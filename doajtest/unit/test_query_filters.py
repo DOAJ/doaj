@@ -92,7 +92,7 @@ class TestQueryFilters(DoajTestCase):
             "track_total_hits": True,
             'query': {
                 'bool': {
-                    'must': [{'terms': {'admin.editor_group.exact': [eg.name]}}]
+                    'must': [{'terms': {'admin.editor_group.exact': [eg.id]}}]
                 }
             }
         }, newq.as_dict()

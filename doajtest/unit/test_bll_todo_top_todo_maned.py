@@ -12,11 +12,11 @@ from portality.lib.paths import rel2abs
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_todo_maned"), "top_todo_maned", "test_id",
-                               {"test_id" : []})
+                               {"test_id": []})
 
 
 EXCEPTIONS = {
-    "ArgumentException" : exceptions.ArgumentException
+    "ArgumentException": exceptions.ArgumentException
 }
 
 
@@ -45,7 +45,7 @@ class TestBLLTopTodoManed(DoajTestCase):
         ]
 
         category_args = {
-            cat : (
+            cat: (
                 int(kwargs.get(cat)),
                 int(kwargs.get(cat + "_order") if kwargs.get(cat + "_order") != "" else -1)
             ) for cat in categories
@@ -58,12 +58,14 @@ class TestBLLTopTodoManed(DoajTestCase):
         w = 7 * 24 * 60 * 60
 
         account = None
+        editor_group_id = None
         if account_arg == "admin":
             asource = AccountFixtureFactory.make_managing_editor_source()
             account = models.Account(**asource)
             eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=account.id)
             eg = models.EditorGroup(**eg_source)
             eg.save(blocking=True)
+            editor_group_id = eg.id
         elif account_arg == "editor":
             asource = AccountFixtureFactory.make_editor_source()
             account = models.Account(**asource)
@@ -78,27 +80,31 @@ class TestBLLTopTodoManed(DoajTestCase):
         ############################################################
 
         # an application stalled for more than 8 weeks (todo_maned_stalled)
-        self.build_application("maned_stalled", 9 * w, 9 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        self.build_application("maned_stalled", 9 * w, 9 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps,
+                               editor_group_id=editor_group_id)
 
         # an application that was created over 10 weeks ago (but updated recently) (todo_maned_follow_up_old)
-        self.build_application("maned_follow_up_old", 2 * w, 11 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        self.build_application("maned_follow_up_old", 2 * w, 11 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps,
+                               editor_group_id=editor_group_id)
 
         # an application that was modifed recently into the ready status (todo_maned_ready)
-        self.build_application("maned_ready", 2 * w, 2 * w, constants.APPLICATION_STATUS_READY, apps)
+        self.build_application("maned_ready", 2 * w, 2 * w, constants.APPLICATION_STATUS_READY, apps,
+                               editor_group_id=editor_group_id)
 
         # an application that was modifed recently into the ready status (todo_maned_completed)
-        self.build_application("maned_completed", 3 * w, 3 * w, constants.APPLICATION_STATUS_COMPLETED, apps)
+        self.build_application("maned_completed", 3 * w, 3 * w, constants.APPLICATION_STATUS_COMPLETED, apps,
+                               editor_group_id=editor_group_id)
 
         # an application that was modifed recently into the ready status (todo_maned_assign_pending)
         def assign_pending(ap):
             ap.remove_editor()
 
         self.build_application("maned_assign_pending", 4 * w, 4 * w, constants.APPLICATION_STATUS_PENDING, apps,
-                               assign_pending)
+                               assign_pending, editor_group_id=editor_group_id)
 
         # an update request
         self.build_application("maned_update_request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST, apps,
-                               update_request=True)
+                               update_request=True, editor_group_id=editor_group_id)
 
         # Applications that should never be reported
         ############################################
@@ -109,7 +115,8 @@ class TestBLLTopTodoManed(DoajTestCase):
         #           maned_ready
         #           maned_completed
         #           maned_assign_pending
-        self.build_application("not_stalled__not_old", 2 * w, 2 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        self.build_application("not_stalled__not_old", 2 * w, 2 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps,
+                               editor_group_id=editor_group_id)
 
         # an application that is old but rejected
         # counter to maned_stalled
@@ -117,7 +124,8 @@ class TestBLLTopTodoManed(DoajTestCase):
         #           maned_ready
         #           maned_completed
         #           maned_assign_pending
-        self.build_application("old_rejected", 11 * w, 11 * w, constants.APPLICATION_STATUS_REJECTED, apps)
+        self.build_application("old_rejected", 11 * w, 11 * w, constants.APPLICATION_STATUS_REJECTED, apps,
+                               editor_group_id=editor_group_id)
 
         # an application that was created/modified over 10 weeks ago and is accepted
         # counter to maned_stalled
@@ -125,7 +133,8 @@ class TestBLLTopTodoManed(DoajTestCase):
         #           maned_ready
         #           maned_completed
         #           maned_assign_pending
-        self.build_application("old_accepted", 12 * w, 12 * w, constants.APPLICATION_STATUS_ACCEPTED, apps)
+        self.build_application("old_accepted", 12 * w, 12 * w, constants.APPLICATION_STATUS_ACCEPTED, apps,
+                               editor_group_id=editor_group_id)
 
         # an application that was recently completed (<2wk)
         # counter to maned_stalled
@@ -133,7 +142,8 @@ class TestBLLTopTodoManed(DoajTestCase):
         #           maned_ready
         #           maned_completed
         #           maned_assign_pending
-        self.build_application("old_accepted", 1 * w, 1 * w, constants.APPLICATION_STATUS_COMPLETED, apps)
+        self.build_application("old_accepted", 1 * w, 1 * w, constants.APPLICATION_STATUS_COMPLETED, apps,
+                               editor_group_id=editor_group_id)
 
         # pending application with no assed younger than 2 weeks
         # counter to maned_stalled
@@ -142,11 +152,12 @@ class TestBLLTopTodoManed(DoajTestCase):
         #           maned_completed
         #           maned_assign_pending
         self.build_application("not_assign_pending", 1 * w, 1 * w, constants.APPLICATION_STATUS_PENDING, apps,
-                               assign_pending)
+                               assign_pending, editor_group_id=editor_group_id)
 
         # pending application with assed assigned
         # counter to maned_assign_pending
-        self.build_application("pending_assed_assigned", 3 * w, 3 * w, constants.APPLICATION_STATUS_PENDING, apps)
+        self.build_application("pending_assed_assigned", 3 * w, 3 * w, constants.APPLICATION_STATUS_PENDING, apps,
+                               editor_group_id=editor_group_id)
 
         # pending application with no editor group assigned
         # counter to maned_assign_pending
@@ -154,17 +165,18 @@ class TestBLLTopTodoManed(DoajTestCase):
             ap.remove_editor_group()
 
         self.build_application("pending_assed_assigned", 3 * w, 3 * w, constants.APPLICATION_STATUS_PENDING, apps,
-                               noeditorgroup)
+                               noeditorgroup, editor_group_id=editor_group_id)
 
         # application with no assed, but not pending
         # counter to maned_assign_pending
-        self.build_application("no_assed", 3 * w, 3 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps, assign_pending)
+        self.build_application("no_assed", 3 * w, 3 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps,
+                               assign_pending, editor_group_id=editor_group_id)
 
         wait_until_no_es_incomplete_tasks()
         models.Application.refresh()
 
         # size = int(size_arg)
-        size=25
+        size = 25
 
         raises = None
         if raises_arg:
@@ -194,10 +206,11 @@ class TestBLLTopTodoManed(DoajTestCase):
                 assert actions.get(k, 0) == v[0]
                 if v[1] > -1:
                     assert v[1] in positions.get(k, [])
-                else:   # the todo item is not positioned at all
+                else:  # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
 
-    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None, update_request=False):
+    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None,
+                          update_request=False, editor_group_id=None):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.set_id(id)
@@ -214,6 +227,9 @@ class TestBLLTopTodoManed(DoajTestCase):
 
         if additional_fn is not None:
             additional_fn(ap)
+
+        if editor_group_id is not None:
+            ap.set_editor_group(editor_group_id)
 
         ap.save()
         app_registry.append(ap)

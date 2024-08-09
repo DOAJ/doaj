@@ -132,7 +132,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "editor_group",
                     category: "facet",
-                    field: "admin.editor_group.exact",
+                    field: "index.editor_group_name.exact",
                     display: "Editor group",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -140,7 +140,7 @@ $.extend(true, doaj, {
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: true
+                        hideInactive: true,
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -376,7 +376,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>Editor group</strong>: ",
-                                    "field" : "admin.editor_group"
+                                    "field" : "index.editor_group_name",
                                 }
                             ],
                             [
@@ -474,7 +474,7 @@ $.extend(true, doaj, {
                         "admin.owner.exact" : "Owner",
                         "index.has_editor_group.exact" : "Editor group?",
                         "index.has_editor.exact" : "Associate Editor?",
-                        "admin.editor_group.exact" : "Editor group",
+                        "index.editor_group_name.exact" : "Editor group",
                         "admin.editor.exact" : "Associate Editor",
                         "index.license.exact" : "License",
                         "bibjson.publisher.name.exact" : "Publisher",
@@ -510,7 +510,7 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error. Please reload the page and try again. If the issue persists please contact an administrator.");
-                    }
+                    },
                 }
             });
             doaj.adminJournalsSearch.activeEdges[selector] = e;

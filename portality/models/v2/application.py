@@ -95,7 +95,7 @@ class Application(JournalLikeObject):
 
     @classmethod
     def assignment_to_editor_groups(cls, egs):
-        q = AssignedEditorGroupsQuery([eg.name for eg in egs])
+        q = AssignedEditorGroupsQuery([eg.id for eg in egs])
         res = cls.query(q.query())
         buckets = res.get("aggregations", {}).get("editor_groups", {}).get("buckets", [])
         assignments = {}
