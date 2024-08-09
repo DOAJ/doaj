@@ -1,0 +1,50 @@
+{% extends "public/base.html" %}
+
+{% block page_title %}Login to apply{% endblock %}
+
+{% block public_content %}
+    <div class="container">
+      <div class="row">
+          <div class="col-md-8">
+              <section class="page-content" id="apply">
+                <h1>Application form</h1>
+
+                    <p>Read our <a href="/apply/guide/">Guide to applying</a> first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please <a href="/contact/">contact us</a>.</p>
+
+                    <p>You can <a href="/static/doaj/docs/DOAJquestions-for-reference-only.pdf" target="_blank">print or download</a> a PDF list of the questions.</p>
+
+                    <p>Log in or register to submit your application.</p>
+
+                    <hr />
+
+                    <h2 id="log-in-to-your-account">Log in to your account</h2>
+
+                    <p>→ Don’t have an account? <a href="{{ url_for("account.register") }}">Register here</a>.</p>
+                        {% include "_account/includes/_login_form.html" %}
+                    <p>If you cannot log in, <a href={{ url_for("account.forgot") }}>reset your password</a>. If you still cannot login, <a href="/contact">contact us</a>.</p>
+                </section>
+            </div>
+          <div class="col-md-4">
+              <div>
+                  <aside class="hero hero--aside">
+                      <h2 class="label">Related help</h2>
+                      <ul class="stretch-list">
+                          <li class="stretch-list__item">
+                              <a href="{{ url_for('doaj.guide') }}" target="_blank">Guide to applying</a>
+                          </li>
+                          <li class="stretch-list__item">
+                              <a href="{{ url_for('doaj.seal') }}" target="_blank">The DOAJ Seal</a>
+                          </li>
+                          <li class="stretch-list__item">
+                              <a href="{{ url_for('doaj.transparency') }}" target="_blank">Transparency & best practice</a>
+                          </li>
+                          <li class="stretch-list__item">
+                              <a href="{{ url_for('doaj.why_index') }}" target="_blank">Why index your journal in DOAJ?</a>
+                          </li>
+                      </ul>
+                  </aside>
+              </div>
+          </div>
+      </div>
+    </div>
+{% endblock %}

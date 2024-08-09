@@ -1,0 +1,55 @@
+{% extends "management/admin/base.html" %}
+
+{% set form_id = "maned_form" %}
+{% set formulaic_after = url_for("admin.application", application_id=obj.id) %}
+{% set form_action = url_for("admin.application", application_id=obj.id) %}
+
+{% set js_validation = True %}
+{% set auto_save = 0 %}
+{% set notabs = true %}
+{% set diff_table = true %}
+{% set quick_reject = true %}
+
+{% block page_title %}{% if obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: {{ obj.bibjson().title }}{% endblock %}
+{% block body_id %}apply{% endblock %}
+
+{% block admin_content scoped %}
+    {% include "management/_application-form/includes/_editorial_form_body.html" %}
+
+    {% if obj.application_status not in ["accepted", "rejected"] %}
+        {% set fs = formulaic_context.fieldset("quick_reject") %}
+        <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
+            <div class="modal__dialog" role="document">
+                <header class="flex-space-between modal__heading">
+                    <h3 id="modalLabel-quick_reject" class="modal__title">
+                        “{{ fs.label | safe }}”
+                    </h3>
+                    <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>
+                </header>
+                <p>{{ obj.id }}</p>
+                <form class="form form--compact" method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
+                    {% for f in fs.fields() %}
+                        {% set field_template = f.template %}
+                        {%  include field_template %}
+                    {% endfor %}
+                    <button class="button button--primary" type="submit" id="submit_quick_reject">Quick reject</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block admin_js scoped %}
+    {% if autochecks %}
+        <script type="application/javascript">
+            doaj.autochecks = {{ autochecks.data|tojson }}
+        </script>
+        <script type="text/javascript" src="/static/js/autochecks.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    {% endif %}
+    {% include "_application-form/includes/_form_js.html" %}
+    {% if autochecks %}
+        <script type="application/javascript">
+            doaj.autocheckers.manager = new doaj.autocheckers.AutochecksManager({})
+        </script>
+    {% endif %}
+{% endblock %}

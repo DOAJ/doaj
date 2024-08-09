@@ -1,6 +1,6 @@
 ---
 layout: no-sidenav
-include: /data/ambassadors.html
+include: /public/includes/_ambassadors.html
 title: Ambassadors
 section: About
 toc: true

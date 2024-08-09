@@ -1,0 +1,44 @@
+{% extends "public/publisher/base.html" %}
+<!--~~JournalCSV:Page~~-->
+<!--~~->JournalCSV:Feature-->
+
+{% block page_title %}Validate your CSV{% endblock %}
+
+{% block publisher_content %}
+    <div class="row">
+        <header class="col-md-4">
+            <p></p> {# FIXME: style workaround #}
+            <h2>Validate your CSV</h2>
+
+            <div class="alert">
+                <p><a href="{{ url_for("doaj.faq") }}#using-a-spreadsheet-to-update-your-journal-metadata">Help is available</a> on how to validate a CSV file and what warning and error messages mean.</p>
+            </div>
+        </header>
+
+        <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="{{ url_for("publisher.journal_csv_validate") }}" enctype="multipart/form-data">
+            <fieldset>
+                <h3 class="form__header">Journal CSV</h3>
+                <div class="form__question">
+                    <label for="upload-csv-file">Select a file</label>
+                    <input type="file" id="upload-csv-file" name="file">
+                    <p><small>Must be less than 1MB.</small></p>
+                    {% if error %}
+                        <p><small class="error">You must specify the file or upload from a link</small></p>
+                    {% endif %}
+                </div>
+            </fieldset>
+            <button type="submit" id="validate" class="button button--primary">Validate</button>
+        </form>
+    </div>
+
+    <div id="validation-results"></div>
+{% endblock %}
+
+{% block publisher_js %}
+    <script type="text/javascript" src="/static/js/publisher_csv.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            doaj.publisher_csvs.init()
+        })
+    </script>
+{% endblock %}

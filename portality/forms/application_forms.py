@@ -46,6 +46,7 @@ from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext,
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
 from portality.ui.messages import Messages
+from portality.ui import templates
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -1143,8 +1144,8 @@ class FieldDefinitions:
             "apc_currency",
             "apc_max"
         ],
-        "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group_horizontal.html",
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GROUP_HORIZONTAL,
         "widgets": [
             "multiple_field"
         ]
@@ -1972,8 +1973,8 @@ class FieldDefinitions:
             "note_id",
             "note_author_id",
         ],
-        "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group.html",
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat": {"enable_on_repeat": ["textarea"]}},
             "note_modal"
@@ -2367,9 +2368,9 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "templates": {
-            "form": "application_form/public_application.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html"
+            "form": templates.PUBLIC_APPLICATION_FORM,
+            "default_field": templates.AF_FIELD,
+            "default_group": templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": ApplicationFormXWalk.obj2form,
@@ -2384,14 +2385,14 @@ class ApplicationContextDefinitions:
     UPDATE = deepcopy(PUBLIC)
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
-    UPDATE["templates"]["form"] = "application_form/publisher_update_request.html"
+    UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
 
     # ~~->$ ReadOnlyApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
     READ_ONLY = deepcopy(PUBLIC)
     READ_ONLY["name"] = "application_read_only"
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
-    READ_ONLY["templates"]["form"] = "application_form/readonly_application.html"
+    READ_ONLY["templates"]["form"] = templates.PUBLISHER_READ_ONLY_APPLICATION
 
     # ~~->$ AssociateEditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2404,7 +2405,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
-    ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
+    ASSOCIATE["templates"]["form"] = templates.ASSED_APPLICATION_FORM
 
     # ~~->$ EditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2418,7 +2419,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
-    EDITOR["templates"]["form"] = "application_form/editor_application.html"
+    EDITOR["templates"]["form"] = templates.EDITOR_APPLICATION_FORM
 
     # ~~->$ ManEdApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2436,15 +2437,15 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication
-    MANED["templates"]["form"] = "application_form/maned_application.html"
+    MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
 
 class JournalContextDefinitions:
     # ~~->$ ReadOnlyJournal:FormContext~~
     # ~~^-> JournalForm:Crosswalk~~
     # ~~^-> ReadOnlyJournal:FormProcessor~~
-    READ_ONLY = {
-        "name": "readonly",
+    ADMIN_READ_ONLY = {
+        "name": "admin_readonly",
         "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
@@ -2464,9 +2465,9 @@ class JournalContextDefinitions:
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "templates": {
-            "form": "application_form/readonly_journal.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html"
+            "form": templates.MANED_READ_ONLY_JOURNAL,
+            "default_field": templates.AF_FIELD,
+            "default_group": templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,
@@ -2475,17 +2476,22 @@ class JournalContextDefinitions:
         "processor": application_processors.ReadOnlyJournal
     }
 
+    # identical context for editors, mostly to support the different view contexts
+    EDITOR_READ_ONLY = deepcopy(ADMIN_READ_ONLY)
+    EDITOR_READ_ONLY["name"] = "editor_readonly"
+    EDITOR_READ_ONLY["templates"]["form"] = templates.EDITOR_READ_ONLY_JOURNAL
+
     # ~~->$ AssEditorJournal:FormContext~~
     # ~~^-> ReadOnlyJournal:FormContext~~
     # ~~^-> AssEdJournal:FormProcessor~~
-    ASSOCIATE = deepcopy(READ_ONLY)
+    ASSOCIATE = deepcopy(ADMIN_READ_ONLY)
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["processor"] = application_processors.AssEdJournalReview
-    ASSOCIATE["templates"]["form"] = "application_form/assed_journal.html"
+    ASSOCIATE["templates"]["form"] = templates.ASSED_JOURNAL_FORM
 
     # ~~->$ EditorJournal:FormContext~~
     # ~~^-> AssEdJournal:FormContext~~
@@ -2496,7 +2502,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"]
     ]
     EDITOR["processor"] = application_processors.EditorJournalReview
-    EDITOR["templates"]["form"] = "application_form/editor_journal.html"
+    EDITOR["templates"]["form"] = templates.EDITOR_JOURNAL_FORM
 
     # ~~->$ ManEdJournal:FormContext~~
     # ~~^-> EditorJournal:FormContext~~
@@ -2510,7 +2516,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.CONTINUATIONS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
-    MANED["templates"]["form"] = "application_form/maned_journal.html"
+    MANED["templates"]["form"] = templates.MANED_JOURNAL_FORM
 
     # ~~->$ BulkEditJournal:FormContext~~
     # ~~^-> JournalForm:Crosswalk~~
@@ -2521,9 +2527,9 @@ class JournalContextDefinitions:
             FieldSetDefinitions.BULK_EDIT["name"]
         ],
         "templates": {
-            "form": "application_form/maned_journal_bulk_edit.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html"
+            "form": templates.MANED_JOURNAL_BULK_EDIT,
+            "default_field": templates.AF_FIELD,
+            "default_group": templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,
@@ -2552,7 +2558,8 @@ APPLICATION_FORMS = {
 
 JOURNAL_FORMS = {
     "contexts": {
-        JournalContextDefinitions.READ_ONLY["name"]: JournalContextDefinitions.READ_ONLY,
+        JournalContextDefinitions.ADMIN_READ_ONLY["name"]: JournalContextDefinitions.ADMIN_READ_ONLY,
+        JournalContextDefinitions.EDITOR_READ_ONLY["name"]: JournalContextDefinitions.EDITOR_READ_ONLY,
         JournalContextDefinitions.BULK_EDIT["name"]: JournalContextDefinitions.BULK_EDIT,
         JournalContextDefinitions.ASSOCIATE["name"]: JournalContextDefinitions.ASSOCIATE,
         JournalContextDefinitions.EDITOR["name"]: JournalContextDefinitions.EDITOR,

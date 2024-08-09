@@ -1,0 +1,5863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redhead: Jinja2 template structure browser</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+
+        .blocks {
+            font-size: 14px;
+            font-weight: bold;
+            color: blue;
+        }
+
+        .files {
+            font-size: 14px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .extensions {
+            font-size: 14px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .overridden_by {
+            font-size: 14px;
+            font-weight: bold;
+            color: purple;
+        }
+
+        .path {
+            font-style: italic;
+            color: rgb(128, 128, 128);
+        }
+
+        .path-separator {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+
+
+
+<a href="redhead_tree.html">File Inheritance</a> | <a href="redhead_blocks.html">Block Inheritance</a> |
+    <a href="redhead_records.json">Records JSON</a> | <a href="redhead_tree.json">Tree JSON</a> | <a href="redhead_blocks.json">Blocks JSON</a><br><br>
+
+<h1>Block Inheritance</h1>
+
+<a href="#" class="expand-all">Expand all</a> | <a href="#" class="collapse-all">Collapse all</a>
+
+<ul>
+    
+        
+    <li >
+        base_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        body_class
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        body_class
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        body_id
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        extra_header
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        extra_header
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        extra_js_bottom
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">notifications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">contact.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_articles.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        extra_js_bottom
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">notifications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">contact.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_articles.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        main_panel
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        admin_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">continuation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        editor_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        publisher_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_already_submitted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        single_col_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        toc_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_articles.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">notifications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">contact.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        admin_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">continuation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        editor_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        publisher_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_already_submitted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        single_col_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        toc_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_articles.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">notifications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">contact.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        page_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">continuation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        main_panel
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        admin_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">continuation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        editor_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        publisher_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_already_submitted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        single_col_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        toc_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_articles.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">notifications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">contact.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        admin_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">continuation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        editor_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        publisher_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_already_submitted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        single_col_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        toc_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_articles.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">notifications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">dashboard</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">openurl</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">single_col_page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">contact.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        page_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">continuation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        nav
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        extra_meta_tags
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        extra_stylesheets
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">admin_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        meta_description
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        meta_og_description
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        meta_og_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        meta_twitter_description
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        meta_twitter_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        page_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">500.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">401.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">404.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">400.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">unlocked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">updates_in_progress.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">uploadmetadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">preservation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_csv.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_deleted.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">help.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">publisher</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">dashboard_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">toc_base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">continuation.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">global_notifications_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">update_requests.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">background_jobs_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_group_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article_metadata.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">admin</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journal_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">group_applications.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">application_locked.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">editor</span><span class="path-separator">/</span>
+    
+        <span class="path-element">associate_journals.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">articles_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">journals_search.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">doaj</span><span class="path-separator">/</span>
+    
+        <span class="path-element">article.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">api</span><span class="path-separator">/</span>
+    
+        <span class="path-element">current</span><span class="path-separator">/</span>
+    
+        <span class="path-element">api_docs.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">public_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">maned_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_application.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">assed_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">editor_journal.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">publisher_update_request.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">readonly_journal.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        pagination_menu
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">pagination_menu_admin.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">application_form</span><span class="path-separator">/</span>
+    
+        <span class="path-element">pagination_menu.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+</ul>
+
+<script
+			  src="https://code.jquery.com/jquery-3.7.1.min.js"
+			  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			  crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    jQuery (document).ready (function($) {
+        $(".toggle").on("click", function(event) {
+            event.preventDefault();
+            let $this = $(this);
+            let $parent = $this.parent();
+            let $ul = $parent.children("ul");
+            let state = $this.data("state");
+            if (state === "hidden") {
+                $ul.children("li").show();
+                $this.data("state", "shown");
+                $this.text("-");
+            } else {
+                $ul.children("li").hide();
+                $this.data("state", "hidden");
+                $this.text("+");
+            }
+        });
+
+        $(".expand-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "shown") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+
+        $(".collapse-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "hidden") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

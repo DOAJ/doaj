@@ -1,0 +1,38 @@
+<script type="text/javascript" src="/static/js/dontleave.js"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // Populate select2 role picker
+        $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"]})
+
+        // Scroll to errors
+        let firstError = $('.errors')[0];
+        if (firstError) {
+            $(window).scrollTop($(firstError).offset().top - 100)
+        }
+
+        {% if account.has_role("api") %}
+            // Copy API key to clipboard
+            $('#click-to-copy--api').click(function() {
+                let value_to_copy = $('#user-api').html();
+                navigator.clipboard.writeText(value_to_copy);
+                var confirmation = $("#copy-confirmation--api");
+                confirmation.text("Copied: " + value_to_copy);
+                confirmation.show().delay(3000).fadeOut();
+            });
+        {% endif %}
+
+        // If the user is editing their own account, make them confirm when email address is updated
+        {% if current_user.id == account.id %}
+            $('form#edit_user').submit(function () {
+                if ($('input#email_confirm').val() !== "") {
+                    return confirm('Are you sure you want to change email address?\nYou will be logged out and will need to verify your account again to continue.');
+                }
+            });
+        {% endif %}
+
+        {# ~~->DontLeave:Feature~~ #}
+        // initialise the leave with unsaved changed warning
+        doaj.dontleave.init({containerSelector: "#edit_user"});
+    });
+</script>

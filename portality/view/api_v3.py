@@ -12,6 +12,7 @@ from portality.decorators import api_key_required, api_key_optional, swag, write
 from portality.lib import plausible
 from portality.view import api_v4
 from flask_swagger import swagger
+from portality.ui import templates
 
 blueprint = Blueprint('api_v3', __name__)
 
@@ -45,7 +46,7 @@ def docs():
         this_major_version = API_VERSION_NUMBER.split(".")[0]
         base_url = base_url + "v" + this_major_version + "/"
 
-    return render_template('api/v3/api_docs.html',
+    return render_template(templates.API_V3_DOCS,
                            api_version=API_VERSION_NUMBER,
                            base_url=base_url,
                            contact_us_url=url_for('doaj.contact'),

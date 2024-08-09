@@ -1,0 +1,29 @@
+{% extends "public/publisher/base.html" %}
+
+{% block page_title %}My update requests{% endblock %}
+
+{% block publisher_content %}
+    <h2>My update requests</h2>
+    <div id="publisher_update_requests"></div>
+{% endblock %}
+
+{% block publisher_js %}
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        publisherUpdatesSearchConfig : {
+            journalReadOnlyUrl : "{{ url_for('publisher.application_readonly', application_id="") }}",
+            tocUrl : "{{ url_for('doaj.toc', identifier="") }}",
+            editPendingUrl : "FIXME",
+            applyUrl: "{{ url_for('apply.public_application', draft_id="") }}",
+            deleteLinkTemplate: "{{ url_for("publisher.delete_application", application_id="__application_id__") }}",
+            searchPath : '/publisher_query/update_requests/_search',
+            journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
+        }
+    });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/publisher.update_requests.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% endblock %}

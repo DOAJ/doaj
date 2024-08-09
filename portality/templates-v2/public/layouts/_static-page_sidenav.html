@@ -1,0 +1,45 @@
+<main class="container page-content">
+    <div class="row">
+        <div class="{% if page.larger_main %}col-lg-10 col-md-9{% else %}col-md-8{% endif %}">
+            <section>
+                {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
+                <h1>{{ page.title }}</h1>
+
+                {% if page.preface %}
+                    {% include page.preface %}
+                {% endif %}
+
+                {% include page.frag %}
+
+                {% if page.include %}
+                    {% include page.include %}
+                {% endif %}
+            </section>
+        </div>
+        <div class="{% if page.larger_main %}col-lg-2 col-md-3{% else %}col-md-4{% endif %}">
+            {% if page.toc %}
+                <nav class="page-nav nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
+                    <h2 class="page-nav__heading">Jump to:</h2>
+                    {% include "public/includes/_sidenav_toc.html" %}
+                </nav>
+            {% else %}
+                {% if page.sidenav_include %}
+                    {% include page.sidenav_include %}
+                {% endif %}
+                <aside class="hero hero--aside">
+                    <p class="label">Just so you know&hellip;</p>
+
+                    {% set min = 0 %}
+                    {% set max = data.promo | length %}
+                    {% set rand = range(min, max) | random %}
+
+                    <h2>{{ data.promo[rand].title }}</h2>
+                    <p>
+                        {{ data.promo[rand].summary }}
+                    </p>
+                    <a href="{{ data.promo[rand].url }}" target="_blank" class="promo__link">Learn more</a>
+                </aside>
+            {% endif %}
+        </div>
+    </div>
+</main>
