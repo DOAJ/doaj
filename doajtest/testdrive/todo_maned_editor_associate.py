@@ -142,6 +142,14 @@ def build_maned_applications(un, eg, owner, eponymous_group):
         "title": un + " Maned Pending Application"
     }]
 
+    app = build_application(un + " Maned On Hold Application", 2 * w, 2 * w, constants.APPLICATION_STATUS_ON_HOLD,
+                            editor_group=eg.name, owner=owner)
+    app.save()
+    apps["on_hold"] = [{
+        "id": app.id,
+        "title": un + " Maned On Hold Application"
+    }]
+
     app = build_application(un + " Maned Low Priority Pending Application", 1 * w, 1 * w,
                             constants.APPLICATION_STATUS_PENDING,
                             editor_group=eponymous_group.name, owner=owner)
@@ -154,11 +162,11 @@ def build_maned_applications(un, eg, owner, eponymous_group):
 
     lmur = build_application(un + " Last Month Maned Update Request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST,
                            editor_group=eponymous_group.name, owner=owner, update_request=True)
-    lmur.save()
+    # lmur.save()
 
     tmur = build_application(un + " This Month Maned Update Request", 0, 0, constants.APPLICATION_STATUS_UPDATE_REQUEST,
                            editor_group=eponymous_group.name, owner=owner, update_request=True)
-    tmur.save()
+    # tmur.save()
 
     apps["update_request"] = [
         {
@@ -183,6 +191,7 @@ def build_application(title, lmu_diff, cd_diff, status, editor=None, editor_grou
 
     if update_request:
         ap.application_type = constants.APPLICATION_TYPE_UPDATE_REQUEST
+        ap.set_current_journal(ap.makeid())
     else:
         ap.remove_current_journal()
         ap.remove_related_journal()

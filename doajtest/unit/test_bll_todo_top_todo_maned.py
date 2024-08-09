@@ -41,7 +41,8 @@ class TestBLLTopTodoManed(DoajTestCase):
             "todo_maned_ready",
             "todo_maned_completed",
             "todo_maned_assign_pending",
-            "todo_maned_new_update_request"
+            "todo_maned_new_update_request",
+            "todo_maned_on_hold"
         ]
 
         category_args = {
@@ -99,6 +100,9 @@ class TestBLLTopTodoManed(DoajTestCase):
         # an update request
         self.build_application("maned_update_request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST, apps,
                                update_request=True)
+
+        # an application that was modifed recently into the ready status (todo_maned_completed)
+        self.build_application("maned_on_hold", 2 * w, 2 * w, constants.APPLICATION_STATUS_ON_HOLD, apps)
 
         # Applications that should never be reported
         ############################################
