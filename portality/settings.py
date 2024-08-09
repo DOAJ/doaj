@@ -484,6 +484,7 @@ FACET_FIELD = ".exact"
 # an array of DAO classes from which to retrieve the type-specific ES mappings
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
+    "portality.models.Article",
     "portality.models.Journal", # ~~->Journal:Model~~
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
@@ -657,7 +658,15 @@ DATAOBJ_TO_MAPPING_COPY_TO_EXTENSIONS = {
 DEFAULT_INDEX_SETTINGS = \
     {
         'number_of_shards': 4,
-        'number_of_replicas': 1
+        'number_of_replicas': 1,
+        'analysis': {
+          'analyzer': {
+            'ascii_folded': {
+              'tokenizer': 'standard',
+              'filter': ['lowercase', 'asciifolding']
+            }
+          }
+        }
     }
 
 
@@ -702,7 +711,6 @@ MAPPINGS = {
 # MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
 # MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
 
-MAPPINGS['article'] = MAPPINGS["account"]  #~~->Article:Model~~
 MAPPINGS['upload'] = MAPPINGS["account"] #~~->Upload:Model~~
 MAPPINGS['bulk_articles'] = MAPPINGS["account"] #~~->BulkArticles:Model~~
 MAPPINGS['cache'] = MAPPINGS["account"] #~~->Cache:Model~~

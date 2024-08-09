@@ -11,7 +11,8 @@ JOURNAL_BIBJSON = {
                 "pissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True},
                 "discontinued_date" : {"coerce" : "bigenddate"},
                 "publication_time_weeks" : {"coerce" : "integer"},
-                "title" : {"coerce" : "unicode"},
+                "title" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
+                                                                                 "search_analyzer": "ascii_folded"}},
                 "oa_start" : {"coerce" : "integer"}
             },
             "lists" : {
@@ -138,7 +139,8 @@ JOURNAL_BIBJSON = {
                 },
                 "publisher" : {
                     "fields" : {
-                        "name" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
+                                                                                 "search_analyzer": "ascii_folded"}},
                         "country" : {"coerce" : "country_code", "set__allow_coerce_failure" : True}
                     }
                 },
@@ -214,7 +216,8 @@ SHARED_JOURNAL_LIKE = {
         },
         "index" : {
             "fields" : {
-                "country" : {"coerce" : "unicode"},
+                "country" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
+                                                                                 "search_analyzer": "ascii_folded"}},
                 "has_apc" : {"coerce" : "unicode"},
                 "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
@@ -234,6 +237,50 @@ SHARED_JOURNAL_LIKE = {
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
                 "schema_code" : {"contains" : "field", "coerce" : "unicode"},
                 "schema_codes_tree" : {"contains" : "field", "coerce" : "unicode"}
+            }
+        }
+    }
+}
+
+ARTICLE_STRUCT = {
+    "fields" : {
+        "created_date": {"coerce": "utcdatetime"},
+        "es_type": {"coerce": "unicode"},
+        "id": {"coerce": "unicode"},
+        "last_updated": {"coerce": "utcdatetime"},
+    },
+    "objects": [
+        "admin", "index"
+    ],
+    "structs": {
+        "admin": {
+            "fields": {
+                "in_doaj": {"coerce": "bool"},
+                "publisher_record_id": {"coerce": "unicode"},
+                "seal": {"coerce": "bool"},
+                "upload_id": {"coerce": "unicode"}
+            }
+        },
+        "index": {
+            "fields": {
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "classification" : {"coerce" : "unicode"},
+                "classification_paths": {"coerce" : "unicode"},
+                "country" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
+                                                                                 "search_analyzer": "ascii_folded"}},
+                "date" : {"coerce" : "utcdatetime"},
+                "date_toc_fv_month": {"coerce" : "utcdatetime"},
+                "doi": {"coerce" : "unicode"},
+                "fulltext": {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "issn": {"coerce" : "unicode"},
+                "language": {"coerce" : "unicode"},
+                "publisher": {"coerce" : "unicode"},
+                "schema_code": {"coerce" : "unicode"},
+                "schema_codes_tree": {"coerce" : "unicode"},
+                "schema_subject": {"coerce" : "unicode"},
+                "subject": {"coerce" : "unicode"},
+                "unpunctitle": {"coerce" : "unicode"}
             }
         }
     }
