@@ -7,7 +7,6 @@ python accounts_with_missing_api_role.py -o accounts.csv [-a]
 ```
 """
 import csv
-import esprit
 from portality.core import es_connection
 from portality.util import ipt_prefix
 from portality import models
@@ -30,7 +29,7 @@ MISSING_API_ROLE = {
 
 def publishers_with_journals():
     """ Get accounts for all publishers with journals in the DOAJ """
-    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), q=MISSING_API_ROLE, page_size=100, keepalive='1m'):
+    for acc in models.Account.scroll(q=MISSING_API_ROLE, page_size=100, keepalive='5m'):
         publisher_account = models.Account(**acc)
         issns = models.Journal.issns_by_owner(publisher_account.id)
         if len(issns) > 0:

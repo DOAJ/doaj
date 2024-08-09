@@ -1,8 +1,6 @@
 import csv
-import esprit
 
 from portality import models
-from portality.core import es_connection
 from portality.util import ipt_prefix
 
 
@@ -24,7 +22,7 @@ def make_csv(start, end, out):
         writer = csv.writer(f)
         writer.writerow(["ID", "Last Updated", "Is Quick Reject?", "Suggester Name", "Suggester Email", "Owner ID", "Owner Name", "Owner Email",
                          "Title", "ISSNS", "Quick Reject Note Date", "All Notes"])
-        for source in esprit.tasks.scroll(conn, ipt_prefix("suggestion"), q):
+        for application in models.Application.scroll(q=q, page_size=100, keepalive='5m'):
             application = models.Suggestion(**source)
 
             qr_note = None
