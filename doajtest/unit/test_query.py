@@ -1,3 +1,6 @@
+import pytest
+from elasticsearch import RequestError
+
 from portality import models
 
 from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory, EditorGroupFixtureFactory, \
@@ -591,3 +594,14 @@ class TestQuery(DoajTestCase):
                             {'query': 'application test','default_operator': 'AND'}},
                             'size': 0, 'track_total_hits': True}, account=None, additional_parameters={"ref":"fqw"})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_search__invalid_from(self):
+        acc = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        acc.save(blocking=True)
+        query = {'query': {'bool': {'must': [{'term': {'es_type.exact': 'journal'}}],
+                                    'filter': [{'term': {'admin.in_doaj': True}}]}},
+                 'size': '10', 'from': '@@PQF0l',
+                 'sort': [{'_score': {'order': 'desc'}}],
+                 'track_total_hits': 'true'}
+        with pytest.raises(RequestError):
+            QueryService().search('admin_query', 'journal', query, account=acc, additional_parameters={})
