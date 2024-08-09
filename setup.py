@@ -63,6 +63,9 @@ setup(
         'pandas~=2.0.1',  # pandas lets us generate URLs for linkcheck
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
+
+        'jsonpath-ng~=1.6',
+
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
