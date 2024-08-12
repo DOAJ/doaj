@@ -85,9 +85,8 @@
                         </small>
                     </p>
                     <h1>
-                        {% block page_title %}
-                            Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
-                            {{ current_user.id }}{% endif %}!
+                        {% block page_header %}
+                            {{ self.page_title() }}
                         {% endblock %}
                     </h1>
                 </header>

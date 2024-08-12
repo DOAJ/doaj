@@ -1,5 +1,12 @@
 {% extends "management/editor/base.html" %}
 
+{% block page_title %}Editor Dashboard{% endblock %}
+
+{% block page_header %}
+    Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+    {{ current_user.id }}{% endif %}!
+{% endblock %}
+
 {% block editor_content %}
     <div class="container">
         {% include "management/includes/_todo.html" %}

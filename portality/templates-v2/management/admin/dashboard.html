@@ -1,6 +1,12 @@
 {% extends "management/admin/base.html" %}
 {# ~~Dashboard:Page~~ #}
 
+{% block page_title %}Managing Editor Dashboard{% endblock %}
+
+{% block page_header %}
+    Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+    {{ current_user.id }}{% endif %}!
+{% endblock %}
 
 {% block admin_content %}
     <div class="flex-end">

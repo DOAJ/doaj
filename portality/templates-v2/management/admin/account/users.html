@@ -1,8 +1,12 @@
 {% extends "management/admin/base.html" %}
 
-{% block page_title %}List of users{% endblock %}
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
 
-{% include "management/includes/_edges_common_css.html" %}
+{% block page_title %}List of users{% endblock %}
 
 {% block admin_content %}
     <h1 class="sr-only">List of users</h1>
