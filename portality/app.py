@@ -11,6 +11,8 @@ new ones as required too.
 """
 
 import os, sys
+
+import elasticsearch.exceptions
 import tzlocal
 import pytz
 
@@ -37,12 +39,6 @@ from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
 from portality.view.jct import blueprint as jct
 from portality.view.apply import blueprint as apply
-if 'api1' in app.config['FEATURES']:
-    from portality.view.api_v1 import blueprint as api_v1
-if 'api2' in app.config['FEATURES']:
-    from portality.view.api_v2 import blueprint as api_v2
-if 'api3' in app.config['FEATURES']:
-    from portality.view.api_v3 import blueprint as api_v3
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
@@ -63,12 +59,22 @@ app.register_blueprint(query, name='dashboard_query', url_prefix="/dashboard_que
 app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
 app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
+    from portality.view.api_v1 import blueprint as api_v1
     app.register_blueprint(api_v1, url_prefix='/api/v1') # ~~-> APIv1:Blueprint~~
 if 'api2' in app.config['FEATURES']:
+    from portality.view.api_v2 import blueprint as api_v2
     app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
 if 'api3' in app.config['FEATURES']:
-    app.register_blueprint(api_v3, name='api', url_prefix='/api') # ~~-> APIv3:Blueprint~~
+    from portality.view.api_v3 import blueprint as api_v3
     app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
+    if app.config.get("CURRENT_API_MAJOR_VERSION") == "3":
+        app.register_blueprint(api_v3, name='api', url_prefix='/api')
+if 'api4' in app.config['FEATURES']:
+    from portality.view.api_v4 import blueprint as api_v4
+    app.register_blueprint(api_v4, name='api_v4', url_prefix='/api/v4') # ~~-> APIv4:Blueprint~~
+    if app.config.get("CURRENT_API_MAJOR_VERSION", "4") == "4":
+        app.register_blueprint(api_v4, name='api', url_prefix='/api')
+
 app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
@@ -432,6 +438,12 @@ def page_not_found(e):
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template('500.html'), 500
+
+
+@app.errorhandler(elasticsearch.exceptions.RequestError)
+def handle_es_request_error(e):
+    app.logger.exception(e)
+    return render_template('400.html'), 400
 
 
 def run_server(host=None, port=None, fake_https=False):

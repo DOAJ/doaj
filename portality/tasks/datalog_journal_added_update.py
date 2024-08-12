@@ -1,3 +1,14 @@
+"""
+Background job that automatically populate a Google sheet that shows accepted journals.
+
+about how to setup google sheet API key for testing, please reference to
+`Setup google API key for google sheet` in `how-to-setup.md`
+
+References
+* [Origin](https://github.com/DOAJ/doajPM/issues/2810)
+* [No longer display Seal](https://github.com/DOAJ/doajPM/issues/3829)
+"""
+
 import datetime
 import itertools
 import logging
@@ -61,7 +72,6 @@ def to_datalog_journal_added(journal: Journal) -> DatalogJournalAdded:
     bibjson = journal.bibjson()
     title = bibjson.title
     issn = bibjson.eissn or bibjson.pissn
-    has_seal = journal.has_seal()
     try:
         has_continuations = any([journal.get_future_continuations() + journal.get_past_continuations()])
     except RecursionError:
@@ -69,7 +79,6 @@ def to_datalog_journal_added(journal: Journal) -> DatalogJournalAdded:
 
     record = DatalogJournalAdded(title=title, issn=issn,
                                  date_added=journal.created_timestamp,
-                                 has_seal=has_seal,
                                  has_continuations=has_continuations,
                                  journal_id=journal.id)
 
@@ -151,7 +160,6 @@ def find_new_xlsx_rows(last_issn, page_size=400) -> list:
 def to_display_data(datalog: DatalogJournalAdded) -> list:
     return [datalog.title, datalog.issn,
             dates.reformat(datalog.date_added, out_format=DatalogJournalAdded.DATE_FMT),
-            'Seal' if datalog.has_seal else '',
             'Yes' if datalog.has_continuations else '']
 
 
@@ -239,15 +247,17 @@ huey_helper = DatalogJournalAddedUpdate.create_huey_helper(main_queue)
 
 @huey_helper.register_schedule
 def scheduled_datalog_journal_added_update():
-    background_helper.submit_by_bg_task_type(
-        DatalogJournalAddedUpdate,
+    huey_helper.scheduled_common(
         filename=app.config.get("DATALOG_JA_FILENAME"),
         worksheet_name=app.config.get("DATALOG_JA_WORKSHEET_NAME"),
         google_key_path=app.config.get("GOOGLE_KEY_PATH"),
     )
 
 
-datalog_journal_added_update = huey_helper.create_common_execute_fn()
+@huey_helper.register_execute(is_load_config=False)
+def datalog_journal_added_update(job_id):
+    huey_helper.execute_common(job_id)
+
 
 if __name__ == '__main__':
     records_new_journals(

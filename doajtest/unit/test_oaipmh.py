@@ -1,16 +1,20 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory
+import base64
+import time
+from datetime import timedelta
+
+import pytest
+from flask import url_for
+from freezegun import freeze_time
+from lxml import etree
+
 from doajtest.fixtures import ArticleFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory
+from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.app import app
-from lxml import etree
-from datetime import timedelta
-from freezegun import freeze_time
-from flask import url_for
-import time
-
 from portality.lib import dates
 from portality.lib.dates import FMT_DATE_STD
+from portality.view.oaipmh import ResumptionTokenException, decode_resumption_token
 
 
 class TestClient(DoajTestCase):
@@ -446,3 +450,15 @@ class TestClient(DoajTestCase):
                 assert len(oai_dc) == 1
                 assert oai_dc[0].tag == "{%s}" % self.oai_ns["oai_dc"] + "dc"
                 assert oai_dc[0].nsmap["xsi"] == self.oai_ns["xsi"]
+
+
+class TestOaipmhFunction(DoajTestCase):
+    def test_decode_resumption_token__fail(self):
+        with pytest.raises(ResumptionTokenException):
+            decode_resumption_token('aaaaa@@@@@')
+        with pytest.raises(ResumptionTokenException):
+            decode_resumption_token(base64.urlsafe_b64encode(b'"m":1xxxxx').decode('utf-8'))
+
+    def test_decode_resumption_token(self):
+        params = decode_resumption_token(base64.urlsafe_b64encode(b'{"m":1}').decode('utf-8'))
+        assert params == {"metadata_prefix": 1}

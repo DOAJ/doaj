@@ -17,10 +17,28 @@ from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
 
+
 class ApplicationService(object):
     """
     ~~Application:Service->DOAJ:Service~~
     """
+
+    @staticmethod
+    def prevent_concurrent_ur_submission(ur: models.Application, record_if_not_concurrent=True):
+        """
+        Prevent duplicated update request submission
+        :param ur:
+        :param record_if_not_concurrent:
+        :return:
+        """
+        cs = DOAJ.concurrencyPreventionService()
+
+        if ur.current_journal is not None and ur.id is not None:
+            if cs.check_concurrency(ur.current_journal, ur.id):
+                raise exceptions.ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
+
+            if record_if_not_concurrent:
+                cs.store_concurrency(ur.current_journal, ur.id, timeout=app.config.get("UR_CONCURRENCY_TIMEOUT", 10))
 
     def reject_application(self, application, account, provenance=True, note=None, manual_update=True):
         """
@@ -649,14 +667,11 @@ class ApplicationService(object):
                                      was=journal_value, now=e.value)
                     continue
 
-
-
                 if len(updates) == 0:
                     validation.row(validation.WARN, row_ix, Messages.JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE)
                     continue
 
                 # if we get to here, then there are updates
-
                 [validation.log(upd) for upd in updates]
 
                 # If a field is disabled in the UR Form Context, then we must confirm that the form data from the
@@ -684,7 +699,7 @@ class ApplicationService(object):
                 alock = None
                 try:
                     # ~~ ^->UpdateRequest:Feature ~~
-                    update_req, jlock, alock = self.update_request_for_journal(j.id, account=j.owner_account, lock_records=False)
+                    update_req, jlock, alock = self.update_request_for_journal(j.id, account=account, lock_records=False)
                 except AuthoriseException as e:
                     validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR.format(reason=e.reason))
                     continue
@@ -706,7 +721,7 @@ class ApplicationService(object):
                         question = Journal2PublisherUploadQuestionsXwalk.q(k)
                         try:
                             pos = header_row.index(question)
-                        except:
+                        except ValueError:
                             # this is because the validation is on a field which is not in the csv, so it must
                             # be due to an existing validation error in the data, and not something the publisher
                             # can do anything about
@@ -716,6 +731,10 @@ class ApplicationService(object):
                         if isinstance(v[0], dict):
                             for sk, sv in v[0].items():
                                 validation.value(validation.ERROR, row_ix, pos, ". ".join(sv),
+                                             was=was, now=now)
+                        elif isinstance(v[0], list):
+                            # If we have a list, we must go a level deeper
+                            validation.value(validation.ERROR, row_ix, pos, ". ".join(v[0]),
                                              was=was, now=now)
                         else:
                             validation.value(validation.ERROR, row_ix, pos, ". ".join(v),

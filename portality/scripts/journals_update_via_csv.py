@@ -22,6 +22,7 @@ e.g. to validate a CSV upload and create a batch of update requests from that us
 
 import os
 import csv
+import re
 
 from portality import lock, constants
 from portality.core import app
@@ -44,6 +45,15 @@ SYSTEM_ACCOUNT = {
 
 sys_acc = Account(**SYSTEM_ACCOUNT)
 
+
+def confirm_prompt():
+    doit = input('Proceed? [y\\N] ')
+
+    if doit.lower() != 'y':
+        print('\nExiting.')
+        exit(0)
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -53,6 +63,7 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-a", "--account", help="Account ID of the user to import as")
     group.add_argument('-s', '--sys', help="Validate and create URs using the system user (for admin / batch uploads)", action='store_true')
+    group.add_argument('-p', '--prefix', help="Read the account by splitting the filename (supplied as e.g. 12341234.publisher_doajupload.csv)", action='store_true')
 
     parser.add_argument("-d", "--dry-run", help="Run this script without actually making index changes", action='store_true')
     parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
@@ -65,11 +76,7 @@ if __name__ == "__main__":
     print('\nNote supplied via $DOAJ_CSV_NOTE: ' + note)
 
     if not args.yes:
-        doit = input('Proceed? [y\\N] ')
-
-        if doit.lower() != 'y':
-            print('\nExiting.')
-            exit(0)
+        confirm_prompt()
 
     # Disable app emails so this doesn't spam users
     app.config['ENABLE_EMAIL'] = False
@@ -81,7 +88,10 @@ if __name__ == "__main__":
     if args.sys:
         acc = sys_acc
     else:
-        acc = Account.pull(args.account)
+        found_account_name = re.split(r'[._]', os.path.basename(args.infile))[0] if args.prefix else args.account
+        print(f'Creating Update Requests as account {found_account_name}')
+
+        acc = Account.pull(found_account_name)
 
         if acc is None:
             print(f'ERROR: Account {args.account} not found.')
@@ -90,17 +100,25 @@ if __name__ == "__main__":
     appSvc = DOAJ.applicationService()
     validation_results = appSvc.validate_update_csv(args.infile, acc)
     if validation_results.has_errors_or_warnings():
-        print(f'ERROR: CSV validation failed.')
+        print(f'ERROR: CSV validation failed with warnings or errors.')
         print(validation_results.json(indent=2))
 
-        if not validation_results.has_errors() and args.force:
-            print('Forcing update despite warnings...')
-        else:
-            print(f'Errors found. No updates processed.')
-            exit(1)
+        if not args.dry_run:
+            if not validation_results.has_errors() and args.force:
+                print('Forcing update despite warnings...')
+            elif validation_results.has_errors() and args.force:
+                if args.sys:
+                    print("DANGER - do you want to force these changes despite errors (some may not work)?")
+                    confirm_prompt()
+                else:
+                    print("Can't force update on file with errors using publisher account.")
+                    exit(1)
+            else:
+                print(f'No updates processed due to errors or warnings. Supply -f arg to ignore warnings.')
+                exit(1)
 
-    # if we get to here, the records can all be imported, so we can go ahead with minimal
-    # additional checks
+    # if we get to here, the records can all be imported*, so we can go ahead with minimal additional checks
+    # * unless we're forcing with errors
 
     # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
     with open(args.infile, 'r', encoding='utf-8-sig') as g:
@@ -148,7 +166,7 @@ if __name__ == "__main__":
             alock = None
             try:
                 # ~~ ^->UpdateRequest:Feature ~~
-                update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=j.owner_account)
+                update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=acc)
             except AuthoriseException as e:
                 print('Could not create update request: {0}'.format(e.reason))
                 continue

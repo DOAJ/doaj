@@ -1,4 +1,5 @@
 # ~~JournalAssedAssignedNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -12,7 +13,7 @@ class JournalAssedAssignedNotify(EventConsumer):
     ID = "journal:assed:assigned:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_JOURNAL_ASSED_ASSIGNED and \
                event.context.get("journal") is not None
 
@@ -40,7 +41,7 @@ class JournalAssedAssignedNotify(EventConsumer):
             group_name=journal.editor_group
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in journal.bibjson().issns())
+            issns=journal.bibjson().issns_as_text()
         )
         notification.action = url_for("editor.journal_page", journal_id=journal.id)
 
