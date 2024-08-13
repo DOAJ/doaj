@@ -9,8 +9,8 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.7.1"
-API_VERSION = "3.0.1"
+DOAJ_VERSION = "6.8.2"
+API_VERSION = "4.0.0"
 
 ######################################
 # Deployment configuration
@@ -66,7 +66,7 @@ ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
-ELASTIC_SEARCH_VERSION = "1.7.5"
+ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
@@ -148,7 +148,7 @@ else:
 # ~~->API:Feature~~
 BASE_API_URL = "https://doaj.org/api/"
 API_CURRENT_BLUEPRINT_NAME = "api_v4"  # change if upgrading API to new version and creating new view
-CURRENT_API_MAJOR_VERSION = "3"
+CURRENT_API_MAJOR_VERSION = "4"
 
 # URL used for the journal ToC URL in the journal CSV export
 # NOTE: must be the correct route as configured in view/doaj.py
@@ -1133,7 +1133,7 @@ BLOG_URL = "http://doajournals.wordpress.com/"
 
 BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
 
-FRONT_PAGE_NEWS_ITEMS = 6
+FRONT_PAGE_NEWS_ITEMS = 4
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
