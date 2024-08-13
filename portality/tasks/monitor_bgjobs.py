@@ -3,9 +3,8 @@ import itertools
 from portality import app_email, models
 from portality.background import BackgroundTask
 from portality.core import app
-from portality.decorators import write_required
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import schedule, long_running
+from portality.tasks.redis_huey import long_running
 
 
 def get_system_email():
@@ -76,17 +75,20 @@ class MonitorBgjobsBackgroundTask(BackgroundTask):
 
     @classmethod
     def submit(cls, background_job):
-        background_helper.submit_by_background_job(background_job, execute_monitor_bgjobs)
+        background_helper.submit_by_background_job(background_job, monitor_bgjobs)
 
 
-@long_running.periodic_task(schedule(MonitorBgjobsBackgroundTask.__action__))
-@write_required(script=True)
+huey_helper = MonitorBgjobsBackgroundTask.create_huey_helper(long_running)
+
+
+@huey_helper.register_schedule
 def scheduled_monitor_bgjobs():
-    background_helper.submit_by_bg_task_type(
-        MonitorBgjobsBackgroundTask,
+    huey_helper.scheduled_common(
         to_address_list=app.config.get("TASKS_MONITOR_BGJOBS_TO", [get_system_email(), ]),
         from_address=app.config.get("TASKS_MONITOR_BGJOBS_FROM", get_system_email()),
     )
 
 
-execute_monitor_bgjobs = background_helper.create_execute_fn(long_running, MonitorBgjobsBackgroundTask)
+@huey_helper.register_execute(is_load_config=False)
+def monitor_bgjobs(job_id):
+    huey_helper.execute_common(job_id)

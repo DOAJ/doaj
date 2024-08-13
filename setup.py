@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.6.11',
+    version='6.8.2',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -71,6 +71,7 @@ setup(
                  "selenium==4.12.0",
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
                  "bs4==0.0.1",   # beautifulsoup for HTML parsing
+                 'openapi-spec-validator~=0.5',
                  ],
 
         # additional test dependencies for the test-extras target
@@ -88,4 +89,10 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
+    entry_points={
+        'console_scripts': [
+            'manage-bgjobs = portality.scripts.manage_background_jobs:main',
+        ],
+    },
+
 )
