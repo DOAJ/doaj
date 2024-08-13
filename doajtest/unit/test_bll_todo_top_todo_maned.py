@@ -12,11 +12,11 @@ from portality.lib.paths import rel2abs
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_todo_maned"), "top_todo_maned", "test_id",
-                               {"test_id" : []})
+                               {"test_id": []})
 
 
 EXCEPTIONS = {
-    "ArgumentException" : exceptions.ArgumentException
+    "ArgumentException": exceptions.ArgumentException
 }
 
 
@@ -45,7 +45,7 @@ class TestBLLTopTodoManed(DoajTestCase):
         ]
 
         category_args = {
-            cat : (
+            cat: (
                 int(kwargs.get(cat)),
                 int(kwargs.get(cat + "_order") if kwargs.get(cat + "_order") != "" else -1)
             ) for cat in categories
@@ -164,7 +164,7 @@ class TestBLLTopTodoManed(DoajTestCase):
         models.Application.refresh()
 
         # size = int(size_arg)
-        size=25
+        size = 25
 
         raises = None
         if raises_arg:
@@ -194,8 +194,14 @@ class TestBLLTopTodoManed(DoajTestCase):
                 assert actions.get(k, 0) == v[0]
                 if v[1] > -1:
                     assert v[1] in positions.get(k, [])
-                else:   # the todo item is not positioned at all
+                else:  # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
+
+            # prevent revision on dashboard
+            assert all([
+                self.svc.todo_app_status(t) != constants.APPLICATION_STATUS_REVISIONS_REQUIRED
+                for t in todos
+            ])
 
     def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None, update_request=False):
         source = ApplicationFixtureFactory.make_application_source()

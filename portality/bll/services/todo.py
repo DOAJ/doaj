@@ -1,9 +1,11 @@
-from portality.lib.argvalidate import argvalidate
+from __future__ import annotations
+
+from portality import constants
 from portality import models
 from portality.bll import exceptions
-from portality import constants
 from portality.lib import dates
-from datetime import datetime
+from portality.lib.argvalidate import argvalidate
+
 
 class TodoService(object):
     """
@@ -14,16 +16,16 @@ class TodoService(object):
     def group_stats(self, group_id):
         # ~~-> EditorGroup:Model~~
         eg = models.EditorGroup.pull(group_id)
-        stats = {"editor_group" : eg.data}
+        stats = {"editor_group": eg.data}
 
-        #~~-> Account:Model ~~
+        # ~~-> Account:Model ~~
         stats["editors"] = {}
         editors = [eg.editor] + eg.associates
         for editor in editors:
             acc = models.Account.pull(editor)
             stats["editors"][editor] = {
-                    "email" : None if acc is None else acc.email
-                }
+                "email": None if acc is None else acc.email
+            }
 
         q = GroupStatsQuery(eg.name)
         resp = models.Application.query(q=q.query())
@@ -42,7 +44,8 @@ class TodoService(object):
                     stats["by_editor"][bucket["key"]]["update_requests"] = b["doc_count"]
                     stats["total"]["update_requests"] += b["doc_count"]
 
-        unassigned_buckets = resp.get("aggregations", {}).get("unassigned", {}).get("application_type", {}).get("buckets", [])
+        unassigned_buckets = resp.get("aggregations", {}).get("unassigned", {}).get(
+            "application_type", {}).get("buckets", [])
         stats["unassigned"] = {"applications": 0, "update_requests": 0}
         for ub in unassigned_buckets:
             if ub["key"] == constants.APPLICATION_TYPE_NEW_APPLICATION:
@@ -63,8 +66,7 @@ class TodoService(object):
 
         return stats
 
-
-    def top_todo(self, account, size=25, new_applications=True, update_requests=True):
+    def top_todo(self, account, size=25, new_applications=True, update_requests=True) -> list[dict]:
         """
         Returns the top number of todo items for a given user
 
@@ -74,7 +76,7 @@ class TodoService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("top_todo", [
-            {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"}
+            {"arg": account, "instance": models.Account, "allow_none": False, "arg_name": "account"}
         ], exceptions.ArgumentException)
 
         queries = []
@@ -90,7 +92,7 @@ class TodoService(object):
                 queries.append(TodoRules.maned_last_month_update_requests(size, maned_of))
                 queries.append(TodoRules.maned_new_update_requests(size, maned_of))
 
-        if new_applications:    # editor and associate editor roles only deal with new applications
+        if new_applications:  # editor and associate editor roles only deal with new applications
             if account.has_role("editor"):
                 groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
                 regular_groups = [g for g in groups if g.maned != account.id]
@@ -126,10 +128,10 @@ class TodoService(object):
                 todos.append({
                     "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
                     "date_type": sort,
-                    "action_id" : [aid],
-                    "title" : ap.bibjson().title,
-                    "object_id" : ap.id,
-                    "object" : ap,
+                    "action_id": [aid],
+                    "title": ap.bibjson().title,
+                    "object_id": ap.id,
+                    "object": ap,
                     "boost": boost
                 })
 
@@ -162,6 +164,10 @@ class TodoService(object):
 
         return stds[:size]
 
+    def todo_app_status(self, todo: dict) -> str:
+        return todo['object']['admin']['application_status']
+
+
 
 class TodoRules(object):
     @classmethod
@@ -174,7 +180,11 @@ class TodoRules(object):
                 TodoQuery.is_new_application()
             ],
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
+                ])
             ],
             sort=sort_date,
             size=size
@@ -191,7 +201,11 @@ class TodoRules(object):
                 TodoQuery.is_new_application()
             ],
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
+                ])
             ],
             sort=sort_date,
             size=size
@@ -262,7 +276,11 @@ class TodoRules(object):
                 TodoQuery.is_update_request()
             ],
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
+                ])
                 # TodoQuery.exists("admin.editor")
             ],
             sort=sort_date,
@@ -282,7 +300,11 @@ class TodoRules(object):
                 TodoQuery.is_update_request()
             ],
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
+                ])
                 # TodoQuery.exists("admin.editor")
             ],
             sort=sort_date,
@@ -303,7 +325,8 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_READY
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
             ],
             sort=sort_date,
@@ -324,7 +347,8 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_READY
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
             ],
             sort=sort_date,
@@ -364,7 +388,7 @@ class TodoRules(object):
         return constants.TODO_EDITOR_ASSIGN_PENDING, assign_pending, sort_date, 1
 
     @classmethod
-    def associate_stalled(cls,  acc_id, size):
+    def associate_stalled(cls, acc_id, size):
         sort_field = "created_date"
         stalled = TodoQuery(
             musts=[
@@ -377,7 +401,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
             ],
             sort=sort_field,
@@ -386,7 +411,7 @@ class TodoRules(object):
         return constants.TODO_ASSOCIATE_PROGRESS_STALLED, stalled, sort_field, 0
 
     @classmethod
-    def associate_follow_up_old(cls,  acc_id, size):
+    def associate_follow_up_old(cls, acc_id, size):
         sort_field = "created_date"
         follow_up_old = TodoQuery(
             musts=[
@@ -399,7 +424,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
             ],
             sort=sort_field,
@@ -434,7 +460,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
             ],
             sort=sort_field,
@@ -448,7 +475,7 @@ class TodoQuery(object):
     ~~->$Todo:Query~~
     ~~^->Elasticsearch:Technology~~
     """
-    lmu_sort = {"last_manual_update" : {"order" : "asc"}}
+    lmu_sort = {"last_manual_update": {"order": "asc"}}
     # cd_sort = {"created_date" : {"order" : "asc"}}
     # NOTE that admin.date_applied and created_date should be the same for applications, but for some reason this is not always the case
     # therefore, we take a created_date sort to mean a date_applied sort
@@ -463,16 +490,16 @@ class TodoQuery(object):
     def query(self):
         sort = self.lmu_sort if self._sort == "last_manual_update" else self.cd_sort
         q = {
-            "query" : {
-                "bool" : {
+            "query": {
+                "bool": {
                     "must": self._musts,
                     "must_not": self._must_nots
                 }
             },
-            "sort" : [
+            "sort": [
                 sort
             ],
-            "size" : self._size
+            "size": self._size
         }
         return q
 
@@ -495,8 +522,8 @@ class TodoQuery(object):
     @classmethod
     def editor_group(cls, groups):
         return {
-            "terms" : {
-                "admin.editor_group.exact" : [g.name for g in groups]
+            "terms": {
+                "admin.editor_group.exact": [g.name for g in groups]
             }
         }
 
@@ -523,16 +550,16 @@ class TodoQuery(object):
     @classmethod
     def status(cls, statuses):
         return {
-            "terms" : {
-                "admin.application_status.exact" : statuses
+            "terms": {
+                "admin.application_status.exact": statuses
             }
         }
 
     @classmethod
     def exists(cls, field):
         return {
-            "exists" : {
-                "field" : field
+            "exists": {
+                "field": field
             }
         }
 
@@ -559,13 +586,14 @@ class GroupStatsQuery():
     ~~->$GroupStats:Query~~
     ~~^->Elasticsearch:Technology~~
     """
+
     def __init__(self, group_name, editor_count=10):
         self.group_name = group_name
         self.editor_count = editor_count
 
     def query(self):
         return {
-            "track_total_hits" : True,
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -575,10 +603,10 @@ class GroupStatsQuery():
                             }
                         }
                     ],
-                    "must_not" : [
+                    "must_not": [
                         {
-                            "terms" : {
-                                "admin.application_status.exact" : [
+                            "terms": {
+                                "admin.application_status.exact": [
                                     constants.APPLICATION_STATUS_ACCEPTED,
                                     constants.APPLICATION_STATUS_REJECTED
                                 ]
@@ -587,26 +615,12 @@ class GroupStatsQuery():
                     ]
                 }
             },
-            "size" : 0,
-            "aggs" : {
-                "editor" : {
-                    "terms" : {
-                        "field" : "admin.editor.exact",
-                        "size" : self.editor_count
-                    },
-                    "aggs" : {
-                        "application_type" : {
-                            "terms" : {
-                                "field": "admin.application_type.exact",
-                                "size": 2
-                            }
-                        }
-                    }
-                },
-                "status" : {
-                    "terms" : {
-                        "field" : "admin.application_status.exact",
-                        "size" : len(constants.APPLICATION_STATUSES_ALL)
+            "size": 0,
+            "aggs": {
+                "editor": {
+                    "terms": {
+                        "field": "admin.editor.exact",
+                        "size": self.editor_count
                     },
                     "aggs": {
                         "application_type": {
@@ -617,13 +631,27 @@ class GroupStatsQuery():
                         }
                     }
                 },
-                "unassigned" : {
-                    "missing" : {
+                "status": {
+                    "terms": {
+                        "field": "admin.application_status.exact",
+                        "size": len(constants.APPLICATION_STATUSES_ALL)
+                    },
+                    "aggs": {
+                        "application_type": {
+                            "terms": {
+                                "field": "admin.application_type.exact",
+                                "size": 2
+                            }
+                        }
+                    }
+                },
+                "unassigned": {
+                    "missing": {
                         "field": "admin.editor.exact"
                     },
-                    "aggs" : {
-                        "application_type" : {
-                            "terms" : {
+                    "aggs": {
+                        "application_type": {
+                            "terms": {
                                 "field": "admin.application_type.exact",
                                 "size": 2
                             }
