@@ -36,7 +36,7 @@ def apply_mapping_opts(field_name, path, spec, mapping_opts):
     elif spec['coerce'] in mapping_opts['coerces']:
         field_mapping = deepcopy(mapping_opts['coerces'][spec['coerce']])
         if 'additional_fields' in spec:
-            field_mapping = {**field_mapping, **spec['additional_fields']}
+            field_mapping = {**field_mapping, **mapping_opts[spec['additional_fields']]}
 
         return field_mapping
     else:

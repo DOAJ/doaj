@@ -35,8 +35,7 @@ ARTICLE_BIBJSON_EXTENSION = {
                 "month" : {"coerce" : "unicode"},
                 "start_page" : {"coerce" : "unicode"},
                 "end_page" : {"coerce" : "unicode"},
-                "abstract" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
-                                                                                 "search_analyzer": "ascii_folded"}}
+                "abstract" : {"coerce" : "unicode", "additional_fields":"ascii_folded"}
             },
             "lists" : {
                 "author" : {"contains" : "object"}
@@ -48,8 +47,7 @@ ARTICLE_BIBJSON_EXTENSION = {
             "structs" : {
                 "author" : {
                     "fields" : {
-                        "name" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
-                                                                                 "search_analyzer": "ascii_folded"}},
+                        "name" : {"coerce" : "unicode", "additional_fields": "ascii_folded"},
                         "affiliation" : {"coerce" : "unicode"},
                         "email" : {"coerce": "unicode"},
                         "orcid_id" : {"coerce" : "unicode"}
@@ -60,8 +58,7 @@ ARTICLE_BIBJSON_EXTENSION = {
                     "fields" : {
                         "volume" : {"coerce" : "unicode"},
                         "number" : {"coerce" : "unicode"},
-                        "publisher" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
-                                                                                 "search_analyzer": "ascii_folded"}},
+                        "publisher" : {"coerce" : "unicode", "additional_fields": "ascii_folded"},
                         "title" : {"coerce" : "unicode"},
                         "country" : {"coerce" : "unicode"}
                     },
@@ -80,7 +77,8 @@ MAPPING_OPTS = {
     "dynamic": None,
     "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
     "exceptions": {},
-    "additional_mappings": {}
+    "additional_mappings": {},
+    "ascii_folded": app.config["ASCII_FOLDED"]
 }
 
 

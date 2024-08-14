@@ -998,6 +998,8 @@ ADMIN_NOTES_SEARCH_MAPPING = {
     }
 }
 
+ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
+
 ####################################################
 # Autocomplete
 

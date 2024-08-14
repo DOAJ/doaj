@@ -5,8 +5,7 @@ SHARED_BIBJSON = {
     "structs" : {
         "bibjson" : {
             "fields" : {
-                "title" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
-                                                                                 "search_analyzer": "ascii_folded"}},
+                "title" : {"coerce" : "unicode", "additional_fields":"ascii_folded"},
             },
             "lists" : {
                 "identifier" : {"contains" : "object"},
@@ -50,8 +49,7 @@ JOURNAL_BIBJSON_EXTENSION = {
                 "active" : {"coerce" : "bool"},
                 "alternative_title" : {"coerce" : "unicode"},
                 "country" : {"coerce" : "unicode"},
-                "publisher" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
-                                                                                 "search_analyzer": "ascii_folded"}},
+                "publisher" : {"coerce" : "unicode", "additional_fields":"ascii_folded"},
                 "provider" : {"coerce" : "unicode"},
                 "institution" : {"coerce" : "unicode"},
                 "apc_url" : {"coerce" : "unicode"},
