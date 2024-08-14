@@ -180,9 +180,9 @@ We cannot provide a status update for applications which are less than three mon
 You will receive an email giving the reasons for rejection of the application. Do not submit another application for the same journal until six months after the notification of rejection.
 
 New applications may only be submitted within six months if these rejection reasons have been resolved:
-- Unconfirmed ISSN
-- Website unavailable
-- Insufficient content published
+  - Unconfirmed ISSN
+  - Website unavailable
+  - Insufficient content published
 
 Where a journal has been rejected for other reasons, a new application may be submitted after six months.
 
