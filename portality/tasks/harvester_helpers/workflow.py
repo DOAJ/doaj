@@ -7,6 +7,16 @@ from portality.models.harvester import HarvestState
 from portality.lib.dataobj import DataObjException
 
 
+SYSTEM_ACCOUNT = {
+    "email": "steve@cottagelabs.com",
+    "name": "harvest_background_job",
+    "role": ['admin'],
+    "id": "harvest_background_job"
+}
+
+sys_acc = Account(**SYSTEM_ACCOUNT)
+
+
 class DefaultLogger(object):
     def __init__(self):
         self._log = []
@@ -110,12 +120,13 @@ class HarvesterWorkflow(object):
             Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
             return False
 
-        acc = Account.pull(account_id)
         try:
-            id = ArticlesCrudApi.create(article.data, acc).id
+            # Use the admin account to have sufficient rights to update full text or doi.
+            # Related github issue #3857
+            id = ArticlesCrudApi.create(article.data, sys_acc).id
         except Exception as e:
             self._write_to_logger("Article caused DOAJException: {m} ... skipping".format(m=e))
             Report.record_error((article.get_identifier("doi") or "< DOI MISSING >"))
             return False
-        self._write_to_logger("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
+        self._write_to_logger("Created article in DOAJ for Account:{x} with ID: {y}".format(x=sys_acc.id, y=id))
         return True
