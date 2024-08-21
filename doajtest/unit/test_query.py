@@ -18,6 +18,13 @@ QUERY_ROUTE = {
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Article"
+        },
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Journal"
         }
     },
     "publisher_query" : {
