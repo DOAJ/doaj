@@ -246,6 +246,10 @@ class OAI_DC_Journal(OAI_DC):
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
 
+        # beyond this point, only include the metadata if the record is not "deleted"
+        if not record.is_in_doaj():
+            return metadata
+
         # our internal identifier
         url = app.config["BASE_URL"] + "/toc/" + record.toc_id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
@@ -292,6 +296,9 @@ class OAI_DC_Journal(OAI_DC):
     def header(self, record):
         bibjson = record.bibjson()
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
+
+        if not record.is_in_doaj():
+            head.set("status", "deleted")
 
         identifier = etree.SubElement(head, self.PMH + "identifier")
         set_text(identifier, make_oai_identifier(record.id, "journal"))

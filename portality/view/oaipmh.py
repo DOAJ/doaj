@@ -288,13 +288,16 @@ def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_
                 return IdDoesNotExist(base_url)
             # do the crosswalk
             xwalk = get_crosswalk(f.get("metadataPrefix"), dao.__type__)
-            metadata = xwalk.crosswalk(record)
+
             header = xwalk.header(record)
-            # make the response
             oai_id = make_oai_identifier(identifier, dao.__type__)
             gr = GetRecord(base_url, oai_id, metadata_prefix)
-            gr.metadata = metadata
             gr.header = header
+
+            if record.is_in_doaj():
+                metadata = xwalk.crosswalk(record)
+                gr.metadata = metadata
+
             return gr
 
     # if we have not returned already, this means we can't disseminate this format
@@ -556,7 +559,8 @@ class GetRecord(OAI_PMH):
         record = etree.SubElement(gr, self.PMH + "record")
 
         record.append(self.header)
-        record.append(self.metadata)
+        if self.metadata is not None:
+            record.append(self.metadata)
 
         return gr
 

@@ -42,7 +42,7 @@ class OAIPMHRecord(object):
         "query": {
             "bool": {
                 "must": [
-                    { "term": { "admin.in_doaj": True } }
+                    # { "term": { "admin.in_doaj": True } }
                 ]
             }
         },
@@ -126,15 +126,16 @@ class OAIPMHArticle(OAIPMHRecord, Article):
             return record
         return None
 
+
 class OAIPMHJournal(OAIPMHRecord, Journal):
     def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):
         total, results = super(OAIPMHJournal, self).list_records(from_date=from_date,
             until_date=until_date, oai_set=oai_set, list_size=list_size, start_after=start_after)
         return total, [Journal(**r) for r in results]
 
-    def pull(self, identifier):
-        # override the default pull, as we care about whether the item is in_doaj
-        record = super(OAIPMHJournal, self).pull(identifier)
-        if record is not None and record.is_in_doaj():
-            return record
-        return None
+    # def pull(self, identifier):
+    #     # override the default pull, as we care about whether the item is in_doaj
+    #     record = super(OAIPMHJournal, self).pull(identifier)
+    #     if record is not None and record.is_in_doaj():
+    #         return record
+    #     return None
