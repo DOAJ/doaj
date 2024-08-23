@@ -37,7 +37,8 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
         acc.save()
 
         eg = models.EditorGroup()
-        eg.set_name(app.editor_group)
+        eg.set_name("test group")
+        eg.set_id(app.editor_group)
         eg.set_editor("editor")
         eg.save(blocking=True)
 
@@ -67,7 +68,8 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
         # app.save(blocking=True)
 
         eg = models.EditorGroup()
-        eg.set_name(app.editor_group)
+        eg.set_name('test group')
+        eg.set_id(app.editor_group)
         eg.save(blocking=True)
 
         event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application": app.data})

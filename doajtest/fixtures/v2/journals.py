@@ -11,7 +11,7 @@ from portality.regex import ISSN_COMPILED
 
 class JournalFixtureFactory(object):
     @staticmethod
-    def make_journal_source(in_doaj=False):
+    def make_journal_source(in_doaj=False) -> dict:
         template = deepcopy(JOURNAL_SOURCE)
         template['admin']['in_doaj'] = in_doaj
         return template
@@ -37,23 +37,23 @@ class JournalFixtureFactory(object):
         return journal_sources
 
     @staticmethod
-    def make_journal_form():
+    def make_journal_form() -> dict:
         return deepcopy(JOURNAL_FORM)
 
     @staticmethod
-    def make_journal_form_info():
+    def make_journal_form_info() -> dict:
         return deepcopy(JOURNAL_FORM_EXPANDED)
 
     @staticmethod
-    def make_bulk_edit_data():
+    def make_bulk_edit_data() -> dict:
         return deepcopy(JOURNAL_BULK_EDIT)
 
     @staticmethod
-    def csv_headers():
+    def csv_headers() -> dict:
         return deepcopy(CSV_HEADERS)
 
     @staticmethod
-    def question_answers():
+    def question_answers() -> dict:
         return deepcopy(JOURNAL_QUESTION_ANSWERS)
 
 

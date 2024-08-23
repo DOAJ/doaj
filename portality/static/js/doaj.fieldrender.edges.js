@@ -125,7 +125,7 @@ $.extend(true, doaj, {
             return edges.newRefiningANDTermSelector({
                 id: "editor_group",
                 category: "facet",
-                field: "admin.editor_group.exact",
+                field: "index.editor_group_name.exact",
                 display: "Editor group",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -133,7 +133,7 @@ $.extend(true, doaj, {
                     open: false,
                     togglable: true,
                     countFormat: doaj.valueMaps.countFormat,
-                    hideInactive: true
+                    hideInactive: true,
                 })
             })
         },

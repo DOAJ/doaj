@@ -75,7 +75,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "editor_group",
                     category: "facet",
-                    field: "admin.editor_group.exact",
+                    field: "index.editor_group_name.exact",
                     display: "Editor Group",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -83,7 +83,7 @@ $.extend(true, doaj, {
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: true
+                        hideInactive: true,
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -293,7 +293,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>Editor Group</strong>: ",
-                                    "field" : "admin.editor_group"
+                                    "field" : "index.editor_group_name",
                                 }
                             ],
                             [
@@ -373,7 +373,7 @@ $.extend(true, doaj, {
                         'admin.application_status.exact': 'Application Status',
                         'index.application_type.exact' : 'Record type',
                         'index.has_editor.exact' : 'Has Associate Editor?',
-                        'admin.editor_group.exact' : 'Editor Group',
+                        'index.editor_group_name.exact' : 'Editor Group',
                         'admin.editor.exact' : 'Editor',
                         'index.classification.exact' : 'Classification',
                         'index.language.exact' : 'Journal language',
@@ -382,7 +382,7 @@ $.extend(true, doaj, {
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'index.license.exact' : 'Journal license',
                         "index.has_apc.exact" : "Publication charges?"
-                    }
+                    },
                 })
             ];
 
@@ -398,7 +398,7 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
-                    }
+                    },
                 }
             });
             doaj.editorGroupApplicationsSearch.activeEdges[selector] = e;

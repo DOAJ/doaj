@@ -33,7 +33,7 @@ class ApplicationAssedAssignedNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
         notification.long = svc.long_notification(cls.ID).format(
             journal_title=application.bibjson().title,
-            group_name=application.editor_group
+            group_name=application.editor_group_name(default_id=True)
         )
         notification.short = svc.short_notification(cls.ID).format(
             issns=application.bibjson().issns_as_text()

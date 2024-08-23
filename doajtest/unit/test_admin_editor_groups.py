@@ -38,5 +38,5 @@ class TestAdminEditorGroups(DoajTestCase):
             # give some time for the new record to be indexed
             time.sleep(1)
             updated_group = EditorGroup.pull(editor_group_id)
-            self.assertEquals(updated_group.name, "Test Group")
-            self.assertNotEquals(updated_group.name, "New Test Group")
+            self.assertEquals(updated_group.name, "New Test Group")
+            self.assertNotEquals(updated_group.name, "Test Group")

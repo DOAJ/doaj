@@ -221,7 +221,8 @@ SHARED_JOURNAL_LIKE = {
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},
                 "has_editor_group" : {"coerce" : "unicode"},
-                "has_editor" : {"coerce" : "unicode"}
+                "has_editor" : {"coerce" : "unicode"},
+                "editor_group_name" : {'coerce' : 'unicode'},
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},

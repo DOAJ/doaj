@@ -70,10 +70,12 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
 
         # test dry run
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=True)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    editor_group=new_eg.id, dry_run=True)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=False)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    editor_group=new_eg.id, dry_run=False)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         blocklist = [(s.id, s.last_updated) for s in self.suggestions]
@@ -85,7 +87,7 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         modified_suggestions = [s.pull(s.id) for s in self.suggestions]
 
         for ix, s in enumerate(modified_suggestions):
-            assert s.editor_group == new_eg.name, \
+            assert s.editor_group == new_eg.id, \
                 "modified_suggestions[{}].editor_group is {}\n" \
                 "Here is the BackgroundJob audit log:\n{}".format(
                     ix, s.editor_group, json.dumps(job.audit, indent=2)

@@ -109,7 +109,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                 # FIXME: this is a bit of a stop-gap, pending a more substantial referential-integrity-like solution
                 # if the editor group is not being changed, validate that the editor is actually in the editor group,
                 # and if not, unset them
-                eg = models.EditorGroup.pull_by_key("name", j.editor_group)
+                eg = models.EditorGroup.pull(j.editor_group)
                 if eg is not None:
                     all_eds = eg.associates + [eg.editor]
                     if j.editor not in all_eds:

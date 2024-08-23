@@ -1,18 +1,23 @@
-from portality.dao import DomainObject
-from portality.core import app
-from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
-from portality.models.v2.bibjson import JournalLikeBibJSON
-from portality.models.v2 import shared_structs
-from portality.models.account import Account
-from portality.lib import es_data_mapping, dates, coerce
-from portality.lib.seamless import SeamlessMixin
-from portality.lib.coerce import COERCE_MAP
+from __future__ import annotations
 
+import string
+import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 
-import string, uuid
+from elasticsearch import helpers
 from unidecode import unidecode
+
+from portality import dao
+from portality.core import app
+from portality.dao import DomainObject
+from portality.lib import es_data_mapping, dates, coerce
+from portality.lib.coerce import COERCE_MAP
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
+from portality.lib.seamless import SeamlessMixin
+from portality.models.account import Account
+from portality.models.v2 import shared_structs
+from portality.models.v2.bibjson import JournalLikeBibJSON
 
 JOURNAL_STRUCT = {
     "objects": [
@@ -46,7 +51,7 @@ JOURNAL_STRUCT = {
         "index": {
             "fields": {
                 "publisher_ac": {"coerce": "unicode"},
-                "institution_ac": {"coerce": "unicode"}
+                "institution_ac": {"coerce": "unicode"},
             }
         }
     }
@@ -123,6 +128,41 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         # create an array of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
+
+    @classmethod
+    def renew_editor_group_name(cls,
+                                editor_group_id: str,
+                                new_name: str,
+                                batch_size: int = 10000,
+                                ):
+        """
+        Renew editor_group_name in the index.
+        for ALL documents with related editor_group_id.
+        """
+
+        query = ByEditorGroupIdQuery(editor_group_id).query()
+        query['_source'] = ['id']
+
+        def _to_action(_id):
+            return {
+                "_op_type": "update",
+                "_index": cls.index_name(),
+                "_id": _id,
+                "script": {
+                    "source": "ctx._source.index.editor_group_name = params.new_value",
+                    "lang": "painless",
+                    "params": {
+                        "new_value": new_name
+                    }
+                }
+            }
+
+        ids = [j['id'] for j in cls.iterate(q=query, wrap=False, page_size=batch_size, keepalive='5m')]
+        app.logger.info(f"Found {len(ids)} {cls.__name__} with editor_group_id: {editor_group_id}")
+
+        id_batches = (ids[i:i + batch_size] for i in range(0, len(ids), batch_size))
+        for _sub_ids in id_batches:
+            helpers.bulk(dao.ES, [_to_action(_id) for _id in _sub_ids])
 
     ############################################
     ## base property methods
@@ -227,8 +267,23 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def set_editor_group(self, eg):
         self.__seamless__.set_with_struct("admin.editor_group", eg)
 
+
     def remove_editor_group(self):
         self.__seamless__.delete("admin.editor_group")
+        self.__seamless__.delete("index.editor_group_name")
+
+    def editor_group_name(self, index=True, default_id=False) -> str | None:
+        name = None
+        if index:
+            name = self.__seamless__.get_single("index.editor_group_name")
+        elif self.editor_group:
+            from portality.models import EditorGroup
+            name = EditorGroup.find_name_by_id(self.editor_group)
+
+        if default_id:
+            name = name or self.editor_group
+
+        return name
 
     @property
     def editor(self):
@@ -280,7 +335,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.add_note(note=note.get("note"), date=note.get("date"),
                              id=note.get("id"), author_id=note.get("author_id"))
 
-
     def remove_note(self, note):
         self.__seamless__.delete_from_list("admin.notes", matchsub=note)
 
@@ -301,7 +355,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         clusters = {}
         for note in notes:
             if "date" not in note:
-                note["date"] = DEFAULT_TIMESTAMP_VAL   # this really means something is broken with note date setting, which needs to be fixed
+                # this really means something is broken with note date setting, which needs to be fixed
+                note["date"] = DEFAULT_TIMESTAMP_VAL
             if note["date"] not in clusters:
                 clusters[note["date"]] = [note]
             else:
@@ -451,6 +506,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if self.editor is not None:
             has_editor = "Yes"
 
+        editor_group_name = self.editor_group_name(index=False)
+
         # build the index part of the object
         index = {}
 
@@ -485,6 +542,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["schema_code"] = schema_codes
         if len(schema_codes_tree) > 0:
             index["schema_codes_tree"] = schema_codes_tree
+        if editor_group_name:
+            index["editor_group_name"] = editor_group_name
 
         self.__seamless__.set_with_struct("index", index)
 
@@ -505,7 +564,7 @@ class Journal(JournalLikeObject):
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
         # FIXME: I have taken this out for the moment, as I'm not sure it's what we should be doing
-        #if kwargs:
+        # if kwargs:
         #    self.add_autogenerated_fields(**kwargs)
         super(Journal, self).__init__(raw=kwargs)
 
@@ -535,7 +594,7 @@ class Journal(JournalLikeObject):
             bib["pid_scheme"] = {"has_pid_scheme": False}
         if "preservation" in bib and bib["preservation"] != '':
             bib["preservation"]["has_preservation"] = (len(bib["preservation"]) != 0 or
-                                                    bib["national_library"] is not None)
+                                                       bib["national_library"] is not None)
         else:
             bib["preservation"] = {"has_preservation": True}
 
@@ -764,7 +823,8 @@ class Journal(JournalLikeObject):
         self.__seamless__.delete("admin.related_applications")
 
     def remove_related_application(self, application_id):
-        self.set_related_applications([r for r in self.related_applications if r.get("application_id") != application_id])
+        self.set_related_applications([r for r in self.related_applications
+                                       if r.get("application_id") != application_id])
 
     def related_application_record(self, application_id):
         for record in self.related_applications:
@@ -852,7 +912,6 @@ class Journal(JournalLikeObject):
         for article in self.all_articles():
             article.set_in_doaj(self.is_in_doaj())
             article.save()
-
 
     def prep(self, is_update=True):
         self._ensure_in_doaj()
@@ -1010,7 +1069,7 @@ class JournalURLQuery(object):
                     ]
                 }
             },
-            "size" : self.max
+            "size": self.max
         }
         if self.in_doaj is not None:
             q["query"]["bool"]["must"].append({"term": {"admin.in_doaj": self.in_doaj}})
@@ -1023,9 +1082,9 @@ class IssnQuery(object):
         self._in_doaj = in_doaj
 
     def query(self):
-        musts = [{"term": { "admin.owner.exact": self._owner}}]
+        musts = [{"term": {"admin.owner.exact": self._owner}}]
         if self._in_doaj is not None:
-            musts.append({"term": { "admin.in_doaj": self._in_doaj}})
+            musts.append({"term": {"admin.in_doaj": self._in_doaj}})
         return {
             "track_total_hits": True,
             "query": {
@@ -1039,7 +1098,7 @@ class IssnQuery(object):
                     "terms": {
                         "field": "index.issn.exact",
                         "size": 10000,
-                        "order": { "_key": "asc" }
+                        "order": {"_key": "asc"}
                     }
                 }
             }
@@ -1162,9 +1221,28 @@ class RecentJournalsQuery(object):
     def query(self):
         return {
             "track_total_hits": True,
-            "query" : {"match_all" : {}},
-            "size" : self.max,
-            "sort" : [
-                {"created_date" : {"order" : "desc"}}
+            "query": {"match_all": {}},
+            "size": self.max,
+            "sort": [
+                {"created_date": {"order": "desc"}}
             ]
+        }
+
+
+class ByEditorGroupIdQuery:
+
+    def __init__(self, editor_group_id):
+        self.editor_group_id = editor_group_id
+
+    def query(self):
+        return {
+            'query': {
+                'bool': {
+                    'filter': {
+                        'term': {
+                            'admin.editor_group.exact': self.editor_group_id
+                        }
+                    }
+                }
+            },
         }

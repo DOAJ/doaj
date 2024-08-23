@@ -83,4 +83,4 @@ huey_helper = ArticleBulkCreateBackgroundTask.create_huey_helper(main_queue)
 
 @huey_helper.register_execute(is_load_config=False)
 def article_bulk_create(job_id):
-    background_helper.execute_by_job_id(job_id, ArticleBulkCreateBackgroundTask)
+    huey_helper.execute_common(job_id)
