@@ -1,18 +1,22 @@
-from portality.dao import DomainObject
-from portality.core import app
-from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
-from portality.models.v2.bibjson import JournalLikeBibJSON
-from portality.models.v2 import shared_structs
-from portality.models.account import Account
-from portality.lib import es_data_mapping, dates, coerce
-from portality.lib.seamless import SeamlessMixin
-from portality.lib.coerce import COERCE_MAP
+from __future__ import annotations
 
+import string
+import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
+from typing import Callable, Iterable
 
-import string, uuid
 from unidecode import unidecode
+
+from portality.core import app
+from portality.dao import DomainObject
+from portality.lib import es_data_mapping, dates, coerce
+from portality.lib.coerce import COERCE_MAP
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
+from portality.lib.seamless import SeamlessMixin
+from portality.models.account import Account
+from portality.models.v2 import shared_structs
+from portality.models.v2.bibjson import JournalLikeBibJSON
 
 JOURNAL_STRUCT = {
     "objects": [
@@ -784,29 +788,41 @@ class Journal(JournalLikeObject):
     ########################################################################
     ## Functions for handling continuations
 
-    def get_future_continuations(self):
-        irb = self.bibjson().is_replaced_by
-        q = ContinuationQuery(irb)
 
-        journals = self.q2obj(q=q.query())
+    def _get_continuations(self, issns,
+                           get_sub_journals: Callable,
+                           journal_caches: set[str] = None) -> Iterable['Journal']:
+        """
+
+        Parameters
+        ----------
+        issns
+        get_sub_journals
+        journal_caches
+            contain completed journals ids, avoid infinite recursion by passing a
+            set of journal objects that have already been processed
+        """
+        journal_caches = journal_caches or set()
+        journal_caches.add(self.id)
+        journals = self.q2obj(q=ContinuationQuery(issns).query())
+        journals = [j for j in journals if j.id not in journal_caches]
+        journal_caches.update({j.id for j in journals})
+
         subjournals = []
         for j in journals:
-            subjournals += j.get_future_continuations()
+            subjournals += get_sub_journals(j, journal_caches)
 
-        future = journals + subjournals
-        return future
+        return journals + subjournals
 
-    def get_past_continuations(self):
-        replaces = self.bibjson().replaces
-        q = ContinuationQuery(replaces)
+    def get_future_continuations(self, journal_caches: set[str]=None) -> Iterable['Journal']:
+        return self._get_continuations(self.bibjson().is_replaced_by,
+                                       lambda j, jc: j.get_future_continuations(jc),
+                                       journal_caches=journal_caches)
 
-        journals = self.q2obj(q=q.query())
-        subjournals = []
-        for j in journals:
-            subjournals += j.get_past_continuations()
-
-        past = journals + subjournals
-        return past
+    def get_past_continuations(self, journal_caches: set[str]=None) -> Iterable['Journal']:
+        return self._get_continuations(self.bibjson().replaces,
+                                       lambda j, jc: j.get_past_continuations(jc),
+                                       journal_caches=journal_caches)
 
     #######################################################################
 
