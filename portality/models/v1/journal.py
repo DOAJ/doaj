@@ -1287,8 +1287,7 @@ MAPPING_OPTS = {
             "index": False,
             #"include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
         }
-    },
-    "ascii_folded": app.config["ASCII_FOLDED"]
+    }
 }
 
 ########################################################

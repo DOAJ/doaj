@@ -11,7 +11,7 @@ JOURNAL_BIBJSON = {
                 "pissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True},
                 "discontinued_date" : {"coerce" : "bigenddate"},
                 "publication_time_weeks" : {"coerce" : "integer"},
-                "title" : {"coerce" : "unicode", "additional_fields": "ascii_folded"},
+                "title" : {"coerce" : "unicode"},
                 "oa_start" : {"coerce" : "integer"}
             },
             "lists" : {
@@ -138,7 +138,7 @@ JOURNAL_BIBJSON = {
                 },
                 "publisher" : {
                     "fields" : {
-                        "name" : {"coerce" : "unicode", "additional_fields": "ascii_folded"},
+                        "name" : {"coerce" : "unicode"},
                         "country" : {"coerce" : "country_code", "set__allow_coerce_failure" : True}
                     }
                 },
@@ -214,7 +214,7 @@ SHARED_JOURNAL_LIKE = {
         },
         "index" : {
             "fields" : {
-                "country" : {"coerce" : "unicode", "additional_fields": "ascii_folded"},
+                "country" : {"coerce" : "unicode"},
                 "has_apc" : {"coerce" : "unicode"},
                 "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
@@ -263,7 +263,7 @@ ARTICLE_STRUCT = {
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "classification" : {"coerce" : "unicode"},
                 "classification_paths": {"coerce" : "unicode"},
-                "country" : {"coerce" : "unicode", "additional_fields": "ascii_folded"},
+                "country" : {"coerce" : "unicode"},
                 "date" : {"coerce" : "utcdatetime"},
                 "date_toc_fv_month": {"coerce" : "utcdatetime"},
                 "doi": {"coerce" : "unicode"},
