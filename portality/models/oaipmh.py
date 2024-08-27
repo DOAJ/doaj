@@ -119,12 +119,12 @@ class OAIPMHArticle(OAIPMHRecord, Article):
             until_date=until_date, oai_set=oai_set, list_size=list_size, start_after=start_after)
         return total, [Article(**r) for r in results]
 
-    def pull(self, identifier):
-        # override the default pull, as we care about whether the item is in_doaj
-        record = super(OAIPMHArticle, self).pull(identifier)
-        if record is not None and record.is_in_doaj():
-            return record
-        return None
+    # def pull(self, identifier):
+    #     # override the default pull, as we care about whether the item is in_doaj
+    #     record = super(OAIPMHArticle, self).pull(identifier)
+    #     if record is not None and record.is_in_doaj():
+    #         return record
+    #     return None
 
 
 class OAIPMHJournal(OAIPMHRecord, Journal):
