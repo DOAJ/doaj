@@ -759,7 +759,7 @@ class DataObj(object):
                 return deepcopy(val)
 
     def _set_single(self, path, val, coerce=None, allow_coerce_failure=False, allowed_values=None, allowed_range=None,
-                    allow_none=True, ignore_none=False, additional_fields = None):
+                    allow_none=True, ignore_none=False):
 
         if val is None and ignore_none:
             return

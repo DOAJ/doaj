@@ -354,7 +354,7 @@ class SeamlessData(object):
             return val
 
     def set_single(self, path, val, coerce=None, allow_coerce_failure=False, allowed_values=None, allowed_range=None,
-                    allow_none=True, ignore_none=False, context="", additional_fields = None):
+                    allow_none=True, ignore_none=False, context=""):
 
         if val is None and ignore_none:
             return
