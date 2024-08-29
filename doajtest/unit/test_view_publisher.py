@@ -18,4 +18,4 @@ class TestViewPublisher(DoajTestCase):
             assert resp.status_code == 200
 
             resp = t_client.get(url_for("publisher.delete_application", application_id='no_such_id'))
-            assert resp.status_code == 400
+            assert resp.status_code == 404

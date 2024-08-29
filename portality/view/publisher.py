@@ -58,7 +58,7 @@ def delete_application(application_id):
     try:
         appService.delete_application(application_id, current_user._get_current_object())
     except NoSuchObjectException:
-        abort(400)
+        abort(404)
 
     return redirect(url_for("publisher.deleted_thanks"))
 
