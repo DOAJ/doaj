@@ -336,6 +336,8 @@ class TestClient(DoajTestCase):
         a_public.save(blocking=True)
         public_id = a_public.id
 
+        time.sleep(1)
+
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
