@@ -460,7 +460,6 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             event.preventDefault();
             let id = $(this).attr("data-id");
             let type = $(this).attr("data-type");
-            that.submitting = true;
             that.unlock({type : type, id : id})
         });
 
@@ -477,7 +476,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             // ignore any "view note" modal close button hits
             // FIXME: I don't love this, it feels brittle, but I don't have a better solution
             let exceptClasses = ["formulaic-notemodal-close"];
-            let exceptIds = ["open_withdraw_reinstate"];
+            let exceptIds = ["open_withdraw_reinstate", "unlock"];
             let excepted = false;
             for (let i = 0; i < exceptClasses.length; i++) {
                 if ($(event.currentTarget).hasClass(exceptClasses[i])) {
@@ -898,6 +897,29 @@ window.Parsley.addValidator("onlyIf", {
             return true;
         } else {
             return true;
+        }
+    },
+    messages: {
+        en: 'This only can be set when requirements are met'
+    },
+    priority: 1
+});
+
+window.Parsley.addValidator("onlyIfExists", {
+    validateString: function (values, requirement, parsleyInstance) {
+        let fields = requirement.split(",");
+        for (var i = 0; i < fields.length; i++) {
+            let field = fields[i];
+            let other = $("[name=" + field + "]");
+            let type = other.attr("type");
+            if (type === "checkbox" || type === "radio") {
+                let checked = other.filter(":checked");
+                if (checked.length === 0) {
+                    return false;
+                }
+                return true;
+            }
+            return !!other.val()
         }
     },
     messages: {

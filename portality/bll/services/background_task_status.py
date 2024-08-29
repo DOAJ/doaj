@@ -122,9 +122,8 @@ class BackgroundTaskStatusService:
                    if qn == queue_name}
 
         return {
-            k: v
-            for k, v in app.config.get(config_name, {}).items()
-            if k in actions
+            k: app.config.get(config_name, {}).get(k, app.config.get('BG_MONITOR_DEFAULT_CONFIG'))
+            for k in actions
         }
 
     def create_background_status(self) -> dict:
@@ -137,4 +136,30 @@ class BackgroundTaskStatusService:
             status=(self.all_stable_str(queues.values())),
             queues=queues,
         )
-        return result_dict
+
+        # sort the results in the order of unstable status
+        sorted_data = self.sort_dict_by_unstable_status(result_dict)
+
+        return sorted_data
+
+    def sort_dict_by_unstable_status(self, data):
+        """
+        Sorts each dictionary within the nested structure by prioritizing items with 'status': 'unstable'.
+        The overall structure of the input dictionary is preserved.
+        """
+        if isinstance(data, dict):
+            # Extract items with 'status': 'unstable' and other items
+            unstable_items = {k: v for k, v in data.items() if isinstance(v, dict) and v.get('status') == 'unstable'}
+            other_items = {k: v for k, v in data.items() if k not in unstable_items}
+
+            # Recursively sort nested dictionaries
+            for k in unstable_items:
+                unstable_items[k] = self.sort_dict_by_unstable_status(unstable_items[k])
+            for k in other_items:
+                other_items[k] = self.sort_dict_by_unstable_status(other_items[k])
+
+            # Merge the dictionaries, with unstable items first
+            return {**unstable_items, **other_items}
+        else:
+            # Return the item as is if it's not a dict
+            return data

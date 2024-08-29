@@ -14,21 +14,21 @@ class TestUpdateRequestPublisherRejectedNotify(DoajTestCase):
     def tearDown(self):
         super(TestUpdateRequestPublisherRejectedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         source = ApplicationFixtureFactory.make_application_source()
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : source, "old_status" : "in progress", "new_status": "rejected"})
-        assert UpdateRequestPublisherRejectedNotify.consumes(event)
+        assert UpdateRequestPublisherRejectedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
                              context={"old_status": "rejected", "new_status": "rejected"})
-        assert not UpdateRequestPublisherRejectedNotify.consumes(event)
+        assert not UpdateRequestPublisherRejectedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"application" : "2345"})
-        assert not UpdateRequestPublisherRejectedNotify.consumes(event)
+        assert not UpdateRequestPublisherRejectedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
-        assert not UpdateRequestPublisherRejectedNotify.consumes(event)
+        assert not UpdateRequestPublisherRejectedNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")
