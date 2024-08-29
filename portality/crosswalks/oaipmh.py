@@ -99,6 +99,9 @@ class OAI_DC_Article(OAI_DC):
     ~~->OAIDC:Crosswalk~~
     """
     def crosswalk(self, record):
+        if not record.is_in_doaj():
+            return None
+
         bibjson = record.bibjson()
 
         metadata = etree.Element(self.PMH + "metadata")
@@ -106,27 +109,14 @@ class OAI_DC_Article(OAI_DC):
         oai_dc.set(self.XSI + "schemaLocation",
                    "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd")
 
+        if bibjson.title is not None:
+            title = etree.SubElement(oai_dc, self.DC + "title")
+            set_text(title, bibjson.title)
+
         # all the external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-
-        # beyond this point, only include the metadata if the record is not "deleted"
-        if not record.is_in_doaj():
-            # include the ft url only, so the client can identify the article this way if needed
-            ftobj = bibjson.get_single_url('fulltext', unpack_urlobj=False)
-            if ftobj and "url" in ftobj:
-                urlel = etree.SubElement(oai_dc, self.DC + "relation")
-                set_text(urlel, ftobj.get("url"))
-            return metadata
-
-        for identifier in bibjson.get_identifiers(idtype=bibjson.P_ISSN) + bibjson.get_identifiers(idtype=bibjson.E_ISSN):
-            journallink = etree.SubElement(oai_dc, self.DC + "relation")
-            set_text(journallink, app.config['BASE_URL'] + "/toc/" + identifier)
-
-        if bibjson.title is not None:
-            title = etree.SubElement(oai_dc, self.DC + "title")
-            set_text(title, bibjson.title)
 
         # our internal identifier
         url = app.config['BASE_URL'] + "/article/" + record.id
@@ -142,6 +132,10 @@ class OAI_DC_Article(OAI_DC):
         for url in bibjson.get_urls():
             urlel = etree.SubElement(oai_dc, self.DC + "relation")
             set_text(urlel, url.get("url"))
+
+        for identifier in bibjson.get_identifiers(idtype=bibjson.P_ISSN) + bibjson.get_identifiers(idtype=bibjson.E_ISSN):
+            journallink = etree.SubElement(oai_dc, self.DC + "relation")
+            set_text(journallink, app.config['BASE_URL'] + "/toc/" + identifier)
 
         if bibjson.abstract is not None:
             abstract = etree.SubElement(oai_dc, self.DC + "description")
@@ -243,6 +237,9 @@ class OAI_DC_Journal(OAI_DC):
     ~~->OAIDC:Crosswalk~~
     """
     def crosswalk(self, record):
+        if not record.is_in_doaj():
+            return None
+
         bibjson = record.bibjson()
 
         metadata = etree.Element(self.PMH + "metadata")
@@ -257,10 +254,6 @@ class OAI_DC_Journal(OAI_DC):
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-
-        # beyond this point, only include the metadata if the record is not "deleted"
-        if not record.is_in_doaj():
-            return metadata
 
         # our internal identifier
         url = app.config["BASE_URL"] + "/toc/" + record.toc_id
@@ -334,40 +327,15 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
     NSMAP.update({"oai_doaj": OAI_DOAJ_NAMESPACE})
 
     def crosswalk(self, record):
+        if not record.is_in_doaj():
+            return None
+
         bibjson = record.bibjson()
 
         metadata = etree.Element(self.PMH + "metadata")
         oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle", nsmap=self.NSMAP)
         oai_doaj_article.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd")
-
-        # all the external identifiers (ISSNs, etc)
-        if bibjson.get_one_identifier(bibjson.P_ISSN):
-            issn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issn")
-            set_text(issn, bibjson.get_one_identifier(bibjson.P_ISSN))
-
-        if bibjson.get_one_identifier(bibjson.E_ISSN):
-            eissn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "eissn")
-            set_text(eissn, bibjson.get_one_identifier(bibjson.E_ISSN))
-
-        if bibjson.get_one_identifier(bibjson.DOI):
-            doi = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "doi")
-            set_text(doi, bibjson.get_one_identifier(bibjson.DOI))
-
-        ftobj = bibjson.get_single_url('fulltext', unpack_urlobj=False)
-        if ftobj:
-            attrib = {}
-            if "content_type" in ftobj:
-                attrib['format'] = ftobj['content_type']
-
-            fulltext_url_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "fullTextUrl", **attrib)
-
-            if "url" in ftobj:
-                set_text(fulltext_url_elem, ftobj['url'])
-
-        # beyond this point, only include the metadata if the record is not "deleted"
-        if not record.is_in_doaj():
-            return metadata
 
         # look up the journal's language
         jlangs = bibjson.journal_language
@@ -395,6 +363,14 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
             journtitel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "journalTitle")
             set_text(journtitel, bibjson.journal_title)
 
+        # all the external identifiers (ISSNs, etc)
+        if bibjson.get_one_identifier(bibjson.P_ISSN):
+            issn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issn")
+            set_text(issn, bibjson.get_one_identifier(bibjson.P_ISSN))
+
+        if bibjson.get_one_identifier(bibjson.E_ISSN):
+            eissn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "eissn")
+            set_text(eissn, bibjson.get_one_identifier(bibjson.E_ISSN))
 
         # work out the date of publication
         date = bibjson.get_publication_date()
@@ -428,7 +404,9 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
             end_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "endPage")
             set_text(end_page, bibjson.end_page)
 
-
+        if bibjson.get_one_identifier(bibjson.DOI):
+            doi = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "doi")
+            set_text(doi, bibjson.get_one_identifier(bibjson.DOI))
 
         if record.publisher_record_id():
             pubrecid = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publisherRecordId")
@@ -472,6 +450,17 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         if bibjson.abstract:
             abstract = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "abstract")
             set_text(abstract, bibjson.abstract)
+
+        ftobj = bibjson.get_single_url('fulltext', unpack_urlobj=False)
+        if ftobj:
+            attrib = {}
+            if "content_type" in ftobj:
+                attrib['format'] = ftobj['content_type']
+
+            fulltext_url_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "fullTextUrl", **attrib)
+
+            if "url" in ftobj:
+                set_text(fulltext_url_elem, ftobj['url'])
 
         if bibjson.keywords:
             keywords_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + 'keywords')

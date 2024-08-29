@@ -739,7 +739,8 @@ class ListRecords(OAI_PMH):
         for metadata, header in self.records:
             r = etree.SubElement(lr, self.PMH + "record")
             r.append(header)
-            r.append(metadata)
+            if metadata is not None:
+                r.append(metadata)
 
         if self.resumption is not None:
             rt = etree.SubElement(lr, self.PMH + "resumptionToken")
