@@ -8,6 +8,7 @@
             {% include "formcontext/_error_header.html" %}
             {% from "_formhelpers.html" import render_field_horizontal %}
 
+            <!-- form requires novalidate to prevent the browser from trying to focus invalid fields - hidden by select2; validation handled by WTForm at the backend -->
             <form method="post" action="
 
                     {{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{ form.group_id.data }}{% endif %}"
