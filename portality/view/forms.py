@@ -103,16 +103,6 @@ class EditorGroupForm(Form):
         self.editor_error = False;
         self.maned_error = False;
 
-    # def _validate_editors(self):
-    #     if not self.data["maned"]:
-    #         self.maned_error = True;
-    #     if not self.data["editor"]:
-    #         self.editor_error = True;
-    #     return not self.maned_error and not self.editor_error;
-    #
-    # def validate(self, extra_validators = None):
-    #     return self._validate_editors() and super(EditorGroupForm, self).validate();
-
 ##########################################################################
 ## Continuations Forms
 ##########################################################################
