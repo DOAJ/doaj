@@ -103,7 +103,7 @@ class KeepersRegistry(ISSNChecker):
                     )
 
         for service in services:
-            if service == "none":
+            if service in ["none", "national_library"]:
                 continue
 
             id = self.ID_MAP.get(service)

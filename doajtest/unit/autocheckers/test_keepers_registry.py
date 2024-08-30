@@ -31,7 +31,8 @@ class TestKeepersRegistry(DoajTestCase):
         form = {
             "pissn": "1234-5678",
             "eissn": "9876-5432",
-            "preservation_service": ["LOCKSS", "Internet Archive", "PKP PN", "PMC"]
+            "preservation_service": ["LOCKSS", "Internet Archive", "PKP PN", "PMC", "national_library"],
+            "preservation_service_library": "BL"
         }
 
         source = ApplicationFixtureFactory.make_application_source()
@@ -67,3 +68,29 @@ class TestKeepersRegistry(DoajTestCase):
                 checks[4] = True
 
         assert all(checks)
+
+    def test_02_none(self):
+        Resource.fetch = ResourceBundleResourceMockFactory.no_contact_resource_fetch(archive_components={
+            "CLOCKSS": True,
+            "LOCKSS": True,
+            "Internet Archive": False
+        })
+
+        kr = KeepersRegistry()
+
+        form = {
+            "pissn": "1234-5678",
+            "eissn": "9876-5432",
+            "preservation_service": ["none"]
+        }
+
+        source = ApplicationFixtureFactory.make_application_source()
+        app = models.Application(**source)
+
+        autochecks = models.Autocheck()
+        resources = ResourceBundle()
+
+        kr.check(form, app, autochecks, resources, logger=lambda x: x)
+
+        # should just get the CLOCKSS and LOCKSS results
+        assert len(autochecks.checks) == 2
