@@ -98,11 +98,6 @@ class EditorGroupForm(Form):
     editor = StringField("Editor", [validators.DataRequired(), NotRole("publisher")])
     associates = StringField("Associate Editors", [validators.Optional(), NotRole("publisher")])
 
-    def __init__(self, formdata=None, obj=None, prefix='', data=None, meta=None, **kwargs):
-        super().__init__(formdata=formdata, obj=obj, prefix=prefix, data=data, meta=meta, **kwargs)
-        self.editor_error = False;
-        self.maned_error = False;
-
 ##########################################################################
 ## Continuations Forms
 ##########################################################################
