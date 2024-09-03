@@ -367,8 +367,8 @@ $.extend(true, doaj, {
         subjectBrowser: function (params) {
             var tree = params.tree;
             var hideEmpty = edges.getParam(params.hideEmpty, false);
-            var id = params.id ? params.id : "subject";
-            var category = params.category ? params.category : "facet";
+            var id = edges.getParam(params.id, "subject");
+            var category = edges.getParam(params.category, "facet");
 
             return edges.newTreeBrowser({
                 id: id,
