@@ -51,7 +51,7 @@ class TodoManedEditorAssociate(TestDrive):
 
         aapps = build_associate_applications(un)
         eapps = build_editor_applications(un, eg2)
-        mapps = build_maned_applications(un, eg1, owner.id, eg3)
+        mapps = build_maned_applications(un, eg1, owner.id, eg3, eg2)
 
 
         return {
@@ -96,7 +96,7 @@ class TodoManedEditorAssociate(TestDrive):
         return {"status": "success"}
 
 
-def build_maned_applications(un, eg, owner, eponymous_group):
+def build_maned_applications(un, eg, owner, eponymous_group, other_group):
     w = 7 * 24 * 60 * 60
 
     apps = {}
@@ -142,13 +142,21 @@ def build_maned_applications(un, eg, owner, eponymous_group):
         "title": un + " Maned Pending Application"
     }]
 
-    app = build_application(un + " Maned On Hold Application", 2 * w, 2 * w, constants.APPLICATION_STATUS_ON_HOLD,
+    app = build_application(un + " Maned (Group) On Hold Application", 2 * w, 2 * w, constants.APPLICATION_STATUS_ON_HOLD,
                             editor_group=eg.name, owner=owner)
     app.save()
     apps["on_hold"] = [{
         "id": app.id,
-        "title": un + " Maned On Hold Application"
+        "title": un + " Maned (Group) On Hold Application"
     }]
+
+    app = build_application(un + " Maned (Editor) On Hold Application", 2 * w, 2 * w, constants.APPLICATION_STATUS_ON_HOLD,
+                            editor_group=other_group.name, editor=un, owner=owner)
+    app.save()
+    apps["on_hold"].append({
+        "id": app.id,
+        "title": un + " Maned (Editor) On Hold Application"
+    })
 
     app = build_application(un + " Maned Low Priority Pending Application", 1 * w, 1 * w,
                             constants.APPLICATION_STATUS_PENDING,

@@ -90,7 +90,7 @@ class TodoService(object):
                 queries.append(TodoRules.maned_last_month_update_requests(size, maned_of))
                 queries.append(TodoRules.maned_new_update_requests(size, maned_of))
             if on_hold:
-                queries.append(TodoRules.maned_on_hold(size, maned_of))
+                queries.append(TodoRules.maned_on_hold(size, account.id, maned_of))
 
         if new_applications:    # editor and associate editor roles only deal with new applications
             if account.has_role("editor"):
@@ -307,13 +307,16 @@ class TodoRules(object):
         return constants.TODO_MANED_NEW_UPDATE_REQUEST, assign_pending, sort_date, -2
 
     @classmethod
-    def maned_on_hold(cls, size, maned_of):
+    def maned_on_hold(cls, size, account, maned_of):
         sort_date = "created_date"
         on_holds = TodoQuery(
             musts=[
-                TodoQuery.editor_group(maned_of),
                 TodoQuery.is_new_application(),
                 TodoQuery.status([constants.APPLICATION_STATUS_ON_HOLD])
+            ],
+            ors=[
+                TodoQuery.editor_group(maned_of),
+                TodoQuery.editor(account)
             ],
             sort=sort_date,
             size=size
@@ -484,9 +487,10 @@ class TodoQuery(object):
     # therefore, we take a created_date sort to mean a date_applied sort
     cd_sort = {"admin.date_applied": {"order": "asc"}}
 
-    def __init__(self, musts=None, must_nots=None, sort="last_manual_update", size=10):
+    def __init__(self, musts=None, must_nots=None, ors=None, sort="last_manual_update", size=10):
         self._musts = [] if musts is None else musts
         self._must_nots = [] if must_nots is None else must_nots
+        self._ors = [] if ors is None else ors
         self._sort = sort
         self._size = size
 
@@ -494,16 +498,22 @@ class TodoQuery(object):
         sort = self.lmu_sort if self._sort == "last_manual_update" else self.cd_sort
         q = {
             "query" : {
-                "bool" : {
-                    "must": self._musts,
-                    "must_not": self._must_nots
-                }
+                "bool" : {}
             },
             "sort" : [
                 sort
             ],
             "size" : self._size
         }
+
+        if len(self._musts) > 0:
+            q["query"]["bool"]["must"] = self._musts
+        if len(self._must_nots) > 0:
+            q["query"]["bool"]["must_not"] = self._must_nots
+        if len(self._ors) > 0:
+            q["query"]["bool"]["should"] = self._ors
+            q["query"]["bool"]["minimum_should_match"] = 1
+
         return q
 
     @classmethod
