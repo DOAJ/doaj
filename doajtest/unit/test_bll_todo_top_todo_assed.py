@@ -126,9 +126,12 @@ class TestBLLTopTodoAssed(DoajTestCase):
 
             # prevent revision on dashboard
             assert all([
-                self.svc.todo_app_status(t) != constants.APPLICATION_STATUS_REVISIONS_REQUIRED
+                self._todo_app_status(t) != constants.APPLICATION_STATUS_REVISIONS_REQUIRED
                 for t in todos
             ])
+
+    def _todo_app_status(self, todo: dict) -> str:
+        return todo['object']['admin']['application_status']
 
     def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
         source = ApplicationFixtureFactory.make_application_source()

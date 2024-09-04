@@ -164,10 +164,6 @@ class TodoService(object):
 
         return stds[:size]
 
-    def todo_app_status(self, todo: dict) -> str:
-        return todo['object']['admin']['application_status']
-
-
 
 class TodoRules(object):
     @classmethod

@@ -52,6 +52,7 @@ class ApplicationService(object):
         :param application:
         :param account:
         :param provenance:
+        :param note:
         :param manual_update:
         :return:
         """
@@ -558,7 +559,7 @@ class ApplicationService(object):
         if application.related_journal is not None:
             try:
                 related_journal, rjlock = journalService.journal(application.related_journal, lock_journal=True, lock_account=account)
-            except lock.Locked as e:
+            except lock.Locked:
                 # if the resource is locked, we have to back out
                 if alock is not None: alock.delete()
                 if cjlock is not None: cjlock.delete()
@@ -825,7 +826,7 @@ class CSVValidationReport:
         return cleantext
 
     def json(self, indent=None):
-        repr = {
+        _repr = {
             "has_errors": self._errors,
             "has_warnings": self._warnings,
             "general": self._general,
@@ -834,4 +835,4 @@ class CSVValidationReport:
             "values": self._values,
             "log": self._log
         }
-        return json.dumps(repr, indent=indent)
+        return json.dumps(_repr, indent=indent)
