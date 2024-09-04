@@ -183,7 +183,6 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
             ],
             sort=sort_date,
@@ -204,7 +203,6 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
             ],
             sort=sort_date,
@@ -279,7 +277,6 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
                 # TodoQuery.exists("admin.editor")
             ],
@@ -303,7 +300,6 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                 ])
                 # TodoQuery.exists("admin.editor")
             ],
