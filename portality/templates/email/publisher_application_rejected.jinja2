@@ -11,7 +11,7 @@
 
 {% if publisher_name %}Dear {{ publisher_name }},{% endif %}
 
-The application which you submitted for "{{ bibjson.title }}" on {{ application.date_applied|human_date }} has been rejected as the journal does not meet our basic criteria ({{ url_root}}{{ url_for("doaj.guide") }}).
+The application you submitted for "{{ bibjson.title }}" on {{ application.date_applied|human_date }} has been rejected as the journal does not meet our criteria for inclusion.
 
 {% if note %}
 Reason for rejection:
@@ -19,7 +19,7 @@ Reason for rejection:
 {{ note }}
 {% endif %}
 
-You may submit a new application 6 months after the date of this email unless advised otherwise by a member of the DOAJ Editorial Team. Before you apply again, make any necessary changes to ensure your journal adheres to our criteria: {{ url_root}}{{ url_for("doaj.guide") }}.
+You may submit a new application 6 months after the date of this email. Before you apply again, make the necessary changes to ensure your journal adheres to our criteria: {{ url_root}}{{ url_for("doaj.guide") }}.
 
 Yours faithfully
 
