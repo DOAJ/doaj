@@ -81,7 +81,7 @@ class TodoService(object):
 
         hs = HistoricalNumbersQuery(editor_group.editor, editor_status, editor_group.id)
         # ~~-> Provenance:Model ~~
-        editor_count = models.Provenance.count(body=hs.query())
+        editor_count = models.Provenance.count(query=hs.query())
 
         # ~~-> Account:Model ~~
         acc = models.Account.pull(editor_group.editor)
@@ -90,7 +90,7 @@ class TodoService(object):
         stats["associate_editors"] = []
         for associate in editor_group.associates:
             hs = HistoricalNumbersQuery(associate, associate_status, editor_group.id)
-            associate_count = models.Provenance.count(body=hs.query())
+            associate_count = models.Provenance.count(query=hs.query())
             acc = models.Account.pull(associate)
             stats["associate_editors"].append({"name":acc.id, "count":associate_count})
 
@@ -110,7 +110,7 @@ class TodoService(object):
         elif account.has_role("associate_editor"):
             hs = HistoricalNumbersQuery(account.id, "status:" + constants.APPLICATION_STATUS_COMPLETED)
 
-        count = models.Provenance.count(body=hs.query())
+        count = models.Provenance.count(query=hs.query())
 
         return count
 

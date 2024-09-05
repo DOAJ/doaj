@@ -108,7 +108,7 @@ class Statistics(TestDrive):
 
     def createGroups(self):
 
-        self.groups = [];
+        self.groups = []
         for group_key, group_info in self.EDITOR_GROUPS.items():
             eg_source = EditorGroupFixtureFactory.make_editor_group_source(group_name=group_key, maned=self.admin,
                                                                            editor=
@@ -120,13 +120,13 @@ class Statistics(TestDrive):
             ids_to_set = [assed['id'] for assed in
                           self.asseds[group_info['start_assed_index']:group_info['end_assed_index']]]
             editor_group.set_associates(ids_to_set)
-            editor_group.save(blocking=True)
+            editor_group.save()
             self.groups.append(editor_group.id)
 
     def createProvenanceData(self):
 
-        self.finished_by_user = {};
-        self.provenance_data = [];
+        self.finished_by_user = {}
+        self.provenance_data = []
         role_mapping = {
             "editor": {
                 "array": self.editors,
@@ -166,7 +166,7 @@ class Statistics(TestDrive):
             "editor_group": [editor_group]
         }
         p = models.Provenance(**data)
-        p.save(blocking=True)
+        p.save()
         return p
 
     def teardown(self, params):
