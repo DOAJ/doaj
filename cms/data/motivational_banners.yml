@@ -11,4 +11,4 @@ banners:
     - "Wait, you’ve completed {{ COUNT }} applications this year already? You’re on fire!"
     - "Impressive! You’ve already completed {{ COUNT }} applications this year!"
     - "{{ COUNT }} applications in the bag this year! You’re smashing it!"
-    - "Congratulations, you have completed {{ COUNT }} applications this year so far! Keep up!"
+    - "Congratulations, you have completed {{ COUNT }} applications this year so far! Keep it up!"
