@@ -93,7 +93,7 @@ This statement was prepared on **28 May 2020**. It was last reviewed on **06 Sep
 
 This website was last tested on **24 November 2020**. The DOAJ team carried out testing.
 
-#### Changes to this document 
+## Changes to this document 
 
 - 06 September 2024: added details on things we have fixed; removed references to the PDFs and the blog, which are not covered by this statement; added the last point to the Non-compliance section; updated compliance status
 - 20 December 2021: updated target date to meet accessibility standards to Jan 2021. 
