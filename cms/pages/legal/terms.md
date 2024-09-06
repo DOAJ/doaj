@@ -25,9 +25,9 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
   + In the [full data dump of all journal metadata](/docs/public-data-dump/)
   + As the [list of journals which say they are in DOAJ but are not](https://docs.google.com/spreadsheets/d/1Y_Sza4rPDkf-NNX9kwiErGrKeNTM75md9B63A_gVpaQ/edit?usp=sharing)
 
-3. The *article metadata* provided to us by publishers or that we collect from EuropePMC, which we then process and display, is availble with a [CC0 waiver](https://creativecommons.org/share-your-work/public-domain/cc0/). Collecting, using and reusing part or all of the article-level metadata must be done in accordance with the terms of the CC0 license. The article-level metadata is available:
+3. The *article metadata* provided to us by publishers or that we collect from EuropePMC, which we then process and display, is available with a [CC0 waiver](https://creativecommons.org/share-your-work/public-domain/cc0/). Collecting, using and reusing part or all of the article-level metadata must be done under the terms of the CC0 waiver. The article-level metadata is available:
 
-  + On individual journal pages in DOAJ, for example: [https://doaj.org/toc/1932-6203](/toc/1932-6203)
+  + On individual journal pages in DOAJ, for example [https://doaj.org/toc/1932-6203](/toc/1932-6203)
   + Via our API
   + In our [OAI-PMH feed](/docs/oai-pmh)
   + In the [full data dump of all article metadata](/docs/public-data-dump/).
@@ -46,13 +46,13 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Conditions of using this website
-8. Use of this website is subject to the following Terms and Conditions. By using this website you agree to be bound by these Terms and Conditions which form a binding contract between you and [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/), the company responsible for providing the DOAJ (Directory of Open Access Journals) service.
+8. Use of this website is subject to the following Terms and Conditions. By using this website, you agree to be bound by these Terms and Conditions, which form a binding contract between you and [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/), the company responsible for providing the DOAJ (Directory of Open Access Journals) service.
 
 9. You confirm that you have read and accept [our Privacy policy](/privacy/).
 
 10. IS4OA reserves the right to suspend or terminate your account at any time without notice. Written notice will be provided twenty-four (24) hours in advance.
 
-11. The name 'Directory of Open Access Journals' and the acronym 'DOAJ' are protected as trade names owned by IS4OA. Neither the name, the acronym nor the look and feel of the DOAJ website may be reproduced without the express prior written permission of the [DOAJ Managing Director](mailto:helpdesk@doaj.org).
+11. The name 'Directory of Open Access Journals' and the acronym 'DOAJ' are protected as trade names owned by IS4OA. Neither the name, the acronym, nor the look and feel of the DOAJ website may be reproduced without the express prior written permission of the [DOAJ Managing Director](mailto:helpdesk@doaj.org).
 
 12. In no event shall IS4OA, or its employees, ambassadors, volunteers or contractors be liable for any damages of any nature, including without limitation any consequential loss, loss of income or profit, loss of or damage to property, claims of third parties, or any other loss, cost, claim or expense of any kind or character arising out of or in connection with the use of this website, its content or any website with which it is linked. This exclusion and limitation only applies to the extent permitted by law and does not apply to liability for death or personal injury caused by the negligence of IS4OA, its employees, ambassadors, volunteers or contractors.
 
@@ -63,7 +63,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Licensing terms for content published on DOAJ News Service
-15. DOAJ News Service is the DOAJ blog, hosted on Wordpress: https://blog.doaj.org
+15. DOAJ News Service is the DOAJ blog, hosted on WordPress: https://blog.doaj.org
 
 16. All content posted on the blog is licensed under the CC BY-NC Creative Commons license. See the blog footer for full details.
 
