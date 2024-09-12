@@ -32,9 +32,9 @@ class Statistics(TestDrive):
 
     # Define editor groups and associate editors' associations
     EDITOR_GROUPS = {
-        'Group_0': {'editor_index': 0, 'start_assed_index': 0, 'end_assed_index': 2},
-        'Group_1': {'editor_index': 0, 'start_assed_index': 2, 'end_assed_index': 5},
-        'Group_2': {'editor_index': 1, 'start_assed_index': 5, 'end_assed_index': 8},
+        'eg0': {'editor_index': 0, 'start_assed_index': 0, 'end_assed_index': 2},
+        'eg1': {'editor_index': 0, 'start_assed_index': 2, 'end_assed_index': 5},
+        'eg2': {'editor_index': 1, 'start_assed_index': 5, 'end_assed_index': 8},
     }
 
     def setup(self) -> dict:
@@ -89,7 +89,7 @@ class Statistics(TestDrive):
         for i in range(self.NUMBER_OF_EDITORS):
             us = self.create_random_str()
             pw = self.create_random_str()
-            editor = models.Account.make_account(us + "@example.com", us, "Editor" + str(i) + " " + us,
+            editor = models.Account.make_account(us + "@example.com", us, "Editor" + str(i+1) + " " + us,
                                                  [constants.ROLE_EDITOR])
             editor.set_password(pw)
             editor.save()
@@ -100,7 +100,7 @@ class Statistics(TestDrive):
         for i in range(self.NUMBER_OF_ASSEDITORS):
             us = self.create_random_str()
             pw = self.create_random_str()
-            assed = models.Account.make_account(us + "@example.com", us, "AssEd" + str(i) + " " + us,
+            assed = models.Account.make_account(us + "@example.com", us, "AssEd" + str(i+1) + " " + us,
                                                 [constants.ROLE_ASSOCIATE_EDITOR])
             assed.set_password(pw)
             assed.save()
@@ -167,6 +167,7 @@ class Statistics(TestDrive):
         }
         p = models.Provenance(**data)
         p.save()
+        print(p.id)
         return p
 
     def teardown(self, params):
