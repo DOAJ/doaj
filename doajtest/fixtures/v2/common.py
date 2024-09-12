@@ -25,7 +25,7 @@ EDITORIAL_FORM_EXPANDED = {
 }
 
 SEAL_FORM_EXPANDED = {
-    "doaj_seal": False,
+    "doaj_seal": [],
 }
 
 JOURNAL_LIKE_BIBJSON = {

@@ -123,8 +123,8 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     job.add_audit_message("Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
                     fc.form[k].data = v
                 else:
-                    if v:
-                        fc.form.doaj_seal.data = v
+                    if v or (isinstance(v, str) and v.lower() == 'y'):
+                        fc.form.doaj_seal.data = ['y']
                 updated = True
 
             if note:

@@ -85,9 +85,12 @@ def create_publisher_a():
     return publisher
 
 
-def create_maned_a():
+def create_maned_a(save=False):
     from portality import models
     maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+    maned.set_password("password")
+    if save:
+        maned.save(blocking=True)
     return maned
 
 
