@@ -563,7 +563,7 @@ def abc():
     return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
 
 
-@blueprint.route("/about/advisory-board-council/")
+@blueprint.route("/about/editorial-policy-advisory-group/")
 def epag():
     return render_template("layouts/static_page.html", page_frag="/about/editorial-policy-advisory-group.html")
 
