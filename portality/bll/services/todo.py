@@ -108,12 +108,17 @@ class TodoService(object):
         :param year
         :return:
         """
+        hs = None
+
         if account.has_role("editor"):
             hs = HistoricalNumbersQuery(account.id, "status:" + constants.APPLICATION_STATUS_READY, year)
         elif account.has_role("associate_editor"):
             hs = HistoricalNumbersQuery(account.id, "status:" + constants.APPLICATION_STATUS_COMPLETED, year)
 
-        count = models.Provenance.count(query=hs.query())
+        if hs:
+            count = models.Provenance.count(query=hs.query())
+        else:
+            count = None
 
         return count
 
