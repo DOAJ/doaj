@@ -9,7 +9,7 @@ class Messages(object):
         Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
         for review. Click the 'Edit' button to make further changes or 'Delete' to cancel the request.
         """, 'success')
-    PUBLISHER_UPLOAD_ERROR = """An error has occurred and your upload may not have succeeded. {error_str} <br \> If the problem persists, please send the error details from the Notes column of the History of Uploads box below and a screenshot of the entire error message"""
+    PUBLISHER_UPLOAD_ERROR = """An error has occurred and your upload did not succeed. {error_str} <br \> If the problem persists, please send the error details from the Notes column of the History of Uploads box below and a screenshot of the entire error message"""
     NO_FILE_UPLOAD_ID="""No file upload record has been specified"""
 
     ARTICLE_METADATA_SUBMITTED_FLASH = ("<a href='{url}' target='_blank'>Article created/updated</a>", "success")
@@ -17,6 +17,8 @@ class Messages(object):
     Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
     ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
         Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
+
+    CONCURRENT_UPDATE_REQUEST = """You have submitted an Update Request for the same journal in a short period of time.  If this is in error, you don't need to do anything, your first request is being processed.  If this was intentional, please try again in a moment."""
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent notification to '{user}' to tell them that their journal was accepted."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent notification to user '{user}' to tell them that their journal application was rejected."""
