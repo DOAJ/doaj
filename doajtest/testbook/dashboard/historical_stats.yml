@@ -3,16 +3,13 @@ testset: Historical Statistics
 tests:
   - title: Historical Statistics Display - Managing Editor with 3 groups
     context:
-      role: managing editor/admin
+      role: admin
       testdrive: statistics
     steps:
       - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
       - step: Log in with provided managing_editor credentials.
         results:
           - User dashboard is displayed.
-      - step: Verify the motivational banner at the top of the dashboard (green) and check number of finished applications.
-        results:
-          - The motivational banner is GREEN and shows the correct sum of applications finished in all groups.
       - step: Verify historical statistics in the Activity section at the bottom.
         results:
           - Three groups are displayed.
