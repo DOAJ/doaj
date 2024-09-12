@@ -46,11 +46,11 @@ class Statistics(TestDrive):
                 "username": self.admin,
                 "password": self.admin_pass
             },
-            "editor_0": {
+            "editor_1": {
                 "username": self.editors[0]["id"],
                 "password": self.editors[0]["pass"]
             },
-            "editor_1": {
+            "editor_2": {
                 "username": self.editors[1]["id"],
                 "password": self.editors[1]["pass"]
             },
