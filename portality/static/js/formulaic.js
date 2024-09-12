@@ -1,9 +1,9 @@
 var formulaic = {
 
-    newFormulaic : function(params) {
+    newFormulaic: function (params) {
         return edges.instantiate(formulaic.Formulaic, params);
     },
-    Formulaic : function(params) {
+    Formulaic: function (params) {
         // Construction Arguments
         ///////////////////////////////////////////////////////
 
@@ -54,7 +54,7 @@ var formulaic = {
         /**
          * Construct the Formulaic instance
          */
-        this.init = function() {
+        this.init = function () {
             // set up the save button
             this.bindSave();
 
@@ -93,7 +93,7 @@ var formulaic = {
             }
         };*/
 
-        this.getElementName = function(element) {
+        this.getElementName = function (element) {
             var name = element.attr("data-formulaic-sync");
             if (!name) {
                 name = element.attr("name");
@@ -101,7 +101,7 @@ var formulaic = {
             return name;
         };
 
-        this.getFieldDefinition = function(params) {
+        this.getFieldDefinition = function (params) {
             var field = params.field;
 
             for (var i = 0; i < this.fieldsets.length; i++) {
@@ -122,7 +122,7 @@ var formulaic = {
         //////////////////////////////////////////////
         // Functions for handling save
 
-        this.bindSave = function() {
+        this.bindSave = function () {
             edges.on(this.context.find(".formulaic-complete"), "click.Complete", this, "saveComplete", false, false, false);
             edges.on(this.context.find(".formulaic-draft"), "click.Draft", this, "saveDraftAndComplete", false, false, false);
 
@@ -131,24 +131,26 @@ var formulaic = {
             }
         };
 
-        this.backgroundSaveClosure = function() {
+        this.backgroundSaveClosure = function () {
             var that = this;
-            return function() {
-                that.save({validate: false, additional : {"draft" : "true", "async" : "true"}, complete: false});
+            return function () {
+                that.save({validate: false, additional: {"draft": "true", "async": "true"}, complete: false});
                 setTimeout(that.backgroundSaveClosure(), that.autoSave);
             };
         };
 
-        this.saveComplete = function(element, event) {
+        this.saveComplete = function (element, event) {
             this.save({event: event});
         };
 
-        this.saveDraftAndComplete = function(element, event) {
-            this.save({validate: false, additional : {"draft" : "true", "async" : "true"}, event: event});
+        this.saveDraftAndComplete = function (element, event) {
+            this.save({validate: false, additional: {"draft": "true", "async": "true"}, event: event});
         };
 
-        this.save = function(params) {
-            if (!params) { params = {};}
+        this.save = function (params) {
+            if (!params) {
+                params = {};
+            }
             var validate = edges.getParam(params.validate, this.doValidation);
             var additional_params = edges.getParam(params.additional, {});
             var complete = edges.getParam(params.complete, true);
@@ -174,8 +176,9 @@ var formulaic = {
                     $.post({
                         url: this.context.attr("action"),
                         data: full_data,
-                        error: function() {/*alert("background save failed")*/},
-                        success: function(response_data) {
+                        error: function () {/*alert("background save failed")*/
+                        },
+                        success: function (response_data) {
                             that.lastSaveVal = submit_data;
                             var rd = JSON.parse(response_data);
                             that.setId(rd);
@@ -193,7 +196,7 @@ var formulaic = {
             }
         };
 
-        this.setId = function(params) {
+        this.setId = function (params) {
             var id = params.id;
             var existing = this.context.find("[name=id]");
             if (existing.length > 0) {
@@ -208,7 +211,7 @@ var formulaic = {
         /////////////////////////////////////////////////////
         // Functions for handling synchronised fields
 
-        this.registerSynchronised = function() {
+        this.registerSynchronised = function () {
             var fieldRegister = [];
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
@@ -230,7 +233,7 @@ var formulaic = {
             for (var i = 0; i < fields.length; i++) {
                 var name = fields[i];
                 var allByName = this.controlSelect.input({name: name});
-                allByName.each(function() {
+                allByName.each(function () {
                     var that = $(this);
                     var current_id = that.attr("id");
                     that.attr("data-formulaic-sync", name).attr("data-formulaic-id", current_id);
@@ -240,7 +243,7 @@ var formulaic = {
                 for (var j = 0; j < fieldsets.length; j++) {
                     var fieldset = fieldsets[j];
                     var elements = this.controlSelect.input({fieldset: fieldset, name: name});
-                    elements.each(function() {
+                    elements.each(function () {
                         var newname = fieldset + "__" + name;
                         var newid = fieldset + "__" + $(this).attr("id");
                         $(this).attr("name", newname).attr("id", newid);
@@ -251,7 +254,7 @@ var formulaic = {
             }
         };
 
-        this.synchroniseChange = function(element) {
+        this.synchroniseChange = function (element) {
             var that = $(element);
             var name = that.attr("data-formulaic-sync");
             var original_id = that.attr("data-formulaic-id");
@@ -262,7 +265,7 @@ var formulaic = {
             if (type === "radio" || type === "checkbox") {
                 var checked = that.is(":checked");
                 var toSync = this.controlSelect.input({syncName: name});
-                toSync.each(function() {
+                toSync.each(function () {
                     var el = $(this);
                     if (el.attr("data-formulaic-id") === original_id) {
                         el.prop("checked", checked);
@@ -278,7 +281,7 @@ var formulaic = {
         // Functions for conditional fields
         ///////////////////////////////////////////////////////
 
-        this.bindConditional = function() {
+        this.bindConditional = function () {
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
                 for (var j = 0; j < fieldset.fields.length; j++) {
@@ -312,7 +315,7 @@ var formulaic = {
             }
         };
 
-        this.checkConditional = function(element) {
+        this.checkConditional = function (element) {
             var name = this.getElementName($(element));
             var downstream = this.conditionals[name];
             for (var i = 0; i < downstream.length; i++) {
@@ -343,7 +346,7 @@ var formulaic = {
             });
         };
 
-        this.isConditionSatisfied = function(params) {
+        this.isConditionSatisfied = function (params) {
             var field = params.field;
             var definition = this.getFieldDefinition(params);
             for (var i = 0; i < definition.conditional.length; i++) {
@@ -354,7 +357,7 @@ var formulaic = {
 
                 if (type === "radio" || type === "checkbox") {
                     var checkedValues = [];
-                    elements.each(function() {
+                    elements.each(function () {
                         var that = $(this);
                         if (that.is(":checked")) {
                             checkedValues.push(that.val());
@@ -373,7 +376,7 @@ var formulaic = {
         // Functions for widget handling
         ///////////////////////////////////////////////////////
 
-        this.applyWidgets = function() {
+        this.applyWidgets = function () {
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
                 for (var j = 0; j < fieldset.fields.length; j++) {
@@ -413,7 +416,7 @@ var formulaic = {
             }
         };
 
-        this.getWidget = function(widgetName) {
+        this.getWidget = function (widgetName) {
             if (this.widgetRefs[widgetName]) {
                 return this.widgetRefs[widgetName];
             }
@@ -441,7 +444,7 @@ var formulaic = {
         // Functions for exclusive checkboxes
         //////////////////////////////////////////////////////
 
-        this.bindExclusiveCheckboxes = function() {
+        this.bindExclusiveCheckboxes = function () {
             // first register all the exclusive elements and values
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
@@ -475,7 +478,7 @@ var formulaic = {
             }
         };
 
-        this.checkExclusive = function(element) {
+        this.checkExclusive = function (element) {
             var jqel = $(element);
             var name = jqel.attr("name");
             var value = jqel.val();
@@ -491,7 +494,7 @@ var formulaic = {
             var checked = jqel.is(":checked");
             var elements = this.controlSelect.input({name: name});
             var that = this;
-            elements.each(function() {
+            elements.each(function () {
                 if (checked && $(this).val() !== value) {
                     $(this).prop("checked", false);
                     $(this).prop('disabled', true);
@@ -507,8 +510,10 @@ var formulaic = {
         // Parsley state management
         ////////////////////////////////////////////////////
 
-        this.destroyParsley = function() {
-            if (!this.doValidation) { return; }
+        this.destroyParsley = function () {
+            if (!this.doValidation) {
+                return;
+            }
             if (this.activeParsley) {
                 this.activeParsley.destroy();
                 this.activeParsley = false;
@@ -517,8 +522,10 @@ var formulaic = {
             // $(".has-error").removeClass("has-error");
         };
 
-        this.bounceParsley = function() {
-            if (!this.doValidation) { return; }
+        this.bounceParsley = function () {
+            if (!this.doValidation) {
+                return;
+            }
             this.destroyParsley();
             this.activeParsley = this.context.parsley();
         };
@@ -529,21 +536,21 @@ var formulaic = {
         this.init();
     },
 
-    newDefaultControlSelect : function(params) {
+    newDefaultControlSelect: function (params) {
         return edges.instantiate(formulaic.DefaultControlSelect, params);
     },
-    DefaultControlSelect : function(params) {
+    DefaultControlSelect: function (params) {
         this.containerClassTemplate = edges.getParam(params.containerClassTemplate, "{name}__container");
 
         this.groupSeparator = edges.getParam(params.groupSeparator, "-");
 
         this.formulaic = false;
 
-        this.set_formuaic = function(f) {
+        this.set_formuaic = function (f) {
             this.formulaic = f;
         };
 
-        this.get_context = function(params) {
+        this.get_context = function (params) {
             var context = this.formulaic.context;
             if (params.fieldset) {
                 context = $("#" + params.fieldset, context);
@@ -551,7 +558,7 @@ var formulaic = {
             return context;
         };
 
-        this.localiseName = function(params) {
+        this.localiseName = function (params) {
             var name = params.name;
             var def = this.formulaic.getFieldDefinition({field: name});
             if (def.hasOwnProperty("group")) {
@@ -562,10 +569,10 @@ var formulaic = {
             }
         };
 
-        this.input = function(params) {
+        this.input = function (params) {
             var context = this.get_context(params);
             if (params.name) {
-                var name = this.localiseName({name : params.name});
+                var name = this.localiseName({name: params.name});
                 return $("[name=" + name + "], [data-formulaic-sync=" + name + "]", context).filter(":input");
             } else if (params.id) {
                 return $("#" + params.id, context).filter(":input");
@@ -575,104 +582,113 @@ var formulaic = {
             }
         };
 
-        this.container = function(params) {
+        this.container = function (params) {
             var context = this.get_context(params);
             var name = params.name || params.syncName;
             var selector = "." + this.containerClassTemplate.replace("{name}", name);
             return $(selector, context);
         };
 
-        this.widgetsContainer = function(params) {
+        this.widgetsContainer = function (params) {
             var context = this.get_context(params);
             return $("#" + params.name + "_widgets-container", context)
         }
     },
 
-    edges : {
-        newTreeBrowser : function(params) {
-            return edges.instantiate(formulaic.edges.TreeBrowser, params, edges.newComponent);
+    edges: {
+        newTreeBrowser: function (params) {
+            // return edges.instantiate(formulaic.edges.TreeBrowserForm, params, edges.newComponent);
+            return edges.instantiate(formulaic.edges.TreeBrowserForm, params, edges.TreeBrowserCore);
         },
-        TreeBrowser : function(params) {
-            this.tree = edges.getParam(params.tree, {});
-
+        TreeBrowserForm: function (params) {
             this.sourceInput = edges.getParam(params.sourceInput, false);
-
-            this.nodeMatch = edges.getParam(params.nodeMatch, false);
-
-            this.filterMatch = edges.getParam(params.filterMatch, false);
-
-            this.nodeIndex = edges.getParam(params.nodeIndex, false);
-
-            this.syncTree = [];
-
-            this.parentIndex = {};
-
-            this.nodeCount = 0;
-
             this.selected = [];
 
-            this.init = function(edge) {
+            this.init = function (edge) {
+                console.log("formulaic.edges.TreeBrowserForm")
                 // first kick the request up to the superclass
-                edges.newSelector().init.call(this, edge);
+                edges.newTreeBrowserCore().init.call(this, edge);
 
+                // sourceInput can be false
+                // this is specific for the form, not the TreeBrowser itself
                 var text = this.sourceInput.val();
                 if (text !== "") {
-                    this.selected = text.split(",").map(function(x) {return x.trim()})
+                    this.selected = text.split(",").map(function (x) {
+                        return x.trim()
+                    })
                 } else {
                     this.selected = [];
                 }
             };
 
-
-            this.synchronise = function() {
-
+            this.synchronise = function () {
+                console.log("formulaic.edges.TreeBrowserForm.synchonise")
                 this.syncTree = $.extend(true, [], this.tree);
                 var selected = this.selected;
                 var that = this;
 
-                function recurse(tree, path) {
-                    var anySelected = false;
-                    var childCount = 0;
-
-                    for (var i = 0; i < tree.length; i++) {
-                        var node = tree[i];
-                        that.nodeCount++;
-
-                        that.parentIndex[node.value] = $.extend(true, [], path);
-
-                        if (that.filterMatch(node, selected)) {
-                            node.selected = true;
-                            anySelected = true;
-                        }
-
-                        if (that.nodeIndex) {
-                            node.index = that.nodeIndex(node);
-                        } else {
-                            node.index = node.display;
-                        }
-
-                        if (node.children) {
-                            path.push(node.value);
-                            var childReport = recurse(node.children, path);
-                            path.pop();
-                            if (childReport.anySelected) {
-                                node.selected = true;
-                                anySelected = true;
-                            }
-                            childCount += childReport.childCount;
-                            node.childCount = childReport.childCount;
-                        } else {
-                            node.childCount = 0;
-                        }
-
+                var processNode = function (node) {
+                    if (that.filterMatch(node, selected)) {
+                        node.selected = true;
+                        anySelected = true;
                     }
-                    return {anySelected: anySelected, childCount: childCount}
-                }
+                    node.index = that.nodeIndex ? that.nodeIndex(node) : node.display;
+                };
+
                 var path = [];
-                recurse(this.syncTree, path);
+                this.baseRecurse(this.syncTree, path, processNode);
             };
 
-            this.addFilter = function(params) {
+            // this.synchronise = function() {
+            //
+            //     this.syncTree = $.extend(true, [], this.tree);
+            //     var selected = this.selected;
+            //     var that = this;
+            //
+            //     function recurse(tree, path) {
+            //         var anySelected = false;
+            //         var childCount = 0;
+            //
+            //         for (var i = 0; i < tree.length; i++) {
+            //             var node = tree[i];
+            //             that.nodeCount++;
+            //
+            //             that.parentIndex[node.value] = $.extend(true, [], path);
+            //
+            //             if (that.filterMatch(node, selected)) {
+            //                 node.selected = true;
+            //                 anySelected = true;
+            //             }
+            //
+            //             if (that.nodeIndex) {
+            //                 node.index = that.nodeIndex(node);
+            //             } else {
+            //                 node.index = node.display;
+            //             }
+            //
+            //             if (node.children) {
+            //                 path.push(node.value);
+            //                 var childReport = recurse(node.children, path);
+            //                 path.pop();
+            //                 if (childReport.anySelected) {
+            //                     node.selected = true;
+            //                     anySelected = true;
+            //                 }
+            //                 childCount += childReport.childCount;
+            //                 node.childCount = childReport.childCount;
+            //             } else {
+            //                 node.childCount = 0;
+            //             }
+            //
+            //         }
+            //         return {anySelected: anySelected, childCount: childCount}
+            //     }
+            //     var path = [];
+            //     recurse(this.syncTree, path);
+            // };
+
+            this.addFilter = function (params) {
+                console.log("formulaic.edges.TreeBrowserForm.addFilter")
                 var value = params.value;
                 var parents = this.parentIndex[value];
                 var terms = [params.value];
@@ -720,7 +736,8 @@ var formulaic = {
                 return true;
             };
 
-            this.removeFilter = function(params) {
+            this.removeFilter = function (params) {
+                console.log("formulaic.edges.TreeBrowserForm.removeFilter")
                 var term = params.value;
 
                 var newValues = $.extend(true, [], this.selected);
@@ -753,7 +770,7 @@ var formulaic = {
                     if (grandparents.length > 0) {
                         var immediate = grandparents[grandparents.length - 1];
                         var sharedParent = false;
-                        for (var i = 0; i < newValues.length;i ++) {
+                        for (var i = 0; i < newValues.length; i++) {
                             var aunts = this.parentIndex[newValues[i]];
                             if (aunts.length > 0 && aunts[aunts.length - 1] === immediate) {
                                 sharedParent = true;
@@ -773,23 +790,224 @@ var formulaic = {
                 this.sourceInput.trigger("change");
                 this.edge.cycle();
             };
-        }
-
-        newSubjectBrowser : function(params) {
-            return edges.instantiate(formulaic.edges.SubjectBrowser, params, edges.newRenderer);
         },
-        SubjectBrowser : function(params) {
+        /*TreeBrowserForm: function (params) {
+            this.tree = edges.getParam(params.tree, {});
+
+            this.sourceInput = edges.getParam(params.sourceInput, false);
+
+            this.nodeMatch = edges.getParam(params.nodeMatch, false);
+
+            this.filterMatch = edges.getParam(params.filterMatch, false);
+
+            this.nodeIndex = edges.getParam(params.nodeIndex, false);
+
+            this.syncTree = [];
+
+            this.parentIndex = {};
+
+            this.nodeCount = 0;
+
+            this.selected = [];
+
+            this.init = function (edge) {
+                // first kick the request up to the superclass
+                edges.newSelector().init.call(this, edge);
+
+                // sourceInput can be false
+                // this is specific for the form, not the TreeBrowser itself
+                var text = this.sourceInput.val();
+                if (text !== "") {
+                    this.selected = text.split(",").map(function (x) {
+                        return x.trim()
+                    })
+                } else {
+                    this.selected = [];
+                }
+            };
+
+            this.synchronise = function () {
+                this.syncTree = $.extend(true, [], this.tree);
+                var selected = this.selected;
+                var that = this;
+
+                var processNode = function (node) {
+                    if (that.filterMatch(node, selected)) {
+                        node.selected = true;
+                        anySelected = true;
+                    }
+                    node.index = that.nodeIndex ? that.nodeIndex(node) : node.display;
+                };
+
+                var path = [];
+                this.baseRecurse(this.syncTree, path, processNode);
+            };
+
+            // this.synchronise = function() {
+            //
+            //     this.syncTree = $.extend(true, [], this.tree);
+            //     var selected = this.selected;
+            //     var that = this;
+            //
+            //     function recurse(tree, path) {
+            //         var anySelected = false;
+            //         var childCount = 0;
+            //
+            //         for (var i = 0; i < tree.length; i++) {
+            //             var node = tree[i];
+            //             that.nodeCount++;
+            //
+            //             that.parentIndex[node.value] = $.extend(true, [], path);
+            //
+            //             if (that.filterMatch(node, selected)) {
+            //                 node.selected = true;
+            //                 anySelected = true;
+            //             }
+            //
+            //             if (that.nodeIndex) {
+            //                 node.index = that.nodeIndex(node);
+            //             } else {
+            //                 node.index = node.display;
+            //             }
+            //
+            //             if (node.children) {
+            //                 path.push(node.value);
+            //                 var childReport = recurse(node.children, path);
+            //                 path.pop();
+            //                 if (childReport.anySelected) {
+            //                     node.selected = true;
+            //                     anySelected = true;
+            //                 }
+            //                 childCount += childReport.childCount;
+            //                 node.childCount = childReport.childCount;
+            //             } else {
+            //                 node.childCount = 0;
+            //             }
+            //
+            //         }
+            //         return {anySelected: anySelected, childCount: childCount}
+            //     }
+            //     var path = [];
+            //     recurse(this.syncTree, path);
+            // };
+
+            this.addFilter = function (params) {
+                var value = params.value;
+                var parents = this.parentIndex[value];
+                var terms = [params.value];
+                var clearOthers = edges.getParam(params.clearOthers, false);
+
+                var newValues = $.extend(true, [], this.selected);
+
+                // if there is, just add the term to it (removing and parent terms along the way)
+                if (newValues.length > 0) {
+                    newValues.sort();
+
+                    // if this is an exclusive filter that clears all others, just do that
+                    if (clearOthers) {
+                        newValues = [];
+                    }
+
+                    // next, if there are any terms left, remove all the parent terms
+                    for (var i = 0; i < parents.length; i++) {
+                        var parent = parents[i];
+                        var location = $.inArray(parent, newValues);
+                        if (location !== -1) {
+                            newValues.splice(location, 1);
+                        }
+                    }
+
+                    // now add all the provided terms
+                    var hadTermAlready = 0;
+                    for (var i = 0; i < terms.length; i++) {
+                        var term = terms[i];
+                        if ($.inArray(term, newValues) !== -1) {
+                            hadTermAlready++;
+                        } else {
+                            newValues.push(term);
+                        }
+                    }
+                } else {
+                    newValues = terms;
+                }
+
+                // store the new values on the object and in the form
+                this.selected = newValues;
+                this.sourceInput.val(newValues.join(","));
+                this.sourceInput.trigger("change");
+                this.edge.cycle();
+                return true;
+            };
+
+            this.removeFilter = function (params) {
+                var term = params.value;
+
+                var newValues = $.extend(true, [], this.selected);
+
+                if (newValues.length > 0) {
+                    var location = $.inArray(term, newValues);
+                    if (location !== -1) {
+                        // the filter we are being asked to remove is the actual selected one
+                        newValues.splice(location, 1);
+                    } else {
+                        // the filter we are being asked to remove may be a parent of the actual selected one
+                        // first get all the parent sets of the values that are currently in force
+                        var removes = [];
+                        for (var i = 0; i < newValues.length; i++) {
+                            var val = newValues[i];
+                            var parentSet = this.parentIndex[val];
+                            if ($.inArray(term, parentSet) > -1) {
+                                removes.push(val);
+                            }
+                        }
+                        for (var i = 0; i < removes.length; i++) {
+                            var location = $.inArray(removes[i], newValues);
+                            if (location !== -1) {
+                                newValues.splice(location, 1);
+                            }
+                        }
+                    }
+
+                    var grandparents = this.parentIndex[term];
+                    if (grandparents.length > 0) {
+                        var immediate = grandparents[grandparents.length - 1];
+                        var sharedParent = false;
+                        for (var i = 0; i < newValues.length; i++) {
+                            var aunts = this.parentIndex[newValues[i]];
+                            if (aunts.length > 0 && aunts[aunts.length - 1] === immediate) {
+                                sharedParent = true;
+                                break;
+                            }
+                        }
+                        if (!sharedParent && $.inArray(immediate, newValues) === -1) {
+                            newValues.push(immediate);
+                        }
+                    }
+                }
+
+                // reset the search page to the start and then trigger the next query
+                // store the new values on the object and in the form
+                this.selected = newValues;
+                this.sourceInput.val(newValues.join(","));
+                this.sourceInput.trigger("change");
+                this.edge.cycle();
+            };
+        },*/
+
+        newSubjectBrowserRenderer: function (params) {
+            return edges.instantiate(formulaic.edges.SubjectBrowserRenderer, params, edges.newRenderer);
+        },
+        SubjectBrowserRenderer: function (params) {
+            console.log("formulaic.edges.SubjectBrowserRenderer")
+            edges.newRenderer().call(params);
             this.title = edges.getParam(params.title, "");
-
             this.hideEmpty = edges.getParam(params.hideEmpty, false);
-
             this.expanded = [];
-
             this.lastScroll = 0;
-
             this.namespace = "formulaic-subject-browser";
 
-            this.draw = function() {
+            this.draw = function () {
+                console.log("formulaic.edges.SubjectBrowserRenderer.draw")
                 // for convenient short references ...
                 var st = this.component.syncTree;
                 var namespace = this.namespace;
@@ -843,7 +1061,7 @@ var formulaic = {
                 edges.on(fieldSelector, "click", this, "fieldToggle");
             };
 
-            this._renderTree = function(params) {
+            this._renderTree = function (params) {
                 var st = edges.getParam(params.tree, []);
                 var selectedPathOnly = edges.getParam(params.selectedPathOnly, true);
                 var showOneLevel = edges.getParam(params.showOneLevel, true);
@@ -954,13 +1172,13 @@ var formulaic = {
                         rFrag += entryFrag;
                         rFrag += '</li>';
                     }
-                    return {frag : rFrag, anySelected: anySelected};
+                    return {frag: rFrag, anySelected: anySelected};
                 }
 
                 return recurse(st);
             };
 
-            this.fieldToggle = function(element) {
+            this.fieldToggle = function (element) {
                 var value = this.component.jq(element).attr("data-value");
 
                 var existing = $.inArray(value, this.expanded);
@@ -975,7 +1193,7 @@ var formulaic = {
                 this.component.edge.cycle();
             };
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
                 this.lastScroll = this.component.jq(mainListSelector).scrollTop();
 
@@ -989,7 +1207,7 @@ var formulaic = {
                 }
             };
 
-            this.filterSubjects = function(element) {
+            this.filterSubjects = function (element) {
                 var st = this.component.syncTree;
                 var term = $(element).val();
                 var that = this;
@@ -1019,7 +1237,7 @@ var formulaic = {
                     }
 
                     var matchTerm = entry.index;
-                    var includes =  matchTerm.includes(term);
+                    var includes = matchTerm.includes(term);
                     if (includes) {
                         var idx = matchTerm.indexOf(term);
                         var display = entry.display;
@@ -1054,7 +1272,11 @@ var formulaic = {
                 var filtered = recurse(st);
 
                 if (filtered.length > 0) {
-                    var displayReport = this._renderTree({tree: filtered, selectedPathOnly: false, showOneLevel: false});
+                    var displayReport = this._renderTree({
+                        tree: filtered,
+                        selectedPathOnly: false,
+                        showOneLevel: false
+                    });
 
                     filterEl.html(displayReport.frag);
                     mainEl.hide();
@@ -1072,15 +1294,15 @@ var formulaic = {
         }
     },
 
-    widgets : {
-        _select2_shift_focus: function(){
+    widgets: {
+        _select2_shift_focus: function () {
             let id = $(this).attr("id");
             console.log("focused on " + id);
-            let select2_elem  = $("#s2id_" + id).find("input");
+            let select2_elem = $("#s2id_" + id).find("input");
             $(select2_elem).focus();
         },
 
-        _make_empty_container: function(namespace, containerName, form, fieldDef, additionalClasses, additionalStyles) {
+        _make_empty_container: function (namespace, containerName, form, fieldDef, additionalClasses, additionalStyles) {
             if (!additionalClasses) {
                 additionalClasses = "";
             }
@@ -1108,16 +1330,16 @@ var formulaic = {
             return elements.find(containerSelector);
         },
 
-        newAutocheck : function(params) {
+        newAutocheck: function (params) {
             return edges.instantiate(formulaic.widgets.Autocheck, params);
         },
-        Autocheck: function(params) {
+        Autocheck: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
             this.namespace = "formulaic-autocheck-" + this.fieldDef.name;
 
-            this.init = function() {
+            this.init = function () {
                 let annos = this._getAutochecksForField();
                 if (annos.length === 0) {
                     return;
@@ -1139,7 +1361,7 @@ var formulaic = {
                 feather.replace();
             }
 
-            this._getAutochecksForField = function() {
+            this._getAutochecksForField = function () {
                 if (!doaj.autochecks) {
                     return [];
                 }
@@ -1152,21 +1374,21 @@ var formulaic = {
                 return applicable;
             }
 
-            this._renderAutocheck = function(autocheck) {
+            this._renderAutocheck = function (autocheck) {
                 let frag = "<li>";
-                
+
                 if (autocheck.checked_by && doaj.autocheckers &&
                     doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
                     frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
                 } else {
                     frag += this._defaultRender(autocheck);
                 }
-                
+
                 frag += `</li>`;
                 return frag;
             }
 
-            this._defaultRender = function(autocheck) {
+            this._defaultRender = function (autocheck) {
                 let frag = "";
                 if (autocheck.advice) {
                     frag += `${autocheck.advice}<br>`
@@ -1186,11 +1408,10 @@ var formulaic = {
             this.init();
         },
 
-        newSubjectTree : function(params) {
+        newSubjectTree: function (params) {
             return edges.instantiate(formulaic.widgets.SubjectTree, params);
-            // return edges.instantiate(formulaic.widgets.SubjectTree, params);
         },
-        SubjectTree : function(params) {
+        SubjectTree: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
@@ -1198,7 +1419,7 @@ var formulaic = {
 
             this.ns = "formulaic-subjecttree";
 
-            this.init = function() {
+            this.init = function () {
 
                 var tree = doaj.af.lccTree;
                 var containerId = edges.css_id(this.ns, "container");
@@ -1229,7 +1450,7 @@ var formulaic = {
                 var subjectBrowser = formulaic.edges.newTreeBrowser({
                     id: widgetId,
                     sourceInput: this.input,
-                    tree: function(tree) {
+                    tree: function (tree) {
                         function recurse(ctx) {
                             var displayTree = [];
                             for (var i = 0; i < ctx.length; i++) {
@@ -1245,9 +1466,10 @@ var formulaic = {
                             displayTree.sort((a, b) => a.display > b.display ? 1 : -1);
                             return displayTree;
                         }
+
                         return recurse(tree);
                     }(tree),
-                    nodeMatch: function(node, match_list) {
+                    nodeMatch: function (node, match_list) {
                         for (var i = 0; i < match_list.length; i++) {
                             var m = match_list[i];
                             if (node.value === m.key) {
@@ -1256,31 +1478,31 @@ var formulaic = {
                         }
                         return -1;
                     },
-                    filterMatch: function(node, selected) {
+                    filterMatch: function (node, selected) {
                         return $.inArray(node.value, selected) > -1;
                     },
-                    nodeIndex : function(node) {
+                    nodeIndex: function (node) {
                         return node.display.toLowerCase();
                     },
-                    renderer: doaj.renderers.newSubjectBrowser({
+                    renderer: doaj.renderers.newSubjectBrowserRenderer({
                         title: "Subjects"
                     })
                 });
 
                 var e = edges.newEdge({
                     selector: containerSelector,
-                    manageUrl : false,
-                    components : [
+                    manageUrl: false,
+                    components: [
                         subjectBrowser
                     ],
-                    callbacks : {
-                        "edges:query-fail" : function() {
+                    callbacks: {
+                        "edges:query-fail": function () {
                             alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
                         },
-                        "edges:post-init" : function() {
+                        "edges:post-init": function () {
                             feather.replace();
                         },
-                        "edges:post-render" : function() {
+                        "edges:post-render": function () {
                             feather.replace();
                         }
                     }
@@ -1293,12 +1515,12 @@ var formulaic = {
                 edges.on(closeSelector, "click", this, "closeModal");
             };
 
-            this.openModal = function() {
+            this.openModal = function () {
                 var containerSelector = edges.css_id_selector(this.ns, "container");
                 $(containerSelector).show();
             };
 
-            this.closeModal = function() {
+            this.closeModal = function () {
                 var containerSelector = edges.css_id_selector(this.ns, "container");
                 $(containerSelector).hide();
                 this.input.trigger("change");
@@ -1306,10 +1528,10 @@ var formulaic = {
 
             this.init();
         },
-        newClickableOwner : function(params) {
+        newClickableOwner: function (params) {
             return edges.instantiate(formulaic.widgets.ClickableOwner, params)
         },
-        ClickableOwner : function(params) {
+        ClickableOwner: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
@@ -1317,7 +1539,7 @@ var formulaic = {
 
             this.link = false;
 
-            this.init = function() {
+            this.init = function () {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 edges.on(elements, "change.ClickableOwner", this, "updateOwner");
                 for (var i = 0; i < elements.length; i++) {
@@ -1325,7 +1547,7 @@ var formulaic = {
                 }
             };
 
-            this.updateOwner = function(element) {
+            this.updateOwner = function (element) {
                 var that = $(element);
                 var val = that.val();
 
@@ -1349,16 +1571,16 @@ var formulaic = {
 
             this.init();
         },
-        newClickToCopy : function(params) {
+        newClickToCopy: function (params) {
             return edges.instantiate(formulaic.widgets.ClickToCopy, params)
         },
-        ClickToCopy : function(params) {
+        ClickToCopy: function (params) {
             this.fieldDef = params.fieldDef;
-            this.init = function() {
+            this.init = function () {
                 var elements = $("#click-to-copy--" + this.fieldDef.name);
                 edges.on(elements, "click", this, "copy");
             };
-            this.copy = function(element) {
+            this.copy = function (element) {
                 let form = new doaj.af.BaseApplicationForm()
                 let value = form.determineFieldsValue(this.fieldDef.name)
                 let value_to_copy = form.convertValueToText(value);
@@ -1370,10 +1592,10 @@ var formulaic = {
             this.init();
 
         },
-        newTrimWhitespace : function(params) {
+        newTrimWhitespace: function (params) {
             return edges.instantiate(formulaic.widgets.TrimWhitespace, params)
         },
-        TrimWhitespace : function(params) {
+        TrimWhitespace: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
@@ -1391,7 +1613,7 @@ var formulaic = {
                 }
             };
 
-            this.trim = function(element) {
+            this.trim = function (element) {
                 var that = $(element);
                 var val = that.val();
                 var nv = val.trim();
@@ -1403,10 +1625,10 @@ var formulaic = {
             this.init();
         },
 
-        newClickableUrl : function(params) {
+        newClickableUrl: function (params) {
             return edges.instantiate(formulaic.widgets.ClickableUrl, params)
         },
-        ClickableUrl : function(params) {
+        ClickableUrl: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
@@ -1414,7 +1636,7 @@ var formulaic = {
 
             this.link = false;
 
-            this.init = function() {
+            this.init = function () {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
 
                 edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
@@ -1424,11 +1646,11 @@ var formulaic = {
                 }
             };
 
-            this.updateUrl = function(element) {
+            this.updateUrl = function (element) {
                 var that = $(element);
                 var val = that.val();
 
-                if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
+                if (val && (val.substring(0, 7) === "http://" || val.substring(0, 8) === "https://") && val.length > 10) {
                     if (this.link) {
                         this.link.attr("href", val);
                     } else {
@@ -1450,10 +1672,10 @@ var formulaic = {
             this.init();
         },
 
-        newFullContents : function(params) {
+        newFullContents: function (params) {
             return edges.instantiate(formulaic.widgets.FullContents, params)
         },
-        FullContents : function(params) {
+        FullContents: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
             this.args = params.args;
@@ -1462,7 +1684,7 @@ var formulaic = {
 
             this.container = false;
 
-            this.init = function() {
+            this.init = function () {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 edges.on(elements, "keyup.FullContents", this, "updateContents");
 
@@ -1471,7 +1693,7 @@ var formulaic = {
                 }
             };
 
-            this.updateContents = function(element) {
+            this.updateContents = function (element) {
                 var that = $(element);
                 var val = that.val();
 
@@ -1504,10 +1726,10 @@ var formulaic = {
             this.init();
         },
 
-        newNoteModal : function(params) {
+        newNoteModal: function (params) {
             return edges.instantiate(formulaic.widgets.NoteModal, params)
         },
-        NoteModal : function(params) {
+        NoteModal: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
@@ -1515,7 +1737,7 @@ var formulaic = {
 
             this.container = false;
 
-            this.init = function() {
+            this.init = function () {
                 var viewClass = edges.css_classes(this.ns, "view");
                 var closeClass = edges.css_classes(this.ns, "close");
                 let group = $("div[name='" + this.fieldDef["name"] + "__group']")
@@ -1573,13 +1795,13 @@ var formulaic = {
                 edges.on(closeSelector, "click", this, "closeModal");
             };
 
-            this.showModal = function(element) {
+            this.showModal = function (element) {
                 var that = $(element);
                 var modal = that.siblings(".modal");
                 modal.show();
             };
 
-            this.closeModal = function(element) {
+            this.closeModal = function (element) {
                 var that = $(element);
                 var modal = that.parents(".modal");
                 modal.hide();
@@ -1588,10 +1810,10 @@ var formulaic = {
             this.init();
         },
 
-        newInfiniteRepeat : function(params) {
+        newInfiniteRepeat: function (params) {
             return edges.instantiate(formulaic.widgets.InfiniteRepeat, params)
         },
-        InfiniteRepeat: function(params) {
+        InfiniteRepeat: function (params) {
             this.fieldDef = params.fieldDef;
             this.args = params.args;
 
@@ -1600,9 +1822,9 @@ var formulaic = {
             this.container = false;
             this.divs = false;
 
-            this.init = function() {
+            this.init = function () {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
-                for (var i = 0 ; i < this.divs.length; i++) {
+                for (var i = 0; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
                     div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove<span data-feather="x" aria-hidden="true"/></button>'));
                     feather.replace();
@@ -1644,7 +1866,7 @@ var formulaic = {
 
             };
 
-            this.addField = function() {
+            this.addField = function () {
                 var currentLargest = -1;
                 for (var i = 0; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
@@ -1660,7 +1882,7 @@ var formulaic = {
                 var frag = '<div name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
                 var jqt = $(frag);
                 var that = this;
-                jqt.find(":input").each(function() {
+                jqt.find(":input").each(function () {
                     var el = $(this);
                     var id = el.attr("id");
 
@@ -1701,7 +1923,7 @@ var formulaic = {
                 edges.on(this.removeFieldBtns, "click", this, "removeField");
             };
 
-            this.removeField = function(element) {
+            this.removeField = function (element) {
                 var container = $(element).parents("div[name='" + this.fieldDef["name"] + "__group']");
                 container.remove();
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
@@ -1710,10 +1932,10 @@ var formulaic = {
             this.init();
         },
 
-        newMultipleField : function(params) {
+        newMultipleField: function (params) {
             return edges.instantiate(formulaic.widgets.MultipleField, params)
         },
-        MultipleField: function(params) {
+        MultipleField: function (params) {
             this.fieldDef = params.fieldDef;
             this.max = this.fieldDef["repeatable"]["initial"] - 1;
 
@@ -1726,7 +1948,7 @@ var formulaic = {
                 feather.replace();
             };
 
-            this._setupIndividualSelect2 = function() {
+            this._setupIndividualSelect2 = function () {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
@@ -1786,7 +2008,7 @@ var formulaic = {
                 })
             };
 
-            this._setupIndividualField = function() {
+            this._setupIndividualField = function () {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let jqf = $(f);
@@ -1809,7 +2031,7 @@ var formulaic = {
 
                 this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
                 this.addFieldBtn.on("click", () => {
-                    let next_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                    let next_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1) + '"]').parent();
                     // TODO: why .show() does not work?
                     $(next_input).show();
                     this.count++;
@@ -1837,7 +2059,7 @@ var formulaic = {
 
                         this.count--;
                         $(this.fields[this.count + 1]).val("");
-                        let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                        let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1) + '"]').parent();
                         $(last_input).hide();
                         if (this.count === 0) {
                             $(this.remove_btns[0]).hide();
@@ -1849,19 +2071,19 @@ var formulaic = {
                 });
             };
 
-            this._setupRepeatingIndividual = function() {
+            this._setupRepeatingIndividual = function () {
                 let tag = this.fieldDef["input"] === "select" ? "select" : "input";
                 this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]');
                 this.count = 0;
 
-                if (tag === "select"){
+                if (tag === "select") {
                     this._setupIndividualSelect2();
                 } else {
                     this._setupIndividualField();
                 }
             };
 
-            this._setupRepeatingGroup = function() {
+            this._setupRepeatingGroup = function () {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 this.count = 0;
 
@@ -1918,28 +2140,26 @@ var formulaic = {
                             nextDiv = nextDiv.next();
                             let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
                             let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
-                            for (let j = 0; j < thisInputs.length; j++){
+                            for (let j = 0; j < thisInputs.length; j++) {
                                 let thisInput = $(thisInputs[j]);
                                 let nextInput = $(nextInputs[j]);
-                                if (thisInput.is("select")){
+                                if (thisInput.is("select")) {
                                     let data = $(nextInput).select2('data');
                                     if (data === null) {
                                         data = {id: i, text: ""};
                                     }
                                     $(thisInput).select2('data', {id: data.id, text: data.text});
 
-                                }
-                                else {
+                                } else {
                                     $(thisInputs[j]).val($(nextInputs[j]).val());
                                 }
                             }
                         }
                         this.count--;
                         $(this.divs[this.count + 1]).find("select, input[id^='" + this.fieldDef["name"] + "']").each((idx, inp) => {
-                            if ($(inp).is("select")){
+                            if ($(inp).is("select")) {
                                 $(inp).select2('data', {id: this.count + 1, text: ""});
-                            }
-                            else {
+                            } else {
                                 $(inp).val("");
                             }
                         });
@@ -1957,10 +2177,10 @@ var formulaic = {
             this.init()
         },
 
-        newSelect : function(params) {
+        newSelect: function (params) {
             return edges.instantiate(formulaic.widgets.Select, params);
         },
-        Select : function(params) {
+        Select: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
             this.args = params.args;
@@ -1968,7 +2188,7 @@ var formulaic = {
             this.ns = "formulaic-select";
             this.elements = false;
 
-            this.init = function() {
+            this.init = function () {
                 let allow_clear = this.args.allow_clear || false;
                 this.elements = $("select[name$='" + this.fieldDef.name + "']");
                 this.elements.select2({
@@ -1982,17 +2202,17 @@ var formulaic = {
             this.init();
         },
 
-        newTagList : function(params) {
+        newTagList: function (params) {
             return edges.instantiate(formulaic.widgets.TagList, params);
         },
-        TagList : function(params) {
+        TagList: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
             this.args = params.args;
 
             this.ns = "formulaic-taglist";
 
-            this.init = function() {
+            this.init = function () {
                 var stopWords = edges.getParam(this.args.stopWords, []);
 
                 var ajax = {
@@ -2049,17 +2269,17 @@ var formulaic = {
             this.init();
         },
 
-        newTagEntry : function(params) {
+        newTagEntry: function (params) {
             return edges.instantiate(formulaic.widgets.TagEntry, params);
         },
-        TagEntry : function(params) {
+        TagEntry: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
             this.args = params.args;
 
             this.ns = "formulaic-tagentry";
 
-            this.init = function() {
+            this.init = function () {
                 let selector = "[name='" + this.fieldDef.name + "']";
                 $(selector).select2({
                     minimumInputLength: 1,
@@ -2074,50 +2294,44 @@ var formulaic = {
         },
 
 
-
-        newLoadEditors: function(params) {
+        newLoadEditors: function (params) {
             return edges.instantiate(formulaic.widgets.LoadEditors, params);
         },
 
-        LoadEditors: function(params) {
+        LoadEditors: function (params) {
             this.fieldDef = params.fieldDef;
             this.params = params.args;
 
             this.groupField = false;
             this.editorField = false;
 
-            this.init = function() {
+            this.init = function () {
                 this.groupField = $("[name='" + this.fieldDef.name + "']");
                 this.editorField = $("[name='" + this.params.field + "']");
                 edges.on(this.groupField, "change", this, "updateEditors");
             };
 
-            this.updateEditors = function(element) {
+            this.updateEditors = function (element) {
                 var ed_group_name = $(element).val();
                 var ed_query_url = "/admin/dropdown/eg_associates";
 
                 // var ed_group_name = $("#s2id_editor_group").find('span').text();
                 var that = this;
                 $.ajax({
-                    type : "GET",
-                    data : {egn : ed_group_name},
+                    type: "GET",
+                    data: {egn: ed_group_name},
                     dataType: "json",
                     url: ed_query_url,
-                    success: function(resp)
-                    {
+                    success: function (resp) {
                         // Get the options for the drop-down from our ajax request
                         var assoc_options = [];
-                        if (resp != null)
-                        {
+                        if (resp != null) {
                             assoc_options = [["", "No editor assigned"]];
 
-                            for (var i=0; i<resp.length; i++)
-                            {
+                            for (var i = 0; i < resp.length; i++) {
                                 assoc_options = assoc_options.concat([[resp[i], resp[i]]]);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             assoc_options = [["", ""]];
                         }
 
@@ -2125,7 +2339,7 @@ var formulaic = {
                         // var ed_field = $("#editor");
                         that.editorField.empty();
 
-                        for (var j=0; j < assoc_options.length; j++) {
+                        for (var j = 0; j < assoc_options.length; j++) {
                             that.editorField.append(
                                 $("<option></option>").attr("value", assoc_options[j][0]).text(assoc_options[j][1])
                             );
@@ -2137,15 +2351,15 @@ var formulaic = {
             this.init();
         },
 
-        newAutocomplete: function(params){
+        newAutocomplete: function (params) {
             return edges.instantiate(formulaic.widgets.Autocomplete, params);
         },
 
-        Autocomplete: function(params){
+        Autocomplete: function (params) {
             this.fieldDef = params.fieldDef;
             this.params = params.args;
 
-            this.init = function() {
+            this.init = function () {
                 let doc_type = this.params.type || "journal";
                 let doc_field = this.params.field;
                 let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;
@@ -2161,11 +2375,13 @@ var formulaic = {
                         };
                     },
                     results: function (data, page) {
-                        return { results: data["suggestions"] };
+                        return {results: data["suggestions"]};
                     }
                 };
 
-                var csc = function(term) {return {"id":term, "text": term};};
+                var csc = function (term) {
+                    return {"id": term, "text": term};
+                };
 
                 var initSel = function (element, callback) {
                     var data = {id: element.val(), text: element.val()};
@@ -2182,7 +2398,7 @@ var formulaic = {
                         minimumInputLength: mininput,
                         ajax: ajax,
                         createSearchChoice: csc,
-                        initSelection : initSel,
+                        initSelection: initSel,
                         allowClear: allow_clear,
                         width: 'resolve'
                     });
@@ -2191,7 +2407,7 @@ var formulaic = {
                     $(selector).select2({
                         minimumInputLength: mininput,
                         ajax: ajax,
-                        initSelection : initSel,
+                        initSelection: initSel,
                         allowClear: allow_clear,
                         width: 'resolve'
                     });
@@ -2202,10 +2418,10 @@ var formulaic = {
 
             this.init()
         },
-        newIssnLink : function(params) {
+        newIssnLink: function (params) {
             return edges.instantiate(formulaic.widgets.IssnLink, params)
         },
-        IssnLink : function(params) {
+        IssnLink: function (params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
             this.issn = params.issn;
@@ -2215,7 +2431,7 @@ var formulaic = {
             this.link = false;
             this.url = "https://portal.issn.org/resource/ISSN/";
 
-            this.init = function() {
+            this.init = function () {
                 var elements = this.form.controlSelect.input(
                     {name: this.fieldDef.name});
                 edges.on(elements, "keyup.IssnLink", this, "updateUrl");
@@ -2225,7 +2441,7 @@ var formulaic = {
                 }
             };
 
-            this.updateUrl = function(element) {
+            this.updateUrl = function (element) {
                 var that = $(element);
                 var val = that.val();
                 var id = edges.css_id(this.ns, this.fieldDef.name);
