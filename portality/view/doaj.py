@@ -65,8 +65,9 @@ def dismiss_site_note():
     return resp
 
 
-@blueprint.route("/news")
+@blueprint.route("/news/")
 def news():
+    # NOTE: On live this is also handled by the nginx redirect map, but this will strip those with parameters supplied
     return redirect("https://blog.doaj.org")
 
 
