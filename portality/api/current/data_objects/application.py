@@ -178,7 +178,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         # check they are not the same
         if pissn is not None and eissn is not None:
             if pissn == eissn:
-                raise seamless.SeamlessException("P-ISSN and E-ISSN should be different")
+                raise seamless.SeamlessException("Print ISSN and Online ISSN should be different")
 
         # A link to the journal homepage is required
         #
