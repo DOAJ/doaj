@@ -21,7 +21,6 @@ from portality.lib.dates import FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
 from portality.tasks.redis_huey import main_queue, long_running
 from portality.util import url_for
-from view.admin import index
 
 
 def patch_config(inst, properties):

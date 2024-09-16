@@ -10,7 +10,6 @@ from lxml import etree
 from doajtest.fixtures import ArticleFixtureFactory
 from doajtest.fixtures import JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
-from models import ArticleTombstone
 from portality import models
 from portality.app import app
 from portality.lib import dates
@@ -54,7 +53,6 @@ class TestClient(DoajTestCase):
         j_private = models.Journal(**journal_sources[1])
         j_private.set_in_doaj(False)
         j_private.save(blocking=True)
-        deleted_id = j_private.id
 
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
@@ -342,7 +340,6 @@ class TestClient(DoajTestCase):
         stone.set_id(stone.makeid())
         stone.bibjson().add_subject("LCC", "Economic theory. Demography", "AB22")
         stone.save(blocking=True)
-        stone_id = stone.id
 
         models.Article.blockall([(a_private.id, a_private.last_updated), (a_public.id, a_public.last_updated)])
         models.ArticleTombstone.blockall([(stone.id, stone.last_updated)])
@@ -355,7 +352,7 @@ class TestClient(DoajTestCase):
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
 
-                # Check we only have two articles returned
+                # Check we only have three articles returned
                 r = records[0].xpath('//oai:record', namespaces=self.oai_ns)
                 assert len(r) == 3
 
