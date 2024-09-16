@@ -10,12 +10,14 @@ from lxml import etree
 from doajtest.fixtures import ArticleFixtureFactory
 from doajtest.fixtures import JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
+from models import ArticleTombstone
 from portality import models
 from portality.app import app
 from portality.lib import dates
 from portality.lib.dates import FMT_DATE_STD
 from portality.view.oaipmh import ResumptionTokenException, decode_resumption_token
 
+from doajtest.helpers import with_es
 
 class TestClient(DoajTestCase):
     @classmethod
@@ -336,7 +338,14 @@ class TestClient(DoajTestCase):
         a_public.save(blocking=True)
         public_id = a_public.id
 
-        time.sleep(1)
+        stone = models.ArticleTombstone()
+        stone.set_id(stone.makeid())
+        stone.bibjson().add_subject("LCC", "Economic theory. Demography", "AB22")
+        stone.save(blocking=True)
+        stone_id = stone.id
+
+        models.Article.blockall([(a_private.id, a_private.last_updated), (a_public.id, a_public.last_updated)])
+        models.ArticleTombstone.blockall([(stone.id, stone.last_updated)])
 
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
@@ -348,16 +357,16 @@ class TestClient(DoajTestCase):
 
                 # Check we only have two articles returned
                 r = records[0].xpath('//oai:record', namespaces=self.oai_ns)
-                assert len(r) == 2
+                assert len(r) == 3
 
-                seen_deleted = False
+                seen_deleted = 0
                 seen_public = False
                 records = records[0].getchildren()
                 for r in records:
                     header = r.xpath('oai:header', namespaces=self.oai_ns)[0]
                     status = header.get("status")
                     if status == "deleted":
-                        seen_deleted = True
+                        seen_deleted += 1
                     else:
                         seen_public = True
                         # Check we have the correct article
@@ -369,7 +378,7 @@ class TestClient(DoajTestCase):
                         assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[
                                    0].text == a_public.bibjson().title
 
-                assert seen_deleted
+                assert seen_deleted == 2
                 assert seen_public
 
                 resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier=' + public_id)
@@ -437,7 +446,8 @@ class TestClient(DoajTestCase):
                 # Check we have the correct journal
                 assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == j_public.bibjson().title
 
-
+    @with_es(indices=[models.Article.__type__, models.ArticleTombstone.__type__],
+             warm_mappings=[models.Article.__type__, models.ArticleTombstone.__type__])
     def test_11_oai_dc_attr(self):
         """test if the OAI-PMH article feed returns record with correct attributes in oai_dc element"""
         article_source = ArticleFixtureFactory.make_article_source(eissn='1234-1234', pissn='5678-5678,', in_doaj=True)

@@ -490,10 +490,12 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
 CROSSWALKS = {
     "oai_dc": {
         "article": OAI_DC_Article,
-        "journal": OAI_DC_Journal
+        "journal": OAI_DC_Journal,
+        "article,article_tombstone": OAI_DC_Article
     },
     'oai_doaj': {
-        "article": OAI_DOAJ_Article
+        "article": OAI_DOAJ_Article,
+        "article,article_tombstone": OAI_DOAJ_Article
     }
 }
 

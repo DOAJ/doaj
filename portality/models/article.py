@@ -95,18 +95,25 @@ class Article(DomainObject):
         cls.delete_selected(query=q.query(), snapshot=snapshot)
 
     @classmethod
-    def delete_selected(cls, query=None, owner=None, snapshot=True):
+    def delete_selected(cls, query=None, owner=None, snapshot=True, tombstone=True):
         if owner is not None:
             from portality.models import Journal
             issns = Journal.issns_by_owner(owner)
             q = ArticleQuery(issns=issns)
             query = q.query()
 
-        if snapshot:
+        if snapshot or tombstone:
             articles = cls.iterate(query, page_size=1000)
             for article in articles:
-                article.snapshot()
+                if snapshot:
+                    article.snapshot()
+                if tombstone:
+                    article._tombstone()
         return cls.delete_by_query(query)
+
+    def delete(self):
+        self._tombstone()
+        super(Article, self).delete()
 
     def bibjson(self, **kwargs):
         if "bibjson" not in self.data:
@@ -141,6 +148,18 @@ class Article(DomainObject):
         hist = ArticleHistory(**snap)
         hist.save()
         return hist.id
+
+    def _tombstone(self):
+        stone = ArticleTombstone()
+        stone.set_id(self.id)
+        sbj = stone.bibjson()
+
+        subs = self.bibjson().subjects()
+        for s in subs:
+            sbj.add_subject(s.get("scheme"), s.get("term"), s.get("code"))
+
+        stone.save()
+        return stone
 
     def add_history(self, bibjson, date=None):
         """Deprecated"""
@@ -564,6 +583,23 @@ class Article(DomainObject):
             return NoValidOwnerException
 
         return owners[0]
+
+
+class ArticleTombstone(Article):
+    __type__ = "article_tombstone"
+
+    def snapshot(self):
+        return None
+
+    def is_in_doaj(self):
+        return False
+
+    def prep(self):
+        self.data['last_updated'] = dates.now_str()
+
+    def save(self, *args, **kwargs):
+        return super(ArticleTombstone, self).save(*args, **kwargs)
+
 
 class ArticleBibJSON(GenericBibJSON):
 
