@@ -271,14 +271,14 @@
             "in": "path"
         }, 
         {
-            "description": "Which page of the results you wish to see.", 
+            "description": "Which page of the results you want to see.", 
             "required": false, 
             "type": "integer", 
             "name": "page", 
             "in": "query"
         }, 
         {
-            "description": "How many results per page you wish to see, the default is 10.",
+            "description": "How many results per page you want to see. The default is 10.",
             "required": false, 
             "type": "integer", 
             "name": "pageSize", 
