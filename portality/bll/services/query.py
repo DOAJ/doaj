@@ -269,12 +269,17 @@ class Query(object):
             try:
                 return int(self.q["size"])
             except ValueError:
-                return 10
+                app.logger.warn("Invalid size parameter in query: [{x}], "
+                                "expected integer value".format(x=self.q["size"]))
         return 10
 
     def from_result(self):
         if "from" in self.q:
-            return int(self.q["from"])
+            try:
+                return int(self.q["from"])
+            except ValueError:
+                app.logger.warn("Invalid from parameter in query: [{x}], "
+                                "expected integer value".format(x=self.q["from"]))
         return 0
 
     def as_dict(self):

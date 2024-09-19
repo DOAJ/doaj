@@ -3,7 +3,7 @@ import time
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
     BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_history_dir
+from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
 from portality.constants import BgjobOutcomeStatus
@@ -944,6 +944,33 @@ class TestModels(DoajTestCase):
         assert len(future) == 2
         assert future[0].bibjson().get_one_identifier(bj.E_ISSN) == "2222-2222"
         assert future[1].bibjson().get_one_identifier(bj.E_ISSN) == "3333-3333"
+
+
+    def test_journal__recursive_future_continuations(self):
+        journal_a, journal_b = [models.Journal(**j) for j in
+                                JournalFixtureFactory.make_many_journal_sources(count=2, in_doaj=True)]
+
+        journal_a.bibjson().is_replaced_by = journal_b.bibjson().issns()[0]
+        journal_b.bibjson().is_replaced_by = journal_a.bibjson().issns()[0]
+
+        save_all_block_last([journal_a, journal_b])
+
+        assert {j.id for j in journal_a.get_future_continuations()} == {journal_b.id}
+
+
+    def test_journal__recursive_pass_continuations(self):
+        journal_a, journal_b, journal_c = [
+            models.Journal(**j)
+            for j in JournalFixtureFactory.make_many_journal_sources(count=3, in_doaj=True)]
+
+        journal_a.bibjson().replaces = journal_b.bibjson().issns()[0]
+        journal_b.bibjson().replaces = journal_c.bibjson().issns()[0]
+        journal_c.bibjson().replaces = journal_a.bibjson().issns()[0]
+
+        save_all_block_last([journal_a, journal_b, journal_c])
+
+        assert {j.id for j in journal_b.get_past_continuations()} == {journal_a.id, journal_c.id}
+
 
     def test_16_article_bibjson(self):
         source = BibJSONFixtureFactory.article_bibjson()
