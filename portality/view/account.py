@@ -318,14 +318,14 @@ class RegisterForm(RedirectForm):
     roles = StringField('Roles')
     # These are honeypot (bot-trap) fields
     email = StringField('email')
-    hptimer = DecimalField('hptimer')
+    hptimer = DecimalField('hptimer', [validators.Optional()])
 
     def is_bot(self):
         """
         Checks honeypot fields and determines whether the form was submitted by a bot
         :return: True, if bot suspected; False, if human
         """
-        return (self.email.data != "" or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000))
+        return self.email.data != "" or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
@@ -339,7 +339,16 @@ def register():
 
     form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
 
-    if request.method == 'POST' and not form.is_bot():
+    if request.method == 'POST':
+
+        if not current_user.is_authenticated and form.is_bot():
+            print(current_user.is_authenticated)
+            print(form.is_bot())
+            if app.config.get('DEBUG', True):
+                flash(f"Debug mode - Values submitted: bot trap field = '{form.email.data}'; anti-bot timer: '{form.hptimer.data}'")
+            else:
+                flash(Messages.ARE_YOU_A_HUMAN, "error")
+            return render_template('account/register.html', form=form)
 
         if form.validate():
             account = Account.make_account(email=form.sender_email.data, username=form.identifier.data, name=form.name.data,
@@ -364,8 +373,5 @@ def register():
             return redirect(url_for('doaj.home'))
         else:
             flash('Please correct the errors', 'error')
-
-    if request.method == 'POST' and form.is_bot():
-        flash(Messages.ARE_YOU_A_HUMAN, "error")
 
     return render_template('account/register.html', form=form)
