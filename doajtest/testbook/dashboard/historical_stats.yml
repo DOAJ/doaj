@@ -3,16 +3,13 @@ testset: Historical Statistics
 tests:
   - title: Historical Statistics Display - Managing Editor with 3 groups
     context:
-      role: managing editor/admin
+      role: admin
       testdrive: statistics
     steps:
       - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
       - step: Log in with provided managing_editor credentials.
         results:
           - User dashboard is displayed.
-      - step: Verify the motivational banner at the top of the dashboard (green) and check number of finished applications.
-        results:
-          - The motivational banner is GREEN and shows the correct sum of applications finished in all groups.
       - step: Verify historical statistics in the Activity section at the bottom.
         results:
           - Three groups are displayed.
@@ -23,11 +20,11 @@ tests:
       - step: (Optional) Click the link at the bottom of the testdrive page to free resources after finishing this test session.
   - title: Historical Statistics Display - Editor with 2 groups
     context:
-      role: editor_0
+      role: editor
       testdrive: statistics
     steps:
       - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
-      - step: Log in with provided editor_0 credentials.
+      - step: Log in with provided editor_1 credentials.
         results:
           - User dashboard is displayed.
       - step: Verify the motivational banner at the top of the dashboard (green) and check number of finished applications.
@@ -43,11 +40,11 @@ tests:
       - step: (Optional) Click the link at the bottom of the testdrive page to free resources after finishing this test session.
   - title: Historical Statistics Display - Editor with 1 group
     context:
-      role: editor_1
+      role: editor
       testdrive: statistics
     steps:
       - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
-      - step: Log in with provided editor_1 credentials.
+      - step: Log in with provided editor_2 credentials.
         results:
           - User dashboard is displayed.
       - step: Verify the motivational banner at the top of the dashboard (green) and check number of finished applications.
@@ -67,7 +64,7 @@ tests:
       testdrive: statistics
     steps:
       - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
-      - step: Log in with provided associate_editor_0 credentials.
+      - step: Log in with provided associate_editor_1 credentials.
         results:
           - User dashboard is displayed.
       - step: Verify the motivational banner at the top of the dashboard (grey).
@@ -78,13 +75,13 @@ tests:
           - No statistics are displayed in the Activity section.
       - step: Log out.
       - step:
-  - title: Historical Statistics Display - Associate Editor 1
+  - title: Historical Statistics Display - Associate Editor 2
     context:
       role: associate editor
       testdrive: statistics
     steps:
       - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
-      - step: Log in with provided associate_editor_1 credentials.
+      - step: Log in with provided associate_editor_2 credentials.
         results:
           - User dashboard is displayed.
       - step: Verify the motivational banner at the top of the dashboard (green).

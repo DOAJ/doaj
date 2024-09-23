@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.8.1"
+DOAJ_VERSION = "6.8.4"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -96,14 +96,8 @@ ELASTIC_APM = {
 ###########################################
 # Event handler
 
-# use this to queue events asynchronously through kafka
-EVENT_SEND_FUNCTION = "portality.events.kafka_producer.send_event"
-# use this one to bypass kafka and process events immediately/synchronously
-# EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
-
-KAFKA_BROKER = "kafka://localhost:9092"
-KAFKA_EVENTS_TOPIC = "events"
-KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
+# Process events immediately/synchronously
+EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
 
 ###########################################
 # Read Only Mode

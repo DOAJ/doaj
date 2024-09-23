@@ -19,7 +19,7 @@
                             <a href="#" data-group-id="{{ eg.id }}"
                                aria-selected="{% if loop.first %}true{% else %}false{% endif %}"
                                class="label js-group-tab" title="Toggle to {{ eg.name }}’s activity data">{{ eg.name }}
-                                ({{ person_of_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
+                                ({{ person_of_assignments[eg.name] | default(0) }}<span class="sr-only"> applications</span>)</a>
                         </li>
                     {% endfor %}
                 {% endif %}
