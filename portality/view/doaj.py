@@ -39,11 +39,17 @@ def login():
 def cookie_consent():
     cont = request.values.get("continue")
     if cont is not None:
-        resp = redirect(cont)
+        # Only permit relative path redirects, to prevent phishing by supplying a full URI to a different domain
+        parsed_redirect = urllib.parse.urlparse(cont)
+        if parsed_redirect.netloc != '':
+            abort(400)
+        else:
+            resp = redirect(cont)
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
+    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"),
+                    Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
     return resp
 
 
@@ -59,8 +65,9 @@ def dismiss_site_note():
     return resp
 
 
-@blueprint.route("/news")
+@blueprint.route("/news/")
 def news():
+    # NOTE: On live this is also handled by the nginx redirect map, but this will strip those with parameters supplied
     return redirect("https://blog.doaj.org")
 
 
@@ -145,7 +152,7 @@ def search_post():
 
 #############################################
 
-# FIXME: this should really live somewhere else more appropirate to who can access it
+# FIXME: this should really live somewhere else more appropriate to who can access it
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
 @login_required
 @ssl_required
@@ -286,6 +293,7 @@ def find_toc_journal_by_identifier(identifier):
 def is_issn_by_identifier(identifier):
     return len(identifier) == 9
 
+
 def find_correct_redirect_identifier(identifier, bibjson) -> str:
     """
     return None if identifier is correct and no redirect is needed
@@ -345,6 +353,7 @@ def toc(identifier=None):
 def toc_articles_legacy(identifier=None):
     return redirect(url_for('doaj.toc_articles', identifier=identifier, volume=1, issue=1), 301)
 
+
 @blueprint.route("/toc/<identifier>/articles")
 def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
@@ -354,7 +363,6 @@ def toc_articles(identifier=None):
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
         return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson )
-
 
 
 #~~->Article:Page~~
@@ -508,7 +516,8 @@ def oai_pmh():
 
 @blueprint.route('/docs/api/')
 def docs():
-    return redirect(url_for('api_v3.docs'))
+    major_version = app.config.get("CURRENT_API_MAJOR_VERSION")
+    return redirect(url_for('api_v' + major_version + '.docs'))
 
 
 @blueprint.route("/docs/xml/")
@@ -544,6 +553,7 @@ def about():
 def at_20():
     return render_template("layouts/static_page.html", page_frag="/about/at-20.html")
 
+
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
     return render_template("layouts/static_page.html", page_frag="/about/ambassadors.html")
@@ -552,6 +562,11 @@ def ambassadors():
 @blueprint.route("/about/advisory-board-council/")
 def abc():
     return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
+
+
+@blueprint.route("/about/editorial-policy-advisory-group/")
+def epag():
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-policy-advisory-group.html")
 
 
 @blueprint.route("/about/volunteers/")

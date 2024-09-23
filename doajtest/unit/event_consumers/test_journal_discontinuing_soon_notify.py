@@ -38,19 +38,19 @@ class TestJournalDiscontinuingSoonNotify(DoajTestCase):
         models.Application.pull = self.pull_application
         models.EditorGroup.pull_by_key = self.pull_by_key
 
-    def test_consumes(self):
+    def test_should_consume(self):
 
         event = models.Event("test:event", context={"data" : {"1234"}})
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event("test:event", context={"data": {}})
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON)
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON, context = {"journal": {"1234"}, "discontinue_date": "2002-22-02"})
-        assert JournalDiscontinuingSoonNotify.consumes(event)
+        assert JournalDiscontinuingSoonNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

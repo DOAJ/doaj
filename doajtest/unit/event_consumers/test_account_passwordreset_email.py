@@ -31,7 +31,7 @@ class TestAccountPasswordResetEmail(DoajTestCase):
         self.info_stream.truncate(0)
         self.app_test.logger.removeHandler(self.read_info)
 
-    def test_consumes(self):
+    def test_should_consume(self):
         source = AccountFixtureFactory.make_publisher_source()
         acc = models.Account(**source)
         acc.clear_password()
@@ -39,13 +39,13 @@ class TestAccountPasswordResetEmail(DoajTestCase):
         acc.set_reset_token(reset_token, 86400)
 
         event = models.Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, context={"account" : acc.data})
-        assert AccountPasswordResetEmail.consumes(event)
+        assert AccountPasswordResetEmail.should_consume(event)
 
         event = models.Event(constants.EVENT_ACCOUNT_PASSWORD_RESET)
-        assert not AccountPasswordResetEmail.consumes(event)
+        assert not AccountPasswordResetEmail.should_consume(event)
 
         event = models.Event("test:event", context={"application" : "2345"})
-        assert not AccountPasswordResetEmail.consumes(event)
+        assert not AccountPasswordResetEmail.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")
