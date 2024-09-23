@@ -410,7 +410,7 @@ $.extend(true, doaj, {
                 nodeIndex: function (node) {
                     return node.display.toLowerCase();
                 },
-                renderer: doaj.renderers.newSubjectBrowser({
+                renderer: doaj.renderers.newSubjectBrowserRenderer({
                     title: "Subjects",
                     open: true,
                     hideEmpty: hideEmpty,
@@ -597,11 +597,10 @@ $.extend(true, doaj, {
                 }
             }
         },
-        // SubjectBrowserRenderer!
-        newSubjectBrowser: function (params) {
-            return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
+        newSubjectBrowserRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SubjectBrowserRenderer, params, edges.newRenderer);
         },
-        SubjectBrowser: function (params) {
+        SubjectBrowserRenderer: function (params) {
             this.title = edges.getParam(params.title, "");
 
             this.selectMode = edges.getParam(params.selectMode, "multiple");

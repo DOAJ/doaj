@@ -932,7 +932,7 @@ var formulaic = {
                     nodeIndex: function (node) {
                         return node.display.toLowerCase();
                     },
-                    renderer: doaj.renderers.newSubjectBrowser({
+                    renderer: doaj.renderers.newSubjectBrowserRenderer({
                         title: "Subjects",
                         open: true,
                         showCounts: false
