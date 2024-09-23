@@ -597,7 +597,7 @@ $.extend(true, doaj, {
                 }
             }
         },
-
+        // SubjectBrowserRenderer!
         newSubjectBrowser: function (params) {
             return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
         },
@@ -907,8 +907,6 @@ $.extend(true, doaj, {
                 term = term.toLowerCase();
 
                 function entryMatch(entry) {
-                    console.log("entryMatch")
-                    console.log(entry)
                     if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
                         return false;
                     }
