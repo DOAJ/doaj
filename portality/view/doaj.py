@@ -67,8 +67,9 @@ def dismiss_site_note():
     return resp
 
 
-@blueprint.route("/news")
+@blueprint.route("/news/")
 def news():
+    # NOTE: On live this is also handled by the nginx redirect map, but this will strip those with parameters supplied
     return redirect("https://blog.doaj.org")
 
 
@@ -502,6 +503,7 @@ def about():
 def at_20():
     return render_template(templates.STATIC_PAGE, page_frag="/about/at-20.html")
 
+
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
     return render_template(templates.STATIC_PAGE, page_frag="/about/ambassadors.html")
@@ -510,6 +512,11 @@ def ambassadors():
 @blueprint.route("/about/advisory-board-council/")
 def abc():
     return render_template(templates.STATIC_PAGE, page_frag="/about/advisory-board-council.html")
+
+
+@blueprint.route("/about/editorial-policy-advisory-group/")
+def epag():
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-policy-advisory-group.html")
 
 
 @blueprint.route("/about/volunteers/")
