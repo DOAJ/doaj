@@ -1,7 +1,5 @@
 from portality import models
-from portality.core import es_connection
 from portality.util import ipt_prefix
-import esprit
 import csv
 
 ALL = {
@@ -30,8 +28,7 @@ if __name__ == "__main__":
         writer = csv.writer(f)
         writer.writerow(["ID", "Article Title", "PISSN", "EISSN"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=ALL, page_size=100, keepalive='5m'):
-            article = models.Article(_source=j)
+        for article in models.Article.scroll(q=ALL, page_size=100, keepalive='5m'):
             bibjson = article.bibjson()
             pissn = bibjson.get_one_identifier("pissn")
             eissn = bibjson.get_one_identifier("eissn")
