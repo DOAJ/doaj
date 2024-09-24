@@ -26,7 +26,6 @@ setup(
         "Flask-Mail==0.9.1",
         "Flask-WTF==0.14.2",
         "freezegun==0.3.12",
-        "GitPython==2.1.14",
         "gunicorn==19.9.0",
         "huey==1.10.5",  # upgrading to 1.11 / 2.x requires work
         "libsass==0.20.1",
