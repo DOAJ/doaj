@@ -37,7 +37,7 @@ setup(
         "mdx_truly_sane_lists==1.3",
         "numpy<2",    # Elasticsearch==7.13.0 requires numpy<2, and we can't upgrade our ES library while we are on OSS
         "openpyxl~=3.1.5",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
-        "parameterized==0.9.0",
+        "parameterized~=0.9.0",
         "psutil==5.9.8",
         "pycountry==24.6.1",  # TODO: pycountry can get behind debian lists, so we may flip back to our fork later
         #"pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
@@ -62,17 +62,17 @@ setup(
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
-        "test": ["pytest~=7.3.1",
-                 "pytest-cov~=4.0.0",
-                 "pytest-xdist~=3.2.1",
-                 "selenium==4.12.0",
-                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
+        "test": ["pytest~=8.3.3",
+                 "pytest-cov~=5.0.0",
+                 "pytest-xdist~=3.6.1",
+                 "selenium==4.25.0",
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@c96e6035244e29d4709fff23103405c17cd04a13#egg=combinatrix",
                  "bs4==0.0.2",   # beautifulsoup for HTML parsing
                  'openapi-spec-validator~=0.5',
                  ],
 
         # additional test dependencies for the test-extras target
-        "test-ex" : ["pytest-randomly", ],
+        "test-ex": ["pytest-randomly", ],
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@060e256a3e397518ed02111debf1605a9e05f34c#egg=featuremap",
             "testbook @ git+https://github.com/CottageLabs/testbook.git@edede0987fe2f9fe806bbc74b635f415ab645166#egg=testbook"]

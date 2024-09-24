@@ -212,7 +212,7 @@ def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
     :return: the string formatted datetime
     """
-    local = tzlocal.get_localzone()
+    local = pytz.timezone(str(tzlocal.get_localzone()))
     ld = local.localize(stamp)
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
