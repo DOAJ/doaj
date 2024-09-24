@@ -23,7 +23,7 @@ class ArticlesBulkApi(Api):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(
             {
-                "description": "<div class=\"search-query-docs\">A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed, you have to supply the full JSON.</div>",
+                "description": "<div class=\"search-query-docs\">A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed; you have to supply the full JSON.</div>",
                 "required": True,
                 "schema": {"type": "string"},
                 "name": "article_json",
@@ -70,7 +70,7 @@ class ArticlesBulkApi(Api):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(
             {
-                "description": "<div class=\"search-query-docs\"><p>A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed, you have to supply the full JSON.</p><p>This request is asynchronous, the response will contain an upload_id, you can use this id to query the task status.</p></div>",
+                "description": "<div class=\"search-query-docs\"><p>A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed; you have to supply the full JSON.</p><p>This request is asynchronous; the response will contain an upload_id. You can use this id to query the task status.</p></div>",
                 "required": True,
                 "schema": {"type": "string"},
                 "name": "article_json",
@@ -85,12 +85,12 @@ class ArticlesBulkApi(Api):
                     "msg": {"type": "string", },
                     "upload_id": {"type": "string",
                                   "description": "The upload id of the task, "
-                                                 "User can use this id to check the bulk upload status."},
+                                                 "User can use this ID to check the bulk upload status."},
                     "status": {"type": "string", "description": "Link to the status URL for the task"}
                 },
                 "type": "object"
             },
-            "description": "Resources are being created asynchronously, response contains the task IDs "
+            "description": "Resources are being created asynchronously; response contains the task IDs "
         }
         template['responses']['400'] = cls.R400
         return cls._build_swag_response(template)
@@ -128,7 +128,7 @@ class ArticlesBulkApi(Api):
                     "status": {
                         "type": "string",
                         "description": "The status of the task",
-                        "enum": ["pending", "validated", "falied", "processed", "processed_partial"]
+                        "enum": ["pending", "validated", "failed", "processed", "processed_partial"]
                     },
                     "results": {
                         'type': 'object',

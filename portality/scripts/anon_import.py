@@ -13,27 +13,12 @@ or for a test server:
 DOAJENV=test python portality/scripts/anon_import.py data_import_settings/test_server.json
 """
 
-import esprit, json, gzip, shutil, elasticsearch
+import json, gzip, shutil, elasticsearch
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
-from portality.util import ipt_prefix
+from portality.dao import DomainObject
+from portality import models
 from doajtest.helpers import patch_config
-
-
-# FIXME: monkey patch for esprit.bulk (but esprit's chunking is handy)
-class Resp(object):
-    def __init__(self, **kwargs):
-        [setattr(self, k, v) for k, v in kwargs.items()]
-
-
-def es_bulk(connection, data, type=""):
-    try:
-        if not isinstance(data, str):
-            data = data.read()
-        res = connection.bulk(data, type, timeout='60s', request_timeout=60)
-        return Resp(status_code=200, json=res)
-    except Exception as e:
-        return Resp(status_code=500, text=str(e))
 
 
 def do_import(config):
@@ -80,35 +65,41 @@ def do_import(config):
         limit = cfg.get("limit", -1)
         limit = None if limit == -1 else limit
 
-        n = 1
-        while True:
-            filename = import_type + ".bulk" + "." + str(n)
-            handle = mainStore.get(container, filename)
-            if handle is None:
-                break
-            tempStore.store(container, filename + ".gz", source_stream=handle)
-            print(("Retrieved {x} from storage".format(x=filename)))
-            handle.close()
+        dao = models.lookup_models_by_type(import_type, DomainObject)
+        if dao:
 
-            print(("Unzipping {x} in temporary store".format(x=filename)))
-            compressed_file = tempStore.path(container, filename + ".gz")
-            uncompressed_file = tempStore.path(container, filename, must_exist=False)
-            with gzip.open(compressed_file, "rb") as f_in, open(uncompressed_file, "wb") as f_out:
-                shutil.copyfileobj(f_in, f_out)
-            tempStore.delete_file(container, filename + ".gz")
+            n = 1
+            while True:
+                filename = import_type + ".bulk" + "." + str(n)
+                handle = mainStore.get(container, filename)
+                if handle is None:
+                    break
+                tempStore.store(container, filename + ".gz", source_stream=handle)
+                print(("Retrieved {x} from storage".format(x=filename)))
+                handle.close()
 
-            print(("Importing from {x}".format(x=filename)))
-            imported_count = esprit.tasks.bulk_load(es_connection, ipt_prefix(import_type), uncompressed_file,
-                                                    limit=limit,
-                                                    max_content_length=config.get("max_content_length", 100000000))
-            tempStore.delete_file(container, filename)
+                print(("Unzipping {x} in temporary store".format(x=filename)))
+                compressed_file = tempStore.path(container, filename + ".gz")
+                uncompressed_file = tempStore.path(container, filename, must_exist=False)
+                with gzip.open(compressed_file, "rb") as f_in, open(uncompressed_file, "wb") as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+                tempStore.delete_file(container, filename + ".gz")
 
-            if limit is not None and imported_count != -1:
-                limit -= imported_count
-            if limit is not None and limit <= 0:
-                break
+                print(("Importing from {x}".format(x=filename)))
 
-            n += 1
+                imported_count = dao.bulk_load_from_file(uncompressed_file,
+                                                        limit=limit, max_content_length=config.get("max_content_length", 100000000))
+                tempStore.delete_file(container, filename)
+
+                if limit is not None and imported_count != -1:
+                    limit -= imported_count
+                if limit is not None and limit <= 0:
+                    break
+
+                n += 1
+
+            else:
+                print(("dao class not available for the import {x}. Skipping import {x}".format(x=import_type)))
 
     # once we've finished importing, clean up by deleting the entire temporary container
     tempStore.delete_container(container)
@@ -130,10 +121,6 @@ if __name__ == '__main__':
     with open(args.config, "r", encoding="utf-8") as f:
         cf = json.loads(f.read())
 
-    # FIXME: monkey patch for esprit raw_bulk
-    unwanted_primate = esprit.raw.raw_bulk
-    esprit.raw.raw_bulk = es_bulk
-
     if args.storeimpl == 'local':
         print("\n**\nImporting from Local storage")
         original_configs = patch_config(app, {
@@ -146,5 +133,4 @@ if __name__ == '__main__':
         })
 
     do_import(cf)
-    esprit.raw.raw_bulk = unwanted_primate
     patch_config(app, original_configs)

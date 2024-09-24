@@ -193,7 +193,8 @@ ass_ed:
   city: York
   country: United Kingdom
   language: English
-
+  photo: "Ben Catt.jpg"
+  
 - name: Busro Busro
   area: Humanities
   year_since:
