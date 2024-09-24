@@ -46,6 +46,7 @@ class TestAdminEditMetadata(DoajTestCase):
             login_request = helpers.login(t_client, "admin", "password123")
             resp = t_client.get(url_for('admin.article_page', article_id=self.a.id), follow_redirects=False)
             assert resp.status_code == 200, "expected: 200, received: {}".format(resp.status)
+            helpers.logout(t_client)
 
         # user not logged in
         with self._make_and_push_test_context():
