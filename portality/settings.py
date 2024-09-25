@@ -39,7 +39,7 @@ DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by defaul
 DEBUG_PYCHARM_SERVER = 'localhost'
 DEBUG_PYCHARM_PORT = 6000
 
-#~~->DebugToolbar:Framework~~
+# ~~->DebugToolbar:Framework~~
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 DEBUG_TB_INTERCEPT_REDIRECTS = False
 
@@ -48,7 +48,7 @@ DEBUG_TB_ENV_LIST_ENABLED = False
 
 #######################################
 # Elasticsearch configuration
-#~~->Elasticsearch:Technology
+# ~~->Elasticsearch:Technology
 
 # elasticsearch settings # TODO: changing from single host / esprit to multi host on ES & correct the default
 ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': 'localhost', 'port': 9201}]
@@ -65,7 +65,7 @@ INDEX_PER_TYPE_SUBSTITUTE = '_doc'      # Migrated from esprit
 ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
-INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
+INITIALISE_INDEX = True  # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
@@ -232,7 +232,7 @@ STATIC_PATHS = [
 ]
 
 # GitHub base url where static content can be edited by the DOAJ team (you can leave out the trailing slash)
-#~~->GitHub:ExternalService~~
+# ~~->GitHub:ExternalService~~
 CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/cms"
 
 # Where static files are served from - in case we need to serve a file
@@ -284,7 +284,7 @@ PASSWORD_RESET_TIMEOUT = 86400
 # amount of time a reset token for a new account is valid for
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
-#"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
+# "api" top-level role is added to all accounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = [
     "admin",
     "publisher",
@@ -436,7 +436,7 @@ HUEY_SCHEDULE = {
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
-    "public_data_dump": {"month": "*", "day": "*", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
@@ -445,9 +445,6 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
     "article_bulk_create": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
 }
-
-# Standard schedule for PDD (#3970)
-# "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
 
 
 HUEY_TASKS = {
@@ -689,15 +686,6 @@ MAPPINGS = {
         'settings': DEFAULT_INDEX_SETTINGS
     }
 }
-# MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
-# MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
-# MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
-# MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
-# MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
-# MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
-# MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
-# MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
-# MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
 
 MAPPINGS['article'] = MAPPINGS["account"]  #~~->Article:Model~~
 MAPPINGS['upload'] = MAPPINGS["account"] #~~->Upload:Model~~
@@ -716,222 +704,223 @@ MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
 # ~~->Query:WebRoute~~
 
 QUERY_ROUTE = {
-    "query" : {
+    "query": {
         # ~~->PublicJournalQuery:Endpoint~~
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_validators" : ["non_public_fields_validator", "public_query_validator"],
-            "query_filters" : ["only_in_doaj", "last_update_fallback", "search_all_meta"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Journal", # ~~->Journal:Model~~
-            "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_validators": ["non_public_fields_validator", "public_query_validator"],
+            "query_filters": ["only_in_doaj", "last_update_fallback", "search_all_meta"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Journal",  # ~~->Journal:Model~~
+            "required_parameters": {"ref": ["ssw", "public_journal", "subject_page"]}
         },
         # ~~->PublicArticleQuery:Endpoint~~
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_validators" : ["non_public_fields_validator", "public_query_validator"],
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article", # ~~->Article:Model~~
-            "required_parameters" : {"ref" : ["public_article", "toc", "subject_page"]}
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_validators": ["non_public_fields_validator", "public_query_validator"],
+            "query_filters": ["only_in_doaj"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article",  # ~~->Article:Model~~
+            "required_parameters": {"ref": ["public_article", "toc", "subject_page"]}
         },
         # back-compat for fixed query widget
         # ~~->PublicJournalArticleQuery:Endpoint~~
-        "journal,article" : {
-            "auth" : False,
-            "role" : None,
-            "query_validators" : ["non_public_fields_validator", "public_query_validator"],
-            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix", "journal_article_filter"],
-            "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
-            "dao" : "portality.models.JournalArticle",  # ~~->JournalArticle:Model~~
-            "required_parameters" : {"ref" : ["fqw"]}
+        "journal,article": {
+            "auth": False,
+            "role": None,
+            "query_validators": ["non_public_fields_validator", "public_query_validator"],
+            "query_filters": ["only_in_doaj", "strip_facets", "es_type_fix", "journal_article_filter"],
+            "result_filters": ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
+            "dao": "portality.models.JournalArticle",  # ~~->JournalArticle:Model~~
+            "required_parameters": {"ref": ["fqw"]}
         }
     },
-    "publisher_query" : {
+    "publisher_query": {
         # ~~->PublisherJournalQuery:Endpoint~~
-        "journal" : {
-            "auth" : True,
-            "role" : "publisher",
-            "query_validators" : ["non_public_fields_validator"],
-            "query_filters" : ["owner", "only_in_doaj", "search_all_meta"],
-            "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
+        "journal": {
+            "auth": True,
+            "role": "publisher",
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters": ["owner", "only_in_doaj", "search_all_meta"],
+            "result_filters": ["publisher_result_filter"],
+            "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->PublisherApplicationQuery:Endpoint~~
-        "applications" : {
-            "auth" : True,
-            "role" : "publisher",
-            "query_validators" : ["non_public_fields_validator"],
-            "query_filters" : ["owner", "not_update_request", "search_all_meta"],
-            "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.AllPublisherApplications" # ~~->AllPublisherApplications:Model~~
+        "applications": {
+            "auth": True,
+            "role": "publisher",
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters": ["owner", "not_update_request", "search_all_meta"],
+            "result_filters": ["publisher_result_filter"],
+            "dao": "portality.models.AllPublisherApplications"  # ~~->AllPublisherApplications:Model~~
         },
         # ~~->PublisherUpdateRequestsQuery:Endpoint~~
-        "update_requests" : {
-            "auth" : True,
-            "role" : "publisher",
-            "query_validators" : ["non_public_fields_validator"],
-            "query_filters" : ["owner", "update_request", "search_all_meta"],
-            "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Application"  # ~~->Application:Model~~
+        "update_requests": {
+            "auth": True,
+            "role": "publisher",
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters": ["owner", "update_request", "search_all_meta"],
+            "result_filters": ["publisher_result_filter"],
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         }
     },
-    "admin_query" : {
+    "admin_query": {
         # ~~->AdminJournalQuery:Endpoint~~
-        "journal" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Journal"   # ~~->Journal:Model~~
+        "journal": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AdminApplicationQuery:Endpoint~~
-        "suggestion" : {
-            "auth" : True,
-            "role" : "admin",
-            "query_filters" : ["not_update_request"],
-            "dao" : "portality.models.Application"    # ~~->Application:Model~~
+        "suggestion": {
+            "auth": True,
+            "role": "admin",
+            "query_filters": ["not_update_request"],
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         },
         # ~~->AdminUpdateRequestQuery:Endpoint~~
         "update_requests": {
             "auth": True,
             "role": "admin",
-            "query_filters" : ["update_request"],
+            "query_filters": ["update_request"],
             "dao": "portality.models.Application"  # ~~->Application:Model~~
         },
         # ~~->AdminEditorGroupQuery:Endpoint~~
-        "editor,group" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.EditorGroup"   # ~~->EditorGroup:Model~~
+        "editor,group": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.EditorGroup"  # ~~->EditorGroup:Model~~
         },
         # ~~->AdminAccountQuery:Endpoint~~
-        "account" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Account"   # ~~->Account:Model~~
+        "account": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Account"  # ~~->Account:Model~~
         },
         # ~~->AdminJournalArticleQuery:Endpoint~~
-        "journal,article" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.search.JournalArticle"     # ~~->JournalArticle:Model~~
+        "journal,article": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.search.JournalArticle"  # ~~->JournalArticle:Model~~
         },
         # ~~->AdminBackgroundJobQuery:Endpoint~~
-        "background,job" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.BackgroundJob"     # ~~->BackgroundJob:Model~~
+        "background,job": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.BackgroundJob"  # ~~->BackgroundJob:Model~~
         },
         # ~~->APINotificationQuery:Endpoint~~
-        "notifications" : {
-            "auth" : False,
-            "role" : "admin",
-            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
-            "required_parameters" : None
+        "notifications": {
+            "auth": False,
+            "role": "admin",
+            "dao": "portality.models.Notification",  # ~~->Notification:Model~~
+            "required_parameters": None
         }
     },
-    "associate_query" : {
+    "associate_query": {
         # ~~->AssEdJournalQuery:Endpoint~~
-        "journal" : {
-            "auth" : True,
-            "role" : "associate_editor",
-            "query_validators" : ["non_public_fields_validator"],
-            "query_filters" : ["associate", "search_all_meta"],
-            "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
+        "journal": {
+            "auth": True,
+            "role": "associate_editor",
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters": ["associate", "search_all_meta"],
+            "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
-        "suggestion" : {
-            "auth" : True,
-            "role" : "associate_editor",
-            "query_validators" : ["non_public_fields_validator"],
-            "query_filters" : ["associate", "search_all_meta"],
-            "dao" : "portality.models.Application"  # ~~->Application:Model~~
+        "suggestion": {
+            "auth": True,
+            "role": "associate_editor",
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters": ["associate", "search_all_meta"],
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         }
     },
-    "editor_query" : {
+    "editor_query": {
         # ~~->EditorJournalQuery:Endpoint~~
-        "journal" : {
-            "auth" : True,
-            "role" : "editor",
-            "query_validators" : ["non_public_fields_validator"],
-            "query_filters" : ["editor", "search_all_meta"],
-            "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
+        "journal": {
+            "auth": True,
+            "role": "editor",
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters": ["editor", "search_all_meta"],
+            "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->EditorApplicationQuery:Endpoint~~
-        "suggestion" : {
-            "auth" : True,
-            "role" : "editor",
-            "query_validators" : ["non_public_fields_validator"],
-            "query_filters" : ["editor", "search_all_meta"],
-            "dao" : "portality.models.Application"  # ~~->Application:Model~~
+        "suggestion": {
+            "auth": True,
+            "role": "editor",
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters": ["editor", "search_all_meta"],
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         }
     },
-    "api_query" : {
+    "api_query": {
         # ~~->APIArticleQuery:Endpoint~~
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Article", # ~~->Article:Model~~
-            "required_parameters" : None,
-            "keepalive" : "10m"
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj", "public_source"],
+            "dao": "portality.models.Article",  # ~~->Article:Model~~
+            "required_parameters": None,
+            "keepalive": "10m"
         },
         # ~~->APIJournalQuery:Endpoint~~
-        "journal" : {
-            "auth" : False,
-            "role" : None,
+        "journal": {
+            "auth": False,
+            "role": None,
             "query_validators": ["non_public_fields_validator"],
-            "query_filters" : ["only_in_doaj", "public_source", "search_all_meta"],
-            "dao" : "portality.models.Journal", # ~~->Journal:Model~~
-            "required_parameters" : None
+            "query_filters": ["only_in_doaj", "public_source", "search_all_meta"],
+            "dao": "portality.models.Journal",  # ~~->Journal:Model~~
+            "required_parameters": None
         },
         # ~~->APIApplicationQuery:Endpoint~~
-        "application" : {
-            "auth" : True,
-            "role" : None,
+        "application": {
+            "auth": True,
+            "role": None,
             "query_validators": ["non_public_fields_validator"],
-            "query_filters" : ["owner", "private_source", "search_all_meta"],
-            "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
-            "required_parameters" : None
+            "query_filters": ["owner", "private_source", "search_all_meta"],
+            "dao": "portality.models.Suggestion",  # ~~->Application:Model~~
+            "required_parameters": None
         }
     },
     "dashboard_query": {
         # ~~->APINotificationQuery:Endpoint~~
-        "notifications" : {
-            "auth" : False,
-            "role" : "read_notifications",
-            "query_filters" : ["who_current_user"], # ~~-> WhoCurrentUser:Query
-            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
-            "required_parameters" : None
+        "notifications": {
+            "auth": False,
+            "role": "read_notifications",
+            "query_filters": ["who_current_user"],  # ~~-> WhoCurrentUser:Query
+            "dao": "portality.models.Notification",  # ~~->Notification:Model~~
+            "required_parameters": None
         }
     }
 }
 
 QUERY_FILTERS = {
     # sanitisers
-    "public_query_validator" : "portality.lib.query_filters.public_query_validator",
-    "non_public_fields_validator" : "portality.lib.query_filters.non_public_fields_validator",
+    "public_query_validator": "portality.lib.query_filters.public_query_validator",
+    "non_public_fields_validator": "portality.lib.query_filters.non_public_fields_validator",
 
     # query filters
-    "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
-    "owner" : "portality.lib.query_filters.owner",
-    "update_request" : "portality.lib.query_filters.update_request",
-    "associate" : "portality.lib.query_filters.associate",
-    "editor" : "portality.lib.query_filters.editor",
-    "strip_facets" : "portality.lib.query_filters.strip_facets",
-    "es_type_fix" : "portality.lib.query_filters.es_type_fix",
-    "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
-    "not_update_request" : "portality.lib.query_filters.not_update_request",
-    "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
-    "search_all_meta" : "portality.lib.query_filters.search_all_meta",  # ~~-> SearchAllMeta:Query ~~
-    "journal_article_filter" : "portality.lib.query_filters.journal_article_filter", # ~~-> JournalArticleFilter:Query ~~
+    "only_in_doaj": "portality.lib.query_filters.only_in_doaj",
+    "owner": "portality.lib.query_filters.owner",
+    "update_request": "portality.lib.query_filters.update_request",
+    "associate": "portality.lib.query_filters.associate",
+    "editor": "portality.lib.query_filters.editor",
+    "strip_facets": "portality.lib.query_filters.strip_facets",
+    "es_type_fix": "portality.lib.query_filters.es_type_fix",
+    "last_update_fallback": "portality.lib.query_filters.last_update_fallback",
+    "not_update_request": "portality.lib.query_filters.not_update_request",
+    "who_current_user": "portality.lib.query_filters.who_current_user",  # ~~-> WhoCurrentUser:Query ~~
+    "search_all_meta": "portality.lib.query_filters.search_all_meta",  # ~~-> SearchAllMeta:Query ~~
+    "journal_article_filter": "portality.lib.query_filters.journal_article_filter",
+    # ~~-> JournalArticleFilter:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
-    "add_fqw_facets" : "portality.lib.query_filters.add_fqw_facets",
-    "fqw_back_compat" : "portality.lib.query_filters.fqw_back_compat",
+    "add_fqw_facets": "portality.lib.query_filters.add_fqw_facets",
+    "fqw_back_compat": "portality.lib.query_filters.fqw_back_compat",
 
     # source filters
     "private_source": "portality.lib.query_filters.private_source",
@@ -946,7 +935,7 @@ PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
 ]
 
 ADMIN_NOTES_INDEX_ONLY_FIELDS = {
-    "all_meta" : {
+    "all_meta": {
         "type": "text",
         "fields": {
             "exact": {
@@ -992,8 +981,8 @@ ADMIN_NOTES_SEARCH_MAPPING = {
 
 # ~~->BibJSON:Model~~
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
-    "bibjson.publisher.name" : "index.publisher_ac",
-    "bibjson.institution.name" : "index.institution_ac"
+    "bibjson.publisher.name": "index.publisher_ac",
+    "bibjson.institution.name": "index.institution_ac"
 }
 
 ####################################################
@@ -1122,7 +1111,6 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 TOC_CHANGEFREQ = "monthly"
 
 
-
 ##################################################
 # News feed settings
 # ~~->News:Feature~~
@@ -1158,9 +1146,6 @@ BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
 #BITLY_OAUTH_TOKEN = ""
 
-###############################################
-# Date handling
-# See portality.lib.dates   - moved to prevent circular import
 
 #################################################
 # API configuration
@@ -1175,42 +1160,42 @@ DISCOVERY_MAX_RECORDS_SIZE = 1000
 
 # ~~->ArticleBibJSON:Model~~
 DISCOVERY_ARTICLE_SEARCH_SUBS = {
-    "title" : "bibjson.title",
-    "doi" : "bibjson.identifier.id.exact",
-    "issn" :  "index.issn.exact",
-    "publisher" : "bibjson.journal.publisher",
-    "journal" : "bibjson.journal.title",
-    "abstract" :  "bibjson.abstract"
+    "title": "bibjson.title",
+    "doi": "bibjson.identifier.id.exact",
+    "issn": "index.issn.exact",
+    "publisher": "bibjson.journal.publisher",
+    "journal": "bibjson.journal.title",
+    "abstract": "bibjson.abstract"
 }
 
 DISCOVERY_ARTICLE_SORT_SUBS = {
-    "title" : "index.unpunctitle.exact"
+    "title": "index.unpunctitle.exact"
 }
 
 # ~~->JournalBibJSON:Model~~
 DISCOVERY_JOURNAL_SEARCH_SUBS = {
-    "title" : "index.title",
-    "issn" :  "index.issn.exact",
-    "publisher" : "bibjson.publisher",
-    "license" : "index.license.exact",
-    "username" : "admin.owner.exact"
+    "title": "index.title",
+    "issn": "index.issn.exact",
+    "publisher": "bibjson.publisher",
+    "license": "index.license.exact",
+    "username": "admin.owner.exact"
 }
 
 DISCOVERY_JOURNAL_SORT_SUBS = {
-    "title" : "index.unpunctitle.exact",
-    "issn" :  "index.issn.exact"
+    "title": "index.unpunctitle.exact",
+    "issn": "index.issn.exact"
 }
 
 DISCOVERY_APPLICATION_SEARCH_SUBS = {
-    "title" : "index.title",
-    "issn" :  "index.issn.exact",
-    "publisher" : "bibjson.publisher",
-    "license" : "index.license.exact"
+    "title": "index.title",
+    "issn": "index.issn.exact",
+    "publisher": "bibjson.publisher",
+    "license": "index.license.exact"
 }
 
 DISCOVERY_APPLICATION_SORT_SUBS = {
-    "title" : "index.unpunctitle.exact",
-    "issn" :  "index.issn.exact"
+    "title": "index.unpunctitle.exact",
+    "issn": "index.issn.exact"
 }
 
 # API data dump settings
@@ -1331,12 +1316,12 @@ MINIMAL_OA_START_DATE = 1900
 
 
 #############################################
-## Harvester Configuration
+# Harvester Configuration
 # ~~->Harvester:Feature~~
 
-## Configuration options for the DOAJ API Client
+# Configuration options for the DOAJ API Client
 
-## EPMC Client configuration
+# EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.9"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
@@ -1466,7 +1451,7 @@ BG_MONITOR_QUEUED_CONFIG = {
 }
 
 ##################################################
-## Public data dump settings
+# Public data dump settings
 
 # how long should the temporary URL for public data dumps last
 PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
@@ -1544,7 +1529,7 @@ GOOGLE_KEY_PATH = ''
 # Datalog
 # ~~->Datalog:Feature~~
 
-### Datalog for Journal Added
+# Datalog for Journal Added
 
 # google sheet filename for datalog ja
 DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
