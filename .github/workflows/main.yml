@@ -16,7 +16,7 @@ jobs:
     
     steps:
       - name: checkout the branch of interest
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with: 
           path: doaj
 
@@ -31,7 +31,7 @@ jobs:
       - name: set up a python 3.10 environment
         uses: actions/setup-python@v5
         with:
-          python-version: 3.10.12
+          python-version: '3.10'
         
       - name: install elasticsearch
         uses: getong/elasticsearch-action@v1.2
