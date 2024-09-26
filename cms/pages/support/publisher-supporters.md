@@ -47,11 +47,10 @@ We only accept support through our publisher supporter model from publishers wit
 ## Benefits
 
 1. Your logo on the DOAJ website
-2. A post from all our social media platforms (X, Facebook, LinkedIn, Mastodon, Bluesky) acknowledging your organisation as a Supporter
-3. A blog post at the start of the year introducing new supporters
-4. A DOAJ Supporter logo that you can use on your website
-5. Access to our Public Data Dump
-6. For supporters from  Bands A-E or those contributing over the suggested amounts, a personal DOAJ contact to whom all enquiries regarding your applications and updates can be directed
+2. A blog post during the year thanking all our supporters
+3. A DOAJ Supporter logo that you can use on your website
+4. Access to our Public Data Dump
+5. A personal DOAJ contact to whom all enquiries regarding your applications and updates can be directed
 
 ## Sponsorship opportunities
 
