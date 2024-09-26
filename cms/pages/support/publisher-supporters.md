@@ -10,11 +10,11 @@ featuremap:
  - ~~->PublisherSupportersData:Template~~
 ---
 
-DOAJ relies on the support of publishers and [libraries](/support/) to ensure that its metadata and journal reviewing services remain free for all. The publishers on this page have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them, as our work would not be possible without them.
+We rely on the support of publishers and [libraries](/support/) so we can uphold our commitment to ensuring that our journal reviewing and metadata services remain free for all. The publishers on this page have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them, as our work would not be possible without them.
 
 ## Pricing
 
-We publish our simplified support prices openly in line with [our commitment to the Principles of Open Scholarly Infrastructure](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/).
+We always publish our simplified support prices openly, in line with [our commitment to the Principles of Open Scholarly Infrastructure](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/).
 
 We only accept support through our publisher supporter model from publishers with journals already indexed in DOAJ. Non-commercial/institutional rates are only available to community-led, smaller publishers with limited funding. [Contact us](/contact/) if you are unsure which category applies or if you want to discuss ways of further contributing to DOAJ's operating costs.
 
@@ -48,7 +48,7 @@ We only accept support through our publisher supporter model from publishers wit
 
 1. Your logo on the DOAJ website
 2. A post from all our social media platforms (X, Facebook, LinkedIn, Mastodon, Bluesky) acknowledging your organisation as a Supporter
-3. A blog post at the start of the year introducing our new supporters
+3. A blog post at the start of the year introducing new supporters
 4. A DOAJ Supporter logo that you can use on your website
 5. Access to our Public Data Dump
 6. For supporters from  Bands A-E or those contributing over the suggested amounts, a personal DOAJ contact to whom all enquiries regarding your applications and updates can be directed
