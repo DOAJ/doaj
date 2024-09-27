@@ -125,8 +125,16 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-
-- name: Amber Osman
+  
+- name: Ana Melisa Fernandes
+  area: Bird behavior and ecology
+  year_since:
+  city: Bogotá 
+  country: Colombia
+  language: Spanish, English, Portuguese
+  photo: "Ana Melisa Fernandes.jpg" 
+  
+- name: Amber Osman 
   area: Open Science, Publication Ethics, Scholarly communication
   year_since:
   city: Karachi
