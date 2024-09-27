@@ -5,7 +5,7 @@ from portality import models, app_email
 from portality.background import BackgroundTask, BackgroundApi
 from portality.core import app
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 # FIXME: update for index-per-type
@@ -76,7 +76,7 @@ class RequestESBackupBackgroundTask(BackgroundTask):
         request_es_backup.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = RequestESBackupBackgroundTask.create_huey_helper(main_queue)
+huey_helper = RequestESBackupBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule
