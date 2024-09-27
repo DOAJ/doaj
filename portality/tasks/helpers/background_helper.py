@@ -12,7 +12,7 @@ from portality import models, constants
 from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
 from portality.decorators import write_required
-from portality.tasks.redis_huey import long_running, main_queue, configure, schedule
+from portality.tasks.redis_huey import long_running, main_queue, events_queue, scheduled_long_queue, scheduled_short_queue, configure, schedule
 
 TaskFactory = Callable[[models.BackgroundJob], BackgroundTask]
 _queue_for_action = None
@@ -25,6 +25,12 @@ def get_queue_id_by_task_queue(task_queue: RedisHuey):
         return constants.BGJOB_QUEUE_ID_LONG
     elif task_queue.name == main_queue.name:
         return constants.BGJOB_QUEUE_ID_MAIN
+    elif task_queue.name == events_queue.name:
+        return constants.BGJOB_QUEUE_ID_EVENTS
+    elif task_queue.name == scheduled_long_queue.name:
+        return constants.BGJOB_QUEUE_ID_SCHEDULED_LONG
+    elif task_queue.name == scheduled_short_queue.name:
+        return constants.BGJOB_QUEUE_ID_SCHEDULED_SHORT
     else:
         app.logger.warning(f'unknown task_queue[{task_queue}]')
         return constants.BGJOB_QUEUE_ID_UNKNOWN

@@ -1388,11 +1388,18 @@ TASKS_MONITOR_BGJOBS_FROM = "helpdesk@doaj.org"
 # Background monitor
 # ~~->BackgroundMonitor:Feature~~
 
+# some time period for convenience
+_MIN = 60
+_HOUR = 3600
+_DAY = 24 * _HOUR
+_WEEK = 7 * _DAY
+
 # Configures the age of the last completed job on the queue before the queue is marked as unstable
 # (in seconds)
 BG_MONITOR_LAST_COMPLETED = {
-    'main_queue': 7200,     # 2 hours
-    'long_running': 93600,  # 26 hours
+    'events': 2 * _HOUR,     # 2 hours
+    'scheduled_short': 2 * _HOUR, # 2 hours
+    'scheduled_long': _DAY + 2 * _HOUR,  # 26 hours
 }
 
 # Default monitoring config for background job types which are not enumerated in BG_MONITOR_ERRORS_CONFIG below
@@ -1405,49 +1412,49 @@ BG_MONITOR_DEFAULT_CONFIG = {
 
     # The age of the oldest record allowed to be in the `queued` state.
     # If the oldest queued item was created before this, the result is flagged
-    'oldest': 1200,
+    'oldest': 20 * _MIN,
 
     ## default values for error config
 
     # The time period over which to check for errors, from now to now - check_sec
-    'check_sec': 3600,
+    'check_sec': _HOUR,
 
     # The number of errors allowed in the check period before the result is flagged
-    'allowed_num_err': 0
+    'allowed_num_err': 0,
+
+    # how long ago since a job just successfully ran (0 turns this off)
+    'last_successfully_ran': 0
 }
 
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
-    # Main queue
+    'anon_export': {
+        'check_sec': _WEEK,    # a week
+        'allowed_num_err': 0
+    },
     'article_bulk_create': {
-        'check_sec': 86400,  # 1 day
+        'check_sec': _DAY,  # 1 day
         'allowed_num_err': 0,
     },
-    'journal_csv': {
-        'check_sec': 10800,  # 3 hours
-        'allowed_num_err': 1,
-    },
-    'ingest_articles': {
-        'check_sec': 86400,
-        'allowed_num_err': 0
-    },
-
-    # Long running
-    'anon_export': {
-        'check_sec': 604800,    # a week
-        'allowed_num_err': 0
-    },
     'article_cleanup_sync': {
-        'check_sec': 604800,    # a week
+        'check_sec': 2 * _DAY,    # 2 days
         'allowed_num_err': 0
     },
     'harvest': {
-        'check_sec': 86400,
+        'check_sec': _DAY,
         'allowed_num_err': 0,
     },
+    'ingest_articles': {
+        'check_sec': _DAY,
+        'allowed_num_err': 0
+    },
+    'journal_csv': {
+        'check_sec': 3 * _HOUR,
+        'allowed_num_err': 1,
+    },
     'public_data_dump': {
-        'check_sec': 604800,
+        'check_sec': 2 * _HOUR,
         'allowed_num_err': 0
     }
 }
@@ -1455,44 +1462,92 @@ BG_MONITOR_ERRORS_CONFIG = {
 # Configures the total number of queued items and the age of the oldest of those queued items allowed
 # before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
 BG_MONITOR_QUEUED_CONFIG = {
-    # Main queue
-    'article_bulk_create': {
-        'total': 3,
-        'oldest': 600
-    },
-    'ingest_articles': {
-        'total': 10,
-        'oldest': 600
-    },
-    'journal_bulk_edit': {
-        'total': 2,
-        'oldest': 600
-    },
-    'journal_csv': {
-        'total': 1,
-        'oldest': 600,     # 20 mins
-    },
-    'set_in_doaj': {
-        'total': 2,
-        'oldest': 600
-    },
-    'suggestion_bulk_edit': {
-        'total': 2,
-        'oldest': 600
-    },
-
-    # Long running
     'anon_export': {
         'total': 1,
-        'oldest': 1200
+        'oldest': 20 * _MIN
+    },
+    'article_bulk_create': {
+        'total': 3,
+        'oldest': 10 * _MIN
     },
     'harvest': {
         'total': 1,
-        'oldest': 86400
+        'oldest': _DAY
+    },
+    'ingest_articles': {
+        'total': 10,
+        'oldest': 10 * _MIN
+    },
+    'journal_bulk_edit': {
+        'total': 2,
+        'oldest': 10 * _MIN
+    },
+    'journal_csv': {
+        'total': 1,
+        'oldest': 20 * _MIN
     },
     'public_data_dump': {
         'total': 1,
-        'oldest': 86400
+        'oldest': _DAY
+    },
+    'set_in_doaj': {
+        'total': 2,
+        'oldest': 10 * _MIN
+    },
+    'suggestion_bulk_edit': {
+        'total': 2,
+        'oldest': 10 * _MIN
+    }
+}
+
+BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
+    'anon_export': {
+        'last_successfully_ran': 32 * _DAY
+    },
+    'article_cleanup_sync': {
+        'last_successfully_ran': 33 * _DAY
+    },
+    'async_workflow_notifications': {
+        'last_successfully_ran': _WEEK + _DAY
+    },
+    'check_latest_es_backup': {
+        'last_successfully_ran': _DAY + _HOUR
+    },
+    'datalog_journal_added_update': {
+        'last_successfully_ran': _HOUR
+    },
+    'find_discontinued_soon': {
+        'last_successfully_ran': _DAY + _HOUR
+    },
+    'harvest': {
+        'last_successfully_ran': _DAY + _HOUR
+    },
+    'journal_csv': {
+        'last_successfully_ran': 2 * _HOUR
+    },
+    'monitor_bgjobs': {
+        'last_successfully_ran': _WEEK + _DAY
+    },
+    'old_data_cleanup': {
+        'last_successfully_ran': 32 * _DAY
+    },
+    'prune_es_backups': {
+        'last_successfully_ran': _DAY + _HOUR
+    },
+    'public_data_dump': {
+        'last_successfully_ran': 32 * _DAY
+    },
+    'read_news': {
+        'last_successfully_ran': 2 * _HOUR
+    },
+    'reporting': {
+        'last_successfully_ran': 32 * _DAY
+    },
+    'request_es_backup': {
+        'last_successfully_ran': _DAY + _HOUR
+    },
+    'sitemap': {
+        'last_successfully_ran': _DAY + _HOUR
     }
 }
 

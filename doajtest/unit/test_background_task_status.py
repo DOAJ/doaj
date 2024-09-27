@@ -55,15 +55,17 @@ bg_monitor_queued_config__zero_total = {
 # config BG_MONITOR_LAST_COMPLETED
 bg_monitor_last_completed__now = {
     'BG_MONITOR_LAST_COMPLETED': {
-        'main_queue': 0,
-        'long_running': 0,
+        'events_queue': 0,
+        'scheduled_long': 0,
+        'scheduled_short': 0
     }
 }
 
 bg_monitor_last_completed__a = {
     'BG_MONITOR_LAST_COMPLETED': {
-        'main_queue': 10000,
-        'long_running': 10000,
+        'events_queue': 10000,
+        'scheduled_long': 10000,
+        'scheduled_short': 10000
     }
 }
 
@@ -95,43 +97,43 @@ class TestBackgroundTaskStatus(DoajTestCase):
         assert len(val.get('err_msgs'))
 
     @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__invalid_last_completed__main_queue(self):
+    def test_create_background_status__invalid_last_completed__events_queue(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_MAIN,
+                        queue_id=constants.BGJOB_QUEUE_ID_EVENTS,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
         status_dict = background_task_status.create_background_status()
 
         assert not is_stable(status_dict['status'])
-        self.assert_unstable_dict(status_dict['queues'].get('main_queue', {}))
-        self.assert_stable_dict(status_dict['queues'].get('long_running', {}))
+        self.assert_unstable_dict(status_dict['queues'].get('events', {}))
+        self.assert_stable_dict(status_dict['queues'].get('scheduled_long', {}))
 
     @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__invalid_last_completed__long_running(self):
+    def test_create_background_status__invalid_last_completed__scheduled_long(self):
         save_mock_bgjob(AnonExportBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_LONG,
+                        queue_id=constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
         status_dict = background_task_status.create_background_status()
 
         assert not is_stable(status_dict['status'])
-        self.assert_stable_dict(status_dict['queues'].get('main_queue', {}))
-        self.assert_unstable_dict(status_dict['queues'].get('long_running', {}))
+        self.assert_stable_dict(status_dict['queues'].get('events', {}))
+        self.assert_unstable_dict(status_dict['queues'].get('scheduled_long', {}))
 
     @apply_test_case_config(bg_monitor_last_completed__a)
     def test_create_background_status__valid_last_completed(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_MAIN,
+                        queue_id=constants.BGJOB_QUEUE_ID_EVENTS,
                         status=constants.BGJOB_STATUS_COMPLETE, )
         save_mock_bgjob(AnonExportBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_LONG,
+                        queue_id=constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
         status_dict = background_task_status.create_background_status()
 
         assert is_stable(status_dict['status'])
-        self.assert_stable_dict(status_dict['queues'].get('main_queue', {}))
-        self.assert_stable_dict(status_dict['queues'].get('long_running', {}))
+        self.assert_stable_dict(status_dict['queues'].get('events', {}))
+        self.assert_stable_dict(status_dict['queues'].get('scheduled_long', {}))
 
     @apply_test_case_config(bg_monitor_last_completed__now)
     def test_create_background_status__valid_last_completed__no_record(self):
@@ -145,13 +147,13 @@ class TestBackgroundTaskStatus(DoajTestCase):
 
         status_dict = background_task_status.create_background_status()
 
-        journal_csv_dict = status_dict['queues']['main_queue']['errors'].get(JournalCSVBackgroundTask.__action__, {})
+        journal_csv_dict = status_dict['queues']['scheduled_short']['errors'].get(JournalCSVBackgroundTask.__action__, {})
 
         assert not is_stable(status_dict['status'])
         assert journal_csv_dict
         # unstable action should be on top of the list after sorting
-        first_key = next(iter(status_dict['queues']['main_queue']['errors']))
-        assert not is_stable(status_dict['queues']['main_queue']['errors'][first_key]['status'])
+        first_key = next(iter(status_dict['queues']['scheduled_short']['errors']))
+        assert not is_stable(status_dict['queues']['scheduled_short']['errors'][first_key]['status'])
 
     @apply_test_case_config(bg_monitor_errors_config__a)
     def test_create_background_status__error_in_period_found(self):
@@ -160,7 +162,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
 
         status_dict = background_task_status.create_background_status()
 
-        journal_csv_dict = status_dict['queues']['main_queue']['errors'].get(JournalCSVBackgroundTask.__action__, {})
+        journal_csv_dict = status_dict['queues']['scheduled_short']['errors'].get(JournalCSVBackgroundTask.__action__, {})
 
         assert not is_stable(status_dict['status'])
         self.assert_unstable_dict(journal_csv_dict)
@@ -174,7 +176,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
 
         status_dict = background_task_status.create_background_status()
 
-        journal_csv_dict = status_dict['queues']['main_queue']['errors'].get(JournalCSVBackgroundTask.__action__, {})
+        journal_csv_dict = status_dict['queues']['scheduled_short']['errors'].get(JournalCSVBackgroundTask.__action__, {})
 
         assert is_stable(status_dict['status'])
         self.assert_stable_dict(journal_csv_dict)
@@ -187,7 +189,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
 
         status_dict = background_task_status.create_background_status()
 
-        journal_csv_dict = status_dict['queues']['main_queue']['queued'].get(JournalCSVBackgroundTask.__action__, {})
+        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
 
         assert not is_stable(status_dict['status'])
         assert journal_csv_dict.get('total', 0)
@@ -200,7 +202,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
 
         status_dict = background_task_status.create_background_status()
 
-        journal_csv_dict = status_dict['queues']['main_queue']['queued'].get(JournalCSVBackgroundTask.__action__, {})
+        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
 
         assert is_stable(status_dict['status'])
         assert journal_csv_dict.get('total', 0) == 0
@@ -214,7 +216,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
 
         status_dict = background_task_status.create_background_status()
 
-        journal_csv_dict = status_dict['queues']['main_queue']['queued'].get(JournalCSVBackgroundTask.__action__, {})
+        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
 
         assert not is_stable(status_dict['status'])
         self.assert_unstable_dict(journal_csv_dict)
@@ -228,7 +230,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         status_dict = background_task_status.create_background_status()
         print(json.dumps(status_dict, indent=4))
 
-        journal_csv_dict = status_dict['queues']['main_queue']['queued'].get(JournalCSVBackgroundTask.__action__, {})
+        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
 
         assert is_stable(status_dict['status'])
         self.assert_stable_dict(journal_csv_dict)
