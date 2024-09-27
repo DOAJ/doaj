@@ -8,7 +8,7 @@ from portality.models.harvester import HarvesterProgressReport as Report
 from portality.store import StoreFactory
 from portality.tasks.harvester_helpers import workflow
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_long_queue as queue
 
 
 class BGHarvesterLogger(object):
@@ -111,7 +111,7 @@ class HarvesterBackgroundTask(BackgroundTask):
         return False
 
 
-huey_helper = HarvesterBackgroundTask.create_huey_helper(long_running)
+huey_helper = HarvesterBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

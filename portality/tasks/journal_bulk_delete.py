@@ -9,7 +9,7 @@ from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundE
 from portality.bll import DOAJ
 from portality.core import app
 from portality.lib import dates
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 from portality.ui.messages import Messages
 
 
@@ -154,7 +154,7 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         journal_bulk_delete.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)
