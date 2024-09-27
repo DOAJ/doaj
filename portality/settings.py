@@ -442,8 +442,7 @@ HUEY_SCHEDULE = {
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
-    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
-    "article_bulk_create": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"}
 }
 
 
@@ -1398,17 +1397,36 @@ BG_MONITOR_LAST_COMPLETED = {
 
 # Default monitoring config for background job types which are not enumerated in BG_MONITOR_ERRORS_CONFIG below
 BG_MONITOR_DEFAULT_CONFIG = {
+    ## default values for queued config
+
+    # the total number of items that are allowed to be in `queued` state at the same time.
+    # Any more than this and the result is flagged
     'total': 2,
+
+    # The age of the oldest record allowed to be in the `queued` state.
+    # If the oldest queued item was created before this, the result is flagged
     'oldest': 1200,
+
+    ## default values for error config
+
+    # The time period over which to check for errors, from now to now - check_sec
+    'check_sec': 3600,
+
+    # The number of errors allowed in the check period before the result is flagged
+    'allowed_num_err': 0
 }
 
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
     # Main queue
-    'journal_csv': {
-        'check_sec': 3600,  # 1 hour, time period between scheduled runs
+    'article_bulk_create': {
+        'check_sec': 86400,  # 1 day
         'allowed_num_err': 0,
+    },
+    'journal_csv': {
+        'check_sec': 10800,  # 3 hours
+        'allowed_num_err': 1,
     },
     'ingest_articles': {
         'check_sec': 86400,
@@ -1416,12 +1434,20 @@ BG_MONITOR_ERRORS_CONFIG = {
     },
 
     # Long running
+    'anon_export': {
+        'check_sec': 604800,    # a week
+        'allowed_num_err': 0
+    },
+    'article_cleanup_sync': {
+        'check_sec': 604800,    # a week
+        'allowed_num_err': 0
+    },
     'harvest': {
         'check_sec': 86400,
         'allowed_num_err': 0,
     },
     'public_data_dump': {
-        'check_sec': 86400 * 7,
+        'check_sec': 604800,
         'allowed_num_err': 0
     }
 }
@@ -1430,16 +1456,36 @@ BG_MONITOR_ERRORS_CONFIG = {
 # before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
 BG_MONITOR_QUEUED_CONFIG = {
     # Main queue
-    'journal_csv': {
-        'total': 2,
-        'oldest': 1200,     # 20 mins
+    'article_bulk_create': {
+        'total': 3,
+        'oldest': 600
     },
     'ingest_articles': {
-        'total': 250,
-        'oldest': 86400
+        'total': 10,
+        'oldest': 600
+    },
+    'journal_bulk_edit': {
+        'total': 2,
+        'oldest': 600
+    },
+    'journal_csv': {
+        'total': 1,
+        'oldest': 600,     # 20 mins
+    },
+    'set_in_doaj': {
+        'total': 2,
+        'oldest': 600
+    },
+    'suggestion_bulk_edit': {
+        'total': 2,
+        'oldest': 600
     },
 
     # Long running
+    'anon_export': {
+        'total': 1,
+        'oldest': 1200
+    },
     'harvest': {
         'total': 1,
         'oldest': 86400
