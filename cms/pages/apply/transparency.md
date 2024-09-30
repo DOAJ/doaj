@@ -196,6 +196,9 @@ OASPA is a trade association that was established in 2008 in order to represent 
 
 WAME is a global nonprofit voluntary association of editors of peer-reviewed medical journals who seek to foster cooperation and communication among editors; improve editorial standards; promote professionalism in medical editing through education, self-criticism, and self-regulation; and encourage research on the principles and practice of medical editing. WAME develops policies and recommendations of best practices for medical journal editors and has a syllabus for editors that members are encouraged to follow.
 
+## License for this work
+
+[Principles of transparency and best practice in scholarly publishing](https://doi.org/10.24318/cope.2019.1.12) by COPE, DOAJ, OASPA, WAME is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1)
 
 ## In other languages
 
