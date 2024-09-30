@@ -472,7 +472,15 @@ ass_ed:
   country: Iraq
   language: Arabic, English, Swedish
   photo: "karima.jpg"
-
+  
+- name: Kelly Anne Dumayne
+  area: Psychology, linguistics, creative writing
+  year_since:
+  city: Wales
+  country: United Kingdom
+  language: English
+  photo: 
+  
 - name: Khoirul Fathoni
   area: Humanities
   year_since:
