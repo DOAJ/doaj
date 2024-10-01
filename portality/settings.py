@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.8.4"
+DOAJ_VERSION = "6.8.5"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -51,7 +51,6 @@ DEBUG_TB_ENV_LIST_ENABLED = False
 #~~->Elasticsearch:Technology
 
 # elasticsearch settings # TODO: changing from single host / esprit to multi host on ES & correct the default
-ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
 ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': 'localhost', 'port': 9201}]
 ELASTIC_SEARCH_VERIFY_CERTS = True  # Verify the SSL certificate of the ES host.  Set to False in dev.cfg to avoid having to configure your local certificates
 
@@ -437,7 +436,7 @@ HUEY_SCHEDULE = {
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
-    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "public_data_dump": {"month": "*", "day": "*", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
@@ -446,6 +445,10 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
     "article_bulk_create": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
 }
+
+# Standard schedule for PDD (#3970)
+# "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+
 
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},

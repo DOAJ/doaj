@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.8.4',
+    version='6.8.5',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -26,7 +26,6 @@ setup(
         "Flask-Mail==0.9.1",
         "Flask-WTF==0.14.2",
         "freezegun==0.3.12",
-        "GitPython==2.1.14",
         "gunicorn==19.9.0",
         "huey==1.10.5",  # upgrading to 1.11 / 2.x requires work
         "libsass==0.20.1",
@@ -53,7 +52,6 @@ setup(
         # Flask2 required >=2.0.*, Flask-Login required <=2.0.*
         "Werkzeug~=2.0.0",
         "WTForms==2.2.1",
-        "esprit @ git+https://github.com/CottageLabs/esprit.git@edda12177effa0945d99302f0d453b22503e335b#egg=esprit",
         "dictdiffer @ git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer",
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger",
 
