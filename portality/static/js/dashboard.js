@@ -172,7 +172,7 @@ doaj.dashboard.renderGroupInfo = function (data) {
             if (current_user.role.includes("admin")) {
                 // Ready applications by editor
                 statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF; display: unset;">Ready</span> Applications: `;
-                statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.name}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;
+                statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.id}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;
             }
 
             // Completed applications by associated editor
@@ -180,7 +180,7 @@ doaj.dashboard.renderGroupInfo = function (data) {
                 statisticsFrag += `<h4 class="label label--secondary">Applications <span class="progress-bar__bar--completed label label--secondary" style="padding: .5em; display: unset;">Completed</span> by associated editors</h4>`;
                 statisticsFrag += `<ul class="inlined-list">`;
                 for (let associateEditor of historicalNumbers.associate_editors) {
-                    statisticsFrag += `<li><span class="label tag">${associateEditor.name}</span> <span class="tag tag--tertiary">${associateEditor.count}</span></span>`;
+                    statisticsFrag += `<li><span class="label tag">${associateEditor.id}</span> <span class="tag tag--tertiary">${associateEditor.count}</span></span>`;
                 }
 
                 statisticsFrag += `</ul>`
