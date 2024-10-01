@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.8.4"
+DOAJ_VERSION = "6.8.5"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -283,7 +283,7 @@ PASSWORD_RESET_TIMEOUT = 86400
 # amount of time a reset token for a new account is valid for
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
-# "api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
+# "api" top-level role is added to all accounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = [
     "admin",
     "publisher",
@@ -444,6 +444,7 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
     "article_bulk_create": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
 }
+
 
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},
@@ -683,15 +684,6 @@ MAPPINGS = {
         'settings': DEFAULT_INDEX_SETTINGS
     }
 }
-# MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
-# MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
-# MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
-# MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
-# MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
-# MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
-# MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
-# MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
-# MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
 
 MAPPINGS['article'] = MAPPINGS["account"]  # ~~->Article:Model~~
 MAPPINGS['upload'] = MAPPINGS["account"]  # ~~->Upload:Model~~
@@ -1145,9 +1137,6 @@ BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
 # BITLY_OAUTH_TOKEN = ""
 
-###############################################
-# Date handling
-# See portality.lib.dates   - moved to prevent circular import
 
 #################################################
 # API configuration
@@ -1314,12 +1303,12 @@ QUICK_REJECT_REASONS = [
 MINIMAL_OA_START_DATE = 1900
 
 #############################################
-## Harvester Configuration
+# Harvester Configuration
 # ~~->Harvester:Feature~~
 
-## Configuration options for the DOAJ API Client
+# Configuration options for the DOAJ API Client
 
-## EPMC Client configuration
+# EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.9"  # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
@@ -1446,7 +1435,7 @@ BG_MONITOR_QUEUED_CONFIG = {
 }
 
 ##################################################
-## Public data dump settings
+# Public data dump settings
 
 # how long should the temporary URL for public data dumps last
 PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
@@ -1529,7 +1518,7 @@ GOOGLE_KEY_PATH = ''
 # Datalog
 # ~~->Datalog:Feature~~
 
-### Datalog for Journal Added
+# Datalog for Journal Added
 
 # google sheet filename for datalog ja
 DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'

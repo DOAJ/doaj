@@ -138,8 +138,26 @@ ${status}</a></li>`;
         }).join('')}
         </ul>
     </div>`;
+doaj.dashboard.renderGroupInfo = function (data) {
+    // Remove the editor from the associates list if they are there
+    _removeEditorFromAssociates = function (data) {
+        if (data.editor_group.associates && data.editor_group.associates.length > 0) {
+            let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor);
+            if (edInAssEd > -1) {
+                data.editor_group.associates.splice(edInAssEd, 1);
+            }
+        } else {
+            data.editor_group.associates = [];  // to avoid having to keep checking it below
+        }
     }
 
+    // Generate the search query source
+    _generateSearchQuerySource = function (term, sort) {
+        return doaj.searchQuerySource({
+            "term": term,
+            "sort": sort
+        });
+    }
 
     // Generate the editor list fragment
     _generateEditorListFragment = function (data, allEditors) {
@@ -187,18 +205,19 @@ ${status}</a></li>`;
 
     // Generate the status progress bar
     _generateStatusProgressBar = function (data) {
-
-
         let appStatusProgressBar = "";
-
         for (let status of doaj.dashboard.statusOrder) {
             if (data.by_status[status]?.applications > 0) {
-                let url = statusLinks[status]; // Get the URL from the precomputed status links
+                let appStatusSource = _generateSearchQuerySource([
+                    {"admin.editor_group.exact": data.editor_group.name},
+                    {"admin.application_status.exact": status},
+                    {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
+                ], [{"admin.date_applied": {"order": "asc"}}]);
 
-                appStatusProgressBar += `<li class="status status--link status--${status.replace(' ', '-')} progress-bar__bar" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
-                <a href="${url}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
-                    <strong>${data.by_status[status].applications}</strong>
-                </a></li>`;
+                appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
+                    <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
+                        <strong>${data.by_status[status].applications}</strong>
+                    </a></li>`;
             }
         }
 
@@ -231,6 +250,56 @@ ${status}</a></li>`;
                 </section>`;
         }
 
+     _generateStatisticsFragment = function (data) {
+        let statisticsFrag = "";
+        let historicalNumbers = data.historical_numbers;
+
+        if (historicalNumbers) {
+            statisticsFrag += `<section>
+                <h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
+
+            if (current_user.role.includes("admin")) {
+                // Ready applications by editor
+                statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF; display: unset;">Ready</span> Applications: `;
+                statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.id}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;
+            }
+
+            // Completed applications by associated editor
+            if (historicalNumbers.associate_editors.length) {
+                statisticsFrag += `<h4 class="label label--secondary">Applications <span class="progress-bar__bar--completed label label--secondary" style="padding: .5em; display: unset;">Completed</span> by associated editors</h4>`;
+                statisticsFrag += `<ul class="inlined-list">`;
+                for (let associateEditor of historicalNumbers.associate_editors) {
+                    statisticsFrag += `<li><span class="label tag">${associateEditor.id}</span> <span class="tag tag--tertiary">${associateEditor.count}</span></span>`;
+                }
+
+                statisticsFrag += `</ul>`
+            }
+            statisticsFrag += `</section>`;
+        }
+
+        return statisticsFrag;
+    };
+
+
+    // Generate the main fragment
+    _renderMainFragment = function (data) {
+        _removeEditorFromAssociates(data);
+
+        let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
+        let editorListFrag = _generateEditorListFragment(data, allEditors);
+        let appStatusProgressBar = _generateStatusProgressBar(data);
+        let statisticsFragment = _generateStatisticsFragment(data);
+
+        let appGroupSource = _generateSearchQuerySource([
+            {"admin.editor_group.exact": data.editor_group.name},
+            {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
+        ], [{"admin.date_applied": {"order": "asc"}}]);
+
+
+        // Combine all fragments
+        let frag = `<div class="tabs__content card">
+        <h3>${data.editor_group.name}’s open applications</h3>
+        
         return statisticsFrag;
     };
 
@@ -254,26 +323,41 @@ ${status}</a></li>`;
         // Combine all fragments
         let frag = `<div class="tabs__content card activity-section">
         <h3>${data.editor_group.name}’s open applications</h3>
-        
+
         <section>
             <h3 class="sr-only">Status progress bar colour legend</h3>
             ${colorLegend}
         </section>
-        
+
         <section>
           <h4 class="label label--secondary">By editor</h4>
           <ul class="inlined-list">
               ${editorListFrag}
           </ul>
         </section>
-        
+        if (data["total"]["applications"]) {
+            frag += `<section>
+                <h4 class="label label--secondary">Applications by status</h4>
+                <ul class="inlined-list progress-bar">
+                    ${appStatusProgressBar}
+                </ul>
+            </section>`
+        }
+        frag += `
+                    ${statisticsFragment}
+                </div>`;
+
+        return frag;
+    }
+        </section>
+
         <section>
           <h4 class="label label--secondary">Applications by status</h4>
           <ul class="inlined-list progress-bar">
               ${appStatusProgressBar}
           </ul>
         </section>
-        
+
         ${statisticsFragment}
       </div>`;
 
