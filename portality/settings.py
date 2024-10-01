@@ -1491,7 +1491,7 @@ TOURS = {
     ],
     "/dashboard/": [
         {
-            "roles": ["admin", "associate_editor"],
+            "roles": ["admin", "editor"],
             "content_id": "application_by_status",
             "name": "New Links in the Colour Legend",
             "description": "Discover how the colour legend labels now serve as links to quickly filter and view applications by group and status."
