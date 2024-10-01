@@ -176,14 +176,16 @@ doaj.dashboard.renderGroupInfo = function (data) {
             }
 
             // Completed applications by associated editor
-            statisticsFrag += `<h4 class="label label--secondary">Applications <span class="progress-bar__bar--completed label label--secondary" style="padding: .5em; display: unset;">Completed</span> by associated editors</h4>`;
-            statisticsFrag += `<ul class="inlined-list">`;
-            for (let associateEditor of historicalNumbers.associate_editors) {
-                statisticsFrag += `<li><span class="label tag">${associateEditor.name}</span> <span class="tag tag--tertiary">${associateEditor.count}</span></span>`;
-            }
+            if (historicalNumbers.associate_editors.length) {
+                statisticsFrag += `<h4 class="label label--secondary">Applications <span class="progress-bar__bar--completed label label--secondary" style="padding: .5em; display: unset;">Completed</span> by associated editors</h4>`;
+                statisticsFrag += `<ul class="inlined-list">`;
+                for (let associateEditor of historicalNumbers.associate_editors) {
+                    statisticsFrag += `<li><span class="label tag">${associateEditor.name}</span> <span class="tag tag--tertiary">${associateEditor.count}</span></span>`;
+                }
 
-            statisticsFrag += `</ul>
-                </section>`;
+                statisticsFrag += `</ul>`
+            }
+            statisticsFrag += `</section>`;
         }
 
         return statisticsFrag;
@@ -214,17 +216,18 @@ doaj.dashboard.renderGroupInfo = function (data) {
           <ul class="inlined-list">
               ${editorListFrag}
           </ul>
-        </section>
-        
-        <section>
-          <h4 class="label label--secondary">Applications by status</h4>
-          <ul class="inlined-list progress-bar">
-              ${appStatusProgressBar}
-          </ul>
-        </section>
-        
-        ${statisticsFragment}
-      </div>`;
+        </section>`
+        if (data["total"]["applications"]) {
+            frag += `<section>
+                <h4 class="label label--secondary">Applications by status</h4>
+                <ul class="inlined-list progress-bar">
+                    ${appStatusProgressBar}
+                </ul>
+            </section>`
+        }
+        frag += `
+                    ${statisticsFragment}
+                </div>`;
 
         return frag;
     }
