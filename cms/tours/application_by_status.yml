@@ -1,0 +1,13 @@
+steps:
+  - selector: '#color-legend'
+    title: Colour legend links
+    content:
+      <p>
+        <strong>Each label in the colour legend now works as a link!</strong><br />
+        Clicking a label will take you to the search page, filtered by the currently viewed group
+          and the specific application status.
+      </p>
+
+  - selector: '#feature_tour_nav'
+    title: Want to see this tip again?
+    content: Take the tour again by selecting it from the Feature Tours menu.
