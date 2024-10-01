@@ -186,4 +186,13 @@ tests:
   - step: click spacebar to check the filter
     results:
       - filter is applied
-
+- title: Export article in RIS format
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ search page at /search/articles
+    results:
+      - Only articles are shown in the results
+  - step: Click on 'Export RIS' of any article
+    results:
+      - A RIS file is downloaded
