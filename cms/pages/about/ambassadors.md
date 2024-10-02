@@ -1,5 +1,5 @@
 ---
-layout: no-sidenav
+layout: sidenav
 include: /data/ambassadors.html
 title: Ambassadors
 section: About
