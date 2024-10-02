@@ -1,5 +1,5 @@
 ---
-layout: no-sidenav
+layout: sidenav
 include: /data/team.html
 title: DOAJ team
 section: About
