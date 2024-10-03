@@ -35,7 +35,9 @@ doaj.af.journalFormFactory = (params) => {
             return doaj.af.newEditorJournalForm(params);
         case "associate_editor":
             return doaj.af.newAssociateJournalForm(params);
-        case "readonly":
+        case "admin_readonly":
+            return doaj.af.newReadOnlyJournalForm(params);
+        case "editor_readonly":
             return doaj.af.newReadOnlyJournalForm(params);
         default:
             throw "Could not extract a context from the form";
