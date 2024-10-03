@@ -1,13 +1,13 @@
 # ~~Notifications:Data~~
 application:assed:assigned:notify:
   long: |
-    An application for the journal **{journal_title}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.
+    An application for **{journal_title}** has been assigned to you by the Editor of **{group_name}**. Please start work on this within 1 week.
   short:
     New application ({issns}) assigned to you
 
 application:assed:inprogress:notify:
   long: |
-    The application for **{application_title}** has not passed review by an Editor or Managing Editor and has been assigned back to you with questions or changes.
+    The application for **{application_title}** that you marked as Completed has been assigned back to you with questions or changes.
   short:
     One of your applications ({issns}) has not passed review
 
@@ -20,19 +20,19 @@ application:editor:completed:notify:
 
 application:editor_group:assigned:notify:
   long: |
-    A new application or an update request for the journal **{journal_name}** has been assigned to your group by a Managing Editor. Please assign this to an Associate Editor within 5 working days.
+    A new application for **{journal_name}** has been assigned to your group by a Managing Editor. Please assign this to an Associate Editor within 5 working days.
   short:
     New application ({issns}) assigned to your group
 
 application:editor:inprogress:notify:
   long: |
-    The application for **{application_title}** has not passed review by a Managing Editor and has been assigned back to your group with questions or changes.
+    The application for **{application_title}** has been assigned back to your group with questions or changes.
   short:
     Application ({issns}) reverted to 'In Progress' by Managing Editor
 
 application:maned:ready:notify:
   long: |
-    The application for **{application_title}** has been marked **Ready** by **{editor}**. Please review it as soon as possible.
+    The application for **{application_title}** has been marked **Ready** by **{editor}** from **{group_name}** . Please review it within 1 week.
   short:
     Application ({issns}) marked as ready
 
@@ -42,11 +42,9 @@ application:publisher:accepted:notify:
 
     You may access the journal record from your Publisher dashboard: [{publisher_dashboard_url}]({publisher_dashboard_url}) using your DOAJ account ID or email address, and password.
 
-    If there are changes or updates to the information about your journal at any time after it has been accepted, please [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard promptly. Failure to do this promptly may result in the withdrawal of your journal from DOAJ.
+    It is your rresponsibility to keep the information about your journal in DOAJ up to date. When there are changes or updates needed please [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
 
-    [How to submit an Update Request](https://doaj.org/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date)
-
-    To increase the visibility, impact, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
+    To increase the visibility, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
 
     [How to upload article metadata](https://doaj.org/docs/faq/#uploading-article-metadata)
 
@@ -64,13 +62,17 @@ application:publisher:created:notify:
   long: |
     {title} ([{journal_url}]({journal_url}))
 
-    Thank you for your application on {application_date}.
+    Thank you for your application submitted to DOAJ on {application_date}.
 
-    We receive hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions.
-
-    If you need to make a change to your application, send an email to our Help desk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org). Please include your ISSN. We cannot reply to emails requesting a status update for applications which are less than three months old.
-
-    If you write to us, check first that there is nothing in your Spam folder from us or one of our volunteers. Our volunteers may not be emailing from a DOAJ email address so you can check that their name is there on this page [{volunteers_url}]({volunteers_url})
+    Our average review time is 3 months due to the large number of applications we receive. 
+    You may request a status update only after three months have passed since you submitted an application.  
+    
+    During the review, you may receive an email from us if we have questions. You may be contacted by one of our volunteer editors who will not be using a DOAJ email address so please check your spam folder regularly. 
+    You can see our volunteers listed here: [{volunteers_url}]({volunteers_url})
+    
+    If you need to make a change to your application, send an email to our Help desk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org). Please include your ISSN. 
+    We cannot reply to emails requesting a status update within 3 months of application.
+    
   short:
     Your application ({issns}) to DOAJ has been received
 
@@ -84,11 +86,11 @@ application:publisher:inprogress:notify:
 
 application:publisher:quickreject:notify:
   long: |
-    The application which you submitted for **{title}** on {date_applied} has been rejected as the journal does not meet our basic criteria ([{doaj_guide_url}]({doaj_guide_url})).
+    The application you submitted for **{title}** on {date_applied} has been rejected as the journal does not meet our criteria for inclusion. 
     
     {note}
     
-    You may submit a new application 6 months after the date of this email unless advised otherwise by a member of the DOAJ Editorial Team. Before you apply again, make any necessary changes to ensure your journal adheres to our criteria: ([{doaj_guide_url}]({doaj_guide_url}))
+    You may submit a new application 6 months after the date of this email. Before you apply again, make the necessary changes to ensure your journal adheres to our criteria: ([{doaj_guide_url}]({doaj_guide_url}))
   short:
     Your application ({issns}) was rejected
 
@@ -118,9 +120,9 @@ journal:editor_group:assigned:notify:
 
 update_request:publisher:accepted:notify:
   long: |
-    Congratulations! The changes which you sent us for **{application_title}** on {application_date} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been omitted and replaced with other values by the Managing Editor who carried out the review. Review the journal record here: [{publisher_dashboard_url}]({publisher_dashboard_url}).
+    The changes which you submitted for **{application_title}** on {application_date} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been edited by our editorial team. Review the journal record here: [{publisher_dashboard_url}]({publisher_dashboard_url}).
 
-    Thank you for updating this journal and helping to keep the DOAJ database up-to-date.
+    Thank you for helping to keep the DOAJ database up-to-date.
   short:
     Update request ({issns}) accepted
 
@@ -134,11 +136,10 @@ update_request:publisher:assigned:notify:
 
 update_request:publisher:rejected:notify:
   long: |
-    The update which you submitted for **{title}** on {date_applied} has been rejected. This is either because:
+    The update which you submitted for **{title}** on {date_applied} has been rejected. 
 
-    - We were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update when you are ready; or
+    If you have any questions about this or require further details, please contact our Help Desk: helpdesk@doaj.org.
 
-    - We already have one active update in the system. Additional updates are rejected without review.
   short:
     Your update request ({issns}) was rejected
 
