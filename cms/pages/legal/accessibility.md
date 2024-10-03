@@ -81,6 +81,7 @@ The content listed below is non-accessible for the following reasons.
 - Some images may not have a text alternative, so people using a screen reader cannot access the information. This fails WCAG 2.1 Success Criterion 1.1.1 (Non-text content).
 - Some form fields may be missing a label identifying the purpose of its corresponding field. This fails WCAG Success Criterion 1.3.5 (Identify Input Purpose).
 - We make users solve, recall, or transcribe something to log in. This fails WCAG Success Criterion Success 3.3.8 (Accessible Authentication)
+- We use ReCAPTCHA. This fails WCAG Success Criterion Success 3.3.8 (Accessible Authentication)
 
 ### Disproportionate burden
 

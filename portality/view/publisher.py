@@ -234,7 +234,7 @@ def upload_file():
         return resp
 
     if url is not None and url != "":
-        flash("File reference successfully received - it will be processed shortly", "success")
+        flash("File successfully received - it will be processed shortly", "success")
         return resp
 
     flash("No file or URL provided", "error")
