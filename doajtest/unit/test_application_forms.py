@@ -42,6 +42,7 @@ def test_disable_edit_note_except_editing_user(user_id, expected_result):
 
 class TestEditableNote(DoajTestCase):
 
+    @pytest.mark.skip(reason="Untestable: we don't have the editor.journal_page route enabled")  # FIXME: permanently?
     def test_note_textarea_disabled_correctly(self):
         pwd = 'password123'
         acc = models.Account(**AccountFixtureFactory.make_editor_source())
