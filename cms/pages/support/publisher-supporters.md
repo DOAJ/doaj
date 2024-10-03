@@ -1,6 +1,6 @@
 ---
 layout: sidenav
-include: /data/publisher-supporters.html
+include: /public/includes/_publisher-supporters.html
 title: Publisher supporter model
 section: Support
 sticky_sidenav: true
@@ -64,4 +64,4 @@ Please [contact us](/contact/) to discuss further.
 
 ## Supporting publishers, aggregators, and other organizations
 
-<div>{% include '/data/sponsors.html' %}</div>
+<div>{% include 'public/includes/_sponsors.html' %}</div>

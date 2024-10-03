@@ -5,6 +5,7 @@ from flask_login import current_user, login_required
 from portality.decorators import ssl_required
 from portality.bll import DOAJ, exceptions
 from portality.util import jsonp
+from portality.ui import templates
 
 import json
 
@@ -33,7 +34,7 @@ def top_todo():
                          update_requests=update_requests)
 
     # ~~-> Dashboard:Page~~
-    return render_template('dashboard/index.html', todos=todos)
+    return render_template(templates.DASHBOARD, todos=todos)
 
 
 @blueprint.route("/top_notifications")
@@ -75,4 +76,4 @@ def notification_seen(notification_id):
 @ssl_required
 def notifications():
     # ~~-> Notifications:Page~~
-    return render_template("dashboard/notifications.html")
+    return render_template(templates.NOTIFICATIONS)
