@@ -1016,7 +1016,7 @@ MAX_FEED_ENTRY_AGE = 2592000
 
 # Licensing terms for feed content
 # ~~->SiteLicence:Content~~
-FEED_LICENCE = "(c) DOAJ 2013. CC BY-SA."
+FEED_LICENCE = "(c) DOAJ 2024. CC BY-SA."
 
 # name of the feed generator (goes in the atom:generator element)
 FEED_GENERATOR = "CottageLabs feed generator"
