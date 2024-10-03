@@ -1,3 +1,7 @@
+"""
+NOTE: This test has been disabled due to the removal of the /editor/journal route (see portality.view.editor#51)
+"""
+
 import pytest
 
 from doajtest import helpers
