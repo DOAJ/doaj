@@ -66,7 +66,7 @@ DOAJ partners with many organisations. The nature of the partnerships varies and
   {:.stretch-list__item} 
 + [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
   {:.stretch-list__item} 
-+ [IOI](https://infrafinder.investinopen.org/solutions/doaj-directory-of-open-access-journals)
++ [IOI Infra Finder](https://infrafinder.investinopen.org/solutions/doaj-directory-of-open-access-journals)
   {:.stretch-list__item} 
 + [ISSN](https://www.issn.org/)
   {:.stretch-list__item} 
