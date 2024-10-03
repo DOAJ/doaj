@@ -20,7 +20,7 @@ Here is the mapping between OpenURL parameters and our Elasticsearch database fi
 
 ### Journal
 
-| Parameter | Elasticsearch field             |
+| Parameter | DOAJ record field               |
 |-----------|---------------------------------|
 | jtitle    | index.title.exact               |
 | stitle    | bibjson.alternative_title.exact |
@@ -30,7 +30,7 @@ Here is the mapping between OpenURL parameters and our Elasticsearch database fi
 
 ### Article
 
-| Parameter | Elasticsearch field              |
+| Parameter | DOAJ record field                |
 |-----------|----------------------------------|
 | aulast    | bibjson.author.name.exact        |
 | aucorp    | bibjson.author.affiliation.exact |
