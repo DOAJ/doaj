@@ -23,7 +23,7 @@ class ArticlesBulkApi(Api):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(
             {
-                "description": "<div class=\"search-query-docs\">A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed; you have to supply the full JSON.</div>",
+                "description": "<div class=\"search-query-docs\">A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the 'GET (Retrieve) an article route' below. Partial updates are not allowed; you have to supply the full JSON.</div>",
                 "required": True,
                 "schema": {"type": "string"},
                 "name": "article_json",
@@ -70,7 +70,7 @@ class ArticlesBulkApi(Api):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(
             {
-                "description": "<div class=\"search-query-docs\"><p>A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed; you have to supply the full JSON.</p><p>This request is asynchronous; the response will contain an upload_id. You can use this id to query the task status.</p></div>",
+                "description": "<div class=\"search-query-docs\"><p>A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the 'GET (Retrieve) an article route' below. Partial updates are not allowed; you have to supply the full JSON.</p><p>This request is asynchronous; the response will contain an upload_id. You can use this id to query the task status.</p></div>",
                 "required": True,
                 "schema": {"type": "string"},
                 "name": "article_json",
