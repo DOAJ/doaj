@@ -2905,7 +2905,7 @@ $.extend(true, doaj, {
                 frag += '</a></li>\
                          <li>\
                             <a href="' + export_url + '" target="_blank">\
-                            Export RIS '
+                            Export Citation (RIS) '
                 if (this.widget){
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/download.svg" alt="external-link icon">'
                 } else {
@@ -3517,7 +3517,9 @@ $.extend(true, doaj, {
                         if (dir === undefined) {
                             dir = "";
                         }
-                        dir = " " + dir;
+                        if (dir !== "") {
+                            dir = " " + dir;
+                        }
                         sortOptions += '<option value="' + field + '' + dir + '">' + edges.escapeHtml(display) + '</option>';
                     }
 

@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.6.8',
+    version='6.8.4',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -19,6 +19,7 @@ setup(
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
         "jinja2<3.1.0",            # fixme: unpinned dependency of flask, import error on 'escape'
+        "jsonpath-ng~=1.6",
         "Flask~=2.1.2",
         "Flask-Cors==3.0.8",
         "Flask-DebugToolbar==0.13.1",
@@ -39,8 +40,8 @@ setup(
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized==0.7.0",
         "psutil==5.6.3",
-        #"pycountry==22.3.5",  # FIXME: pycountry on pypi is quite outdated (2022-03-05, missing e.g. Türkiye)
-        "pycountry @ git+https://github.com/DOAJ/pycountry.git@30a23571951cf4eb98939a961ac96d1c2b64a3d8#egg=pycountry",
+        #"pycountry==23.12.11",  # FIXME: pycountry can get behind debian lists, so we'll maintain our fork for now
+        "pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
         "python-dateutil==2.8.2",  # something else already installs this, so just note we need it without an explicit version freeze
         "pytz==2020.1",
         "redis==3.3.11",
@@ -64,8 +65,6 @@ setup(
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
 
-        'jsonpath-ng~=1.6',
-
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
@@ -75,6 +74,7 @@ setup(
                  "selenium==4.12.0",
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
                  "bs4==0.0.1",   # beautifulsoup for HTML parsing
+                 'openapi-spec-validator~=0.5',
                  ],
 
         # additional test dependencies for the test-extras target
@@ -92,4 +92,10 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
+    entry_points={
+        'console_scripts': [
+            'manage-bgjobs = portality.scripts.manage_background_jobs:main',
+        ],
+    },
+
 )

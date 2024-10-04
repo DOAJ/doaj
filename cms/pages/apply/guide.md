@@ -93,7 +93,8 @@ The following information must be available online and easily accessible from th
 - Use of a plagiarism checking service is highly recommended but not required for inclusion in DOAJ.
 - Endogeny should be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
-
+  - Where content is not divided into issues, for example in a continuous publication model, endogeny must not exceed 25% in the last calendar year (minimum 5 articles per year).
+  
 ---
 
 ### Special issues
@@ -176,9 +177,15 @@ We cannot provide a status update for applications which are less than three mon
 
 ## If your application is rejected
 
-You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until six months after the date of the notification of rejection.
+You will receive an email giving the reasons for rejection of the application. Do not submit another application for the same journal until six months after the notification of rejection.
 
-If your application was rejected due to an unconfirmed ISSN, we may be able to reopen the application if the ISSN is confirmed within three months of the DOAJ rejection. Email the [DOAJ Helpdesk](mailto:helpdesk@doaj.org).
+New applications may only be submitted within six months if these rejection reasons have been resolved:
+
+- Unconfirmed ISSN
+- Website unavailable
+- Insufficient content published
+
+Where a journal has been rejected for other reasons, a new application may be submitted after six months.
 
 You are responsible for providing accurate information when you submit an application. Applications that contain information that is inaccurate or wrong or that have answers missing are automatically rejected. 
 
@@ -208,6 +215,8 @@ Appeals are considered by the DOAJ Appeals Committee, consisting of the Head of 
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
 
+Appeals or complaints that include abuse of DOAJ editors will not be considered. See our [Zero tolerance policy](https://doaj.org/about/#zero-tolerance-policy). DOAJ reserves the right to impose a penalty on publishers for such behaviour. 
+
 ---
 
 ## In other languages
@@ -223,7 +232,7 @@ Our criteria are available in:
 - [Chinese](https://zenodo.org/record/4633341)
 - [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
 - [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
-- [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
+- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
 - [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
 - [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)

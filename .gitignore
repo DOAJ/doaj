@@ -32,6 +32,7 @@ app.cfg
 # directories of transient stuff that gets created locally
 media/*
 upload/*
+upload_async/*
 !upload/README.md
 failed_articles/*
 !failed_articles/README.md
@@ -39,6 +40,7 @@ cache/csv/*.csv
 cache/sitemap/*.xml
 portality/migrate/p1p2/*.csv
 portality/migrate/p1p2/*.csv.bak
+/portality/scripts/3821_add_deposit_policy/add-Mirabel-deposit-policy.csv
 local_store/main/*
 !local_store/main/README.md
 local_store/tmp/*
@@ -130,3 +132,6 @@ doajtest/unit/resources/harvester_resp_temp.json
 
 # playground dir for try things out
 portality/_playground/*
+
+# ignore local gitignore
+.gitignore-local
