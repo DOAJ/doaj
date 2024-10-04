@@ -24,7 +24,7 @@ RIS_ARTICLE_MAPPING = {
     'UR': '$.bibjson.link[*].url',
     'AB': '$.bibjson.abstract',
     'KW': '$.bibjson.keywords[*]',
-    'DOI': '$.bibjson.identifier[?(@.type == "doi")].id',
+    'DO': '$.bibjson.identifier[?(@.type == "doi")].id',
     'SN': '$.bibjson.journal.issns[*]',
     'LA': '$.language.language',
 }

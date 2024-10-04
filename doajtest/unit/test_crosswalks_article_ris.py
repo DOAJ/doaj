@@ -28,7 +28,7 @@ UR  - http://www.example.com/article
 AB  - abstract
 KW  - word
 KW  - key
-DOI  - 10.0000/SOME.IDENTIFIER
+DO  - 10.0000/SOME.IDENTIFIER
 ER  - 
         """.split()
 
