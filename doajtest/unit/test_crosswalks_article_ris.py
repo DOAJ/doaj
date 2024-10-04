@@ -29,6 +29,8 @@ AB  - abstract
 KW  - word
 KW  - key
 DO  - 10.0000/SOME.IDENTIFIER
+LA  - EN
+LA  - FR
 ER  - 
         """.split()
 
