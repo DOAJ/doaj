@@ -16,15 +16,16 @@ class TestAPIClient(DoajTestCase):
         # Turn off debug so we're allowed to add these routes after the app has been used in other tests
         cls.app_test.debug = False
 
-        @cls.app_test.route('/hello')
-        @api_key_required
-        def hello_world():
-            return Response("hello, world!")
+        with cls.app_test.app_context():
+            @cls.app_test.route('/hello')
+            @api_key_required
+            def hello_world():
+                return Response("hello, world!")
 
-        @cls.app_test.route('/helloopt')
-        @api_key_optional
-        def hello_world_opt():
-            return Response("hello, world!")
+            @cls.app_test.route('/helloopt')
+            @api_key_optional
+            def hello_world_opt():
+                return Response("hello, world!")
 
         # Reinstate debug
         cls.app_test.debug = True
