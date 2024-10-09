@@ -32,10 +32,11 @@
 
 - name: Ina Smith
   region: Southern Africa
-  bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Access in general, scholarly research activities, repositories, and Open Access journal management and publishing."
+  bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Science incl. Open Access, scholarly research activities, repositories, and Open Access journal management and publishing."
   photo: "ina-smith.png"
   coi:
     2022: https://drive.google.com/file/d/1bnxk0NzQDU5QzdUdaFWD85A3lEA4Iu8a/view?usp=sharing
+    2024: https://drive.google.com/file/d/1cjkOAuYhyt_8m5EkKxoDe4A596emb9Wb/view?usp=sharing
 
 - name: Ivonne Lujano
   region: Latin America
