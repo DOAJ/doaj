@@ -1,6 +1,6 @@
 ---
-layout: sidenav
-include: /data/ambassadors.html
+layout: no-sidenav
+include: /public/includes/_ambassadors.html
 title: Ambassadors
 section: About
 toc: true

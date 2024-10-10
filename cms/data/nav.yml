@@ -106,7 +106,7 @@ entries:
         url: '#'
         modal:
           id: wechat
-          include: "includes/_wechat_modal.html"
+          include: "public/includes/_wechat_modal.html"
       - label: Atom feed
         feather: rss
         route: atom.feed  # ~~->Atom:WebRoute~~

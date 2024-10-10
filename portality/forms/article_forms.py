@@ -15,6 +15,7 @@ from portality.forms.fields import DOAJSelectField, TagListField
 from portality.forms.validate import OptionalIf, ThisOrThat, NoScriptTag, DifferentTo
 from portality.lib import dates
 from portality.ui.messages import Messages
+from portality.ui import templates
 
 
 #########################################
@@ -715,7 +716,7 @@ class PublisherMetadataForm(MetadataForm):
         super(PublisherMetadataForm, self).__init__(source=source, form_data=form_data, user=user)
 
     def set_template(self):
-        self.template = "publisher/metadata.html"
+        self.template = templates.PUBLISHER_ARTICLE_METADATA
 
     def render_template(self, **kwargs):
         self._check_for_author_errors(**kwargs)
@@ -732,7 +733,7 @@ class AdminMetadataArticleForm(MetadataForm):
         super(AdminMetadataArticleForm, self).__init__(source=source, form_data=form_data, user=user)
 
     def set_template(self):
-        self.template = "admin/article_metadata.html"
+        self.template = templates.ADMIN_ARTICLE_FORM
 
     def render_template(self, **kwargs):
         self._check_for_author_errors(**kwargs)
