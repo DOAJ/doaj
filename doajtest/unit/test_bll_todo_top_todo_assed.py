@@ -124,6 +124,15 @@ class TestBLLTopTodoAssed(DoajTestCase):
                 else:   # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
 
+            # prevent revision on dashboard
+            assert all([
+                self._todo_app_status(t) != constants.APPLICATION_STATUS_REVISIONS_REQUIRED
+                for t in todos
+            ])
+
+    def _todo_app_status(self, todo: dict) -> str:
+        return todo['object']['admin']['application_status']
+
     def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
