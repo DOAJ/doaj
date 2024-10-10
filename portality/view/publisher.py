@@ -4,7 +4,8 @@ from flask_login import current_user, login_required
 
 from portality.app_email import EmailException
 from portality import models, constants
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, ArticleNotAcceptable
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, \
+    ArticleNotAcceptable, NoSuchObjectException
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
@@ -55,7 +56,10 @@ def delete_application(application_id):
 
     # otherwise delegate to the application service to sort this out
     appService = DOAJ.applicationService()
-    appService.delete_application(application_id, current_user._get_current_object())
+    try:
+        appService.delete_application(application_id, current_user._get_current_object())
+    except NoSuchObjectException:
+        abort(404)
 
     return redirect(url_for("publisher.deleted_thanks"))
 
