@@ -1,0 +1,5 @@
+public:
+  context: public
+  fieldsets:
+    - basic_compliance
+    - about_the_journal

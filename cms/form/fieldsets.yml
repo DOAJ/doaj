@@ -1,0 +1,6 @@
+basic_compliance:
+  label: "Open access compliance",
+  fields:
+    - boai
+    - oa_statement_url
+    - oa_start

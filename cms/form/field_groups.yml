@@ -1,0 +1,14 @@
+notes:
+  label: "Notes",
+  repeatable:
+    initial: 1,
+    add_button_placement: "top"
+  fields:
+    - "note_author",
+    - "note_date",
+    - "note",
+    - "note_id",
+    - "note_author_id",
+  template: templates.AF_LIST,
+  entry_template: templates.AF_ENTRY_GOUP,
+  merge_disabled: "merge_disabled_notes"

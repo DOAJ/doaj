@@ -1,0 +1,21 @@
+boai:
+  label: Does the journal adhere to DOAJ’s definition of open access?
+  input: radio,
+  options:
+    - display: Yes
+      value: y
+    - display: No
+      value: n
+  help:
+    long_help: "See <a href='https://blog.doaj.org/2020/11/17/"
+                              "what-does-doaj-define-as-open-access/' "
+                              "target='_blank' rel='noopener'>"
+                              "DOAJ’s definition of open access explained "
+                              "in full</a>."
+    doaj_criteria: "You must answer 'Yes'"
+  validate:
+    required:
+      message: "You must answer <strong>Yes</strong> to continue"
+    required_value:
+      value: y
+

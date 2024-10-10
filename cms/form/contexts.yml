@@ -1,0 +1,10 @@
+admin:
+  fields:
+    boai:
+      validate: false
+  field_groups:
+    notes:
+      label: "Admin Notes"
+  fieldsets:
+    basic_compliance:
+      label: "Check this first"
