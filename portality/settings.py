@@ -1546,6 +1546,8 @@ AUTOCHECK_INCOMING = False
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 
+AUTOCHECK_PUBLICATION_THRESHOLD = 2
+
 
 ##################################################
 # Background jobs Management settings
