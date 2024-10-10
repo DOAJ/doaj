@@ -42,7 +42,7 @@ application:publisher:accepted:notify:
 
     You may access the journal record from your Publisher dashboard: [{publisher_dashboard_url}]({publisher_dashboard_url}) using your DOAJ account ID or email address, and password.
 
-    It is your rresponsibility to keep the information about your journal in DOAJ up to date. When there are changes or updates needed please [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
+    It is your responsibility to keep the information about your journal in DOAJ up to date. When there are changes or updates needed please [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
 
     To increase the visibility, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
 
@@ -96,7 +96,7 @@ application:publisher:quickreject:notify:
 
 application:publisher:revision:notify:
   long: |
-    The update which you submitted for **{application_title}** on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed.
+    The update you submitted for **{application_title}** on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed.
   short:
     Your update request ({issns}) needs revisions
 
