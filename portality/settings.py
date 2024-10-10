@@ -478,6 +478,7 @@ FACET_FIELD = ".exact"
 # an array of DAO classes from which to retrieve the type-specific ES mappings
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
+    "portality.models.Article",
     "portality.models.Journal", # ~~->Journal:Model~~
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
@@ -651,7 +652,15 @@ DATAOBJ_TO_MAPPING_COPY_TO_EXTENSIONS = {
 DEFAULT_INDEX_SETTINGS = \
     {
         'number_of_shards': 4,
-        'number_of_replicas': 1
+        'number_of_replicas': 1,
+        'analysis': {
+          'analyzer': {
+            'ascii_folded': {
+              'tokenizer': 'standard',
+              'filter': ['lowercase', 'asciifolding']
+            }
+          }
+        }
     }
 
 
@@ -687,7 +696,6 @@ MAPPINGS = {
     }
 }
 
-MAPPINGS['article'] = MAPPINGS["account"]  #~~->Article:Model~~
 MAPPINGS['upload'] = MAPPINGS["account"] #~~->Upload:Model~~
 MAPPINGS['bulk_articles'] = MAPPINGS["account"] #~~->BulkArticles:Model~~
 MAPPINGS['cache'] = MAPPINGS["account"] #~~->Cache:Model~~
@@ -974,6 +982,22 @@ ADMIN_NOTES_SEARCH_MAPPING = {
                 }
             }
     }
+}
+
+ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
+
+JOURNAL_EXCEPTION_MAPPING = {
+    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+}
+
+ARTICLE_EXCEPTION_MAPPING = {
+    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
 }
 
 ####################################################
