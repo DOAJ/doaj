@@ -506,7 +506,11 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
 
     beforeUnload(event) {
         if (!this.changed || this.submitting) {
-            event.cancel();
+            try {
+                event.cancel();
+            } catch(e) {
+                // do nothing
+            }
         }
         return "Any unsaved changes may be lost"
     }

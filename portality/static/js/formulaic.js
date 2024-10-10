@@ -1109,6 +1109,26 @@ var formulaic = {
             return elements.find(containerSelector);
         },
 
+        newFlagManager : function(params) {
+            return edges.instantiate(formulaic.widgets.FlagManager, params);
+        },
+        FlagManager: function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.namespace = "formulaic-flagmanager-" + this.fieldDef.name;
+
+            this.init = function() {
+                this.container = $("." + this.fieldDef.name + "__container");
+                this.container.hide();
+
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "flagmanager", this.form, this.fieldDef);
+                cont.html("Hidden flag stuff")
+            }
+
+            this.init();
+        },
+
         newAutocheck : function(params) {
             return edges.instantiate(formulaic.widgets.Autocheck, params);
         },
