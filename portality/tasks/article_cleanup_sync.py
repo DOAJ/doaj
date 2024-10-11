@@ -11,7 +11,7 @@ from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_long_queue as queue
 
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
@@ -216,7 +216,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         article_cleanup_sync.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = ArticleCleanupSyncBackgroundTask.create_huey_helper(long_running)
+huey_helper = ArticleCleanupSyncBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

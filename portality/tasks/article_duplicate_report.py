@@ -12,7 +12,7 @@ from portality.bll import exceptions
 from portality.bll.doaj import DOAJ
 from portality.core import app, es_connection
 from portality.lib import dates
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_long_queue as queue
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -286,7 +286,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         article_duplicate_report.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = ArticleDuplicateReportBackgroundTask.create_huey_helper(long_running)
+huey_helper = ArticleDuplicateReportBackgroundTask.create_huey_helper(queue)
 
 '''
 @long_running.periodic_task(schedule("article_duplicate_report"))

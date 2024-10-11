@@ -10,7 +10,7 @@ from portality.lib import dates
 from portality.models import cache
 from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_long_queue as queue
 
 
 class PublicDataDumpBackgroundTask(BackgroundTask):
@@ -247,7 +247,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         public_data_dump.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = PublicDataDumpBackgroundTask.create_huey_helper(long_running)
+huey_helper = PublicDataDumpBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

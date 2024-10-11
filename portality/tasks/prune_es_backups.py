@@ -8,7 +8,7 @@ from portality.background import BackgroundTask, BackgroundApi
 from portality.core import app
 from portality.lib import dates
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 # FIXME: update for index-per-type
@@ -78,7 +78,7 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         prune_es_backups.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = PruneESBackupsBackgroundTask.create_huey_helper(long_running)
+huey_helper = PruneESBackupsBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

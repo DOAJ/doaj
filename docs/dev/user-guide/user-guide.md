@@ -30,9 +30,9 @@ HUEY_SCHEDULE = {
 }
 ```
 
-* run your `main` background job consumer 
+* run your `scheduled_short` background job consumer 
 ```
-~/venv/doaj/bin/huey_consumer.py portality.tasks.consumer_main_queue.main_queue
+~/venv/doaj/bin/huey_consumer.py portality.tasks.consumer_scheduled_short_queue.scheduled_short_queue
 ```
 
 * wait 10 ~ 30 minute for generate some background jobs

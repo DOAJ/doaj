@@ -3,7 +3,7 @@ from portality import models, lock
 from portality.bll import DOAJ
 from portality.core import app
 
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundSummary
@@ -143,7 +143,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         set_in_doaj.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = SetInDOAJBackgroundTask.create_huey_helper(main_queue)
+huey_helper = SetInDOAJBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)
