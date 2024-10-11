@@ -251,36 +251,39 @@ class TestManEdAppReview(DoajTestCase):
         acc = models.Account()
         acc.set_id("steve")
         acc.add_role("admin")
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc) as ctx:
+            # ctx = self._make_and_push_test_context(acc=acc)
 
-        # construct it from form data (with a known source)
-        formulaic_context = ApplicationFormFactory.context("admin")
-        app = models.Application(**ApplicationFixtureFactory.make_application_source())
-        jid = app.current_journal
-        JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
-        JOURNAL_SOURCE["id"] = jid
-        current_journal = models.Journal(**JOURNAL_SOURCE)
-        current_journal.save()
+            # construct it from form data (with a known source)
+            formulaic_context = ApplicationFormFactory.context("admin")
+            app = models.Application(**ApplicationFixtureFactory.make_application_source())
+            jid = app.current_journal
+            JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
+            JOURNAL_SOURCE["id"] = jid
+            current_journal = models.Journal(**JOURNAL_SOURCE)
+            current_journal.save()
 
-        fc = formulaic_context.processor(
-            source=app,
-            formdata=MultiDict(make_application_form())
-        )
+            fc = formulaic_context.processor(
+                source=app,
+                formdata=MultiDict(make_application_form())
+            )
 
-        # check the form has the continuations data
-        assert fc.form.continues.data == ["1111-1111"]
-        assert fc.form.continued_by.data == ["2222-2222"]
-        assert fc.form.discontinued_date.data == "2001-01-01"
+            # check the form has the continuations data
+            assert fc.form.continues.data == ["1111-1111"]
+            assert fc.form.continued_by.data == ["2222-2222"]
+            assert fc.form.discontinued_date.data == "2001-01-01"
 
-        # run the crosswalk, don't test it at all in this test
-        fc.form2target()
-        # patch the target with data from the source
-        fc.patch_target()
+            # run the crosswalk, don't test it at all in this test
+            fc.form2target()
+            # patch the target with data from the source
+            fc.patch_target()
 
-        # ensure the model has the continuations data
-        assert fc.target.bibjson().replaces == ["1111-1111"]
-        assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
-        assert fc.target.bibjson().discontinued_date == "2001-01-01"
+            # ensure the model has the continuations data
+            assert fc.target.bibjson().replaces == ["1111-1111"]
+            assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
+            assert fc.target.bibjson().discontinued_date == "2001-01-01"
+
+            # ctx.pop()
 
     def test_05_maned_review_accept(self):
         """Give the editor's application form a full workout"""
