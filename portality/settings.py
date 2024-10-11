@@ -1422,8 +1422,9 @@ BG_MONITOR_DEFAULT_CONFIG = {
     # The number of errors allowed in the check period before the result is flagged
     'allowed_num_err': 0,
 
-    # how long ago since a job just successfully ran (0 turns this off)
-    'last_successfully_ran': 0
+    # The last time this job ran within the specified time period, was it successful.
+    # If the most recent job in the timeframe is an error, this will trigger an "unstable" state (0 turns this off)
+    'last_run_successful_in': 0
 }
 
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
@@ -1502,52 +1503,52 @@ BG_MONITOR_QUEUED_CONFIG = {
 
 BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
     'anon_export': {
-        'last_successfully_ran': 32 * _DAY
+        'last_run_successful_in': 32 * _DAY
     },
     'article_cleanup_sync': {
-        'last_successfully_ran': 33 * _DAY
+        'last_run_successful_in': 33 * _DAY
     },
     'async_workflow_notifications': {
-        'last_successfully_ran': _WEEK + _DAY
+        'last_run_successful_in': _WEEK + _DAY
     },
     'check_latest_es_backup': {
-        'last_successfully_ran': _DAY + _HOUR
+        'last_run_successful_in': _DAY + _HOUR
     },
     'datalog_journal_added_update': {
-        'last_successfully_ran': _HOUR
+        'last_run_successful_in': _HOUR
     },
     'find_discontinued_soon': {
-        'last_successfully_ran': _DAY + _HOUR
+        'last_run_successful_in': _DAY + _HOUR
     },
     'harvest': {
-        'last_successfully_ran': _DAY + _HOUR
+        'last_run_successful_in': _DAY + _HOUR
     },
     'journal_csv': {
-        'last_successfully_ran': 2 * _HOUR
+        'last_run_successful_in': 2 * _HOUR
     },
     'monitor_bgjobs': {
-        'last_successfully_ran': _WEEK + _DAY
+        'last_run_successful_in': _WEEK + _DAY
     },
     'old_data_cleanup': {
-        'last_successfully_ran': 32 * _DAY
+        'last_run_successful_in': 32 * _DAY
     },
     'prune_es_backups': {
-        'last_successfully_ran': _DAY + _HOUR
+        'last_run_successful_in': _DAY + _HOUR
     },
     'public_data_dump': {
-        'last_successfully_ran': 32 * _DAY
+        'last_run_successful_in': 32 * _DAY
     },
     'read_news': {
-        'last_successfully_ran': 2 * _HOUR
+        'last_run_successful_in': 2 * _HOUR
     },
     'reporting': {
-        'last_successfully_ran': 32 * _DAY
+        'last_run_successful_in': 32 * _DAY
     },
     'request_es_backup': {
-        'last_successfully_ran': _DAY + _HOUR
+        'last_run_successful_in': _DAY + _HOUR
     },
     'sitemap': {
-        'last_successfully_ran': _DAY + _HOUR
+        'last_run_successful_in': _DAY + _HOUR
     }
 }
 

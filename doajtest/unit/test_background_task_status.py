@@ -69,6 +69,14 @@ bg_monitor_last_completed__a = {
     }
 }
 
+bg_monitor_last_successful = {
+    'BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG': {
+        'journal_csv': {
+            'last_run_successful_in': 100
+        }
+    }
+}
+
 
 class TestBackgroundTaskStatus(DoajTestCase):
     @classmethod
@@ -235,3 +243,36 @@ class TestBackgroundTaskStatus(DoajTestCase):
         assert is_stable(status_dict['status'])
         self.assert_stable_dict(journal_csv_dict)
         assert journal_csv_dict.get('oldest') is not None
+
+    @apply_test_case_config(bg_monitor_last_successful)
+    def test_create_background_status__last_run_successful(self):
+        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
+                        status=constants.BGJOB_STATUS_COMPLETE, )
+
+        status_dict = background_task_status.create_background_status()
+        print(json.dumps(status_dict, indent=4))
+
+        journal_csv_dict = status_dict['queues']['scheduled_short']['last_run_successful'].get(JournalCSVBackgroundTask.__action__, {})
+
+        assert is_stable(status_dict['status'])
+        self.assert_stable_dict(journal_csv_dict)
+        assert journal_csv_dict.get('last_run') is not None
+        assert journal_csv_dict.get('last_run_status') == constants.BGJOB_STATUS_COMPLETE
+
+    @apply_test_case_config(bg_monitor_last_successful)
+    def test_create_background_status__last_run_unsuccessful(self):
+        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
+                        status=constants.BGJOB_STATUS_ERROR, )
+
+        status_dict = background_task_status.create_background_status()
+        print(json.dumps(status_dict, indent=4))
+
+        journal_csv_dict = status_dict['queues']['scheduled_short']['last_run_successful'].get(
+            JournalCSVBackgroundTask.__action__, {})
+
+        assert not is_stable(status_dict['status'])
+        self.assert_unstable_dict(journal_csv_dict)
+        assert journal_csv_dict.get('last_run') is not None
+        assert journal_csv_dict.get('last_run_status') == constants.BGJOB_STATUS_ERROR
+
+
