@@ -48,31 +48,30 @@ class TestAccountPasswordResetEmail(DoajTestCase):
         assert not AccountPasswordResetEmail.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
+        with self._make_and_push_test_context_manager("/"):
+            source = AccountFixtureFactory.make_publisher_source()
+            acc = models.Account(**source)
+            acc.clear_password()
+            reset_token = uuid.uuid4().hex
+            acc.set_reset_token(reset_token, 86400)
 
-        source = AccountFixtureFactory.make_publisher_source()
-        acc = models.Account(**source)
-        acc.clear_password()
-        reset_token = uuid.uuid4().hex
-        acc.set_reset_token(reset_token, 86400)
+            event = models.Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, context={"account": acc.data})
 
-        event = models.Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, context={"account": acc.data})
+            AccountPasswordResetEmail.consume(event)
 
-        AccountPasswordResetEmail.consume(event)
+            # Use the captured info stream to get email send logs
+            info_stream_contents = self.info_stream.getvalue()
 
-        # Use the captured info stream to get email send logs
-        info_stream_contents = self.info_stream.getvalue()
-
-        # We expect one email sent:
-        #   * to the applicant, informing them the application was received
-        template = re.escape('account_password_reset.jinja2')
-        to = re.escape(acc.email)
-        subject = "Directory of Open Access Journals - password reset"
-        email_matched = re.search(email_log_regex % (template, to, subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            # We expect one email sent:
+            #   * to the applicant, informing them the application was received
+            template = re.escape('account_password_reset.jinja2')
+            to = re.escape(acc.email)
+            subject = "Directory of Open Access Journals - password reset"
+            email_matched = re.search(email_log_regex % (template, to, subject),
+                                             info_stream_contents,
+                                             re.DOTALL)
+            assert bool(email_matched)
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
     def test_consume_fail(self):
         source = AccountFixtureFactory.make_publisher_source()

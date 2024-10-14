@@ -34,31 +34,33 @@ class TestTaskJournalBulkDelete(DoajTestCase):
             AccountFixtureFactory.make_assed3_source()['id']
         ]
 
-        self._make_and_push_test_context(acc=models.Account(**AccountFixtureFactory.make_managing_editor_source()))
+        # self._make_and_push_test_context(acc=models.Account(**AccountFixtureFactory.make_managing_editor_source()))
 
     def tearDown(self):
         super(TestTaskJournalBulkDelete, self).tearDown()
 
     def test_01_bulk_delete(self):
         """Bulk delete journals as an admin, but leave some around to test queries in bulk delete job"""
-        # test dry run
-        SPARE_JOURNALS_NUM = 5
-        ids_to_delete = []
-        for i in range(0, len(self.journals) - SPARE_JOURNALS_NUM):
-            ids_to_delete.append(self.journals[i].id)
-        del_q_should_terms = {"query": {"bool": {"must": [{"match_all": {}}, {"terms": {"_id": ids_to_delete}}]}}}
 
-        summary = journal_bulk_delete_manage(del_q_should_terms, dry_run=True)
-        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
-        assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
+        with self._make_and_push_test_context_manager(acc=models.Account(**AccountFixtureFactory.make_managing_editor_source())):
+            # test dry run
+            SPARE_JOURNALS_NUM = 5
+            ids_to_delete = []
+            for i in range(0, len(self.journals) - SPARE_JOURNALS_NUM):
+                ids_to_delete.append(self.journals[i].id)
+            del_q_should_terms = {"query": {"bool": {"must": [{"match_all": {}}, {"terms": {"_id": ids_to_delete}}]}}}
 
-        summary = journal_bulk_delete_manage(del_q_should_terms, dry_run=False)
-        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
-        assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
+            summary = journal_bulk_delete_manage(del_q_should_terms, dry_run=True)
+            assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
+            assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
 
-        sleep(3)
+            summary = journal_bulk_delete_manage(del_q_should_terms, dry_run=False)
+            assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
+            assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
 
-        job = models.BackgroundJob.all()[0]
+            sleep(3)
 
-        assert len(models.Journal.all()) == SPARE_JOURNALS_NUM, "{}\n\n{}".format(len(models.Journal.all()), json.dumps(job.audit, indent=2))  # json.dumps([j.data for j in models.Journal.all()], indent=2)
-        assert len(models.Article.all()) == SPARE_JOURNALS_NUM * TEST_ARTICLES_PER_JOURNAL, "{}\n\n{}".format(len(models.Article.all()), json.dumps(job.audit, indent=2))  # json.dumps([a.data for a in models.Article.all()], indent=2)
+            job = models.BackgroundJob.all()[0]
+
+            assert len(models.Journal.all()) == SPARE_JOURNALS_NUM, "{}\n\n{}".format(len(models.Journal.all()), json.dumps(job.audit, indent=2))  # json.dumps([j.data for j in models.Journal.all()], indent=2)
+            assert len(models.Article.all()) == SPARE_JOURNALS_NUM * TEST_ARTICLES_PER_JOURNAL, "{}\n\n{}".format(len(models.Article.all()), json.dumps(job.audit, indent=2))  # json.dumps([a.data for a in models.Article.all()], indent=2)

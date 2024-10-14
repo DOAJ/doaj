@@ -272,7 +272,7 @@ class TestAPIDiscovery(DoajTestCase):
         acc.save(blocking=True)
 
         # now run some queries
-        with self._make_and_push_test_context(acc=acc):
+        with self._make_and_push_test_context_manager(acc=acc):
             # 1. a general query that should hit everything
             res = DiscoveryApi.search("application", acc, "Test", 1, 2)
             assert res.data.get('total', 0) == 5
@@ -359,7 +359,7 @@ class TestAPIDiscovery(DoajTestCase):
         # 13. A search with an account that isn't either of the ones in the dataset
         other = models.Account()
         other.set_id("other")
-        with self._make_and_push_test_context(acc=other):
+        with self._make_and_push_test_context_manager(acc=other):
             res = DiscoveryApi.search("application", other, "Test", 1, 10, "created_date:desc")
             assert res.data.get('total', 0) == 0
 
