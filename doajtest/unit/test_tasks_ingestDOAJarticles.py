@@ -1051,7 +1051,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_62_article_before_oa_start(self):
         journal = article_upload_tester.create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432")
-        journal.bibjson().oa_start = dates.now().year + 2
+        journal.bibjson().oa_start = dates.now().year
         helpers.save_all_block_last([ journal,
             article_upload_tester.create_simple_publisher("testowner")
         ])
@@ -1088,7 +1088,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_63_article_after_oa_start(self):
         journal = article_upload_tester.create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432")
-        journal.bibjson().oa_start = dates.now().year - 2
+        journal.bibjson().oa_start = 2013
         helpers.save_all_block_last([ journal,
             article_upload_tester.create_simple_publisher("testowner")
         ])

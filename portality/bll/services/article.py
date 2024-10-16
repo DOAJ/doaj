@@ -72,8 +72,10 @@ class ArticleService(object):
             except (exceptions.ArticleMergeConflict, exceptions.ConfigurationException):
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
             except exceptions.ArticleBeforeOAStartDate as e:
+                all_before_oa_start_date.add(article.bibjson().title)
+                result = {'fail': 1}
+                e.message = e.message.format(title=",".join(list(all_before_oa_start_date)))
                 e_not_acceptable = e
-                result = {'fail': 1, 'before_oa_start_date': article.bibjson().title}
             except exceptions.ArticleNotAcceptable as e:
                 # The ArticleNotAcceptable exception is a superset of reasons we can't match a journal to this article
                 e_not_acceptable = e
@@ -86,9 +88,6 @@ class ArticleService(object):
             all_shared.update(result.get("shared", set()))
             all_unowned.update(result.get("unowned", set()))
             all_unmatched.update(result.get("unmatched", set()))
-            article_before_oa_start = result.get("before_oa_start_date")
-            if isinstance(article_before_oa_start, str) and article_before_oa_start:
-                all_before_oa_start_date.add(article_before_oa_start)
 
         report = {"success": success, "fail": fail, "update": update, "new": new, "shared": all_shared,
                   "unowned": all_unowned, "unmatched": all_unmatched, "before_oa_start_date":all_before_oa_start_date}
@@ -244,10 +243,10 @@ class ArticleService(object):
 
         # Check if article is uploaded before OA start date of Journal and reject the article
         journal = article.get_journal()
+        published_year = int(article.bibjson().year)
         oa_start_date = journal.has_oa_start_date()
-        if oa_start_date and dates.now().year < oa_start_date:
-            raise exceptions.ArticleBeforeOAStartDate(message=Messages.EXCEPTION_ARTICLE_BEFORE_OA_START_DATE.
-                                                      format(title=article.bibjson().title))
+        if oa_start_date and published_year < oa_start_date:
+            raise exceptions.ArticleBeforeOAStartDate(message=Messages.EXCEPTION_ARTICLE_BEFORE_OA_START_DATE)
 
         if add_journal_info:
             article.add_journal_metadata(j=journal)
