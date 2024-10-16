@@ -1455,20 +1455,6 @@ TOUR_COOKIE_PREFIX = "doaj_tour_"
 TOUR_COOKIE_MAX_AGE = 31536000
 
 TOURS = {
-    "/editor/": [
-        {
-            "roles": ["associate_editor"],
-            "content_id": "dashboard_ed_assed",
-            "name": "Welcome to your dashboard!",
-            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
-        },
-        {
-            "roles": ["editor"],
-            "content_id": "application_by_status",
-            "name": "New Links in the Colour Legend",
-            "description": "Discover how the colour legend labels now serve as links to quickly filter and view applications by group and status."
-        }
-    ],
     "/admin/journal/*": [
         {
             "roles": ["admin"],
@@ -1476,6 +1462,14 @@ TOURS = {
             "content_id": "admin_journal_autochecks",
             "name": "Autochecks",
             "description": "Autochecks are available on some journals, and can help you to identify potential problems with the journal's metadata."
+        }
+    ],
+    "/editor/": [
+        {
+            "roles": ["editor"],
+            "content_id": "application_by_status",
+            "name": "New Links in the Colour Legend",
+            "description": "Discover how the colour legend labels now serve as links to quickly filter and view applications by group and status."
         }
     ],
     "/dashboard/": [
