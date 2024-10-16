@@ -211,8 +211,11 @@ ${status}</a></li>`;
         let historicalNumbers = data.historical_numbers;
 
         if (historicalNumbers) {
-            statisticsFrag += `<section>
-                <h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
+            statisticsFrag += `<section>`;
+
+            if (current_user.role.includes("admin") || historicalNumbers.associate_editors.length > 0) {
+                statisticsFrag += `<h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
+            }
 
             if (current_user.role.includes("admin")) {
                 // Ready applications by editor
