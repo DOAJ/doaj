@@ -10,6 +10,13 @@ doaj.dashboard = {
         "ready",
         "rejected",
         "accepted"
+    ],
+    visibleStatusFilters: [
+        "pending",
+        "in progress",
+        "completed",
+        "on hold",
+        "ready",
     ]
 };
 
@@ -97,6 +104,43 @@ doaj.dashboard.renderGroupInfo = function (data) {
         });
     }
 
+    _generateStatusLinks = function (data) {
+        const statusLinks = {};
+
+        // Generate URL for each status
+        doaj.dashboard.statusOrder.forEach(status => {
+            const queryParams = [
+                {"admin.editor_group.exact": data.editor_group.name},
+                {"admin.application_status.exact": status},
+                {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
+            ];
+            const sortOptions = [{"admin.date_applied": {"order": "asc"}}];
+            const querySource = _generateSearchQuerySource(queryParams, sortOptions);
+            const url = `${doaj.dashboard.context.applicationsSearchBase}?source=${querySource}`;
+
+            statusLinks[status] = url;
+        });
+
+        return statusLinks;
+    }
+
+    const statusLinks = _generateStatusLinks(data)
+
+    _generateColorLegend = function(data) {
+        return `<div id="color-legend" class="color-legend">
+        <ul class="inlined-list">
+            ${doaj.dashboard.visibleStatusFilters.map(status => {
+            // Use the statusLink for each status
+            const link = statusLinks[status] || '#'; // Fallback to # if no link is found
+
+            return `<li><a href="${link}" class="label status status--link status--${status.replace(' ', '-')}" title="See ${data.by_status[status]?.applications || 0} ${status} application(s)">
+${status}</a></li>`;
+        }).join('')}
+        </ul>
+    </div>`;
+    }
+
+
     // Generate the editor list fragment
     _generateEditorListFragment = function (data, allEditors) {
         let editorListFrag = "";
@@ -143,35 +187,39 @@ doaj.dashboard.renderGroupInfo = function (data) {
 
     // Generate the status progress bar
     _generateStatusProgressBar = function (data) {
+
+
         let appStatusProgressBar = "";
+
         for (let status of doaj.dashboard.statusOrder) {
             if (data.by_status[status]?.applications > 0) {
-                let appStatusSource = _generateSearchQuerySource([
-                    {"admin.editor_group.exact": data.editor_group.name},
-                    {"admin.application_status.exact": status},
-                    {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
-                ], [{"admin.date_applied": {"order": "asc"}}]);
+                let url = statusLinks[status]; // Get the URL from the precomputed status links
 
-                appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
-                    <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
-                        <strong>${data.by_status[status].applications}</strong>
-                    </a></li>`;
+                appStatusProgressBar += `<li class="status status--link status--${status.replace(' ', '-')} progress-bar__bar" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
+                <a href="${url}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
+                    <strong>${data.by_status[status].applications}</strong>
+                </a></li>`;
             }
         }
+
         return appStatusProgressBar;
     }
 
-     _generateStatisticsFragment = function (data) {
+
+    _generateStatisticsFragment = function (data) {
         let statisticsFrag = "";
         let historicalNumbers = data.historical_numbers;
 
         if (historicalNumbers) {
-            statisticsFrag += `<section>
-                <h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
+            statisticsFrag += `<section>`;
+
+            if (current_user.role.includes("admin") || historicalNumbers.associate_editors.length > 0) {
+                statisticsFrag += `<h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
+            }
 
             if (current_user.role.includes("admin")) {
                 // Ready applications by editor
-                statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF; display: unset;">Ready</span> Applications: `;
+                statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="label status status--ready" style="padding: .5em; display: unset;">Ready</span> Applications: `;
                 statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.id}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;
             }
 
@@ -196,6 +244,7 @@ doaj.dashboard.renderGroupInfo = function (data) {
     _renderMainFragment = function (data) {
         _removeEditorFromAssociates(data);
 
+        let colorLegend = _generateColorLegend(data);
         let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
         let editorListFrag = _generateEditorListFragment(data, allEditors);
         let appStatusProgressBar = _generateStatusProgressBar(data);
@@ -208,8 +257,21 @@ doaj.dashboard.renderGroupInfo = function (data) {
 
 
         // Combine all fragments
-        let frag = `<div class="tabs__content card">
-        <h3>${data.editor_group.name}’s open applications</h3>
+        let frag = `<div class="tabs__content card activity-section">
+        <h3>
+            ${data.editor_group.name}’s open applications
+            <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appGroupSource}" 
+            class="tag tag--secondary" 
+            title="See all ${data.editor_group.name}’s open applications ">
+                ${data.total.applications}
+                <span class="sr-only"> applications</span>
+            </a>
+        </h3>
+        
+        <section>
+            <h3 class="sr-only">Status progress bar colour legend</h3>
+            ${colorLegend}
+        </section>
         
         <section>
           <h4 class="label label--secondary">By editor</h4>
@@ -225,14 +287,11 @@ doaj.dashboard.renderGroupInfo = function (data) {
                 </ul>
             </section>`
         }
-        frag += `
-                    ${statisticsFragment}
-                </div>`;
+        frag += `${statisticsFragment}</div>`;
 
         return frag;
     }
 
     return _renderMainFragment(data);
 }
-
 
