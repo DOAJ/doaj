@@ -19,6 +19,7 @@ from portality.decorators import api_key_optional
 from portality.decorators import api_key_required, swag, write_required
 from portality.lib import plausible
 from portality.models import BulkArticles
+from portality.ui import templates
 
 # Google Analytics category for API events
 GA_CATEGORY = app.config.get('GA_CATEGORY_API', 'API Hit')
@@ -51,7 +52,7 @@ def docs():
         this_major_version = API_VERSION_NUMBER.split(".")[0]
         base_url = base_url + "v" + this_major_version + "/"
 
-    return render_template('api/v4/api_docs.html',
+    return render_template(templates.API_V4_DOCS,
                            api_version=API_VERSION_NUMBER,
                            base_url=base_url,
                            contact_us_url=url_for('doaj.contact'),

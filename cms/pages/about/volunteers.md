@@ -4,7 +4,7 @@ title: Volunteers
 section: About
 toc: true
 highlight: true
-include: /data/volunteers.html
+include: /public/includes/_volunteers.html
 featuremap: ~~Volunteers:Fragment->VolunteersData:Template~~
 
 ---

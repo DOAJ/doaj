@@ -1,0 +1,290 @@
+[
+  {
+    "name": "base_content",
+    "blocks": [
+      {
+        "name": "extra_header",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/index.html"
+        ]
+      },
+      {
+        "name": "management_content",
+        "blocks": [
+          {
+            "name": "admin_content",
+            "blocks": [],
+            "files": [
+              "management/admin/base.html",
+              "management/admin/admin_site_search.html",
+              "management/admin/account/users.html",
+              "management/admin/account/create.html",
+              "management/admin/account/edit.html"
+            ]
+          },
+          {
+            "name": "editor_content",
+            "blocks": [],
+            "files": [
+              "management/editor/base.html",
+              "management/editor/account/edit.html"
+            ]
+          }
+        ],
+        "files": [
+          "management/base.html",
+          "management/admin/base.html",
+          "management/editor/base.html"
+        ]
+      },
+      {
+        "name": "nav",
+        "blocks": [],
+        "files": [
+          "management/base.html",
+          "management/admin/base.html",
+          "management/editor/base.html"
+        ]
+      },
+      {
+        "name": "page_title",
+        "blocks": [],
+        "files": [
+          "management/base.html",
+          "base.html",
+          "public/layouts/static-page.html",
+          "public/account/reset.html",
+          "public/account/login.html",
+          "public/account/register.html",
+          "public/account/login_to_apply.html",
+          "public/account/forgot.html",
+          "public/account/edit.html",
+          "management/admin/admin_site_search.html",
+          "management/admin/account/users.html",
+          "management/admin/account/create.html",
+          "management/admin/account/edit.html",
+          "management/editor/account/edit.html"
+        ]
+      },
+      {
+        "name": "public_content",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/index.html",
+          "public/layouts/static-page.html",
+          "public/account/reset.html",
+          "public/account/login.html",
+          "public/account/register.html",
+          "public/account/login_to_apply.html",
+          "public/account/forgot.html",
+          "public/account/edit.html"
+        ]
+      }
+    ],
+    "files": [
+      "base.html",
+      "public/base.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "base_js",
+    "blocks": [
+      {
+        "name": "management_js",
+        "blocks": [
+          {
+            "name": "admin_js",
+            "blocks": [],
+            "files": [
+              "management/admin/base.html",
+              "management/admin/account/users.html",
+              "management/admin/account/create.html",
+              "management/admin/account/edit.html"
+            ]
+          },
+          {
+            "name": "editor_js",
+            "blocks": [],
+            "files": [
+              "management/editor/base.html",
+              "management/editor/account/edit.html"
+            ]
+          }
+        ],
+        "files": [
+          "management/base.html",
+          "management/admin/base.html",
+          "management/editor/base.html"
+        ]
+      },
+      {
+        "name": "public_js",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/account/register.html",
+          "public/account/edit.html"
+        ]
+      }
+    ],
+    "files": [
+      "base.html",
+      "public/base.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "base_meta",
+    "blocks": [
+      {
+        "name": "management_meta",
+        "blocks": [],
+        "files": [
+          "management/base.html"
+        ]
+      },
+      {
+        "name": "meta_description",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_og_description",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_og_title",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_twitter_description",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_twitter_title",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "public_meta",
+        "blocks": [],
+        "files": [
+          "public/base.html"
+        ]
+      }
+    ],
+    "files": [
+      "base.html",
+      "public/base.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "base_stylesheets",
+    "blocks": [
+      {
+        "name": "management_stylesheets",
+        "blocks": [
+          {
+            "name": "admin_stylesheets",
+            "blocks": [],
+            "files": [
+              "management/admin/base.html",
+              "management/admin/account/create.html"
+            ]
+          },
+          {
+            "name": "editor_stylesheets",
+            "blocks": [],
+            "files": [
+              "management/editor/base.html"
+            ]
+          }
+        ],
+        "files": [
+          "management/base.html",
+          "management/admin/base.html",
+          "management/editor/base.html"
+        ]
+      },
+      {
+        "name": "public_stylesheets",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/account/register.html"
+        ]
+      }
+    ],
+    "files": [
+      "base.html",
+      "public/base.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "body_attrs",
+    "blocks": [],
+    "files": [
+      "base.html"
+    ]
+  },
+  {
+    "name": "body_class",
+    "blocks": [],
+    "files": [
+      "base.html",
+      "public/index.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "body_id",
+    "blocks": [],
+    "files": [
+      "base.html"
+    ]
+  },
+  {
+    "name": "page_title",
+    "blocks": [],
+    "files": [
+      "base.html",
+      "public/layouts/static-page.html",
+      "public/account/reset.html",
+      "public/account/login.html",
+      "public/account/register.html",
+      "public/account/login_to_apply.html",
+      "public/account/forgot.html",
+      "public/account/edit.html",
+      "management/base.html",
+      "management/admin/admin_site_search.html",
+      "management/admin/account/users.html",
+      "management/admin/account/create.html",
+      "management/admin/account/edit.html",
+      "management/editor/account/edit.html"
+    ]
+  }
+]
