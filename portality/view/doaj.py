@@ -516,7 +516,7 @@ def abc():
 
 @blueprint.route("/about/editorial-policy-advisory-group/")
 def epag():
-    return render_template("layouts/static_page.html", page_frag="/about/editorial-policy-advisory-group.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/editorial-policy-advisory-group.html")
 
 
 @blueprint.route("/about/volunteers/")
