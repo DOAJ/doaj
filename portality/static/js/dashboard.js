@@ -253,7 +253,15 @@ ${status}</a></li>`;
 
         // Combine all fragments
         let frag = `<div class="tabs__content card activity-section">
-        <h3>${data.editor_group.name}’s open applications</h3>
+        <h3>
+            ${data.editor_group.name}’s open applications
+            <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appGroupSource}" 
+            class="tag tag--secondary" 
+            title="See all ${data.editor_group.name}’s open applications ">
+                ${data.total.applications}
+                <span class="sr-only"> applications</span>
+            </a>
+        </h3>
         
         <section>
             <h3 class="sr-only">Status progress bar colour legend</h3>
