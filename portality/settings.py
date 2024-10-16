@@ -1457,16 +1457,16 @@ TOUR_COOKIE_MAX_AGE = 31536000
 TOURS = {
     "/editor/": [
         {
-            "roles": ["editor", "associate_editor"],
+            "roles": ["associate_editor"],
             "content_id": "dashboard_ed_assed",
             "name": "Welcome to your dashboard!",
             "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
         },
         {
             "roles": ["editor"],
-            "content_id": "dashboard_ed",
-            "name": "Your group activity",
-            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
+            "content_id": "application_by_status",
+            "name": "New Links in the Colour Legend",
+            "description": "Discover how the colour legend labels now serve as links to quickly filter and view applications by group and status."
         }
     ],
     "/admin/journal/*": [
@@ -1480,7 +1480,7 @@ TOURS = {
     ],
     "/dashboard/": [
         {
-            "roles": ["admin", "editor"],
+            "roles": ["admin"],
             "content_id": "application_by_status",
             "name": "New Links in the Colour Legend",
             "description": "Discover how the colour legend labels now serve as links to quickly filter and view applications by group and status."
