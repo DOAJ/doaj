@@ -2,7 +2,6 @@
 ~~ApplicationForm:Feature~~
 """
 from copy import deepcopy
-from dataclasses import Field
 
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, SelectMultipleField, \
     SelectField, \
