@@ -1977,7 +1977,8 @@ class FieldDefinitions:
         "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat": {"enable_on_repeat": ["textarea"]}},
-            "note_modal"
+            "note_modal",
+            "convert_to_flag"
         ],
         "merge_disabled": "merge_disabled_notes",
     }
@@ -2023,6 +2024,84 @@ class FieldDefinitions:
         "name": "note_author_id",
         "group": "notes",
         "input": "hidden"
+    }
+
+    FLAG = {
+        "name": "flag",
+        "input": "group",
+        "label": "Flag",
+        "subfields": [
+            "flag_setter",
+            "flag_created_date",
+            "flag_deadline",
+            "flag_note",
+            "flag_note_id",
+            "flag_setter_id",
+            "flag_assignee"
+        ],
+        "template": templates.AF_FIELD,
+        "entry_template": templates.AF_ENTRY_GOUP,
+        "widgets": [
+            "flag_manager"
+        ]
+    }
+
+    # ~~->$ NoteAuthor:FormField~~
+    FLAG_SETTER = {
+        "subfield": True,
+        "name": "flag_setter",
+        "group": "flag",
+        "input": "text",
+        "disabled": True
+    }
+
+    # ~~->$ NoteDate:FormField~~
+    FLAG_CREATED_DATE = {
+        "subfield": True,
+        "name": "flag_created_date",
+        "group": "flag",
+        "input": "text",
+        "disabled": True
+    }
+
+    FLAG_DEADLINE = {
+        "subfield": True,
+        "name": "flag_deadline",
+        "group": "flag",
+        "input": "text",
+        "disabled": True
+    }
+
+    FLAG_NOTE = {
+        "subfield": True,
+        "name": "flag_note",
+        "group": "flag",
+        "input": "textarea",
+        "disabled": False # "disable_except_assignee_owner_admin",
+    }
+
+    # ~~->$ NoteID:FormField~~
+    FLAG_NOTE_ID = {
+        "subfield": True,
+        "name": "flag_note_id",
+        "group": "flag",
+        "input": "hidden"
+    }
+
+    # ~~->$ NoteAuthorID:FormField~~
+    FLAG_SETTER_ID = {
+        "subfield": True,
+        "name": "flag_setter_id",
+        "group": "flag",
+        "input": "hidden"
+    }
+
+    FLAG_ASSIGNEE = {
+        "subfield": True,
+        "name": "flag_assignee",
+        "group": "flag",
+        "input": "text",
+        "disabled": False # "disable_except_assignee_owner_admin"
     }
 
     # ~~->$ OptionalValidation:FormField~~
@@ -2302,6 +2381,21 @@ class FieldSetDefinitions:
         ]
     }
 
+    FLAG = {
+        "name": "flag",
+        "label": "Flag",
+        "fields": [
+            FieldDefinitions.FLAG["name"],
+            FieldDefinitions.FLAG_SETTER["name"],
+            FieldDefinitions.FLAG_CREATED_DATE["name"],
+            FieldDefinitions.FLAG_DEADLINE["name"],
+            FieldDefinitions.FLAG_NOTE["name"],
+            FieldDefinitions.FLAG_NOTE_ID["name"],
+            FieldDefinitions.FLAG_SETTER_ID["name"],
+            FieldDefinitions.FLAG_ASSIGNEE["name"],
+        ]
+    }
+
     # ~~->$ Notes:FieldSet~~
     NOTES = {
         "name": "notes",
@@ -2434,6 +2528,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.FLAG["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication
@@ -3174,7 +3269,9 @@ JAVASCRIPT_FUNCTIONS = {
     "trim_whitespace": "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
     "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
-    "issn_link": "formulaic.widgets.newIssnLink"  # ~~-> IssnLink:FormWidget~~,
+    "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
+    "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+    "convert_to_flag": "formulaic.widgets.newConvertToFlag"  # ~~-> ConvertToFlag:FormWidget~~
 }
 
 
