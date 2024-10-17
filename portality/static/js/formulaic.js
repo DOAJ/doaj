@@ -1122,8 +1122,90 @@ var formulaic = {
                 this.container = $("." + this.fieldDef.name + "__container");
                 this.container.hide();
 
-                let cont = formulaic.widgets._make_empty_container(this.namespace, "flagmanager", this.form, this.fieldDef);
-                cont.html("Hidden flag stuff")
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
+                let clearFlagClass = edges.css_classes(this.namespace, "clear-flag");
+                let resolveFlagClass = edges.css_classes(this.namespace, "resolve-flag");
+                let controls = `<button class="${clearFlagClass}">Clear</button><button class="${resolveFlagClass}">Resolve</button>`;
+                cont.html(controls);
+
+
+                let addFlagContainer = edges.css_classes(this.namespace, "add-flag-container");
+                let addFlagClass = edges.css_classes(this.namespace, "add-flag");
+                let frag = `<div class="${addFlagContainer}"><button class="${addFlagClass}">Add flag</button></div>`;
+                this.container.after(frag);
+
+                let addFlagClassSelector = edges.css_class_selector(this.namespace, "add-flag");
+                edges.on(addFlagClassSelector, "click", this, "addFlag");
+
+                let clearFlagClassSelector = edges.css_class_selector(this.namespace, "clear-flag");
+                edges.on(clearFlagClassSelector, "click", this, "clearFlag");
+
+                let resolveFlagClassSelector = edges.css_class_selector(this.namespace, "resolve-flag");
+                edges.on(resolveFlagClassSelector, "click", this, "resolveFlag");
+            }
+
+            this.addFlag = function() {
+                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                $(addFlagContainer).hide();
+                this.container.show();
+            }
+
+            this.clearFlag = function() {
+                // TODO: actually clear the flag content from the form
+                this.container.hide();
+                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                $(addFlagContainer).show();
+            }
+
+            this.resolveFlag = function() {
+                let flagNote = this.container.find("#flag-flag_note");
+
+                let noteWidgets = formulaic.active.activeWidgets["notes"];
+                // TODO: we'll need a way to actually find the InfiniteRepeat widget for certain
+                let irw = noteWidgets[0];
+                irw.addField();
+
+                let justAdded = irw.container.find("div").first();
+                let textarea = justAdded.find("textarea");
+                textarea.val("Flag resolved: " + flagNote.val());
+
+                this.clearFlag();
+            }
+
+            this.init();
+        },
+
+        newConvertToFlag : function(params) {
+            return edges.instantiate(formulaic.widgets.ConvertToFlag, params);
+        },
+        ConvertToFlag: function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.namespace = "formulaic-convertoflag-" + this.fieldDef.name;
+
+            this.init = function () {
+                var flagClass = edges.css_classes(this.ns, "flag");
+                let group = $("div[name='" + this.fieldDef["name"] + "__group']")
+                var textarea = group.find("textarea");
+
+                for (var i = 0; i < textarea.length; i++) {
+                    var container = $(textarea[i]);
+                    $(`<button class="button ` + flagClass + `" style="margin: 0 1rem 1rem 0;">Convert to Flag</button>`).insertAfter(container);
+                }
+
+                var flagSelector = edges.css_class_selector(this.ns, "flag");
+                edges.on(flagSelector, "click", this, "convertToFlag");
+            }
+
+            this.convertToFlag = function(element) {
+                // TODO: only do this if a flag is not already set, otherwise say flag must be cleared or resolved first
+                var textarea = $(element).prev();
+                var flagNote = textarea.val();
+                var flagWidgets = formulaic.active.activeWidgets["flag"];
+                var flagWidget = flagWidgets[0];
+                flagWidget.addFlag();
+                flagWidget.container.find("#flag-flag_note").val(flagNote);
             }
 
             this.init();

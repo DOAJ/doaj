@@ -1978,7 +1978,8 @@ class FieldDefinitions:
         "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat": {"enable_on_repeat": ["textarea"]}},
-            "note_modal"
+            "note_modal",
+            "convert_to_flag"
         ],
         "merge_disabled": "merge_disabled_notes",
     }
@@ -2043,10 +2044,6 @@ class FieldDefinitions:
         "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             "flag_manager"
-            # {
-            #     "show_on_click": {"button_value": "Flag this record"},
-            #     "note_modal"
-            # }
         ]
     }
 
@@ -3274,7 +3271,8 @@ JAVASCRIPT_FUNCTIONS = {
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
     "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
-    "flag_manager": "formulaic.widgets.newFlagManager"  # ~~-> FlagManager:FormWidget~~
+    "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+    "convert_to_flag": "formulaic.widgets.newConvertToFlag"  # ~~-> ConvertToFlag:FormWidget~~
 }
 
 
