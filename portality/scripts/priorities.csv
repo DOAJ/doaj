@@ -10,7 +10,7 @@ HP/PfT,"Priority: High, Workflow: Pending for Test",Review
 HP/rev,Priority: High,Review
 PfT,Workflow: Pending for Test,Review
 PfL,Workflow: Pending for Live,Review
-Inv,Workflow: Initial Investigation,"Review, In Progress, To Do"
+Inv,Workflow: Initial Investigation,"Review, In progress, To Do"
 Rev,,Review
 Near,Scale: Nearly Finished,
 Sch,Priority: Scheduled,

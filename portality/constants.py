@@ -105,6 +105,9 @@ BGJOB_STATUS_COMPLETE = 'complete'
 BGJOB_QUEUE_ID_LONG = 'long_running'
 BGJOB_QUEUE_ID_MAIN = 'main_queue'
 BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
+BGJOB_QUEUE_ID_EVENTS = "events"
+BGJOB_QUEUE_ID_SCHEDULED_SHORT = "scheduled_short"
+BGJOB_QUEUE_ID_SCHEDULED_LONG = "scheduled_long"
 
 # Background monitor status
 BG_STATUS_STABLE = 'stable'

@@ -9,7 +9,7 @@ from portality.core import app
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.lib import dates
 from portality.lib.formulaic import FormulaicException
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 
 
 def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', application_status=''):
@@ -204,7 +204,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
         suggestion_bulk_edit.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = SuggestionBulkEditBackgroundTask.create_huey_helper(main_queue)
+huey_helper = SuggestionBulkEditBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)

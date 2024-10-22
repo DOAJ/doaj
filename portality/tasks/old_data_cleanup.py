@@ -8,7 +8,7 @@ from portality.lib import dates
 from portality.lib.es_queries import ES_DATETIME_FMT
 from portality.models import Notification, BackgroundJob
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 class RetentionQuery:
@@ -83,7 +83,7 @@ class OldDataCleanupBackgroundTask(BackgroundTask):
         )
 
 
-huey_helper = OldDataCleanupBackgroundTask.create_huey_helper(long_running)
+huey_helper = OldDataCleanupBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule
