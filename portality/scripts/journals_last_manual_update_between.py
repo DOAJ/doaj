@@ -1,13 +1,15 @@
 """ Create a CSV of journals last updated before a given date. Headings are:
 Journal title
 Journal URL
-Journal ISSN (print version)
 Journal EISSN (online version)
+Journal ISSN (print version)
+DOAJ Form URL
 Created date
 Owner
 Owner's email address
 Country
 Publisher
+Editor Group
 """
 
 import csv
@@ -77,7 +79,8 @@ if __name__ == "__main__":
                          "Owner",
                          "Owner's email address",
                          "Country",
-                         "Publisher"])
+                         "Publisher",
+                         "Editor Group"])
 
         for journal in Journal.iterate(q=LAST_MANUAL_UPDATE_BETWEEN, keepalive='5m', wrap=True):
             bibjson = journal.bibjson()
@@ -95,5 +98,6 @@ if __name__ == "__main__":
                              owner,
                              account.email if account else "Not Found",
                              index["country"],
-                             bibjson.publisher
+                             bibjson.publisher,
+                             journal.editor_group
                              ])
