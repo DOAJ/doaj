@@ -342,10 +342,9 @@ def register():
     if request.method == 'POST':
 
         if not current_user.is_authenticated and form.is_bot():
-            print(current_user.is_authenticated)
-            print(form.is_bot())
             if app.config.get('DEBUG', True):
-                flash(f"Debug mode - Values submitted: bot trap field = '{form.email.data}'; anti-bot timer: '{form.hptimer.data}'")
+                flash(Messages.ARE_YOU_A_HUMAN, "error")
+                flash(f"Debug mode - Values submitted: bot trap field = '{form.email.data}'; anti-bot timer: '{form.hptimer.data}' ('{form.hptimer.data/1000:.2f}' sec)")
             else:
                 flash(Messages.ARE_YOU_A_HUMAN, "error")
             return render_template('account/register.html', form=form)

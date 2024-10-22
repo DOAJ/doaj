@@ -11,6 +11,8 @@ doaj.honeypot.handleRegistration = function (event) {
     event.preventDefault();
     const endTime = performance.now();
     const elapsedTime = endTime - doaj.honeypot.startTime;
+    // reset the timer
+    doaj.honeypot.startTime = performance.now();
     $("#hptimer").val(elapsedTime);
     $("#registrationForm").submit();
 }

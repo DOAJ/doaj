@@ -6,8 +6,9 @@
         <input type="hidden" name="next" value="/register"/>
         {# This input is a bot-bait, it should stay invisible to the users and empty. #}
         {# Make sure it's invisible on the screen AND FOR SCREEN READERS/KEYBOARD USERS' #}
-        <input type="text" placeholder="Your email" id="email" name="email" autocomplete="false" tabindex="-1"
-               class="hpemail" value="">
+        <div aria-hidden="true" class="hpemail">
+            <input type="text" id="email" name="email" autocomplete="false" tabindex="-1" value="">
+        </div>
         <div class="form__question">
             {% if current_user.is_authenticated and current_user.has_role("create_user") %}
                 {# Admins can specify a user ID #}
