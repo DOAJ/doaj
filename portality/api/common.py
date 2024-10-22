@@ -53,7 +53,7 @@ class Api(object):
                                                                      "contains bad data"}
 
     SWAG_API_KEY_REQ_PARAM = {
-        "description": "<div class=\"search-query-docs\">Go to 'MY ACCOUNT' and 'Settings' to find your API key. If there is no key, click 'Generate a new API key'. If you do not see that button, contact us.",
+        "description": "<div class=\"search-query-docs\">Go to 'DASHBOARD' and 'Settings' to find your API key. If there is no key, click 'Generate a new API key'. If you do not see that button, contact us.",
         "required": True,
         "type": "string",
         "name": "api_key",

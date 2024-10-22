@@ -8,6 +8,7 @@ import uuid
 from io import StringIO
 import logging
 import re
+from portality.ui import templates
 
 # A regex string for searching the log entries
 email_log_regex = 'template.*%s.*to:\[u{0,1}\'%s.*subject:.*%s'
@@ -65,7 +66,7 @@ class TestAccountCreatedEmail(DoajTestCase):
 
         # We expect one email sent:
         #   * to the applicant, informing them the application was received
-        template = re.escape('account_created.jinja2')
+        template = re.escape(templates.EMAIL_ACCOUNT_CREATED)
         to = re.escape(acc.email)
         subject = "Directory of Open Access Journals - account created, please verify your email address"
         email_matched = re.search(email_log_regex % (template, to, subject),

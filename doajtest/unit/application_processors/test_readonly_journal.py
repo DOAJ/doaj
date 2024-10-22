@@ -39,14 +39,63 @@ class TestReadOnlyJournal(DoajTestCase):
         super(TestReadOnlyJournal, self).tearDown()
         lcc.lookup_code = self.old_lookup_code
 
-    ###########################################################
-    # Tests on the publisher's re-journal form
-    ###########################################################
-    def test_01_readonly_journal_success(self):
-        """Give the read-only journal form a full workout"""
+    def test_01_unknown_context(self):
+        """ Pulling the wrong context gives an exception """
+
+        with self.assertRaises(AttributeError):
+            formulaic_context = JournalFormFactory.context("readonly")
+            fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+
+    def test_02_editor_readonly_journal(self):
+        """ Tests on the editor's read-only journal form """
 
         # we start by constructing it from source
-        formulaic_context = JournalFormFactory.context("readonly")
+        formulaic_context = JournalFormFactory.context("editor_readonly")
+        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, ReadOnlyJournal)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is None
+
+        # now construct it from form data (with a known source)
+        journal_obj = models.Journal(**JOURNAL_SOURCE)
+        journal_bibjson_obj = journal_obj.bibjson()
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
+            source=journal_obj
+        )
+
+        assert isinstance(fc, ReadOnlyJournal)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is not None
+
+        # see that form has the correct info from an object (after all, that's the only point of having the form)
+        assert fc.form.title.data == journal_bibjson_obj.title
+        assert fc.form.pissn.data == journal_bibjson_obj.pissn
+        assert fc.form.eissn.data == journal_bibjson_obj.eissn
+
+        # test each of the workflow components individually ...
+
+        # run the validation
+        assert fc.validate(), fc.form.errors
+
+        # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
+        fc.form2target()
+        assert fc.target is None  # can't edit data using this form
+
+        # patch the target with data from the source
+        fc.patch_target()
+        assert fc.target is None  # can't edit data using this form
+
+        # shouldn't be able to finalise, can't edit data using this form
+        self.assertRaises(Exception, fc.finalise)
+
+    def test_03_maned_readonly_journal(self):
+        """ Tests on the managing editor's read-only journal form """
+
+        # we start by constructing it from source
+        formulaic_context = JournalFormFactory.context("admin_readonly")
         fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
         assert isinstance(fc, ReadOnlyJournal)
         assert fc.form is not None
