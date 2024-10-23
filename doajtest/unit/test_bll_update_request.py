@@ -71,6 +71,7 @@ class TestBLLUpdateRequest(DoajTestCase):
             app = Suggestion(**ApplicationFixtureFactory.make_application_source())
             app.set_id(app.makeid())
             app.set_created("198" + str(i) + "-01-01T00:00:00Z")
+            app.set_date_applied("198" + str(i) + "-04-01T00:00:00Z")
             app.set_current_journal(jid)
             app.save()
             latest_app = app
@@ -82,6 +83,7 @@ class TestBLLUpdateRequest(DoajTestCase):
             app = Suggestion(**ApplicationFixtureFactory.make_application_source())
             app.set_id(app.makeid())
             app.set_created("197" + str(i) + "-01-01T00:00:00Z")
+            app.set_date_applied("197" + str(i) + "-04-01T00:00:00Z")
             app.set_related_journal(jid)
             app.save()
             if journal is not None:
