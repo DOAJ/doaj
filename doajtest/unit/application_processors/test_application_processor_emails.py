@@ -352,7 +352,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
         publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
         publisher_to = re.escape(owner.email)
@@ -401,7 +401,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
         assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
@@ -552,7 +552,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
         publisher_template = templates.EMAIL_NOTIFICATION
         publisher_to = re.escape(owner.email)
@@ -590,7 +590,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
@@ -935,7 +935,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
         publisher_template = templates.EMAIL_NOTIFICATION
         publisher_to = re.escape(owner.email)
@@ -985,7 +985,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
         assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
@@ -1124,7 +1124,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
         publisher_template = templates.EMAIL_NOTIFICATION
         publisher_to = re.escape(owner.email)
@@ -1162,7 +1162,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
@@ -1347,7 +1347,7 @@ class TestJournalReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
         assert len(re.findall(email_count_string, info_stream_contents)) == 2
         ctx.pop()
 
@@ -1378,7 +1378,7 @@ class TestJournalReviewEmails(DoajTestCase):
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
-        assert bool(assEd_email_matched)
+        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         ctx.pop()
