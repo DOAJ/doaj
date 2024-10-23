@@ -14,15 +14,15 @@ class TestJournalEditorGroupAssignedNotify(DoajTestCase):
     def tearDown(self):
         super(TestJournalEditorGroupAssignedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, context={"journal" : {}})
-        assert JournalEditorGroupAssignedNotify.consumes(event)
+        assert JournalEditorGroupAssignedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"journal" : {}})
-        assert not JournalEditorGroupAssignedNotify.consumes(event)
+        assert not JournalEditorGroupAssignedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED)
-        assert not JournalEditorGroupAssignedNotify.consumes(event)
+        assert not JournalEditorGroupAssignedNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")
@@ -41,7 +41,7 @@ class TestJournalEditorGroupAssignedNotify(DoajTestCase):
         eg.set_editor("editor")
         eg.save(blocking=True)
 
-        event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, context={"journal" : app.data})
+        event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, context={"journal": app.data})
         JournalEditorGroupAssignedNotify.consume(event)
 
         time.sleep(1)
@@ -54,7 +54,7 @@ class TestJournalEditorGroupAssignedNotify(DoajTestCase):
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
         assert n.long is not None
         assert n.short is not None
-        assert n.action is not None
+        assert n.action is None  # view.editor.journal_page has been removed
         assert not n.is_seen()
 
     def test_consume_fail(self):

@@ -6,13 +6,14 @@ from portality import app_email
 from portality import models
 from portality.core import app
 from portality.bll.exceptions import NoSuchPropertyException
+from portality.ui import templates
 
 
 class AccountCreatedEmail(EventConsumer):
     ID = "account:created:email"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_ACCOUNT_CREATED and event.context.get("account") is not None
 
     @classmethod
@@ -44,7 +45,7 @@ class AccountCreatedEmail(EventConsumer):
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/account_created.jinja2",
+                            template_name=templates.EMAIL_ACCOUNT_CREATED,
                             reset_url=reset_url,
                             email=account.email,
                             timeout_days=password_create_timeout_days,

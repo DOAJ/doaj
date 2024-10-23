@@ -31,9 +31,9 @@
     2024: https://drive.google.com/file/d/1Gr7f_V5Of84_OmRr_4vYnJyAyOLMEySA/view?usp=drive_link
 
 - name: Dominic Mitchell
-  role: Operations Manager
+  role: Deputy Director, Platform Manager
   photo: dominic.jpg
-  bio: "Dominic has over 25 years of experience working with the publisher and library communities. He is responsible for operations, and the development of the DOAJ platform. He acts as Committee chair for the Think. Check. Submit. initiative, of which DOAJ is a founding organisation. He represents DOAJ in Project JASPER, a cross-industry project working to ensure that journals are preserved for the long term. He is also Chair of the OASPA Board of Directors. His spare time is divided between looking after his twin sons and his vinyl record collection."
+  bio: "Dominic has over 25 years of experience working with the publisher and library communities. He is responsible for managing and developing the DOAJ platform in association with DOAJ's technical partners. He acts as Committee chair for the Think. Check. Submit. initiative, of which DOAJ is a founding organisation. He is also Chair of the OASPA Board of Directors. His spare time is divided between looking after his twin sons and his vinyl record collection."
   coi:
     2018: https://drive.google.com/file/d/13XX_GUrw2xRmXARjRrTxegULPT8Redka/view?usp=sharing
     2020: https://drive.google.com/file/d/1nxFOuAdXLb8A-LulhNpz9i5vSmr5DBwF/view?usp=sharing
@@ -116,7 +116,7 @@
 - name: Lars Bjørnshauge
   role: Advisor and Founder
   photo: lars.jpg
-  bio: "Lars worked at Danish university libraries for two decades and was Director of Libraries at Lund University, Sweden from 2001 to 2011. He founded the DOAJ in 2003, and was Managing Director from 2013-2021. He has vast experience in change management, re-engineering academic libraries, and developing information services for research & higher education. For more than two decades, Lars has strongly advocated open access and provided services to the open access movement. He is co-founder of <a href=\"http://www.opendoar.org/\" target=\"_blank\">OpenDOAR</a>, the <a href=\"https://www.doabooks.org/\" target=\"_blank\">Directory of Open Access Books</a> and <a href=\"https://thinkchecksubmit.org\" target=\"_blank\">Think. Check. Submit.</a> Lars lives outside Copenhagen and is married with four children and four grandchildren. He enjoys vegetable gardening, growing cacti and succulents, and playing internet chess."
+  bio: "Lars worked at Danish university libraries for two decades and was Director of Libraries at Lund University, Sweden from 2001 to 2011. He founded the DOAJ in 2003, and was Managing Director from 2013-2021. He has vast experience in change management, re-engineering academic libraries, and developing information services for research & higher education. For more than two decades, Lars has strongly advocated open access and provided services to the open access movement. He is co-founder of <a href=\"https://www.opendoar.org/\" target=\"_blank\">OpenDOAR</a>, the <a href=\"https://www.doabooks.org/\" target=\"_blank\">Directory of Open Access Books</a> and <a href=\"https://thinkchecksubmit.org\" target=\"_blank\">Think. Check. Submit.</a> Lars lives outside Copenhagen and is married with four children and four grandchildren. He enjoys vegetable gardening, growing cacti and succulents, and playing internet chess."
   coi:
     2018: https://drive.google.com/file/d/1mm1a8nbY5MQX9loqIs2ZQuVN-73RfPuN/view?usp=sharing
     2021: https://drive.google.com/file/d/1bNj5sqUsu4sRLmm_YOuh3JCSMERzQ1Ro/view?usp=sharing
@@ -131,6 +131,13 @@
     2020: https://drive.google.com/file/d/1zU-lLB5W54E_QUm5uto5tqB6cZl83TAJ/view?usp=sharing
     2022: https://drive.google.com/file/d/19rw-naMJqHkI5T7aDIDPUkwPutBdDpDm/view?usp=sharing
     2024: https://drive.google.com/file/d/1mE86YvfsmGtklIs4I_iwLI9iH5vefg0n/view?usp=drive_link
+
+- name: Lene Rasmussen
+  role: Operations Manager
+  photo: lene.jpg
+  bio: "Lene holds a master’s degree in mathematics and economics and spent 17 years in the financial industry before joining DOAJ. She has extensive leadership experience, including leading strategy and business development processes, managing key strategic projects and driving operational excellence while delivering senior management support and advice. Lene highly prioritizes time with close friends and family and loves to travel the world. Her spare time is spent coaching the local children’s soccer team and taking a run or bike ride in the nearby forest."
+  coi:
+    2024: https://drive.google.com/file/d/1GK8gX_8_yoDWiidDweF9CHVlG0N7a-ot/view?usp=sharing
 
 - name: Mahmoud Khalifa
   role: Managing Editor and Ambassador
@@ -175,13 +182,6 @@
     2022: https://drive.google.com/file/d/1soZtiW6gyVJPl7P_J60j2TL2Fqzl0QAs/view?usp=sharing
     2024: https://drive.google.com/file/d/1jCz7G1imwy1Z2LB0h05QCxwDYRuHrPzt/view?usp=drive_link
  
-- name: Sophie
-  role: UX/UI Product Designer
-  photo:
-  bio: "Sophie specialises in user experience design and accessibility for open source projects in open access and scholarly communications. She has a Masters in Library and Information science from the University of Montreal and McGill University and did her undergraduate studies in biology and French literature at the University of Ottawa. She also leads design and front-end development at OA.Works, and has worked for the Public Knowledge Project (OJS), SPARC, and Érudit, as well as directly for a number of scholars doing UI design and data visualisation."
-  coi: 
-    2022: https://drive.google.com/file/d/19J5ELHNaV_pby7ZpQMii8_Ts4wiERu8K/view?usp=sharing
-
 - name: Zhanna Protasevych
   role: Finance Administrator
   photo: zhanna.jpg

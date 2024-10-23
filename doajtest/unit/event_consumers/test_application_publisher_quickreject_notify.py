@@ -14,24 +14,24 @@ class TestApplicationPublisherQuickRejectNotify(DoajTestCase):
     def tearDown(self):
         super(TestApplicationPublisherQuickRejectNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : {}, "old_status" : "in progress", "new_status": "rejected", "process": constants.PROCESS__QUICK_REJECT})
-        assert ApplicationPublisherQuickRejectNotify.consumes(event)
+        assert ApplicationPublisherQuickRejectNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
                              context={"application": {}, "old_status": "in progress", "new_status": "rejected"})
-        assert not ApplicationPublisherQuickRejectNotify.consumes(event)
+        assert not ApplicationPublisherQuickRejectNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
                              context={"old_status": "rejected", "new_status": "rejected"})
-        assert not ApplicationPublisherQuickRejectNotify.consumes(event)
+        assert not ApplicationPublisherQuickRejectNotify.should_consume(event)
 
         event = models.Event("test:event", context={"application" : {}, "old_status" : "in progress", "new_status": "rejected", "process": constants.PROCESS__QUICK_REJECT})
-        assert not ApplicationPublisherQuickRejectNotify.consumes(event)
+        assert not ApplicationPublisherQuickRejectNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
-        assert not ApplicationPublisherQuickRejectNotify.consumes(event)
+        assert not ApplicationPublisherQuickRejectNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

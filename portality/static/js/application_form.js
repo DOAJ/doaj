@@ -35,7 +35,9 @@ doaj.af.journalFormFactory = (params) => {
             return doaj.af.newEditorJournalForm(params);
         case "associate_editor":
             return doaj.af.newAssociateJournalForm(params);
-        case "readonly":
+        case "admin_readonly":
+            return doaj.af.newReadOnlyJournalForm(params);
+        case "editor_readonly":
             return doaj.af.newReadOnlyJournalForm(params);
         default:
             throw "Could not extract a context from the form";
@@ -897,6 +899,29 @@ window.Parsley.addValidator("onlyIf", {
             return true;
         } else {
             return true;
+        }
+    },
+    messages: {
+        en: 'This only can be set when requirements are met'
+    },
+    priority: 1
+});
+
+window.Parsley.addValidator("onlyIfExists", {
+    validateString: function (values, requirement, parsleyInstance) {
+        let fields = requirement.split(",");
+        for (var i = 0; i < fields.length; i++) {
+            let field = fields[i];
+            let other = $("[name=" + field + "]");
+            let type = other.attr("type");
+            if (type === "checkbox" || type === "radio") {
+                let checked = other.filter(":checked");
+                if (checked.length === 0) {
+                    return false;
+                }
+                return true;
+            }
+            return !!other.val()
         }
     },
     messages: {

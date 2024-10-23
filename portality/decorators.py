@@ -1,15 +1,14 @@
 import json, signal
+import re
 from functools import wraps
 from flask import request, abort, redirect, flash, url_for, render_template, make_response
 from flask_login import login_user, current_user
-
-from portality.api.common import Api401Error
 
 from portality.core import app
 from portality.lib import dates
 from portality.models import Account
 from portality.models.harvester import HarvesterProgressReport as Report
-
+from portality.ui import templates
 
 def swag(swag_summary, swag_spec):
     """
@@ -17,7 +16,7 @@ def swag(swag_summary, swag_spec):
     Decorator for API functions, adding swagger info to the swagger spec.
     """
     def decorator(f):
-        f.summary = swag_summary
+        f.summary = re.sub('</?(span|div).*?>', '', swag_summary)
         f.swag = swag_spec
         f.description = swag_summary
         return f
@@ -39,6 +38,7 @@ def api_key_required(fn):
                 if login_user(user, remember=False):
                     return fn(*args, **kwargs)
         # else
+        from portality.api.common import Api401Error
         raise Api401Error("An API Key is required to access this.")
 
     return decorated_view
@@ -119,7 +119,8 @@ def write_required(script=False, api=False):
                     resp.mimetype = "application/json"
                     return resp
                 else:
-                    return render_template("doaj/readonly.html")
+                    # FIXME: ideally, this would show a different page for each different user class
+                    return render_template(templates.PUBLIC_READ_ONLY_MODE)
 
             return fn(*args, **kwargs)
 

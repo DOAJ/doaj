@@ -84,11 +84,11 @@ application:publisher:inprogress:notify:
 
 application:publisher:quickreject:notify:
   long: |
-    The application which you submitted for **{title}** on {date_applied} has been rejected as the journal does not meet our basic criteria ([{doaj_guide_url}]({doaj_guide_url})).
+    The application you submitted for **{title}** on {date_applied} has been rejected as the journal does not meet our criteria for inclusion.
     
     {note}
     
-    You may submit a new application 6 months after the date of this email unless advised otherwise by a member of the DOAJ Editorial Team. Before you apply again, make any necessary changes to ensure your journal adheres to our criteria: ([{doaj_guide_url}]({doaj_guide_url}))
+    You may submit a new application 6 months after the date of this email. Before you apply again, make the necessary changes to ensure your journal adheres to our criteria: ([{doaj_guide_url}]({doaj_guide_url}))
   short:
     Your application ({issns}) was rejected
 
@@ -141,6 +141,22 @@ update_request:publisher:rejected:notify:
     - We already have one active update in the system. Additional updates are rejected without review.
   short:
     Your update request ({issns}) was rejected
+
+update_request:publisher:submitted:notify:
+  long: |
+    "{application_title}"
+
+    Thank you for submitting an update to your journal on {date_applied}. This has been safely received. A Managing Editor will start to review it soon. In the meantime, your original journal record is still visible in DOAJ and you may continue to upload article metadata to us.
+
+    Please save this email as a record of when you submitted your update. Before you contact us requesting a status update, please check your Spam folder to ensure that a member of our editorial team has not already contacted you.
+
+    Yours faithfully,
+
+    The DOAJ Editorial Team
+
+    **This is an automated message.**
+  short:
+    Your update request ({issns}) has been submitted
 
 journal:maned:discontinuing_soon:notify:
   long: |
