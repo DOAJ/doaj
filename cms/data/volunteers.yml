@@ -125,8 +125,16 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-
-- name: Amber Osman
+  
+- name: Ana Melisa Fernandes
+  area: Bird behavior and ecology
+  year_since:
+  city: Bogotá 
+  country: Colombia
+  language: Spanish, English, Portuguese
+  photo: "Ana Melisa Fernandes.jpg" 
+  
+- name: Amber Osman 
   area: Open Science, Publication Ethics, Scholarly communication
   year_since:
   city: Karachi
@@ -193,7 +201,8 @@ ass_ed:
   city: York
   country: United Kingdom
   language: English
-
+  photo: "Ben Catt.jpg"
+  
 - name: Busro Busro
   area: Humanities
   year_since:
@@ -463,7 +472,15 @@ ass_ed:
   country: Iraq
   language: Arabic, English, Swedish
   photo: "karima.jpg"
-
+  
+- name: Kelly Anne Dumayne
+  area: Psychology, linguistics, creative writing
+  year_since:
+  city: Wales
+  country: United Kingdom
+  language: English
+  photo: 
+  
 - name: Khoirul Fathoni
   area: Humanities
   year_since:

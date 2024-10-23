@@ -1,0 +1,28 @@
+{% extends "management/editor/base.html" %}
+
+{% block editor_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block page_title %}Your group’s applications{% endblock %}
+
+{% block editor_content %}
+    <div id="group_applications"></div>
+{% endblock %}
+
+{% block editor_js %}
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        editorGroupApplicationsSearchConfig : {
+            applicationEditUrl : "{{ url_for('editor.application', application_id='') }}",
+            readOnlyJournalUrl: "{{ url_for('editor.journal_readonly', journal_id="") }}",
+            searchPath : '/editor_query/suggestion/_search'
+        }
+    });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/editor.groupapplications.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% endblock %}
