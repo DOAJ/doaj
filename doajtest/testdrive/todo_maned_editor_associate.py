@@ -13,7 +13,8 @@ class TodoManedEditorAssociate(TestDrive):
     def setup(self) -> dict:
         un = self.create_random_str()
         pw = self.create_random_str()
-        admin = models.Account.make_account(un + "@example.com", un, "TodoManedEditorAssociate " + un, ["admin", "editor", constants.ROLE_ASSOCIATE_EDITOR])
+        admin = models.Account.make_account(un + "@example.com", un, "TodoManedEditorAssociate " + un,
+                                            ["admin", "editor", constants.ROLE_ASSOCIATE_EDITOR])
         admin.set_password(pw)
         admin.save()
 
@@ -52,7 +53,6 @@ class TodoManedEditorAssociate(TestDrive):
         aapps = build_associate_applications(un)
         eapps = build_editor_applications(un, eg2)
         mapps = build_maned_applications(un, eg1, owner.id, eg3)
-
 
         return {
             "account": {
@@ -96,13 +96,15 @@ class TodoManedEditorAssociate(TestDrive):
         return {"status": "success"}
 
 
-def build_maned_applications(un, eg, owner, eponymous_group):
+def build_maned_applications(un: str,
+                             eg: models.EditorGroup, owner,
+                             eponymous_group: models.EditorGroup):
     w = 7 * 24 * 60 * 60
 
     apps = {}
 
     app = build_application(un + " Maned Stalled Application", 8 * w, 9 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
-                            editor_group=eg.name, owner=owner)
+                            editor_group=eg.id, owner=owner)
     app.save()
     apps["stalled"] = [{
         "id": app.id,
@@ -110,7 +112,7 @@ def build_maned_applications(un, eg, owner, eponymous_group):
     }]
 
     app = build_application(un + " Maned Old Application", 10 * w, 10 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
-                            editor_group=eg.name, owner=owner)
+                            editor_group=eg.id, owner=owner)
     app.save()
     apps["old"] = [{
         "id": app.id,
@@ -118,7 +120,7 @@ def build_maned_applications(un, eg, owner, eponymous_group):
     }]
 
     app = build_application(un + " Maned Ready Application", 1 * w, 1 * w, constants.APPLICATION_STATUS_READY,
-                            editor_group=eg.name, owner=owner)
+                            editor_group=eg.id, owner=owner)
     app.save()
     apps["ready"] = [{
         "id": app.id,
@@ -126,7 +128,7 @@ def build_maned_applications(un, eg, owner, eponymous_group):
     }]
 
     app = build_application(un + " Maned Completed Application", 2 * w, 2 * w, constants.APPLICATION_STATUS_COMPLETED,
-                            editor_group=eg.name, owner=owner)
+                            editor_group=eg.id, owner=owner)
     app.save()
     apps["completed"] = [{
         "id": app.id,
@@ -134,7 +136,7 @@ def build_maned_applications(un, eg, owner, eponymous_group):
     }]
 
     app = build_application(un + " Maned Pending Application", 2 * w, 2 * w, constants.APPLICATION_STATUS_PENDING,
-                            editor_group=eg.name, owner=owner)
+                            editor_group=eg.id, owner=owner)
     app.remove_editor()
     app.save()
     apps["pending"] = [{
@@ -144,7 +146,7 @@ def build_maned_applications(un, eg, owner, eponymous_group):
 
     app = build_application(un + " Maned Low Priority Pending Application", 1 * w, 1 * w,
                             constants.APPLICATION_STATUS_PENDING,
-                            editor_group=eponymous_group.name, owner=owner)
+                            editor_group=eponymous_group.id, owner=owner)
     app.remove_editor()
     app.save()
     apps["low_priority_pending"] = [{
@@ -152,12 +154,14 @@ def build_maned_applications(un, eg, owner, eponymous_group):
         "title": un + " Maned Low Priority Pending Application"
     }]
 
-    lmur = build_application(un + " Last Month Maned Update Request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST,
-                           editor_group=eponymous_group.name, owner=owner, update_request=True)
+    lmur = build_application(un + " Last Month Maned Update Request", 5 * w, 5 * w,
+                             constants.APPLICATION_STATUS_UPDATE_REQUEST,
+                             editor_group=eponymous_group.id, owner=owner, update_request=True)
     lmur.save()
 
-    tmur = build_application(un + " This Month Maned Update Request", 0, 0, constants.APPLICATION_STATUS_UPDATE_REQUEST,
-                           editor_group=eponymous_group.name, owner=owner, update_request=True)
+    tmur = build_application(un + " This Month Maned Update Request", 0, 0,
+                             constants.APPLICATION_STATUS_UPDATE_REQUEST,
+                             editor_group=eponymous_group.id, owner=owner, update_request=True)
     tmur.save()
 
     apps["update_request"] = [
@@ -174,7 +178,8 @@ def build_maned_applications(un, eg, owner, eponymous_group):
     return apps
 
 
-def build_application(title, lmu_diff, cd_diff, status, editor=None, editor_group=None, owner=None, update_request=False):
+def build_application(title, lmu_diff, cd_diff, status, editor=None, editor_group=None, owner=None,
+                      update_request=False):
     source = ApplicationFixtureFactory.make_application_source()
     ap = models.Application(**source)
     ap.bibjson().title = title

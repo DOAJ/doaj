@@ -61,10 +61,12 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
 
         # test dry run
-        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, editor_group=new_eg.name, dry_run=True)
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
+                                 editor_group=new_eg.id, dry_run=True)
         assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
-        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, editor_group=new_eg.name, dry_run=False)
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
+                                 editor_group=new_eg.id, dry_run=False)
         assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
         sleep(1)
@@ -74,7 +76,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         modified_journals = [j.pull(j.id) for j in self.journals]
 
         for ix, j in enumerate(modified_journals):
-            assert j.editor_group == new_eg.name, \
+            assert j.editor_group == new_eg.id, \
                 "modified_journals[{}].editor_group is {}" \
                 "\nHere is the BackgroundJob audit log:\n{}"\
                     .format(ix, j.editor_group, json.dumps(job.audit, indent=2))

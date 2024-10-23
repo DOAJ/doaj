@@ -1,19 +1,25 @@
-import time
+from __future__ import annotations
+import json
 import re
 import sys
-import uuid
-import json
-import elasticsearch
+import time
 import urllib.parse
-
+import uuid
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List
+from typing import List, Iterable, Union, Dict, TypedDict, Optional
+from typing import TYPE_CHECKING
+
+import elasticsearch
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
+
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 11):
+        from typing import Self
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -21,6 +27,10 @@ from portality.lib.dates import FMT_DATETIME_STD
 
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_\.]+?\] in order to sort on.*', re.DOTALL)
 CONTENT_TYPE_JSON = {'Content-Type': 'application/json'}
+
+class IdText(TypedDict):
+    id: str
+    text: str
 
 
 class ElasticSearchWriteException(Exception):
@@ -380,7 +390,7 @@ class DomainObject(UserDict, object):
         return ES.indices.refresh(index=cls.index_name())
 
     @classmethod
-    def pull(cls, id_):
+    def pull(cls, id_) -> 'Self':
         """Retrieve object by id."""
         if id_ is None or id_ == '':
             return None
@@ -400,7 +410,7 @@ class DomainObject(UserDict, object):
         return cls(**out)
 
     @classmethod
-    def pull_by_key(cls, key, value):
+    def pull_by_key(cls, key, value) -> 'Self':
         res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
@@ -408,7 +418,7 @@ class DomainObject(UserDict, object):
             return None
 
     @classmethod
-    def object_query(cls, q=None, **kwargs):
+    def object_query(cls, q=None, **kwargs) -> List['Self']:
         result = cls.query(q, **kwargs)
         return [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
 
@@ -569,7 +579,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
-                keepalive: str = '1m'):
+                keepalive: str = '1m') -> Iterable[Union['Self', Dict]]:
         """ Provide an iterable of all items in a model, use
         :param q: The query to scroll results on
         :param page_size: limited by ElasticSearch, check settings to override
@@ -798,7 +808,7 @@ class DomainObject(UserDict, object):
         return cls.send_query(q.query())
 
     @classmethod
-    def advanced_autocomplete(cls, filter_field, facet_field, substring, size=5, prefix_only=True):
+    def advanced_autocomplete(cls, filter_field, facet_field, substring, size=5, prefix_only=True) -> List[IdText]:
         analyzed = True
         if " " in substring:
             analyzed = False
@@ -819,7 +829,7 @@ class DomainObject(UserDict, object):
         return result
 
     @classmethod
-    def autocomplete(cls, field, prefix, size=5):
+    def autocomplete(cls, field, prefix, size=5) -> List[IdText]:
         res = None
         # if there is a space in the prefix, the prefix query won't work, so we fall back to a wildcard
         # we only do this if we have to, because the wildcard query is a little expensive
@@ -837,7 +847,35 @@ class DomainObject(UserDict, object):
         return result
 
     @classmethod
-    def q2obj(cls, **kwargs):
+    def autocomplete_pair(cls, query_field, query_prefix, id_field, text_field, size=5) -> list[IdText]:
+        query = AutocompletePairQuery(query_field, query_prefix,
+                                      source_fields=[id_field, text_field],
+                                      size=size).query()
+        objs = cls.q2obj(q=query)
+        return [{"id": getattr(obj, id_field), "text": getattr(obj, text_field)} for obj in objs]
+
+    @classmethod
+    def get_target_value(cls, query, id_name, field_name) -> str | None:
+        results = cls.get_target_values(query, id_name, field_name, size=2)
+        if len(results) > 1:
+            app.logger.debug("More than one record found for query {q}".format(q=json.dumps(query, indent=2)))
+
+        if len(results) > 0:
+            return list(results.values())[0]
+
+        return None
+
+
+    @classmethod
+    def get_target_values(cls, query, id_name, field_name, size=1000) -> dict[str]:
+        query['_source'] = [id_name, field_name]
+        query['size'] = size
+        res = cls.query(q=query)
+        return {hit['_source'].get(id_name): hit['_source'].get(field_name)
+                for hit in res['hits']['hits']}
+
+    @classmethod
+    def q2obj(cls, **kwargs) -> List['Self']:
         extra_trace_info = ''
         if 'q' in kwargs:
             extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(
@@ -936,6 +974,13 @@ class DomainObject(UserDict, object):
             m.save()
         if blocking:
             cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
+
+    @classmethod
+    def save_all_block_last(cls, objects):
+        *objs, last = objects
+        for obj in objects:
+            obj.save()
+        last.save(blocking=True)
 
 
 def any_pending_tasks():
@@ -1061,6 +1106,25 @@ class WildcardAutocompleteQuery(object):
         }
 
 
+class AutocompletePairQuery(object):
+    def __init__(self, query_field, query_value, source_fields=None, size=5):
+        self.query_field = query_field
+        self.query_value = query_value
+        self.source_fields = source_fields
+        self.size = size
+
+    def query(self):
+        query = {
+            "query": {
+                "prefix": {self.query_field: self.query_value}
+            },
+            "size": self.size
+        }
+        if self.source_fields is not None:
+            query["_source"] = self.source_fields
+        return query
+
+
 #########################################################################
 # A query handler that knows how to speak facetview2
 #########################################################################
@@ -1106,6 +1170,23 @@ class Facetview2(object):
     @staticmethod
     def url_encode_query(query):
         return urllib.parse.quote(json.dumps(query).replace(' ', ''))
+
+
+#########################################################################
+# id to text Queries
+#########################################################################
+
+class IdTextTermQuery:
+    def __init__(self, id_field, id_value):
+        self.id_field = id_field
+        self.id_value = id_value
+
+    def query(self):
+        if isinstance(self.id_value, list):
+            term = {"terms": {self.id_field: self.id_value}}
+        else:
+            term = {"term": {self.id_field: self.id_value}}
+        return {"query": term}
 
 
 def patch_model_for_bulk(obj: DomainObject):

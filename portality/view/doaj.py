@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 import re
 import urllib.error
@@ -13,6 +14,7 @@ from portality import dao
 from portality import models
 from portality import store
 from portality.core import app
+from portality.dao import IdTextTermQuery
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
@@ -218,21 +220,24 @@ def get_from_local_store(container, filename):
     return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
 
 
+def _no_suggestions_response():
+    return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})
+
+
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q', '')
     if not prefix:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+        return _no_suggestions_response()  # select2 does not understand 400, which is the correct code here...
 
     m = models.lookup_model(doc_type)
     if not m:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+        return _no_suggestions_response()  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
 
     filter_field = app.config.get("AUTOCOMPLETE_ADVANCED_FIELD_MAPS", {}).get(field_name)
 
-    suggs = []
     if filter_field is None:
         suggs = m.autocomplete(field_name, prefix, size=size)
     else:
@@ -241,6 +246,77 @@ def autocomplete(doc_type, field_name):
     return jsonify({'suggestions': suggs})
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
+
+
+@blueprint.route('/autocomplete/<doc_type>/<field_name>/<id_field>', methods=["GET", "POST"])
+def autocomplete_pair(doc_type, field_name, id_field):
+    r"""
+    different from autocomplete, in response json, the values of `id` and `text` are used different field
+
+    Parameters:
+        `q` -- will be used to search record with value that start with `q` in `field_name` field
+
+    Returns:
+        Json string with follow format:
+        {suggestions: [{id: id_field, text: field_name}]}
+
+        `id` used value of `id_field`
+        `text` used value of `field_name`
+    """
+
+    prefix = request.args.get('q', '')
+    if not prefix:
+        return _no_suggestions_response()  # select2 does not understand 400, which is the correct code here...
+
+    m = models.lookup_model(doc_type)
+    if not m:
+        return _no_suggestions_response()  # select2 does not understand 404, which is the correct code here...
+
+    size = request.args.get('size', 5)
+    suggs = m.autocomplete_pair(field_name, prefix.lower(), id_field, field_name, size=size)
+    return jsonify({'suggestions': suggs})
+
+
+@blueprint.route('/autocomplete-text/<doc_type>/<field_name>/<id_field>', methods=["GET", "POST"])
+def autocomplete_text_mapping(doc_type, field_name, id_field):
+    """
+    This route is used by the autocomplete widget to get the text value by id
+
+    Json string with follow format:
+    {id_val: text_val}
+    """
+
+    id_value = request.args.get('id')
+    if id_value is None:
+        id_value = request.json.get('ids', [])
+    else:
+        id_value = id_value.strip()
+    id_map = id_text_mapping(doc_type, field_name, id_field, id_value)
+    return jsonify(id_map)
+
+
+def id_text_mapping(doc_type, field_name, id_field, id_value) -> dict:
+
+    query_factory_mapping = {
+        ('editor_group', 'id', 'name', ): lambda: IdTextTermQuery(id_field, id_value).query(),
+    }
+    query_factory = query_factory_mapping.get((doc_type, id_field, field_name))
+    if not query_factory:
+        app.logger.warning(f"Unsupported id_text_mapping for "
+                           f"doc_type[{doc_type}], field_name[{field_name}], id_field[{id_field}]")
+        return {}
+
+    if not id_value:
+        return {}
+
+    m = models.lookup_model(doc_type)
+    if not m:
+        app.logger.warning(f"model not found for doc_type[{doc_type}]")
+        return {}
+
+    query = query_factory()
+    return m.get_target_values(query, id_field, field_name)
+
 
 
 def find_toc_journal_by_identifier(identifier):

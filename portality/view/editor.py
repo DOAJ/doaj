@@ -138,8 +138,7 @@ def application(application_id):
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
     # Edit role is either associate_editor or editor, depending whether the user is group leader
-    eg = models.EditorGroup.pull_by_key("name", ap.editor_group)
-    role = 'editor' if eg is not None and eg.editor == current_user.id else 'associate_editor'
+    role = models.EditorGroup.find_editor_role_by_id(ap.editor_group, current_user.id)
     fc = ApplicationFormFactory.context(role, extra_param=exparam_editing_user())
 
     if request.method == "GET":

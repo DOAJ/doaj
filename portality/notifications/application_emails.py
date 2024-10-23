@@ -5,8 +5,6 @@ import json
 from portality import models, app_email, constants
 from portality.core import app
 from portality.dao import Facetview2
-from portality.ui.messages import Messages
-from portality.lib import dates
 from portality.ui import templates
 
 
@@ -19,9 +17,7 @@ def send_editor_completed_email(application):
     url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
 
     # This is to the editor in charge of this application's assigned editor group
-    editor_group_name = application.editor_group
-    editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
-    editor_group = models.EditorGroup.pull(editor_group_id)
+    editor_group = models.EditorGroup.pull(application.editor_group)
     editor_acc = editor_group.get_editor_account()
 
     editor_id = editor_acc.id

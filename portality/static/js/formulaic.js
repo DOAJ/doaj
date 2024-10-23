@@ -2151,51 +2151,66 @@ var formulaic = {
                 let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;
                 let include_input = this.params.include === undefined ? true : this.params.include;
                 let allow_clear = this.params.allow_clear_input === undefined ? true : this.params.allow_clear_input;
+                const id_field = this.params.id_field;
 
+                let url = `${current_scheme}//${current_domain}/autocomplete/${doc_type}/${doc_field}`;
+                if (id_field) {
+                    url +=  `/${id_field}`;
+                }
                 let ajax = {
-                    url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
+                    url: url,
                     dataType: 'json',
                     data: function (term, page) {
-                        return {
-                            q: term
-                        };
+                        return { q: term };
                     },
                     results: function (data, page) {
                         return { results: data["suggestions"] };
                     }
                 };
 
-                var csc = function(term) {return {"id":term, "text": term};};
 
                 var initSel = function (element, callback) {
-                    var data = {id: element.val(), text: element.val()};
-                    callback(data);
+                    function setIdText(id, text) {
+                        callback({id: id, text: text || id});
+                    }
+                    const eleVal = element.val();
+
+                    if (!id_field || !eleVal) {
+                        /*
+                        no need to query text value if id_field is not provided (not id text mapping)
+                        or if the element value is empty
+                         */
+                        setIdText(eleVal, eleVal);
+                        return;
+                    }
+
+                    $.ajax({
+                        type : "GET",
+                        data : {id : eleVal},
+                        dataType: "json",
+                        url: `${current_scheme}//${current_domain}/autocomplete-text/${doc_type}/${doc_field}/${id_field}`,
+                        success: function(resp) {
+                            setIdText(eleVal, resp[eleVal]);
+                        }
+                    })
                 };
 
                 let selector = "[name='" + this.fieldDef.name + "']";
 
                 $(selector).on("focus", formulaic.widgets._select2_shift_focus);
 
+                let select2Param = {
+                    minimumInputLength: mininput,
+                    ajax: ajax,
+                    initSelection : initSel,
+                    allowClear: allow_clear,
+                    width: 'resolve'
+                };
                 if (include_input) {
                     // apply the create search choice
-                    $(selector).select2({
-                        minimumInputLength: mininput,
-                        ajax: ajax,
-                        createSearchChoice: csc,
-                        initSelection : initSel,
-                        allowClear: allow_clear,
-                        width: 'resolve'
-                    });
-                } else {
-                    // go without the create search choice option
-                    $(selector).select2({
-                        minimumInputLength: mininput,
-                        ajax: ajax,
-                        initSelection : initSel,
-                        allowClear: allow_clear,
-                        width: 'resolve'
-                    });
+                    select2Param.createSearchChoice = (term) => ({"id": term, "text": term});
                 }
+                $(selector).select2(select2Param);
 
                 $(selector).on("focus", formulaic.widgets._select2_shift_focus);
             };

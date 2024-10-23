@@ -234,21 +234,15 @@ def editor_notifications(emails_dict, limit=None):
     status_filters = [Facetview2.make_term_filter(term, status) for status in relevant_statuses]
 
     # First note - how many applications in editor's group have no associate editor assigned.
-    ed_app_query = EdAppQuery(status_filters)
-
     ed_url = app.config.get("BASE_URL") + "/editor/group_applications"
 
     # Query for editor groups which have items in the required statuses, count their numbers
-    es = models.Suggestion.query(q=ed_app_query.query())
-    group_stats = [(bucket.get("key"), bucket.get("doc_count")) for bucket in es.get("aggregations", {}).get("ed_group_counts", {}).get("buckets", [])]
-
-    if limit is not None and isinstance(limit, int):
-        group_stats = group_stats[:limit]
+    group_stats = find_group_stats(EdAppQuery(status_filters).query(), limit)
 
     # Get the email addresses for the editor in charge of each group, Add the template to their email
-    for (group_name, group_count) in group_stats:
+    for (group_id, group_count) in group_stats:
         # get editor group object by name
-        eg = models.EditorGroup.pull_by_key("name", group_name)
+        eg = models.EditorGroup.pull(group_id)
         if eg is None:
             continue
 
@@ -256,7 +250,7 @@ def editor_notifications(emails_dict, limit=None):
         editor = eg.get_editor_account()
         ed_email = editor.email
 
-        text = render_template(templates.EMAIL_WF_EDITOR_GROUPCOUNT, num=group_count, ed_group=group_name, url=ed_url)
+        text = render_template(templates.EMAIL_WF_EDITOR_GROUPCOUNT, num=group_count, ed_group=eg.name, url=ed_url)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
     # Second note - records within editor group not touched for so long
@@ -264,22 +258,16 @@ def editor_notifications(emails_dict, limit=None):
     newest_date = dates.now() - timedelta(weeks=X_WEEKS)
     newest_date_stamp = newest_date.strftime(FMT_DATETIME_STD)
 
-    ed_age_query = EdAgeQuery(newest_date_stamp, status_filters)
-
     ed_fv_prefix = app.config.get('BASE_URL') + "/editor/group_applications?source="
     fv_age = Facetview2.make_query(sort_parameter="last_manual_update")
     ed_age_url = ed_fv_prefix + Facetview2.url_encode_query(fv_age)
 
-    es = models.Suggestion.query(q=ed_age_query.query())
-    group_stats = [(bucket.get("key"), bucket.get("doc_count")) for bucket in es.get("aggregations", {}).get("ed_group_counts", {}).get("buckets", [])]
-
-    if limit is not None and isinstance(limit, int):
-        group_stats = group_stats[:limit]
+    group_stats = find_group_stats(EdAgeQuery(newest_date_stamp, status_filters).query(), limit)
 
     # Get the email addresses for the editor in charge of each group, Add the template to their email
-    for (group_name, group_count) in group_stats:
+    for (group_id, group_count) in group_stats:
         # get editor group object by name
-        eg = models.EditorGroup.pull_by_key("name", group_name)
+        eg = models.EditorGroup.pull(group_id)
         if eg is None:
             continue
 
@@ -287,8 +275,17 @@ def editor_notifications(emails_dict, limit=None):
         editor = eg.get_editor_account()
         ed_email = editor.email
 
-        text = render_template(templates.EMAIL_WF_EDITOR_AGE, num=group_count, ed_group=group_name, url=ed_age_url, x_weeks=X_WEEKS)
+        text = render_template(templates.EMAIL_WF_EDITOR_AGE, num=group_count, ed_group=eg.name, url=ed_age_url, x_weeks=X_WEEKS)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
+
+
+def find_group_stats(ed_query, limit):
+    es = models.Suggestion.query(q=ed_query)
+    group_stats = [(bucket.get("key"), bucket.get("doc_count"))
+                   for bucket in es.get("aggregations", {}).get("ed_group_counts", {}).get("buckets", [])]
+    if limit is not None and isinstance(limit, int):
+        group_stats = group_stats[:limit]
+    return group_stats
 
 
 def associate_editor_notifications(emails_dict, limit=None):

@@ -6,8 +6,10 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from typing import Callable, Iterable
 
+from elasticsearch import helpers
 from unidecode import unidecode
 
+from portality import dao
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
@@ -50,7 +52,7 @@ JOURNAL_STRUCT = {
         "index": {
             "fields": {
                 "publisher_ac": {"coerce": "unicode"},
-                "institution_ac": {"coerce": "unicode"}
+                "institution_ac": {"coerce": "unicode"},
             }
         }
     }
@@ -128,6 +130,41 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         # create an array of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
+
+    @classmethod
+    def renew_editor_group_name(cls,
+                                editor_group_id: str,
+                                new_name: str,
+                                batch_size: int = 10000,
+                                ):
+        """
+        Renew editor_group_name in the index.
+        for ALL documents with related editor_group_id.
+        """
+
+        query = ByEditorGroupIdQuery(editor_group_id).query()
+        query['_source'] = ['id']
+
+        def _to_action(_id):
+            return {
+                "_op_type": "update",
+                "_index": cls.index_name(),
+                "_id": _id,
+                "script": {
+                    "source": "ctx._source.index.editor_group_name = params.new_value",
+                    "lang": "painless",
+                    "params": {
+                        "new_value": new_name
+                    }
+                }
+            }
+
+        ids = [j['id'] for j in cls.iterate(q=query, wrap=False, page_size=batch_size, keepalive='5m')]
+        app.logger.info(f"Found {len(ids)} {cls.__name__} with editor_group_id: {editor_group_id}")
+
+        id_batches = (ids[i:i + batch_size] for i in range(0, len(ids), batch_size))
+        for _sub_ids in id_batches:
+            helpers.bulk(dao.ES, [_to_action(_id) for _id in _sub_ids])
 
     ############################################
     ## base property methods
@@ -232,8 +269,23 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def set_editor_group(self, eg):
         self.__seamless__.set_with_struct("admin.editor_group", eg)
 
+
     def remove_editor_group(self):
         self.__seamless__.delete("admin.editor_group")
+        self.__seamless__.delete("index.editor_group_name")
+
+    def editor_group_name(self, index=True, default_id=False) -> str | None:
+        name = None
+        if index:
+            name = self.__seamless__.get_single("index.editor_group_name")
+        elif self.editor_group:
+            from portality.models import EditorGroup
+            name = EditorGroup.find_name_by_id(self.editor_group)
+
+        if default_id:
+            name = name or self.editor_group
+
+        return name
 
     @property
     def editor(self):
@@ -305,7 +357,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         clusters = {}
         for note in notes:
             if "date" not in note:
-                note["date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
+                # this really means something is broken with note date setting, which needs to be fixed
+                note["date"] = DEFAULT_TIMESTAMP_VAL
             if note["date"] not in clusters:
                 clusters[note["date"]] = [note]
             else:
@@ -455,6 +508,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if self.editor is not None:
             has_editor = "Yes"
 
+        editor_group_name = self.editor_group_name(index=False)
+
         # build the index part of the object
         index = {}
 
@@ -489,6 +544,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["schema_code"] = schema_codes
         if len(schema_codes_tree) > 0:
             index["schema_codes_tree"] = schema_codes_tree
+        if editor_group_name:
+            index["editor_group_name"] = editor_group_name
 
         self.__seamless__.set_with_struct("index", index)
 
@@ -1184,4 +1241,23 @@ class RecentJournalsQuery(object):
             "sort": [
                 {"created_date": {"order": "desc"}}
             ]
+        }
+
+
+class ByEditorGroupIdQuery:
+
+    def __init__(self, editor_group_id):
+        self.editor_group_id = editor_group_id
+
+    def query(self):
+        return {
+            'query': {
+                'bool': {
+                    'filter': {
+                        'term': {
+                            'admin.editor_group.exact': self.editor_group_id
+                        }
+                    }
+                }
+            },
         }

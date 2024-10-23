@@ -138,7 +138,8 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore,
                                             mainStore=mainStore, container=container)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"],
+                       scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
 
         logger_fn((dates.now_str() + " done\n"))
 
@@ -187,12 +188,11 @@ huey_helper = AnonExportBackgroundTask.create_huey_helper(long_running)
 
 @huey_helper.register_schedule
 def scheduled_anon_export():
-    background_helper.submit_by_bg_task_type(AnonExportBackgroundTask,
-                                             clean=app.config.get("TASKS_ANON_EXPORT_CLEAN", False),
-                                             limit=app.config.get("TASKS_ANON_EXPORT_LIMIT", None),
-                                             batch_size=app.config.get("TASKS_ANON_EXPORT_BATCH_SIZE", 100000))
+    huey_helper.scheduled_common(clean=app.config.get("TASKS_ANON_EXPORT_CLEAN", False),
+                                 limit=app.config.get("TASKS_ANON_EXPORT_LIMIT", None),
+                                 batch_size=app.config.get("TASKS_ANON_EXPORT_BATCH_SIZE", 100000))
 
 
 @huey_helper.register_execute(is_load_config=False)
 def anon_export(job_id):
-    background_helper.execute_by_job_id(job_id, AnonExportBackgroundTask)
+    huey_helper.execute_common(job_id)

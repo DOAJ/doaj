@@ -24,8 +24,7 @@ class ApplicationEditorGroupAssignedNotify(EventConsumer):
         if not application.editor_group:
             return
 
-        editor_group = models.EditorGroup.pull_by_key("name", application.editor_group)
-
+        editor_group = models.EditorGroup.pull(application.editor_group)
         if not editor_group.editor:
             raise exceptions.NoSuchPropertyException("Editor Group {x} does not have property `editor`".format(x=editor_group.id))
 

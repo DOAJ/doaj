@@ -74,7 +74,7 @@ class AuthorisationService(object):
             if not application.editor_group:
                 return False
 
-            eg = models.EditorGroup.pull_by_key("name", application.editor_group)
+            eg = models.EditorGroup.pull(application.editor_group)
             if eg is not None and eg.editor == account.id:
                 return True
 
@@ -129,7 +129,7 @@ class AuthorisationService(object):
             passed = True
 
         # now check whether the user is the editor of the editor group
-        eg = models.EditorGroup.pull_by_key("name", journal.editor_group)   # ~~->EditorGroup:Model~~
+        eg = models.EditorGroup.pull(journal.editor_group)   # ~~->EditorGroup:Model~~
         if eg is not None and eg.editor == account.id:
             passed = True
 

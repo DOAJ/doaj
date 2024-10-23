@@ -563,8 +563,6 @@ def editor_group(group_id=None):
             eg = models.EditorGroup.pull(group_id)
             form.group_id.data = eg.id
             form.name.data = eg.name
-            # Do not allow the user to edit the name. issue #3859
-            form.name.render_kw = {'disabled': True}
             form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
@@ -620,13 +618,17 @@ def editor_group(group_id=None):
                         ae.add_role("associate_editor")
                         ae.save()
 
-            if eg.name is None:
-                eg.set_name(form.name.data)
+            is_name_changed = eg.name != form.name.data
+            eg.set_name(form.name.data)
             eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
                 eg.set_associates(associates)
             eg.save()
+
+            if is_name_changed:
+                models.Journal.renew_editor_group_name(eg.id, eg.name)
+                models.Application.renew_editor_group_name(eg.id, eg.name)
 
             flash(
                 "Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.",
@@ -656,7 +658,7 @@ def user_autocomplete():
 @ssl_required
 def eg_associates_dropdown():
     egn = request.values.get("egn")
-    eg = models.EditorGroup.pull_by_key("name", egn)
+    eg = models.EditorGroup.pull(egn)
 
     if eg is not None:
         editors = [eg.editor]
@@ -722,7 +724,7 @@ def bulk_assign_editor_group(doaj_type):
 
     summary = task(
         selection_query=get_query_from_request(payload, doaj_type),
-        editor_group=payload['editor_group'],
+        editor_group=models.EditorGroup.group_exists_by_name(payload['editor_group']) or payload['editor_group'],
         dry_run=payload.get('dry_run', True)
     )
 
@@ -759,6 +761,11 @@ def bulk_edit_journal_metadata():
     payload = get_web_json_payload()
     if not "metadata" in payload:
         raise BulkAdminEndpointException("key 'metadata' not present in request json")
+
+    # replace editor_group name with id
+    if "editor_group" in payload["metadata"]:
+        _eg = payload["metadata"]["editor_group"]
+        payload["metadata"]["editor_group"] = models.EditorGroup.group_exists_by_name(_eg) or _eg
 
     formdata = MultiDict(payload["metadata"])
     formulaic_context = JournalFormFactory.context("bulk_edit", extra_param=exparam_editing_user())
