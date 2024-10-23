@@ -3269,8 +3269,7 @@ JAVASCRIPT_FUNCTIONS = {
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
     "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
-    "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
-    "convert_to_flag": "formulaic.widgets.newConvertToFlag"  # ~~-> ConvertToFlag:FormWidget~~
+    "flag_manager": "formulaic.widgets.newFlagManager"  # ~~-> FlagManager:FormWidget~~
 }
 
 
