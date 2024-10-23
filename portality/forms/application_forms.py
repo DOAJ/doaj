@@ -1977,8 +1977,7 @@ class FieldDefinitions:
         "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat": {"enable_on_repeat": ["textarea"]}},
-            "note_modal",
-            "convert_to_flag"
+            "note_modal"
         ],
         "merge_disabled": "merge_disabled_notes",
     }

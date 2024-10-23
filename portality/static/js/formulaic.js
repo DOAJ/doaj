@@ -1175,42 +1175,6 @@ var formulaic = {
             this.init();
         },
 
-        newConvertToFlag : function(params) {
-            return edges.instantiate(formulaic.widgets.ConvertToFlag, params);
-        },
-        ConvertToFlag: function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-
-            this.namespace = "formulaic-convertoflag-" + this.fieldDef.name;
-
-            this.init = function () {
-                var flagClass = edges.css_classes(this.ns, "flag");
-                let group = $("div[name='" + this.fieldDef["name"] + "__group']")
-                var textarea = group.find("textarea");
-
-                for (var i = 0; i < textarea.length; i++) {
-                    var container = $(textarea[i]);
-                    $(`<button class="button ` + flagClass + `" style="margin: 0 1rem 1rem 0;">Convert to Flag</button>`).insertAfter(container);
-                }
-
-                var flagSelector = edges.css_class_selector(this.ns, "flag");
-                edges.on(flagSelector, "click", this, "convertToFlag");
-            }
-
-            this.convertToFlag = function(element) {
-                // TODO: only do this if a flag is not already set, otherwise say flag must be cleared or resolved first
-                var textarea = $(element).prev();
-                var flagNote = textarea.val();
-                var flagWidgets = formulaic.active.activeWidgets["flag"];
-                var flagWidget = flagWidgets[0];
-                flagWidget.addFlag();
-                flagWidget.container.find("#flag-flag_note").val(flagNote);
-            }
-
-            this.init();
-        },
-
         newAutocheck : function(params) {
             return edges.instantiate(formulaic.widgets.Autocheck, params);
         },
