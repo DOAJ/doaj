@@ -37,6 +37,36 @@ doaj.autocheckers.ISSNActive = class {
     }
 }
 
+doaj.autocheckers.PublicationTime = class {
+     MESSAGES = {
+        "below_threshold": "Average time between article submission & publication is {{ THRESHOLD }} weeks or shorter",
+        "over_threshold": "Average time between article submission & publication is more than {{ THRESHOLD }} weeks",
+    }
+
+    ICONS = {
+        "below_threshold": "x-circle",
+        "over_threshold": "check-circle",
+    }
+
+    STYLE = {
+        "below_threshold": "warn",
+        "over_threshold": "success",
+    }
+
+    draw(autocheck) {
+        let icon = this.ICONS[autocheck.advice];
+        let message = this.MESSAGES[autocheck.advice];
+        let style = this.STYLE[autocheck.advice];
+        let context = JSON.parse(autocheck.context);
+        message = message.replace("{{ THRESHOLD }}", context.threshold);
+
+        let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    ${message} </div>`;
+        console.log(frag);
+        return frag;
+    }
+}
+
 doaj.autocheckers.KeepersRegistry = class {
     MESSAGES = {
         "missing": "Keepers does not show any content archived in {service}.",
@@ -76,7 +106,8 @@ doaj.autocheckers.KeepersRegistry = class {
 
 doaj.autocheckers.registry = {
     "issn_active": doaj.autocheckers.ISSNActive,
-    "keepers_registry": doaj.autocheckers.KeepersRegistry
+    "keepers_registry": doaj.autocheckers.KeepersRegistry,
+    "publication_time": doaj.autocheckers.PublicationTime
 }
 
 doaj.autocheckers.AutochecksManager = class {

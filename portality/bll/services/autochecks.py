@@ -4,11 +4,14 @@ from portality import models
 
 from portality.autocheck.checkers.issn_active import ISSNActive
 from portality.autocheck.checkers.keepers_registry import KeepersRegistry
+from portality.autocheck.checkers.publication_time import PublicationTime
 
 AUTOCHECK_PLUGINS = [
     # (Active on Journal?, Active on Application?, Plugin Class)
     (True, True, ISSNActive),
-    (True, True, KeepersRegistry)
+    (True, True, KeepersRegistry),
+    (True, True, PublicationTime)
+
 ]
 
 
