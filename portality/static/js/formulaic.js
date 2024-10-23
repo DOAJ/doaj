@@ -1109,6 +1109,72 @@ var formulaic = {
             return elements.find(containerSelector);
         },
 
+        newFlagManager : function(params) {
+            return edges.instantiate(formulaic.widgets.FlagManager, params);
+        },
+        FlagManager: function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.namespace = "formulaic-flagmanager-" + this.fieldDef.name;
+
+            this.init = function() {
+                this.container = $("." + this.fieldDef.name + "__container");
+                this.container.hide();
+
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
+                let clearFlagClass = edges.css_classes(this.namespace, "clear-flag");
+                let resolveFlagClass = edges.css_classes(this.namespace, "resolve-flag");
+                let controls = `<button class="${clearFlagClass}">Clear</button><button class="${resolveFlagClass}">Resolve</button>`;
+                cont.html(controls);
+
+
+                let addFlagContainer = edges.css_classes(this.namespace, "add-flag-container");
+                let addFlagClass = edges.css_classes(this.namespace, "add-flag");
+                let frag = `<div class="${addFlagContainer}"><button class="${addFlagClass}">Add flag</button></div>`;
+                this.container.after(frag);
+
+                let addFlagClassSelector = edges.css_class_selector(this.namespace, "add-flag");
+                edges.on(addFlagClassSelector, "click", this, "addFlag");
+
+                let clearFlagClassSelector = edges.css_class_selector(this.namespace, "clear-flag");
+                edges.on(clearFlagClassSelector, "click", this, "clearFlag");
+
+                let resolveFlagClassSelector = edges.css_class_selector(this.namespace, "resolve-flag");
+                edges.on(resolveFlagClassSelector, "click", this, "resolveFlag");
+            }
+
+            this.addFlag = function() {
+                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                $(addFlagContainer).hide();
+                this.container.show();
+            }
+
+            this.clearFlag = function() {
+                // TODO: actually clear the flag content from the form
+                this.container.hide();
+                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                $(addFlagContainer).show();
+            }
+
+            this.resolveFlag = function() {
+                let flagNote = this.container.find("#flag-flag_note");
+
+                let noteWidgets = formulaic.active.activeWidgets["notes"];
+                // TODO: we'll need a way to actually find the InfiniteRepeat widget for certain
+                let irw = noteWidgets[0];
+                irw.addField();
+
+                let justAdded = irw.container.find("div").first();
+                let textarea = justAdded.find("textarea");
+                textarea.val("Flag resolved: " + flagNote.val());
+
+                this.clearFlag();
+            }
+
+            this.init();
+        },
+
         newAutocheck : function(params) {
             return edges.instantiate(formulaic.widgets.Autocheck, params);
         },
