@@ -2,14 +2,7 @@
 
 {% block page_title %}Register{% endblock %}
 
-{% block public_stylesheets %}
-    <style>
-        #recaptcha_div iframe {
-            padding: unset;
-            border: unset;
-        }
-    </style>
-{% endblock %}
+{% block public_stylesheets %}{% endblock %}
 
 {% block public_content %}
 <div class="page-content">
@@ -34,6 +27,7 @@
 {% endblock %}
 
 {% block public_js %}
+    <script type="text/javascript" src="/static/js/honeypot.js?v={{ config.get('DOAJ_VERSION') }}"></script>
     {% if current_user.is_authenticated and current_user.has_role("create_user") %}
         <!-- select2 for role picker on admin create user form -->
         <script type="text/javascript">
@@ -41,11 +35,12 @@
             $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
         });
         </script>
-    {% endif %}
 
-    {% if config.get("RECAPTCHA_ENABLE") %}
-        <!-- reCAPTCHA for the register form -->
-        <script type="text/javascript" src="/static/js/recaptcha.js?v={{config.get('DOAJ_VERSION')}}"></script>
-        <script src="https://www.recaptcha.net/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    {% else %}
+        <script type="text/javascript">
+            jQuery(document).ready(function ($) {
+                doaj.honeypot.init();
+            });
+        </script>
     {% endif %}
 {% endblock %}
