@@ -6,7 +6,7 @@ from portality.ui.messages import Messages
 from portality.bll.exceptions import NoSuchObjectException, NoSuchPropertyException
 from datetime import datetime
 from portality.lib import dates
-
+from portality.ui import templates
 
 class NotificationsService(object):
     def notify(self, notification: models.Notification):
@@ -29,8 +29,8 @@ class NotificationsService(object):
         app_email.send_markdown_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/notification_email.jinja2",
-                            markdown_template_name="email/notification_email.jinja2",    # for the moment the markdown and plaintext templates are the same
+                            template_name=templates.EMAIL_NOTIFICATION,
+                            markdown_template_name=templates.EMAIL_NOTIFICATION,    # for the moment the markdown and plaintext templates are the same
                             user=acc,
                             message=notification.long,
                             action=notification.action,

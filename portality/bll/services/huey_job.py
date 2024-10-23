@@ -47,7 +47,7 @@ HUEY_REDIS_KEYS = [HUEY_REDIS_DOAJMAINQUEUE, HUEY_REDIS_DOAJLONGRUNNING]
 class HueyJobService:
 
     def create_redis_client(self):
-        client = redis.StrictRedis(host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'], db=0)
+        client = redis.StrictRedis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'], db=0)
         return client
 
     def find_all_huey_jobs(self, client=None) -> Iterator[HueyJobData]:

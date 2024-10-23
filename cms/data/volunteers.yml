@@ -125,8 +125,16 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-
-- name: Amber Osman
+  
+- name: Ana Melisa Fernandes
+  area: Bird behavior and ecology
+  year_since:
+  city: Bogotá 
+  country: Colombia
+  language: Spanish, English, Portuguese
+  photo: "Ana Melisa Fernandes.jpg" 
+  
+- name: Amber Osman 
   area: Open Science, Publication Ethics, Scholarly communication
   year_since:
   city: Karachi
@@ -193,7 +201,8 @@ ass_ed:
   city: York
   country: United Kingdom
   language: English
-
+  photo: "Ben Catt.jpg"
+  
 - name: Busro Busro
   area: Humanities
   year_since:
@@ -448,6 +457,14 @@ ass_ed:
   language: Turkish, English
   photo: "kamil.jpg"
 
+- name: Kamila Kokot-Kanikuła
+  area: Library Science
+  year_since:
+  city: Gdańsk
+  country: Poland
+  language: Polish, English
+  photo: "Kamila_Kokot.jpg"
+  
 - name: Karima Akool Al-Sahili
   area: Medicine
   year_since:
@@ -455,7 +472,15 @@ ass_ed:
   country: Iraq
   language: Arabic, English, Swedish
   photo: "karima.jpg"
-
+  
+- name: Kelly Anne Dumayne
+  area: Psychology, linguistics, creative writing
+  year_since:
+  city: Wales
+  country: United Kingdom
+  language: English
+  photo: 
+  
 - name: Khoirul Fathoni
   area: Humanities
   year_since:
@@ -525,13 +550,6 @@ ass_ed:
   country: Germany
   language: German, English
 
-- name: Maria Chiara Pievatolo
-  area: Humanities, Social Sciences
-  year_since:
-  city: Pisa
-  country: Italy
-  language: Italian, English, German
-
 - name: Maria Manuel Borges
   area: Social Sciences
   year_since:
@@ -569,6 +587,13 @@ ass_ed:
   country: Türkiye
   language: English
 
+- name: Michaela Voigt 
+  area: Library and Information Science, Scandinavian Studies
+  year_since:
+  city: Berlin
+  country: Germany
+  language: German, English, Swedish
+  
 - name: Mihaela Teodor 
   area: Humanities, Social Sciences
   year_since:

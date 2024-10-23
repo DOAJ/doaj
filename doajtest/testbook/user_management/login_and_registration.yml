@@ -1,0 +1,42 @@
+suite: User Management
+testset: Login and Registration
+tests:
+- title: Ensure Case Insensitive login
+  context:
+    role: anonymous
+  steps:
+  - step: Ensure a user exists with email "test@test.com" and password "password123"
+  - step: Go to login page at /account/login
+  - step: Provide email "test@test.com" and password "password123"
+    results:
+    - user correctly logged in
+  - step: Log out
+  - step: Go to login page at /account/login
+  - step: Provide email "TEST@test.com" and password "password123"
+    results:
+    - user correctly logged in
+- title: Ensure Case Sensitive Registration
+  context:
+    role: anonymous
+  steps:
+    - step: Ensure a user exists with email "test@test.com" and password "password123"
+    - step: Ensure a user with email "TestUser@test.com" does NOT exist
+    - step: Ensure you're logged out
+    - step: Go to registration page at /account/register
+    - step: Provide "Test User" as a Name and "test@test.com", check captcha and click "Register" button
+      results:
+      - The "That email is already in use" error is displayed
+    - step: Provide "Test User" as a Name and "TEST@test.com", check captcha and click "Register" button
+      results:
+      - The "That email is already in use" error is displayed
+    - step: Provide "Test User" as a Name and "TestUser@test.com", check captch and click "Register" button
+      results:
+      - The User is registered and redirected to the homepage
+      - A prompt to verify email address is displayed at the top
+    - step: Verify the email, set password "password123" and user name to "TestUser"
+    - step: Log in with the new account
+    - step: Go to your account setting at /account/testuser
+      results:
+      - Email address is displayed as "TestUser@test.com" (confirm correct casing).
+
+

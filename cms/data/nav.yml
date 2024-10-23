@@ -46,6 +46,8 @@ entries:
         route: doaj.ambassadors       # ~~->Ambassadors:WebRoute~~
       - label: Advisory Board & Council
         route: doaj.abc               # ~~->AdvisoryBoardCouncil:WebRoute~~
+      - label: Editorial Policy Advisory Group
+        route: doaj.epag              # ~~->EditorialPolicyAdvisoryGroup:WebRoute~~
       - label: Volunteers
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: News
@@ -104,7 +106,7 @@ entries:
         url: '#'
         modal:
           id: wechat
-          include: "includes/_wechat_modal.html"
+          include: "public/includes/_wechat_modal.html"
       - label: Atom feed
         feather: rss
         route: atom.feed  # ~~->Atom:WebRoute~~

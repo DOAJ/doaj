@@ -13,6 +13,7 @@ from portality.bll import exceptions, DOAJ
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping, dates, paths
 from portality.ui.debug_toolbar import DoajDebugToolbar
+from portality.ui import templates
 
 import esprit
 import elasticsearch
@@ -287,6 +288,7 @@ def setup_jinja(app):
     app.jinja_env.globals['type'] = type
     #~~->Constants:Config~~
     app.jinja_env.globals['constants'] = constants
+    app.jinja_env.globals['templates'] = templates
     #~~-> Dates:Library~~
     app.jinja_env.globals['dates'] = dates
     #~~->Datasets:Data~~
@@ -295,7 +297,8 @@ def setup_jinja(app):
     app.jinja_env.globals['services'] = DOAJ
     _load_data(app)
     #~~->CMS:DataStore~~
-    app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
+    app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates-v2',
+                                             app.config['BASE_FILE_PATH'] + '/templates',
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/cms/fragments'])
 
     # a jinja filter that prints to the Flask log

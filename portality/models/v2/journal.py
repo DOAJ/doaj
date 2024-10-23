@@ -4,6 +4,7 @@ import string
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
+from typing import Callable, Iterable
 
 from elasticsearch import helpers
 from unidecode import unidecode
@@ -58,6 +59,7 @@ JOURNAL_STRUCT = {
 }
 
 
+
 class ContinuationException(Exception):
     pass
 
@@ -92,8 +94,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return records
 
     @classmethod
-    def issns_by_owner(cls, owner, in_doaj=None):
-        q = IssnQuery(owner, in_doaj=in_doaj)
+    def issns_by_owner(cls, owner, in_doaj=None, issn_field=None):
+        q = IssnQuery(owner, in_doaj=in_doaj, issn_field=issn_field)
         res = cls.query(q=q.query())
         issns = [term.get("key") for term in res.get("aggregations", {}).get("issns", {}).get("buckets", [])]
         return issns
@@ -844,29 +846,41 @@ class Journal(JournalLikeObject):
     ########################################################################
     ## Functions for handling continuations
 
-    def get_future_continuations(self):
-        irb = self.bibjson().is_replaced_by
-        q = ContinuationQuery(irb)
 
-        journals = self.q2obj(q=q.query())
+    def _get_continuations(self, issns,
+                           get_sub_journals: Callable,
+                           journal_caches: set[str] = None) -> Iterable['Journal']:
+        """
+
+        Parameters
+        ----------
+        issns
+        get_sub_journals
+        journal_caches
+            contain completed journals ids, avoid infinite recursion by passing a
+            set of journal objects that have already been processed
+        """
+        journal_caches = journal_caches or set()
+        journal_caches.add(self.id)
+        journals = self.q2obj(q=ContinuationQuery(issns).query())
+        journals = [j for j in journals if j.id not in journal_caches]
+        journal_caches.update({j.id for j in journals})
+
         subjournals = []
         for j in journals:
-            subjournals += j.get_future_continuations()
+            subjournals += get_sub_journals(j, journal_caches)
 
-        future = journals + subjournals
-        return future
+        return journals + subjournals
 
-    def get_past_continuations(self):
-        replaces = self.bibjson().replaces
-        q = ContinuationQuery(replaces)
+    def get_future_continuations(self, journal_caches: set[str]=None) -> Iterable['Journal']:
+        return self._get_continuations(self.bibjson().is_replaced_by,
+                                       lambda j, jc: j.get_future_continuations(jc),
+                                       journal_caches=journal_caches)
 
-        journals = self.q2obj(q=q.query())
-        subjournals = []
-        for j in journals:
-            subjournals += j.get_past_continuations()
-
-        past = journals + subjournals
-        return past
+    def get_past_continuations(self, journal_caches: set[str]=None) -> Iterable['Journal']:
+        return self._get_continuations(self.bibjson().replaces,
+                                       lambda j, jc: j.get_past_continuations(jc),
+                                       journal_caches=journal_caches)
 
     #######################################################################
 
@@ -1077,9 +1091,10 @@ class JournalURLQuery(object):
 
 
 class IssnQuery(object):
-    def __init__(self, owner, in_doaj=None):
+    def __init__(self, owner, in_doaj=None, issn_field=None):
         self._owner = owner
         self._in_doaj = in_doaj
+        self._issn_field = issn_field or 'index.issn.exact'
 
     def query(self):
         musts = [{"term": {"admin.owner.exact": self._owner}}]
@@ -1096,7 +1111,7 @@ class IssnQuery(object):
             "aggs": {
                 "issns": {
                     "terms": {
-                        "field": "index.issn.exact",
+                        "field": self._issn_field,
                         "size": 10000,
                         "order": {"_key": "asc"}
                     }

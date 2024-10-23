@@ -135,7 +135,7 @@
 
 - name: Pensoft Publishers
   url: https://pensoft.net/media
-  logo: Pensoft.png
+  logo: pensoftlogo.jpg
 
 - name: PLOS
   url: https://plos.org/
@@ -145,6 +145,10 @@
   url: https://www.sagepublications.com/
   logo: sage.svg
 
+- name: Scandinavian University Press
+  url: https://www.universitetsforlaget.no/en/
+  logo: scup-logo.png
+  
 - name: SciFree
   url: https://scifree.se/
   logo: scifree.svg
@@ -160,10 +164,18 @@
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
+  
+- name: Tsinghua University Press
+  url: https://www.tsinghua.edu.cn/en/
+  logo: TSPlogo.jpg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg 
+
+- name: University of Johannesburg
+  url: https://www.uj.ac.za/
+  logo: uj.png
 
 - name: John Wiley and Sons LTD
   url: https://www.wiley.com/en-us 

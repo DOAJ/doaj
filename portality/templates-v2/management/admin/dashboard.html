@@ -1,0 +1,79 @@
+{% extends "management/admin/base.html" %}
+{# ~~Dashboard:Page~~ #}
+
+{% block page_title %}Managing Editor Dashboard{% endblock %}
+
+{% block page_header %}
+    Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+    {{ current_user.id }}{% endif %}!
+{% endblock %}
+
+{% block admin_content %}
+    <div class="flex-end">
+        {% if request.values.get("filter") == None %}
+            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}">Show all</a></span>
+        {% else %}
+            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}">Show all</a></span>
+        {% endif %}
+
+        {% if request.values.get("filter") == "na" %}
+            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+        {% else %}
+            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+        {% endif %}
+
+        {% if request.values.get("filter") == "ur" %}
+            <span class="tag tag--primary"><a
+                    href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+        {% else %}
+            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+        {% endif %}
+    </div>
+    {% include "management/includes/_todo.html" %}
+    <section>
+        {# ~~->$GroupStatus:Feature~~ #}
+        <h2>Activity</h2>
+        <div class="tabs">
+            <nav class="tabs__menu">
+                {# note that js-managed-groups-tabs and the structure beneath it is required in dashboard.js - if you change the
+            structure of this code, you need to change that too #}
+                <ul class="tabs__list js-managed-groups-tabs" role="tablist">
+                    {# managed_groups is inherited from the dashboard_base template #}
+                    {# ~~^-> EditorGroup:Model ~~ #}
+                    {% if managed_groups|length == 0 %}
+                        <h2 class="type-04">
+                            You do not manage any groups now.
+                        </h2>
+                    {% else %}
+                        {% for eg in managed_groups %}
+                            <li class="tabs__item" role="tab">
+                                <a href="#" data-group-id="{{ eg.id }}"
+                                   aria-selected="{% if loop.first %}true{% else %}false{% endif %}"
+                                   class="label js-group-tab"
+                                   title="Toggle to {{ eg.name }}’s activity data">{{ eg.name }}
+                                    ({{ maned_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </nav>
+
+            {# TODO: there’s a bit of a11y work to be done here; we need to indicate which tabs are hidden and which
+      aren’t using ARIA attributes. #}
+            {# TODO: the first tab content needs to be shown by default, without a "click to see" message. #}
+            <div class="tabs__content">
+                <div id="group-tab" role="tabpanel" tabindex="0" aria-labelledby="" aria-hidden=""
+                     style="font-size: smaller;" class="tabs__panel"></div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript" src="/static/js/dashboard.js?v={{ config.get('DOAJ_VERSION') }}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            doaj.dashboard.init({"applicationsSearchBase": "{{ url_for('admin.suggestions') }}"})
+        });
+    </script>
+{% endblock %}
