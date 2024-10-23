@@ -1,0 +1,33 @@
+{% include "management/_application-form/includes/_edit_status.html" %}
+{% include "_application-form/includes/_backend_validation.html" %}
+{% include "management/_application-form/includes/_autochecks.html" %}
+{% import "_application-form/includes/_application_warning_msg.html" as _msg %}
+
+{% if obj and (obj.es_type == 'journal' and obj.is_in_doaj()) %}
+    {{ _msg.build_journal_withdrawn_deleted_msg(obj) }}
+    <a class="button button--tertiary" href="{{ url_for('doaj.toc', identifier=obj.id) }}" target="_blank">See this journal in DOAJ</a>
+{% endif %}
+
+
+<form id="{{ form_id }}"
+      data-context="{{ formulaic_context.name }}"
+      class="row application_form form form--compact"
+      novalidate
+      action="{{ form_action }}"
+      method="post"
+      data-formulaic-after="{{ formulaic_after }}"
+      data-parsley-focus="none">
+
+    <div class="col-md-8 page">
+        <section class="page-content">
+            {% if diff_table %}
+                {% include 'management/_application-form/includes/_application_diff.html' %}
+            {% endif %}
+            {% include 'management/_application-form/includes/_editorial_form_fields.html' %}
+            {% include "_application-form/includes/_public_fieldsets.html" %}
+        </section>
+    </div>
+    <div class="col-md-4 editorial-panel">
+        {% include "management/_application-form/includes/_editorial_side_panel.html" %}
+    </div>
+</form>

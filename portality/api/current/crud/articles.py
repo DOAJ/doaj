@@ -15,6 +15,7 @@ from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable,
     IngestException
 from portality.dao import ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached
 from copy import deepcopy
+from portality.ui import templates
 
 
 class ArticlesCrudApi(CrudApi):
@@ -137,7 +138,7 @@ class ArticlesCrudApi(CrudApi):
                 app_email.send_mail(to=to,
                                      fro=fro,
                                      subject=subject,
-                                     template_name="email/script_tag_detected.jinja2",
+                                     template_name=templates.EMAIL_SCRIPT_TAG_DETECTED,
                                      es_type=es_type,
                                      data=jdata)
             except app_email.EmailException:

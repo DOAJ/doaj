@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{# ~~Dashboard:Template~~ #}
+
+{# we're potentially going need this in a few places in inherited files, so lets just put it here #}
+{# ~~-> EditorGroup:Model ~~ #}
+{% set managed_groups, maned_assignments = maned_of() %}
+{% set editor_of_groups, editor_of_assignments = editor_of() %}
+{% set associate_of_groups, associate_of_assignments = associate_of() %}
+
+{% block base_meta %}
+    {% block management_meta %}{% endblock %}
+{% endblock %}
+
+{% block base_stylesheets %}
+    {% block management_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block body_class %}dashboard{% endblock %}
+
+{# ~~Dashboard:Template~~ #}
+{% block base_content %}
+    {# global site note #}
+    {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+        {% include templates.SITE_NOTE %}
+    {% endif %}
+
+    <header>
+        <h2 class="sr-only">DOAJ Dashboard</h2>
+
+        <nav class="primary-nav flex-space-between" id="primary-nav">
+            <a href="{% if current_user.has_role('admin') %}/dashboard/{% elif current_user.has_role('editor') or current_user.has_role('associate_editor') %}/editor/{% endif %}" class="logo">
+                {% include "includes/svg/doaj-icon.svg" %}
+            </a>
+            <ul class="unstyled-list flex-center">
+                {% include "_tourist/includes/_tourist_nav.html" %}
+                {# ~~->Notifications:Feature~~ #}
+                <li class="dropdown dropdown--notifications flex-center" id="notifications_nav">
+                    <a href="/dashboard/notifications" class="dropdown__trigger label" id="dropdown__trigger--notifications" role="button" aria-haspopup="true" aria-expanded="false">
+                        <span><span data-feather="bell" aria-hidden="true"></span> Notifications <span class="js-notifications-count"></span></span>
+                    </a>
+                    <ul class="dropdown__menu notifications" id="top_notifications"></ul>
+                </li>
+                {% if (current_user.has_role("editor") or current_user.has_role("associate_editor")) and not current_user.has_role("admin") %}
+                    <li class="flex-center">
+                        <a href="{{ url_for('editor.index') }}" class="label">
+                            <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if current_user.has_role("admin") %}
+                    <li class="flex-center">
+                        <a href="{{ url_for('dashboard.top_todo') }}" class="label">
+                            <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="flex-center" id="doaj_home">
+                    <a href="/" class="label">
+                        <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% block nav %}{% endblock %}
+    </header>
+
+
+    <main>
+        <header class="main-header">
+            <div class="row">
+                <header class="col-md-6 col-lg-4">
+                    <p class="label tag">
+                        <small>
+                            <a href="{{ url_for('account.username', username=current_user.id) }}" title="Manage my profile & settings">
+                                <span data-feather="user" aria-hidden="true"></span>
+                                {{ current_user.id }}
+                                {% if current_user.has_role("admin") %}
+                                    (Managing Editor)
+                                {% elif current_user.has_role("editor") %}
+                                    (Editor)
+                                {% elif current_user.has_role("associate_editor") %}
+                                    (Associate Editor)
+                                {% endif %}
+                            </a>
+                        </small>
+                    </p>
+                    <h1>
+                        {% block page_header %}
+                            {{ self.page_title() }}
+                        {% endblock %}
+                    </h1>
+                </header>
+                <nav class="col-md-6 col-lg-8 align-right">
+                    <dl>
+                        {% if current_user.has_role("admin") %}
+                            {% if managed_groups and managed_groups|length > 0 %}
+                                <dt class="sr-only">
+                                    Managing Editor of&nbsp;&nbsp;
+                                </dt>
+                                <dd>
+                                    <ul class="inlined-list tags">
+                                        {% for eg in managed_groups|sort(attribute="name") %}
+                                            <li>
+                                                {% set app_source = search_query_source(term=[
+                                {"admin.editor_group.exact" : eg.name},
+                                {"index.application_type.exact" : "new application"}
+                            ], sort=[{"admin.date_applied": {"order": "asc"}}]
+                        ) %}
+                                                <a href="{{ url_for('admin.suggestions') }}?source={{ app_source }}" title="See all {{ eg.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </dd>
+                            {% endif %}
+                        {% elif current_user.has_role("editor") %}
+                            {% if editor_of_groups and editor_of_groups|length > 0 %}
+                                <dt class="sr-only">
+                                    Editor groups:
+                                </dt>
+                                <dd>
+                                    <ul class="inlined-list tags">
+                                        {% for eg in editor_of_groups|sort(attribute="name") %}
+                                            <li>
+                                                {% set app_source = search_query_source(term=[
+                                    {"admin.editor_group.exact" : eg.name},
+                                    {"index.application_type.exact" : "new application"}
+                                ], sort=[{"admin.date_applied": {"order": "asc"}}]
+                            ) %}
+                                                <a href="{{ url_for('editor.group_suggestions') }}?source={{ app_source }}" title="See all {{ eg.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
+                                                {% set maned = eg.get_maned_account() %}
+                                                <a href="mailto:{{ maned.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ maned.id }} (Managing Editor)</a>
+                                                {{ " / " if not loop.last else "" }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </dd>
+                            {% endif %}
+                        {% elif current_user.has_role("associate_editor") %}
+                            {% if associate_of_groups and associate_of_groups|length > 0 %}
+                                <dt class="sr-only">
+                                    Editor groups:
+                                </dt>
+                                <dd>
+                                    <ul class="tags">
+                                        {% for group in associate_of_groups|sort(attribute="name") %}
+                                            <li>
+                                                <small class="tag tag--tertiary label"><strong>{{ group.name }}</strong></small>
+                                                {% set ed = group.get_editor_account() %}
+                                                <a href="mailto:{{ ed.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ ed.id }} (Editor)</a>
+                                                {% set maned = group.get_maned_account() %}
+                                                <a href="mailto:{{ maned.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ maned.id }} (Managing Editor)</a>
+                                                {{ " / " if not loop.last else "" }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </dd>
+                            {% endif %}
+                        {% endif %}
+                    </dl>
+                </nav>
+            </div>
+        </header>
+        {% include "includes/_flash_notification.html" %}
+        {% block management_content %}{% endblock %}
+
+        <p>
+            <small>
+                <a href="{{ url_for('account.logout') }}" class="tag" id="logout">
+                    <span data-feather="log-out" aria-hidden="true"></span>
+                    Log out
+                </a>
+                <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
+                    <span data-feather="settings" aria-hidden="true"></span>
+                    Settings
+                </a>
+            </small>
+        </p>
+    </main>
+    {% include "includes/_back-to-top.html" %}
+
+{% endblock %}
+
+{% block base_js %}
+    <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    {% include "_tourist/includes/_tourist.html" %}
+
+    <script>
+        var historical_count = {{ historical_count }};
+        var motivational_banners = {{ data.motivational_banners | tojson }};
+        var current_user = {
+            "id": "{{ current_user['id'] }}",
+            "role": {{ current_user['role'] | tojson }}
+        };
+    </script>
+
+
+    {% block management_js %}{% endblock %}
+{% endblock %}
+
+
