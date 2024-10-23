@@ -67,6 +67,8 @@ class WithES:
         for im in self.warm_mappings:
             if im == "article":
                 self.warmArticle()
+            if im == "article_tombstone":
+                self.warmArticleTombstone()
             # add more types if they are necessary
 
     def tearDown(self):
@@ -82,6 +84,16 @@ class WithES:
         article.delete()
         Article.blockdeleted(article.id)
 
+    def warmArticleTombstone(self):
+        # push an article to initialise the mappings
+        from doajtest.fixtures import ArticleFixtureFactory
+        from portality.models import ArticleTombstone
+        source = ArticleFixtureFactory.make_article_source()
+        article = ArticleTombstone(**source)
+        article.save(blocking=True)
+        article.delete()
+        ArticleTombstone.blockdeleted(article.id)
+
 
 CREATED_INDICES = []
 
@@ -91,10 +103,17 @@ def initialise_index():
 
 
 def create_index(index_type):
-    if index_type in CREATED_INDICES:
-        return
-    core.initialise_index(app, core.es_connection, only_mappings=[index_type])
-    CREATED_INDICES.append(index_type)
+    if "," in index_type:
+        # this covers a DAO that has multiple index types for searching purposes
+        # expressed as a comma separated list
+        index_types = index_type.split(",")
+    else:
+        index_types = [index_type]
+    for it in index_types:
+        if it in CREATED_INDICES:
+            return
+        core.initialise_index(app, core.es_connection, only_mappings=[it])
+        CREATED_INDICES.append(it)
 
 
 def dao_proxy(dao_method, type="class"):

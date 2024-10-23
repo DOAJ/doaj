@@ -1,5 +1,6 @@
 from copy import deepcopy
-from portality.models import Journal, Article
+
+from portality.models import Journal, Article, ArticleTombstone
 from portality import constants
 
 class OAIPMHRecord(object):
@@ -41,9 +42,7 @@ class OAIPMHRecord(object):
         "track_total_hits": True,
         "query": {
             "bool": {
-                "must": [
-                    { "term": { "admin.in_doaj": True } }
-                ]
+                "must": []
             }
         },
         "from": 0,
@@ -114,27 +113,23 @@ class OAIPMHRecord(object):
 
 
 class OAIPMHArticle(OAIPMHRecord, Article):
+    __type__ = "article,article_tombstone"
+
     def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):
         total, results = super(OAIPMHArticle, self).list_records(from_date=from_date,
             until_date=until_date, oai_set=oai_set, list_size=list_size, start_after=start_after)
-        return total, [Article(**r) for r in results]
+        return total, [Article(**r) if r.get("es_type") == "article" else ArticleTombstone(**r) for r in results]
 
     def pull(self, identifier):
-        # override the default pull, as we care about whether the item is in_doaj
-        record = super(OAIPMHArticle, self).pull(identifier)
-        if record is not None and record.is_in_doaj():
-            return record
-        return None
+        # override the default pull, as we must check the tombstone record too
+        article = Article.pull(identifier)
+        if article is None:
+            article = ArticleTombstone.pull(identifier)
+        return article
+
 
 class OAIPMHJournal(OAIPMHRecord, Journal):
     def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):
         total, results = super(OAIPMHJournal, self).list_records(from_date=from_date,
             until_date=until_date, oai_set=oai_set, list_size=list_size, start_after=start_after)
         return total, [Journal(**r) for r in results]
-
-    def pull(self, identifier):
-        # override the default pull, as we care about whether the item is in_doaj
-        record = super(OAIPMHJournal, self).pull(identifier)
-        if record is not None and record.is_in_doaj():
-            return record
-        return None
