@@ -18,6 +18,7 @@ from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
+from portality.ui import templates
 
 # ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
@@ -27,7 +28,8 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
+    # return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
+    return render_template('public/index.html', news=news, recent_journals=recent_journals)
 
 
 @blueprint.route('/login/')
@@ -66,8 +68,9 @@ def dismiss_site_note():
     return resp
 
 
-@blueprint.route("/news")
+@blueprint.route("/news/")
 def news():
+    # NOTE: On live this is also handled by the nginx redirect map, but this will strip those with parameters supplied
     return redirect("https://blog.doaj.org")
 
 
@@ -85,12 +88,12 @@ def fqw_hit():
 
 @blueprint.route("/search/journals", methods=["GET"])
 def journals_search():
-    return render_template("doaj/journals_search.html", lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_JOURNAL_SEARCH, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search/articles", methods=["GET"])
 def articles_search():
-    return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_ARTICLE_SEARCH, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search", methods=['GET'])
@@ -152,27 +155,6 @@ def search_post():
 
 
 #############################################
-
-# FIXME: this should really live somewhere else more appropriate to who can access it
-@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
-@login_required
-@ssl_required
-def journal_readonly(journal_id):
-    if (
-            not current_user.has_role("admin")
-            or not current_user.has_role("editor")
-            or not current_user.has_role("associate_editor")
-    ):
-        abort(401)
-
-    j = models.Journal.pull(journal_id)
-    if j is None:
-        abort(404)
-
-    fc = JournalFormFactory.context("readonly")
-    fc.processor(source=j)
-    return fc.render_template(obj=j, lcc_tree=lcc_jstree)
-
 
 @blueprint.route("/csv")
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_JOURNALCSV', 'JournalCSV'),
@@ -350,7 +332,7 @@ def toc(identifier=None):
         return redirect(url_for('doaj.toc', identifier=real_identifier), 301)
     else:
         # now render all that information
-        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson)
+        return render_template(templates.PUBLIC_TOC_MAIN, journal=journal, bibjson=bibjson, tab="main")
 
 
 @blueprint.route("/toc/articles/<identifier>")
@@ -366,7 +348,7 @@ def toc_articles(identifier=None):
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
-        return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson)
+        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, tab="articles")
 
 
 # ~~->Article:Page~~
@@ -387,35 +369,7 @@ def article_page(identifier=None):
         if len(journals) > 0:
             journal = journals[0]
 
-    return render_template('doaj/article.html', article=article, journal=journal, page={"highlight": True})
-
-
-# Not using this form for now but we might bring it back later
-#
-# @blueprint.route("/contact/", methods=["GET", "POST"])
-# def contact():
-#     if request.method == "GET":
-#         form = ContactUs()
-#         if current_user.is_authenticated:
-#             form.email.data = current_user.email
-#         return render_template("doaj/contact.html", form=form)
-#     elif request.method == "POST":
-#         prepop = request.values.get("ref")
-#         form = ContactUs(request.form)
-#
-#         if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
-#             form.email.data = current_user.email
-#
-#         if prepop is not None:
-#             return render_template("doaj/contact.html", form=form)
-#
-#         if not form.validate():
-#             return render_template("doaj/contact.html", form=form)
-#
-#     send_contact_form(form)
-#     flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-#     form = ContactUs()
-#     return render_template("doaj/contact.html", form=form)
+    return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 
 
 ###############################################################
@@ -429,22 +383,22 @@ def google_webmaster_tools():
 
 @blueprint.route("/accessibility/")
 def accessibility():
-    return render_template("layouts/static_page.html", page_frag="/legal/accessibility.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/accessibility.html")
 
 
 @blueprint.route("/privacy/")
 def privacy():
-    return render_template("layouts/static_page.html", page_frag="/legal/privacy.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/privacy.html")
 
 
 @blueprint.route("/contact/")
 def contact():
-    return render_template("layouts/static_page.html", page_frag="/legal/contact.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/contact.html")
 
 
 @blueprint.route("/terms/")
 def terms():
-    return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/terms.html")
 
 
 @blueprint.route("/media/")
@@ -452,67 +406,67 @@ def media():
     """
     ~~Media:WebRoute~~
     """
-    return render_template("layouts/static_page.html", page_frag="/legal/media.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/media.html")
 
 
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="/support/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/index.html")
 
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="/support/sponsors.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/sponsors.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
 def publisher_supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/publisher-supporters.html")
 
 
 @blueprint.route("/support/supporters/")
 def supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/supporters.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/supporters.html")
 
 
 @blueprint.route("/support/thank-you/")
 def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/support/thank-you.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/thank-you.html")
 
 
 @blueprint.route("/apply/guide/")
 def guide():
-    return render_template("layouts/static_page.html", page_frag="/apply/guide.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/guide.html")
 
 
 @blueprint.route("/apply/seal/")
 def seal():
-    return render_template("layouts/static_page.html", page_frag="/apply/seal.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/seal.html")
 
 
 @blueprint.route("/apply/transparency/")
 def transparency():
-    return render_template("layouts/static_page.html", page_frag="/apply/transparency.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/transparency.html")
 
 
 @blueprint.route("/apply/why-index/")
 def why_index():
-    return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/why-index.html")
 
 
 @blueprint.route("/apply/publisher-responsibilities/")
 def publisher_responsibilities():
-    return render_template("layouts/static_page.html", page_frag="/apply/publisher-responsibilities.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/publisher-responsibilities.html")
 
 
 @blueprint.route("/apply/copyright-and-licensing/")
 def copyright_and_licensing():
-    return render_template("layouts/static_page.html", page_frag="/apply/copyright-and-licensing.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/copyright-and-licensing.html")
 
 
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
-    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/oai-pmh.html")
 
 
 @blueprint.route('/docs/api/')
@@ -523,63 +477,68 @@ def docs():
 
 @blueprint.route("/docs/xml/")
 def xml():
-    return render_template("layouts/static_page.html", page_frag="/docs/xml.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/xml.html")
 
 
 @blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html",
-                           base_url=app.config.get('BASE_URL'))
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/widgets.html", base_url=app.config.get('BASE_URL'))
 
 
 @blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/public-data-dump.html")
 
 
 @blueprint.route("/docs/openurl/")
 def openurl():
-    return render_template("layouts/static_page.html", page_frag="/docs/openurl.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/openurl.html")
 
 
 @blueprint.route("/docs/faq/")
 def faq():
-    return render_template("layouts/static_page.html", page_frag="/docs/faq.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/faq.html")
 
 
 @blueprint.route("/about/")
 def about():
-    return render_template("layouts/static_page.html", page_frag="/about/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/index.html")
 
 
 @blueprint.route("/at-20/")
 def at_20():
-    return render_template("layouts/static_page.html", page_frag="/about/at-20.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/at-20.html")
+
 
 
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
-    return render_template("layouts/static_page.html", page_frag="/about/ambassadors.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/ambassadors.html")
 
 
 @blueprint.route("/about/advisory-board-council/")
 def abc():
-    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/advisory-board-council.html")
+
+
+@blueprint.route("/about/editorial-policy-advisory-group/")
+def epag():
+    return render_template(templates.STATIC_PAGE, page_frag="/about/editorial-policy-advisory-group.html")
 
 
 @blueprint.route("/about/volunteers/")
 def volunteers():
-    return render_template("layouts/static_page.html", page_frag="/about/volunteers.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/volunteers.html")
 
 
 @blueprint.route("/about/team/")
 def team():
-    return render_template("layouts/static_page.html", page_frag="/about/team.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/team.html")
 
 
 @blueprint.route("/preservation/")
 def preservation():
-    return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/preservation/index.html")
 
 
 # LEGACY ROUTES

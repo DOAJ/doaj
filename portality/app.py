@@ -26,6 +26,7 @@ from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
+from portality.ui import templates
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -414,22 +415,22 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
 
 @app.errorhandler(400)
 def page_not_found(e):
-    return render_template('400.html'), 400
+    return render_template(templates.ERROR_400), 400
 
 
 @app.errorhandler(401)
 def page_not_found(e):
-    return render_template('401.html'), 401
+    return render_template(templates.ERROR_401), 401
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template(templates.ERROR_404), 404
 
 
 @app.errorhandler(500)
 def page_not_found(e):
-    return render_template('500.html'), 500
+    return render_template(templates.ERROR_500), 500
 
 
 @app.errorhandler(elasticsearch.exceptions.RequestError)
