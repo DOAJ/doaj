@@ -208,6 +208,17 @@ SHARED_JOURNAL_LIKE = {
                         "note" : {"coerce" : "unicode"},
                         "date" : {"coerce" : "utcdatetime"},
                         "author_id" : {"coerce" : "unicode"},  # account_id of the note's author
+                    },
+                    "objects": [
+                        "flag"
+                    ],
+                    "structs": {
+                        "flag": {
+                            "fields": {
+                                "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
+                                "deadline": {"coerce" : "utcdatetime"}
+                            }
+                        }
                     }
                 },
             }
@@ -217,6 +228,7 @@ SHARED_JOURNAL_LIKE = {
                 "country" : {"coerce" : "unicode"},
                 "has_apc" : {"coerce" : "unicode"},
                 "has_seal" : {"coerce" : "unicode"},
+                "has_flag" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},
