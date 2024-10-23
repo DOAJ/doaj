@@ -49,7 +49,7 @@ class TestJournalAssedAssignedNotify(DoajTestCase):
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
         assert n.long is not None
         assert n.short is not None
-        assert n.action is not None
+        assert n.action is None   # view.editor.journal_page has been removed
         assert not n.is_seen()
 
     def test_consume_fail(self):

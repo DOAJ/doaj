@@ -1,0 +1,69 @@
+<!--[if IE]>
+<p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+<![endif]-->
+<div class="primary-nav" id="primary-nav">
+    <div class="container">
+        <div class="row flex-center primary-nav__content">
+            <div class="col-xs-4">
+                <a href="/" class="logo">
+                    <h2 class="sr-only">The Directory of Open Access Journals</h2>
+                    {% include "includes/svg/logo.svg" %}
+                    <span class="logo__tagline">
+                      Open <br/>Global <br/>Trusted
+                    </span>
+                </a>
+            </div>
+            <nav class="col-xs-8 flex-end">
+                <h2 class="sr-only">Main actions</h2>
+                {% set columns = data.nav.entries|selectattr("primary")|list %}
+                  <ul class="nav-bar" role="menubar" id="main_actions">
+                    {% for column in columns %}
+                        {% set section_id=column.id %}
+                        {% include "public/includes/_header-primary-navigation.html" %}
+                    {% endfor %}
+                    <li class="flex-center primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0" role="button">
+                      <span class="label"> Search</span>
+                      <span data-feather="search" aria-hidden="true"></span>
+                    </li>
+                </ul>
+                <div class="nav-bar secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
+                    <span class="label">Menu</span> <span data-feather="menu" aria-hidden="true"></span>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+{# static pages may declare "highlight" in their front matter, and if they do we want to adjust the nav accordingly #}
+{% set extraClass = "" %}
+{% if page %}
+    {% if page.highlight %}
+        {% set extraClass="secondary-nav--precedes-highlight" %}
+    {% endif %}
+{% endif %}
+<nav class="secondary-nav {{ extraClass }}">
+    <div class="container">
+        <h2 class="sr-only">Secondary actions</h2>
+        <div class="flex-space-between">
+            <ul class="nav-bar secondary-nav__menu" role="menu">
+
+                {% set columns = data.nav.entries|selectattr("secondary")|list %}
+                {% for column in columns %}
+                    {% set section_id=column.id %}
+                    {% include "public/includes/_header-secondary-navigation.html" %}
+                {% endfor %}
+                {% set columns = data.nav.entries|selectattr("secondary_mobile")|list %}
+                {% set mobile=True %}
+                {% for column in columns %}
+                    {% set section_id=column.id %}
+                    {% include "public/includes/_header-secondary-navigation.html" %}
+                {% endfor %}
+                {% include "public/includes/_header-secondary-navigation-account.html" %}
+            </ul>
+            <ul class="nav-bar secondary-nav__menu" role="menu">
+              {% set mobile=False %}
+              {% include "public/includes/_header-secondary-navigation-account.html" %}
+            </ul>
+        </div>
+    </div>
+</nav>

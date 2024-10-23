@@ -4,6 +4,7 @@ from portality.models import OpenURLRequest
 from portality.lib import plausible
 from portality.core import app
 from urllib.parse import unquote
+from portality.ui import templates
 
 blueprint = Blueprint('openurl', __name__)
 
@@ -95,9 +96,9 @@ def old_to_new(req):
 
 @blueprint.route("/openurl/help")
 def help():
-    return render_template("openurl/help.html")
+    return render_template(templates.OPENURL_HELP)
 
 
 @blueprint.errorhandler(404)
 def bad_request(e):
-    return render_template("openurl/404.html"), 404
+    return render_template(templates.OPENURL_404), 404
