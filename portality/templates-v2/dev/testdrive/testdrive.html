@@ -11,7 +11,7 @@
 <h1>{{ name }} - Testdrive setup results</h1>
 
 {% for k, v in params.items() %}
-    {% if k != "teardown" %}
+    {% if k != "teardown" and k != "non_renderable" %}
     <h2>{{ k }}</h2>
     <dl>
     {% if v is mapping %}

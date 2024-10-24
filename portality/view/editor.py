@@ -31,8 +31,9 @@ def index():
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"), update_requests=False)
+    count = svc.user_finished_historical_counts(current_user._get_current_object())
     # ~~-> Dashboard:Page~~
-    return render_template(templates.EDITOR_DASHBOARD, todos=todos)
+    return render_template(templates.EDITOR_DASHBOARD, todos=todos, historical_count=count)
 
 
 @blueprint.route('/group_applications')
