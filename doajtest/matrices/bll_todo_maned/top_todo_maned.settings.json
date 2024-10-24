@@ -208,6 +208,35 @@
       }
     },
     {
+      "name": "todo_maned_on_hold",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "admin"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "todo_maned_new_update_request_order",
       "type": "conditional",
       "default": "",
@@ -303,6 +332,24 @@
       "default": "",
       "values": {
         "6": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_maned_on_hold_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "7": {
           "conditions": [
             {
               "account": {
