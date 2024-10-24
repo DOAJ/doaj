@@ -336,7 +336,8 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_READY
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_date,
@@ -357,7 +358,8 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_READY
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_date,
@@ -410,7 +412,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_field,
@@ -432,7 +435,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_field,
@@ -467,7 +471,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_field,
