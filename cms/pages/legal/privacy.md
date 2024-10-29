@@ -18,7 +18,7 @@ The Directory of Open Access Journals ("DOAJ"), managed independently by [IS4OA]
 
 ### Who to contact at DOAJ about protecting your privacy
 
-The DOAJ Operations Manager, Dominic Mitchell, has assumed responsibility for the DOAJ data policy and implementing the changes required by the GDPR, which came into effect on 25th May 2018. If you have any questions or concerns about the information in this Notice or any other question about how DOAJ protects or uses your data, please [email Dominic](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
+The DOAJ Deputy Director, Dominic Mitchell, has assumed responsibility for the DOAJ data policy and implementing the changes required by the GDPR, which came into effect on 25th May 2018. If you have any questions or concerns about the information in this Notice or any other question about how DOAJ protects or uses your data, please [email Dominic](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
 
 ### The policy
 
@@ -161,7 +161,7 @@ Users may request at any time that we delete all their personal data from our sy
 
 #### 6c Volunteer applications
 
-DOAJ stores the personal data of applicants in a Google Sheet until we assess if a person is a suitable candidate. Old applications are struck through and archived in a secure Google Drive folder only accessible by the Operations Manager. Old applications are deleted after seven years. Volunteer applicants may request at any time that we delete all their personal data from Google Drive by submitting a Subject Access Request (SAR) to us\*\*.
+DOAJ stores the personal data of applicants in a Google Sheet until we have finished assessing the candidates. Old applications are struck through and archived in a secure Google Drive folder only accessible by the Executive Team. Old applications are deleted after two months. Volunteer applicants may request at any time that we delete all their personal data from Google Drive by submitting a Subject Access Request (SAR) to us\*\*.
 
 \*\*see section 9 below.
 
@@ -177,7 +177,7 @@ Individuals may request that DOAJ delete their user account from the DOAJ Admin 
 
 #### 8b How to request that all personal data be deleted
 
-To request that DOAJ delete all of the personal data we hold about you, please email the Operations Manager, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org).
+To request that DOAJ delete all of the personal data we hold about you, please email the Deputy Director, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org).
 
 ### 9) Subject access request (SAR)
 
@@ -187,7 +187,7 @@ An SAR is the name given to the process by which a user can request to know deta
 
 #### 9b How to make a SAR to DOAJ
 
-You may submit a SAR to DOAJ by contacting the Operations Manager, Dominic Mitchell, directly: [dominic@doaj.org](mailto:dominic@doaj.org). Any request in writing will be considered valid, whatever the format.
+You may submit a SAR to DOAJ by contacting the Deputy Director, Dominic Mitchell, directly: [dominic@doaj.org](mailto:dominic@doaj.org). Any request in writing will be considered valid, whatever the format.
 
 ### 10) Withdrawing consent
 
@@ -197,4 +197,4 @@ You may also explicitly indicate that you do not want DOAJ to use your email add
 
 ### 11) How to complain
 
-If you need to complain about how DOAJ has handled an SAR or your request to withdraw consent, or any other aspect related to the information detailed in this Privacy Information Notice, please send an email to the DOAJ Operations Manager, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org)
+If you need to complain about how DOAJ has handled an SAR or your request to withdraw consent, or any other aspect related to the information detailed in this Privacy Information Notice, please send an email to the DOAJ Deputy Director, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org)
