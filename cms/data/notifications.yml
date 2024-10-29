@@ -46,7 +46,7 @@ application:publisher:accepted:notify:
 
     To increase the visibility, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
 
-    [How to upload article metadata](https://doaj.org/docs/faq/#uploading-article-metadata)
+    [How to upload article metadata]({faq_url}#uploading-article-metadata)
 
     We are delighted to welcome this journal into DOAJ. Do not hesitate to contact us at [helpdesk@doaj.org](mailto:helpdesk@doaj.org) if you have any questions.
   short:
@@ -80,7 +80,7 @@ application:publisher:inprogress:notify:
   long: |
     Your submission for **{title}** submitted on {date_applied} is now being reviewed by an Associate Editor.
 
-    The Associate Editor ([{volunteers}]({volunteers})) may contact you by email with questions. They may not be using a doaj.org email address. These emails can end up in your Spam folder so please check your Spam folder regularly.
+    The Associate Editor ([{volunteers_url}]({volunteers_url})) may contact you by email with questions. They may not be using a doaj.org email address. These emails can end up in your Spam folder so please check your Spam folder regularly.
   short:
     Your submission ({issns}) is under review
 
