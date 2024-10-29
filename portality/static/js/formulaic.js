@@ -1120,7 +1120,7 @@ var formulaic = {
 
             this.init = function() {
                 this.container = $("." + this.fieldDef.name + "__container");
-                // this.container.hide();
+                this.container.hide();
 
                 let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
                 let clearFlagClass = edges.css_classes(this.namespace, "clear-flag");
@@ -1145,9 +1145,9 @@ var formulaic = {
             }
 
             this.addFlag = function() {
-                // let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
-                // $(addFlagContainer).hide();
-                // this.container.show();
+                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                $(addFlagContainer).hide();
+                this.container.show();
             }
 
             this.clearFlag = function() {
