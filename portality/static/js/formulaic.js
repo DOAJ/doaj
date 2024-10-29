@@ -1151,7 +1151,7 @@ var formulaic = {
             }
 
             this.clearFlag = function() {
-                $(this.container).find('input').val('');
+                $(this.container).find('input,textarea').val('');
                 // this.container.hide();
                 // let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
                 // $(addFlagContainer).show();
