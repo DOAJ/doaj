@@ -299,9 +299,17 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.__seamless__.get_list("admin.notes")
 
     @property
-    def ordered_notes(self):
+    def notes_except_flags(self):
+        return [note for note in self.notes if not note.get("flag") or not note["flag"].get("assigned_to")]
+
+    @property
+    def flags(self):
+        return [note for note in self.notes if note.get("flag") and note["flag"].get("assigned_to")]
+
+    @property
+    def ordered_notes(self, with_flags=True):
         """Orders notes by newest first"""
-        notes = self.notes
+        notes = self.notes if with_flags else self.notes_except_flags
         clusters = {}
         for note in notes:
             if "date" not in note:
