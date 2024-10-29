@@ -66,6 +66,8 @@ DOAJ partners with many organisations. The nature of the partnerships varies and
   {:.stretch-list__item} 
 + [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
   {:.stretch-list__item} 
++ [IOI Infra Finder](https://infrafinder.investinopen.org/solutions/doaj-directory-of-open-access-journals)
+  {:.stretch-list__item} 
 + [ISSN](https://www.issn.org/)
   {:.stretch-list__item} 
 + [Library Publishing Coalition](https://librarypublishing.org/)
@@ -76,6 +78,8 @@ DOAJ partners with many organisations. The nature of the partnerships varies and
   {:.stretch-list__item}
 + [OpenAIRE](https://www.openaire.eu/)
   {:.stretch-list__item}    
++ [Principles of Open Scholarly Infrastructure (POSI)](https://openscholarlyinfrastructure.org/)
+  {:.stretch-list__item}
 + [Redalyc](https://www.redalyc.org/)
   {:.stretch-list__item} 
 + [Research4Life](https://www.research4life.org/)
@@ -85,7 +89,7 @@ DOAJ partners with many organisations. The nature of the partnerships varies and
 
 
 ## Think. Check. Submit.
-DOAJ is a proud founder of [Think. Check. Submit.](https://thinkchecksubmit.org/) as well as a contributing organisation and long-standing committee member.
+DOAJ is a proud founder of [Think. Check. Submit.](https://thinkchecksubmit.org/) as well as a contributing organisation and long-standing committee member. DOAJ currently chairs the TCS Committee.
 
 Established in 2015, Think. Check. Submit. was developed with the support of an international coalition of organisations from across scholarly communications in response to discussions about predatory publishing and amid a growing number of new and unfamiliar publishing options available for researchers.
 
