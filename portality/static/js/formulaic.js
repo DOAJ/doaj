@@ -1120,7 +1120,7 @@ var formulaic = {
 
             this.init = function() {
                 this.container = $("." + this.fieldDef.name + "__container");
-                this.container.hide();
+                // this.container.hide();
 
                 let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
                 let clearFlagClass = edges.css_classes(this.namespace, "clear-flag");
@@ -1140,36 +1140,36 @@ var formulaic = {
                 let clearFlagClassSelector = edges.css_class_selector(this.namespace, "clear-flag");
                 edges.on(clearFlagClassSelector, "click", this, "clearFlag");
 
-                let resolveFlagClassSelector = edges.css_class_selector(this.namespace, "resolve-flag");
-                edges.on(resolveFlagClassSelector, "click", this, "resolveFlag");
+                // let resolveFlagClassSelector = edges.css_class_selector(this.namespace, "resolve-flag");
+                // edges.on(resolveFlagClassSelector, "click", this, "resolveFlag");
             }
 
             this.addFlag = function() {
-                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
-                $(addFlagContainer).hide();
-                this.container.show();
+                // let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                // $(addFlagContainer).hide();
+                // this.container.show();
             }
 
             this.clearFlag = function() {
-                // TODO: actually clear the flag content from the form
-                this.container.hide();
-                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
-                $(addFlagContainer).show();
+                $(this.container).find('input').val('');
+                // this.container.hide();
+                // let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                // $(addFlagContainer).show();
             }
 
             this.resolveFlag = function() {
-                let flagNote = this.container.find("#flag-flag_note");
-
-                let noteWidgets = formulaic.active.activeWidgets["notes"];
-                // TODO: we'll need a way to actually find the InfiniteRepeat widget for certain
-                let irw = noteWidgets[0];
-                irw.addField();
-
-                let justAdded = irw.container.find("div").first();
-                let textarea = justAdded.find("textarea");
-                textarea.val("Flag resolved: " + flagNote.val());
-
-                this.clearFlag();
+                // let flagNote = this.container.find("#flag-flag_note");
+                //
+                // let noteWidgets = formulaic.active.activeWidgets["notes"];
+                // // TODO: we'll need a way to actually find the InfiniteRepeat widget for certain
+                // let irw = noteWidgets[0];
+                // irw.addField();
+                //
+                // let justAdded = irw.container.find("div").first();
+                // let textarea = justAdded.find("textarea");
+                // textarea.val("Flag resolved: " + flagNote.val());
+                //
+                // this.clearFlag();
             }
 
             this.init();

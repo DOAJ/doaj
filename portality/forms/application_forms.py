@@ -2051,7 +2051,6 @@ class FieldDefinitions:
         "name": "flag_setter",
         "group": "flag",
         "input": "text",
-        "disabled": True
     }
 
     # ~~->$ NoteDate:FormField~~
@@ -2060,7 +2059,6 @@ class FieldDefinitions:
         "name": "flag_created_date",
         "group": "flag",
         "input": "text",
-        "disabled": True
     }
 
     FLAG_DEADLINE = {
@@ -2068,7 +2066,6 @@ class FieldDefinitions:
         "name": "flag_deadline",
         "group": "flag",
         "input": "text",
-        "disabled": True
     }
 
     FLAG_NOTE = {

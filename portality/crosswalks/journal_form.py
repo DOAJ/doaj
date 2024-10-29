@@ -270,6 +270,17 @@ class JournalGenericXWalk(object):
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
                                  author_id=formnote["note_author_id"])
 
+        if getattr(form, "flag", None):
+            flag = form.flag.data
+            flag_date = flag["flag_created_date"]
+            flag_deadline = flag["flag_deadline"]
+            flag_assigned_to = flag["flag_assignee"]
+            flag_author = flag["flag_setter"]
+            flag_id = flag["flag_note_id"]
+            flag_note = flag["flag_note"]
+            obj.add_note(flag_note, date=flag_date, id=flag_id,
+                         author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
+
         if getattr(form, 'owner', None):
             owner = form.owner.data
             if owner:
