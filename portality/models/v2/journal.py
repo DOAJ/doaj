@@ -62,6 +62,25 @@ class ContinuationException(Exception):
     pass
 
 
+def _order_notes(notes):
+    clusters = {}
+    for note in notes:
+        if "date" not in note:
+            note[
+                "date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
+        if note["date"] not in clusters:
+            clusters[note["date"]] = [note]
+        else:
+            clusters[note["date"]].append(note)
+
+    ordered_keys = sorted(list(clusters.keys()), reverse=True)
+    ordered = []
+    for key in ordered_keys:
+        clusters[key].reverse()
+        ordered += clusters[key]
+    return ordered
+
+
 class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @classmethod
@@ -307,24 +326,15 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return [note for note in self.notes if note.get("flag") and note["flag"].get("assigned_to")]
 
     @property
-    def ordered_notes(self, with_flags=True):
+    def ordered_notes(self):
         """Orders notes by newest first"""
-        notes = self.notes if with_flags else self.notes_except_flags
-        clusters = {}
-        for note in notes:
-            if "date" not in note:
-                note["date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
-            if note["date"] not in clusters:
-                clusters[note["date"]] = [note]
-            else:
-                clusters[note["date"]].append(note)
+        notes = self.notes
+        return _order_notes(notes)
 
-        ordered_keys = sorted(list(clusters.keys()), reverse=True)
-        ordered = []
-        for key in ordered_keys:
-            clusters[key].reverse()
-            ordered += clusters[key]
-        return ordered
+    @property
+    def ordered_notes_except_flags(self):
+        notes = self.notes_except_flags
+        return _order_notes(notes)
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
