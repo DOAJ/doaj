@@ -1,0 +1,20 @@
+{
+  "types": [
+    {
+      "type" : "journal",
+      "init_with_model" : true,
+      "keepalive" : "20m",
+      "functions" : [
+        "portality.migrate.20241031_4005_apc_model_consistency.operations.reset_apc"
+      ]
+    },
+    {
+      "type" : "application",
+      "init_with_model" : true,
+      "keepalive" : "20m",
+      "functions" : [
+        "portality.migrate.20241031_4005_apc_model_consistency.operations.reset_apc"
+      ]
+    }
+  ]
+}

@@ -1722,6 +1722,16 @@ class TestModels(DoajTestCase):
         ap2 = models.Autocheck.for_journal("9876")
         assert ap2.journal == "9876"
 
+    def test_41_add_remove_apc_bibjson(self):
+        bj = models.JournalLikeBibJSON()
+        bj.add_apc("GBP", 100)
+        assert bj.has_apc is True
+        assert bj.apc == [{"currency": "GBP", "price": 100}]
+
+        bj.has_apc = False
+        assert bj.has_apc is False
+        assert bj.apc == []
+
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
 
