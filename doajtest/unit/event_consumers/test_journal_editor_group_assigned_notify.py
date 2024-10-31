@@ -29,7 +29,6 @@ class TestJournalEditorGroupAssignedNotify(DoajTestCase):
 
             source = JournalFixtureFactory.make_journal_source(True)
             app = models.Journal(**source)
-            # app.save()
 
             acc = models.Account()
             acc.set_id("editor")
@@ -41,21 +40,21 @@ class TestJournalEditorGroupAssignedNotify(DoajTestCase):
             eg.set_editor("editor")
             eg.save(blocking=True)
 
-        event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, context={"journal": app.data})
-        JournalEditorGroupAssignedNotify.consume(event)
+            event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, context={"journal": app.data})
+            JournalEditorGroupAssignedNotify.consume(event)
 
             time.sleep(1)
             ns = models.Notification.all()
             assert len(ns) == 1
 
-        n = ns[0]
-        assert n.who == "editor"
-        assert n.created_by == JournalEditorGroupAssignedNotify.ID
-        assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
-        assert n.long is not None
-        assert n.short is not None
-        assert n.action is None  # view.editor.journal_page has been removed
-        assert not n.is_seen()
+            n = ns[0]
+            assert n.who == "editor"
+            assert n.created_by == JournalEditorGroupAssignedNotify.ID
+            assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
+            assert n.long is not None
+            assert n.short is not None
+            assert n.action is None  # view.editor.journal_page has been removed
+            assert not n.is_seen()
 
     def test_consume_fail(self):
         event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, context={"journal": {"key" : "value"}})
@@ -64,7 +63,6 @@ class TestJournalEditorGroupAssignedNotify(DoajTestCase):
 
         source = JournalFixtureFactory.make_journal_source(True)
         app = models.Journal(**source)
-        # app.save(blocking=True)
 
         eg = models.EditorGroup()
         eg.set_name(app.editor_group)
