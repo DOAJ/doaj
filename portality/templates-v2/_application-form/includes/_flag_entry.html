@@ -1,0 +1,6 @@
+<div name="{{ f.name }}__group">
+    <h2 style="{color: blue}">This is custom notes entry template</h2>
+    {% for subfield in f.group_subfields() %}
+        {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
+    {% endfor %}
+</div>

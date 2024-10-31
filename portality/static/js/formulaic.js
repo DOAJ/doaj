@@ -1120,10 +1120,8 @@ var formulaic = {
 
             this.init = function() {
                 this.container = $("." + this.fieldDef.name + "__container");
-                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
-                $(addFlagContainer).hide();
-                // this.container.hide();
-                //
+                this.container.hide();
+
                 let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
                 let clearFlagClass = edges.css_classes(this.namespace, "clear-flag");
                 let resolveFlagClass = edges.css_classes(this.namespace, "resolve-flag");
@@ -1147,16 +1145,13 @@ var formulaic = {
             }
 
             this.addFlag = function() {
-                // let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
+                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
                 // $(addFlagContainer).hide();
-                // this.container.show();
+                this.container.show();
             }
 
             this.clearFlag = function() {
                 $(this.container).find('input,textarea').val('');
-                // this.container.hide();
-                // let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
-                // $(addFlagContainer).show();
             }
 
             this.resolveFlag = function() {
@@ -1784,6 +1779,10 @@ var formulaic = {
         MultipleField: function(params) {
             this.fieldDef = params.fieldDef;
             this.max = this.fieldDef["repeatable"]["initial"] - 1;
+            // this.show_labels = this.fieldDef["repeatable"]["show_labels"] ? this.fieldDef["repeatable"]["show_labels"] : false;
+            // if (!this.show_labels) {
+            //     this.fields.forEach(f => f.addClass("hiddenLabel"))
+            // }
 
             this.init = () => {
                 if (this.fieldDef["input"] === "group") {

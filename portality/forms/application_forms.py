@@ -2025,10 +2025,14 @@ class FieldDefinitions:
         "input": "hidden"
     }
 
-    FLAG = {
-        "name": "flag",
+    FLAGS = {
+        "name": "flags",
         "input": "group",
         "label": "Flag",
+        "repeatable": {
+            "initial": 2,
+            "add_button_placement": "top"
+        },
         "subfields": [
             "flag_setter",
             "flag_created_date",
@@ -2038,16 +2042,20 @@ class FieldDefinitions:
             "flag_setter_id",
             "flag_assignee"
         ],
-        "template": templates.AF_FIELD,
-        "entry_template": templates.AF_ENTRY_GOUP,
+        "template": templates.FLAGS_LIST,
+        "entry_template": templates.FLAG_ENTRY_GROUP,
         "widgets": [
-            "flag_manager"
+            {"multiple_field": {"hide_labels": False}}
+            # "flag_manager"
         ]
     }
 
     # ~~->$ NoteAuthor:FormField~~
     FLAG_SETTER = {
         "subfield": True,
+        "help": {
+            "placeholder": "setter"
+        },
         "name": "flag_setter",
         "group": "flag",
         "input": "text",
@@ -2057,6 +2065,8 @@ class FieldDefinitions:
     FLAG_CREATED_DATE = {
         "subfield": True,
         "name": "flag_created_date",
+        "help": {
+        "placeholder": "date"},
         "group": "flag",
         "input": "text",
     }
@@ -2064,6 +2074,8 @@ class FieldDefinitions:
     FLAG_DEADLINE = {
         "subfield": True,
         "name": "flag_deadline",
+        "help": {
+        "placeholder": "deadline"},
         "group": "flag",
         "input": "text",
     }
@@ -2095,6 +2107,8 @@ class FieldDefinitions:
     FLAG_ASSIGNEE = {
         "subfield": True,
         "name": "flag_assignee",
+        "help": {
+        "placeholder": "assigned_to"},
         "group": "flag",
         "input": "text",
         "disabled": False # "disable_except_assignee_owner_admin"
@@ -2377,11 +2391,11 @@ class FieldSetDefinitions:
         ]
     }
 
-    FLAG = {
+    FLAGS = {
         "name": "flag",
         "label": "Flag",
         "fields": [
-            FieldDefinitions.FLAG["name"],
+            FieldDefinitions.FLAGS["name"],
             FieldDefinitions.FLAG_SETTER["name"],
             FieldDefinitions.FLAG_CREATED_DATE["name"],
             FieldDefinitions.FLAG_DEADLINE["name"],
@@ -2524,7 +2538,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.FLAG["name"],
+        FieldSetDefinitions.FLAGS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication

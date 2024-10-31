@@ -270,8 +270,9 @@ class JournalGenericXWalk(object):
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
                                  author_id=formnote["note_author_id"])
 
-        if getattr(form, "flag", None):
-            flag = form.flag.data
+        if getattr(form, "flags", None):
+            print(form.flags.data)
+            flag = form.flags.data[0]
             flag_date = flag["flag_created_date"]
             flag_deadline = flag["flag_deadline"]
             flag_assigned_to = flag["flag_assignee"]
@@ -452,6 +453,7 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def admin2form(cls, obj, forminfo):
+        print(obj.ordered_notes)
         forminfo['notes'] = []
         for n in obj.ordered_notes_except_flags:
             author_id = n.get('author_id', '')
@@ -462,13 +464,15 @@ class JournalGenericXWalk(object):
                         }
             forminfo['notes'].append(note_obj)
 
+        forminfo["flags"] = []
+        print(obj.flags)
         if obj.flags:
             # display only the newest flag
             flag = obj.flags[0]
             flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"], "flag_note_id": flag["id"],
                         "flag_setter": flag["author_id"], "flag_assignee": flag["flag"]["assigned_to"],
-                                                                    "flag_deadline": flag["flag"]["deadline"]}
-            forminfo['flag'] = flag_obj
+                                                                    "flag_deadline": flag["flag"].get("flag_deadline", "")}
+            forminfo['flags'].append(flag_obj)
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:
