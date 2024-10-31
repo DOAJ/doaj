@@ -10,7 +10,7 @@ from portality.dao import Facetview2
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import main_queue
 from portality.ui import templates
 
 
@@ -178,6 +178,8 @@ class AssEdAgeQuery(object):
                 }
             }
         }
+
+
 # Functions for each notification recipient - ManEd, Editor, Assoc_editor
 def managing_editor_notifications(emails_dict):
     """

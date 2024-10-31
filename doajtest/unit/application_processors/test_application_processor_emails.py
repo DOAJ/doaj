@@ -1,5 +1,4 @@
 # FIXME: these tests are no longer as useful as they once were because we always send the notification template
-# FIXME more: these tests are horribly broken and need a good going over for this notifications release 2022-07-21
 
 import logging
 import re
@@ -7,7 +6,8 @@ from io import StringIO
 from copy import deepcopy
 
 from portality import constants
-from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, \
+    JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
@@ -16,7 +16,6 @@ from doajtest.mocks.bll_notification import InterceptNotifications
 from portality.ui import templates
 
 from portality.events.consumers.application_assed_inprogress_notify import ApplicationAssedInprogressNotify
-
 
 UPDATE_REQUEST_SOURCE_TEST_1 = ApplicationFixtureFactory.make_update_request_source()
 UPDATE_REQUEST_SOURCE_TEST_2 = ApplicationFixtureFactory.make_update_request_source()
@@ -37,6 +36,7 @@ ASSED1_SOURCE = AccountFixtureFactory.make_assed1_source()
 ASSED2_SOURCE = AccountFixtureFactory.make_assed2_source()
 ASSED3_SOURCE = AccountFixtureFactory.make_assed3_source()
 
+
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
@@ -46,9 +46,11 @@ def editor_group_pull_by_key(cls, field, value):
     eg = models.EditorGroup(**EDITOR_GROUP_SOURCE)
     return eg
 
+
 @classmethod
 def editor_group_pull(self, _id):
     return models.EditorGroup(**EDITOR_GROUP_SOURCE)
+
 
 @classmethod
 def editor_account_pull(self, _id):
@@ -62,6 +64,7 @@ def editor_account_pull(self, _id):
         return models.Account(**ASSED3_SOURCE)
     else:
         return ACTUAL_ACCOUNT_PULL(_id)
+
 
 ACTUAL_ACCOUNT_PULL = models.Account.pull
 
@@ -86,7 +89,7 @@ class TestPublicApplicationEmails(DoajTestCase):
 
         self.notifications_service = DOAJ.notificationsService
         NOTIFICATIONS_INTERCEPT.clear()
-        DOAJ.notificationsService = lambda : InterceptNotifications(NOTIFICATIONS_INTERCEPT)
+        DOAJ.notificationsService = lambda: InterceptNotifications(NOTIFICATIONS_INTERCEPT)
         self.svc = DOAJ.notificationsService()
 
     def tearDown(self):
@@ -122,7 +125,8 @@ class TestPublicApplicationEmails(DoajTestCase):
         #   * to the applicant, informing them the application was received
         public_template = re.escape(templates.EMAIL_NOTIFICATION)
         public_to = re.escape(account.email)
-        public_subject = re.escape("Directory of Open Access Journals - Your application (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ") to DOAJ has been received")
+        public_subject = re.escape("Directory of Open Access Journals - Your application (" + ", ".join(
+            issn for issn in processor.source.bibjson().issns()) + ") to DOAJ has been received")
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -178,8 +182,6 @@ class TestApplicationReviewEmails(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("admin")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
-
             # If an application has been set to 'ready' but is returned to 'in progress',
             # an email is sent to the editor and assigned associate editor
             ready_application = models.Application(**APPLICATION_SOURCE_TEST_1)
@@ -212,7 +214,8 @@ class TestApplicationReviewEmails(DoajTestCase):
             # We expect two emails sent:
             #   * to the editor, informing them an application has been bounced from ready back to in progress.
             #   * to the associate editor, informing them the same
-            assert len(NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
+            assert len(
+                NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
 
             ### editor in progress notification and email
             notification = NOTIFICATIONS_INTERCEPT.pop()
@@ -221,31 +224,36 @@ class TestApplicationReviewEmails(DoajTestCase):
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ") reverted to 'In Progress' by Managing Editor\n")
-        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(editor_email_matched)
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape("Application (" + ", ".join(issn for issn in
+                                                                   processor.source.bibjson().issns()) + ") reverted to 'In Progress' by Managing Editor\n")
+            editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                             info_stream_contents,
+                                             re.DOTALL)
+            assert bool(editor_email_matched)
 
             ### associate editor in progress notification and email
-            assert len(NOTIFICATIONS_INTERCEPT) == 1    # this will change when more of this file is run through the notifications system
+            assert len(
+                NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
             notification = NOTIFICATIONS_INTERCEPT.pop()
             assert notification.who == "associate"
-            assert notification.long is not None # this and action are hard to predict, so lets just check they are set
+            assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape(self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())) + "\n")# "an application assigned to you has not passed review."
-        assoc_editor_email_matched = re.search(email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
-                                               info_stream_contents,
-                                               re.DOTALL)
-        assert bool(assoc_editor_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
-        ###
+            assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assoc_editor_to = re.escape('associate@example.com')
+            assoc_editor_subject = re.escape(
+                self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(
+                    issn for issn in
+                    processor.source.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
+            assoc_editor_email_matched = re.search(
+                email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+                info_stream_contents,
+                re.DOTALL)
+            assert bool(assoc_editor_email_matched)
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -280,7 +288,8 @@ class TestApplicationReviewEmails(DoajTestCase):
             # We expect two emails sent:
             #   * to the editor, informing them an application has been bounced from completed back to in progress.
             #   * to the associate editor, informing them the same
-            assert len(NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
+            assert len(
+                NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
 
             ### editor in progress notification and email
             notification = NOTIFICATIONS_INTERCEPT.pop()
@@ -289,32 +298,37 @@ class TestApplicationReviewEmails(DoajTestCase):
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Directory of Open Access Journals - Application ({}) reverted to 'In Progress' by Managing Editor".format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(editor_email_matched)
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape(
+                "Directory of Open Access Journals - Application ({}) reverted to 'In Progress' by Managing Editor".format(
+                    ', '.join(issn for issn in processor.source.bibjson().issns())))
+            editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                             info_stream_contents,
+                                             re.DOTALL)
+            assert bool(editor_email_matched)
 
             ### associate editor in progress notification and email
-            assert len(NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
+            assert len(
+                NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
             notification = NOTIFICATIONS_INTERCEPT.pop()
             assert notification.who == "associate"
-            assert notification.long is not None # this and action are hard to predict, so lets just check they are set
+            assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape(self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
-        assoc_editor_email_matched = re.search(
-            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
-            info_stream_contents,
-            re.DOTALL)
-        assert bool(assoc_editor_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
-        ###
+            assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assoc_editor_to = re.escape('associate@example.com')
+            assoc_editor_subject = re.escape(
+                self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(
+                    issn for issn in
+                    processor.source.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
+            assoc_editor_email_matched = re.search(
+                email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+                info_stream_contents,
+                re.DOTALL)
+            assert bool(assoc_editor_email_matched)
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -343,21 +357,24 @@ class TestApplicationReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the AssEd who's been assigned,
-        #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 2 emails to be sent:
+            #   * to the AssEd who's been assigned,
+            #   * and to the publisher informing them there's an editor assigned.
+            assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assEd_to = re.escape(models.Account.pull('associate_3').email)
+            assEd_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
-        publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your application ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape(
+                'Directory of Open Access Journals - Your application ({}) has been assigned to an editor for review'.format(
+                    ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -384,26 +401,29 @@ class TestApplicationReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the editor of the assigned group,
-        #   * to the AssEd who's been assigned
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to your group'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 2 emails to be sent:
+            #   * to the editor of the assigned group,
+            #   * to the AssEd who's been assigned
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape(
+                'Directory of Open Access Journals - New application ({}) assigned to your group'.format(
+                    ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                              info_stream_contents,
                                              re.DOTALL)
             assert bool(editor_email_matched)
 
-        assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+            assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assEd_to = re.escape(models.Account.pull('associate_3').email)
+            assEd_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -433,11 +453,12 @@ class TestApplicationReviewEmails(DoajTestCase):
             processor.finalise(acc)
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the ManEd in charge of the assigned Editor Group, saying an application is ready
-        manEd_template = re.escape(templates.EMAIL_NOTIFICATION)
-        manEd_to = re.escape(acc.email)
-        manEd_subject = re.escape('Directory of Open Access Journals - Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect one email to be sent here:
+            #   * to the ManEd in charge of the assigned Editor Group, saying an application is ready
+            manEd_template = re.escape(templates.EMAIL_NOTIFICATION)
+            manEd_to = re.escape(acc.email)
+            manEd_subject = re.escape('Directory of Open Access Journals - Application ({}) marked as ready'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                             info_stream_contents,
@@ -458,11 +479,13 @@ class TestApplicationReviewEmails(DoajTestCase):
             processor.finalise(acc)
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect 1 email to be sent:
-        #   * to the publisher, informing them of the journal's acceptance
-        publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your journal ({}) has been accepted'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 1 email to be sent:
+            #   * to the publisher, informing them of the journal's acceptance
+            publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape(
+                'Directory of Open Access Journals - Your journal ({}) has been accepted'.format(
+                    ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -470,15 +493,13 @@ class TestApplicationReviewEmails(DoajTestCase):
             assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
             assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
-            #ctx.pop()
-
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("editor")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
+            # ctx = self._make_and_push_test_context(acc=acc)
 
             # If an application has been set to 'ready' from another status, the ManEds are notified
             pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
@@ -510,11 +531,12 @@ class TestApplicationReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the ManEds, saying an application is ready
-        manEd_template = templates.EMAIL_NOTIFICATION
-        manEd_to = re.escape("maned@example.com")
-        manEd_subject = re.escape('Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect one email to be sent here:
+            #   * to the ManEds, saying an application is ready
+            manEd_template = templates.EMAIL_NOTIFICATION
+            manEd_to = re.escape("maned@example.com")
+            manEd_subject = re.escape('Application ({}) marked as ready'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                             info_stream_contents,
@@ -544,21 +566,23 @@ class TestApplicationReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the AssEd who's been assigned,
-        #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = templates.EMAIL_NOTIFICATION
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 2 emails to be sent:
+            #   * to the AssEd who's been assigned,
+            #   * and to the publisher informing them there's an editor assigned.
+            assEd_template = templates.EMAIL_NOTIFICATION
+            assEd_to = re.escape(models.Account.pull('associate_3').email)
+            assEd_subject = re.escape('New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
-        publisher_template = templates.EMAIL_NOTIFICATION
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            publisher_template = templates.EMAIL_NOTIFICATION
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -572,28 +596,25 @@ class TestApplicationReviewEmails(DoajTestCase):
             # Editors can also reassign applications to different associate editors.
             fc = ApplicationFormFactory.context("editor")
             processor = fc.processor(source=models.Suggestion(**APPLICATION_SOURCE_TEST_2))
-            # fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE_TEST_2))
-            # assert isinstance(fc, formcontext.EditorApplicationReview)
-
             processor.form.editor.data = "associate_2"
-
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
             # check the associate was changed
             assert processor.target.editor == "associate_2"
 
-        # We expect 1 email to be sent:
-        #   * to the AssEd who's been assigned,
-        assEd_template = templates.EMAIL_NOTIFICATION
-        assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 1 email to be sent:
+            #   * to the AssEd who's been assigned,
+            assEd_template = templates.EMAIL_NOTIFICATION
+            assEd_to = re.escape(models.Account.pull('associate_2').email)
+            assEd_subject = re.escape('New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -605,11 +626,6 @@ class TestApplicationReviewEmails(DoajTestCase):
             # Construct an application form
             fc = ApplicationFormFactory.context("editor")
             processor = fc.processor(source=completed_application)
-            # fc = formcontext.ApplicationFormFactory.get_form_context(
-            #     role="editor",
-            #     source=completed_application
-            # )
-            # assert isinstance(fc, formcontext.EditorApplicationReview)
 
             # Make changes to the application status via the form
             processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
@@ -624,21 +640,20 @@ class TestApplicationReviewEmails(DoajTestCase):
             assert processor.source.application_status == constants.APPLICATION_STATUS_COMPLETED
             assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
-        # We expect two email to be sent:
-        #   * to the associate editor, informing them the application has been bounced back to in progress.
-        #   * to the editor telling them an application has reverted to in progress
-        assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape('One of your applications ({}) has not passed review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        assoc_editor_email_matched = re.search(
-            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
-            info_stream_contents,
-            re.DOTALL)
-        assert bool(assoc_editor_email_matched)
+            # We expect two email to be sent:
+            #   * to the associate editor, informing them the application has been bounced back to in progress.
+            #   * to the editor telling them an application has reverted to in progress
+            assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assoc_editor_to = re.escape('associate@example.com')
+            assoc_editor_subject = re.escape('One of your applications ({}) has not passed review'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
+            assoc_editor_email_matched = re.search(
+                email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+                info_stream_contents,
+                re.DOTALL)
+            assert bool(assoc_editor_email_matched)
 
             assert len(re.findall(email_count_string, info_stream_contents)) == 2
-
-            #ctx.pop()
 
     def test_03_assoc_ed_review_emails(self):
         """ Ensure the Associate Editor's application review form sends the right emails"""
@@ -646,8 +661,6 @@ class TestApplicationReviewEmails(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("associate_editor")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
-
             # If an application has been set to 'in progress' from 'pending', the publisher is notified
             pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_3)
             pending_application.remove_current_journal()
@@ -668,11 +681,13 @@ class TestApplicationReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your submission ({}) is under review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect one email to be sent here:
+            #   * to the publisher, notifying that an editor is viewing their application
+            publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape(
+                'Directory of Open Access Journals - Your submission ({}) is under review'.format(
+                    ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -689,18 +704,18 @@ class TestApplicationReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email sent:
-        #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('Directory of Open Access Journals - Application ({}) marked as completed'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(editor_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
-
-            #ctx.pop()
+            # We expect one email sent:
+            #   * to the editor, informing them an application has been completed by an Associate Editor
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape(
+                'Directory of Open Access Journals - Application ({}) marked as completed'.format(
+                    ', '.join(issn for issn in processor.source.bibjson().issns())))
+            editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                             info_stream_contents,
+                                             re.DOTALL)
+            assert bool(editor_email_matched)
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
 
 class TestUpdateRequestReviewEmails(DoajTestCase):
@@ -749,8 +764,6 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("admin")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
-
             # If an application has been set to 'ready' but is returned to 'in progress',
             # an email is sent to the editor and assigned associate editor
             ready_application = models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_1)
@@ -776,11 +789,6 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             # Construct an application form
             fc = ApplicationFormFactory.context("admin")
             processor = fc.processor(source=ready_application)
-            # fc = formcontext.ApplicationFormFactory.get_form_context(
-            #     role="admin",
-            #     source=ready_application
-            # )
-            # assert isinstance(fc, formcontext.ManEdApplicationReview)
 
             # Make changes to the application status via the form
             processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
@@ -808,13 +816,14 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application ({}) reverted to 'In Progress' by Managing Editor".format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(editor_email_matched)
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape("Application ({}) reverted to 'In Progress' by Managing Editor".format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
+            editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                             info_stream_contents,
+                                             re.DOTALL)
+            assert bool(editor_email_matched)
 
             ### associate editor in progress notification and email
             assert len(
@@ -825,16 +834,17 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape(self.svc.short_notification(
-            ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.target.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
-        assoc_editor_email_matched = re.search(
-            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
-            info_stream_contents,
-            re.DOTALL)
-        assert bool(assoc_editor_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+            assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assoc_editor_to = re.escape('associate@example.com')
+            assoc_editor_subject = re.escape(self.svc.short_notification(
+                ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in
+                                                                                  processor.target.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
+            assoc_editor_email_matched = re.search(
+                email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+                info_stream_contents,
+                re.DOTALL)
+            assert bool(assoc_editor_email_matched)
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -879,13 +889,14 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application ({}) reverted to 'In Progress' by Managing Editor".format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(editor_email_matched)
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape("Application ({}) reverted to 'In Progress' by Managing Editor".format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
+            editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                             info_stream_contents,
+                                             re.DOTALL)
+            assert bool(editor_email_matched)
 
             ### associate editor in progress notification and email
             assert len(
@@ -896,16 +907,17 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assert notification.action is not None
             assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape(self.svc.short_notification(
-            ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
-        assoc_editor_email_matched = re.search(
-            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
-            info_stream_contents,
-            re.DOTALL)
-        assert bool(assoc_editor_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+            assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assoc_editor_to = re.escape('associate@example.com')
+            assoc_editor_subject = re.escape(self.svc.short_notification(
+                ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in
+                                                                                  processor.source.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
+            assoc_editor_email_matched = re.search(
+                email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+                info_stream_contents,
+                re.DOTALL)
+            assert bool(assoc_editor_email_matched)
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -929,21 +941,23 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the AssEd who's been assigned,
-        #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = templates.EMAIL_NOTIFICATION
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 2 emails to be sent:
+            #   * to the AssEd who's been assigned,
+            #   * and to the publisher informing them there's an editor assigned.
+            assEd_template = templates.EMAIL_NOTIFICATION
+            assEd_to = re.escape(models.Account.pull('associate_3').email)
+            assEd_subject = re.escape('New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
-        publisher_template = templates.EMAIL_NOTIFICATION
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            publisher_template = templates.EMAIL_NOTIFICATION
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -970,27 +984,29 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the editor of the assigned group,
-        #   * to the AssEd who's been assigned
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('New application ({}) assigned to your group'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 2 emails to be sent:
+            #   * to the editor of the assigned group,
+            #   * to the AssEd who's been assigned
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape('New application ({}) assigned to your group'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                              info_stream_contents,
                                              re.DOTALL)
             assert bool(editor_email_matched)
 
-        assEd_template = templates.EMAIL_NOTIFICATION
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            assEd_template = templates.EMAIL_NOTIFICATION
+            assEd_to = re.escape(models.Account.pull('associate_3').email)
+            assEd_subject = re.escape('New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -1008,11 +1024,12 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise(acc)
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the ManEds, saying an application is ready
-        manEd_template = templates.EMAIL_NOTIFICATION
-        manEd_to = re.escape("maned@example.com")
-        manEd_subject = re.escape('Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect one email to be sent here:
+            #   * to the ManEds, saying an application is ready
+            manEd_template = templates.EMAIL_NOTIFICATION
+            manEd_to = re.escape("maned@example.com")
+            manEd_subject = re.escape('Application ({}) marked as ready'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                             info_stream_contents,
@@ -1034,12 +1051,13 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise(acc)
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect 1 email to be sent:
-        #   * to the publisher, informing them of the journal's acceptance
-        #   * to the journal contact, informing them of the journal's acceptance
-        publisher_template = templates.EMAIL_NOTIFICATION
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Update request ({}) accepted'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 1 email to be sent:
+            #   * to the publisher, informing them of the journal's acceptance
+            #   * to the journal contact, informing them of the journal's acceptance
+            publisher_template = templates.EMAIL_NOTIFICATION
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape(
+                'Update request ({}) accepted'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -1047,15 +1065,13 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
             assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
-            #ctx.pop()
-
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("editor")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
+            # ctx = self._make_and_push_test_context(acc=acc)
 
             # If an application has been set to 'ready' from another status, the ManEds are notified
             pending_application = models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_2)
@@ -1086,11 +1102,12 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the ManEds, saying an application is ready
-        manEd_template = templates.EMAIL_NOTIFICATION
-        manEd_to = re.escape("maned@example.com")
-        manEd_subject = re.escape('Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect one email to be sent here:
+            #   * to the ManEds, saying an application is ready
+            manEd_template = templates.EMAIL_NOTIFICATION
+            manEd_to = re.escape("maned@example.com")
+            manEd_subject = re.escape('Application ({}) marked as ready'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                             info_stream_contents,
@@ -1119,21 +1136,23 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the AssEd who's been assigned,
-        #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = templates.EMAIL_NOTIFICATION
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 2 emails to be sent:
+            #   * to the AssEd who's been assigned,
+            #   * and to the publisher informing them there's an editor assigned.
+            assEd_template = templates.EMAIL_NOTIFICATION
+            assEd_to = re.escape(models.Account.pull('associate_3').email)
+            assEd_subject = re.escape('New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
-        publisher_template = templates.EMAIL_NOTIFICATION
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            publisher_template = templates.EMAIL_NOTIFICATION
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -1158,17 +1177,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_2"
 
-        # We expect 1 email to be sent:
-        #   * to the AssEd who's been assigned,
-        assEd_template = templates.EMAIL_NOTIFICATION
-        assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 1 email to be sent:
+            #   * to the AssEd who's been assigned,
+            assEd_template = templates.EMAIL_NOTIFICATION
+            assEd_to = re.escape(models.Account.pull('associate_2').email)
+            assEd_subject = re.escape('New application ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -1199,20 +1219,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assert processor.source.application_status == constants.APPLICATION_STATUS_COMPLETED
             assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
-        # We expect one email to be sent:
-        #   * to the associate editor, informing them the application has been bounced back to in progress.
-        assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape('One of your applications ({}) has not passed review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        assoc_editor_email_matched = re.search(
-            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
-            info_stream_contents,
-            re.DOTALL)
-        assert bool(assoc_editor_email_matched)
-
+            # We expect one email to be sent:
+            #   * to the associate editor, informing them the application has been bounced back to in progress.
+            assoc_editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assoc_editor_to = re.escape('associate@example.com')
+            assoc_editor_subject = re.escape('One of your applications ({}) has not passed review'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
+            assoc_editor_email_matched = re.search(
+                email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+                info_stream_contents,
+                re.DOTALL)
+            assert bool(assoc_editor_email_matched)
             assert len(re.findall(email_count_string, info_stream_contents)) == 2
-
-            #ctx.pop()
 
     def test_03_assoc_ed_review_emails(self):
         """ Ensure the Associate Editor's application review form sends the right emails"""
@@ -1220,8 +1238,6 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("associate_editor")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
-
             # If an application has been set to 'in progress' from 'pending', the publisher is notified
             pending_application = models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_3)
 
@@ -1246,11 +1262,12 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your submission ({}) is under review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect one email to be sent here:
+            #   * to the publisher, notifying that an editor is viewing their application
+            publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
+            publisher_to = re.escape(owner.email)
+            publisher_subject = re.escape('Your submission ({}) is under review'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                                 info_stream_contents,
@@ -1267,18 +1284,17 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email sent:
-        #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application ({}) marked as completed".format(', '.join(issn for issn in processor.source.bibjson().issns())))
-        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(editor_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
-
-            #ctx.pop()
+            # We expect one email sent:
+            #   * to the editor, informing them an application has been completed by an Associate Editor
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape("Application ({}) marked as completed".format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
+            editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                             info_stream_contents,
+                                             re.DOTALL)
+            assert bool(editor_email_matched)
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
 
 class TestJournalReviewEmails(DoajTestCase):
@@ -1317,8 +1333,6 @@ class TestJournalReviewEmails(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("admin")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
-
             journal = models.Journal(**JOURNAL_SOURCE_TEST_1)
 
             # Construct a journal form
@@ -1335,28 +1349,30 @@ class TestJournalReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the editor of the assigned group,
-        #   * to the AssEd who's been assigned,
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to your group'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 2 emails to be sent:
+            #   * to the editor of the assigned group,
+            #   * to the AssEd who's been assigned,
+            editor_template = re.escape(templates.EMAIL_NOTIFICATION)
+            editor_to = re.escape('eddie@example.com')
+            editor_subject = re.escape(
+                'Directory of Open Access Journals - New journal ({}) assigned to your group'.format(
+                    ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                              info_stream_contents,
                                              re.DOTALL)
             assert bool(editor_email_matched)
 
-        assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assEd_to = re.escape(models.Account.pull('associate_3').email)
+            assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
-        ctx.pop()
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's journal review form sends the right emails"""
@@ -1364,8 +1380,6 @@ class TestJournalReviewEmails(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("editor")
         with self._make_and_push_test_context_manager(acc=acc):
-            #ctx = self._make_and_push_test_context(acc=acc)
-
             # Editors can reassign journals to associate editors.
             fc = JournalFormFactory.context("editor")
             processor = fc.processor(source=models.Journal(**JOURNAL_SOURCE_TEST_2))
@@ -1377,16 +1391,15 @@ class TestJournalReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_2"
 
-        # We expect 1 email to be sent:
-        #   * to the AssEd who's been assigned
-        assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
+            # We expect 1 email to be sent:
+            #   * to the AssEd who's been assigned
+            assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
+            assEd_to = re.escape(models.Account.pull('associate_2').email)
+            assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(
+                ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
-
-            #ctx.pop()
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
