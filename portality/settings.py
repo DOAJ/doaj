@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.8.5"
+DOAJ_VERSION = "7.0.0"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -266,7 +266,6 @@ SITE_NOTE_ACTIVE = False
 SITE_NOTE_KEY = "doaj-site-note"
 SITE_NOTE_SLEEP = 259200    # every 3 days
 SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
-SITE_NOTE_TEMPLATE = "doaj/site_note.html"
 
 ####################################
 # Authorisation settings
@@ -1008,7 +1007,7 @@ MAX_FEED_ENTRY_AGE = 2592000
 
 # Licensing terms for feed content
 # ~~->SiteLicence:Content~~
-FEED_LICENCE = "(c) DOAJ 2013. CC BY-SA."
+FEED_LICENCE = "(c) DOAJ 2024. CC BY-SA."
 
 # name of the feed generator (goes in the atom:generator element)
 FEED_GENERATOR = "CottageLabs feed generator"

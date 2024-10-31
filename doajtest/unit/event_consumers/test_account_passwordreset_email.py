@@ -8,6 +8,7 @@ import uuid
 from io import StringIO
 import logging
 import re
+from portality.ui import templates
 
 # A regex string for searching the log entries
 email_log_regex = 'template.*%s.*to:\[u{0,1}\'%s.*subject:.*%s'
@@ -62,16 +63,16 @@ class TestAccountPasswordResetEmail(DoajTestCase):
             # Use the captured info stream to get email send logs
             info_stream_contents = self.info_stream.getvalue()
 
-            # We expect one email sent:
-            #   * to the applicant, informing them the application was received
-            template = re.escape('account_password_reset.jinja2')
-            to = re.escape(acc.email)
-            subject = "Directory of Open Access Journals - password reset"
-            email_matched = re.search(email_log_regex % (template, to, subject),
-                                             info_stream_contents,
-                                             re.DOTALL)
-            assert bool(email_matched)
-            assert len(re.findall(email_count_string, info_stream_contents)) == 1
+        # We expect one email sent:
+        #   * to the applicant, informing them the application was received
+        template = re.escape(templates.EMAIL_PASSWORD_RESET)
+        to = re.escape(acc.email)
+        subject = "Directory of Open Access Journals - password reset"
+        email_matched = re.search(email_log_regex % (template, to, subject),
+                                         info_stream_contents,
+                                         re.DOTALL)
+        assert bool(email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
     def test_consume_fail(self):
         source = AccountFixtureFactory.make_publisher_source()

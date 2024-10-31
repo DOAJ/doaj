@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.9.0',
+    version='7.1.0',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",

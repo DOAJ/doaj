@@ -731,14 +731,14 @@ class ApplicationService(object):
                         was = [v for q, v in journal_questions if q == question][0]
                         if isinstance(v[0], dict):
                             for sk, sv in v[0].items():
-                                validation.value(validation.ERROR, row_ix, pos, ". ".join(sv),
+                                validation.value(validation.ERROR, row_ix, pos, ". ".join([str(x) for x in sv]),
                                              was=was, now=now)
                         elif isinstance(v[0], list):
                             # If we have a list, we must go a level deeper
-                            validation.value(validation.ERROR, row_ix, pos, ". ".join(v[0]),
+                            validation.value(validation.ERROR, row_ix, pos, ". ".join([str(x) for x in v[0]]),
                                              was=was, now=now)
                         else:
-                            validation.value(validation.ERROR, row_ix, pos, ". ".join(v),
+                            validation.value(validation.ERROR, row_ix, pos, ". ".join([str(x) for x in v]),
                                              was=was, now=now)
 
         return validation

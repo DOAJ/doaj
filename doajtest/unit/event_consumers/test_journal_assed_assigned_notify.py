@@ -43,14 +43,14 @@ class TestJournalAssedAssignedNotify(DoajTestCase):
             ns = models.Notification.all()
             assert len(ns) == 1
 
-            n = ns[0]
-            assert n.who == app.editor
-            assert n.created_by == JournalAssedAssignedNotify.ID
-            assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
-            assert n.long is not None
-            assert n.short is not None
-            assert n.action is not None
-            assert not n.is_seen()
+        n = ns[0]
+        assert n.who == app.editor
+        assert n.created_by == JournalAssedAssignedNotify.ID
+        assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
+        assert n.long is not None
+        assert n.short is not None
+        assert n.action is None   # view.editor.journal_page has been removed
+        assert not n.is_seen()
 
     def test_consume_fail(self):
         event = models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, context={"journal": {"key" : "value"}})

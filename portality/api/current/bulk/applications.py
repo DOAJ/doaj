@@ -19,7 +19,7 @@ class ApplicationsBulkApi(CrudApi):
         "in": "body"
     }
     SWAG_APPLICATION_BODY_PARAM = {
-        "description": "<div class=\"search-query-docs\">List of Application JSON objects that you would like to create. Each element of the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Applications_get_api_application_application_id\"> GET (Retrieve) an application route</a>.</div>",
+        "description": "<div class=\"search-query-docs\">List of Application JSON objects that you would like to create. Each element of the list should comply with the schema displayed in the 'GET (Retrieve) an application route' below.</div>",
         "required": True,
         "schema": {"type" : "string"},
         "name": "application_json",
