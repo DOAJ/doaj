@@ -260,6 +260,9 @@ class JournalGenericXWalk(object):
                 new_subjects.append(sobj)
             bibjson.subject = new_subjects
 
+        if getattr(form, "labels", None):
+            bibjson.labels = form.labels.data
+
     @classmethod
     def form2admin(cls, form, obj):
         if getattr(form, "notes", None):
@@ -438,6 +441,9 @@ class JournalGenericXWalk(object):
         for s in bibjson.subject:
             if "code" in s:
                 forminfo['subject'].append(s['code'])
+
+        # labels
+        forminfo['labels'] = bibjson.labels
 
     @classmethod
     def admin2form(cls, obj, forminfo):

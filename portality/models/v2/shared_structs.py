@@ -21,7 +21,7 @@ JOURNAL_BIBJSON = {
                 "license" : {"contains" : "object"},
                 "replaces" : {"contains" : "field", "coerce" : "issn", "set__allow_coerce_failure" : True},
                 "subject" : {"contains" : "object"},
-                "labels": {"contains": "field", "coerce": "unicode"},
+                "labels": {"contains": "field", "coerce": "unicode", "allowed_values": ["s2o"]},
             },
             "objects" : [
                 "apc",
