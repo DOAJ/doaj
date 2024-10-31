@@ -637,6 +637,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
         assert bj.language == ["EN", "FR"]
+        assert bj.labels == ["s2o"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 3, bj.subject
@@ -687,6 +688,7 @@ class TestModels(DoajTestCase):
         bj.keywords = ["new", "terms"]
         bj.is_replaced_by = ["4444-4444"]
         bj.language = ["IT"]
+        bj.labels = ["diamond"]
         bj.replaces = ["3333-3333"]
         bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
         bj.apc_url = "http://apc2.com"
@@ -727,6 +729,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444"]
         assert bj.keywords == ["new", "terms"]
         assert bj.language == ["IT"]
+        assert bj.labels == ["diamond"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["3333-3333"]
         assert len(bj.subject) == 1
@@ -769,6 +772,7 @@ class TestModels(DoajTestCase):
         bj.add_is_replaced_by("4321-4321")
         bj.add_keyword("keyword")
         bj.add_language("CZ")
+        bj.add_label("s2o")
         bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
         bj.add_replaces("1234-1234")
         bj.add_subject("SCH", "TERM", "CDE")
@@ -781,6 +785,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
         assert bj.language == ["IT", "CZ"]
+        assert bj.labels == ["diamond", "s2o"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
@@ -801,6 +806,9 @@ class TestModels(DoajTestCase):
 
         with self.assertRaises(seamless.SeamlessException):
             bj.article_license_display = "notallowedvalue"
+
+        bj.clear_labels()
+        assert bj.labels == []
 
         # deprecated methods (they still need to work)
         bj.publication_time = 3

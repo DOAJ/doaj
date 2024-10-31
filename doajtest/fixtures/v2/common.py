@@ -66,6 +66,7 @@ JOURNAL_LIKE_BIBJSON = {
         "country": "US"
     },
     "keywords": ["word", "key"],
+    "labels": ["s2o"],
     "language": ["EN", "FR"],
     "license": [
         {
