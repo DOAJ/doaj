@@ -433,14 +433,14 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
 huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(main_queue)
 
 
-@huey_helper.task_queue.periodic_task(schedule("async_workflow_notifications"))
+@huey_helper.register_schedule
 def scheduled_async_workflow_notifications():
     user = app.config.get("SYSTEM_USERNAME")
     job = AsyncWorkflowBackgroundTask.prepare(user)
     AsyncWorkflowBackgroundTask.submit(job)
 
 
-@huey_helper.task_queue.task()
+@huey_helper.register_execute(is_load_config=False)
 def async_workflow_notifications(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = AsyncWorkflowBackgroundTask(job)

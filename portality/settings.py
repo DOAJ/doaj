@@ -416,7 +416,7 @@ APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in pro
 # huey/redis settings
 REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
-HUEY_EAGER = False
+HUEY_IMMEDIATE = False
 
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}

@@ -297,7 +297,7 @@ def scheduled_article_cleanup_sync():
 '''
 
 
-@huey_helper.task_queue.task()
+@huey_helper.register_execute(is_load_config=False)
 def article_duplicate_report(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = ArticleDuplicateReportBackgroundTask(job)

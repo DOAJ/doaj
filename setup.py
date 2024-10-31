@@ -27,7 +27,7 @@ setup(
         "email_validator~=2.2.0",
         "freezegun==1.5.1",
         "gunicorn==23.0.0",
-        "huey==1.10.5",  # upgrading to 1.11 / 2.x requires work
+        "huey~=2.5.2",
         "libsass==0.23.0",
         "LinkHeader==0.4.3",
         "lxml==5.3.0",
@@ -41,7 +41,7 @@ setup(
         "psutil==5.9.8",
         "pycountry==24.6.1",  # TODO: pycountry can get behind debian lists, so we may flip back to our fork later
         #"pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
-        "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
+        "python-dateutil",  # something else already installs this; note we need it without an explicit version freeze
         "pytz==2024.2",
         "redis==3.3.11",
         "requests~=2.32.3",
