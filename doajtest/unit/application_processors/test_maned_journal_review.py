@@ -149,7 +149,7 @@ class TestManEdJournalReview(DoajTestCase):
 
         # set the seal to False using the form
         fc.form.doaj_seal.data = False
-        fc.form.labels = []
+        fc.form.s2o.data = False
 
         # run the crosswalk, don't test it at all in this test
         fc.form2target()

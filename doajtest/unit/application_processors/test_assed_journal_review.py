@@ -29,7 +29,7 @@ JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
 del JOURNAL_FORM["owner"]
 del JOURNAL_FORM["editor_group"]
 del JOURNAL_FORM["editor"]
-del JOURNAL_FORM["labels"]
+del JOURNAL_FORM["s2o"]
 
 ######################################################
 # Main test class

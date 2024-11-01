@@ -151,7 +151,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "institution_name" : "Society Institution",
     "institution_country" : "US",
     "keywords": ["word", "key"],
-    "labels": ["s2o"],
+    "s2o": True,
     "language": ["EN", "FR"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",

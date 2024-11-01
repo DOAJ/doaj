@@ -1719,17 +1719,28 @@ class FieldDefinitions:
         ]
     }
 
-    LABELS = {
-        "name": "labels",
-        "label": "Labels for this Journal",
+    # LABELS = {
+    #     "name": "labels",
+    #     "label": "Labels for this Journal",
+    #     "input": "checkbox",
+    #     "multiple": True,
+    #     "options": [
+    #         {"display": "Subscribe to Open", "value": "s2o"}
+    #     ],
+    #     "help": {
+    #         "long_help": ["Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
+    #                       "Subscribe to Open</a> initiative?"],
+    #     }
+    # }
+
+    S2O = {
+        "name": "s2o",
+        "label": "Subscribe to Open",
         "input": "checkbox",
-        "multiple": True,
-        "options": [
-            {"display": "Subscribe to Open", "value": "s2o"}
-        ],
         "help": {
-            "long_help": ["Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
-                          "Subscribe to Open</a> initiative?"],
+            "long_help": [
+                "Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
+                "Subscribe to Open</a> initiative?"],
         }
     }
 
@@ -2260,7 +2271,7 @@ class FieldSetDefinitions:
         "name": "labels",
         "label": "Specify labels for this journal",
         "fields": [
-            FieldDefinitions.LABELS["name"]
+            FieldDefinitions.S2O["name"]
         ]
     }
 
