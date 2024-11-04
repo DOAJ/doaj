@@ -1,4 +1,5 @@
 import json
+import time
 from time import sleep
 
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ArticleFixtureFactory
@@ -8,6 +9,7 @@ from portality.tasks.journal_bulk_delete import journal_bulk_delete_manage
 
 TEST_JOURNAL_COUNT = 25
 TEST_ARTICLES_PER_JOURNAL = 2
+
 
 class TestTaskJournalBulkDelete(DoajTestCase):
 
@@ -21,7 +23,9 @@ class TestTaskJournalBulkDelete(DoajTestCase):
             self.journals.append(j)
             j.save()
             for i in range(0, TEST_ARTICLES_PER_JOURNAL):
-                a = models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, eissn=j.bibjson().first_eissn, pissn=j.bibjson().first_pissn))
+                a = models.Article(**ArticleFixtureFactory.make_article_source(with_id=False,
+                                                                               eissn=j.bibjson().first_eissn,
+                                                                               pissn=j.bibjson().first_pissn))
                 a.save()
                 self.articles.append(a)
 
@@ -58,9 +62,12 @@ class TestTaskJournalBulkDelete(DoajTestCase):
             assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
             assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
 
-            sleep(3)
-
             job = models.BackgroundJob.all()[0]
+
+            # Wait for the job to complete
+            # while job.status != 'complete':
+            #     time.sleep(1)
+            #     job = models.BackgroundJob.pull(job.id)
 
             assert len(models.Journal.all()) == SPARE_JOURNALS_NUM, "{}\n\n{}".format(len(models.Journal.all()), json.dumps(job.audit, indent=2))  # json.dumps([j.data for j in models.Journal.all()], indent=2)
             assert len(models.Article.all()) == SPARE_JOURNALS_NUM * TEST_ARTICLES_PER_JOURNAL, "{}\n\n{}".format(len(models.Article.all()), json.dumps(job.audit, indent=2))  # json.dumps([a.data for a in models.Article.all()], indent=2)

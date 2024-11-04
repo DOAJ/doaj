@@ -235,7 +235,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         :return:
         """
         background_job.save(blocking=True)
-        journal_bulk_edit.schedule(args=(background_job.id,), delay=10)
+        journal_bulk_edit.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = JournalBulkEditBackgroundTask.create_huey_helper(main_queue)

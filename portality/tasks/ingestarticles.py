@@ -357,7 +357,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save(blocking=True)
-        ingest_articles.schedule(args=(background_job.id,), delay=10)
+        ingest_articles.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
     @classmethod
     def _file_upload(cls, username, f, schema, previous):

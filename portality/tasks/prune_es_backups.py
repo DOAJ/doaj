@@ -68,7 +68,7 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        prune_es_backups.schedule(args=(background_job.id,), delay=10)
+        prune_es_backups.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = PruneESBackupsBackgroundTask.create_huey_helper(long_running)

@@ -283,7 +283,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        article_duplicate_report.schedule(args=(background_job.id,), delay=10)
+        article_duplicate_report.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = ArticleDuplicateReportBackgroundTask.create_huey_helper(long_running)

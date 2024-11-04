@@ -71,15 +71,16 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
 
         # test dry run
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=True)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    editor_group=new_eg.name, dry_run=True)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=False)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    editor_group=new_eg.name, dry_run=False)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         blocklist = [(s.id, s.last_updated) for s in self.suggestions]
         models.Application.blockall(blocklist)
-        # sleep(1)
 
         job = models.BackgroundJob.all()[0]
 
@@ -94,10 +95,12 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
 
     def test_02_note_successful_add(self):
         # test dry run
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=True)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    note="Test note", dry_run=True)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=False)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    note="Test note", dry_run=False)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         blocklist = [(s.id, s.last_updated) for s in self.suggestions]
@@ -122,14 +125,15 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         for acc_id in self.forbidden_accounts:
             logout_user()
             with self._make_and_push_test_context_manager(acc=models.Account.pull(acc_id)):
-                #self._make_and_push_test_context(acc=models.Account.pull(acc_id))
 
                 with self.assertRaises(BackgroundException):
                     # test dry run
-                    r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=True)
+                    r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                          note="Test note", dry_run=True)
 
                 with self.assertRaises(BackgroundException):
-                    r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=False)
+                    r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                          note="Test note", dry_run=False)
 
     def test_04_parameter_checks(self):
         # no params set at all
@@ -184,10 +188,12 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         """Bulk set an application status on a bunch of suggestions using a background task"""
         expected_app_status = constants.APPLICATION_STATUS_ON_HOLD
         # test dry run
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    application_status=expected_app_status, dry_run=True)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}},
+                                    application_status=expected_app_status, dry_run=False)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         blocklist = [(s.id, s.last_updated) for s in self.suggestions]

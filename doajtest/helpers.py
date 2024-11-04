@@ -149,6 +149,8 @@ class DoajTestCase(TestCase):
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
             "UR_CONCURRENCY_TIMEOUT": 0,
             'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
+            'HUEY_IMMEDIATE': True,
+            'HUEY_ASYNC_DELAY': 0
         }
 
     @classmethod

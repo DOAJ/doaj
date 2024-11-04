@@ -196,7 +196,7 @@ def submit_by_background_job(background_job, execute_fn):
     """ Common way of `BackgroundTask.submit`
     """
     background_job.save()
-    execute_fn.schedule(args=(background_job.id,), delay=10)
+    execute_fn.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 def create_execute_fn(task_queue: RedisHuey, task_factory: TaskFactory, task_name=None, script=True):
