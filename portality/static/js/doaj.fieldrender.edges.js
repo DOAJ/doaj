@@ -2711,43 +2711,49 @@ $.extend(true, doaj, {
                     externalLink += '</a></li>';
                 }
 
-                frag +='</sup>\
-                            </a>\
-                            ' + subtitle + '\
-                          </h3>\
-                        </header>\
-                        <div class="search-results__body">\
-                          <ul class="inlined-list">\
-                            <li>\
-                              ' + published + '\
-                            </li>\
-                            ' + language + '\
-                          </ul>\
-                          ' + subjects + '\
-                        </div>\
-                      </div>\
-                      <aside class="col-sm-4 search-results__aside">\
-                        ' + seal + '\
-                        <ul>\
-                          <li>\
-                            ' + update_or_added + '\
-                          </li>\
-                          ' + articles + '\
-                          ' + externalLink + '\
-                        <li>\
-                            ' + apcs + '\
-                          </li>\
-                          <li>\
-                            ' + rights + '\
-                          </li>\
-                          <li>\
-                            ' + licenses + '\
-                          </li>\
-                        </ul>\
-                        ' + actions + modals + '\
-                      </aside>\
-                    </article>\
-                  </li>';
+                let s2o = "";
+                if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
+                    s2o = `<li><img src="/assets/img/labels/s2o.webp" alt="Subscribe to Open"></li>`;
+                }
+
+                frag +=`</sup>
+                            </a>
+                            ` + subtitle + `
+                          </h3>
+                        </header>
+                        <div class="search-results__body">
+                          <ul class="inlined-list">
+                            <li>
+                              ` + published + `
+                            </li>
+                            ` + language + `
+                          </ul>
+                          ` + subjects + `
+                        </div>
+                      </div>
+                      <aside class="col-sm-4 search-results__aside">
+                        ` + seal + `
+                        <ul>
+                          <li>
+                            ` + update_or_added + `
+                          </li>
+                          ` + articles + `
+                          ` + externalLink + `
+                        <li>
+                            ` + apcs + `
+                          </li>
+                          <li>
+                            ` + rights + `
+                          </li>
+                          <li>
+                            ` + licenses + `
+                          </li>
+                          ${s2o}
+                        </ul>
+                        ` + actions + modals + `
+                      </aside>
+                    </article>
+                  </li>`;
 
                 return frag;
             };
