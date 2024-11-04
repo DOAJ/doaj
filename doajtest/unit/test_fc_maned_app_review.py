@@ -16,7 +16,7 @@ from portality.forms.application_processors import AdminApplication
 # Mocks required to make some of the lookups work
 #####################################################################
 
-@classmethod
+@classmethod  # noqa
 def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
@@ -83,8 +83,7 @@ class TestManEdAppReview(DoajTestCase):
         acc = models.Account()
         acc.set_id("aga")
         acc.add_role("admin")
-        with self._make_and_push_test_context_manager(acc=acc) as ctx:
-            #ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
 
             # Pre-existing applications will have an owner
             owner = models.Account(**AccountFixtureFactory.make_publisher_source())
@@ -121,7 +120,8 @@ class TestManEdAppReview(DoajTestCase):
             # no disabled fields, so just test the function runs
 
             # run the validation itself
-            fc.form.subject.choices = mock_lcc_choices  # set the choices allowed for the subject manually (part of the test)
+            # set the choices allowed for the subject manually (part of the test)
+            fc.form.subject.choices = mock_lcc_choices
             assert fc.validate(), fc.form.errors
 
             # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
@@ -145,15 +145,12 @@ class TestManEdAppReview(DoajTestCase):
             prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
             assert prov is not None
 
-            #ctx.pop()
-
     @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_02_update_request(self):
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("admin")
-        with self._make_and_push_test_context_manager(acc=acc) as ctx:
-            #ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
 
             # Pre-existing applications will have an owner
             owner = models.Account(**AccountFixtureFactory.make_publisher_source())
@@ -203,14 +200,11 @@ class TestManEdAppReview(DoajTestCase):
             assert h is not None
             assert len(h) == 2
 
-            #ctx.pop()
-
     def test_03_classification_required(self):
         acc = models.Account()
         acc.set_id("steve")
         acc.add_role("admin")
-        with self._make_and_push_test_context_manager(acc=acc) as ctx:
-            #ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
 
             # Check we can accept an application with a subject classification present
             ready_application = models.Application(**ApplicationFixtureFactory.make_application_source())
@@ -248,14 +242,11 @@ class TestManEdAppReview(DoajTestCase):
             # fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
             # assert fc.validate(), fc.form.errors
 
-            #ctx.pop()
-
     def test_04_maned_review_continuations(self):
         acc = models.Account()
         acc.set_id("steve")
         acc.add_role("admin")
-        with self._make_and_push_test_context_manager(acc=acc) as ctx:
-            # ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
 
             # construct it from form data (with a known source)
             formulaic_context = ApplicationFormFactory.context("admin")
@@ -286,15 +277,12 @@ class TestManEdAppReview(DoajTestCase):
             assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
             assert fc.target.bibjson().discontinued_date == "2001-01-01"
 
-            # ctx.pop()
-
     def test_05_maned_review_accept(self):
         """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("admin")
-        with self._make_and_push_test_context_manager(acc=acc) as ctx:
-            #ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
 
             # Pre-existing applications will have an owner
             owner = models.Account(**AccountFixtureFactory.make_publisher_source())
@@ -330,15 +318,12 @@ class TestManEdAppReview(DoajTestCase):
                     count += 10
             assert count == 11
 
-            #ctx.pop()
-
     def test_06_maned_review_reject(self):
         """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("admin")
-        with self._make_and_push_test_context_manager(acc=acc) as ctx:
-            #ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
 
             # Pre-existing applications will have an owner
             owner = models.Account(**AccountFixtureFactory.make_publisher_source())
@@ -372,8 +357,6 @@ class TestManEdAppReview(DoajTestCase):
                     count += 10
             assert count == 11
 
-            #ctx.pop()
-
     def test_07_disallowed_statuses(self):
         """ Check that managing editors can access applications in any status """
         APPLICATION_SOURCE = make_application_source()
@@ -382,8 +365,7 @@ class TestManEdAppReview(DoajTestCase):
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("admin")
-        with self._make_and_push_test_context_manager(acc=acc) as ctx:
-            #ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
 
             # Pre-existing applications will have an owner
             owner = models.Account(**AccountFixtureFactory.make_publisher_source())
@@ -416,7 +398,7 @@ class TestManEdAppReview(DoajTestCase):
             assert fc.source is not None
             assert fc.form_data is not None
 
-            # Finalise the formcontext. This should raise an exception because the application has already been accepted.
+            # Finalise the formcontext. Should raise an exception because the application has already been accepted.
             self.assertRaises(Exception, fc.finalise)
 
             # Check that an application status can when on hold.
@@ -456,5 +438,3 @@ class TestManEdAppReview(DoajTestCase):
 
             # Finalise the formcontext. This should not raise an exception.
             fc.finalise(acc)
-
-            #ctx.pop()

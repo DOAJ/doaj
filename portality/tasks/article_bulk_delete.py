@@ -4,6 +4,7 @@ from copy import deepcopy
 from flask_login import current_user
 
 from portality import models
+from portality.core import app
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 from portality.tasks.redis_huey import main_queue
 from portality.util import batch_up
