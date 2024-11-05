@@ -9,9 +9,10 @@ from portality.bll import exceptions
 from portality.core import app
 from portality.lib import nav, dates
 from portality.lib.argvalidate import argvalidate
-from portality.lib.dates import FMT_DATETIME_SHORT
+from portality.lib.dates import FMT_DATETIME_SHORT, FMT_DATETIME_STD
 from portality.store import StoreFactory, prune_container
 from portality.util import get_full_url_safe
+from portality.view.doaj import sitemap
 
 NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 IN_DOAJ = {
@@ -103,6 +104,7 @@ class SiteService(object):
             base_url += "/"
 
         run_start_time = dates.now_str(FMT_DATETIME_SHORT)
+        lastmod_date = dates.now_str(FMT_DATETIME_STD)
 
         filename_prefix = 'sitemap_doaj_' + run_start_time
         cache_container_id = app.config.get("STORE_CACHE_CONTAINER")
@@ -150,6 +152,7 @@ class SiteService(object):
             sitemap_generator.add_url(article_loc, lastmod=a.last_updated)
             total_articles_count += 1
 
+        # check last sitemap
         if sitemap_generator.get_url_count() > 0:
             sitemap_generator.finalize_sitemap_file()
 
@@ -159,12 +162,27 @@ class SiteService(object):
         with open(sitemap_index_path, "w") as f:
             f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             f.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+            sitemap_count = 0
             for sitemap_url in sitemap_generator.get_sitemap_files():
                 f.write(f"    <sitemap>\n")
-                f.write(f"        <loc>{sitemap_url}</loc>\n")
-                f.write(f"        <lastmod>{run_start_time}</lastmod>\n")
+                f.write(f"        <loc>{base_url}sitemap{sitemap_count}.xml</loc>\n")
+                f.write(f"        <lastmod>{lastmod_date}</lastmod>\n")
                 f.write(f"    </sitemap>\n")
+                # Cache the sitemap
+                models.Cache.cache_nth_sitemap(sitemap_count, sitemap_url)
+                sitemap_count += 1
             f.write('</sitemapindex>\n')
+
+            # Delete any previous cache. Usually this may not be the situation but check
+            # if there are any previous sitemap available and delete
+            while True:
+                cache = models.Cache.pull("sitemap"+str(sitemap_count))
+                if cache:
+                    cache.delete()
+                else:
+                    break
+                sitemap_count += 1
+
 
         mainStore.store(container_id, sitemap_index_filename, source_path=sitemap_index_path)
         index_url = mainStore.url(container_id, sitemap_index_filename)
@@ -174,7 +192,7 @@ class SiteService(object):
         # Prune old sitemaps if required
         if prune:
             def sort(filelist):
-                rx = "sitemap_doaj_(\d{8})_(\d{4})"
+                rx = r"^sitemap_doaj_(\d{8})_(\d{4})"
 
                 matched_dates = [
                     (filename, datetime.strptime(match.groups()[0]+"_"+match.groups()[1], FMT_DATETIME_SHORT))
