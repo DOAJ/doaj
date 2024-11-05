@@ -15,6 +15,7 @@ from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable,
     IngestException
 from portality.dao import ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached
 from copy import deepcopy
+from portality.ui import templates
 
 
 class ArticlesCrudApi(CrudApi):
@@ -35,8 +36,8 @@ class ArticlesCrudApi(CrudApi):
         "description": """<div class=\"search-query-docs\">
             Article JSON that you would like to create or update. The contents should comply with the schema displayed
             in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>.
-            Explicit documentation for the structure of this data is also <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIArticle">provided here</a>.
-            Partial updates are not allowed, you have to supply the full JSON.</div>""",
+            <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIArticle">Explicit documentation for the structure of this data is available</a>.
+            Partial updates are not allowed; you have to supply the full JSON.</div>""",
         "required": True,
         "schema": {"type" : "string"},
         "name": "article_json",
@@ -55,7 +56,7 @@ class ArticlesCrudApi(CrudApi):
         try:
             am.add_journal_metadata()  # overwrite journal part of metadata and in_doaj setting
         except models.NoJournalException as e:
-            raise Api400Error("No journal found to attach article to. Each article in DOAJ must belong to a journal and the (E)ISSNs provided in the bibjson.identifiers section of this article record do not match any DOAJ journal.")
+            raise Api400Error("No journal found to attach the article to. The ISSN(s) provided in the bibjson.identifiers section of this article record do not match any DOAJ journal.")
 
         # restore the user's data
         am.bibjson().number = number
@@ -102,7 +103,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
-            raise Api403Error("It is not possible to create an article for this journal. Have you included in the upload an ISSN which is not associated with any journal in your account? ISSNs must match exactly the ISSNs against the journal record.")
+            raise Api403Error("It is not possible to create an article for this journal. Does the upload include an ISSN that is not associated with any journal in your account? ISSNs must match exactly the ISSNs in the journal record.")
 
         return am
 
@@ -137,7 +138,7 @@ class ArticlesCrudApi(CrudApi):
                 app_email.send_mail(to=to,
                                      fro=fro,
                                      subject=subject,
-                                     template_name="email/script_tag_detected.jinja2",
+                                     template_name=templates.EMAIL_SCRIPT_TAG_DETECTED,
                                      es_type=es_type,
                                      data=jdata)
             except app_email.EmailException:
@@ -148,9 +149,9 @@ class ArticlesCrudApi(CrudApi):
         am = ia.to_article_model()
 
         # the user may have supplied metadata in the model for id and created_date
-        # and we want to can that data.  If this is a truly new article its fine for
-        # us to assign a new id here, and if it's a duplicate, it will get attached
-        # to its duplicate id anyway.
+        # and we want to can that data.  If this is a truly new article, it's fine for
+        # us to assign a new ID here, and if it's a duplicate, it will get attached
+        # to its duplicate ID anyway.
         am.set_id()
         am.set_created()
 
@@ -217,7 +218,7 @@ class ArticlesCrudApi(CrudApi):
 
     @classmethod
     def update(cls, id, data, account):
-        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # as long as authentication (in the layer above) has been successful and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()
