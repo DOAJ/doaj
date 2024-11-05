@@ -3,17 +3,18 @@ from copy import deepcopy
 from portality.models import Journal, Article, ArticleTombstone
 from portality import constants
 
+
 class OAIPMHRecord(object):
     earliest = {
         "query": {
             "bool": {
                 "must": [
-                    { "term": { "admin.in_doaj": True } }
+                    {"term": {"admin.in_doaj": True}}
                 ]
             }
         },
         "size": 1,
-        "sort" : [
+        "sort": [
             {"last_updated": {"order": "asc"}}
         ]
     }
@@ -22,7 +23,7 @@ class OAIPMHRecord(object):
         "query": {
             "bool": {
                 "must": [
-                    { "term": { "admin.in_doaj": True } }
+                    {"term": {"admin.in_doaj": True}}
                 ]
             }
         },
@@ -31,7 +32,7 @@ class OAIPMHRecord(object):
             "sets": {
                 "terms": {
                     "field": "index.schema_subject.exact",
-                    "order": {"_key" : "asc"},
+                    "order": {"_key": "asc"},
                     "size": 100000
                 }
             }
@@ -49,9 +50,9 @@ class OAIPMHRecord(object):
         "size": 25
     }
 
-    set_limit = {"term" : { "index.classification.exact" : "<set name>" }}
-    range_limit = { "range" : { "last_updated" : {"gte" : "<from date>", "lte" : "<until date>"} } }
-    created_sort = [{"last_updated" : {"order" : "desc"}}, {"id.exact" : "desc"}]
+    set_limit = {"term": {"index.classification.exact": "<set name>"}}
+    range_limit = {"range": {"last_updated": {"gte": "<from date>", "lte": "<until date>"}}}
+    created_sort = [{"last_updated": {"order": "desc"}}, {"id.exact": "desc"}]
 
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
