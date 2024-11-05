@@ -6,8 +6,9 @@ directory.
 
 ## CI Status
 
-**develop** [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/develop.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/develop)
-**master** [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/master)
+**develop** &nbsp; [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/develop.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/develop)
+
+**master** &nbsp; [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/master)
 
 ## Reporting issues
 
