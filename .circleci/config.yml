@@ -74,5 +74,4 @@ workflows:
           filters:
             branches:
               ignore:
-                - /release\/.*/
                 - static_pages
