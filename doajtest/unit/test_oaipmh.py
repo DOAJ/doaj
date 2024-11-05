@@ -18,10 +18,15 @@ from portality.view.oaipmh import ResumptionTokenException, decode_resumption_to
 
 from doajtest.helpers import with_es
 
+
 class TestClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
         app.testing = True
+
+        # Preserve default value of OAI record page size
+        cls.DEFAULT_OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)
+
         super(TestClient, cls).setUpClass()
 
     def setUp(self):
@@ -31,7 +36,11 @@ class TestClient(DoajTestCase):
         self.oai_ns = {'oai': 'http://www.openarchives.org/OAI/2.0/',
                        'oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
                        'dc': 'http://purl.org/dc/elements/1.1/',
-                       'xsi' : 'http://www.w3.org/2001/XMLSchema-instance'}
+                       'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
+
+    def tearDown(self):
+        app.config['OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE'] = self.DEFAULT_OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE
+        super(TestClient, self).tearDown()
 
     def test_01_oai_ListMetadataFormats(self):
         """ Check we get the correct response from the OAI endpoint ListMetdataFormats request"""
@@ -41,7 +50,8 @@ class TestClient(DoajTestCase):
                 assert resp.status_code == 200
 
                 t = etree.fromstring(resp.data)
-                assert t.xpath('/oai:OAI-PMH/oai:ListMetadataFormats/oai:metadataFormat/oai:metadataPrefix', namespaces=self.oai_ns)[0].text == 'oai_dc'
+                assert t.xpath('/oai:OAI-PMH/oai:ListMetadataFormats/oai:metadataFormat/oai:metadataPrefix',
+                               namespaces=self.oai_ns)[0].text == 'oai_dc'
 
     def test_02_oai_journals(self):
         """test if the OAI-PMH journal feed returns records and only displays journals accepted in DOAJ, marking withdrawn ones as deleted"""
@@ -81,7 +91,9 @@ class TestClient(DoajTestCase):
                 assert seen_deleted
                 assert seen_public
 
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier={0}'.format(public_id))
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier={0}'.format(
+                        public_id))
                 assert resp.status_code == 200
 
                 t = etree.fromstring(resp.data)
@@ -123,7 +135,7 @@ class TestClient(DoajTestCase):
             with self.app_test.test_client() as t_client:
                 resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListIdentifiers', metadataPrefix='oai_dc'))
                 t = etree.fromstring(resp.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt.get('completeListSize') == '5'
                 assert rt.get('cursor') == '2'
@@ -131,7 +143,7 @@ class TestClient(DoajTestCase):
                 # Get the next result
                 resp2 = t_client.get(url_for('oaipmh.oaipmh', verb='ListIdentifiers', resumptionToken=rt.text))
                 t = etree.fromstring(resp2.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt2 = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt2.get('completeListSize') == '5'
                 assert rt2.get('cursor') == '4'
@@ -139,17 +151,18 @@ class TestClient(DoajTestCase):
                 # And the final result - check we get an empty resumptionToken
                 resp3 = t_client.get(url_for('oaipmh.oaipmh', verb='ListIdentifiers', resumptionToken=rt2.text))
                 t = etree.fromstring(resp3.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt3 = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt3.get('completeListSize') == '5'
                 assert rt3.get('cursor') == '5'
                 assert rt3.text is None
 
                 # We should get an error if we request again with an empty resumptionToken
-                resp4 = t_client.get(url_for('oaipmh.oaipmh', verb='ListIdentifiers') + '&resumptionToken={0}'.format(rt3.text))
-                assert resp4.status_code == 200                                   # fixme: should this be a real error code?
+                resp4 = t_client.get(
+                    url_for('oaipmh.oaipmh', verb='ListIdentifiers') + '&resumptionToken={0}'.format(rt3.text))
+                assert resp4.status_code == 200  # fixme: should this be a real error code?
                 t = etree.fromstring(resp4.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
 
                 err = t.xpath('//oai:error', namespaces=self.oai_ns)[0]
                 assert 'the resumptionToken argument is invalid or expired' in err.text
@@ -171,9 +184,11 @@ class TestClient(DoajTestCase):
         yesterday = (dates.now() - timedelta(days=1)).strftime(FMT_DATE_STD)
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday))
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(
+                        yesterday))
                 t = etree.fromstring(resp.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt.get('completeListSize') == '3'
                 assert rt.get('cursor') == '2'
@@ -187,15 +202,17 @@ class TestClient(DoajTestCase):
                 resp2 = t_client.get('/oai?verb=ListRecords&resumptionToken={0}'.format(rt.text))
                 resp2 = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', resumptionToken=rt.text))
                 t = etree.fromstring(resp2.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt2 = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt2.get('completeListSize') == '3'
                 assert rt2.get('cursor') == '3'
 
                 # Start a new request - we should see the new journal
-                resp3 = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday))
+                resp3 = t_client.get(
+                    url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(
+                        yesterday))
                 t = etree.fromstring(resp3.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt.get('completeListSize') == '4'
 
@@ -227,9 +244,11 @@ class TestClient(DoajTestCase):
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 # Request OAI journals since yesterday (looking for today's results only)
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday.strftime(FMT_DATE_STD)))
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(
+                        yesterday.strftime(FMT_DATE_STD)))
                 t = etree.fromstring(resp.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt.get('completeListSize') == '2'
                 assert rt.get('cursor') == '1'
@@ -238,10 +257,11 @@ class TestClient(DoajTestCase):
                     assert title.text in [journals[2]['bibjson']['title'], journals[3]['bibjson']['title']]
 
                 # Request OAI journals from 3 days ago to yesterday (expecting the 2 days ago results)
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}&until={1}'.format(
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords',
+                                            metadataPrefix='oai_dc') + '&from={0}&until={1}'.format(
                     two_days_before_yesterday.strftime(FMT_DATE_STD), yesterday.strftime(FMT_DATE_STD)))
                 t = etree.fromstring(resp.data)
-                #print etree.tostring(t, pretty_print=True)
+                # print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
                 assert rt.get('completeListSize') == '2'
                 assert rt.get('cursor') == '1'
@@ -262,7 +282,8 @@ class TestClient(DoajTestCase):
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:Identify', namespaces=self.oai_ns)
             assert len(records) == 1
-            assert records[0].xpath('//oai:repositoryName', namespaces=self.oai_ns)[0].text == 'Directory of Open Access Journals'
+            assert records[0].xpath('//oai:repositoryName', namespaces=self.oai_ns)[
+                       0].text == 'Directory of Open Access Journals'
             assert records[0].xpath('//oai:adminEmail', namespaces=self.oai_ns)[0].text == 'helpdesk+oai@doaj.org'
             assert records[0].xpath('//oai:granularity', namespaces=self.oai_ns)[0].text == 'YYYY-MM-DDThh:mm:ssZ'
 
@@ -278,15 +299,17 @@ class TestClient(DoajTestCase):
                 assert resp.status_code == 200
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH', namespaces=self.oai_ns)
-                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].text == 'Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated.'
+                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[
+                           0].text == 'Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated.'
                 assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].get("code") == 'badVerb'
 
-                #invalid verb
+                # invalid verb
                 resp = t_client.get(url_for('oaipmh.oaipmh', verb='InvalidVerb', metadataPrefix='oai_dc'))
                 assert resp.status_code == 200
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH', namespaces=self.oai_ns)
-                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].text == 'Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated.'
+                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[
+                           0].text == 'Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated.'
                 assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].get("code") == 'badVerb'
 
     def test_08_list_sets(self):
@@ -311,13 +334,13 @@ class TestClient(DoajTestCase):
 
             # check that we can retrieve a record with one of those sets
             with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set=set0[0].text))
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set=set0[0].text))
                 assert resp.status_code == 200
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
                 results = records[0].getchildren()
             assert len(results) == 1
-
 
     def test_09_article(self):
         """test if the OAI-PMH article feed returns records and only displays articles accepted in DOAJ, showing the others as deleted"""
@@ -346,7 +369,8 @@ class TestClient(DoajTestCase):
 
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
                 assert resp.status_code == 200
 
                 t = etree.fromstring(resp.data)
@@ -378,7 +402,8 @@ class TestClient(DoajTestCase):
                 assert seen_deleted == 2
                 assert seen_public
 
-                resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier=' + public_id)
+                resp = t_client.get(url_for('oaipmh.oaipmh', specified='article', verb='GetRecord',
+                                            metadataPrefix='oai_dc') + '&identifier=' + public_id)
                 assert resp.status_code == 200
 
                 t = etree.fromstring(resp.data)
@@ -402,7 +427,8 @@ class TestClient(DoajTestCase):
         with self.app_test.test_request_context():
             # Check whether the journal is found for its specific set: Veterinary Medicine (TENDOlZldGVyaW5hcnkgbWVkaWNpbmU)
             with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set='TENDOlZldGVyaW5hcnkgbWVkaWNpbmU~'))
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc',
+                                            set='TENDOlZldGVyaW5hcnkgbWVkaWNpbmU~'))
                 assert resp.status_code == 200
 
                 t = etree.fromstring(resp.data)
@@ -414,7 +440,7 @@ class TestClient(DoajTestCase):
                 # Check we have the correct journal
                 assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == j_public.bibjson().title
 
-                #check we have expected subjects (Veterinary Medicine but not Agriculture)
+                # check we have expected subjects (Veterinary Medicine but not Agriculture)
                 subjects = records[0].xpath('//dc:subject', namespaces=self.oai_ns)
                 assert len(subjects) != 0
 
@@ -426,7 +452,8 @@ class TestClient(DoajTestCase):
         with self.app_test.test_request_context():
             # Check whether the journal is found for more general set: Agriculture (TENDOkFncmljdWx0dXJl)
             with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set='TENDOkFncmljdWx0dXJl~'))
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set='TENDOkFncmljdWx0dXJl~'))
                 assert resp.status_code == 200
 
                 t = etree.fromstring(resp.data)
@@ -457,7 +484,8 @@ class TestClient(DoajTestCase):
 
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
                 assert resp.status_code == 200
 
                 t = etree.fromstring(resp.data)
@@ -483,7 +511,7 @@ class TestClient(DoajTestCase):
                 t = etree.fromstring(resp.data)
                 # find metadata element of our record
                 elem = t.xpath('/oai:OAI-PMH/oai:ListRecords/oai:record/oai:metadata', namespaces=self.oai_ns)
-                #metadata element should have only one child, "dc" with correct nsmap
+                # metadata element should have only one child, "dc" with correct nsmap
                 oai_dc = elem[0].getchildren()
                 assert len(oai_dc) == 1
                 assert oai_dc[0].tag == "{%s}" % self.oai_ns["oai_dc"] + "dc"
