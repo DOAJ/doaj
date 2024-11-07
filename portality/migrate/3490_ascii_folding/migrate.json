@@ -11,6 +11,11 @@
 			"type": "journal",
 			"migrate": true,
 			"set_alias": false
+		},
+		{
+			"type": "application",
+			"migrate": true,
+			"set_alias": false
 		}
 	]
 }

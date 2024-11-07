@@ -725,6 +725,38 @@ class TestQuery(DoajTestCase):
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
+    def test_application_query_ascii_folding_data(self):
+        acc = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        application = models.Application(**ApplicationFixtureFactory
+                                      .make_application_with_data(title="Kadınlarının sağlık",
+                                                              publisher_name="Ankara Üniversitesi",
+                                                              country="Türkiye", ))
+        application.save(blocking=True)
+        qsvc = QueryService()
+
+        # check if journal exist
+        res = qsvc.search('editor_query', 'suggestion', MATCH_ALL_RAW_QUERY, account=acc,
+                          additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for title search
+        res = qsvc.search('editor_query', 'suggestion', raw_query("Kadinlarinin saglik"), account=acc,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for publisher name
+        res = qsvc.search('editor_query', 'suggestion', raw_query("Ankara Universitesi"), account=acc,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for country
+        res = qsvc.search('editor_query', 'suggestion', raw_query("Turkiye"), account=acc,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
     def test_search__invalid_from(self):
         acc = models.Account(**AccountFixtureFactory.make_managing_editor_source())
         acc.save(blocking=True)

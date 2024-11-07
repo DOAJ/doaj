@@ -20,6 +20,17 @@ class ApplicationFixtureFactory(object):
     @staticmethod
     def make_application_source():
         return deepcopy(APPLICATION_SOURCE)
+
+    @staticmethod
+    def make_application_with_data(title=None, publisher_name=None, country=None):
+        application = deepcopy(APPLICATION_SOURCE)
+        if title:
+            application["bibjson"]["title"] = title
+        if publisher_name:
+            application["bibjson"]["publisher"]["name"] = publisher_name
+        if country:
+            application["bibjson"]["publisher"]["country"] = country
+        return application
     
     @staticmethod
     def make_many_application_sources(count=2, in_doaj=False):
