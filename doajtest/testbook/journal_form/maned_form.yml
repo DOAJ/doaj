@@ -145,3 +145,17 @@ tests:
     - step: Navigate to the article's public page as an anonymous user
       results:
         - The button "Edit this journal" is not displayed
+- title: Subscribe to Open journal labelling
+  context:
+    role: Admin
+  steps:
+    - step: Select a journal from the admin journal search page, and click "Edit this journal"
+      results:
+        - The journal's admin metadata form is opened in a new tab, and the journal labelling section
+          of the form is available to you, with a single option "Subscribe to Open".
+    - step: Click the "Subscribe to Open" checkbox and then click "Save" on the journal record
+      results:
+        - The journal record is saved, and the "Subscribe to Open" checkbox is checked.
+    - step: Go to the public journals search page
+      path: /search/journals
+
