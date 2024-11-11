@@ -1230,6 +1230,10 @@ var formulaic = {
                 return $("button[id='cancelAddingFlag--" + idx + "']")
             }
 
+            this.getResolveFlagInput = function(idx) {
+                return $("input[id='flags-" + idx + "-flag_resolved']")
+            }
+
             this.clearFlag = function(e) {
                 let flagId = e.target.id.split("--")[1];
                 $(this.flagGroups[flagId]).find('input,textarea').val('');
@@ -1311,6 +1315,7 @@ var formulaic = {
 
             this.resolveFlag = function(e) {
                 this.markFlagAsResolved();
+                this.getResolveFlagInput(this.existingFlagIdx).val("true");
                 this.flagExists = false;
                 this.setAddBtnStatus();
             }
@@ -1318,6 +1323,7 @@ var formulaic = {
             this.unresolveFlag = function(e) {
                 // let flagId = e.target.id.split("--")[1];
                 this.markFlagAsUnresolved();
+                this.getResolveFlagInput().val("false");
                 this.flagExists = true;
                 this.setAddBtnStatus();
             }

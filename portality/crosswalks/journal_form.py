@@ -271,24 +271,24 @@ class JournalGenericXWalk(object):
                                  author_id=formnote["note_author_id"])
 
         if getattr(form, "flags", None):
-            flag = form.flags.data[0]
-            flag_date = flag["flag_created_date"]
-            flag_deadline = flag["flag_deadline"]
-            flag_assigned_to = flag["flag_assignee"]
-            flag_author = flag["flag_setter"]
-            flag_id = flag["flag_note_id"]
-            flag_note = flag["flag_note"]
-            flag_resolved = flag["flag_resolved"]
-            flag_resolved_by = "Myself"
-            flag_resolved_date = "today"
-            print(flag_resolved)
-            if flag_resolved == "true":
-                note = f"Flag: \n Resolved by: {flag_resolved_by} \n Resolved on: {flag_resolved_date}\n Assigned to: {flag_assigned_to} \n Note: {flag_note}"
-                print(note)
-                obj.add_note(note, date=flag_date, id=flag_id, author_id=flag_author)
-            else:
-                obj.add_note(flag_note, date=flag_date, id=flag_id,
-                         author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
+            for flag in form.flags.data:
+                flag_date = flag["flag_created_date"]
+                flag_deadline = flag["flag_deadline"]
+                flag_assigned_to = flag["flag_assignee"]
+                flag_author = flag["flag_setter"]
+                flag_id = flag["flag_note_id"]
+                flag_note = flag["flag_note"]
+                flag_resolved = flag["flag_resolved"]
+                flag_resolved_by = "Myself"
+                flag_resolved_date = "today"
+                if flag_resolved == "true":
+                    # obj.remove_note({"id": flag_id})
+                    note = f"Flag: \n Resolved by: {flag_resolved_by} \n Resolved on: {flag_resolved_date}\n Assigned to: {flag_assigned_to} \n Note: {flag_note}"
+                    obj.add_note(note, date=flag_date, id=flag_id, author_id=flag_author)
+                else:
+                    obj.add_note(flag_note, date=flag_date, id=flag_id,
+                             author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
+        print(obj.flags)
 
         if getattr(form, 'owner', None):
             owner = form.owner.data
@@ -461,7 +461,6 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def admin2form(cls, obj, forminfo):
-        print(obj.ordered_notes)
         forminfo['notes'] = []
         for n in obj.ordered_notes_except_flags:
             author_id = n.get('author_id', '')
