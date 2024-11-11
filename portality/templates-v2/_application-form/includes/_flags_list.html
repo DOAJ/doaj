@@ -1,64 +1,24 @@
 {% from "_application-form/includes/_value.html" import value %}
 
-<div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
-    <h2> This is custom flag list template</h2>
+<div class="{{ f.name }}__container form__question">
     <a id="question-{{ f.name }}"></a>
+    <p class="add_field__button_div">
+        <button type="button" id="add_flag__{{ f.name }}" class="add_flag__button label" >Add Flag</button>
+    </p>
     <label>
         {% autoescape off %}{{ f.label }}{% endautoescape %}
         {% if f.help("long_help") %}
             <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
         {% endif %}
-        {% if f.has_widget("click_to_copy") %}
-            <span class="form__click-to-copy" id="click-to-copy--{{ f.name }}" data-feather="copy" aria-hidden="true"></span><span class="sr-only">Copy value</span>
-            <span class="tag tag--confirmation" style="display:none" id="copy-confirmation--{{ f.name }}">Copied!</span>
-        {% endif %}
-        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
     </label>
-    {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
-    {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
-        {% set add_button %}
-            <p class="add_field__button_div">
-                <button type="button" id="add_field__{{ f.name }}" class="add_field__button label" >Add</button>
-            </p>
-        {% endset %}
-
-        {% if f.repeatable.add_button_placement == "top" %}
-            {{ add_button }}
-        {% endif %}
-
-        <div class="removable-fields">
-          {% for entry in f.wtfield %}
-              {% set entry_template = f.entry_template %}
-              {% include entry_template %}
-          {% endfor %}
-        </div>
-
-        {% if f.repeatable.add_button_placement != "top" %}
-            {{ add_button }}
-        {% endif %}
-
-    {% else %}
+    {% for entry in f.wtfield %}
+        {% set entry_template = f.entry_template %}
+        {% set idx = loop.index0 %}
         {% include entry_template %}
-    {% endif %}
-
-    {% if f.help("render_error_box") != False %} {# some fields have custom error boxes #}
-    <div id="{{ f.name }}_checkbox-errors"></div>
-    {% endif %}
-
-    {% if form_diff %}
-        {% if f.help("update_requests_diff", True) and f.name in form_diff %}
-        <p class="alert alert--message">
-          <strong>WAS:</strong>
-          <em>
-            {{ value(form_diff[f.name].a, f.name, formulaic_context) }}
-          </em>
-        </p>
-        {% endif %}
-    {% endif %}
+    {% endfor %}
 
     {% if f.help("short_help") %}
        <p><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
 
-    {% include "_application-form/includes/_modal.html" %}
 </div>

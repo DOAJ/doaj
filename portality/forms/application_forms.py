@@ -2040,14 +2040,23 @@ class FieldDefinitions:
             "flag_note",
             "flag_note_id",
             "flag_setter_id",
-            "flag_assignee"
+            "flag_assignee",
+            "flag_resolved"
         ],
         "template": templates.FLAGS_LIST,
         "entry_template": templates.FLAG_ENTRY_GROUP,
         "widgets": [
-            {"multiple_field": {"hide_labels": False}}
-            # "flag_manager"
+            "multiple_field",
+            "flag_manager"
         ]
+    }
+
+    FLAG_RESOLVED = {
+        "subfield": True,
+        "name": "flag_resolved",
+        "label": "resolved",
+        "group": "flag",
+        "input": "text"
     }
 
     # ~~->$ NoteAuthor:FormField~~
@@ -2073,6 +2082,7 @@ class FieldDefinitions:
 
     FLAG_DEADLINE = {
         "subfield": True,
+        "optional": True,
         "name": "flag_deadline",
         "help": {
         "placeholder": "deadline"},
@@ -2403,6 +2413,7 @@ class FieldSetDefinitions:
             FieldDefinitions.FLAG_NOTE_ID["name"],
             FieldDefinitions.FLAG_SETTER_ID["name"],
             FieldDefinitions.FLAG_ASSIGNEE["name"],
+            FieldDefinitions.FLAG_RESOLVED["name"]
         ]
     }
 

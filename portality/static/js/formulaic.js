@@ -1120,53 +1120,87 @@ var formulaic = {
 
             this.init = function() {
                 this.container = $("." + this.fieldDef.name + "__container");
-                this.container.hide();
+                let divsSelector = "div[name^='" + this.fieldDef["name"] + "__group--']";
+                this.divs = $(divsSelector);
 
-                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
-                let clearFlagClass = edges.css_classes(this.namespace, "clear-flag");
-                let resolveFlagClass = edges.css_classes(this.namespace, "resolve-flag");
-                let controls = `<button class="${clearFlagClass}">Clear</button><button class="${resolveFlagClass}">Resolve</button>`;
-                cont.html(controls);
+                const addFlagClassSelector = "#add_flag__" + this.fieldDef.name;
+                this.addFlagBtn = this.container.find(addFlagClassSelector);
 
+                const resolveFlagBtns = $("[id^='resolve_flag--']");
+                resolveFlagBtns.each((index, btn) =>
+                    $(btn).on("click", (e) => this.resolveFlag(e))
+                );
 
-                let addFlagContainer = edges.css_classes(this.namespace, "add-flag-container");
-                let addFlagClass = edges.css_classes(this.namespace, "add-flag");
-                let frag = `<div class="${addFlagContainer}"><button class="${addFlagClass}">Add flag</button></div>`;
-                this.container.after(frag);
+                const unresolveFlagBtns = $("[id^='unresolve_flag--']");
+                unresolveFlagBtns.each((index, btn) =>
+                    $(btn).on("click", (e) => this.unresolveFlag(e))
+                );
 
-                let addFlagClassSelector = edges.css_class_selector(this.namespace, "add-flag");
-                edges.on(addFlagClassSelector, "click", this, "addFlag");
+                let inputs = this.divs.find("input[name$='-flag_assignee']");
+                this.hasVal = false;
+
+                for (var j = 0; j < inputs.length; j++) {
+                    this.getUnresolveBtn(j).hide();
+                    if ($(inputs[j]).val()) {
+                        this.hasVal = true;
+                        this.addFlagBtn.hide();
+                    }
+                    else {
+                        this.getResolveBtn(j).hide();
+                        $(inputs[j]).parent().hide();
+                    }
+                }
+
 
                 let clearFlagClassSelector = edges.css_class_selector(this.namespace, "clear-flag");
                 edges.on(clearFlagClassSelector, "click", this, "clearFlag");
 
-                // let resolveFlagClassSelector = edges.css_class_selector(this.namespace, "resolve-flag");
-                // edges.on(resolveFlagClassSelector, "click", this, "resolveFlag");
             }
 
-            this.addFlag = function() {
-                let addFlagContainer = edges.css_class_selector(this.namespace, "add-flag-container");
-                // $(addFlagContainer).hide();
-                this.container.show();
+            this.getResolveBtn = function(idx) {
+                return $("[id^='resolve_flag--" + idx + "']")
+            }
+
+            this.getUnresolveBtn = function(idx) {
+                return $("[id^='unresolve_flag--" + idx + "']")
+            }
+
+            this.getResolvedInput = function(idx) {
+                return $("input[id='flags-" + idx + "-flag_resolved']")
+            }
+
+            this.allowOnlyOne = function() {
+
             }
 
             this.clearFlag = function() {
                 $(this.container).find('input,textarea').val('');
             }
 
-            this.resolveFlag = function() {
-                // let flagNote = this.container.find("#flag-flag_note");
-                //
-                // let noteWidgets = formulaic.active.activeWidgets["notes"];
-                // // TODO: we'll need a way to actually find the InfiniteRepeat widget for certain
-                // let irw = noteWidgets[0];
-                // irw.addField();
-                //
-                // let justAdded = irw.container.find("div").first();
-                // let textarea = justAdded.find("textarea");
-                // textarea.val("Flag resolved: " + flagNote.val());
-                //
-                // this.clearFlag();
+            this.resolveFlag = function(e) {
+                let flagId = e.target.id.split("--")[1];
+                let resolveInput = this.getResolvedInput(flagId);
+                $(resolveInput).val(true);
+                let unresolveBtn = this.getUnresolveBtn(flagId);
+                $(unresolveBtn).show();
+                let resolveBtn  = this.getResolveBtn(flagId);
+                resolveBtn.hide();
+                this.addFlagBtn.prop('disabled', false);
+                this.addFlagBtn.prop('title', "Add flag to that record");
+                $(e.target).parent().addClass("resolved");
+            }
+
+            this.unresolveFlag = function(e) {
+                let flagId = e.target.id.split("--")[1];
+                let resolveInput = this.getResolvedInput(flagId);
+                $(resolveInput).val(false);
+                let unresolveBtn = this.getUnresolveBtn(flagId);
+                $(unresolveBtn).hide();
+                let resolveBtn  = this.getResolveBtn(flagId);
+                resolveBtn.show();
+                this.addFlagBtn.prop('disabled', true);
+                this.addFlagBtn.prop('title', "You can add only one flag per record. Resolve the existing flag to add another one.");
+                $(e.target).parent().removeClass("doaj-flag-resolved");
             }
 
             this.init();

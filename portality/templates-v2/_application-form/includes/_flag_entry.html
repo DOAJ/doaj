@@ -1,6 +1,9 @@
-<div name="{{ f.name }}__group">
-    <h2 style="{color: blue}">This is custom notes entry template</h2>
+<div name="{{ f.name }}__group--{{ idx }}">
     {% for subfield in f.group_subfields() %}
         {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
     {% endfor %}
+    <p class="control_buttons_div--{{ idx }}">
+        <button type="button" id="resolve_flag--{{ idx }}" class="resolve_flag__button label" >Resolve Flag</button>
+        <button type="button" id="unresolve_flag--{{ idx }}" class="unresolve_flag__button label" >Undo Resolving</button>
+    </p>
 </div>
