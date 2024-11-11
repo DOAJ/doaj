@@ -1,9 +1,13 @@
 <div name="{{ f.name }}__group--{{ idx }}">
-    {% for subfield in f.group_subfields() %}
-        {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
-    {% endfor %}
+    <div name="{{ f.name }}-inputs--container--{{ idx }}">
+        {% for subfield in f.group_subfields() %}
+            {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
+        {% endfor %}
+    </div>
     <p class="control_buttons_div--{{ idx }}">
         <button type="button" id="resolve_flag--{{ idx }}" class="resolve_flag__button label" >Resolve Flag</button>
         <button type="button" id="unresolve_flag--{{ idx }}" class="unresolve_flag__button label" >Undo Resolving</button>
+        <button type="button" id="cancelAddingFlag--{{ idx }}" class="remove_field__button">Cancel</button>
+        <button type="button" id="clearFlag--{{ idx }}" class="remove_field__button">Clear Flag</button>
     </p>
 </div>

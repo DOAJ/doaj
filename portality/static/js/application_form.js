@@ -569,17 +569,6 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         })
     };
 
-    _findResolvedFlags() {
-        let resolvedFlags = [];
-        $('[id^="flags-"][id$="-flag_resolved"]').each(function() {
-            if ($(this).val() === 'True') {
-                let idx = $(this).attr('id').split('-')[1];
-                resolvedFlags.push(idx);
-            }
-        });
-        return resolvedFlags;
-    }
-
     _generate_values_preview() {
         $(".admin_value_preview").each((i,elem) => {
             let sourceId = $(elem).attr("data-source");

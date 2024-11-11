@@ -1119,12 +1119,65 @@ var formulaic = {
             this.namespace = "formulaic-flagmanager-" + this.fieldDef.name;
 
             this.init = function() {
-                this.container = $("." + this.fieldDef.name + "__container");
-                let divsSelector = "div[name^='" + this.fieldDef["name"] + "__group--']";
-                this.divs = $(divsSelector);
+                //for debugging purposes only
+                let style = document.createElement("style");
+                    style.innerHTML = `
+                        .flag--resolved {
+                            position: relative;
+                            opacity: 0.2; /* Set opacity of entire div */
+                        }
+                        
+                        .flag--resolved button {
+                            position: relative; /* Keep the button unaffected by opacity */
+                            z-index: 1; /* Ensure the button is above the stamp effect */
+                        }
+                        
+                        .flag--resolved::before {
+                            content: "RESOLVED"; /* The word to display as the stamp */
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%) rotate(-45deg); /* Center and rotate the text */
+                            font-size: 3em; /* Adjust the size of the stamp */
+                            color: rgba(0, 0, 0, 0.5); /* Light black color for the stamp */
+                            z-index: 0; /* Place the stamp behind the button */
+                            pointer-events: none; /* Ensure the stamp doesn't interfere with interactions */
+                            opacity: 0.6; /* Make the stamp slightly transparent */
+                            letter-spacing: 0.2em; /* Adjust the spacing between letters for the stamp */
+                            font-weight: bold;
+                        }
 
+                    `;
+
+                    // Append the style to the head
+                    document.head.appendChild(style);
+
+
+                this.container = $("." + this.fieldDef.name + "__container");
+                this.flagGroups = $("div[name^='" + this.fieldDef["name"] + "__group--']");
+                this.flagInputsContainer = $("div[name^='" + this.fieldDef["name"] + "-inputs--container--']");
+
+                this.flagExists = false;
+                this.existingFlagIdx = null;
+                this.newFlagIdx = null;
+
+                this.setUpEventListeners();
+
+                let inputs = this.flagGroups.find("input[name$='-flag_assignee']");
+
+                for (var j = 0; j < inputs.length; j++) {
+                    if ($(inputs[j]).val()) {
+                        this.flagExists = true;
+                    }
+                }
+                
+                this.setUI();
+            }
+
+            this.setUpEventListeners = function() {
                 const addFlagClassSelector = "#add_flag__" + this.fieldDef.name;
                 this.addFlagBtn = this.container.find(addFlagClassSelector);
+                $(this.addFlagBtn).on("click", () => this.addFlag())
 
                 const resolveFlagBtns = $("[id^='resolve_flag--']");
                 resolveFlagBtns.each((index, btn) =>
@@ -1136,25 +1189,25 @@ var formulaic = {
                     $(btn).on("click", (e) => this.unresolveFlag(e))
                 );
 
-                let inputs = this.divs.find("input[name$='-flag_assignee']");
-                this.hasVal = false;
+                let clearFlagClassBtns = $("[id^='clearFlag--']");
+                clearFlagClassBtns.each((index, btn) =>
+                    $(btn).on("click", (e) => this.clearFlag(e))
+                );
 
-                for (var j = 0; j < inputs.length; j++) {
-                    this.getUnresolveBtn(j).hide();
-                    if ($(inputs[j]).val()) {
-                        this.hasVal = true;
-                        this.addFlagBtn.hide();
-                    }
-                    else {
-                        this.getResolveBtn(j).hide();
-                        $(inputs[j]).parent().hide();
-                    }
-                }
+                let cancelFlagBtns = $("[id^='cancelAddingFlag--']");
+                cancelFlagBtns.each((index, btn) =>
+                    $(btn).on("click", (e) => this.cancelFlag(e))
+                );
+            }
 
+            this.enableAddBtn = function() {
+                $(this.addFlagBtn).prop('disabled', false);
+                $(this.addFlagBtn).prop('title', "Add flag to that record");
+            }
 
-                let clearFlagClassSelector = edges.css_class_selector(this.namespace, "clear-flag");
-                edges.on(clearFlagClassSelector, "click", this, "clearFlag");
-
+            this.disableAddBtn = function() {
+                $(this.addFlagBtn).prop('disabled', true);
+                $(this.addFlagBtn).prop('title', "You can add only one flag per record. Resolve the existing flag to add another one.");
             }
 
             this.getResolveBtn = function(idx) {
@@ -1169,38 +1222,104 @@ var formulaic = {
                 return $("input[id='flags-" + idx + "-flag_resolved']")
             }
 
-            this.allowOnlyOne = function() {
-
+            this.getClearFlagBtn = function(idx) {
+                return $("button[id='clearFlag--" + idx + "']");
             }
 
-            this.clearFlag = function() {
-                $(this.container).find('input,textarea').val('');
+            this.getCancelFlagBtn = function(idx) {
+                return $("button[id='cancelAddingFlag--" + idx + "']")
+            }
+
+            this.clearFlag = function(e) {
+                let flagId = e.target.id.split("--")[1];
+                $(this.flagGroups[flagId]).find('input,textarea').val('');
+            }
+
+            this.setUI = function() {
+                // Calculate indices based on the flag's existence
+                this.existingFlagIdx = this.flagExists ? 0 : null;
+                this.newFlagIdx = this.flagExists ? 1 : 0;
+
+                if (this.flagExists) {
+                    this.getResolveBtn(this.existingFlagIdx).show();
+                    this.getUnresolveBtn(this.existingFlagIdx).hide();
+                    this.getCancelFlagBtn(this.existingFlagIdx).hide();
+                    this.getClearFlagBtn(this.existingFlagIdx).hide();
+                    $(this.flagGroups[this.newFlagIdx]).insertBefore(this.flagGroups[this.existingFlagIdx]);
+                }
+                else {
+                    $(this.flagGroups[1]).hide();
+                }
+
+                this.getResolveBtn(this.newFlagIdx).hide();
+                this.getUnresolveBtn(this.newFlagIdx).hide();
+                this.getCancelFlagBtn(this.newFlagIdx).show();
+                this.getClearFlagBtn(this.newFlagIdx).show();
+                $(this.flagGroups[this.newFlagIdx]).hide();
+
+                this.setAddBtnStatus();
+            };
+
+            this.setAddBtnStatus = function() {
+                if (this.flagExists) {
+                    this.disableAddBtn();
+                }
+                else {
+                    this.enableAddBtn();
+                }
+            }
+
+            this.showNewFlag = function() {
+                $(this.flagGroups[this.newFlagIdx]).show();
+            }
+
+            this.hideNewFlag = function() {
+                $(this.flagGroups[this.newFlagIdx]).hide();
+            }
+
+            this.markFlagAsResolved = function() {
+                $(this.flagInputsContainer[this.existingFlagIdx]).addClass("flag--resolved");
+                this.getResolveBtn(this.existingFlagIdx).hide();
+                this.getUnresolveBtn(this.existingFlagIdx).show();
+            }
+
+            this.markFlagAsUnresolved = function() {
+                $(this.flagInputsContainer[this.existingFlagIdx]).removeClass("flag--resolved");
+                this.getResolveBtn(this.existingFlagIdx).show();
+                this.getUnresolveBtn(this.existingFlagIdx).hide();
+            }
+
+            this.addFlag = function() {
+                this.showNewFlag();
+                this.flagExists = true;
+                this.setAddBtnStatus();
+                if (this.existingFlagIdx !== null) {
+                    this.getUnresolveBtn(this.existingFlagIdx).prop("disabled", true);
+                    this.getUnresolveBtn(this.existingFlagIdx).prop("title", "You can add only one flag at the time. To unresolve this flag, remove the new flag first");
+                }
+            }
+
+            this.cancelFlag = function(idx) {
+                this.hideNewFlag();
+                this.flagExists = false;
+                this.setAddBtnStatus();
+                if (this.existingFlagIdx !== null) {
+                    this.getUnresolveBtn(this.existingFlagIdx).prop("disabled", false);
+                    this.getUnresolveBtn(this.existingFlagIdx).prop("title", "");
+                }
             }
 
             this.resolveFlag = function(e) {
-                let flagId = e.target.id.split("--")[1];
-                let resolveInput = this.getResolvedInput(flagId);
-                $(resolveInput).val(true);
-                let unresolveBtn = this.getUnresolveBtn(flagId);
-                $(unresolveBtn).show();
-                let resolveBtn  = this.getResolveBtn(flagId);
-                resolveBtn.hide();
-                this.addFlagBtn.prop('disabled', false);
-                this.addFlagBtn.prop('title', "Add flag to that record");
-                $(e.target).parent().addClass("resolved");
+                this.markFlagAsResolved();
+                this.flagExists = false;
+                this.setAddBtnStatus();
             }
 
             this.unresolveFlag = function(e) {
-                let flagId = e.target.id.split("--")[1];
-                let resolveInput = this.getResolvedInput(flagId);
-                $(resolveInput).val(false);
-                let unresolveBtn = this.getUnresolveBtn(flagId);
-                $(unresolveBtn).hide();
-                let resolveBtn  = this.getResolveBtn(flagId);
-                resolveBtn.show();
-                this.addFlagBtn.prop('disabled', true);
-                this.addFlagBtn.prop('title', "You can add only one flag per record. Resolve the existing flag to add another one.");
-                $(e.target).parent().removeClass("doaj-flag-resolved");
+                // let flagId = e.target.id.split("--")[1];
+                this.markFlagAsUnresolved();
+                this.flagExists = true;
+                this.setAddBtnStatus();
             }
 
             this.init();
