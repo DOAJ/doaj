@@ -85,8 +85,8 @@ class Article(DomainObject):
         return articles
 
     @classmethod
-    def count_by_issns(cls, issns):
-        q = ArticleQuery(issns=issns)
+    def count_by_issns(cls, issns, in_doaj=None):
+        q = ArticleQuery(issns=issns, in_doaj=in_doaj)
         return cls.hit_count(q.query())
 
     @classmethod
@@ -902,9 +902,10 @@ class ArticleQuery(object):
     _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} }
     _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
 
-    def __init__(self, issns=None, volume=None):
+    def __init__(self, issns=None, volume=None, in_doaj=None):
         self.issns = issns
         self.volume = volume
+        self.in_doaj = in_doaj
 
     def query(self):
         q = deepcopy(self.base_query)
@@ -918,6 +919,9 @@ class ArticleQuery(object):
             vq = deepcopy(self._volume_term)
             vq["term"]["bibjson.journal.volume.exact"] = self.volume
             q["query"]["bool"]["must"].append(vq)
+
+        if self.in_doaj is not None:
+            q["query"]["bool"]["must"].append({"term": {"admin.in_doaj": self.in_doaj}})
 
         return q
     

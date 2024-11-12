@@ -437,9 +437,9 @@ def assert_expected_dict(test_case: TestCase, target, expected: dict):
     test_case.assertDictEqual(actual, expected)
 
 
-def login(app_client, username, password, follow_redirects=True):
+def login(app_client, email, password, follow_redirects=True):
     return app_client.post(url_for('account.login'),
-                           data=dict(user=username, password=password),
+                           data=dict(user=email, password=password),
                            follow_redirects=follow_redirects)
 
 
