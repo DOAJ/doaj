@@ -2120,7 +2120,12 @@ class FieldDefinitions:
         "placeholder": "assigned_to"},
         "group": "flag",
         "validate": [
-            "required"
+            {"required": {"message": "A flag must be assigned to a user."}},
+            "reserved_usernames",
+            "owner_exists"
+        ],
+        "widgets": [
+            {"autocomplete": {"type": "account", "field": "id", "include": False}},  # ~~^-> Autocomplete:FormWidget~~
         ],
         "input": "text",
         "disabled": False # "disable_except_assignee_owner_admin"

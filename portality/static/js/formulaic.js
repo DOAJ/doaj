@@ -2400,7 +2400,13 @@ var formulaic = {
                     callback(data);
                 };
 
-                let selector = "[name='" + this.fieldDef.name + "']";
+                let selector = ""
+                if (this.fieldDef.group){
+                    selector = "[name$='" + this.fieldDef.name + "']";
+                }
+                else {
+                    selector = "[name='" + this.fieldDef.name + "']";
+                }
 
                 $(selector).on("focus", formulaic.widgets._select2_shift_focus);
 
