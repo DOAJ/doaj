@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "7.0.0"
+DOAJ_VERSION = "7.0.2"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -698,6 +698,7 @@ MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
 MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
+MAPPINGS['article_tombstone'] = MAPPINGS["account"]    #~~->ArticleTombstone:Model~~
 
 #########################################
 # Query Routes
