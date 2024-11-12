@@ -397,7 +397,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         continued = "No"
         has_editor_group = "No"
         has_editor = "No"
-        has_flag = False
+        is_flagged = "No"
+        flag_assignees = None
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -441,7 +442,12 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             license.append(l.get("type"))
 
         # check for any flags
-        has_flag = any("assigned_to" in note.get("flag", {}) and note["flag"]["assigned_to"] is not None for note in self.notes)
+        is_flagged = any("assigned_to" in note.get("flag", {}) and note["flag"]["assigned_to"] is not None for note in self.notes)
+        flag_assignees = [
+            note["flag"]["assigned_to"]
+            for note in self.notes
+            if "assigned_to" in note.get("flag", {}) and note["flag"]["assigned_to"]
+        ]
 
         # deduplicate the lists
         titles = list(set(titles))
@@ -488,7 +494,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
             index["asciiunpunctitle"] = asciiunpunctitle
-        index["has_flag"] = has_flag
+        if is_flagged:
+            index["is_flagged"] = is_flagged
+            index["flag_assignees"] = flag_assignees
         index["continued"] = continued
         index["has_editor_group"] = has_editor_group
         index["has_editor"] = has_editor

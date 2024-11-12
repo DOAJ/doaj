@@ -2,9 +2,19 @@
 
 <div class="{{ f.name }}__container form__question">
     <a id="question-{{ f.name }}"></a>
-    <p class="add_field__button_div">
-        <button type="button" id="add_flag__{{ f.name }}" class="add_flag__button label" >Add Flag</button>
-    </p>
+    {% set role_found = false %}
+    {% for role in f.repeatable.add_field_permission | default([]) %}
+        {% if current_user.has_role(role) %}
+            {% set role_found = true %}
+            {# Exit the loop early if a matching role is found #}
+            {% break %}
+        {% endif %}
+    {% endfor %}
+    {% if role_found %}
+        <p class="add_field__button_div" id="add_field__button_div">
+            <button type="button" id="add_flag__{{ f.name }}" class="add_flag__button label" >Add Flag</button>
+        </p>
+    {% endif %}
     <label>
         {% autoescape off %}{{ f.label }}{% endautoescape %}
         {% if f.help("long_help") %}

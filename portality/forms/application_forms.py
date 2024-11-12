@@ -2031,7 +2031,8 @@ class FieldDefinitions:
         "label": "Flag",
         "repeatable": {
             "initial": 2,
-            "add_button_placement": "top"
+            "add_button_placement": "top",
+            "add_field_permission": ["admin"]
         },
         "subfields": [
             "flag_assignee",
@@ -2527,6 +2528,7 @@ class ApplicationContextDefinitions:
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.FLAGS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -2541,6 +2543,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.FLAGS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication

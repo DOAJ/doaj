@@ -1940,10 +1940,6 @@ var formulaic = {
         MultipleField: function(params) {
             this.fieldDef = params.fieldDef;
             this.max = this.fieldDef["repeatable"]["initial"] - 1;
-            // this.show_labels = this.fieldDef["repeatable"]["show_labels"] ? this.fieldDef["repeatable"]["show_labels"] : false;
-            // if (!this.show_labels) {
-            //     this.fields.forEach(f => f.addClass("hiddenLabel"))
-            // }
 
             this.init = () => {
                 if (this.fieldDef["input"] === "group") {
