@@ -64,6 +64,9 @@
                 articleEditUrl : "{{ url_for('admin.article_page', article_id='') }}",
                 journalEditUrl : "{{ url_for('admin.journal_page', journal_id='') }}",
                 searchPath : '/admin_query/journal,article/_search'
+            },
+            session : {
+                currentUser: "{{ current_user | tojson }}"
             }
         });
     </script>

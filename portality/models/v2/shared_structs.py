@@ -229,6 +229,7 @@ SHARED_JOURNAL_LIKE = {
                 "has_apc" : {"coerce" : "unicode"},
                 "has_seal" : {"coerce" : "unicode"},
                 "is_flagged" : {"coerce" : "unicode"},
+                "latest_deadline": {"coerce" : "utcdatetime"},
                 "flag_assignees" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},

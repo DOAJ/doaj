@@ -15,7 +15,32 @@ $.extend(true, doaj, {
                     })
                 ]
             }
+        },
+        isFlagged : function() {
+            return {
+                id: "is_flagged",
+                display: "Flagged records ony",
+                must: [
+                    es.newTermFilter({
+                        field: "index.is_flagged",
+                        value: true
+                    })
+                ]
+            }
+        },
+        flaggedToMe : function() {
+            return {
+                id: "flagged_to_me",
+                display: "Flagged to me",
+                must: [
+                    es.newTermFilter({
+                        field: "index.flag_assignees",
+                        value: doaj.session.currentUser
+                    })
+                ]
+            }
         }
+
     },
     facets : {
         inDOAJ : function() {

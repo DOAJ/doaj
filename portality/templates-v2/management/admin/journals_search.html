@@ -21,6 +21,9 @@
                 journalEditUrl : "{{ url_for('admin.journal_page', journal_id='') }}",
                 applicationsUrl : "{{ url_for('admin.suggestions') }}",
                 searchPath : '/admin_query/journal/_search'
+            },
+            session : {
+                currentUser: "{{ current_user.id }}"
             }
         });
     </script>
