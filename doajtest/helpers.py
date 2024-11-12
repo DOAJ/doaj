@@ -149,6 +149,7 @@ class DoajTestCase(TestCase):
     @classmethod
     def create_app_patch(cls):
         return {
+            'AUTOCHECK_INCOMING': False,  # old test cases design and depend on work flow of autocheck disabled
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
