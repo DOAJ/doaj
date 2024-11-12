@@ -2054,9 +2054,8 @@ class FieldDefinitions:
     FLAG_RESOLVED = {
         "subfield": True,
         "name": "flag_resolved",
-        "label": "resolved",
         "group": "flag",
-        "input": "text"
+        "input": "hidden"
     }
 
     # ~~->$ NoteAuthor:FormField~~
@@ -2120,6 +2119,9 @@ class FieldDefinitions:
         "help": {
         "placeholder": "assigned_to"},
         "group": "flag",
+        "validate": [
+            "required"
+        ],
         "input": "text",
         "disabled": False # "disable_except_assignee_owner_admin"
     }

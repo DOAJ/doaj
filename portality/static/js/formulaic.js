@@ -1259,6 +1259,8 @@ var formulaic = {
                 this.getUnresolveBtn(this.newFlagIdx).hide();
                 this.getCancelFlagBtn(this.newFlagIdx).show();
                 this.getClearFlagBtn(this.newFlagIdx).show();
+                $("#flags-" + this.newFlagIdx + "-flag_setter").hide();
+                $("#flags-" + this.newFlagIdx + "-flag_created_date").hide();
                 $(this.flagGroups[this.newFlagIdx]).hide();
 
                 this.setAddBtnStatus();

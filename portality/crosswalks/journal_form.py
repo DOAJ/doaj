@@ -4,6 +4,10 @@ from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
 from portality.models import Account
+from portality.lib import dates
+
+from flask_login import current_user
+
 
 
 class JournalGenericXWalk(object):
@@ -279,10 +283,9 @@ class JournalGenericXWalk(object):
                 flag_id = flag["flag_note_id"]
                 flag_note = flag["flag_note"]
                 flag_resolved = flag["flag_resolved"]
-                flag_resolved_by = "Myself"
-                flag_resolved_date = "today"
+                flag_resolved_by = current_user.id if current_user else ""
+                flag_resolved_date = dates.now_str()
                 if flag_resolved == "true":
-                    # obj.remove_note({"id": flag_id})
                     note = f"Flag: \n Resolved by: {flag_resolved_by} \n Resolved on: {flag_resolved_date}\n Assigned to: {flag_assigned_to} \n Note: {flag_note}"
                     obj.add_note(note, date=flag_date, id=flag_id, author_id=flag_author)
                 else:
@@ -472,12 +475,13 @@ class JournalGenericXWalk(object):
             forminfo['notes'].append(note_obj)
 
         forminfo["flags"] = []
-        print(obj.flags)
         if obj.flags:
             # display only the newest flag
             flag = obj.flags[0]
+            author_id = flag["author_id"]
+            flag_setter = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
             flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"], "flag_note_id": flag["id"],
-                        "flag_setter": flag["author_id"], "flag_assignee": flag["flag"]["assigned_to"],
+                        "flag_setter": flag_setter, "flag_assignee": flag["flag"]["assigned_to"],
                                                                     "flag_deadline": flag["flag"].get("flag_deadline", "")}
             forminfo['flags'].append(flag_obj)
 
