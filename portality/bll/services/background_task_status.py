@@ -4,10 +4,9 @@
 import itertools
 from typing import Iterable
 
-import constants
-from constants import BGJOB_STATUS_COMPLETE
-from portality.constants import BGJOB_QUEUE_ID_LONG, BGJOB_QUEUE_ID_MAIN, BGJOB_QUEUE_ID_EVENTS, BGJOB_QUEUE_ID_SCHEDULED_LONG, BGJOB_QUEUE_ID_SCHEDULED_SHORT, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED, \
-    BG_STATUS_STABLE, BG_STATUS_UNSTABLE
+from portality import constants
+# from portality.constants import BGJOB_QUEUE_ID_LONG, BGJOB_QUEUE_ID_MAIN, BGJOB_QUEUE_ID_EVENTS, BGJOB_QUEUE_ID_SCHEDULED_LONG, BGJOB_QUEUE_ID_SCHEDULED_SHORT, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED, \
+#     BG_STATUS_STABLE, BG_STATUS_UNSTABLE, BGJOB_STATUS_COMPLETE
 from portality.core import app
 from portality.lib import dates
 from portality.models.background import BackgroundJobQueryBuilder, BackgroundJob, SimpleBgjobQueue, \
@@ -23,11 +22,11 @@ class BackgroundTaskStatusService:
 
     @staticmethod
     def is_stable(val):
-        return val == BG_STATUS_STABLE
+        return val == constants.BG_STATUS_STABLE
 
     @staticmethod
     def to_bg_status_str(stable_val: bool) -> str:
-        return BG_STATUS_STABLE if stable_val else BG_STATUS_UNSTABLE
+        return constants.BG_STATUS_STABLE if stable_val else constants.BG_STATUS_UNSTABLE
 
     def all_stable(self, items: Iterable, field_name='status') -> bool:
         return all(self.is_stable(q.get(field_name)) for q in items)
@@ -38,7 +37,7 @@ class BackgroundTaskStatusService:
     def create_last_successfully_run_status(self, action, last_run_successful_in=0, **_) -> dict:
         if last_run_successful_in == 0:
             return dict(
-                status=BG_STATUS_STABLE,
+                status=constants.BG_STATUS_STABLE,
                 last_run=None,
                 last_run_status=None,
                 err_msgs=[]
@@ -54,7 +53,7 @@ class BackgroundTaskStatusService:
         lr_results = BackgroundJob.q2obj(q=lr_query)
         lr_job = lr_results[0] if len(lr_results) > 0 else None
 
-        status = BG_STATUS_UNSTABLE
+        status = constants.BG_STATUS_UNSTABLE
         lr = None
         last_run_status = None
         msg = ["No background jobs completed or errored in the time period"]
@@ -62,8 +61,8 @@ class BackgroundTaskStatusService:
         if lr_job is not None:
             lr = lr_job.created_date
             last_run_status = lr_job.status
-            if lr_job.status == BGJOB_STATUS_COMPLETE:
-                status = BG_STATUS_STABLE
+            if lr_job.status == constants.BGJOB_STATUS_COMPLETE:
+                status = constants.BG_STATUS_STABLE
                 msg = []
             else:
                 msg = ["Last job did not complete successfully"]
@@ -76,7 +75,7 @@ class BackgroundTaskStatusService:
         )
 
     def create_errors_status(self, action, check_sec=3600, allowed_num_err=0, **_) -> dict:
-        in_monitoring_query = SimpleBgjobQueue(action, status=BGJOB_STATUS_ERROR, since=dates.before_now(check_sec))
+        in_monitoring_query = SimpleBgjobQueue(action, status=constants.BGJOB_STATUS_ERROR, since=dates.before_now(check_sec))
         num_err_in_monitoring = BackgroundJob.hit_count(query=in_monitoring_query.query())
 
         # prepare errors messages
@@ -86,15 +85,15 @@ class BackgroundTaskStatusService:
 
         return dict(
             status=self.to_bg_status_str(not err_msgs),
-            total=BackgroundJob.hit_count(query=SimpleBgjobQueue(action, status=BGJOB_STATUS_ERROR).query()),
+            total=BackgroundJob.hit_count(query=SimpleBgjobQueue(action, status=constants.BGJOB_STATUS_ERROR).query()),
             in_monitoring_period=num_err_in_monitoring,
             err_msgs=err_msgs,
         )
 
     def create_queued_status(self, action, total=2, oldest=1200, **_) -> dict:
-        total_queued = BackgroundJob.hit_count(query=SimpleBgjobQueue(action, status=BGJOB_STATUS_QUEUED).query())
+        total_queued = BackgroundJob.hit_count(query=SimpleBgjobQueue(action, status=constants.BGJOB_STATUS_QUEUED).query())
         oldest_query = (BackgroundJobQueryBuilder().action(action)
-                        .status_includes(BGJOB_STATUS_QUEUED).size(1)
+                        .status_includes(constants.BGJOB_STATUS_QUEUED).size(1)
                         .order_by('created_date', 'asc')
                         .build_query_dict())
         oldest_jobs = list(BackgroundJob.q2obj(q=oldest_query))
@@ -175,7 +174,11 @@ class BackgroundTaskStatusService:
     def create_background_status(self) -> dict:
         queues = {
             queue_name: self.create_queues_status(queue_name)
-            for queue_name in [BGJOB_QUEUE_ID_LONG, BGJOB_QUEUE_ID_MAIN, BGJOB_QUEUE_ID_EVENTS, BGJOB_QUEUE_ID_SCHEDULED_LONG, BGJOB_QUEUE_ID_SCHEDULED_SHORT]
+            for queue_name in [constants.BGJOB_QUEUE_ID_LONG,
+                               constants.BGJOB_QUEUE_ID_MAIN,
+                               constants.BGJOB_QUEUE_ID_EVENTS,
+                               constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
+                               constants.BGJOB_QUEUE_ID_SCHEDULED_SHORT]
         }
 
         result_dict = dict(

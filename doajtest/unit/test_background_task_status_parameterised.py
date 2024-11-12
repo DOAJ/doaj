@@ -1,3 +1,14 @@
+from parameterized import parameterized
+from combinatrix.testintegration import load_parameter_sets
+from unittest import TestCase
+
+from portality.lib.paths import rel2abs
+from portality.lib.normalise import normalise_doi
+
+def load_cases():
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "lib_normalise_doi"), "normalise_doi", "test_id",
+                               {"test_id" : []})
+
 import json
 
 from doajtest.fixtures.background import save_mock_bgjob
