@@ -1,6 +1,7 @@
 <div name="{{ f.name }}__group--{{ idx }}">
     <div name="{{ f.name }}-inputs--container--{{ idx }}">
         {% for subfield in f.group_subfields() %}
+            <label for="{{ f.name }}-{{ idx }}-{{ subfield.name }}"> {{ subfield.label }} {% if subfield.optional %}<span class="form__question--optional">(Optional)</span>{% endif %} </label>
             {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
         {% endfor %}
     </div>

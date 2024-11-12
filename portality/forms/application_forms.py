@@ -2034,13 +2034,13 @@ class FieldDefinitions:
             "add_button_placement": "top"
         },
         "subfields": [
+            "flag_assignee",
+            "flag_note",
+            "flag_deadline",
             "flag_setter",
             "flag_created_date",
-            "flag_deadline",
-            "flag_note",
             "flag_note_id",
             "flag_setter_id",
-            "flag_assignee",
             "flag_resolved"
         ],
         "template": templates.FLAGS_LIST,
@@ -2082,6 +2082,7 @@ class FieldDefinitions:
     FLAG_DEADLINE = {
         "subfield": True,
         "optional": True,
+        "label": "Deadline",
         "name": "flag_deadline",
         "help": {
         "placeholder": "deadline"},
@@ -2092,6 +2093,7 @@ class FieldDefinitions:
     FLAG_NOTE = {
         "subfield": True,
         "name": "flag_note",
+        "label": "Note",
         "group": "flag",
         "input": "textarea",
         "disabled": False # "disable_except_assignee_owner_admin",
@@ -2116,6 +2118,7 @@ class FieldDefinitions:
     FLAG_ASSIGNEE = {
         "subfield": True,
         "name": "flag_assignee",
+        "label": "Assign a user",
         "help": {
         "placeholder": "assigned_to"},
         "group": "flag",
