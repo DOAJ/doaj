@@ -354,16 +354,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
-        publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your application ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-
-        assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -553,16 +544,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-
-        publisher_template = templates.EMAIL_NOTIFICATION
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -665,17 +647,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your submission ({}) is under review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+        # We expect no emails
+        assert len(re.findall(email_count_string, info_stream_contents)) == 0
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -936,17 +909,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-
-        publisher_template = templates.EMAIL_NOTIFICATION
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-
-        assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -1125,16 +1088,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-
-        publisher_template = templates.EMAIL_NOTIFICATION
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -1240,17 +1194,8 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
-        # We expect one email to be sent here:
-        #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape(templates.EMAIL_NOTIFICATION)
-        publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your submission ({}) is under review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+        # We expect no email to be sent
+        assert len(re.findall(email_count_string, info_stream_contents)) == 0
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -1328,27 +1273,8 @@ class TestJournalReviewEmails(DoajTestCase):
         # check the associate was changed
         assert processor.target.editor == "associate_3"
 
-        # We expect 2 emails to be sent:
-        #   * to the editor of the assigned group,
-        #   * to the AssEd who's been assigned,
-        editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-        editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to your group'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
-                                         info_stream_contents,
-                                         re.DOTALL)
-        assert bool(editor_email_matched)
-
-        assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        # We expect no emails to be sent
+        assert len(re.findall(email_count_string, info_stream_contents)) == 0
         ctx.pop()
 
     def test_02_ed_review_emails(self):
@@ -1369,16 +1295,7 @@ class TestJournalReviewEmails(DoajTestCase):
         # check the associate was changed
         assert processor.target.editor == "associate_2"
 
-        # We expect 1 email to be sent:
-        #   * to the AssEd who's been assigned
-        assEd_template = re.escape(templates.EMAIL_NOTIFICATION)
-        assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
-
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+        # We no email to be sent
+        assert len(re.findall(email_count_string, info_stream_contents)) == 0
 
         ctx.pop()

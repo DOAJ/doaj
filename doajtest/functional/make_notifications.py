@@ -6,6 +6,7 @@ from doajtest.mocks.mock_mail import MockMail
 from portality import constants
 from portality import models, app_email
 from portality.core import app
+from portality.bll import DOAJ
 from portality.events.consumers import application_assed_assigned_notify, \
     application_assed_inprogress_notify, \
     application_editor_completed_notify, \
@@ -30,34 +31,36 @@ from portality.models.event import Event
 
 USER = "richard"
 
-NOTIFICATIONS = [
-    "application_assed_assigned_notify",
-    "application_assed_inprogress_notify",
-    "application_editor_completed_notify",
-    "application_editor_group_assigned_notify",
-    "application_editor_inprogress_notify",
-    "application_maned_ready_notify",
-    "application_publisher_accepted_notify",
-    "application_publisher_assigned_notify",
-    "application_publisher_created_notify",
-    "application_publisher_inprogress_notify",
-    "application_publisher_quickreject_notify",
-    "application_publisher_revision_notify",
-    "bg_job_finished_notify",
-    "journal_assed_assigned_notify",
-    "journal_editor_group_assigned_notify",
-    "update_request_publisher_accepted_notify",
-    "update_request_publisher_assigned_notify",
-    "update_request_publisher_rejected_notify",
-    UpdateRequestPublisherSubmittedNotify.ID,
-]
+NOTIFICATIONS = [ec.ID for ec in DOAJ.eventsService().EVENT_CONSUMERS]
+
+# NOTIFICATIONS = [
+#     "application_assed_assigned_notify",
+#     "application_assed_inprogress_notify",
+#     "application_editor_completed_notify",
+#     "application_editor_group_assigned_notify",
+#     "application_editor_inprogress_notify",
+#     "application_maned_ready_notify",
+#     "application_publisher_accepted_notify",
+#     "application_publisher_assigned_notify",
+#     "application_publisher_created_notify",
+#     "application_publisher_inprogress_notify",
+#     "application_publisher_quickreject_notify",
+#     "application_publisher_revision_notify",
+#     "bg_job_finished_notify",
+#     "journal_assed_assigned_notify",
+#     "journal_editor_group_assigned_notify",
+#     "update_request_publisher_accepted_notify",
+#     "update_request_publisher_assigned_notify",
+#     "update_request_publisher_rejected_notify",
+#     UpdateRequestPublisherSubmittedNotify.ID,
+# ]
 
 app.config["ENABLE_EMAIL"] = True
 app_email.Mail = MockMail
 
 ##############################################
 ## ApplicationAssedAssignedNotify
-if "application_assed_assigned_notify" in NOTIFICATIONS:
+if "application:assed:assigned:notify" in NOTIFICATIONS:
     aaan_application = ApplicationFixtureFactory.make_application_source()
     aaan_application["admin"]["editor"] = USER
     aaan_application["bibjson"]["title"] = "Application Assed Assigned Notify"
@@ -71,7 +74,7 @@ if "application_assed_assigned_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationAssedAssignedNotify
-if "application_assed_inprogress_notify" in NOTIFICATIONS:
+if "application:assed:inprogress:notify" in NOTIFICATIONS:
     aain_application = ApplicationFixtureFactory.make_application_source()
     aain_application["admin"]["editor"] = USER
     aain_application["bibjson"]["title"] = "Application Assed In Progress Notify"
@@ -85,7 +88,7 @@ if "application_assed_inprogress_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationEditorCompletedNotify
-if "application_editor_completed_notify" in NOTIFICATIONS:
+if "application:editor:completed:notify" in NOTIFICATIONS:
     def editor_group_mock_pull(editor_group_id):
         return EditorGroup(**{
             "editor": USER
@@ -109,7 +112,7 @@ if "application_editor_completed_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationEditorGroupAssignedNotify
-if "application_editor_group_assigned_notify" in NOTIFICATIONS:
+if "application:editor_group:assigned:notify" in NOTIFICATIONS:
     def editor_group_mock_pull(key, value):
         return EditorGroup(**{
             "editor": USER
@@ -133,7 +136,7 @@ if "application_editor_group_assigned_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationEditorInprogressNotify
-if "application_editor_inprogress_notify" in NOTIFICATIONS:
+if "application:editor:inprogress:notify" in NOTIFICATIONS:
     def editor_group_mock_pull(editor_group_id):
         return EditorGroup(**{
             "editor": USER
@@ -157,7 +160,7 @@ if "application_editor_inprogress_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationManedReadyNotify
-if "application_maned_ready_notify" in NOTIFICATIONS:
+if "application:maned:ready:notify" in NOTIFICATIONS:
     def editor_group_mock_pull(key, value):
         return EditorGroup(**{
             "maned": USER
@@ -181,7 +184,7 @@ if "application_maned_ready_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationPublisherAcceptedNotify
-if "application_publisher_accepted_notify" in NOTIFICATIONS:
+if "application:publisher:accepted:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Application Publisher Accepted Notify"
@@ -195,7 +198,7 @@ if "application_publisher_accepted_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationPublisherAssignedNotify
-if "application_publisher_assigned_notify" in NOTIFICATIONS:
+if "application:publisher:assigned:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Application Publisher Assigned Notify"
@@ -209,7 +212,7 @@ if "application_publisher_assigned_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationPublisherCreatedNotify
-if "application_publisher_created_notify" in NOTIFICATIONS:
+if "application:publisher:created:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Application Publisher Created Notify"
@@ -223,7 +226,7 @@ if "application_publisher_created_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationPublisherInprogressNotify
-if "application_publisher_inprogress_notify" in NOTIFICATIONS:
+if "application:publisher:inprogress:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Application Publisher In Progress Notify"
@@ -237,7 +240,7 @@ if "application_publisher_inprogress_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationPublisherQuickRejectNotify
-if "application_publisher_quickreject_notify" in NOTIFICATIONS:
+if "application:publisher:quickreject:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Application Publisher Quick Reject Notify"
@@ -251,7 +254,7 @@ if "application_publisher_quickreject_notify" in NOTIFICATIONS:
 
 ##############################################
 ## ApplicationPublisherQuickRejectNotify
-if "application_publisher_revision_notify" in NOTIFICATIONS:
+if "application:publisher:revision:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Application Publisher Revision Notify"
@@ -267,7 +270,7 @@ if "application_publisher_revision_notify" in NOTIFICATIONS:
 ## BGJobFinishedNotify
 if "bg_job_finished_notify" in NOTIFICATIONS:
     job = models.BackgroundJob(**{
-        "id": "bg_job_finished_notify",
+        "id": "bg:job_finished:notify",
         "user": USER,
         "action": "bg_job_finished_notify",
         "status": "complete"
@@ -281,7 +284,7 @@ if "bg_job_finished_notify" in NOTIFICATIONS:
 
 ##############################################
 ## JournalAssedAssignedNotify
-if "journal_assed_assigned_notify" in NOTIFICATIONS:
+if "journal:assed:assigned:notify" in NOTIFICATIONS:
     journal = JournalFixtureFactory.make_journal_source(in_doaj=True)
     journal["admin"]["editor"] = USER
     journal["bibjson"]["title"] = "Journal Assed Assigned Notify"
@@ -295,7 +298,7 @@ if "journal_assed_assigned_notify" in NOTIFICATIONS:
 
 ##############################################
 ## JournalEditorGroupAssignedNotify
-if "journal_editor_group_assigned_notify" in NOTIFICATIONS:
+if "journal:editor_group:assigned:notify" in NOTIFICATIONS:
     def editor_group_mock_pull(key, value):
         return EditorGroup(**{
             "editor": USER
@@ -320,7 +323,7 @@ if "journal_editor_group_assigned_notify" in NOTIFICATIONS:
 
 ##############################################
 ## UpdateRequestPublisherAcceptedNotify
-if "update_request_publisher_accepted_notify" in NOTIFICATIONS:
+if "update_request:publisher:accepted:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Update Request Publisher Accepted Notify"
@@ -334,7 +337,7 @@ if "update_request_publisher_accepted_notify" in NOTIFICATIONS:
 
 ##############################################
 ## UpdateRequestPublisherAssignedNotify
-if "update_request_publisher_assigned_notify" in NOTIFICATIONS:
+if "update_request:publisher:assigned:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Update Request Publisher Assigned Notify"
@@ -348,7 +351,7 @@ if "update_request_publisher_assigned_notify" in NOTIFICATIONS:
 
 ##############################################
 ## UpdateRequestPublisherRejectedNotify
-if "update_request_publisher_rejected_notify" in NOTIFICATIONS:
+if "update_request:publisher:rejected:notify" in NOTIFICATIONS:
     application = ApplicationFixtureFactory.make_application_source()
     application["admin"]["owner"] = USER
     application["bibjson"]["title"] = "Update Request Publisher Rejected Notify"
