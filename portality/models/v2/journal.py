@@ -315,6 +315,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_notes(self):
         self.__seamless__.delete("admin.notes")
 
+    def is_assigned_to(self, user_id):
+        print(self.flags)
+        return any(user_id in flag['flag']['assigned_to'] for flag in self.flags)
+
     @property
     def notes(self):
         return self.__seamless__.get_list("admin.notes")
@@ -326,6 +330,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     @property
     def flags(self):
         return [note for note in self.notes if note.get("flag") and note["flag"].get("assigned_to")]
+
+    @property
+    def is_flagged(self):
+        return len(self.flags) > 0
 
     @property
     def most_urgent_flag_deadline(self):

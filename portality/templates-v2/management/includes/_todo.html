@@ -145,6 +145,8 @@
             {% set app_route = "admin.application" if current_user.has_role("admin") else "editor.application" %}
             {% set app_url =  url_for(app_route, application_id=todo.object_id) %}
             {% set app_date = todo.object.date_applied_timestamp %}
+            {% set is_flagged = todo.object.is_flagged %}
+
             <li class="todo-list__item" data-app-url="{{ app_url }}" data-action-ids="{{ todo.action_id|join(",") }}">
                 <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
                     <div class="flex">
@@ -168,6 +170,8 @@
                                 <h3>
                                     <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(25, True) }}</a>
                                 </h3>
+                                <p>Is flagged: {{ is_flagged }}</p>
+                                <p>Assigned to me: {{ todo.object.is_assigned_to(current_user.id) }}</p>
                             </header>
                             <div>
                  <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
