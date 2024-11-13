@@ -16,6 +16,12 @@ doaj.dashboard = {
 doaj.dashboard.init = function(context) {
     doaj.dashboard.context = context;
     $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
+    let filter = doaj.dashboard.session.filter;
+    let flagged = doaj.dashboard.session.flag_filter === "true" ? "false" : "true";
+    let newUrl = doaj.dashboard.dashboardUrl + '?filter=' + filter + '&flag_filter=' + flagged;
+
+    console.log(newUrl);
+    $("#flagged-filter .flagged-link").attr("href", newUrl);
 
     // trigger a click on the first one, so there is something for the user to look at
     let first = $(".js-managed-groups-tabs").find("li:first-child a");

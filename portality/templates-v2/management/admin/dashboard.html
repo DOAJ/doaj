@@ -11,23 +11,28 @@
 {% block admin_content %}
     <div class="flex-end">
         {% if request.values.get("filter") == None %}
-            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}">Show all</a></span>
+            <span class="tag tag--primary"><a href="{{ url_for('dashboard.top_todo') }}?flag_filter={{ request.values.get('flag_filter') }}">Show all</a></span>
         {% else %}
-            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}">Show all</a></span>
+            <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}?flag_filter={{ request.values.get('flag_filter') }}">Show all</a></span>
         {% endif %}
 
         {% if request.values.get("filter") == "na" %}
-            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+            <span class="tag tag--primary"><a href="{{ url_for('dashboard.top_todo') }}?filter=na&flag_filter={{ request.values.get('flag_filter') }}">New Applications</a></span>
         {% else %}
-            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+            <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}?filter=na&flag_filter={{ request.values.get('flag_filter') }}">New Applications</a></span>
         {% endif %}
 
         {% if request.values.get("filter") == "ur" %}
             <span class="tag tag--primary"><a
-                    href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+                    href="{{ url_for('dashboard.top_todo') }}?filter=ur&flag_filter={{ request.values.get('flag_filter') }}">Update Requests</a></span>
         {% else %}
-            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+            <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}?filter=ur&flag_filter={{ request.values.get('flag_filter') }}">Update Requests</a></span>
         {% endif %}
+
+        <span id="flagged-filter" class="tag {% if request.values.get('flag_filter') == 'true' %} tag--primary {% else %} tag--tertiary {% endif %}">
+            <a class="flagged-link">Flagged to me</a>
+        </span>
+
     </div>
     {% include "management/includes/_todo.html" %}
     <section>
@@ -73,6 +78,10 @@
     <script type="text/javascript" src="/static/js/dashboard.js?v={{ config.get('DOAJ_VERSION') }}"></script>
     <script type="text/javascript">
         jQuery(document).ready(function () {
+            doaj.dashboard.session = {}
+            doaj.dashboard.session.filter = "{{ request.values.get('filter') }}"
+            doaj.dashboard.session.flag_filter = "{{ request.values.get('flag_filter') }}"
+            doaj.dashboard.dashboardUrl = "{{ url_for('dashboard.top_todo') }}"
             doaj.dashboard.init({"applicationsSearchBase": "{{ url_for('admin.suggestions') }}"})
         });
     </script>
