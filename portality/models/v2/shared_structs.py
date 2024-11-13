@@ -216,7 +216,7 @@ SHARED_JOURNAL_LIKE = {
                         "flag": {
                             "fields": {
                                 "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
-                                "deadline": {"coerce" : "utcdatetime"}
+                                "deadline": {"coerce" : "bigenddate"}
                             }
                         }
                     }
@@ -229,7 +229,7 @@ SHARED_JOURNAL_LIKE = {
                 "has_apc" : {"coerce" : "unicode"},
                 "has_seal" : {"coerce" : "unicode"},
                 "is_flagged" : {"coerce" : "unicode"},
-                "latest_deadline": {"coerce" : "utcdatetime"},
+                "most_urgent_flag_deadline": {"coerce" : "bigenddate"},
                 "flag_assignees" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},

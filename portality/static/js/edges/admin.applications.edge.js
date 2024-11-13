@@ -142,8 +142,8 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": '<strong>Latest deadline: </strong>',
-                                    "field": "index.lates_flag_deadline"
+                                    "pre": '<strong>By deadline: </strong>',
+                                    "field": "index.most_urgent_flag"
                                 }
                             ],
                             [

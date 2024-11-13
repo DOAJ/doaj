@@ -18,6 +18,8 @@ from portality.models.account import Account
 from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
 
+from portality.lib.dates import FMT_DATE_STD
+
 JOURNAL_STRUCT = {
     "objects": [
         "admin", "index"
@@ -326,18 +328,20 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return [note for note in self.notes if note.get("flag") and note["flag"].get("assigned_to")]
 
     @property
-    def latest_flag(self):
+    def most_urgent_flag_deadline(self):
         # Filter notes to only include those with a 'flag' and a 'deadline'
         flags_with_deadlines = [
-            note["flag"] for note in self.notes
-            if note.get("flag") and note["flag"].get("assigned_to") and note["flag"].get("deadline")
+            flag.get("deadlines") for flag in self.flags
+            if flag.get("deadline")
         ]
 
         # Find the flag with the earliest deadline
         if not flags_with_deadlines:
             return None  # No flags with a deadline found
 
-        return min(flags_with_deadlines, key=lambda flag: datetime.fromisoformat(flag["deadline"]))
+        earliest_flag_deadline = coerce.find_earliest_date(flags_with_deadlines, dates_format=FMT_DATE_STD)
+
+        return earliest_flag_deadline
 
     @property
     def ordered_notes(self):
@@ -413,7 +417,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         has_editor = "No"
         is_flagged = "No"
         flag_assignees = None
-        lates_flag_deadline = None
+        most_urgent_flag_deadline = "9999-12-31"
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -463,7 +467,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             for note in self.notes
             if "assigned_to" in note.get("flag", {}) and note["flag"]["assigned_to"]
         ]
-        lates_flag_deadline = self.latest_flag;
+        most_urgent_flag_deadline = self.most_urgent_flag_deadline
 
         # deduplicate the lists
         titles = list(set(titles))
@@ -513,7 +517,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if is_flagged:
             index["is_flagged"] = is_flagged
             index["flag_assignees"] = flag_assignees
-            index["lates_flag_deadline"] = lates_flag_deadline
+            if most_urgent_flag_deadline:
+                index["most_urgent_flag_deadline"] = most_urgent_flag_deadline
         index["continued"] = continued
         index["has_editor_group"] = has_editor_group
         index["has_editor"] = has_editor
