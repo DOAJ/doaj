@@ -1,12 +1,13 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
-from unittest import TestCase
 
+from portality.models.background import BackgroundJob
 from portality.lib.paths import rel2abs
-from portality.lib.normalise import normalise_doi
 
 def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "lib_normalise_doi"), "normalise_doi", "test_id",
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "background_task_status"),
+                               "background_task_status",
+                               "test_id",
                                {"test_id" : []})
 
 import json
@@ -19,72 +20,50 @@ from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks.journal_csv import JournalCSVBackgroundTask
 
 background_task_status = DOAJ.backgroundTaskStatusService()
-is_stable = background_task_status.is_stable
 
-# config BG_MONITOR_ERRORS_CONFIG
-bg_monitor_errors_config__empty = {
-    'BG_MONITOR_ERRORS_CONFIG': {}
-}
-
-bg_monitor_errors_config__a = {
-    'BG_MONITOR_ERRORS_CONFIG': {
-        JournalCSVBackgroundTask.__action__: {
-            'check_sec': 3600,
-            'allowed_num_err': 0,
-        }
+# Configures the monitoring period and the allowed number of errors in that period before a queue is marked
+# as unstable
+BG_MONITOR_ERRORS_CONFIG = {
+    'set_in_doaj': {
+        'check_sec': 3000,
+        'allowed_num_err': 0
+    },
+    'anon_export': {
+        'check_sec': 3000,
+        'allowed_num_err': 0,
+    },
+    'journal_csv': {
+        'check_sec': 3000,
+        'allowed_num_err': 0
     }
 }
 
-bg_monitor_errors_config__b = {
-    'BG_MONITOR_ERRORS_CONFIG': {
-        'kajdlaksj': {
-            'check_sec': 3600,
-            'allowed_num_err': 0,
-        }
+# Configures the total number of queued items and the age of the oldest of those queued items allowed
+# before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
+BG_MONITOR_QUEUED_CONFIG = {
+    'set_in_doaj': {
+        'total': 1,
+        'oldest': 3000,
+    },
+    'anon_export': {
+        'total': 1,
+        'oldest': 3000,
+    },
+    'journal_csv': {
+        'total': 1,
+        'oldest': 3000,
     }
 }
 
-# config BG_MONITOR_QUEUED_CONFIG
-bg_monitor_queued_config__a = {
-    'BG_MONITOR_QUEUED_CONFIG': {
-        'journal_csv': {
-            'total': 99999999,
-            'oldest': 1200,
-        }
-    }
-}
-
-bg_monitor_queued_config__zero_total = {
-    'BG_MONITOR_QUEUED_CONFIG': {
-        'journal_csv': {
-            'total': 0,
-            'oldest': 1200,
-        }
-    }
-}
-
-# config BG_MONITOR_LAST_COMPLETED
-bg_monitor_last_completed__now = {
-    'BG_MONITOR_LAST_COMPLETED': {
-        'events_queue': 0,
-        'scheduled_long': 0,
-        'scheduled_short': 0
-    }
-}
-
-bg_monitor_last_completed__a = {
-    'BG_MONITOR_LAST_COMPLETED': {
-        'events_queue': 10000,
-        'scheduled_long': 10000,
-        'scheduled_short': 10000
-    }
-}
-
-bg_monitor_last_successful = {
-    'BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG': {
-        'journal_csv': {
-            'last_run_successful_in': 100
-        }
+BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
+    'anon_export': {
+        'last_run_successful_in': 5000
+    },
+    'set_in_doaj': {
+        'last_run_successful_in': 5000
+    },
+    'journal_csv': {
+        'last_run_successful_in': 5000
     }
 }
 
@@ -98,6 +77,9 @@ class TestBackgroundTaskStatus(DoajTestCase):
                 JournalCSVBackgroundTask.__action__: constants.CRON_NEVER,
                 AnonExportBackgroundTask.__action__: constants.CRON_NEVER,
             },
+            "BG_MONITOR_ERRORS_CONFIG": BG_MONITOR_ERRORS_CONFIG,
+            "BG_MONITOR_QUEUED_CONFIG": BG_MONITOR_QUEUED_CONFIG,
+            "BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG": BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG
         })
 
     @classmethod
@@ -105,195 +87,73 @@ class TestBackgroundTaskStatus(DoajTestCase):
         super().tearDownClass()
         patch_config(cls.app_test, cls.org_config)
 
-    @staticmethod
-    def assert_stable_dict(val: dict):
-        assert is_stable(val.get('status'))
-        assert len(val.get('err_msgs')) == 0
+    @parameterized.expand(load_cases)
+    def test_01_background_task_status(self, name, kwargs):
+        in_queue_arg = kwargs.get("in_queue")
+        oldest_queued_arg = kwargs.get("oldest_queued")
+        error_count_arg = kwargs.get("error_count")
+        error_age_arg = kwargs.get("error_age")
+        lrs_success_or_error_arg = kwargs.get("lrs_success_or_error")
+        queued_arg = kwargs.get("queued")
+        errors_arg = kwargs.get("errors")
+        lrs_arg = kwargs.get("lrs")
 
-    @staticmethod
-    def assert_unstable_dict(val):
-        assert not is_stable(val.get('status'))
-        assert len(val.get('err_msgs'))
+        in_queue = int(in_queue_arg)
+        oldest_queued = 3600 if oldest_queued_arg == "old" else 600
+        error_count = int(error_count_arg)
+        error_age = 600 if error_age_arg == "in_period" else 3600
 
-    def test_various_combinations(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_EVENTS,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
-        save_mock_bgjob(AnonExportBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
-        status_dict = background_task_status.create_background_status()
-        print(json.dumps(status_dict, indent=4))
+        queues = [("events", "set_in_doaj"),
+                  ("scheduled_long", "anon_export"),
+                  ("scheduled_short", "journal_csv")]
 
-    @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__invalid_last_completed__events_queue(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_EVENTS,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
+        # set up
+        ###########################################
+        blocks = []
+        for q, a in queues:
+            if in_queue > 0:
+                # create the number of jobs that should be in status "queued"
+                # their ages are set to the oldest allowed age + the index number for the purposes of disambiguation
+                for i in range(in_queue):
+                    job = save_mock_bgjob(action=a, status="queued", created_before_sec=oldest_queued + i, is_save=True, blocking=False, queue_id=q)
+                    blocks.append((job.id, job.last_updated))
 
-        status_dict = background_task_status.create_background_status()
+            if error_count > 0:
+                # create a single error job if the requested age
+                job = save_mock_bgjob(action=a, status="error", created_before_sec=error_age, is_save=True, blocking=False, queue_id=q)
+                blocks.append((job.id, job.last_updated))
 
-        #assert not is_stable(status_dict['status'])
-        # self.assert_unstable_dict(status_dict['queues'].get('events', {}))
-        self.assert_stable_dict(status_dict['queues'].get('scheduled_long', {}))
+            if lrs_success_or_error_arg != "empty":
+                age = 4000
+                # if there is an error that's being tested (see above), we need to make sure that the more recent job is "complete"
+                # to deactivate this test, if the lrs test is supposed to be "stable".
+                if error_count > 0 and lrs_success_or_error_arg == "complete":
+                    age = 100
+                job = save_mock_bgjob(action=a, status=lrs_success_or_error_arg, created_before_sec=age, is_save=True, blocking=False, queue_id=q)
+                blocks.append((job.id, job.last_updated))
 
-    @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__invalid_last_completed__scheduled_long(self):
-        save_mock_bgjob(AnonExportBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
+        BackgroundJob.blockall(blocks)
 
-        status_dict = background_task_status.create_background_status()
+        # Execute
+        ###########################################
+        status = background_task_status.create_background_status()
 
-        #assert not is_stable(status_dict['status'])
-        self.assert_stable_dict(status_dict['queues'].get('events', {}))
-        self.assert_unstable_dict(status_dict['queues'].get('scheduled_long', {}))
 
-    @apply_test_case_config(bg_monitor_last_completed__a)
-    def test_create_background_status__valid_last_completed(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_EVENTS,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
-        save_mock_bgjob(AnonExportBackgroundTask.__action__,
-                        queue_id=constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
+        # Assert
+        ###########################################
 
-        status_dict = background_task_status.create_background_status()
+        for q, a in queues:
+            assert status['queues'][q]["errors"][a]["status"] == errors_arg
+            assert status['queues'][q]["queued"][a]["status"] == queued_arg
+            assert status['queues'][q]["last_run_successful"][a]["status"] == lrs_arg
 
-        #assert is_stable(status_dict['status'])
-        self.assert_stable_dict(status_dict['queues'].get('events', {}))
-        self.assert_stable_dict(status_dict['queues'].get('scheduled_long', {}))
+            if "unstable" in [errors_arg, queued_arg, lrs_arg]:
+                assert status['queues'][q]["status"] == "unstable"
+            else:
+                assert status['queues'][q]["status"] == "stable"
 
-    @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__valid_last_completed__no_record(self):
-        status_dict = background_task_status.create_background_status()
-        assert is_stable(status_dict['status'])
-
-    @apply_test_case_config(bg_monitor_errors_config__empty)
-    def test_create_background_status__empty_errors_config(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_ERROR, )
-
-        status_dict = background_task_status.create_background_status()
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['errors'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert not is_stable(status_dict['status'])
-        assert journal_csv_dict
-        # unstable action should be on top of the list after sorting
-        first_key = next(iter(status_dict['queues']['scheduled_short']['errors']))
-        assert not is_stable(status_dict['queues']['scheduled_short']['errors'][first_key]['status'])
-
-    @apply_test_case_config(bg_monitor_errors_config__a)
-    def test_create_background_status__error_in_period_found(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_ERROR, )
-
-        status_dict = background_task_status.create_background_status()
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['errors'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert not is_stable(status_dict['status'])
-        self.assert_unstable_dict(journal_csv_dict)
-        assert journal_csv_dict.get('in_monitoring_period', 0) > 0
-
-    @apply_test_case_config(bg_monitor_errors_config__a)
-    def test_create_background_status__error_in_period_not_found(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_ERROR,
-                        created_before_sec=1000000000)
-
-        status_dict = background_task_status.create_background_status()
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['errors'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert is_stable(status_dict['status'])
-        self.assert_stable_dict(journal_csv_dict)
-        assert journal_csv_dict.get('in_monitoring_period', 0) == 0
-
-    @apply_test_case_config(bg_monitor_queued_config__zero_total)
-    def test_create_background_status__queued_invalid_total(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_QUEUED, )
-
-        status_dict = background_task_status.create_background_status()
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert not is_stable(status_dict['status'])
-        assert journal_csv_dict.get('total', 0)
-        self.assert_unstable_dict(journal_csv_dict)
-
-    @apply_test_case_config(bg_monitor_queued_config__zero_total)
-    def test_create_background_status__queued_valid_total(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
-
-        status_dict = background_task_status.create_background_status()
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert is_stable(status_dict['status'])
-        assert journal_csv_dict.get('total', 0) == 0
-        self.assert_stable_dict(journal_csv_dict)
-
-    @apply_test_case_config(bg_monitor_queued_config__a)
-    def test_create_background_status__queued_invalid_oldest(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_QUEUED,
-                        created_before_sec=1000000000)
-
-        status_dict = background_task_status.create_background_status()
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert not is_stable(status_dict['status'])
-        self.assert_unstable_dict(journal_csv_dict)
-        assert journal_csv_dict.get('oldest') is not None
-
-    @apply_test_case_config(bg_monitor_queued_config__a)
-    def test_create_background_status__queued_valid_oldest(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_QUEUED, )
-
-        status_dict = background_task_status.create_background_status()
-        print(json.dumps(status_dict, indent=4))
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['queued'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert is_stable(status_dict['status'])
-        self.assert_stable_dict(journal_csv_dict)
-        assert journal_csv_dict.get('oldest') is not None
-
-    @apply_test_case_config(bg_monitor_last_successful)
-    def test_create_background_status__last_run_successful(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_COMPLETE, )
-
-        status_dict = background_task_status.create_background_status()
-        print(json.dumps(status_dict, indent=4))
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['last_run_successful'].get(JournalCSVBackgroundTask.__action__, {})
-
-        #assert is_stable(status_dict['status'])
-        self.assert_stable_dict(journal_csv_dict)
-        assert journal_csv_dict.get('last_run') is not None
-        assert journal_csv_dict.get('last_run_status') == constants.BGJOB_STATUS_COMPLETE
-
-    @apply_test_case_config(bg_monitor_last_successful)
-    def test_create_background_status__last_run_unsuccessful(self):
-        save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        status=constants.BGJOB_STATUS_ERROR, )
-
-        status_dict = background_task_status.create_background_status()
-        print(json.dumps(status_dict, indent=4))
-
-        journal_csv_dict = status_dict['queues']['scheduled_short']['last_run_successful'].get(
-            JournalCSVBackgroundTask.__action__, {})
-
-        #assert not is_stable(status_dict['status'])
-        self.assert_unstable_dict(journal_csv_dict)
-        assert journal_csv_dict.get('last_run') is not None
-        assert journal_csv_dict.get('last_run_status') == constants.BGJOB_STATUS_ERROR
-
+            if "unstable" in [errors_arg, queued_arg, lrs_arg]:
+                assert status['status'] == "unstable"
+            else:
+                assert status['status'] == "stable"
 

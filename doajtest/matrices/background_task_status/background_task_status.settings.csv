@@ -2,13 +2,16 @@ field,test_id,in_queue,oldest_queued,error_count,error_age,lrs_success_or_error,
 type,index,generated,generated,generated,generated,generated,conditional,conditional,conditional
 default,,,,,,,stable,stable,stable
 ,,,,,,,,,
-values,,0,in_period,0,in_period,success,stable,stable,stable
-values,,1,out_of_period,1,out_of_period,error,unstable,unstable,unstable
-values,,,,,,empty,,,
+values,,0,old,0,in_period,complete,stable,stable,stable
+values,,1,young,1,out_of_period,error,unstable,unstable,unstable
+values,,2,,,,empty,,,
 ,,,,,,,,,
-constraint event_in_queue,,0,out_of_period,,,,,,
-constraint event_error_count,,,,0,out_of_period,,,,
+constraint in_queue,,0,young,,,,,,
+constraint error_count,,,,0,out_of_period,,,,
+constraint error_count,,,,1,,!empty,,,
 ,,,,,,,,,
-conditional queued,,1,in_period,,,,unstable,,
+conditional queued,,2,,,,,unstable,,
+conditional queued,,,old,,,,unstable,,
 conditional errors,,,,1,in_period,,,unstable,
 conditional lrs,,,,,,error,,,unstable
+conditional lrs,,,,,,empty,,,unstable
