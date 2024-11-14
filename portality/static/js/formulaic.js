@@ -1157,6 +1157,9 @@ var formulaic = {
                 this.flagGroups = $("div[name^='" + this.fieldDef["name"] + "__group--']");
                 this.flagInputsContainer = $("div[name^='" + this.fieldDef["name"] + "-inputs--container--']");
 
+                this.resolvedInputDisabled = false;
+                this.unresolvedInputDisabled = false;
+
                 this.flagExists = false;
                 this.existingFlagIdx = null;
                 this.newFlagIdx = null;
@@ -1240,9 +1243,22 @@ var formulaic = {
             }
 
             this.setUI = function() {
+
+                let resolveInputs = $(this.container).find($("input[id$='flag_resolved']"))
+                resolveInputs.each((idx, elem) => {
+                    if ($(elem).is(":disabled")) {
+                        this.getResolveBtn(idx).remove();
+                        this.getUnresolveBtn(idx).remove();
+                    }
+                })
+
                 // Calculate indices based on the flag's existence
                 this.existingFlagIdx = this.flagExists ? 0 : null;
                 this.newFlagIdx = this.flagExists ? 1 : 0;
+
+                if (!this.addFlagBtn.length) {
+                    this.flagGroups[this.newFlagIdx].remove();
+                }
 
                 if (this.flagExists) {
                     this.getResolveBtn(this.existingFlagIdx).show();

@@ -1,22 +1,25 @@
 {% from "_application-form/includes/_value.html" import value %}
 
-<div class="{{ f.name }}__container form__question">
+<div class="{{ f.name }}__container form__question editorial-panel__question">
     <a id="question-{{ f.name }}"></a>
-    {% set role_found = false %}
-    {% for role in f.repeatable.add_field_permission | default([]) %}
-        {% if current_user.has_role(role) %}
-            <p class="add_field__button_div" id="add_field__button_div">
-                <button type="button" id="add_flag__{{ f.name }}" class="add_flag__button label" >Add Flag</button>
-            </p>
-            {% break %}
-        {% endif %}
-    {% endfor %}
-    <label>
-        {% autoescape off %}{{ f.label }}{% endautoescape %}
-        {% if f.help("long_help") %}
-            <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
-        {% endif %}
-    </label>
+    <div class="editorial-panel__question-header flex flex-space-between">
+        <label>
+            {% autoescape off %}{{ f.label }}{% endautoescape %}
+            {% if f.help("long_help") %}
+                <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
+            {% endif %}
+        </label>
+        {% set role_found = false %}
+        {% for role in f.repeatable.add_field_permission | default([]) %}
+            {% if current_user.has_role(role) %}
+                <p class="add_field__button_div" id="add_field__button_div">
+                    <button type="button" id="add_flag__{{ f.name }}" class="add_flag__button label" >Add Flag</button>
+                </p>
+                {% break %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="editorial-panel__questions-content {{ f.name }}__question--content--{{ idx }}">
     {% for entry in f.wtfield %}
         {% set entry_template = f.entry_template %}
         {% set idx = loop.index0 %}

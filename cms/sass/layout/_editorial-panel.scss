@@ -1,11 +1,68 @@
 .editorial-panel {
   margin-top: 0;
 
-  .form__question {
-    select, textarea, input {
+  .flags__container {
+    .form-inputs--container {
       width: 100%;
+      display: inline-flex;
+      label {
+        color: $warm-black;
+        font-size: .889em;
+        &:has(+ textarea) {
+          display: none;
+        }
+      }
+      input {
+        padding: 0.5rem;
+      }
     }
   }
+  .editorial-panel__wrapper {
+    .editorial-panel__content {
+      .form__question {
+        padding: 0 !important;
+        width: auto;
+        border: 0;
+        border-top: 1px dotted #A9A7A5;
+        background: #F6F4F4;
+        .editorial-panel__question-header {
+          align-items: center;
+          margin: 0 -.5rem;
+          padding: .5rem;
+          width: auto;
+          border: 0;
+          border-top: 1px dotted $mid-grey;
+          border-bottom: 1px dotted $mid-grey;
+          background: $light-grey;
+          label, p, p > button {
+            margin: 0;
+          }
+        }
+        .editorial-panel__questions-content {
+          margin: 0 -.5rem;
+          padding: 0;
+          width: auto;
+          .form__question--group {
+            .form-inputs--container {
+              padding: .5rem;
+              display: flex;
+              align-items: baseline;
+              justify-content: space-between;
+              label {
+                margin: 0;
+              }
+              input, .select2-choice {
+                width: 100%;
+              }
+              input:disabled {
+                padding: .5rem;
+              }
+            }
+          }
+        }
+      }
+  }
+}
 
   hr {
     margin: $spacing-02;

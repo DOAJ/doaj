@@ -1,10 +1,10 @@
-<div name="{{ f.name }}__group--{{ idx }}">
-    <div name="{{ f.name }}-inputs--container--{{ idx }}">
+<div class="form__question--group {{ f.name }}__question--group--{{ idx }}">
         {% for subfield in f.group_subfields() %}
-            <label for="{{ f.name }}-{{ idx }}-{{ subfield.name }}"> {{ subfield.label }} {% if subfield.optional %}<span class="form__question--optional">(Optional)</span>{% endif %} </label>
-            {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
+            <div class="form-inputs--container {{ f.name }}-inputs--container--{{ idx }}">
+                <label for="{{ f.name }}-{{ idx }}-{{ subfield.name }}"> {{ subfield.label }} {% if subfield.optional %}<span class="form__question--optional">(Optional)</span>{% endif %} </label>
+                {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
+            </div>
         {% endfor %}
-    </div>
     <p class="control_buttons_div--{{ idx }}">
         <button type="button" id="resolve_flag--{{ idx }}" class="resolve_flag__button label" >Resolve Flag</button>
         <button type="button" id="unresolve_flag--{{ idx }}" class="unresolve_flag__button label" >Undo Resolving</button>

@@ -2028,16 +2028,17 @@ class FieldDefinitions:
     FLAGS = {
         "name": "flags",
         "input": "group",
-        "label": "Flag",
+        "label": "Flags",
         "repeatable": {
             "initial": 2,
             "add_button_placement": "top",
             "add_field_permission": ["admin"]
         },
         "subfields": [
+            "flag_details",
             "flag_assignee",
-            "flag_note",
             "flag_deadline",
+            "flag_note",
             "flag_setter",
             "flag_created_date",
             "flag_note_id",
@@ -2063,12 +2064,9 @@ class FieldDefinitions:
     # ~~->$ NoteAuthor:FormField~~
     FLAG_SETTER = {
         "subfield": True,
-        "help": {
-            "placeholder": "setter"
-        },
         "name": "flag_setter",
         "group": "flags",
-        "input": "text",
+        "input": "hidden",
         "disabled": True
     }
 
@@ -2076,10 +2074,17 @@ class FieldDefinitions:
     FLAG_CREATED_DATE = {
         "subfield": True,
         "name": "flag_created_date",
-        "help": {
-        "placeholder": "date"},
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    FLAG_DETAILS = {
+        "subfield": True,
+        "name": "flag_details",
         "group": "flags",
         "input": "text",
+        "template": templates.FLAG_DETAILS,
         "disabled": True
     }
 
@@ -2415,6 +2420,7 @@ class FieldSetDefinitions:
             FieldDefinitions.FLAGS["name"],
             FieldDefinitions.FLAG_SETTER["name"],
             FieldDefinitions.FLAG_CREATED_DATE["name"],
+            FieldDefinitions.FLAG_DETAILS["name"],
             FieldDefinitions.FLAG_DEADLINE["name"],
             FieldDefinitions.FLAG_NOTE["name"],
             FieldDefinitions.FLAG_NOTE_ID["name"],
@@ -2850,10 +2856,7 @@ def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
     form_field: FormField = field.find_related_form_field('flag', formulaic_context)
     if form_field is None:
         return True
-    print(cur_user_id)
-    print(form_field.data.get('flag_assignee'))
-    print(form_field.data.get('flag_setter'))
-    print(not cur_user_is_admin)
+
     return (cur_user_id != form_field.data.get('flag_assignee') and
             cur_user_id != form_field.data.get('flag_setter') and
             not cur_user_is_admin)

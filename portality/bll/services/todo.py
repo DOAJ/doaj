@@ -121,10 +121,8 @@ class TodoService(object):
 
         todos = []
         for aid, q, sort, boost in queries:
-            print("query:", q.query())
             applications = models.Application.object_query(q=q.query())
             for ap in applications:
-                print("assignees: ", ap["index"]["flag_assignees"])
                 todos.append({
                     "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
                     "date_type": sort,
