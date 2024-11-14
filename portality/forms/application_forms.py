@@ -2048,14 +2048,16 @@ class FieldDefinitions:
         "widgets": [
             "multiple_field",
             "flag_manager"
-        ]
+        ],
+        "merge_disabled": "merge_disabled_notes"
     }
 
     FLAG_RESOLVED = {
         "subfield": True,
         "name": "flag_resolved",
         "group": "flags",
-        "input": "hidden"
+        "input": "hidden",
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     # ~~->$ NoteAuthor:FormField~~
@@ -2067,6 +2069,7 @@ class FieldDefinitions:
         "name": "flag_setter",
         "group": "flags",
         "input": "text",
+        "disabled": True
     }
 
     # ~~->$ NoteDate:FormField~~
@@ -2077,6 +2080,7 @@ class FieldDefinitions:
         "placeholder": "date"},
         "group": "flags",
         "input": "text",
+        "disabled": True
     }
 
     FLAG_DEADLINE = {
@@ -2088,6 +2092,7 @@ class FieldDefinitions:
         "placeholder": "deadline"},
         "group": "flags",
         "input": "text",
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     FLAG_NOTE = {
@@ -2096,7 +2101,7 @@ class FieldDefinitions:
         "label": "Note",
         "group": "flags",
         "input": "textarea",
-        "disabled": False # "disable_except_assignee_owner_admin",
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     # ~~->$ NoteID:FormField~~
@@ -2123,7 +2128,7 @@ class FieldDefinitions:
             {"autocomplete": {"type": "account", "field": "id", "include": False}},  # ~~^-> Autocomplete:FormWidget~~
         ],
         "input": "text",
-        "disabled": False # "disable_except_assignee_owner_admin"
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     # ~~->$ OptionalValidation:FormField~~
@@ -2827,6 +2832,32 @@ def disable_edit_note_except_editing_user(field: FormulaicField,
         return True
     return cur_user_id != form_field.data.get('note_author_id')
 
+def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
+                                          formulaic_context: FormulaicContext):
+    """
+    Only allow the current user to edit this field if current user is an author, assignee or admin
+
+    :param field:
+    :param formulaic_context:
+    :return:
+        False is editable, True is disabled
+    """
+
+    # ~~->Notes:Feature~~
+    editing_user = formulaic_context.extra_param.get('editing_user')
+    cur_user_id = editing_user and editing_user.id
+    cur_user_is_admin = editing_user and editing_user.is_super
+    form_field: FormField = field.find_related_form_field('flag', formulaic_context)
+    if form_field is None:
+        return True
+    print(cur_user_id)
+    print(form_field.data.get('flag_assignee'))
+    print(form_field.data.get('flag_setter'))
+    print(not cur_user_is_admin)
+    return (cur_user_id != form_field.data.get('flag_assignee') and
+            cur_user_id != form_field.data.get('flag_setter') and
+            not cur_user_is_admin)
+
 
 #######################################################
 ## Merge disabled
@@ -3223,6 +3254,7 @@ PYTHON_FUNCTIONS = {
     "disabled": {
         "application_status_disabled": application_status_disabled,
         "disable_edit_note_except_editing_user": disable_edit_note_except_editing_user,
+        "disable_edit_flag_except_author_admin_assignee": disable_edit_flag_except_author_admin_assignee
     },
     "merge_disabled": {
         "merge_disabled_notes": merge_disabled_notes
