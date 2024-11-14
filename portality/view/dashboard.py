@@ -26,12 +26,15 @@ def top_todo():
     elif filter == "ur":
         new_applications = False
 
+    flag_filter = request.values.get("flag_filter") == "true"
+
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(),
                          size=app.config.get("TODO_LIST_SIZE"),
                          new_applications=new_applications,
-                         update_requests=update_requests)
+                         update_requests=update_requests,
+                         flagged=flag_filter)
 
     # ~~-> Dashboard:Page~~
     return render_template(templates.DASHBOARD, todos=todos)

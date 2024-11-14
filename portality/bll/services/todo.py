@@ -64,7 +64,7 @@ class TodoService(object):
         return stats
 
 
-    def top_todo(self, account, size=25, new_applications=True, update_requests=True):
+    def top_todo(self, account, size=25, new_applications=True, update_requests=True, flagged=False):
         """
         Returns the top number of todo items for a given user
 
@@ -119,9 +119,13 @@ class TodoService(object):
                     TodoRules.associate_all_applications(account.id, size)
                 ])
 
+            if flagged:
+                queries.extend([TodoRules.assigned_to_me(size, account.id)])
+
         todos = []
         for aid, q, sort, boost in queries:
             applications = models.Application.object_query(q=q.query())
+            print(applications)
             for ap in applications:
                 todos.append({
                     "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
@@ -164,6 +168,19 @@ class TodoService(object):
 
 
 class TodoRules(object):
+
+    @classmethod
+    def assigned_to_me(cls, size, me):
+        sort_date = "created_date"
+        assigned_to_me = TodoQuery(
+            musts=[
+                TodoQuery.assigned_to_me(me)
+            ],
+            sort=sort_date,
+            size=size
+        )
+        return constants.TODO_ASSIGNED_TO_ME, assigned_to_me, sort_date, 0
+
     @classmethod
     def maned_stalled(cls, size, maned_of):
         sort_date = "created_date"
@@ -553,6 +570,13 @@ class TodoQuery(object):
             }
         }
 
+    @classmethod
+    def assigned_to_me(cls, me):
+        return {
+            "terms": {
+                "index.flag_assignees": me
+            }
+        }
 
 class GroupStatsQuery():
     """

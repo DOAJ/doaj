@@ -3,12 +3,11 @@ from werkzeug.datastructures import MultiDict
 from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
+from portality.lib.dates import FMT_DATE_STD
 from portality.models import Account
 from portality.lib import dates
 
 from flask_login import current_user
-
-
 
 class JournalGenericXWalk(object):
     """
@@ -277,7 +276,7 @@ class JournalGenericXWalk(object):
         if getattr(form, "flags", None):
             for flag in form.flags.data:
                 flag_date = flag["flag_created_date"]
-                flag_deadline = flag["flag_deadline"]
+                flag_deadline = dates.parse(flag.get("flag_deadline", dates.far_in_the_future()), format=FMT_DATE_STD)
                 flag_assigned_to = flag["flag_assignee"]
                 flag_author = flag["flag_setter"]
                 flag_id = flag["flag_note_id"]
@@ -291,7 +290,6 @@ class JournalGenericXWalk(object):
                 else:
                     obj.add_note(flag_note, date=flag_date, id=flag_id,
                              author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
-        print(obj.flags)
 
         if getattr(form, 'owner', None):
             owner = form.owner.data
@@ -479,10 +477,14 @@ class JournalGenericXWalk(object):
             # display only the newest flag
             flag = obj.flags[0]
             author_id = flag["author_id"]
-            flag_setter = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
+            if flag["flag"].get("deadline"):
+                flag_deadline = flag["flag"].get("deadline").format(dates.FMT_DATE_STD)
+            else:
+                flag_deadline = ""
+            flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
             flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"], "flag_note_id": flag["id"],
                         "flag_setter": flag_setter, "flag_assignee": flag["flag"]["assigned_to"],
-                                                                    "flag_deadline": flag["flag"].get("flag_deadline", "")}
+                                                                    "flag_deadline": flag_deadline}
             forminfo['flags'].append(flag_obj)
 
         forminfo['owner'] = obj.owner

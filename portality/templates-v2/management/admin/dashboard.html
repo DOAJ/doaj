@@ -10,7 +10,6 @@
 
 {% block admin_content %}
     <div class="flex-end">
-        {{ request.values.get("filter") == None or request.values.get("filter") == "None" }}
         {% if request.values.get("filter") == None %}
             <span class="tag tag--primary"><a href="{{ url_for('dashboard.top_todo') }}?flag_filter={{ request.values.get('flag_filter') }}">Show all</a></span>
         {% else %}
