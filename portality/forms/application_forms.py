@@ -2041,7 +2041,6 @@ class FieldDefinitions:
             "flag_setter",
             "flag_created_date",
             "flag_note_id",
-            "flag_setter_id",
             "flag_resolved"
         ],
         "template": templates.FLAGS_LIST,
@@ -2055,7 +2054,7 @@ class FieldDefinitions:
     FLAG_RESOLVED = {
         "subfield": True,
         "name": "flag_resolved",
-        "group": "flag",
+        "group": "flags",
         "input": "hidden"
     }
 
@@ -2066,7 +2065,7 @@ class FieldDefinitions:
             "placeholder": "setter"
         },
         "name": "flag_setter",
-        "group": "flag",
+        "group": "flags",
         "input": "text",
     }
 
@@ -2076,7 +2075,7 @@ class FieldDefinitions:
         "name": "flag_created_date",
         "help": {
         "placeholder": "date"},
-        "group": "flag",
+        "group": "flags",
         "input": "text",
     }
 
@@ -2087,7 +2086,7 @@ class FieldDefinitions:
         "name": "flag_deadline",
         "help": {
         "placeholder": "deadline"},
-        "group": "flag",
+        "group": "flags",
         "input": "text",
     }
 
@@ -2095,7 +2094,7 @@ class FieldDefinitions:
         "subfield": True,
         "name": "flag_note",
         "label": "Note",
-        "group": "flag",
+        "group": "flags",
         "input": "textarea",
         "disabled": False # "disable_except_assignee_owner_admin",
     }
@@ -2104,15 +2103,7 @@ class FieldDefinitions:
     FLAG_NOTE_ID = {
         "subfield": True,
         "name": "flag_note_id",
-        "group": "flag",
-        "input": "hidden"
-    }
-
-    # ~~->$ NoteAuthorID:FormField~~
-    FLAG_SETTER_ID = {
-        "subfield": True,
-        "name": "flag_setter_id",
-        "group": "flag",
+        "group": "flags",
         "input": "hidden"
     }
 
@@ -2122,7 +2113,7 @@ class FieldDefinitions:
         "label": "Assign a user",
         "help": {
         "placeholder": "assigned_to"},
-        "group": "flag",
+        "group": "flags",
         "validate": [
             {"required": {"message": "A flag must be assigned to a user."}},
             "reserved_usernames",
@@ -2412,7 +2403,7 @@ class FieldSetDefinitions:
         ]
     }
 
-    FLAGS = {
+    FLAG = {
         "name": "flag",
         "label": "Flag",
         "fields": [
@@ -2422,7 +2413,6 @@ class FieldSetDefinitions:
             FieldDefinitions.FLAG_DEADLINE["name"],
             FieldDefinitions.FLAG_NOTE["name"],
             FieldDefinitions.FLAG_NOTE_ID["name"],
-            FieldDefinitions.FLAG_SETTER_ID["name"],
             FieldDefinitions.FLAG_ASSIGNEE["name"],
             FieldDefinitions.FLAG_RESOLVED["name"]
         ]
@@ -2528,7 +2518,7 @@ class ApplicationContextDefinitions:
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.FLAGS["name"],
+        FieldSetDefinitions.FLAG["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -2543,7 +2533,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.FLAGS["name"],
+        FieldSetDefinitions.FLAG["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -2562,7 +2552,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.FLAGS["name"],
+        FieldSetDefinitions.FLAG["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication

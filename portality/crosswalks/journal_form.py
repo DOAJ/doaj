@@ -480,7 +480,7 @@ class JournalGenericXWalk(object):
             if flag["flag"].get("deadline"):
                 flag_deadline = flag["flag"].get("deadline").format(dates.FMT_DATE_STD)
             else:
-                flag_deadline = ""
+                flag_deadline = dates.far_in_the_future(dates.FMT_DATE_STD)
             flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
             flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"], "flag_note_id": flag["id"],
                         "flag_setter": flag_setter, "flag_assignee": flag["flag"]["assigned_to"],
