@@ -171,7 +171,7 @@
                                     <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(25, True) }}</a>
                                 </h3>
                                 <p>Is flagged: {{ is_flagged }}</p>
-                                <p>Assigned to me: {{ todo.object.is_assigned_to(current_user.id) }}</p>
+                                <p>Flagged to me: {{ todo.object.is_assigned_to(current_user.id) }}</p>
                             </header>
                             <div>
                  <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">

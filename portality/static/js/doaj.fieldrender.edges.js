@@ -34,7 +34,7 @@ $.extend(true, doaj, {
                 display: "Flagged to me",
                 must: [
                     es.newTermFilter({
-                        field: "index.flag_assignees",
+                        field: "index.flag_assignees.exact",
                         value: doaj.session.currentUser
                     })
                 ]

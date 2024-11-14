@@ -262,7 +262,7 @@ $.extend(true, doaj, {
                         "index.has_apc.exact" : "Charges?",
                         'index.license.exact' : 'License',
                         'index.is_flagged': "Only Flagged Records",
-                        'index.flag_assignees': "Flagged to me"
+                        'index.flag_assignees.exact': "Flagged to me"
                     },
                     valueMaps : {
                         "index.application_type.exact" : {
@@ -278,7 +278,7 @@ $.extend(true, doaj, {
                         ],
                         hideValues: [
                             'index.is_flagged',
-                            'index.flag_assignees'
+                            'index.flag_assignees.exact'
                         ]
                     })
                 })
