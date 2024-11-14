@@ -2905,7 +2905,7 @@ $.extend(true, doaj, {
                 frag += '</a></li>\
                          <li>\
                             <a href="' + export_url + '" target="_blank">\
-                            Export Citation (RIS) '
+                            Export citation (RIS) '
                 if (this.widget){
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/download.svg" alt="external-link icon">'
                 } else {
