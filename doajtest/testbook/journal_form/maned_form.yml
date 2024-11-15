@@ -158,4 +158,10 @@ tests:
         - The journal record is saved, and the "Subscribe to Open" checkbox is checked.
     - step: Go to the public journals search page
       path: /search/journals
+    - step: Search for the journal you just edited
+      results:
+        - The journal is displayed in the search results with a "Subscribe to Open" label
+    - step: click on the journal title
+      results:
+        - You are taken to the journal ToC which displays the "Subscribe to Open" label
 
