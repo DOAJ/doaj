@@ -1,4 +1,5 @@
 import json
+import os.path
 import re
 import urllib.error
 import urllib.parse
@@ -168,12 +169,19 @@ def csv_data():
         store_url = "/store" + store_url
     return redirect(store_url, code=307)
 
-
+@blueprint.route("/sitemap_index.xml")
 @blueprint.route("/sitemap.xml")
 def sitemap():
     sitemap_url = models.Cache.get_latest_sitemap()
     if sitemap_url is None:
         abort(404)
+    if sitemap_url.startswith("/"):
+        sitemap_url = "/store" + sitemap_url
+    return redirect(sitemap_url, code=307)
+
+@blueprint.route("/sitemap<n>.xml")
+def nth_sitemap(n):
+    sitemap_url = models.Cache.get_sitemap(n)
     if sitemap_url.startswith("/"):
         sitemap_url = "/store" + sitemap_url
     return redirect(sitemap_url, code=307)
@@ -206,6 +214,10 @@ def public_data_dump_redirect(record_type):
 
     return redirect(store_url, code=307)
 
+@blueprint.route("/store/<container>/<dir>/<filename>")
+def get_from_local_store_dir(container, dir, filename):
+    file = os.path.join(dir, filename)
+    return get_from_local_store(container, file)
 
 @blueprint.route("/store/<container>/<filename>")
 def get_from_local_store(container, filename):
@@ -215,7 +227,8 @@ def get_from_local_store(container, filename):
     from portality import store
     localStore = store.StoreFactory.get(None)
     file_handle = localStore.get(container, filename)
-    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True,
+                     attachment_filename=os.path.basename(filename))
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
