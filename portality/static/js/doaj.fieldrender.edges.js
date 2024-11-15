@@ -2878,6 +2878,8 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
+                const export_url = this.doaj_url + '/service/export/article/' + resultobj.id + '/ris';
+
                 var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
@@ -2903,11 +2905,20 @@ $.extend(true, doaj, {
                             <a href="' + ftl + '" target="_blank" rel="noopener"> Read online '
                 if (this.widget){
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
+                } else {
                     frag += '<i data-feather="external-link" aria-hidden="true"></i>'
                 }
                 frag += '</a></li>\
+                         <li>\
+                            <a href="' + export_url + '" target="_blank">\
+                            Export Citation (RIS) '
+                if (this.widget){
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/download.svg" alt="external-link icon">'
+                } else {
+                    frag += '<i data-feather="download" aria-hidden="true"></i>'
+                }
+                            frag += '</a>\
+                          </li>\
                           <li>\
                             <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\

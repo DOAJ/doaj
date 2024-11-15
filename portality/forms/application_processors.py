@@ -456,11 +456,6 @@ class AdminApplication(ApplicationProcessor):
                 #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
                 #     app.logger.exception("Email to associate failed.")
 
-            # If this is the first time this application has been assigned to an editor, notify the publisher.
-            old_ed = self.source.editor
-            if (old_ed is None or old_ed == '') and self.target.editor is not None:
-                self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
-
             # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
             if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
                 # First, the editor
@@ -586,11 +581,6 @@ class EditorApplication(ApplicationProcessor):
             # except app_email.EmailException:
             #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
             #     app.logger.exception('Error sending associate assigned email')
-
-        # If this is the first time this application has been assigned to an editor, notify the publisher.
-        old_ed = self.source.editor
-        if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
         if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:

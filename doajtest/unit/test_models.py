@@ -1730,6 +1730,61 @@ class TestModels(DoajTestCase):
         ap2 = models.Autocheck.for_journal("9876")
         assert ap2.journal == "9876"
 
+    def test_41_article_tombstone(self):
+        t = models.ArticleTombstone()
+        t.set_id("1234")
+        t.bibjson().add_subject("LCC", "Medicine", "KM22")
+        t.set_in_doaj(True) # should have no effect
+
+        t.save(blocking=True)
+
+        t2 = models.ArticleTombstone.pull("1234")
+        assert t2.id == "1234"
+        assert t2.is_in_doaj() is False
+        assert t2.last_updated is not None
+        assert t2.bibjson().subjects()[0].get("scheme") == "LCC"
+        assert t2.bibjson().subjects()[0].get("term") == "Medicine"
+        assert t2.bibjson().subjects()[0].get("code") == "KM22"
+
+    def test_42_make_article_tombstone(self):
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+
+        t = a._tombstone()
+        assert t.id == a.id
+        assert t.bibjson().subjects() == a.bibjson().subjects()
+        assert t.is_in_doaj() is False
+
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+        a.delete()
+        time.sleep(1)
+
+        stone = models.ArticleTombstone.pull(a.id)
+        assert stone is not None
+
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+        a.save(blocking=True)
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"id.exact": a.id}}
+                    ]
+                }
+            }
+        }
+        models.Article.delete_selected(query)
+        time.sleep(1)
+
+        stone = models.ArticleTombstone.pull(a.id)
+        assert stone is not None
+
+
+
+
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
 
