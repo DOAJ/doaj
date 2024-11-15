@@ -494,9 +494,10 @@ class JournalGenericXWalk(object):
             flag_details = f'Assigned to: {flag_assignee}'
             if flag_deadline_text != "":
                 flag_details += f', Deadline: {flag_deadline}'
-            flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"], "flag_note_id": flag["id"],
-                        "flag_setter": flag_setter, "flag_assignee": flag_assignee,
-                                                                    "flag_deadline": flag_deadline, "flag_details": note_with_flag_details}
+            flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"],
+                        "flag_note_id": flag["id"], "flag_setter": flag_setter, "flag_assignee": flag_assignee,
+                        "flag_deadline": flag_deadline, "note_with_flag_details": note_with_flag_details,
+                        "flag_details": flag_details}
             forminfo['flags'].append(flag_obj)
 
         forminfo['owner'] = obj.owner
