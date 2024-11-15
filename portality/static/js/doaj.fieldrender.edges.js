@@ -158,7 +158,7 @@ $.extend(true, doaj, {
                 id: "author_pays",
                 category: "facet",
                 field: "index.has_apc.exact",
-                display: "APC Innit?",
+                display: "Has APC?",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
