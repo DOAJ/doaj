@@ -1,0 +1,35 @@
+.editorial-panel {
+    .editorial-panel__content {
+        fieldset {
+            margin: 0;
+            padding: 0 1.5rem;
+            border-radius: 0;
+            background: #fff;
+            box-shadow: none;
+        }
+        .form__question.editorial-panel__question {
+            padding: 0 !important;
+
+            .editorial-panel__question-header {
+                padding: .75rem;
+            }
+            .editorial-panel__questions-content {
+                .form-inputs--container {
+                    //input, textarea {
+                    //    padding: .75rem 1.5rem;
+                    //}
+                    input {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    textarea {
+                        padding-left: .75rem;
+                        padding-right: .75rem;
+                    }
+                }
+
+            }
+        }
+    }
+}

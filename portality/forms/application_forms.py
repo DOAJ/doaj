@@ -1973,7 +1973,7 @@ class FieldDefinitions:
             "note_id",
             "note_author_id",
         ],
-        "template": templates.AF_LIST,
+        "template": templates.NOTES_LIST,
         "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat": {"enable_on_repeat": ["textarea"]}},
@@ -2111,7 +2111,6 @@ class FieldDefinitions:
     FLAG_NOTE = {
         "subfield": True,
         "name": "flag_note",
-        "label": "Note",
         "group": "flags",
         "input": "textarea",
         "disabled": "disable_edit_flag_except_author_admin_assignee"

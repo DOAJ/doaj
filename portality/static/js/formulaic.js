@@ -1322,7 +1322,7 @@ var formulaic = {
             };
 
             this.setUpFlagDetails = function() {
-                this.flagDetailsInputs = $(this.container).find($("input[id$='flag_details']"));
+                this.flagDetailsInputs = $(this.container).find($("input[id$='-flag_details']"));
                 let assigneeInput = $(this.assigneeInputs[this.existingFlagIdx]);
                 let flagDetailsInput = $(this.flagDetailsInputs[this.existingFlagIdx]);
                 let input = null;
