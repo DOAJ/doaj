@@ -5,3 +5,4 @@ admin.owner: Your user account ID.  If provided, will be ignored and overridden 
 created_date: Date the record was created in DOAJ.  Will be ignored if provided.
 id: ID assigned by DOAJ for the record.  Will be ignored if provided
 last_updated: Date the record was last updated in DOAJ.  Will be ignored if provided.
+bibjson.labels: A list of labels that have been applied to the journal by the DOAJ team, here only for symmetry with the format of the application you can retrieve from the API.  Will be ignored if provided in a submission via the API.

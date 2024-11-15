@@ -98,6 +98,11 @@ class ApplicationsCrudApi(CrudApi):
         # they are not allowed to set "subject"
         ap.bibjson().remove_subjects()
 
+        # they are not allowed to set "labels"
+        # (though in reality, this is handled by the form transitions which don't contain this facility in this context
+        # so labels wouldn't be transmitted anyway.  This is here for absolute clarity)
+        ap.bibjson().clear_labels()
+
         # if this is an update request on an existing journal
         if ap.current_journal is not None:
             # DOAJ BLL for this request
