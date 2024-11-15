@@ -1,22 +1,24 @@
 """ Create a CSV of journals last updated before a given date. Headings are:
 Journal title
 Journal URL
-Journal ISSN (print version)
 Journal EISSN (online version)
+Journal ISSN (print version)
+DOAJ Form URL
 Created date
 Owner
 Owner's email address
 Country
 Publisher
+Editor Group
 """
 
 import csv
 
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Journal, Account
-from portality.core import es_connection
+from portality.core import es_connection, app
 from portality.lib import dates
-
+from portality.util import url_for
 
 LAST_MANUAL_UPDATE_BETWEEN = {
     "query": {
@@ -72,11 +74,13 @@ if __name__ == "__main__":
                          "Journal URL",
                          "E-ISSN",
                          "P-ISSN",
+                         "DOAJ Form URL",
                          "Created Date",
                          "Owner",
                          "Owner's email address",
                          "Country",
-                         "Publisher"])
+                         "Publisher",
+                         "Editor Group"])
 
         for journal in Journal.iterate(q=LAST_MANUAL_UPDATE_BETWEEN, keepalive='5m', wrap=True):
             bibjson = journal.bibjson()
@@ -89,9 +93,11 @@ if __name__ == "__main__":
                              bibjson.get_single_url(urltype="homepage"),
                              bibjson.get_one_identifier(bibjson.E_ISSN),
                              bibjson.get_one_identifier(bibjson.P_ISSN),
+                             app.config.get("BASE_URL") + url_for("admin.journal_page", journal_id=journal.id),
                              journal.created_date,
                              owner,
                              account.email if account else "Not Found",
                              index["country"],
-                             bibjson.publisher
+                             bibjson.publisher,
+                             journal.editor_group
                              ])

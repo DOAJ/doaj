@@ -11,17 +11,19 @@ featuremap:
 
 ---
 
+Journal records are announced in the feed when they are added or removed.
+
 ## Journal feed
 
 {:.tabular-list}
 - `Identify`
   - Access the [base Identify endpoint](/oai?verb=Identify).
 - `ListSets`
-  - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the [full list of the sets](/oai?verb=ListSets).
+  - We provide all our subject classifications as OAI-PMH sets, so you can harvest only those you are interested in. Access the [full list of the sets](/oai?verb=ListSets).
 - `ListMetadataFormats`
-  - DOAJ currently supports only `oai_dc`; access [the metadata formats](/oai?verb=ListMetadataFormats).
+  - Currently, we only support `oai_dc`; access [the metadata formats](/oai?verb=ListMetadataFormats).
 
-The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Journal field:
+The metadata held by us is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Journal field:
 
 | Dublin Core   | Meaning within DOAJ                                                                                                                                                                                                                                                                                      |
 |---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -91,6 +93,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 
 | Date changes were made live | Changes                                                                                                                                                                                                                                                 |
 |-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 6 November 2024             | added support for article and journal delete to the base Identify endpoint. (Sponsored by Clarivate.) |
 | 25 November 2020            | a minor edit to `dc:relation`: 'Links to related resources: the journal home page and the journal author-pays link if relevant' became 'Links to related resources (if present): the journal home page, open access statement, author instructions, aims, and waiver pages'|
 | 20 April 2015               | `subject` elements which represent a Library of Congress Classification \(LCC\) topic will now be marked with an additional OAI DC\-compliant attribute to denote this: `xsi:type="dcterms:LCSH"`\. LCC subjects will no longer be prefixed by `LCC:`\. |
 | 13 December 2013            | Initial release                                                                                                                                                                                                                                         |
@@ -103,13 +106,13 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 - `Identify`
   - Access the [base Identify endpoint](http://www.doaj.org/oai.article?verb=Identify).
 - `ListSets`
-  - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the [full list of the sets](http://www.doaj.org/oai.article?verb=ListSets).
+  - We provide all our subject classifications as OAI-PMH sets, so you can harvest only those you are interested in. Access the [full list of the sets](http://www.doaj.org/oai.article?verb=ListSets).
 - `ListMetadataFormats`
-  - DOAJ currently supports the `oai_dc` and `oai_doaj` formats; access [the metadata formats](http://www.doaj.org/oai.article?verb=ListMetadataFormats).
+  - Currently, we only support the `oai_dc` and `oai_doaj` formats; access [the metadata formats](http://www.doaj.org/oai.article?verb=ListMetadataFormats).
 
 ### Dublin Core OAI Article format (`OAI_DC`)
 
-The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Article field:
+The metadata held by us is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Article field:
 
 | Dublin Core   | Meaning within DOAJ                                                                                                                                                                                                                                                                                           |
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -190,6 +193,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 
 | Date changes were made live                                                                                                                                                                                                                       | Changes         |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|
+| 6 November 2024             | added support for article and journal delete to the base Identify endpoint |
 | 25 November 2020                                                                                                                                                                                                                                  | The `dc:provenance` element was removed, as we no longer synchronise provenance information to our article records from the journal\. |
 | 22 August 2016                                                                                                                                                                                                                                    | The `dc:rights` element was removed, as it was technically inaccurate \- it represented the Journal's overall licence policy, not the specific rights for the article\. This information is now in `dc:provenance`\. |
 | 20 April 2015                                                                                                                                                                                                                                     | The `identifier` element will now point to the DOAJ article page rather than the `/search` page\. E\.g\. [`https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e`](https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e) <br/><br/>Up to two new `relation` elements will appear for each article, containing URL\-s to the Table of Contents page for the article's journal\. The page can be reached via both print ISSN and E\-ISSN, so up to two such links might appear\. <br/><br/>`subject` elements which represent a Library of Congress Classification \(LCC\) topic will now be marked with an additional OAI DC\-compliant attribute to denote this: `xsi:type="dcterms:LCSH"`\. LCC subjects will no longer be prefixed by `LCC:`\. |
@@ -288,4 +292,5 @@ The following fields are available (not every article will have all the informat
 
 | Date changes were made live | Changes         |
 |-----------------------------|-----------------|
+| 6 November 2024             | added support for article and journal delete to the base Identify endpoint |
 | 20 April 2015               | Initial release |
