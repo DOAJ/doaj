@@ -8,7 +8,7 @@ from portality.lib.dataobj import DataObjException
 
 
 SYSTEM_ACCOUNT = {
-    "email": "steve@cottagelabs.com",
+    "email": app.config['ADMIN_EMAIL'],
     "name": "harvest_background_job",
     "role": ['admin'],
     "id": "harvest_background_job"
