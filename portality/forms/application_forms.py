@@ -2035,6 +2035,7 @@ class FieldDefinitions:
             "add_field_permission": ["admin"]
         },
         "subfields": [
+            "note_with_flag_details",
             "flag_details",
             "flag_assignee",
             "flag_deadline",
@@ -2051,6 +2052,14 @@ class FieldDefinitions:
             "flag_manager"
         ],
         "merge_disabled": "merge_disabled_notes"
+    }
+
+    NOTE_WITH_FLAG_DETAILS = {
+        "subfield": True,
+        "name": "note_with_flag_details",
+        "group": "flags",
+        "input": "text",
+        "disabled": True
     }
 
     FLAG_RESOLVED = {
@@ -2084,7 +2093,6 @@ class FieldDefinitions:
         "name": "flag_details",
         "group": "flags",
         "input": "text",
-        "template": templates.FLAG_DETAILS,
         "disabled": True
     }
 
@@ -2425,7 +2433,8 @@ class FieldSetDefinitions:
             FieldDefinitions.FLAG_NOTE["name"],
             FieldDefinitions.FLAG_NOTE_ID["name"],
             FieldDefinitions.FLAG_ASSIGNEE["name"],
-            FieldDefinitions.FLAG_RESOLVED["name"]
+            FieldDefinitions.FLAG_RESOLVED["name"],
+            FieldDefinitions.NOTE_WITH_FLAG_DETAILS["name"]
         ]
     }
 
@@ -3474,7 +3483,6 @@ class TagListBuilder(WTFormsBuilder):
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         return TagListField(**wtfargs)
-
 
 class IntegerBuilder(WTFormsBuilder):
     @staticmethod

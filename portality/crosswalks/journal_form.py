@@ -6,6 +6,7 @@ from portality.forms.utils import expanded2compact
 from portality.lib.dates import FMT_DATE_STD
 from portality.models import Account
 from portality.lib import dates
+from builtins import ValueError
 
 from flask_login import current_user
 
@@ -276,7 +277,10 @@ class JournalGenericXWalk(object):
         if getattr(form, "flags", None):
             for flag in form.flags.data:
                 flag_date = flag["flag_created_date"]
-                flag_deadline = dates.parse(flag.get("flag_deadline", dates.far_in_the_future()), format=FMT_DATE_STD)
+                try:
+                    flag_deadline = dates.parse(flag.get("flag_deadline"), format=FMT_DATE_STD)
+                except ValueError:
+                    flag_deadline = dates.far_in_the_future()
                 flag_assigned_to = flag["flag_assignee"]
                 flag_author = flag["flag_setter"]
                 flag_id = flag["flag_note_id"]
@@ -478,15 +482,21 @@ class JournalGenericXWalk(object):
             flag = obj.flags[0]
             author_id = flag["author_id"]
             created_date = dates.reformat(flag["date"], dates.FMT_DATETIME_STD, dates.FMT_DATETIME_NO_SECS)
+            flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
+            note_with_flag_details = f'Created by: {flag_setter}, {created_date}'
             if flag["flag"].get("deadline"):
                 flag_deadline = dates.reformat(flag["flag"].get("deadline"), dates.FMT_DATE_STD, dates.FMT_DATE_STD)
+                flag_deadline_text = True
             else:
                 flag_deadline = dates.far_in_the_future(dates.FMT_DATE_STD)
-            flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
-            flag_details = f'Created by: {flag_setter}, {created_date}'
+                flag_deadline_text = False
+            flag_assignee = flag["flag"]["assigned_to"]
+            flag_details = f'Assigned to: {flag_assignee}'
+            if flag_deadline_text != "":
+                flag_details += f', Deadline: {flag_deadline}'
             flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"], "flag_note_id": flag["id"],
-                        "flag_setter": flag_setter, "flag_assignee": flag["flag"]["assigned_to"],
-                                                                    "flag_deadline": flag_deadline, "flag_details": flag_details}
+                        "flag_setter": flag_setter, "flag_assignee": flag_assignee,
+                                                                    "flag_deadline": flag_deadline, "flag_details": note_with_flag_details}
             forminfo['flags'].append(flag_obj)
 
         forminfo['owner'] = obj.owner

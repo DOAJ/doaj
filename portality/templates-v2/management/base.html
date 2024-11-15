@@ -182,6 +182,13 @@
 
 {% block base_js %}
     <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript">
+        $.extend(true, doaj, {
+            session : {
+                currentUserId: "{{ current_user.id }}"
+            }
+        });
+    </script>
     {% include "_tourist/includes/_tourist.html" %}
 
     {% block management_js %}{% endblock %}
