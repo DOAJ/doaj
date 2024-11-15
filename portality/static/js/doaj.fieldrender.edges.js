@@ -2713,7 +2713,7 @@ $.extend(true, doaj, {
 
                 let s2o = "";
                 if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
-                    s2o = `<li><img src="/assets/img/labels/s2o.webp" alt="Subscribe to Open"></li>`;
+                    s2o = `<li><img src="/assets/img/labels/s2o-small.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open"></li>`;
                 }
 
                 frag +=`</sup>
