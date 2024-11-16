@@ -481,23 +481,15 @@ class JournalGenericXWalk(object):
             # display only the newest flag
             flag = obj.flags[0]
             author_id = flag["author_id"]
-            created_date = dates.reformat(flag["date"], dates.FMT_DATETIME_STD, dates.FMT_DATETIME_NO_SECS)
             flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
-            note_with_flag_details = f'Created by: {flag_setter}, {created_date}'
             if flag["flag"].get("deadline"):
                 flag_deadline = dates.reformat(flag["flag"].get("deadline"), dates.FMT_DATE_STD, dates.FMT_DATE_STD)
-                flag_deadline_text = True
             else:
                 flag_deadline = dates.far_in_the_future(dates.FMT_DATE_STD)
-                flag_deadline_text = False
             flag_assignee = flag["flag"]["assigned_to"]
-            flag_details = f'Assigned to: {flag_assignee}'
-            if flag_deadline_text != "":
-                flag_details += f', Deadline: {flag_deadline}'
             flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"],
                         "flag_note_id": flag["id"], "flag_setter": flag_setter, "flag_assignee": flag_assignee,
-                        "flag_deadline": flag_deadline, "note_with_flag_details": note_with_flag_details,
-                        "flag_details": flag_details}
+                        "flag_deadline": flag_deadline }
             forminfo['flags'].append(flag_obj)
 
         forminfo['owner'] = obj.owner

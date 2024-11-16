@@ -316,7 +316,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         self.__seamless__.delete("admin.notes")
 
     def is_assigned_to(self, user_id):
-        print(self.flags)
         return any(user_id in flag['flag']['assigned_to'] for flag in self.flags)
 
     @property
@@ -337,22 +336,17 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @property
     def most_urgent_flag_deadline(self):
-        print("most_urgent_flag_deadline_method")
         # Filter notes to only include those with a 'flag' and a 'deadline'
-        print(self.flags)
         deadlines = [
             flag["flag"].get("deadline") for flag in self.flags
             if flag["flag"].get("deadline")
         ]
-        print(deadlines)
 
         # Find the flag with the earliest deadline
         if not len(deadlines):
-            print(dates.far_in_the_future())
             return dates.far_in_the_future()  # Dummy date for least urgent date
 
         earliest_flag_deadline = coerce.find_earliest_date(deadlines, dates_format=FMT_DATE_STD)
-        print(earliest_flag_deadline)
 
         return earliest_flag_deadline
 
@@ -411,7 +405,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def _generate_index(self):
         # the index fields we are going to generate
-        print("generate_index")
         titles = []
         subjects = []
         schema_subjects = []
@@ -432,7 +425,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         is_flagged = False
         flag_assignees = []
         most_urgent_flag_deadline = dates.far_in_the_future()
-        print(most_urgent_flag_deadline)
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -483,7 +475,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             if "assigned_to" in note.get("flag", {}) and note["flag"]["assigned_to"]
         ]
         most_urgent_flag_deadline = self.most_urgent_flag_deadline
-        print(most_urgent_flag_deadline)
 
         # deduplicate the lists
         titles = list(set(titles))

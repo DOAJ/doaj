@@ -1,34 +1,75 @@
 .editorial-panel {
     .editorial-panel__content {
-        fieldset {
-            margin: 0;
-            padding: 0 1.5rem;
-            border-radius: 0;
-            background: #fff;
-            box-shadow: none;
-        }
         .form__question.editorial-panel__question {
             padding: 0 !important;
 
             .editorial-panel__question-header {
-                padding: .75rem;
+                padding: .5rem;
+                align-items: flex-start;
+                label, p {
+                    margin: 0;
+                }
+            }
+            .editorial-panel__legend {
+                    display: flex;
+                    align-items: center;
+                    gap: .5rem;
+                    padding: 0 .5rem;
+                    margin-bottom: .375rem;
             }
             .editorial-panel__questions-content {
                 .form-inputs--container {
-                    //input, textarea {
-                    //    padding: .75rem 1.5rem;
-                    //}
+                    &:has(input[type="hidden"]) {
+                        display: none;
+                    }
+                    &:has(svg) {
+                        position: relative;
+                        width:100%;
+                        svg {
+                            position: absolute;
+                            left: .5rem;
+                            top:50%;
+                            transform: translateY(-70%);
+                            z-index: 1;
+                        }
+                        .select2-choice {
+                            .select2-chosen {
+                                padding-left: calc(.5rem + 20px);
+                            }
+                        }
+                    }
                     input {
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
                     }
+
+                    span.spanPretendingToBeInput {
+                        display: flex;
+                        align-items: flex-start;
+                        gap: .5rem;
+                        background-color: $disabled;
+                        width: 100%;
+                        padding: 0.5rem;
+                        margin-bottom: .375rem;
+                        font-style: italic;
+
+                        span {
+                            white-space: normal;
+                        }
+                    }
+
+                    input:disabled ~ label {
+                        display: none;
+                    }
+
                     textarea {
-                        padding-left: .75rem;
-                        padding-right: .75rem;
+                        padding: .5rem;
                     }
                 }
-
+                [class^="control_buttons_div"] {
+                    padding: .5rem;
+                }
             }
         }
     }

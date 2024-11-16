@@ -38,6 +38,10 @@
 <!-- get the app's js -->
 <script type="text/javascript" src="/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
+<!-- get our dates libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+<script type="text/javascript" src="/static/js/dates.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 <script>
 jQuery (document).ready (function($) {
     doaj.init();

@@ -26,7 +26,7 @@ def top_todo():
     elif filter == "ur":
         new_applications = False
 
-    flag_filter = request.values.get("flag_filter") == "true"
+    flag_filter = request.values.get("flag_filter", "a2me")
 
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()

@@ -28,12 +28,22 @@
         {% else %}
             <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}?filter=ur&flag_filter={{ request.values.get('flag_filter') }}">Update Requests</a></span>
         {% endif %}
-
-        <span id="flagged-filter" class="tag {% if request.values.get('flag_filter') == 'true' %} tag--primary {% else %} tag--tertiary {% endif %}">
-            <a class="flagged-link">Flagged to me</a>
-        </span>
-
     </div>
+    <div class="flex-end">
+        <span id="assigned-to-me-filter" class="tag {% if not request.values.get('flag_filter') or request.values.get('flag_filter') == 'a2me' %} tag--primary {% else %} tag--tertiary {% endif %}">
+            <a class="flagged-link">My group</a>
+        </span>
+        {% if request.values.get('flag_filter') == 'flagged' %}
+        <span id="flagged-filter" class="tag flex-start tag--primary">
+            <a class="flagged-link">{% include "includes/_flagged--flag--white.html" %} Flagged to me</a>
+        </span>
+        {% else %}
+        <span id="flagged-filter" class="tag flex-start tag--tertiary">
+            <a class="flagged-link">{% include "includes/_flagged_to_me--flag.html" %} Flagged to me</a>
+        </span>
+        {% endif %}
+    </div>
+
     {% include "management/includes/_todo.html" %}
     <section>
         {# ~~->$GroupStatus:Feature~~ #}

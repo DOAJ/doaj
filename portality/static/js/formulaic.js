@@ -1155,7 +1155,7 @@ var formulaic = {
 
                 this.container = $("." + this.fieldDef.name + "__container");
                 this.flagGroups = $("div[class*='" + this.fieldDef["name"] + "__question--group--']");
-                this.flagInputsContainer = $("div[name^='" + this.fieldDef["name"] + "-inputs--container--']");
+                this.flagInputsContainer = $("[class^='form__question_inputs_div--']");
 
                 this.resolvedInputDisabled = false;
                 this.unresolvedInputDisabled = false;
@@ -1178,7 +1178,7 @@ var formulaic = {
             }
 
             this.fullFlagHTML = function() {
-                return `<span class="icon icon-flag icon-flag--full"></span><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                return `<span class="flag flag--full"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_137_201)">
                     <path d="M1.875 0.9375C1.875 0.417969 1.45703 0 0.9375 0C0.417969 0 0 0.417969 0 0.9375V2.5V13.6914V15.625V19.0625C0 19.582 0.417969 20 0.9375 20C1.45703 20 1.875 19.582 1.875 19.0625V15.1562L5.01172 14.3711C6.61719 13.9688 8.31641 14.1562 9.79688 14.8945C11.5234 15.7578 13.5273 15.8633 15.332 15.1836L16.6875 14.6758C17.1758 14.4922 17.5 14.0273 17.5 13.5039V2.57812C17.5 1.67969 16.5547 1.09375 15.75 1.49609L15.375 1.68359C13.5664 2.58984 11.4375 2.58984 9.62891 1.68359C8.25781 0.996094 6.68359 0.824219 5.19531 1.19531L1.875 2.03125V0.9375ZM1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#282624"/>
                     <path d="M1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#982E0A"/>
@@ -1194,8 +1194,7 @@ var formulaic = {
             }
 
             this.emptyFlagHTML = function() {
-                return `<span class="icon icon-flag icon-flag--full">
-                        <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                return `<span class="flag flag--empty"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_137_174)">
                         <path d="M1.875 0.9375C1.875 0.417969 1.45703 0 0.9375 0C0.417969 0 0 0.417969 0 0.9375V2.5V13.6914V15.625V19.0625C0 19.582 0.417969 20 0.9375 20C1.45703 20 1.875 19.582 1.875 19.0625V15.1562L5.01172 14.3711C6.61719 13.9688 8.31641 14.1562 9.79688 14.8945C11.5234 15.7578 13.5273 15.8633 15.332 15.1836L16.6875 14.6758C17.1758 14.4922 17.5 14.0273 17.5 13.5039V2.57812C17.5 1.67969 16.5547 1.09375 15.75 1.49609L15.375 1.68359C13.5664 2.58984 11.4375 2.58984 9.62891 1.68359C8.25781 0.996094 6.68359 0.824219 5.19531 1.19531L1.875 2.03125V0.9375ZM1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="black"/>
                         </g>
@@ -1205,32 +1204,31 @@ var formulaic = {
                         </clipPath>
                         </defs>
                         </svg>
-                    </span>
+                        </span>
                     `
             }
 
             this.setUpEventListeners = function() {
-                const addFlagClassSelector = "#add_flag__" + this.fieldDef.name;
-                this.addFlagBtn = this.container.find(addFlagClassSelector);
+                this.addFlagBtn = this.container.find("#add_flag");
                 $(this.addFlagBtn).on("click", () => this.addFlag())
 
-                const resolveFlagBtns = $("[id^='resolve_flag--']");
-                resolveFlagBtns.each((index, btn) =>
+                const $resolveFlagBtns = $("[id^='resolve_flag--']");
+                $resolveFlagBtns.each((index, btn) =>
                     $(btn).on("click", (e) => this.resolveFlag(e))
                 );
 
-                const unresolveFlagBtns = $("[id^='unresolve_flag--']");
-                unresolveFlagBtns.each((index, btn) =>
+                const $unresolveFlagBtns = $("[id^='unresolve_flag--']");
+                $unresolveFlagBtns.each((index, btn) =>
                     $(btn).on("click", (e) => this.unresolveFlag(e))
                 );
 
-                let clearFlagClassBtns = $("[id^='clearFlag--']");
-                clearFlagClassBtns.each((index, btn) =>
+                let $clearFlagClassBtns = $("[id^='clearFlag--']");
+                $clearFlagClassBtns.each((index, btn) =>
                     $(btn).on("click", (e) => this.clearFlag(e))
                 );
 
-                let cancelFlagBtns = $("[id^='cancelAddingFlag--']");
-                cancelFlagBtns.each((index, btn) =>
+                let $cancelFlagBtns = $("[id^='cancelAddingFlag--']");
+                $cancelFlagBtns.each((index, btn) =>
                     $(btn).on("click", (e) => this.cancelFlag(e))
                 );
             }
@@ -1276,8 +1274,8 @@ var formulaic = {
 
             this.setUI = function() {
 
-                let resolveInputs = $(this.container).find($("input[id$='flag_resolved']"))
-                resolveInputs.each((idx, elem) => {
+                let $resolveInputs = $(this.container).find($("input[id$='flag_resolved']"))
+                $resolveInputs.each((idx, elem) => {
                     if ($(elem).is(":disabled")) {
                         this.getResolveBtn(idx).remove();
                         this.getUnresolveBtn(idx).remove();
@@ -1289,7 +1287,9 @@ var formulaic = {
                 this.newFlagIdx = this.flagExists ? 1 : 0;
 
                 if (this.flagExists) {
-                    this.setUpFlagDetails()
+                    this.setUpFlagDetails();
+                    this.setUpNoteDetails();
+                    $(this.assigneeInputs[this.existingFlagIdx]).on("change", () => this.setUpFlagDetails() )
                 }
 
                 if (!this.addFlagBtn.length) {
@@ -1321,27 +1321,76 @@ var formulaic = {
                 this.setAddBtnStatus();
             };
 
+            this.replaceInputWithSpan = function(input, newValue=null) {
+                let $input = $(input);
+                let text = newValue || $input.val();
+
+                let newFlag = false;
+
+                if ($input.closest('body').length === 0) {
+                    $('body').append($input.css({ position: 'absolute', visibility: 'hidden' }));
+                    newFlag = true;
+                }
+
+                // Create the span
+                let $span = $('<span class="spanPretendingToBeInput" id="spanPretendingToBeInput--flag"></span>')
+                    .html(text)
+                    .css({
+                        color: $input.css('color'),
+                        textAlign: $input.css('text-align'),
+                        verticalAlign: $input.css('vertical-align'),
+                        lineHeight: $input.css('line-height'),
+                    })
+
+                    if (newFlag) {
+                        $input.remove();
+                    }
+                    return $span;
+                }
+
+            this.setUpNoteDetails = function() {
+                let $authorInput = $("input[id='flags-" + this.existingFlagIdx + "-flag_setter']");
+                let $flagDateInput = $("input[id='flags-" + this.existingFlagIdx + "-flag_created_date']");
+                let newNoteText = `<strong>Created by: </strong>` + $authorInput.val() + ", " + doaj.dates.reformat($flagDateInput.val(), doaj.dates.format.FMT_DATETIME_STD, doaj.dates.format.FMT_DATETIME_NO_SECS);
+                let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), newNoteText)
+                $authorInput.before($newSpan);
+                $authorInput.hide();
+                $flagDateInput.hide();
+            };
+
             this.setUpFlagDetails = function() {
-                this.flagDetailsInputs = $(this.container).find($("input[id$='-flag_details']"));
-                let assigneeInput = $(this.assigneeInputs[this.existingFlagIdx]);
-                let flagDetailsInput = $(this.flagDetailsInputs[this.existingFlagIdx]);
-                let input = null;
+                let $assigneeInput = $(this.assigneeInputs[this.existingFlagIdx]);
+                let $flagDeadlineInput = $("input[id='flags-" + this.existingFlagIdx + "-flag_deadline']");
+                let flagDetailsText = "";
 
-                if ($(assigneeInput).is(":disabled")) {
-                    assigneeInput.closest('div').hide();
-                    $("input[id='flags-" + this.existingFlagIdx + "-flag_deadline']").closest('div').hide();
-                    input = flagDetailsInput;
+                if ($assigneeInput.is(":disabled")) {
+                    if ($assigneeInput.val() === doaj.session.currentUserId) {
+                        flagDetailsText += this.fullFlagHTML();
+                    }
+                    else {
+                        flagDetailsText += this.emptyFlagHTML() + ` <span><strong>Assigned to: </strong>` + $assigneeInput.val();
+                    }
+                    if ($flagDeadlineInput.val())
+                        flagDetailsText += `, <strong>Deadline: </strong>` + doaj.dates.reformat($flagDeadlineInput.val(), doaj.dates.format.FMT_DATETIME_STD, doaj.dates.format.FMT_DATE_STD);
+                    flagDetailsText += `</span>`
+                    let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), flagDetailsText)
+                    $assigneeInput.before($newSpan);
+                    $assigneeInput.hide();
+                    $flagDeadlineInput.hide();
                 }
                 else {
-                    flagDetailsInput.closest('div').hide();
-                    input = assigneeInput;
-                }
-
-                if (assigneeInput.val() === doaj.session.currentUserId) {
-                    input.parent().prepend(this.fullFlagHTML());
-                }
-                else {
-                    input.parent().prepend(this.emptyFlagHTML());
+                    if ($(".flag").length > 0) {
+                        $(".flag").remove();
+                    }
+                    if ($assigneeInput.val() === doaj.session.currentUserId) {
+                        if ($(".flag").length > 0) {
+                            $(".flag").remove();
+                        }
+                        $assigneeInput.parent().prepend(this.fullFlagHTML());
+                    }
+                    else {
+                        $assigneeInput.parent().prepend(this.emptyFlagHTML());
+                    }
                 }
             };
 

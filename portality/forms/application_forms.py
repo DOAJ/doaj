@@ -2035,13 +2035,11 @@ class FieldDefinitions:
             "add_field_permission": ["admin"]
         },
         "subfields": [
-            "note_with_flag_details",
-            "flag_details",
+            "flag_setter",
+            "flag_created_date",
             "flag_assignee",
             "flag_deadline",
             "flag_note",
-            "flag_setter",
-            "flag_created_date",
             "flag_note_id",
             "flag_resolved"
         ],
@@ -2052,14 +2050,6 @@ class FieldDefinitions:
             "flag_manager"
         ],
         "merge_disabled": "merge_disabled_notes"
-    }
-
-    NOTE_WITH_FLAG_DETAILS = {
-        "subfield": True,
-        "name": "note_with_flag_details",
-        "group": "flags",
-        "input": "text",
-        "disabled": True
     }
 
     FLAG_RESOLVED = {
@@ -2085,14 +2075,6 @@ class FieldDefinitions:
         "name": "flag_created_date",
         "group": "flags",
         "input": "hidden",
-        "disabled": True
-    }
-
-    FLAG_DETAILS = {
-        "subfield": True,
-        "name": "flag_details",
-        "group": "flags",
-        "input": "text",
         "disabled": True
     }
 
@@ -2420,34 +2402,42 @@ class FieldSetDefinitions:
         ]
     }
 
-    FLAG = {
-        "name": "flag",
-        "label": "Flag",
-        "fields": [
-            FieldDefinitions.FLAGS["name"],
-            FieldDefinitions.FLAG_SETTER["name"],
-            FieldDefinitions.FLAG_CREATED_DATE["name"],
-            FieldDefinitions.FLAG_DETAILS["name"],
-            FieldDefinitions.FLAG_DEADLINE["name"],
-            FieldDefinitions.FLAG_NOTE["name"],
-            FieldDefinitions.FLAG_NOTE_ID["name"],
-            FieldDefinitions.FLAG_ASSIGNEE["name"],
-            FieldDefinitions.FLAG_RESOLVED["name"],
-            FieldDefinitions.NOTE_WITH_FLAG_DETAILS["name"]
-        ]
-    }
+    # FLAG = {
+    #     "name": "flag",
+    #     "label": "Flag",
+    #     "fields": [
+    #         FieldDefinitions.FLAGS["name"],
+    #         FieldDefinitions.FLAG_SETTER["name"],
+    #         FieldDefinitions.FLAG_CREATED_DATE["name"],
+    #         FieldDefinitions.FLAG_DETAILS["name"],
+    #         FieldDefinitions.FLAG_DEADLINE["name"],
+    #         FieldDefinitions.FLAG_NOTE["name"],
+    #         FieldDefinitions.FLAG_NOTE_ID["name"],
+    #         FieldDefinitions.FLAG_ASSIGNEE["name"],
+    #         FieldDefinitions.FLAG_RESOLVED["name"],
+    #         FieldDefinitions.NOTE_WITH_FLAG_DETAILS["name"]
+    #     ]
+    # }
 
     # ~~->$ Notes:FieldSet~~
     NOTES = {
         "name": "notes",
         "label": "Notes",
         "fields": [
+            FieldDefinitions.FLAGS["name"],
+            FieldDefinitions.FLAG_SETTER["name"],
+            FieldDefinitions.FLAG_CREATED_DATE["name"],
+            FieldDefinitions.FLAG_DEADLINE["name"],
+            FieldDefinitions.FLAG_NOTE["name"],
+            FieldDefinitions.FLAG_NOTE_ID["name"],
+            FieldDefinitions.FLAG_ASSIGNEE["name"],
+            FieldDefinitions.FLAG_RESOLVED["name"],
             FieldDefinitions.NOTES["name"],
             FieldDefinitions.NOTE["name"],
             FieldDefinitions.NOTE_AUTHOR["name"],
             FieldDefinitions.NOTE_DATE["name"],
             FieldDefinitions.NOTE_ID["name"],
-            FieldDefinitions.NOTE_AUTHOR_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"]
         ]
     }
 
@@ -2537,7 +2527,6 @@ class ApplicationContextDefinitions:
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.FLAG["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -2552,7 +2541,6 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.FLAG["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -2571,7 +2559,6 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.FLAG["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication
@@ -2861,7 +2848,7 @@ def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
     editing_user = formulaic_context.extra_param.get('editing_user')
     cur_user_id = editing_user and editing_user.id
     cur_user_is_admin = editing_user and editing_user.is_super
-    form_field: FormField = field.find_related_form_field('flag', formulaic_context)
+    form_field: FormField = field.find_related_form_field('notes', formulaic_context)
     if form_field is None:
         return True
 
