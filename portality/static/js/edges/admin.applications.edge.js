@@ -118,8 +118,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": '<strong>Deadline: </strong>',
-                                    "field": "index.most_urgent_flag_deadline"
+                                    valueFunction: doaj.fieldRender.deadline
                                 }
                             ],
                             [
@@ -132,24 +131,6 @@ $.extend(true, doaj, {
                                 {
                                     "pre": "<strong>Last updated</strong>: ",
                                     valueFunction: doaj.fieldRender.lastManualUpdate
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": '<strong>Flagged: </strong>',
-                                    "field": "index.is_flagged"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": '<strong>Assigned to: </strong>',
-                                    "field": "index.flag_assignees"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": '<strong>By deadline: </strong>',
-                                    "field": "index.most_urgent_flag"
                                 }
                             ],
                             [
