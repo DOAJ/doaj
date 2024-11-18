@@ -62,6 +62,8 @@ class TestTaskJournalBulkDelete(DoajTestCase):
             assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
             assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
 
+            time.sleep(2)
+
             job = models.BackgroundJob.all()[0]
 
             # Wait for the job to complete
