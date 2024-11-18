@@ -2084,7 +2084,8 @@ class FieldDefinitions:
         "label": "Deadline",
         "name": "flag_deadline",
         "help": {
-        "placeholder": "deadline"},
+            "placeholder": "deadline (YYYY-MM-DD)",
+        },
         "group": "flags",
         "input": "text",
         "disabled": "disable_edit_flag_except_author_admin_assignee"

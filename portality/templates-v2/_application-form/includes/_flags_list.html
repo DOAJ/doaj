@@ -4,7 +4,7 @@
     <a id="question-{{ f.name }}"></a>
     <div class="editorial-panel__question-header flex flex-space-between">
         <label>
-            {% autoescape off %}{{ f.label }}{% endautoescape %}
+            {% include "includes/_flagged_to_me--flag.html" %}
             {% if f.help("long_help") %}
                 <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
             {% endif %}
@@ -19,9 +19,6 @@
             {% endif %}
         {% endfor %}
     </div>
-    <div class="editorial-panel__legend">
-        {% include "includes/_flagged_to_me--flag.html" %} <span>Flagged for you</span>
-    </div>
     <div class="editorial-panel__questions-content {{ f.name }}__question--content">
     {% for entry in f.wtfield %}
         {% set entry_template = f.entry_template %}
@@ -34,4 +31,6 @@
     {% endif %}
 
 </div>
+
+    {% include "_application-form/includes/_modal.html" %}
 </div>

@@ -2,7 +2,7 @@
     <div class="form__question_inputs_div--{{ idx }}">
         {% for subfield in f.group_subfields() %}
             <div class="form-inputs--container {{ f.name }}-inputs--container--{{ idx }}">
-                {% if not subfield.is_disabled %}<label for="{{ f.name }}-{{ idx }}-{{ subfield.name }}"> {{ subfield.label }} {% if subfield.optional %}<span class="form__question--optional">(Optional)</span>{% endif %} </label>{% endif %}
+                {% if subfield.label %}<label>{{ subfield.label }} {% if subfield.optional %}<span class="form__question--optional">(Optional)</span>{% endif %} </label>{% endif %}
                 {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
             </div>
         {% endfor %}

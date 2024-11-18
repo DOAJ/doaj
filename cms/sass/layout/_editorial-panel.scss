@@ -1,8 +1,26 @@
 .editorial-panel {
+    .flag--resolved {
+        position: relative;
+        opacity: 0.2; /* Set opacity of entire div */
+    }
+
+    .flag--resolved::before {
+        content: "RESOLVED"; /* The word to display as the stamp */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg); /* Center and rotate the text */
+        font-size: 3em; /* Adjust the size of the stamp */
+        color: rgba(0, 0, 0, 0.5); /* Light black color for the stamp */
+        z-index: 10; /* Place the stamp behind the button */
+        pointer-events: none; /* Ensure the stamp doesn't interfere with interactions */
+        opacity: 0.6; /* Make the stamp slightly transparent */
+        letter-spacing: 0.2em; /* Adjust the spacing between letters for the stamp */
+        font-weight: bold;
+    }
     .editorial-panel__content {
         .form__question.editorial-panel__question {
             padding: 0 !important;
-
             .editorial-panel__question-header {
                 padding: .5rem;
                 align-items: flex-start;
@@ -20,7 +38,17 @@
             .editorial-panel__questions-content {
                 .form-inputs--container {
                     &:has(input[type="hidden"]) {
-                        display: none;
+
+                    }
+                    &:has(label) {
+                        label {
+                            font-size: .75rem;
+                            margin-bottom: 0;
+                            margin-left: .5rem;
+                            .form__question--optional {
+                                font-size: .75rem;
+                            }
+                        }
                     }
                     &:has(svg) {
                         position: relative;
@@ -45,9 +73,12 @@
                     }
 
                     span.spanPretendingToBeInput {
-                        display: flex;
-                        align-items: flex-start;
-                        gap: .5rem;
+                        display: block;
+                        &:has(svg) {
+                            display: flex;
+                            align-items: flex-start;
+                            gap: .5rem;
+                        }
                         background-color: $disabled;
                         width: 100%;
                         padding: 0.5rem;
@@ -62,13 +93,10 @@
                     input:disabled ~ label {
                         display: none;
                     }
-
-                    textarea {
-                        padding: .5rem;
-                    }
                 }
                 [class^="control_buttons_div"] {
-                    padding: .5rem;
+                    padding-left: .5rem;
+                    padding-right: .5rem;
                 }
             }
         }
