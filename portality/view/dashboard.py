@@ -20,10 +20,15 @@ blueprint = Blueprint('dashboard', __name__)
 @ssl_required
 def top_todo():
     filter = request.values.get("filter")
-    new_applications, update_requests = True, True
+    new_applications, update_requests, on_hold = True, True, True
     if filter == "na":
+        on_hold = False
         update_requests = False
     elif filter == "ur":
+        on_hold = False
+        new_applications = False
+    elif filter == "oh":
+        update_requests = False
         new_applications = False
 
     flag_filter = request.values.get("flag_filter", "a2me")
@@ -34,7 +39,8 @@ def top_todo():
                          size=app.config.get("TODO_LIST_SIZE"),
                          new_applications=new_applications,
                          update_requests=update_requests,
-                         flagged=flag_filter)
+                         flagged=flag_filter,
+                         on_hold=on_hold)
 
     # ~~-> Dashboard:Page~~
     return render_template(templates.DASHBOARD, todos=todos)

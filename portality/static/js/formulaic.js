@@ -1447,14 +1447,14 @@ var formulaic = {
 
             this._renderAutocheck = function(autocheck) {
                 let frag = "<li>";
-                
+
                 if (autocheck.checked_by && doaj.autocheckers &&
                     doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
                     frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
                 } else {
                     frag += this._defaultRender(autocheck);
                 }
-                
+
                 frag += `</li>`;
                 return frag;
             }
@@ -2550,5 +2550,36 @@ var formulaic = {
 
             this.init();
         },
+
+        newArticleInfo : (params) => edges.instantiate(formulaic.widgets.ArticleInfo, params),
+        ArticleInfo: function ({formulaic, fieldDef, args}) {
+            const $sealEle = $('label[for=doaj_seal-0]');
+
+            if (!$sealEle.length) {
+                console.log('skip ArticleInfo, seal section not found')
+                return;
+            }
+
+            const idResult = window.location.pathname.match('/journal/([a-f0-9]+)')
+            if (!idResult) {
+                console.log('skip ArticleInfo, journal id not found')
+                return
+            }
+            const journalId = idResult[1]
+            fetch(`/admin/journal/${journalId}/article-info`)
+                .then(response => response.json())
+                .then(data => {
+                    let articleText = `(This journal has ${data.n_articles} articles in DOAJ)`
+                    if (data.n_articles > 0) {
+                        const articlesUrl = `/admin/journal/${journalId}/article-info/admin-site-search`
+                        articleText = `<a href="${articlesUrl}" target="_blank">${articleText}</a>`
+                    }
+                    $sealEle.html($sealEle.text() + ` ${articleText}`)
+                })
+        },
+
+
+
+
     }
 };

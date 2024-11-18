@@ -63,8 +63,7 @@ class TodoService(object):
 
         return stats
 
-
-    def top_todo(self, account, size=25, new_applications=True, update_requests=True, flagged=False):
+    def top_todo(self, account, size=25, new_applications=True, update_requests=True, flagged=True, on_hold=True):
         """
         Returns the top number of todo items for a given user
 
@@ -89,8 +88,10 @@ class TodoService(object):
             if update_requests:
                 queries.append(TodoRules.maned_last_month_update_requests(size, maned_of, flagged, acc_id=account.id))
                 queries.append(TodoRules.maned_new_update_requests(size, maned_of, flagged, acc_id=account.id))
+            if on_hold:
+                queries.append(TodoRules.maned_on_hold(size, account.id, maned_of))
 
-        if new_applications:  # editor and associate editor roles only deal with new applications
+        if new_applications: # editor and associate editor roles only deal with new applications
             if account.has_role("editor"):
                 groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
                 regular_groups = [g for g in groups if g.maned != account.id]
@@ -167,7 +168,6 @@ class TodoRules(object):
 
     @classmethod
     def maned_stalled(cls, size, maned_of, flagged=False, acc_id=None):
-        print("maned_stalled")
         sort_date = "created_date"
         musts = [
             TodoQuery.lmu_older_than(8),
@@ -180,7 +180,11 @@ class TodoRules(object):
         stalled = TodoQuery(
             musts=musts,
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_ON_HOLD
+                ])
             ],
             sort=sort_date,
             size=size
@@ -189,7 +193,6 @@ class TodoRules(object):
 
     @classmethod
     def maned_follow_up_old(cls, size, maned_of, flagged=False, acc_id=None):
-        print("maned_follow_up_old")
         sort_date = "created_date"
         musts = [
             TodoQuery.cd_older_than(10),
@@ -200,13 +203,17 @@ class TodoRules(object):
             musts.append(TodoQuery.flagged_to_me(acc_id))
         elif flagged == "a2me":
             musts.append(TodoQuery.editor_group(maned_of))
-        print(musts)    
-        
+        print(musts)
+
 
         follow_up_old = TodoQuery(
             musts=musts,
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_ON_HOLD
+                ])
             ],
             sort=sort_date,
             size=size
@@ -215,7 +222,6 @@ class TodoRules(object):
 
     @classmethod
     def maned_ready(cls, size, maned_of, flagged=False, acc_id=None):
-        print("maned_ready")
         sort_date = "created_date"
         musts = [
             TodoQuery.status([constants.APPLICATION_STATUS_READY]),
@@ -298,7 +304,10 @@ class TodoRules(object):
         assign_pending = TodoQuery(
             musts=musts,
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED
+                ])
             ],
             sort=sort_date,
             size=size
@@ -320,12 +329,32 @@ class TodoRules(object):
         assign_pending = TodoQuery(
             musts=musts,
             must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED
+                ])
             ],
             sort=sort_date,
             size=size
         )
         return constants.TODO_MANED_NEW_UPDATE_REQUEST, assign_pending, sort_date, -2
+
+    @classmethod
+    def maned_on_hold(cls, size, account, maned_of):
+        sort_date = "created_date"
+        on_holds = TodoQuery(
+            musts=[
+                TodoQuery.is_new_application(),
+                TodoQuery.status([constants.APPLICATION_STATUS_ON_HOLD])
+            ],
+            ors=[
+                TodoQuery.editor_group(maned_of),
+                TodoQuery.editor(account)
+            ],
+            sort=sort_date,
+            size=size
+        )
+        return constants.TODO_MANED_ON_HOLD, on_holds, sort_date, 0
 
     @classmethod
     def editor_stalled(cls, groups, size, flagged=False, acc_id=None):
@@ -345,7 +374,8 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_READY
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_date,
@@ -371,7 +401,8 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_READY
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_date,
@@ -439,7 +470,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_field,
@@ -466,7 +498,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_field,
@@ -511,7 +544,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
             sort=sort_field,
@@ -531,9 +565,10 @@ class TodoQuery(object):
     # therefore, we take a created_date sort to mean a date_applied sort
     cd_sort = {"admin.date_applied": {"order": "asc"}}
 
-    def __init__(self, musts=None, must_nots=None, sort="last_manual_update", size=10):
+    def __init__(self, musts=None, must_nots=None, ors=None, sort="last_manual_update", size=10):
         self._musts = [] if musts is None else musts
         self._must_nots = [] if must_nots is None else must_nots
+        self._ors = [] if ors is None else ors
         self._sort = sort
         self._size = size
 
@@ -541,16 +576,22 @@ class TodoQuery(object):
         sort = self.lmu_sort if self._sort == "last_manual_update" else self.cd_sort
         q = {
             "query" : {
-                "bool" : {
-                    "must": self._musts,
-                    "must_not": self._must_nots
-                }
+                "bool" : {}
             },
             "sort" : [
                 sort
             ],
             "size" : self._size
         }
+
+        if len(self._musts) > 0:
+            q["query"]["bool"]["must"] = self._musts
+        if len(self._must_nots) > 0:
+            q["query"]["bool"]["must_not"] = self._must_nots
+        if len(self._ors) > 0:
+            q["query"]["bool"]["should"] = self._ors
+            q["query"]["bool"]["minimum_should_match"] = 1
+
         return q
 
     @classmethod
