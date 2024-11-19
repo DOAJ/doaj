@@ -82,7 +82,7 @@ BACKGROUND_JOB_FINISHED = "bg:job_finished"
 
 PROCESS__QUICK_REJECT = "quick_reject"
 
-# Role
+# Roles
 ROLE_ADMIN = "admin"
 ROLE_PUBLISHER = "publisher"
 ROLE_EDITOR = "editor"
