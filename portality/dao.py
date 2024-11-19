@@ -1,15 +1,17 @@
-import time
+from __future__ import annotations
+
+import json
 import re
 import sys
-import uuid
-import json
-import elasticsearch
+import time
 import urllib.parse
-
+import uuid
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List
+from typing import List, Iterable, Tuple
+
+import elasticsearch
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -962,6 +964,25 @@ def refresh():
     refresh all indexes to make newly added or deleted documents immediately searchable
     """
     return ES.indices.refresh()
+
+
+def find_indexes_by_prefix(index_prefix) -> list[str]:
+    data = ES.indices.get(f'{index_prefix}*')
+    return list(data.keys())
+
+
+def find_index_aliases(alias_prefixes=None) -> Iterable[Tuple[str, str]]:
+    def _yield_index_alias():
+        data = ES.indices.get_alias()
+        for index, d in data.items():
+            for alias in d['aliases'].keys():
+                yield index, alias
+
+    index_aliases = _yield_index_alias()
+    if alias_prefixes:
+        index_aliases = ((index, alias) for index, alias in index_aliases
+                         if any(alias.startswith(p) for p in alias_prefixes))
+    return index_aliases
 
 
 class BlockTimeOutException(Exception):

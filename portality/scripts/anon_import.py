@@ -13,11 +13,21 @@ or for a test server:
 DOAJENV=test python portality/scripts/anon_import.py data_import_settings/test_server.json
 """
 
-import esprit, json, gzip, shutil, elasticsearch
+from __future__ import annotations
+
+import gzip
+import itertools
+import json
+import shutil
+
+import elasticsearch
+import esprit
+
+from doajtest.helpers import patch_config
+from portality import dao
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
 from portality.util import ipt_prefix
-from doajtest.helpers import patch_config
 
 
 # FIXME: monkey patch for esprit.bulk (but esprit's chunking is handy)
@@ -37,7 +47,6 @@ def es_bulk(connection, data, type=""):
 
 
 def do_import(config):
-
     # filter for the types we are going to work with
     import_types = {}
     for t, s in config.get("types", {}).items():
@@ -50,16 +59,38 @@ def do_import(config):
         print(("{x} from {y}".format(x=count, y=import_type)))
     print("\n")
 
+    toberemoved_index_prefixes = [
+        es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
+        for import_type in import_types.keys()
+    ]
+    toberemoved_indexes = list(itertools.chain.from_iterable(
+        dao.find_indexes_by_prefix(p) for p in toberemoved_index_prefixes
+    ))
+    toberemoved_index_aliases = list(dao.find_index_aliases(toberemoved_index_prefixes))
+
+    print("==Removing the following indexes==")
+    print('   {}'.format(', '.join(toberemoved_indexes)))
+    print("==Removing the following aliases==")
+    print('   {}'.format(', '.join(alias for _, alias in toberemoved_index_aliases)))
     if config.get("confirm", True):
         text = input("Continue? [y/N] ")
         if text.lower() != "y":
             exit()
 
     # remove all the types that we are going to import
-    for import_type in list(import_types.keys()):
+    for index in toberemoved_indexes:
         try:
-            if es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type):
-                es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
+            if es_connection.indices.exists(index):
+                print("Deleting index: {}".format(index))
+                es_connection.indices.delete(index)
+        except elasticsearch.exceptions.NotFoundError:
+            pass
+
+    for index, alias in toberemoved_index_aliases:
+        try:
+            if es_connection.indices.exists_alias(index, alias):
+                print("Deleting alias: {} -> {}".format(index, alias))
+                es_connection.indices.delete_alias(index, alias)
         except elasticsearch.exceptions.NotFoundError:
             pass
 
@@ -117,6 +148,7 @@ def do_import(config):
 if __name__ == '__main__':
 
     import argparse
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument("config", help="Config file for import run, e.g dev_basics.json")
