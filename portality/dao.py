@@ -458,7 +458,6 @@ class DomainObject(UserDict, object):
         if r is not None:
             return r
         if exception is not None:
-            print(exception)
             raise exception
         raise Exception("Couldn't get the ES query endpoint to respond.  Also, you shouldn't be seeing this.")
 
