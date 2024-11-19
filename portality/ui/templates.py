@@ -74,7 +74,6 @@ AF_LIST = "_application-form/includes/_list.html"
 NOTES_LIST = "_application-form/includes/_notes_list.html"
 FLAGS_LIST= "_application-form/includes/_flags_list.html"
 FLAG_ENTRY_GROUP = "_application-form/includes/_flag_entry.html"
-FLAG_DETAILS = "_application-form/includes/_flag_details.html"
 
 # Publisher area
 PUBLISHER_DRAFTS = "public/publisher/drafts.html"
