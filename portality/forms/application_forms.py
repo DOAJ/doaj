@@ -1395,7 +1395,16 @@ class FieldDefinitions:
         ],
         "attr": {
             "class": "input-xlarge unstyled-list"
-        }
+        },
+        "contexts": {
+            "admin": {
+                "widgets": [
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "multiple_field",
+                ]
+            }
+        },
     }
 
     # ~~->$ PreservationServiceOther:FormField~~
@@ -1417,7 +1426,15 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
-        ]
+        ],
+        "contexts": {
+            "admin": {
+                "widgets": [
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                ]
+            }
+        },
     }
 
     # ~~->$ PreservationServiceURL:FormField~~
@@ -1518,7 +1535,15 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
-        ]
+        ],
+        "contexts": {
+            "admin": {
+                "widgets": [
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                ]
+            }
+        },
     }
 
     # ~~->$ DepositPolicyURL:FormField~~
@@ -1627,7 +1652,15 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
-        ]
+        ],
+        "contexts": {
+            "admin": {
+                "widgets": [
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                ]
+            }
+        },
     }
 
     # ~~->$ Orcids:FormField~~
