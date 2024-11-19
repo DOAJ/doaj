@@ -189,7 +189,7 @@ def create_es_connection(app):
 #     return type
 
 
-def put_mappings(conn, mappings, force_mappings=False):
+def put_mappings(conn, mappings):
     # get the ES version that we're working with
     #es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
@@ -210,15 +210,10 @@ def put_mappings(conn, mappings, force_mappings=False):
                                     request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
             print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(altered_key, key, r))
         else:
-            if force_mappings:
-                r = conn.indices.put_mapping(index=altered_key, body=mapping.get("mappings"),
-                                             request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
-                print("Updating ES Type + Mapping in index {0} for {1}; status: {2}".format(altered_key, key, r))
-            else:
-                print("ES Type + Mapping already exists in index {0} for {1}".format(altered_key, key))
+            print("ES Type + Mapping already exists in index {0} for {1}".format(altered_key, key))
 
 
-def initialise_index(app, conn, only_mappings=None, force_mappings=False):
+def initialise_index(app, conn, only_mappings=None):
     """
     ~~InitialiseIndex:Framework->Elasticsearch:Technology~~
     :param app:
@@ -240,7 +235,7 @@ def initialise_index(app, conn, only_mappings=None, force_mappings=False):
         mappings = {key:value for (key, value) in mappings.items() if key in only_mappings}
 
     # Send the mappings to ES
-    put_mappings(conn, mappings, force_mappings)
+    put_mappings(conn, mappings)
 
 
 ##################################################
