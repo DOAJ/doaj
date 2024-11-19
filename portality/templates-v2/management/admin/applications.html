@@ -23,9 +23,6 @@
             journalsUrl : "{{ url_for('admin.index') }}",
             readOnlyJournalUrl: "{{ url_for('admin.journal_readonly', journal_id="") }}",
             searchPath : '/admin_query/suggestion/_search'
-        },
-        session : {
-            currentUser: "{{ current_user.id }}"
         }
     });
     </script>

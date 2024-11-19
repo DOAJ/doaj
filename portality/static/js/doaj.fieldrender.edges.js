@@ -35,7 +35,7 @@ $.extend(true, doaj, {
                 must: [
                     es.newTermFilter({
                         field: "index.flag_assignees.exact",
-                        value: doaj.session.currentUser
+                        value: doaj.session.currentUserId
                     })
                 ]
             }
