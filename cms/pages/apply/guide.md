@@ -216,6 +216,7 @@ Journals will be removed if they no longer adhere to DOAJ criteria or publishing
 ## Appeals
 
 Your journal is eligible to submit an appeal if
+
 - It has been removed from DOAJ.
 - The application has been rejected, and no new application is allowed for at least one year.
 
