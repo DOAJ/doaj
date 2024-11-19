@@ -205,6 +205,7 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 After your journal is accepted, you are responsible for updating the DOAJ record and ensuring the journal continues to comply with DOAJ criteria. See the [Publisher Information Page](/apply/publisher-responsibilities/) for details of how to submit an update request. 
 
 We undertake periodic re-evaluation of journals accepted into DOAJ, particularly when:
+
 - They have not been updated by the publisher for several years 
 - Reports are received of website unavailability or questionable practices
 
