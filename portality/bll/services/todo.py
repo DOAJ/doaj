@@ -198,12 +198,10 @@ class TodoRules(object):
             TodoQuery.cd_older_than(10),
             TodoQuery.is_new_application()
         ]
-        print(flagged)
         if flagged == "flagged":
             musts.append(TodoQuery.flagged_to_me(acc_id))
         elif flagged == "a2me":
             musts.append(TodoQuery.editor_group(maned_of))
-        print(musts)
 
 
         follow_up_old = TodoQuery(
