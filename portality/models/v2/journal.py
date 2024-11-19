@@ -468,7 +468,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             license.append(l.get("type"))
 
         # check for any flags
-        is_flagged = any("assigned_to" in note.get("flag", {}) and note["flag"]["assigned_to"] is not None for note in self.notes)
+        is_flagged = self.is_flagged
+
         flag_assignees = [
             note["flag"]["assigned_to"]
             for note in self.notes
