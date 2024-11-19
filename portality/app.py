@@ -477,6 +477,7 @@ def run_server(host=None, port=None, fake_https=False):
     app.run(host=host, debug=app.config['DEBUG'], port=port,
             **run_kwargs)
 
+
 if __name__ == "__main__":
     run_server()
 
