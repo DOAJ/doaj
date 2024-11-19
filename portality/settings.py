@@ -1555,5 +1555,3 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
-##################################################
-FAR_IN_THE_FUTURE = "9999-12-31"

@@ -4,8 +4,6 @@ import math
 from datetime import datetime, timedelta
 from random import randint
 
-from portality.core import app
-
 # Extracted from settings.py to prevent circular import
 config = {
     # when dates.format is called without a format argument, what format to use?
@@ -32,6 +30,7 @@ config = {
 
     # The last_manual_update field was initialised to this value. Used to label as 'never'.
     'DEFAULT_TIMESTAMP': "1970-01-01T00:00:00Z",
+    'FAR_IN_THE_FUTURE': "9999-12-31"
 }
 
 
@@ -55,7 +54,7 @@ FMT_YEAR = '%Y'
 DEFAULT_TIMESTAMP_VAL = config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
 def far_in_the_future (format=FMT_DATE_STD):
-    return parse(app.config.get("FAR_IN_THE_FUTURE", "9999-12-31"), format)
+    return parse(config.get("FAR_IN_THE_FUTURE", "9999-12-31"), format)
 
 def parse(s, format=None, guess=True) -> datetime:
     s = s.strip()
