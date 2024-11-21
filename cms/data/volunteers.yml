@@ -118,13 +118,6 @@ ass_ed:
   country: Poland
   language: Polish, English
   photo: "AleksandraZawadzka.jpg"
-
-- name: Alessandro Pierno
-  area: Humanities
-  year_since:
-  city: Florence
-  country: Italy
-  language: Italian, English, Spanish
   
 - name: Ana Melisa Fernandes
   area: Bird behavior and ecology
@@ -527,7 +520,8 @@ ass_ed:
   city:
   country: Colombia
   language: Spanish, English
-
+  photo: "Lina Blandon.jpg"
+  
 - name: Liping Yang
   area: Material Engineering, Library Studies
   year_since:
@@ -564,6 +558,14 @@ ass_ed:
   country: Canada
   language: French, English
 
+- name: Mario Alejandro Marín Uribe
+  area: Ecology
+  year_since:
+  city: Medellín
+  country: Colombia
+  language: Portuguese, English
+  photo: "Mario Uribe.webp"
+  
 - name: Martyna Mirecka
   area: History, Political Science
   year_since:
@@ -572,6 +574,13 @@ ass_ed:
   language: Polish, English
   photo: "Martyna.JPG"
 
+- name: Mateus de Novaes Maia 
+  area: Literature and Geography
+  year_since:
+  city: Rio de Janeiro
+  country: Brazil
+  language: Portuguese, English 
+ 
 - name: Maxim Mitrofanov
   area: International Relations, Political Science
   year_since:
