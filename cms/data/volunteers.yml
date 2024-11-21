@@ -577,7 +577,7 @@ ass_ed:
 - name: Mateus de Novaes Maia 
   area: Literature and Geography
   year_since:
-  city: Rio de Janeiro
+  city:
   country: Brazil
   language: Portuguese, English 
  
