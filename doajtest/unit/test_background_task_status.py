@@ -95,7 +95,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         assert len(val.get('err_msgs'))
 
     @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__invalid_last_completed__main_queue(self):
+    def test_01_create_background_status__invalid_last_completed__main_queue(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         queue_id=constants.BGJOB_QUEUE_ID_MAIN,
                         status=constants.BGJOB_STATUS_COMPLETE, )
@@ -107,7 +107,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         self.assert_stable_dict(status_dict['queues'].get('long_running', {}))
 
     @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__invalid_last_completed__long_running(self):
+    def test_02_create_background_status__invalid_last_completed__long_running(self):
         save_mock_bgjob(AnonExportBackgroundTask.__action__,
                         queue_id=constants.BGJOB_QUEUE_ID_LONG,
                         status=constants.BGJOB_STATUS_COMPLETE, )
@@ -119,7 +119,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         self.assert_unstable_dict(status_dict['queues'].get('long_running', {}))
 
     @apply_test_case_config(bg_monitor_last_completed__a)
-    def test_create_background_status__valid_last_completed(self):
+    def test_03_create_background_status__valid_last_completed(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         queue_id=constants.BGJOB_QUEUE_ID_MAIN,
                         status=constants.BGJOB_STATUS_COMPLETE, )
@@ -134,12 +134,12 @@ class TestBackgroundTaskStatus(DoajTestCase):
         self.assert_stable_dict(status_dict['queues'].get('long_running', {}))
 
     @apply_test_case_config(bg_monitor_last_completed__now)
-    def test_create_background_status__valid_last_completed__no_record(self):
+    def test_04_create_background_status__valid_last_completed__no_record(self):
         status_dict = background_task_status.create_background_status()
         assert is_stable(status_dict['status'])
 
     @apply_test_case_config(bg_monitor_errors_config__empty)
-    def test_create_background_status__empty_errors_config(self):
+    def test_05_create_background_status__empty_errors_config(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_ERROR, )
 
@@ -154,7 +154,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         assert not is_stable(status_dict['queues']['main_queue']['errors'][first_key]['status'])
 
     @apply_test_case_config(bg_monitor_errors_config__a)
-    def test_create_background_status__error_in_period_found(self):
+    def test_06_create_background_status__error_in_period_found(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_ERROR, )
 
@@ -167,7 +167,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         assert journal_csv_dict.get('in_monitoring_period', 0) > 0
 
     @apply_test_case_config(bg_monitor_errors_config__a)
-    def test_create_background_status__error_in_period_not_found(self):
+    def test_07_create_background_status__error_in_period_not_found(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_ERROR,
                         created_before_sec=1000000000)
@@ -181,7 +181,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         assert journal_csv_dict.get('in_monitoring_period', 0) == 0
 
     @apply_test_case_config(bg_monitor_queued_config__zero_total)
-    def test_create_background_status__queued_invalid_total(self):
+    def test_08_create_background_status__queued_invalid_total(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_QUEUED, )
 
@@ -194,7 +194,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         self.assert_unstable_dict(journal_csv_dict)
 
     @apply_test_case_config(bg_monitor_queued_config__zero_total)
-    def test_create_background_status__queued_valid_total(self):
+    def test_09_create_background_status__queued_valid_total(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
@@ -207,7 +207,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         self.assert_stable_dict(journal_csv_dict)
 
     @apply_test_case_config(bg_monitor_queued_config__a)
-    def test_create_background_status__queued_invalid_oldest(self):
+    def test_10_create_background_status__queued_invalid_oldest(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_QUEUED,
                         created_before_sec=1000000000)
@@ -221,7 +221,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
         assert journal_csv_dict.get('oldest') is not None
 
     @apply_test_case_config(bg_monitor_queued_config__a)
-    def test_create_background_status__queued_valid_oldest(self):
+    def test_11_create_background_status__queued_valid_oldest(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_QUEUED, )
 

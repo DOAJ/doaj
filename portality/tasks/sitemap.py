@@ -61,7 +61,7 @@ class SitemapBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        generate_sitemap.schedule(args=(background_job.id,), delay=10)
+        generate_sitemap.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = SitemapBackgroundTask.create_huey_helper(main_queue)

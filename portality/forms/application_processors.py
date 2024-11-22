@@ -306,10 +306,12 @@ class AdminApplication(ApplicationProcessor):
         # to bypass WTForms insistence that choices on a select field match the value, outside of the actual validation
         # chain
         super(AdminApplication, self).pre_validate()
-        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
+        self.form.editor.validate_choice = False
+        # self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
 
         # TODO: Should quick_reject be set through this form at all?
-        self.form.quick_reject.choices = [(self.form.quick_reject.data, self.form.quick_reject.data)]
+        self.form.quick_reject.validate_choice = False
+        # self.form.quick_reject.choices = [(self.form.quick_reject.data, self.form.quick_reject.data)]
 
     def patch_target(self):
         super(AdminApplication, self).patch_target()

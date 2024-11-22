@@ -62,7 +62,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        journal_csv.schedule(args=(background_job.id,), delay=10)
+        journal_csv.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = JournalCSVBackgroundTask.create_huey_helper(main_queue)
