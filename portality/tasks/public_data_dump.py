@@ -244,7 +244,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        public_data_dump.schedule(args=(background_job.id,), delay=10)
+        public_data_dump.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = PublicDataDumpBackgroundTask.create_huey_helper(long_running)

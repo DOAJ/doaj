@@ -179,7 +179,7 @@ class AnonExportBackgroundTask(BackgroundTask):
     @classmethod
     def submit(cls, background_job):
         background_job.save()
-        anon_export.schedule(args=(background_job.id,), delay=10)
+        anon_export.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = AnonExportBackgroundTask.create_huey_helper(long_running)

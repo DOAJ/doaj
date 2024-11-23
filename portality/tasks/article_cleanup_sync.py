@@ -213,7 +213,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        article_cleanup_sync.schedule(args=(background_job.id,), delay=10)
+        article_cleanup_sync.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = ArticleCleanupSyncBackgroundTask.create_huey_helper(long_running)

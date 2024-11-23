@@ -51,7 +51,6 @@ DEBUG_TB_ENV_LIST_ENABLED = False
 # ~~->Elasticsearch:Technology
 
 # elasticsearch settings # TODO: changing from single host / esprit to multi host on ES & correct the default
-ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
 ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': 'localhost', 'port': 9201}]
 ELASTIC_SEARCH_VERIFY_CERTS = True  # Verify the SSL certificate of the ES host.  Set to False in dev.cfg to avoid having to configure your local certificates
 
@@ -417,7 +416,8 @@ APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in pro
 # huey/redis settings
 REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
-HUEY_EAGER = False
+HUEY_IMMEDIATE = False
+HUEY_ASYNC_DELAY = 10
 
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}

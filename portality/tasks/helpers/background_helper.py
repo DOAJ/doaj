@@ -86,7 +86,11 @@ def register_execute(task_queue, task_name=None, script=True):
             conf = {}
 
         fn = write_required(script=script)(fn)
-        fn = task_queue.task(**conf)(fn)
+        try:
+            fn = task_queue.task(**conf)(fn)
+        except ValueError:
+            # It's already registered - that's okay, we've probably accessed the _status endpoint and loaded the module
+            return None
         return fn
 
     return wrapper
@@ -108,7 +112,11 @@ class RedisHueyTaskHelper:
 
     def register_schedule(self, fn):
         fn = write_required(script=True)(fn)
-        fn = self.task_queue.periodic_task(schedule(self.task_name))(fn)
+        try:
+            fn = self.task_queue.periodic_task(schedule(self.task_name))(fn)
+        except ValueError:
+            # It's already registered - that's okay, we've probably accessed the _status endpoint and loaded the module
+            return None
         return fn
 
     def register_execute(self, is_load_config=False):
@@ -188,7 +196,7 @@ def submit_by_background_job(background_job, execute_fn):
     """ Common way of `BackgroundTask.submit`
     """
     background_job.save()
-    execute_fn.schedule(args=(background_job.id,), delay=10)
+    execute_fn.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 def create_execute_fn(task_queue: RedisHuey, task_factory: TaskFactory, task_name=None, script=True):

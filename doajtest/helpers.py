@@ -169,6 +169,8 @@ class DoajTestCase(TestCase):
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
             "UR_CONCURRENCY_TIMEOUT": 0,
             'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
+            'HUEY_IMMEDIATE': True,
+            'HUEY_ASYNC_DELAY': 0
         }
 
     @classmethod
@@ -180,11 +182,7 @@ class DoajTestCase(TestCase):
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
 
-        # always_eager has been replaced by immediate
-        # for huey version > 2
-        # https://huey.readthedocs.io/en/latest/guide.html
-        main_queue.always_eager = True
-        long_running.always_eager = True
+        # Run huey jobs straight away
         main_queue.immediate = True
         long_running.immediate = True
 

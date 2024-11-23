@@ -10,7 +10,7 @@ from portality.dao import Facetview2
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import main_queue
 from portality.ui import templates
 
 
@@ -178,6 +178,8 @@ class AssEdAgeQuery(object):
                 }
             }
         }
+
+
 # Functions for each notification recipient - ManEd, Editor, Assoc_editor
 def managing_editor_notifications(emails_dict):
     """
@@ -433,14 +435,14 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
 huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(main_queue)
 
 
-@huey_helper.task_queue.periodic_task(schedule("async_workflow_notifications"))
+@huey_helper.register_schedule
 def scheduled_async_workflow_notifications():
     user = app.config.get("SYSTEM_USERNAME")
     job = AsyncWorkflowBackgroundTask.prepare(user)
     AsyncWorkflowBackgroundTask.submit(job)
 
 
-@huey_helper.task_queue.task()
+@huey_helper.register_execute(is_load_config=False)
 def async_workflow_notifications(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = AsyncWorkflowBackgroundTask(job)

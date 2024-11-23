@@ -52,7 +52,7 @@ class ReadNewsBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        read_news.schedule(args=(background_job.id,), delay=10)
+        read_news.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
 
 
