@@ -154,7 +154,7 @@ def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
     return send_file(
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
-            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+            mimetype="application/xml", as_attachment=True, download_name=schema_fn
             )
 
 
