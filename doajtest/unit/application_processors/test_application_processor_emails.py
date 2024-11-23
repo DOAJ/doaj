@@ -370,7 +370,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             re.DOTALL)
             assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
 
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -563,11 +563,11 @@ class TestApplicationReviewEmails(DoajTestCase):
             assEd_subject = re.escape('New application ({}) assigned to you'.format(
                 ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -660,8 +660,8 @@ class TestApplicationReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect no emails
-        assert len(re.findall(email_count_string, info_stream_contents)) == 0
+            # We expect no emails
+            assert len(re.findall(email_count_string, info_stream_contents)) == 0
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -917,11 +917,11 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assEd_subject = re.escape('New application ({}) assigned to you'.format(
                 ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -1101,11 +1101,11 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assEd_subject = re.escape('New application ({}) assigned to you'.format(
                 ', '.join(issn for issn in processor.source.bibjson().issns())))
 
-        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
-                                        info_stream_contents,
-                                        re.DOTALL)
-        assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+            assert bool(assEd_email_matched), info_stream_contents.strip('\x00')
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -1209,8 +1209,8 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise()
             info_stream_contents = self.info_stream.getvalue()
 
-        # We expect no email to be sent
-        assert len(re.findall(email_count_string, info_stream_contents)) == 0
+            # We expect no email to be sent
+            assert len(re.findall(email_count_string, info_stream_contents)) == 0
 
             # Clear the stream for the next part
             self.info_stream.truncate(0)
@@ -1286,9 +1286,8 @@ class TestJournalReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_3"
 
-        # We expect no emails to be sent
-        assert len(re.findall(email_count_string, info_stream_contents)) == 0
-        ctx.pop()
+            # We expect no emails to be sent
+            assert len(re.findall(email_count_string, info_stream_contents)) == 0
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's journal review form sends the right emails"""
@@ -1307,5 +1306,5 @@ class TestJournalReviewEmails(DoajTestCase):
             # check the associate was changed
             assert processor.target.editor == "associate_2"
 
-        # We no email to be sent
-        assert len(re.findall(email_count_string, info_stream_contents)) == 0
+            # We no email to be sent
+            assert len(re.findall(email_count_string, info_stream_contents)) == 0
