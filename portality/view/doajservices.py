@@ -163,5 +163,5 @@ def export_article_ris(article_id, fmt):
 
     filename = f'article-{article_id[:10]}.ris'
 
-    resp = make_response(send_file(byte_stream, as_attachment=True, attachment_filename=filename))
+    resp = make_response(send_file(byte_stream, as_attachment=True, download_name=filename))
     return resp
