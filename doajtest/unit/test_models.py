@@ -1280,7 +1280,7 @@ class TestModels(DoajTestCase):
 
         models.Provenance.make(acc, "act2", obj2, "sub")
 
-        time.sleep(1)
+        time.sleep(2)
 
         prov = models.Provenance.get_latest_by_resource_id("obj2")
         assert prov.type == "suggestion"
