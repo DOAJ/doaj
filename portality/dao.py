@@ -728,7 +728,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def bulk_load_from_file(cls, source_file, index=None, limit=None, max_content_length=100000000):
         """ ported from esprit.tasks - bulk load to index from file """
-        index = cls.index_name()
+        index = index or cls.index_name()
 
         source_size = os.path.getsize(source_file)
         with open(source_file, "r") as f:
