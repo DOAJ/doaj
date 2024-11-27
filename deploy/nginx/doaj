@@ -77,23 +77,23 @@ server {
     error_log /var/log/nginx/doaj.error.log;
 
     location =/static/doaj/doajArticle.xsd {
-        alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/doaj/portality/static/doaj/doajArticles.xsd;
     }
 
     location =/static/doaj/doajArticles.xsd {
-        alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/doaj/portality/static/doaj/doajArticles.xsd;
     }
 
     location =/static/doaj/iso_639-2b.xsd {
-        alias /home/cloo/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+        alias /home/cloo/doaj/portality/static/doaj/iso_639-2b.xsd;
     }
 
     location /static/crossref {
-        alias /home/cloo/doaj/src/doaj/portality/static/crossref;
+        alias /home/cloo/doaj/portality/static/crossref;
     }
 
     location =/robots.txt {
-        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
+        alias /home/cloo/doaj/deploy/robots-production.txt;
     }
 
     location / {
@@ -260,11 +260,11 @@ server {
     }
     
     location =/robots.txt {
-        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
+        alias /home/cloo/doaj/deploy/robots-production.txt;
     }
 
     location /static/ {
-        alias /home/cloo/doaj/src/doaj/portality/static/;
+        alias /home/cloo/doaj/portality/static/;
         autoindex off;
         expires max;
         add_header 'Access-Control-Allow-Origin' '*';              # CORS settings since we don't get these from the app
@@ -274,7 +274,7 @@ server {
     }
 
     location /assets/ {
-        alias /home/cloo/doaj/src/doaj/cms/assets/;
+        alias /home/cloo/doaj/cms/assets/;
         autoindex off;
         expires max;
         add_header 'Access-Control-Allow-Origin' '*';              # CORS settings since we don't get these from the app

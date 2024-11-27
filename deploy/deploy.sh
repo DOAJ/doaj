@@ -13,9 +13,9 @@ sudo pip install awscli
 
 # Run from the doaj folder that's already checked out
 
-# activate the virtualenv that we expect to be at /home/cloo/doaj
-. /home/cloo/doaj/bin/activate
-cd /home/cloo/doaj/src/doaj || exit 1
+# activate the virtualenv that we expect to be at /home/cloo/doaj/venv
+. /home/cloo/doaj/venv/bin/activate
+cd /home/cloo/doaj/ || exit 1
 
 # Get the app configuration secrets from AWS  - NOTE: on a mac, base64 needs -D rather than -d
 if [ "$ENV" = 'production' ]

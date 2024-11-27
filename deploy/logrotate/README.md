@@ -8,13 +8,13 @@
   and set with `sudo passwd root` if necessary.
 
 ```
-sudo cp /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
+sudo cp /home/cloo/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
 ```
 
 and
 
 ```
-sudo cp /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-nginx /etc/logrotate.d/doaj-nginx
+sudo cp /home/cloo/doaj/deploy/logrotate/doaj-nginx /etc/logrotate.d/doaj-nginx
 ```
 
 For the AWS S3 upload to work correctly, the correct credentials must be saved in `~/.aws/`, and 
