@@ -109,13 +109,17 @@ def do_import(config):
         )
 
     # re-initialise the index (sorting out mappings, etc)
-    print("==Initialising Index for Mappings==")
+    print("==Initialising Index Mappings and alias ==")
     mappings = es_data_mapping.get_mappings(app)
     for index_detail in index_details.values():
         print("Initialising index: {}".format(index_detail.instance_name))
         es_connection.indices.create(index=index_detail.instance_name,
                                      body=mappings[index_detail.index_type],
                                      request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
+
+        print("Creating alias:     {:<25} -> {}".format(index_detail.instance_name, index_detail.alias_name))
+        blocking_if_indices_exist(index_detail.alias_name)
+        es_connection.indices.put_alias(index=index_detail.instance_name, name=index_detail.alias_name)
 
     mainStore = StoreFactory.get("anon_data")
     tempStore = StoreFactory.tmp()
@@ -164,17 +168,13 @@ def do_import(config):
     # once we've finished importing, clean up by deleting the entire temporary container
     tempStore.delete_container(container)
 
-    # create aliases for the indexes
-    print("\n==Creating Aliases==")
-    for index_detail in index_details.values():
-        for retry in range(5):
-            if not es_connection.indices.exists(index_detail.alias_name):
-                break
-            print(f"Old alias exists, waiting for it to be removed, alias[{index_detail.alias_name}] retry[{retry}]")
-            sleep(5)
 
-        print("Creating alias: {:<30} -> {}".format(index_detail.instance_name, index_detail.alias_name))
-        es_connection.indices.put_alias(index=index_detail.instance_name, name=index_detail.alias_name)
+def blocking_if_indices_exist(index_name):
+    for retry in range(5):
+        if not es_connection.indices.exists(index_name):
+            break
+        print(f"Old alias exists, waiting for it to be removed, alias[{index_name}] retry[{retry}]...")
+        sleep(5)
 
 
 if __name__ == '__main__':
