@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 from flask_login import login_user
 from huey import RedisHuey
+from huey.exceptions import RetryTask
 
 from portality import constants
 from portality import models
@@ -21,10 +22,6 @@ log = logging.getLogger(__name__)
 
 
 class BackgroundException(Exception):
-    pass
-
-
-class RetryException(Exception):
     pass
 
 
@@ -70,7 +67,7 @@ class BackgroundApi(object):
             background_task.run()
             if job.outcome_status == BgjobOutcomeStatus.Pending:
                 job.outcome_status = BgjobOutcomeStatus.Success
-        except RetryException:
+        except RetryTask:
             if job.reference is None:
                 job.reference = {}
             retries = job.reference.get("retries", 0)

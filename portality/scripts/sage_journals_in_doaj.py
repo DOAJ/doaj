@@ -1,6 +1,5 @@
 from portality import models
 from portality.core import app
-import esprit
 import csv
 
 SAGE_JOURNALS_IN_DOAJ = {
@@ -30,15 +29,12 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID",
                          "Title"])
 
-        for j in esprit.tasks.scroll(conn, models.Journal.__type__, q=SAGE_JOURNALS_IN_DOAJ, limit=800, keepalive='5m'):
-            journal = models.Journal(_source=j)
+        for journal in Journal.scroll(q=SAGE_JOURNALS_IN_DOAJ, page_size=100, keepalive='5m', limit=800):
             bibjson = journal.bibjson()
 
             writer.writerow([journal.id,

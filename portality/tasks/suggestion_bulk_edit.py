@@ -35,8 +35,6 @@ def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', a
         job_id = job.id
     return BackgroundSummary(job_id, affected={"applications": affected})
 
-    # return len(ids)
-
 
 class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
     __action__ = "suggestion_bulk_edit"
@@ -201,7 +199,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
         :return:
         """
         background_job.save(blocking=True)
-        suggestion_bulk_edit.schedule(args=(background_job.id,), delay=10)
+        suggestion_bulk_edit.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = SuggestionBulkEditBackgroundTask.create_huey_helper(main_queue)

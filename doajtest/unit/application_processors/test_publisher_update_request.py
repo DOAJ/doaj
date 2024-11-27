@@ -131,50 +131,51 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         acc.set_id("testadmin")
         acc.set_role("admin")
         acc.save(blocking=True)
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
+            # ctx = self._make_and_push_test_context(acc=acc)
 
-        pub = models.Account()
-        pub.set_id("publisher")
-        pub.set_email("publisher@example.com")
-        pub.save(blocking=True)
+            pub = models.Account()
+            pub.set_id("publisher")
+            pub.set_email("publisher@example.com")
+            pub.save(blocking=True)
 
-        # create an update request
-        ur = models.Application(**UPDATE_REQUEST_SOURCE)
-        ur.bibjson().publication_time_weeks = 1
-        formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=ur)
-        fc.finalise()
+            # create an update request
+            ur = models.Application(**UPDATE_REQUEST_SOURCE)
+            ur.bibjson().publication_time_weeks = 1
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(source=ur)
+            fc.finalise()
 
-        # get a handle on the update request
-        ur = fc.target
+            # get a handle on the update request
+            ur = fc.target
 
-        # reject that update request
-        admin_context = ApplicationFormFactory.context("admin")
-        afc = admin_context.processor(source=ur)
-        afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
-        afc.finalise(account=acc)
+            # reject that update request
+            admin_context = ApplicationFormFactory.context("admin")
+            afc = admin_context.processor(source=ur)
+            afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
+            afc.finalise(account=acc)
 
-        time.sleep(1)
+            time.sleep(1)
 
-        # unreject the update request
-        ur = models.Application.pull(ur.id)
-        urfc = admin_context.processor(source=ur)
-        urfc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
-        urfc.finalise(account=acc)
+            # unreject the update request
+            ur = models.Application.pull(ur.id)
+            urfc = admin_context.processor(source=ur)
+            urfc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
+            urfc.finalise(account=acc)
 
-        time.sleep(1)
+            time.sleep(1)
 
-        # accept the update request
-        ur = models.Application.pull(ur.id)
-        acfc = admin_context.processor(source=ur)
-        acfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
-        afc.finalise(account=acc)
+            # accept the update request
+            ur = models.Application.pull(ur.id)
+            acfc = admin_context.processor(source=ur)
+            acfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+            afc.finalise(account=acc)
 
-        # check that we only have one journal
-        time.sleep(1)
-        all = models.Journal.all()
-        assert len(all) == 1
-        assert all[0].bibjson().publication_time_weeks == 1
+            # check that we only have one journal
+            time.sleep(1)
+            all = models.Journal.all()
+            assert len(all) == 1
+            assert all[0].bibjson().publication_time_weeks == 1
 
 
     def test_04_reject_resubmit(self):
@@ -190,50 +191,51 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         acc.set_id("testadmin")
         acc.set_role("admin")
         acc.save(blocking=True)
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
+            # ctx = self._make_and_push_test_context(acc=acc)
 
-        pub = models.Account()
-        pub.set_id("publisher")
-        pub.set_email("publisher@example.com")
-        pub.save(blocking=True)
+            pub = models.Account()
+            pub.set_id("publisher")
+            pub.set_email("publisher@example.com")
+            pub.save(blocking=True)
 
-        # create an update request
-        ur = models.Application(**UPDATE_REQUEST_SOURCE)
-        ur.bibjson().publication_time_weeks = 1
-        formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=ur)
-        fc.finalise()
+            # create an update request
+            ur = models.Application(**UPDATE_REQUEST_SOURCE)
+            ur.bibjson().publication_time_weeks = 1
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(source=ur)
+            fc.finalise()
 
-        # get a handle on the update request
-        ur = fc.target
+            # get a handle on the update request
+            ur = fc.target
 
-        # reject that update request
-        admin_context = ApplicationFormFactory.context("admin")
-        afc = admin_context.processor(source=ur)
-        afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
-        afc.finalise(account=acc)
+            # reject that update request
+            admin_context = ApplicationFormFactory.context("admin")
+            afc = admin_context.processor(source=ur)
+            afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
+            afc.finalise(account=acc)
 
-        # now make a new UR and process that to completion, expecting nothing to go awry
-        ur = models.Application(**UPDATE_REQUEST_SOURCE)
-        ur.bibjson().publication_time_weeks = 2
-        formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=ur)
-        fc.finalise()
+            # now make a new UR and process that to completion, expecting nothing to go awry
+            ur = models.Application(**UPDATE_REQUEST_SOURCE)
+            ur.bibjson().publication_time_weeks = 2
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(source=ur)
+            fc.finalise()
 
-        ur = fc.target
-        time.sleep(1)
+            ur = fc.target
+            time.sleep(1)
 
-        # accept the update request
-        ur = models.Application.pull(ur.id)
-        acfc = admin_context.processor(source=ur)
-        acfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
-        afc.finalise(account=acc)
+            # accept the update request
+            ur = models.Application.pull(ur.id)
+            acfc = admin_context.processor(source=ur)
+            acfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+            afc.finalise(account=acc)
 
-        # check that we only have one journal
-        time.sleep(1)
-        all = models.Journal.all()
-        assert len(all) == 1
-        assert all[0].bibjson().publication_time_weeks == 2
+            # check that we only have one journal
+            time.sleep(1)
+            all = models.Journal.all()
+            assert len(all) == 1
+            assert all[0].bibjson().publication_time_weeks == 2
 
 
     def test_05_reject_resubmit_unreject(self):
@@ -249,52 +251,53 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         acc.set_id("testadmin")
         acc.set_role("admin")
         acc.save(blocking=True)
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
+            # ctx = self._make_and_push_test_context(acc=acc)
 
-        pub = models.Account()
-        pub.set_id("publisher")
-        pub.set_email("publisher@example.com")
-        pub.save(blocking=True)
+            pub = models.Account()
+            pub.set_id("publisher")
+            pub.set_email("publisher@example.com")
+            pub.save(blocking=True)
 
-        # create an update request
-        ur1 = models.Application(**UPDATE_REQUEST_SOURCE)
-        ur1.set_id(ur1.makeid())
-        ur1.bibjson().publication_time_weeks = 1
-        formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=ur1)
-        fc.finalise()
+            # create an update request
+            ur1 = models.Application(**UPDATE_REQUEST_SOURCE)
+            ur1.set_id(ur1.makeid())
+            ur1.bibjson().publication_time_weeks = 1
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(source=ur1)
+            fc.finalise()
 
-        # get a handle on the update request
-        ur1 = fc.target
+            # get a handle on the update request
+            ur1 = fc.target
 
-        # reject that update request
-        admin_context = ApplicationFormFactory.context("admin")
-        afc = admin_context.processor(source=ur1)
-        afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
-        afc.finalise(account=acc)
+            # reject that update request
+            admin_context = ApplicationFormFactory.context("admin")
+            afc = admin_context.processor(source=ur1)
+            afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
+            afc.finalise(account=acc)
 
-        # now make a new UR but don't process it
-        ur2 = models.Application(**UPDATE_REQUEST_SOURCE)
-        ur2.set_id(ur2.makeid())
-        ur2.bibjson().publication_time_weeks = 2
-        formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=ur2)
-        fc.finalise()
+            # now make a new UR but don't process it
+            ur2 = models.Application(**UPDATE_REQUEST_SOURCE)
+            ur2.set_id(ur2.makeid())
+            ur2.bibjson().publication_time_weeks = 2
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(source=ur2)
+            fc.finalise()
 
-        ur2 = fc.target
-        time.sleep(1)
+            ur2 = fc.target
+            time.sleep(1)
 
-        # now unreject the first one
-        ur1 = models.Application.pull(ur1.id)
-        urfc = admin_context.processor(source=ur1)
-        urfc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
-        urfc.finalise(account=acc)
-        assert len(urfc.alert) == 1, len(urfc.alert)
+            # now unreject the first one
+            ur1 = models.Application.pull(ur1.id)
+            urfc = admin_context.processor(source=ur1)
+            urfc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
+            urfc.finalise(account=acc)
+            assert len(urfc.alert) == 1, len(urfc.alert)
 
-        # check that we were not successful in unrejecting the application
-        time.sleep(1)
-        ur1 = models.Application.pull(ur1.id)
-        assert ur1.application_status == constants.APPLICATION_STATUS_REJECTED
+            # check that we were not successful in unrejecting the application
+            time.sleep(1)
+            ur1 = models.Application.pull(ur1.id)
+            assert ur1.application_status == constants.APPLICATION_STATUS_REJECTED
 
 
     def test_06_reject_reject_accept(self):
@@ -310,60 +313,61 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         acc.set_id("testadmin")
         acc.set_role("admin")
         acc.save(blocking=True)
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
+            # ctx = self._make_and_push_test_context(acc=acc)
 
-        pub = models.Account()
-        pub.set_id("publisher")
-        pub.set_email("publisher@example.com")
-        pub.save(blocking=True)
+            pub = models.Account()
+            pub.set_id("publisher")
+            pub.set_email("publisher@example.com")
+            pub.save(blocking=True)
 
-        # create an update request
-        ur1 = models.Application(**UPDATE_REQUEST_SOURCE)
-        ur1.set_id(ur1.makeid())
-        ur1.bibjson().publication_time_weeks = 1
-        formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=ur1)
-        fc.finalise()
+            # create an update request
+            ur1 = models.Application(**UPDATE_REQUEST_SOURCE)
+            ur1.set_id(ur1.makeid())
+            ur1.bibjson().publication_time_weeks = 1
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(source=ur1)
+            fc.finalise()
 
-        # get a handle on the update request
-        ur1 = fc.target
+            # get a handle on the update request
+            ur1 = fc.target
 
-        # reject that update request
-        admin_context = ApplicationFormFactory.context("admin")
-        afc = admin_context.processor(source=ur1)
-        afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
-        afc.finalise(account=acc)
+            # reject that update request
+            admin_context = ApplicationFormFactory.context("admin")
+            afc = admin_context.processor(source=ur1)
+            afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
+            afc.finalise(account=acc)
 
-        # now make a new UR and reject that one too
-        ur2 = models.Application(**UPDATE_REQUEST_SOURCE)
-        ur2.set_id(ur2.makeid())
-        ur2.bibjson().publication_time_weeks = 2
-        formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=ur2)
-        fc.finalise()
+            # now make a new UR and reject that one too
+            ur2 = models.Application(**UPDATE_REQUEST_SOURCE)
+            ur2.set_id(ur2.makeid())
+            ur2.bibjson().publication_time_weeks = 2
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(source=ur2)
+            fc.finalise()
 
-        ur2 = fc.target
+            ur2 = fc.target
 
-        admin_context = ApplicationFormFactory.context("admin")
-        afc2 = admin_context.processor(source=ur2)
-        afc2.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
-        afc2.finalise(account=acc)
+            admin_context = ApplicationFormFactory.context("admin")
+            afc2 = admin_context.processor(source=ur2)
+            afc2.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
+            afc2.finalise(account=acc)
 
-        time.sleep(1)
+            time.sleep(1)
 
-        # now unreject the first one (and at the same time accept it)
-        ur1 = models.Application.pull(ur1.id)
-        urfc = admin_context.processor(source=ur1)
-        urfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
-        urfc.finalise(account=acc)
+            # now unreject the first one (and at the same time accept it)
+            ur1 = models.Application.pull(ur1.id)
+            urfc = admin_context.processor(source=ur1)
+            urfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+            urfc.finalise(account=acc)
 
-        # check that we were successful in both unrejecting and accepting the application
-        time.sleep(1)
-        ur1 = models.Application.pull(ur1.id)
-        assert ur1.application_status == constants.APPLICATION_STATUS_ACCEPTED
+            # check that we were successful in both unrejecting and accepting the application
+            time.sleep(1)
+            ur1 = models.Application.pull(ur1.id)
+            assert ur1.application_status == constants.APPLICATION_STATUS_ACCEPTED
 
-        journal = models.Journal.pull(journal.id)
-        assert journal.related_application_record(ur1.id) is not None
+            journal = models.Journal.pull(journal.id)
+            assert journal.related_application_record(ur1.id) is not None
 
 
 

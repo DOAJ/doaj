@@ -422,7 +422,7 @@ class PreservationBackgroundTask(BackgroundTask):
         """
         Submit Background job"""
         background_job.save(blocking=True)
-        preserve.schedule(args=(background_job.id,), delay=10)
+        preserve.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
 huey_helper = PreservationBackgroundTask.create_huey_helper(main_queue)

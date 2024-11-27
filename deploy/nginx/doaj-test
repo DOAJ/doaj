@@ -4,15 +4,15 @@ server {
     server_name     testdoaj.cottagelabs.com testdoajes.cottagelabs.com staticdoaj.cottagelabs.com;
 
     location =/static/doaj/doajArticle.xsd {
-        alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/doaj/portality/static/doaj/doajArticles.xsd;
     }
 
     location =/static/doaj/iso_639-2b.xsd {
-        alias /home/cloo/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+        alias /home/cloo/doaj/portality/static/doaj/iso_639-2b.xsd;
     }
 
     location /static/crossref {
-        alias /home/cloo/doaj/src/doaj/portality/static/crossref;
+        alias /home/cloo/doaj/portality/static/crossref;
     }
 
     location / {
@@ -63,10 +63,10 @@ server {
         proxy_pass http://doaj_apps;
     }
     location =/robots.txt {
-        alias /home/cloo/doaj/src/doaj/deploy/robots-test.txt;
+        alias /home/cloo/doaj/deploy/robots-test.txt;
     }
     location /static/ {
-        alias /home/cloo/doaj/src/doaj/portality/static/;
+        alias /home/cloo/doaj/portality/static/;
         autoindex off;
         expires max;
     }
@@ -97,10 +97,10 @@ server {
         proxy_pass http://doaj_static;
     }
     location =/robots.txt {
-        alias /home/cloo/doaj-static/src/doaj/deploy/robots-test.txt;
+        alias /home/cloo/doaj-static/deploy/robots-test.txt;
     }
     location /static/ {
-        alias /home/cloo/doaj-static/src/doaj/portality/static/;
+        alias /home/cloo/doaj-static/portality/static/;
         autoindex off;
         expires max;
     }
