@@ -5,11 +5,8 @@
 ENV=$1
 
 # apt dependencies for the DOAJ app
-sudo apt-get update
-sudo apt-get install -q -y libxml2-dev libxslt-dev python3-dev python3-pip lib32z1-dev
-
-# get awscli from pip so it's up to date (although installation will use the one from the virtualenv it's handy to have)
-sudo pip install awscli
+sudo apt update
+sudo apt install -q -y libxml2-dev libxslt-dev python3-dev python3-pip lib32z1-dev
 
 # Run from the doaj folder that's already checked out
 
@@ -37,7 +34,7 @@ fi
 
 # Install DOAJ submodules and dependencies
 git submodule update --init --recursive
-pip install -e .
+pip install -e . --use-pep517
 
 # Compile the static pages
 python portality/cms/build_fragments.py
