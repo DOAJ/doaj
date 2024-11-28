@@ -1,16 +1,18 @@
-import time
+from __future__ import annotations
+
+import json
 import re
 import os
 import sys
-import uuid
-import json
-import elasticsearch
+import time
 import urllib.parse
-
+import uuid
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List
+from typing import List, Iterable, Tuple
+
+import elasticsearch
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -724,15 +726,16 @@ class DomainObject(UserDict, object):
         return filenames
 
     @classmethod
-    def bulk_load_from_file(cls, source_file, limit=None, max_content_length=100000000):
+    def bulk_load_from_file(cls, source_file, index=None, limit=None, max_content_length=100000000):
         """ ported from esprit.tasks - bulk load to index from file """
+        index = index or cls.index_name()
 
         source_size = os.path.getsize(source_file)
         with open(source_file, "r") as f:
             if limit is None and source_size < max_content_length:
                 # if we aren't selecting a portion of the file, and the file is below the max content length, then
                 # we can just serve it directly
-                ES.bulk(body=f.read(), index=cls.index_name(), doc_type=cls.doc_type(), request_timeout=120)
+                ES.bulk(body=f.read(), index=index, doc_type=cls.doc_type(), request_timeout=120)
                 return -1
             else:
                 count = 0
@@ -755,7 +758,7 @@ class DomainObject(UserDict, object):
                         else:
                             count += records
 
-                    ES.bulk(body=chunk, index=cls.index_name(), doc_type=cls.doc_type(), request_timeout=120)
+                    ES.bulk(body=chunk, index=index, doc_type=cls.doc_type(), request_timeout=120)
                     if finished:
                         break
                 if limit is not None:
@@ -1063,6 +1066,25 @@ def refresh():
     refresh all indexes to make newly added or deleted documents immediately searchable
     """
     return ES.indices.refresh()
+
+
+def find_indexes_by_prefix(index_prefix) -> list[str]:
+    data = ES.indices.get(f'{index_prefix}*')
+    return list(data.keys())
+
+
+def find_index_aliases(alias_prefixes=None) -> Iterable[Tuple[str, str]]:
+    def _yield_index_alias():
+        data = ES.indices.get_alias()
+        for index, d in data.items():
+            for alias in d['aliases'].keys():
+                yield index, alias
+
+    index_aliases = _yield_index_alias()
+    if alias_prefixes:
+        index_aliases = ((index, alias) for index, alias in index_aliases
+                         if any(alias.startswith(p) for p in alias_prefixes))
+    return index_aliases
 
 
 class BlockTimeOutException(Exception):

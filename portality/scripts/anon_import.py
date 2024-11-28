@@ -13,16 +13,40 @@ or for a test server:
 DOAJENV=test python portality/scripts/anon_import.py data_import_settings/test_server.json
 """
 
-import json, gzip, shutil, elasticsearch
-from portality.core import app, es_connection, initialise_index
-from portality.store import StoreFactory
-from portality.dao import DomainObject
-from portality import models
+from __future__ import annotations
+
+import gzip
+import itertools
+import json
+import re
+import shutil
+from dataclasses import dataclass
+from time import sleep
+
+import portality.dao
 from doajtest.helpers import patch_config
+from portality import models
+from portality.core import app, es_connection
+from portality.dao import DomainObject
+from portality.lib import dates, es_data_mapping
+from portality.store import StoreFactory
+from portality.util import ipt_prefix
+
+
+@dataclass
+class IndexDetail:
+    index_type: str
+    instance_name: str
+    alias_name: str
+
+
+def find_toberemoved_indexes(prefix):
+    for index in portality.dao.find_indexes_by_prefix(prefix):
+        if index == prefix or re.match(rf"{prefix}-\d+", index):
+            yield index
 
 
 def do_import(config):
-
     # filter for the types we are going to work with
     import_types = {}
     for t, s in config.get("types", {}).items():
@@ -35,22 +59,58 @@ def do_import(config):
         print(("{x} from {y}".format(x=count, y=import_type)))
     print("\n")
 
+    toberemoved_index_prefixes = [ipt_prefix(import_type) for import_type in import_types.keys()]
+    toberemoved_indexes = itertools.chain.from_iterable(
+        find_toberemoved_indexes(p) for p in toberemoved_index_prefixes
+    )
+    toberemoved_index_aliases = list(portality.dao.find_index_aliases(toberemoved_index_prefixes))
+
+    if toberemoved_indexes:
+        print("==Removing the following indexes==")
+        print('   {}'.format(', '.join(toberemoved_indexes)))
+        print()
+    if toberemoved_index_aliases:
+        print("==Removing the following aliases==")
+        print('   {}'.format(', '.join(alias for _, alias in toberemoved_index_aliases)))
+        print()
+
     if config.get("confirm", True):
         text = input("Continue? [y/N] ")
         if text.lower() != "y":
             exit()
 
     # remove all the types that we are going to import
-    for import_type in list(import_types.keys()):
-        try:
-            if es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type):
-                es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
-        except elasticsearch.exceptions.NotFoundError:
-            pass
+    for index in toberemoved_indexes:
+        if es_connection.indices.exists(index):
+            print("Deleting index: {}".format(index))
+            es_connection.indices.delete(index, ignore=[404])
+
+    for index, alias in toberemoved_index_aliases:
+        if es_connection.indices.exists_alias(alias, index=index):
+            print("Deleting alias: {} -> {}".format(index, alias))
+            es_connection.indices.delete_alias(index, alias, ignore=[404])
+
+    index_details = {}
+    for import_type in import_types.keys():
+        alias_name = ipt_prefix(import_type)
+        index_details[import_type] = IndexDetail(
+            index_type=import_type,
+            instance_name=alias_name + '-{}'.format(dates.today(dates.FMT_DATE_SHORT)),
+            alias_name=alias_name
+        )
 
     # re-initialise the index (sorting out mappings, etc)
-    print("==Initialising Index for Mappings==")
-    initialise_index(app, es_connection)
+    print("==Initialising Index Mappings and alias ==")
+    mappings = es_data_mapping.get_mappings(app)
+    for index_detail in index_details.values():
+        print("Initialising index: {}".format(index_detail.instance_name))
+        es_connection.indices.create(index=index_detail.instance_name,
+                                     body=mappings[index_detail.index_type],
+                                     request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
+
+        print("Creating alias:     {:<25} -> {}".format(index_detail.instance_name, index_detail.alias_name))
+        blocking_if_indices_exist(index_detail.alias_name)
+        es_connection.indices.put_alias(index=index_detail.instance_name, name=index_detail.alias_name)
 
     mainStore = StoreFactory.get("anon_data")
     tempStore = StoreFactory.tmp()
@@ -85,10 +145,12 @@ def do_import(config):
                     shutil.copyfileobj(f_in, f_out)
                 tempStore.delete_file(container, filename + ".gz")
 
-                print(("Importing from {x}".format(x=filename)))
+                instance_index_name = index_details[import_type].instance_name
+                print("Importing from {x} to index[{index}]".format(x=filename, index=instance_index_name))
 
                 imported_count = dao.bulk_load_from_file(uncompressed_file,
-                                                        limit=limit, max_content_length=config.get("max_content_length", 100000000))
+                                                         index=instance_index_name, limit=limit,
+                                                         max_content_length=config.get("max_content_length", 100000000))
                 tempStore.delete_file(container, filename)
 
                 if limit is not None and imported_count != -1:
@@ -105,9 +167,18 @@ def do_import(config):
     tempStore.delete_container(container)
 
 
+def blocking_if_indices_exist(index_name):
+    for retry in range(5):
+        if not es_connection.indices.exists(index_name):
+            break
+        print(f"Old alias exists, waiting for it to be removed, alias[{index_name}] retry[{retry}]...")
+        sleep(5)
+
+
 if __name__ == '__main__':
 
     import argparse
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument("config", help="Config file for import run, e.g dev_basics.json")
