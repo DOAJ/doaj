@@ -18,6 +18,7 @@ from __future__ import annotations
 import gzip
 import itertools
 import json
+import re
 import shutil
 from dataclasses import dataclass
 from time import sleep
@@ -39,6 +40,12 @@ class IndexDetail:
     alias_name: str
 
 
+def find_toberemoved_indexes(prefix):
+    for index in portality.dao.find_indexes_by_prefix(prefix):
+        if index == prefix or re.match(rf"{prefix}-\d+", index):
+            yield index
+
+
 def do_import(config):
     # filter for the types we are going to work with
     import_types = {}
@@ -53,9 +60,9 @@ def do_import(config):
     print("\n")
 
     toberemoved_index_prefixes = [ipt_prefix(import_type) for import_type in import_types.keys()]
-    toberemoved_indexes = list(itertools.chain.from_iterable(
-        portality.dao.find_indexes_by_prefix(p) for p in toberemoved_index_prefixes
-    ))
+    toberemoved_indexes = itertools.chain.from_iterable(
+        find_toberemoved_indexes(p) for p in toberemoved_index_prefixes
+    )
     toberemoved_index_aliases = list(portality.dao.find_index_aliases(toberemoved_index_prefixes))
 
     if toberemoved_indexes:
