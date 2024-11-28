@@ -3,7 +3,7 @@ from portality.background import BackgroundTask, BackgroundApi
 from portality.bll.doaj import DOAJ
 from portality.core import app
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 class JournalCSVBackgroundTask(BackgroundTask):
@@ -65,7 +65,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         journal_csv.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = JournalCSVBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalCSVBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

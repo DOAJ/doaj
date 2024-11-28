@@ -4,7 +4,7 @@ from portality import app_email, models
 from portality.background import BackgroundTask
 from portality.core import app
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 def get_system_email():
@@ -78,7 +78,7 @@ class MonitorBgjobsBackgroundTask(BackgroundTask):
         background_helper.submit_by_background_job(background_job, monitor_bgjobs)
 
 
-huey_helper = MonitorBgjobsBackgroundTask.create_huey_helper(long_running)
+huey_helper = MonitorBgjobsBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule
