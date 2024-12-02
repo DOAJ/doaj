@@ -114,7 +114,7 @@ if __name__ == "__main__":
     # Iterate through all the applications and query Provenance with application id and status to retrieve the
     # status of the applications
     for record in models.Application.iterate(q=date_applied_query(args.from_year, args.to_year), page_size=20):
-        application_year = dates.parse(record["created_date"], dates.FMT_DATETIME_MS_STD).year
+        application_year = dates.parse(record["admin"]["date_applied"], dates.FMT_DATETIME_MS_STD).year
         update_submission_counter(application_year)
 
         provenance_res = models.Provenance.query(q=status_query(record["id"]), size=2)
