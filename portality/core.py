@@ -93,6 +93,12 @@ def configure_app(app):
         app.config.from_pyfile(config_path)
         print('Loaded secrets config from ' + config_path)
 
+    # import from instance.cfg
+    instance_path = os.path.join(proj_root, 'instance.cfg')
+    if os.path.exists(instance_path):
+        app.config.from_pyfile(instance_path)
+        print('Loaded instance specific config from ' + instance_path)
+
 
 def get_app_env(app):
     if not app.config.get('VALID_ENVIRONMENTS'):
