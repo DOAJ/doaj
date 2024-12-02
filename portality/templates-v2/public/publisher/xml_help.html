@@ -226,6 +226,17 @@
                 Ensure that all your articles have the correct DOIs and full-text links. If it still doesn’t work please <a href="https://github.com/DOAJ/doaj/issues/new/choose" target="_blank" rel="noopener">submit a bug report</a> or <a href="{{ url_for('doaj.contact') }}">contact us</a> with the details; we may need to clean up your existing articles manually.
             </td>
         </tr>
+        <tr>
+            <th>
+                <code>Article(s)  cannot be uploaded before OA start date of the Journal</code>
+            </th>
+            <td>
+                One or more articles in the xml has the <strong>publicationDate</strong> which is before OpenAccess start date of the Journal.
+            </td>
+            <td>
+                Ensure that all your articles are uploaded on or after OpenAccess start date of the Journal.
+            </td>
+        </tr>
         </tbody>
     </table>
 {% endblock %}
