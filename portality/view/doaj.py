@@ -217,7 +217,7 @@ def get_from_local_store(container, filename):
     from portality import store
     localStore = store.StoreFactory.get(None)
     file_handle = localStore.get(container, filename)
-    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, download_name=filename)
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])

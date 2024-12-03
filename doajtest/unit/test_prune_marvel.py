@@ -1,13 +1,13 @@
 import datetime, calendar
 from dateutil.relativedelta import relativedelta
 from freezegun import freeze_time
+from unittest import TestCase
 
-from doajtest.helpers import DoajTestCase
 from portality.lib.dates import FMT_DATE_YMDOT
 from portality.scripts.prune_marvel import generate_delete_pattern
 
 
-class TestPruneMarvel(DoajTestCase):
+class TestPruneMarvel(TestCase):
 
     @classmethod
     def setUpClass(cls):

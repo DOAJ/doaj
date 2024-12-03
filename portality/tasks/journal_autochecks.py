@@ -1,7 +1,8 @@
 from portality import models
+from portality.core import app
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import events_queue as queue
 from portality.bll import DOAJ
 
 #######################################
@@ -10,6 +11,7 @@ from portality.bll import DOAJ
 #
 # When we implement that functionality we will also need to implement tests for this
 #######################################
+
 
 class JournalAutochecks(BackgroundTask):
 
@@ -78,10 +80,10 @@ class JournalAutochecks(BackgroundTask):
         :return:
         """
         background_job.save()
-        journal_autochecks.schedule(args=(background_job.id,), delay=10)
+        journal_autochecks.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = JournalAutochecks.create_huey_helper(long_running)
+huey_helper = JournalAutochecks.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=True)

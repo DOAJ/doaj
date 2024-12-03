@@ -29,7 +29,7 @@ Alternatively, you can download and extract the `tar` or `zip` archive and run t
 
 Elasticsearch documentation can be found [here](https://www.elastic.co/guide/en/elasticsearch/reference/7.10/setup.html#setup-installation).
 
-You can check whether its running via `curl localhost:9200` by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
+You can check whether it's running via `curl localhost:9200` by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
 
 ## Redis
 
@@ -47,7 +47,7 @@ For background tasks, we use `redis`. Run this however you like, just make sure 
 
 [comment] <>: (~~->Python:Technology~~)
 
-Install Python 3.8 or greater. Python 2.x is not supported anymore. You can verify if correct version of python is in use by typing:
+Install Python 3.10 or greater. Python 2.x is not supported anymore. You can verify if correct version of python is in use by typing:
 
     python --version
 

@@ -1,13 +1,14 @@
-import json, urllib.request, urllib.parse, urllib.error, requests
+import json
+from io import BytesIO
 
-from flask import Blueprint, make_response, request, abort, render_template
+from flask import Blueprint, make_response, abort, render_template, send_file
 from flask_login import current_user, login_required
 
-from portality.core import app
-from portality.decorators import ssl_required, write_required, restrict_to_role
-from portality.util import jsonp
 from portality import lock, models
 from portality.bll import DOAJ
+from portality.crosswalks.article_ris import ArticleRisXWalk
+from portality.decorators import ssl_required, write_required
+from portality.util import jsonp
 from portality.ui import templates
 
 blueprint = Blueprint('doajservices', __name__)
@@ -41,7 +42,7 @@ def unlock(object_type, object_id):
         abort(400)
 
     # otherwise, return success
-    resp = make_response(json.dumps({"result" : "success"}))
+    resp = make_response(json.dumps({"result": "success"}))
     resp.mimetype = "application/json"
     return resp
 
@@ -111,7 +112,8 @@ def group_status(group_id):
     :param group_id:
     :return:
     """
-    if (not (current_user.has_role("editor") and models.EditorGroup.pull(group_id).editor == current_user.id)) and (not current_user.has_role("admin")):
+    if (not (current_user.has_role("editor") and models.EditorGroup.pull(group_id).editor == current_user.id)) and (
+            not current_user.has_role("admin")):
         abort(404)
     svc = DOAJ.todoService()
     stats = svc.group_stats(group_id)
@@ -130,6 +132,7 @@ def dismiss_autocheck(autocheck_set_id, autocheck_id):
         abort(404)
     return make_response(json.dumps({"status": "success"}))
 
+
 @blueprint.route("/autocheck/undismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
 @jsonp
 @login_required
@@ -142,3 +145,23 @@ def undismiss_autocheck(autocheck_set_id, autocheck_id):
         abort(404)
     return make_response(json.dumps({"status": "success"}))
 
+
+@blueprint.route('/export/article/<article_id>/<fmt>')
+def export_article_ris(article_id, fmt):
+    article = models.Article.pull(article_id)
+    if not article:
+        abort(404)
+
+    if fmt != 'ris':
+        # only support ris for now
+        abort(404)
+
+    byte_stream = BytesIO()
+    ris = ArticleRisXWalk.article2ris(article)
+    byte_stream.write(ris.to_text().encode('utf-8', errors='ignore'))
+    byte_stream.seek(0)
+
+    filename = f'article-{article_id[:10]}.ris'
+
+    resp = make_response(send_file(byte_stream, as_attachment=True, download_name=filename))
+    return resp

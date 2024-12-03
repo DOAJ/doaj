@@ -22,13 +22,21 @@
   photo: "ikhwan.jpg"
   coi:
     2022: https://drive.google.com/file/d/1bmVVvMAPToLQCHGOfNz0D80xi4WyZhwn/view?usp=sharing
+    
+- name: Mochammad Tanzil Multazam
+  region: Indonesia
+  bio: "Mochammad Tanzil Multazam is a prominent academic and legal expert at Universitas Muhammadiyah Sidoarjo, known for his significant contributions to scientific publication and library management. Since 2016, he has played a pivotal role in enhancing the quality of Indonesian journals through his leadership at Relawan Jurnal Indonesia, managing over 13,000 journals as the largest Crossref Sponsoring Organization globally. In 2023, he became Head of the UMSIDA Library, continuing his efforts to integrate digital technology into academic publishing. His influence extends internationally, particularly through the Silkroad Research Network, fostering collaboration among journal managers along the Silk Road Region"
+  photo: "Tanzil.jpg"
+  coi:
+    2024: https://drive.google.com/file/d/1q3h3T45-VRbvJxf8e_HacEDnvJhzg5yY/view?usp=sharing
 
 - name: Ina Smith
   region: Southern Africa
-  bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Access in general, scholarly research activities, repositories, and Open Access journal management and publishing."
+  bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Science incl. Open Access, scholarly research activities, repositories, and Open Access journal management and publishing."
   photo: "ina-smith.png"
   coi:
     2022: https://drive.google.com/file/d/1bnxk0NzQDU5QzdUdaFWD85A3lEA4Iu8a/view?usp=sharing
+    2024: https://drive.google.com/file/d/1cjkOAuYhyt_8m5EkKxoDe4A596emb9Wb/view?usp=sharing
 
 - name: Ivonne Lujano
   region: Latin America
@@ -43,6 +51,13 @@
   photo: "mahmoud-new.jpg"
   coi:
     2022: https://drive.google.com/file/d/10s7B0WeTPqpaafhThv-i8q03uIFaAAue/view?usp=sharing
+
+- name: Kamel Belhamel
+  region: North Africa and Middle East
+  bio: "Kamel Belhamel is a Full Professor of Chemistry at the University of Bejaia, Algeria (ORCID). He is the DOAJ Ambassador and Managing Editor for North Africa and the Middle East. His scientific activity is focused on scholarly communications, new developments in academic publishing and the chemistry of Natural Products. Kamel has strongly advocated for open access and open science. He is the Creative Commons Representative to the Global Network Council and editor-in-chief of the Algerian Journal of Natural Products. He is father to three daughters and likes travelling, healthy local foods and home-made snacks."
+  photo: "Kamel.jpg"
+  coi:
+    2024: https://drive.google.com/file/d/1UTUIqeAx-4Q3_gC4sZ7MG3pa0Z3hOsKP/view?usp=sharing
     
 - name: Melkamu Beyene
   region: East Africa
@@ -52,7 +67,7 @@
 
 - name: Muhammad Imtiaz Subhani
   region: Pakistan
-  bio: "Dr. Subhani is an [award-winning editor by Thomson Reuters in 2015](https://news.pakistantimes.com/2015/05/05/sajms-secures-third-position-in-scholarone-vision-award-2015-367073.html). He holds a PhD from Iqra University, Pakistan, in Financial Econometrics. Dr. Subahni is a Professor and Dean of the Business School at ILMA University, Pakistan. He is currently [working voluntarily for Society for Scholarly Publishing (SSP)](https://customer.sspnet.org/ssp/AboutUs/Committee-Roster.aspx?Code=EDUCATION) as an education committee member, while he is also a member of Creative Commons Global Network, CC Open GLAM, and Research Data Publishing Ethics, FORCE 11. He is a scientific publishing consultant & a technical committee member of HEC Journals’ Recognition System, at the Higher Education Commission, Government of Pakistan."
+  bio: "Dr. Subhani is an <a href='https://news.pakistantimes.com/2015/05/05/sajms-secures-third-position-in-scholarone-vision-award-2015-367073.html' target='_blank'>award-winning editor by Thomson Reuters in 2015</a>. He holds a PhD in Financial Econometrics from Iqra University, Pakistan. Dr. Subahni is a Professor and Dean of the Business School at ILMA University, Pakistan. He is currently <a href='https://customer.sspnet.org/ssp/AboutUs/Committee-Roster.aspx?Code=EDUCATION' target='_blank'>working voluntarily for Society for Scholarly Publishing (SSP)</a> as an education committee member. He is also a member of Creative Commons Global Network, CC Open GLAM, and Research Data Publishing Ethics, FORCE 11. He is a scientific publishing consultant & a technical committee member of HEC Journals’ Recognition System at the Higher Education Commission, Government of Pakistan."
   photo: "subhani-1.jpeg"
   coi:
     2022: https://drive.google.com/file/d/1nYQZ8h766UsNY_gWwCbRyVQ_yxdCyQN5/view?usp=sharing 
