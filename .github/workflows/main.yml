@@ -1,10 +1,13 @@
 on:
   push:
     branches:
-    - master
-    - develop
-    - feature/*
-    
+      - master
+      - develop
+      - feature/*
+  delete:
+    branches:
+      - '*'
+
 jobs:
   gen_docs:
     name: generate DOAJ documentation and functional tests and push to the docs repo
@@ -56,3 +59,46 @@ jobs:
           git add .
           git commit -m "GH Actions docs run for ${{ github.ref_name }}"
           git push
+
+  delete_docs_folder:
+    name: Remove corresponding folder in DOAJ/doaj-docs when a branch is deleted
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout the doaj-docs repository
+        uses: actions/checkout@v4
+        with:
+          path: doaj-docs
+          repository: DOAJ/doaj-docs
+          token: ${{ secrets.STEVE_PAT_DOAJ_ACTIONS_DOCS }}
+          fetch-depth: 0
+
+      - name: Delete corresponding folder
+        env:
+          BRANCH_NAME: ${{ github.ref }}
+        run: |
+          FOLDER_PATH="${{ env.BRANCH_NAME#refs/heads/ }}"
+          BASE_FOLDER=$(dirname "$FOLDER_PATH")
+          TARGET_FOLDER=$(basename "$FOLDER_PATH")
+
+          # Check if base folder and target folder exist
+          if [ -d "$GITHUB_WORKSPACE/doaj-docs/$BASE_FOLDER" ]; then
+            cd $GITHUB_WORKSPACE/doaj-docs/$BASE_FOLDER
+
+            if [ -d "$TARGET_FOLDER" ]; then
+              rm -rf "$TARGET_FOLDER"
+              echo "Deleted folder $TARGET_FOLDER"
+              cd $GITHUB_WORKSPACE/doaj-docs
+              git config user.name github-actions
+              git config user.email github-actions@github.com
+              git add .
+              git commit -m "deleted: $TARGET_FOLDER"
+              git push origin master
+            else
+              echo "$FOLDER_PATH doesn't have a corresponding folder in doaj-docs"
+            fi
+          else
+            echo "$FOLDER_PATH doesn't have a corresponding folder in doaj-docs"
+          fi
