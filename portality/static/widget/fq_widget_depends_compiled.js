@@ -7141,9 +7141,9 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
@@ -7304,7 +7304,7 @@ $.extend(true, doaj, {
 
                 var date = "";
                 if (resultobj.index.date) {
-                    let humanised = doaj.humanYearMonth(resultobj.index.date);
+                    let humanised = doaj.dates.humanYearMonth(resultobj.index.date);
                     if (humanised) {
                         date = "(" + humanised + ")";
                     }
@@ -7597,7 +7597,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.humanDate(resultobj.last_updated);
+                last_updated += doaj.dates.humanDate(resultobj.last_updated);
 
                 var icon = "edit-3";
                 if (accessLink[1] === "View") {
@@ -7752,7 +7752,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.humanDate(resultobj.last_manual_update);
+                last_updated += doaj.dates.humanDate(resultobj.last_manual_update);
 
                 var deleteLink = "";
                 var deleteLinkTemplate = doaj.publisherUpdatesSearchConfig.deleteLinkTemplate;
@@ -7893,9 +7893,9 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
@@ -8356,7 +8356,7 @@ $.extend(true, doaj, {
         },
 
         createdDateWithTime : function (val, resultobj, renderer) {
-            return doaj.iso_datetime2date_and_time(resultobj['created_date']);
+            return doaj.dates.dates.humanYearMonth(resultobj['created_date']);
         },
 
         lastManualUpdate : function (val, resultobj, renderer) {
@@ -8365,13 +8365,13 @@ $.extend(true, doaj, {
             {
                 return 'Never'
             } else {
-                return doaj.iso_datetime2date_and_time(man_update);
+                return doaj.dates.dates.humanYearMonth(man_update);
             }
         },
 
         suggestedOn : function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
-                return doaj.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
+                return doaj.dates.dates.humanYearMonth(resultobj['admin']['date_applied']);
             } else {
                 return false;
             }
