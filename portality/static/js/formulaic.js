@@ -1342,7 +1342,7 @@ var formulaic = {
             }
 
             this.showNewFlag = function() {
-                $(this.flagGroups[this.newFlagIdx]).show();
+                $(this.flagGroups[this.newFlagIdx]).parent().show();
             }
 
             this.hideNewFlag = function() {
