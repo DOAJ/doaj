@@ -1250,7 +1250,7 @@ var formulaic = {
                 $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_setter").hide();
                 $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_created_date").hide();
                 $(this.flagGroups[this.newFlagIdx]).insertBefore(this.flagGroups[this.existingFlagIdx]);
-                $(this.flagGroups[this.newFlagIdx]).hide();
+                $(this.flagGroups[this.newFlagIdx]).parent().hide();
             };
 
             this.setUI = function() {
