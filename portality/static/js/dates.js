@@ -67,7 +67,55 @@ $.extend(true, doaj, {
              */
             if (!isodate_str) { return "" }
             return isodate_str.replace('T',' ').replace('Z','')
-        }
+        },
+
+        parseDate : function(dateStr, format)  {
+                const regexParts = format
+                    .replace(/YYYY/g, "(\\d{4})")
+                    .replace(/MM/g, "(\\d{2})")
+                    .replace(/DD/g, "(\\d{2})")
+                    .replace(/HH/g, "(\\d{2})")
+                    .replace(/mm/g, "(\\d{2})")
+                    .replace(/ss/g, "(\\d{2})");
+
+                const regex = new RegExp(`^${regexParts}$`);
+                const match = dateStr.match(regex);
+
+                if (!match) throw new Error("Date string does not match format");
+
+                const map = {};
+                const formatParts = format.match(/(YYYY|MM|DD|HH|mm|ss)/g);
+
+                formatParts.forEach((token, i) => {
+                    map[token] = match[i + 1];
+                });
+
+                return new Date(
+                    map["YYYY"] || 1970,
+                    map["MM"] ? map["MM"] - 1 : 0,
+                    map["DD"] || 1,
+                    map["HH"] || 0,
+                    map["mm"] || 0,
+                    map["ss"] || 0
+                );
+            },
+
+            formatDate: function(date, format) {
+                const pad = (num, size) => String(num).padStart(size, "0");
+
+                return format
+                    .replace(/YYYY/g, date.getFullYear())
+                    .replace(/MM/g, pad(date.getMonth() + 1, 2))
+                    .replace(/DD/g, pad(date.getDate(), 2))
+                    .replace(/HH/g, pad(date.getHours(), 2))
+                    .replace(/mm/g, pad(date.getMinutes(), 2))
+                    .replace(/ss/g, pad(date.getSeconds(), 2));
+            },
+
+            reformat: function(s, inFormat, outFormat) {
+                const parsedDate = doaj.dates.parseDate(s, inFormat);
+                return doaj.dates.formatDate(parsedDate, outFormat);
+            }
 
     }
 });
