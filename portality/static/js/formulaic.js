@@ -1217,6 +1217,7 @@ var formulaic = {
             };
 
             this.setupFlagIndices = function () {
+                // existing flag is 1 if it doesn't exist just to be able to remove it.
                 this.existingFlagIdx = this.flagExists ? 0 : null;
                 this.newFlagIdx = this.flagExists ? 1 : 0;
             };
@@ -1249,8 +1250,10 @@ var formulaic = {
 
                 $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_setter").hide();
                 $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_created_date").hide();
-                $(this.flagGroups[this.newFlagIdx]).insertBefore(this.flagGroups[this.existingFlagIdx]);
-                $(this.flagGroups[this.newFlagIdx]).parent().hide();
+                if (this.flagExists) {
+                    $(this.flagGroups[this.newFlagIdx]).insertBefore(this.flagGroups[this.existingFlagIdx]);
+                }
+                $(this.flagGroups[this.newFlagIdx]).hide();
             };
 
             this.setUI = function() {
@@ -1258,7 +1261,11 @@ var formulaic = {
                 this.removeResolveButtonsIfResolveDisabled();
                 this.setupFlagIndices();
                 if (this.flagExists) {
-                    this.initializeExistingFlag()
+                    this.initializeExistingFlag();
+                }
+                else {
+                    // only 1 flagGroup is needed, the second one can be removed.
+                    $(this.flagGroups[1]).remove();
                 }
                 this.setupNewFlagGroup()
                 this.setAddBtnStatus();
@@ -1342,7 +1349,7 @@ var formulaic = {
             }
 
             this.showNewFlag = function() {
-                $(this.flagGroups[this.newFlagIdx]).parent().show();
+                $(this.flagGroups[this.newFlagIdx]).show();
             }
 
             this.hideNewFlag = function() {
