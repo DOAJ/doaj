@@ -19,7 +19,7 @@ from portality.dao import any_pending_tasks, query_data_tasks
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
-from portality.tasks.redis_huey import main_queue, long_running
+from portality.tasks.redis_huey import events_queue, scheduled_short_queue, scheduled_long_queue
 from portality.util import url_for
 
 
@@ -169,6 +169,8 @@ class DoajTestCase(TestCase):
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
             "UR_CONCURRENCY_TIMEOUT": 0,
             'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
+            'HUEY_IMMEDIATE': True,
+            'HUEY_ASYNC_DELAY': 0
         }
 
     @classmethod
@@ -180,13 +182,10 @@ class DoajTestCase(TestCase):
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
 
-        # always_eager has been replaced by immediate
-        # for huey version > 2
-        # https://huey.readthedocs.io/en/latest/guide.html
-        main_queue.always_eager = True
-        long_running.always_eager = True
-        main_queue.immediate = True
-        long_running.immediate = True
+        # Run huey jobs straight away
+        events_queue.immediate = True
+        scheduled_short_queue.immediate = True
+        scheduled_long_queue.immediate = True
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")

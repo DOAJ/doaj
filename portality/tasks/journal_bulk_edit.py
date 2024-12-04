@@ -10,7 +10,7 @@ from portality.core import app
 from portality.forms.application_forms import JournalFormFactory
 from portality.lib import dates
 
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 
@@ -235,10 +235,10 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         :return:
         """
         background_job.save(blocking=True)
-        journal_bulk_edit.schedule(args=(background_job.id,), delay=10)
+        journal_bulk_edit.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = JournalBulkEditBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalBulkEditBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)

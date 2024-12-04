@@ -96,8 +96,8 @@ def now_str_with_microseconds() -> str:
     return format(now(), format=FMT_DATETIME_MS_STD)
 
 
-def today() -> str:
-    return format(now(), format=FMT_DATE_STD)
+def today(str_format=FMT_DATE_STD) -> str:
+    return format(now(), format=str_format)
 
 
 def random_date(fro: datetime = None, to: datetime = None) -> str:

@@ -25,33 +25,33 @@ class TestApplicationPublisherCreatedNotify(DoajTestCase):
         assert not ApplicationPublisherCreatedNotify.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
-        source = ApplicationFixtureFactory.make_application_source()
-        app = models.Application(**source)
-        app.set_id("1234")
-        # app.save()
+        with self._make_and_push_test_context_manager("/"):
+            source = ApplicationFixtureFactory.make_application_source()
+            app = models.Application(**source)
+            app.set_id("1234")
+            # app.save()
 
-        acc = models.Account()
-        acc.set_id("publisher")
-        acc.set_email("test@example.com")
-        acc.save(blocking=True)
+            acc = models.Account()
+            acc.set_id("publisher")
+            acc.set_email("test@example.com")
+            acc.save(blocking=True)
 
-        app.set_owner(acc.id)
+            app.set_owner(acc.id)
 
-        event = models.Event(constants.EVENT_APPLICATION_CREATED, context={"application" : app.data})
-        ApplicationPublisherCreatedNotify.consume(event)
+            event = models.Event(constants.EVENT_APPLICATION_CREATED, context={"application" : app.data})
+            ApplicationPublisherCreatedNotify.consume(event)
 
-        time.sleep(1)
-        ns = models.Notification.all()
-        assert len(ns) == 1
+            time.sleep(1)
+            ns = models.Notification.all()
+            assert len(ns) == 1
 
-        n = ns[0]
-        assert n.who == "publisher"
-        assert n.created_by == ApplicationPublisherCreatedNotify.ID
-        assert n.classification == constants.NOTIFICATION_CLASSIFICATION_CREATE
-        assert n.long is not None
-        assert n.short is not None
-        assert not n.is_seen()
+            n = ns[0]
+            assert n.who == "publisher"
+            assert n.created_by == ApplicationPublisherCreatedNotify.ID
+            assert n.classification == constants.NOTIFICATION_CLASSIFICATION_CREATE
+            assert n.long is not None
+            assert n.short is not None
+            assert not n.is_seen()
 
     def test_consume_fail(self):
         event = models.Event(constants.EVENT_APPLICATION_CREATED, context={"application": {"test":"abcd"}})
