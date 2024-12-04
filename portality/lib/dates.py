@@ -30,11 +30,13 @@ config = {
 
     # The last_manual_update field was initialised to this value. Used to label as 'never'.
     'DEFAULT_TIMESTAMP': "1970-01-01T00:00:00Z",
+    'FAR_IN_THE_FUTURE': "9999-12-31"
 }
 
 
 FMT_DATETIME_STD = config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
 FMT_DATETIME_A = '%Y-%m-%d %H:%M:%S'
+FMT_DATETIME_NO_SECS = '%Y-%m-%d %H:%M'
 FMT_DATETIME_MS_STD = '%Y-%m-%dT%H:%M:%S.%fZ'
 FMT_DATETIME_SHORT = '%Y%m%d_%H%M'
 
@@ -51,6 +53,8 @@ FMT_YEAR = '%Y'
 
 DEFAULT_TIMESTAMP_VAL = config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
+def far_in_the_future (format=FMT_DATE_STD):
+    return parse(config.get("FAR_IN_THE_FUTURE", "9999-12-31"), format)
 
 def parse(s, format=None, guess=True) -> datetime:
     s = s.strip()

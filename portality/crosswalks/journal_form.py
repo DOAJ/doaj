@@ -3,8 +3,12 @@ from werkzeug.datastructures import MultiDict
 from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
+from portality.lib.dates import FMT_DATE_STD
 from portality.models import Account
+from portality.lib import dates
+from builtins import ValueError
 
+from flask_login import current_user
 
 class JournalGenericXWalk(object):
     """
@@ -270,6 +274,27 @@ class JournalGenericXWalk(object):
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
                                  author_id=formnote["note_author_id"])
 
+        if getattr(form, "flags", None):
+            for flag in form.flags.data:
+                flag_date = flag["flag_created_date"]
+                try:
+                    flag_deadline = dates.parse(flag.get("flag_deadline"), format=FMT_DATE_STD)
+                except ValueError:
+                    flag_deadline = dates.far_in_the_future()
+                flag_assigned_to = flag["flag_assignee"]
+                flag_author = flag["flag_setter"]
+                flag_id = flag["flag_note_id"]
+                flag_note = flag["flag_note"]
+                flag_resolved = flag["flag_resolved"]
+                flag_resolved_by = current_user.id if current_user else ""
+                flag_resolved_date = dates.now_str()
+                if flag_resolved == "true":
+                    note = f"Flag: \n Resolved by: {flag_resolved_by} \n Resolved on: {flag_resolved_date}\n Assigned to: {flag_assigned_to} \n Note: {flag_note}"
+                    obj.add_note(note, date=flag_date, id=flag_id, author_id=flag_author)
+                else:
+                    obj.add_note(flag_note, date=flag_date, id=flag_id,
+                             author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
+
         if getattr(form, 'owner', None):
             owner = form.owner.data
             if owner:
@@ -442,7 +467,7 @@ class JournalGenericXWalk(object):
     @classmethod
     def admin2form(cls, obj, forminfo):
         forminfo['notes'] = []
-        for n in obj.ordered_notes:
+        for n in obj.ordered_notes_except_flags:
             author_id = n.get('author_id', '')
             note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
             note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
@@ -450,6 +475,22 @@ class JournalGenericXWalk(object):
                         'note_author_id': author_id,
                         }
             forminfo['notes'].append(note_obj)
+
+        forminfo["flags"] = []
+        if obj.flags:
+            # display only the newest flag
+            flag = obj.flags[0]
+            author_id = flag["author_id"]
+            flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
+            if flag["flag"].get("deadline"):
+                flag_deadline = dates.reformat(flag["flag"].get("deadline"), dates.FMT_DATE_STD, dates.FMT_DATE_STD)
+            else:
+                flag_deadline = dates.far_in_the_future(dates.FMT_DATE_STD)
+            flag_assignee = flag["flag"]["assigned_to"]
+            flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"],
+                        "flag_note_id": flag["id"], "flag_setter": flag_setter, "flag_assignee": flag_assignee,
+                        "flag_deadline": flag_deadline }
+            forminfo['flags'].append(flag_obj)
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:

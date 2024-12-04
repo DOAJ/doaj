@@ -31,12 +31,15 @@ def top_todo():
         update_requests = False
         new_applications = False
 
+    flag_filter = request.values.get("flag_filter", "a2me")
+
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(),
                          size=app.config.get("TODO_LIST_SIZE"),
                          new_applications=new_applications,
                          update_requests=update_requests,
+                         flagged=flag_filter,
                          on_hold=on_hold)
 
     # ~~-> Dashboard:Page~~
