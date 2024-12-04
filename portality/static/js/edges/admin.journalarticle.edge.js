@@ -45,7 +45,7 @@ $.extend(true, doaj, {
         },
 
         lastUpdated : function (val, resultobj, renderer) {
-            return doaj.dates.dates.humanYearMonth(resultobj['last_updated']);
+            return doaj.dates.humanYearMonth(resultobj['last_updated']);
         },
 
         deleteArticle : function (val, resultobj, renderer) {

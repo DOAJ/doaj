@@ -8356,7 +8356,7 @@ $.extend(true, doaj, {
         },
 
         createdDateWithTime : function (val, resultobj, renderer) {
-            return doaj.dates.dates.humanYearMonth(resultobj['created_date']);
+            return doaj.dates.humanYearMonth(resultobj['created_date']);
         },
 
         lastManualUpdate : function (val, resultobj, renderer) {
@@ -8365,13 +8365,13 @@ $.extend(true, doaj, {
             {
                 return 'Never'
             } else {
-                return doaj.dates.dates.humanYearMonth(man_update);
+                return doaj.dates.humanYearMonth(man_update);
             }
         },
 
         suggestedOn : function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
-                return doaj.dates.dates.humanYearMonth(resultobj['admin']['date_applied']);
+                return doaj.dates.humanYearMonth(resultobj['admin']['date_applied']);
             } else {
                 return false;
             }
