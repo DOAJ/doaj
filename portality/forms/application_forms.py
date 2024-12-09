@@ -2128,7 +2128,7 @@ class FieldDefinitions:
             "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type": "account", "field": "id", "include": False}},  # ~~^-> Autocomplete:FormWidget~~
+            {"autocomplete": {"type": "account", "field": "id", "include_input": True}},  # ~~^-> Autocomplete:FormWidget~~
         ],
         "input": "text",
         "disabled": "disable_edit_flag_except_author_admin_assignee"
