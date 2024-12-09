@@ -2057,7 +2057,8 @@ class FieldDefinitions:
             "multiple_field",
             "flag_manager"
         ],
-        "merge_disabled": "merge_disabled_notes"
+        "merge_disabled": "merge_disabled_notes",
+        "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
     }
 
     FLAG_RESOLVED = {
@@ -2129,7 +2130,6 @@ class FieldDefinitions:
         "widgets": [
             {"autocomplete": {"type": "account", "field": "id", "include_input": True}},  # ~~^-> Autocomplete:FormWidget~~
         ],
-        "short_help": "Flag must be assigned to a user. Flag not assigned to a user will be automatically converted to a note",
         "input": "text",
         "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
