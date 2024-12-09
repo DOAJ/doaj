@@ -53,12 +53,11 @@ FMT_YEAR = '%Y'
 
 DEFAULT_TIMESTAMP_VAL = config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
-def far_in_the_future (format=FMT_DATE_STD):
-    return parse(config.get("FAR_IN_THE_FUTURE", "9999-12-31"), format)
+def far_in_the_future (in_format, out_format=FMT_DATE_STD):
+    return reformat(config.get("FAR_IN_THE_FUTURE", "9999-12-31"), in_format, out_format)
 
 def parse(s, format=None, guess=True) -> datetime:
     s = s.strip()
-
     if format is not None:
         try:
             return datetime.strptime(s, format)

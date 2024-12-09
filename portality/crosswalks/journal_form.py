@@ -285,14 +285,14 @@ class JournalGenericXWalk(object):
                 flag_author = flag["flag_setter"]
                 flag_id = flag["flag_note_id"]
                 flag_note = flag["flag_note"]
-                flag_resolved = flag["flag_resolved"]
-                flag_resolved_by = current_user.id if current_user else ""
-                flag_resolved_date = dates.now_str()
-                if flag_resolved == "true":
-                    note = f"Flag: \n Resolved by: {flag_resolved_by} \n Resolved on: {flag_resolved_date}\n Assigned to: {flag_assigned_to} \n Note: {flag_note}"
-                    obj.add_note(note, date=flag_date, id=flag_id, author_id=flag_author)
-                else:
-                    obj.add_note(flag_note, date=flag_date, id=flag_id,
+                # flag_resolved = flag["flag_resolved"]
+                # flag_resolved_by = current_user.id if current_user else ""
+                # flag_resolved_date = dates.now_str()
+                # if flag_resolved == "true":
+                #     note = f"Flag: \n Resolved by: {flag_resolved_by} \n Resolved on: {flag_resolved_date}\n Assigned to: {flag_assigned_to} \n Note: {flag_note}"
+                #     obj.add_note(note, date=flag_date, id=flag_id, author_id=flag_author)
+                # else:
+                obj.add_note(flag_note, date=flag_date, id=flag_id,
                              author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
 
         if getattr(form, 'owner', None):
@@ -482,10 +482,12 @@ class JournalGenericXWalk(object):
             flag = obj.flags[0]
             author_id = flag["author_id"]
             flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
-            if flag["flag"].get("deadline"):
-                flag_deadline = dates.reformat(flag["flag"].get("deadline"), dates.FMT_DATE_STD, dates.FMT_DATE_STD)
-            else:
-                flag_deadline = dates.far_in_the_future(dates.FMT_DATE_STD)
+            deadline = flag["flag"].get("deadline")
+            print("our crosswalk")
+            flag_deadline = (
+                deadline if (deadline and deadline != dates.far_in_the_future(dates.FMT_DATE_STD)) else ""
+            )
+            print("end of our crosswalk")
             flag_assignee = flag["flag"]["assigned_to"]
             flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"],
                         "flag_note_id": flag["id"], "flag_setter": flag_setter, "flag_assignee": flag_assignee,
