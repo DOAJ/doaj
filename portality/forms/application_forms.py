@@ -2058,7 +2058,10 @@ class FieldDefinitions:
             "flag_manager"
         ],
         "merge_disabled": "merge_disabled_notes",
-        "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+        "help": {
+            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+            "render_error_box": False,
+        },
     }
 
     FLAG_RESOLVED = {
