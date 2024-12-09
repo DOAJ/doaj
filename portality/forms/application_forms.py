@@ -1981,7 +1981,7 @@ class FieldDefinitions:
             "note_id",
             "note_author_id",
         ],
-        "template": templates.NOTES_LIST,
+        "template": templates.AF_LIST,
         "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat": {"enable_on_repeat": ["textarea"]}},
