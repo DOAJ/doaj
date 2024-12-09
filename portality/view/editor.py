@@ -29,8 +29,9 @@ def restrict():
 @ssl_required
 def index():
     # ~~-> Todo:Service~~
+    flag_filter = request.values.get("flag_filter", "a2me")
     svc = DOAJ.todoService()
-    todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"), update_requests=False)
+    todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"), update_requests=False, flagged="flag_filter")
     # ~~-> Dashboard:Page~~
     return render_template(templates.EDITOR_DASHBOARD, todos=todos)
 
