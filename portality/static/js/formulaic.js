@@ -1135,7 +1135,7 @@ var formulaic = {
                 for (var j = 0; j < this.assigneeInputs.length; j++) {
                     if ($(this.assigneeInputs[j]).val()) {
                         this.flagExists = true;
-                        return false;
+                        break;
                     }
                 }
 
@@ -1310,7 +1310,7 @@ var formulaic = {
 
             this.setUpFlagDetails = function() {
                 let $assigneeInput = $(this.assigneeInputs[this.existingFlagIdx]);
-                let $flagDeadlineInput = $("id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_deadline']");
+                let $flagDeadlineInput = $("[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_deadline']");
                 let flagDetailsText = "";
 
                 if ($assigneeInput.is(":disabled")) {

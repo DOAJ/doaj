@@ -69,53 +69,122 @@ $.extend(true, doaj, {
             return isodate_str.replace('T',' ').replace('Z','')
         },
 
-        parseDate : function(dateStr, format)  {
-                const regexParts = format
-                    .replace(/YYYY/g, "(\\d{4})")
-                    .replace(/MM/g, "(\\d{2})")
-                    .replace(/DD/g, "(\\d{2})")
-                    .replace(/HH/g, "(\\d{2})")
-                    .replace(/mm/g, "(\\d{2})")
-                    .replace(/ss/g, "(\\d{2})");
+        parseDate: function(dateStr, format) {
+            const formatMap = {
+                'YYYY': '(\\d{4})',
+                'YY': '(\\d{2})',
+                'MM': '(\\d{2})',
+                'M': '(\\d{1,2})',
+                'DD': '(\\d{2})',
+                'D': '(\\d{1,2})',
+                'HH': '(\\d{2})',
+                'H': '(\\d{1,2})',
+                'mm': '(\\d{2})',
+                'm': '(\\d{1,2})',
+                'ss': '(\\d{2})',
+                's': '(\\d{1,2})',
+                'SSS': '(\\d{3})',
+                'MMM': '([A-Za-z]{3})',
+                'MMMM': '([A-Za-z]+)',
+                'Z': 'Z'
+            };
 
-                const regex = new RegExp(`^${regexParts}$`);
-                const match = dateStr.match(regex);
+            const monthMap = {
+                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+            };
 
-                if (!match) throw new Error("Date string does not match format");
+            // Create a regular expression to match the dateStr based on the format
+            let regexPattern = format.replace(/YYYY|YY|MM|M|DD|D|HH|H|mm|m|ss|s|SSS|MMMM|MMM|Z/g, (match) => {
+                return formatMap[match] || match;
+            });
 
-                const map = {};
-                const formatParts = format.match(/(YYYY|MM|DD|HH|mm|ss)/g);
+            const regex = new RegExp(`^${regexPattern}$`);
+            const matches = dateStr.match(regex);
 
-                formatParts.forEach((token, i) => {
-                    map[token] = match[i + 1];
-                });
-
-                return new Date(
-                    map["YYYY"] || 1970,
-                    map["MM"] ? map["MM"] - 1 : 0,
-                    map["DD"] || 1,
-                    map["HH"] || 0,
-                    map["mm"] || 0,
-                    map["ss"] || 0
-                );
-            },
-
-            formatDate: function(date, format) {
-                const pad = (num, size) => String(num).padStart(size, "0");
-
-                return format
-                    .replace(/YYYY/g, date.getFullYear())
-                    .replace(/MM/g, pad(date.getMonth() + 1, 2))
-                    .replace(/DD/g, pad(date.getDate(), 2))
-                    .replace(/HH/g, pad(date.getHours(), 2))
-                    .replace(/mm/g, pad(date.getMinutes(), 2))
-                    .replace(/ss/g, pad(date.getSeconds(), 2));
-            },
-
-            reformat: function(s, inFormat, outFormat) {
-                const parsedDate = doaj.dates.parseDate(s, inFormat);
-                return doaj.dates.formatDate(parsedDate, outFormat);
+            if (!matches) {
+                throw new Error("Date string does not match format");
             }
+
+            // Extract components based on the format
+            let year = 1970, month = 0, day = 1, hours = 0, minutes = 0, seconds = 0, milliseconds = 0;
+
+            const formatTokens = format.match(/YYYY|YY|MM|M|DD|D|HH|H|mm|m|ss|s|SSS|MMMM|MMM|Z/g) || [];
+            let matchIndex = 1;
+
+            for (const token of formatTokens) {
+                const value = matches[matchIndex++];
+                switch (token) {
+                    case 'YYYY':
+                        year = parseInt(value, 10);
+                        break;
+                    case 'YY':
+                        year = 2000 + parseInt(value, 10);
+                        break;
+                    case 'MM':
+                    case 'M':
+                        month = parseInt(value, 10) - 1;
+                        break;
+                    case 'MMM':
+                        month = monthMap[value];
+                        break;
+                    case 'DD':
+                    case 'D':
+                        day = parseInt(value, 10);
+                        break;
+                    case 'HH':
+                    case 'H':
+                        hours = parseInt(value, 10);
+                        break;
+                    case 'mm':
+                    case 'm':
+                        minutes = parseInt(value, 10);
+                        break;
+                    case 'ss':
+                    case 's':
+                        seconds = parseInt(value, 10);
+                        break;
+                    case 'SSS':
+                        milliseconds = parseInt(value, 10);
+                        break;
+                }
+            }
+
+            return new Date(year, month, day, hours, minutes, seconds, milliseconds);
+        },
+
+        formatDate: function (date, format) {
+            const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthNamesFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            const padZero = (num, length = 2) => String(num).padStart(length, '0');
+
+            const replacements = {
+                'YYYY': date.getFullYear(),
+                'YY': String(date.getFullYear()).slice(-2),
+                'MMMM': monthNamesFull[date.getMonth()],
+                'MMM': monthNamesShort[date.getMonth()],
+                'MM': padZero(date.getMonth() + 1),
+                'M': date.getMonth() + 1,
+                'DD': padZero(date.getDate()),
+                'D': date.getDate(),
+                'HH': padZero(date.getHours()),
+                'H': date.getHours(),
+                'mm': padZero(date.getMinutes()),
+                'm': date.getMinutes(),
+                'ss': padZero(date.getSeconds()),
+                's': date.getSeconds(),
+                'SSS': padZero(date.getMilliseconds(), 3)
+            };
+
+            // Replace format tokens in the string
+            return format.replace(/YYYY|YY|MMMM|MMM|MM|M|DD|D|HH|H|mm|m|ss|s|SSS/g, (match) => replacements[match]);
+        },
+
+        reformat: function(s, inFormat, outFormat) {
+            const parsedDate = doaj.dates.parseDate(s, inFormat);
+            return doaj.dates.formatDate(parsedDate, outFormat);
+        }
 
     }
 });
