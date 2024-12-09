@@ -2123,13 +2123,13 @@ class FieldDefinitions:
         "placeholder": "assigned_to"},
         "group": "flags",
         "validate": [
-            {"required": {"message": "A flag must be assigned to a user."}},
             "reserved_usernames",
             "owner_exists"
         ],
         "widgets": [
             {"autocomplete": {"type": "account", "field": "id", "include_input": True}},  # ~~^-> Autocomplete:FormWidget~~
         ],
+        "short_help": "Flag must be assigned to a user. Flag not assigned to a user will be automatically converted to a note",
         "input": "text",
         "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
