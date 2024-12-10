@@ -81,9 +81,9 @@ def do_import(config):
     print("\n")
 
     toberemoved_index_prefixes = [ipt_prefix(import_type) for import_type in import_types.keys()]
-    toberemoved_indexes = itertools.chain.from_iterable(
+    toberemoved_indexes = list(itertools.chain.from_iterable(
         find_toberemoved_indexes(p) for p in toberemoved_index_prefixes
-    )
+    ))
     toberemoved_index_aliases = list(portality.dao.find_index_aliases(toberemoved_index_prefixes))
 
     if toberemoved_indexes:
