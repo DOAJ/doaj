@@ -57,6 +57,10 @@ class InMemoryCache(object):
     def marked_regen(self):
         pass
 
+    @classmethod
+    def pull(cls, id):
+        return cls.__memory__.get(id)
+
 class ModelCacheMockFactory(object):
     @classmethod
     def in_memory(cls):
