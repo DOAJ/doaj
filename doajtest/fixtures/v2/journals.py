@@ -45,15 +45,18 @@ class JournalFixtureFactory(object):
         return deepcopy(JOURNAL_FORM_EXPANDED)
 
     @staticmethod
-    def make_journal_with_data(title=None, publisher_name=None, country=None, in_doaj=True):
+    def make_journal_with_data(**data):
         journal = deepcopy(JOURNAL_SOURCE)
+        in_doaj = data['in_doaj'] if'in_doaj' in data else True
         journal['admin']['in_doaj'] = in_doaj
-        if title:
-            journal["bibjson"]["title"] = title
-        if publisher_name:
-            journal["bibjson"]["publisher"]["name"] = publisher_name
-        if country:
-            journal["bibjson"]["publisher"]["country"] = country
+        if 'title' in data:
+            journal["bibjson"]["title"] = data['title']
+        if 'publisher_name' in data:
+            journal["bibjson"]["publisher"]["name"] = data['publisher_name']
+        if 'country' in data:
+            journal["bibjson"]["publisher"]["country"] = data['country']
+        if 'alternative_title' in data:
+            journal["bibjson"]["alternative_title"] = data['alternative_title']
         return journal
 
     @staticmethod

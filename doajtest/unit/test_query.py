@@ -698,7 +698,8 @@ class TestQuery(DoajTestCase):
         self.journal = models.Journal(**JournalFixtureFactory
                                       .make_journal_with_data(title="Kadınlarının sağlık",
                                                               publisher_name="Ankara Üniversitesi",
-                                                              country="Türkiye", ))
+                                                              country="Türkiye",
+                                                              alternative_title="Dirasat: Shariía and Law Sciences"))
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
@@ -722,6 +723,12 @@ class TestQuery(DoajTestCase):
         # check for country
         res = qsvc.search('query', 'journal', raw_query("Turkiye"), account=None,
                           additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check alternative title
+        res = qsvc.search('query', 'journal', raw_query("Shariia"),
+                          account=None, additional_parameters={})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 

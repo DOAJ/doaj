@@ -989,8 +989,10 @@ ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
 
 JOURNAL_EXCEPTION_MAPPING = {
     "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
     "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
 }
 
 ARTICLE_EXCEPTION_MAPPING = {
