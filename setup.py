@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='7.0.1',
+    version='7.0.3',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -19,6 +19,7 @@ setup(
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
         "jinja2<3.1.0",            # fixme: unpinned dependency of flask, import error on 'escape'
+        "jsonpath-ng~=1.6",
         "Flask~=2.1.2",
         "Flask-Cors==3.0.8",
         "Flask-DebugToolbar==0.13.1",
@@ -63,6 +64,7 @@ setup(
         'pandas~=2.0.1',  # pandas lets us generate URLs for linkcheck
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
+
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
