@@ -5,56 +5,52 @@ import sys
 
 setup(
     name='doaj',
-    version='7.0.3',
+    version='8.0.0',
     packages=find_packages(),
     install_requires=[
-        "awscli==1.20.50",
+        "awscli==1.34.25",
         "bagit==1.8.1",
         "beautifulsoup4",
-        "boto3==1.18.50",
+        "boto3==1.35.25",
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",
-        "faust-streaming==0.9.5",  # Note: This is a maintained fork of the abandoned robinhood/faust
         "Faker==2.0.3",
-        "feedparser==6.0.8",
-        "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
-        "jinja2<3.1.0",            # fixme: unpinned dependency of flask, import error on 'escape'
+        "feedparser==6.0.11",
+        "jinja2~=3.1.4",
         "jsonpath-ng~=1.6",
-        "Flask~=2.1.2",
-        "Flask-Cors==3.0.8",
-        "Flask-DebugToolbar==0.13.1",
-        "Flask-Login==0.6.1",
-        "Flask-Mail==0.9.1",
-        "Flask-WTF==0.14.2",
-        "freezegun==0.3.12",
-        "GitPython==2.1.14",
-        "gunicorn==19.9.0",
-        "huey==1.10.5",  # upgrading to 1.11 / 2.x requires work
-        "libsass==0.20.1",
+        "flask<3",
+        "Flask-Cors==5.0.0",
+        "Flask-DebugToolbar==0.15.1",
+        "Flask-Login==0.6.3",
+        "Flask-Mail==0.10.0",
+        "Flask-WTF==1.1.2",
+        "wtforms<3",        # FIXME: deprecations prevent upgrade
+        "email_validator~=2.2.0",
+        "freezegun==1.5.1",
+        "gunicorn==23.0.0",
+        "huey~=2.5.2",
+        "libsass==0.23.0",
         "LinkHeader==0.4.3",
-        "lxml==4.8.0",
-        "Markdown==3.1.1",
-        "markdown-full-yaml-metadata==2.0.1",
+        "lxml==5.3.0",
+        "Markdown==3.7.0",
+        "markdown-full-yaml-metadata==2.2.1",
         "markdown-link-attr-modifier==0.2.1",
-        "mdx_truly_sane_lists==1.2",
-        "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
-        "parameterized==0.7.0",
-        "psutil==5.6.3",
-        #"pycountry==23.12.11",  # FIXME: pycountry can get behind debian lists, so we'll maintain our fork for now
-        "pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
-        "python-dateutil==2.8.2",  # something else already installs this, so just note we need it without an explicit version freeze
-        "pytz==2020.1",
+        "mdx_truly_sane_lists==1.3",
+        "numpy<2",    # Elasticsearch==7.13.0 requires numpy<2, and we can't upgrade our ES library while we are on OSS
+        "openpyxl~=3.1.5",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
+        "parameterized~=0.9.0",
+        "psutil==5.9.8",
+        "pycountry==24.6.1",  # TODO: pycountry can get behind debian lists, so we may flip back to our fork later
+        #"pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
+        "python-dateutil",  # something else already installs this; note we need it without an explicit version freeze
+        "pytz==2024.2",
         "redis==3.3.11",
-        "requests~=2.29.0",
+        "requests~=2.32.3",
         "responses==0.10.6",
-        "rstr==2.2.6",
-        "tzlocal==2.0.0",
-        "Unidecode==1.1.1",
+        "rstr~=3.2.2",
+        "tzlocal~=5.2.0",
+        "Unidecode~=1.3.8",
 
-        # Flask2 required >=2.0.*, Flask-Login required <=2.0.*
-        "Werkzeug~=2.0.0",
-        "WTForms==2.2.1",
-        "esprit @ git+https://github.com/CottageLabs/esprit.git@edda12177effa0945d99302f0d453b22503e335b#egg=esprit",
         "dictdiffer @ git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer",
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger",
 
@@ -68,20 +64,20 @@ setup(
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
-        "test": ["pytest~=7.3.1",
-                 "pytest-cov~=4.0.0",
-                 "pytest-xdist~=3.2.1",
-                 "selenium==4.12.0",
-                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
-                 "bs4==0.0.1",   # beautifulsoup for HTML parsing
+        "test": ["pytest~=8.3.3",
+                 "pytest-cov~=5.0.0",
+                 "pytest-xdist~=3.6.1",
+                 "selenium==4.25.0",
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@c96e6035244e29d4709fff23103405c17cd04a13#egg=combinatrix",
+                 "bs4==0.0.2",   # beautifulsoup for HTML parsing
                  'openapi-spec-validator~=0.5',
                  ],
 
         # additional test dependencies for the test-extras target
-        "test-ex" : ["pytest-randomly", ],
+        "test-ex": ["pytest-randomly", ],
         "docs": [
-            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
-            "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@060e256a3e397518ed02111debf1605a9e05f34c#egg=featuremap",
+            "testbook @ git+https://github.com/CottageLabs/testbook.git@edede0987fe2f9fe806bbc74b635f415ab645166#egg=testbook"]
     },
     url='https://cottagelabs.com/',
     author='Cottage Labs',

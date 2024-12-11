@@ -8,13 +8,13 @@ How to create a background job
 * choice a task queue, details of task queue can have find in `portality/tasks/redis_huey.py`
 
 ```python
-huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(queue)
 ```
 
 * add execute function below BackgroundTask class
 
 ```python
-huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)
@@ -76,5 +76,5 @@ HUEY_SCHEDULE = {
 
 ### Register your task
 
-* add your execute and schedule function in `portality/tasks/consumer_long_running.py`
-  or `portality/tasks/consumer_main_queue.py`
+* add your execute and/or schedule function in `portality/tasks/consumer_scheduled_long.py`
+  `portality/tasks/consumer_scheduled_short.py` or `portality/tasks/consumer_events_queue.py`

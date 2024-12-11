@@ -228,7 +228,7 @@ def get_from_local_store(container, filename):
     localStore = store.StoreFactory.get(None)
     file_handle = localStore.get(container, filename)
     return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True,
-                     attachment_filename=os.path.basename(filename))
+                     download_name=os.path.basename(filename))
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
