@@ -366,7 +366,7 @@ class CurrentJournalQuery(object):
                 }
             },
             "sort": [
-                {"created_date": {"order": "desc"}}
+                {"admin.date_applied": {"order": "desc"}}
             ],
             "size": self.size
         }
@@ -389,7 +389,7 @@ class RelatedJournalQuery(object):
                 }
             },
             "sort": [
-                {"created_date": {"order": "asc"}}
+                {"admin.date_applied": {"order": "asc"}}
             ],
             "size": self.size
         }
