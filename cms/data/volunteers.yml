@@ -106,8 +106,8 @@ ass_ed:
 - name: Alain Chaple
   area: Medical Sciences
   year_since:
-  city: La Habana
-  country: Cuba
+  city: Santiago
+  country: Chile
   language: Spanish, English
   photo: "alainchaple.png"
   
@@ -318,13 +318,6 @@ ass_ed:
   area: Social Sciences
   year_since:
   city: Malang
-  country: Indonesia
-  language: Indonesian, English
-
-- name: Eko Supraptono
-  area: Technology
-  year_since:
-  city: Semarang
   country: Indonesia
   language: Indonesian, English
   
