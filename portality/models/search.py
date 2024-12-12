@@ -23,7 +23,7 @@ class JournalArticle(DomainObject):
             "countries" : "0",
             "abstracts" : "0",
             "new_journals" : "0",
-            "no_apc" : "0"
+            "no_apc" : "0"  # this is now used to represent "no charges", which means no apc and no other charges
         }
 
         # get the journal data
@@ -33,15 +33,20 @@ class JournalArticle(DomainObject):
         stats["journals"] = "{0:,}".format(journal_data.get("hits", {}).get("total", {}).get('value', 0))
         stats["countries"] = "{0:,}".format(len(journal_data.get("aggregations", {}).get("countries", {}).get("buckets", [])))
 
-        apc_buckets = journal_data.get("aggregations", {}).get("apcs", {}).get("buckets", [])
-        for b in apc_buckets:
-            if b.get("key") == "No":
-                stats["no_apc"] = "{0:,}".format(b.get("doc_count"))
-                break
+        # apc_buckets = journal_data.get("aggregations", {}).get("apcs", {}).get("buckets", [])
+        # for b in apc_buckets:
+        #     if b.get("key") == "No":
+        #         stats["no_apc"] = "{0:,}".format(b.get("doc_count"))
+        #         break
 
         nj_stat = journal_data.get("aggregations", {}).get("creation", {}).get("buckets", [])
         if len(nj_stat) > 0:
             stats["new_journals"] = "{0:,}".format(nj_stat[0].get("doc_count", 0))
+
+        # count the journals with no fees
+        qc = JournalChargesQuery()
+        no_fees = Journal.query(q=qc.query())
+        stats["no_apc"] = "{0:,}".format(no_fees.get("hits", {}).get("total", {}).get('value', 0))
 
         # get the article data
         qa = ArticleStatsQuery()
@@ -53,6 +58,22 @@ class JournalArticle(DomainObject):
 
         return stats
 
+
+class JournalChargesQuery(object):
+    def query(self):
+        return {
+            "track_total_hits": True,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"admin.in_doaj": True}},
+                        {"term": {"bibjson.apc.has_apc": False}},
+                        {"term": {"bibjson.other_charges.has_other_charges": False}}
+                    ]
+                }
+            },
+            "size": 0
+        }
 
 class JournalStatsQuery(object):
     stats = {
@@ -68,9 +89,6 @@ class JournalStatsQuery(object):
         "aggs": {
             "countries" : {
             	"terms" : {"field" : "index.country.exact", "size" : 500}
-            },
-            "apcs" : {
-                "terms" : {"field" : "index.has_apc.exact"}
             },
             "creation" : {
                 "date_range" : {
