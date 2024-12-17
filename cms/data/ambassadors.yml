@@ -23,13 +23,6 @@
   coi:
     2022: https://drive.google.com/file/d/1bmVVvMAPToLQCHGOfNz0D80xi4WyZhwn/view?usp=sharing
     
-- name: Mochammad Tanzil Multazam
-  region: Indonesia
-  bio: "Mochammad Tanzil Multazam is a prominent academic and legal expert at Universitas Muhammadiyah Sidoarjo, known for his significant contributions to scientific publication and library management. Since 2016, he has played a pivotal role in enhancing the quality of Indonesian journals through his leadership at Relawan Jurnal Indonesia, managing over 13,000 journals as the largest Crossref Sponsoring Organization globally. In 2023, he became Head of the UMSIDA Library, continuing his efforts to integrate digital technology into academic publishing. His influence extends internationally, particularly through the Silkroad Research Network, fostering collaboration among journal managers along the Silk Road Region"
-  photo: "Tanzil.jpg"
-  coi:
-    2024: https://drive.google.com/file/d/1q3h3T45-VRbvJxf8e_HacEDnvJhzg5yY/view?usp=sharing
-
 - name: Ina Smith
   region: Southern Africa
   bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Science incl. Open Access, scholarly research activities, repositories, and Open Access journal management and publishing."
@@ -44,13 +37,6 @@
   photo: "ivonne.jpg"
   coi:
     2022: https://drive.google.com/file/d/1HnGhYbvbzL34guWOmIqcthcwAN8NADX1/view?usp=sharing
-    
-- name: Mahmoud Khalifa
-  region: Middle East and Persian Gulf
-  bio: "Mahmoud is a PhD candidate at Humboldt University of Berlin, Germany. He is writing his dissertation about national information policies. Mahmoud was an associate at the IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. Professionally, he worked in the Library of Congress Cairo Office from 2006-2018. As a researcher, he published more than 20 articles, book chapters, and conference papers."
-  photo: "mahmoud-new.jpg"
-  coi:
-    2022: https://drive.google.com/file/d/10s7B0WeTPqpaafhThv-i8q03uIFaAAue/view?usp=sharing
 
 - name: Kamel Belhamel
   region: North Africa and Middle East
@@ -59,11 +45,25 @@
   coi:
     2024: https://drive.google.com/file/d/1UTUIqeAx-4Q3_gC4sZ7MG3pa0Z3hOsKP/view?usp=sharing
     
+- name: Mahmoud Khalifa
+  region: Middle East and Persian Gulf
+  bio: "Mahmoud is a PhD candidate at Humboldt University of Berlin, Germany. He is writing his dissertation about national information policies. Mahmoud was an associate at the IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. Professionally, he worked in the Library of Congress Cairo Office from 2006-2018. As a researcher, he published more than 20 articles, book chapters, and conference papers."
+  photo: "mahmoud-new.jpg"
+  coi:
+    2022: https://drive.google.com/file/d/10s7B0WeTPqpaafhThv-i8q03uIFaAAue/view?usp=sharing
+
 - name: Melkamu Beyene
   region: East Africa
   bio: "Dr. Melkamu Beyene is an Assistant Professor in the School of Information Science at Addis Ababa University. He received his PhD in Information Retrieval from Addis Ababa University in a joint program with the Institut National des Sciences Appliquées de Lyon, France, in 2017. He is a Chief Librarian at Addis Ababa University Library system and Chairperson of the Consortium of Ethiopian Academic and Research Libraries from March 08, 2018."
   photo: "melkamu.JPG"
   coi:
+
+- name: Mochammad Tanzil Multazam
+  region: Indonesia
+  bio: "Mochammad Tanzil Multazam is a prominent academic and legal expert at Universitas Muhammadiyah Sidoarjo, known for his significant contributions to scientific publication and library management. Since 2016, he has played a pivotal role in enhancing the quality of Indonesian journals through his leadership at Relawan Jurnal Indonesia, managing over 13,000 journals as the largest Crossref Sponsoring Organization globally. In 2023, he became Head of the UMSIDA Library, continuing his efforts to integrate digital technology into academic publishing. His influence extends internationally, particularly through the Silkroad Research Network, fostering collaboration among journal managers along the Silk Road Region"
+  photo: "Tanzil.jpg"
+  coi:
+    2024: https://drive.google.com/file/d/1q3h3T45-VRbvJxf8e_HacEDnvJhzg5yY/view?usp=sharing
 
 - name: Muhammad Imtiaz Subhani
   region: Pakistan
@@ -71,6 +71,13 @@
   photo: "subhani-1.jpeg"
   coi:
     2022: https://drive.google.com/file/d/1nYQZ8h766UsNY_gWwCbRyVQ_yxdCyQN5/view?usp=sharing 
+
+- name: Ramazan Turgut
+  region: Türkiye
+  bio: "Ramazan Turgut is a teacher at Mardin Artuklu University in Türkiye. He has a Ph.D. in History of Religion and has done research at Radboud University and the University of Chicago. He speaks Kurdish, Turkish, English, and Dutch, which helps him to work with scholars from different countries. Ramazan is a proud father of three children and enjoys reading, cooking, and travelling to learn about new cultures. If he could be a character in Middle Earth, he would have chosen Boromir."
+  photo: "ramazan24.jpeg"
+  coi:
+    2023: https://drive.google.com/file/d/1Mipqt2uTdv968VajWjEkIo5S9rTHSKCT/view?usp=sharing
 
 - name: Shuai Yan
   region: China
