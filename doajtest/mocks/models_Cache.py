@@ -27,6 +27,16 @@ class InMemoryCache(object):
         }
 
     @classmethod
+    def cache_nth_sitemap(cls, n, url):
+        cls.__memory__["sitemap" + str(n)] = {
+            "filename": url
+        }
+
+    @classmethod
+    def get_sitemap(cls, n):
+        return cls.__memory__["sitemap" + str(n)]
+
+    @classmethod
     def get_latest_sitemap(cls):
         return cls.__memory__["sitemap"]
 
@@ -46,6 +56,10 @@ class InMemoryCache(object):
 
     def marked_regen(self):
         pass
+
+    @classmethod
+    def pull(cls, id):
+        return cls.__memory__.get(id)
 
 class ModelCacheMockFactory(object):
     @classmethod
