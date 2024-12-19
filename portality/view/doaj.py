@@ -28,8 +28,7 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    # return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
-    return render_template('public/index.html', news=news, recent_journals=recent_journals)
+    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals)
 
 
 @blueprint.route('/login/')
@@ -215,7 +214,7 @@ def get_from_local_store(container, filename):
     from portality import store
     localStore = store.StoreFactory.get(None)
     file_handle = localStore.get(container, filename)
-    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, download_name=filename)
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])

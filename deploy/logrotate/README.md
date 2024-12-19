@@ -8,13 +8,13 @@
   and set with `sudo passwd root` if necessary.
 
 ```
-sudo cp /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
+sudo cp /home/cloo/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
 ```
 
 and
 
 ```
-sudo cp /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-nginx /etc/logrotate.d/doaj-nginx
+sudo cp /home/cloo/doaj/deploy/logrotate/doaj-nginx /etc/logrotate.d/doaj-nginx
 ```
 
 For the AWS S3 upload to work correctly, the correct credentials must be saved in `~/.aws/`, and 
@@ -31,3 +31,31 @@ Log uploads can be checked on the S3 bucket with the following command:
 ```
 aws --profile doaj-nginx-logs s3 ls s3://doaj-nginx-logs
 ```
+
+You can try a test run of `logrotate`:
+
+```
+sudo /usr/sbin/logrotate /etc/logrotate.conf
+```
+
+Or sync the files by directly running:
+
+```
+HOSTNAME=`hostname` sudo aws --profile doaj-nginx-logs s3 sync /var/log/nginx/ s3://doaj-nginx-logs/$HOSTNAME/ --exclude "*" --include "doaj.*.gz"
+```
+
+
+### Troubleshooting:
+
+```
+error: nginx:1 duplicate log entry for /var/log/nginx/doaj.access.log
+error: found error in file nginx, skipping
+```
+
+Check whether you've disabled the default nginx configuration
+
+```
+The config profile (doaj-nginx-logs) could not be found
+```
+
+Check that root user has access to the AWS credentials and symlink if required.

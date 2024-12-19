@@ -23,6 +23,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 - You will [keep your contact details up to date](/apply/publisher-responsibilities/#settings).
 - You will inform us of changes to your journals and [keep your journal records up to date](/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date).
 - You will [upload article metadata](/publisher/uploadfile) to us if you are able to.
+- You will regularly review your indexed journals and ensure their compliance with current DOAJ criteria.
 
 We have [a zero-tolerance policy](/about/#zero-tolerance-policy). We will treat you with respect and courtesy. We expect you to do the same.
 

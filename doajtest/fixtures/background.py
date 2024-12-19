@@ -52,12 +52,14 @@ BACKGROUND_JOB = {
 
 
 def save_mock_bgjob(action=None, status=None, created_before_sec=0, is_save=True,
-                    queue_id=None):
+                    blocking=True, queue_id=None):
     bgjob = BackgroundJob()
 
-    if action:
+    if not action:
         from portality.tasks.journal_csv import JournalCSVBackgroundTask
         bgjob.action = JournalCSVBackgroundTask.__action__
+    else:
+        bgjob.action = action
 
     if status:
         bgjob._set_with_struct("status", status)
@@ -69,6 +71,6 @@ def save_mock_bgjob(action=None, status=None, created_before_sec=0, is_save=True
         bgjob.queue_id = queue_id
 
     if is_save:
-        bgjob.save(blocking=True)
+        bgjob.save(blocking=blocking)
 
     return bgjob

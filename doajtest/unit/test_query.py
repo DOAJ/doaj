@@ -11,13 +11,13 @@ from portality.bll.services.query import QueryService, Query
 from portality.bll import exceptions
 
 QUERY_ROUTE = {
-    "query" : {
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article"
+    "query": {
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article"
         },
         "journal": {
             "auth": False,
@@ -27,59 +27,59 @@ QUERY_ROUTE = {
             "dao": "portality.models.Journal"
         }
     },
-    "publisher_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "publisher",
-            "query_filters" : ["owner", "only_in_doaj"],
-            "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Journal"
+    "publisher_query": {
+        "journal": {
+            "auth": True,
+            "role": "publisher",
+            "query_filters": ["owner", "only_in_doaj"],
+            "result_filters": ["publisher_result_filter"],
+            "dao": "portality.models.Journal"
         }
     },
-    "admin_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Journal"
+    "admin_query": {
+        "journal": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Application"
         },
     },
-    "api_query" : {
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article",
-            "page_size" : 1
+    "api_query": {
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj", "public_source"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article",
+            "page_size": 1
         },
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Journal"
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj", "public_source"],
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : None,
-            "query_filters" : ["owner", "private_source"],
-            "dao" : "portality.models.Suggestion"
+        "suggestion": {
+            "auth": True,
+            "role": None,
+            "query_filters": ["owner", "private_source"],
+            "dao": "portality.models.Suggestion"
         }
     },
-    "editor_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "editor",
-            "dao" : "portality.models.Journal"
+    "editor_query": {
+        "journal": {
+            "auth": True,
+            "role": "editor",
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "editor",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "editor",
+            "dao": "portality.models.Application"
         }
     },
     "associate_query": {
@@ -88,49 +88,49 @@ QUERY_ROUTE = {
             "role": "associate_editor",
             "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "associate_editor",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "associate_editor",
+            "dao": "portality.models.Application"
         }
     }
 }
 
 SEARCH_ALL_QUERY_ROUTE = {
-    "query" : {
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Journal"
+    "query": {
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Journal"
         }
     },
-    "editor_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Journal"
+    "editor_query": {
+        "journal": {
+            "auth": True,
+            "role": "editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : False,
-            "role" : "editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": False,
+            "role": "editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Application"
         }
     },
     "associate_query": {
         "journal": {
             "auth": False,
             "role": "associate_editor",
-            "query_filters" : ["search_all_meta"],
+            "query_filters": ["search_all_meta"],
             "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : False,
-            "role" : "associate_editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": False,
+            "role": "associate_editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Application"
         }
     }
 }

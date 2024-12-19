@@ -97,73 +97,75 @@ class TestWithdrawReinstate(DoajTestCase):
         self.make_account()
         acc = models.Account()
         acc.set_name("testuser")
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
+            #ctx = self._make_and_push_test_context(acc=acc)
 
-        sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=True)
-        ids = []
-        articles = []
-        for source in sources:
-            source["admin"]["current_application"] = ""
-            j = models.Journal(**source)
-            j.save()
-            ids.append(j.id)
+            sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=True)
+            ids = []
+            articles = []
+            for source in sources:
+                source["admin"]["current_application"] = ""
+                j = models.Journal(**source)
+                j.save()
+                ids.append(j.id)
 
-            pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
-            eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
-            a = models.Article(**asource)
-            a.save()
-            articles.append(a.id)
+                pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
+                eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
+                asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
+                a = models.Article(**asource)
+                a.save()
+                articles.append(a.id)
 
-        time.sleep(1)
+            time.sleep(1)
 
-        change_in_doaj(ids, False)
+            change_in_doaj(ids, False)
 
-        for id in ids:
-            j = models.Journal.pull(id)
-            assert j.is_in_doaj() is False
+            for id in ids:
+                j = models.Journal.pull(id)
+                assert j.is_in_doaj() is False
 
-        for id in articles:
-            a = models.Article.pull(id)
-            assert a.is_in_doaj() is False
+            for id in articles:
+                a = models.Article.pull(id)
+                assert a.is_in_doaj() is False
 
-        ctx.pop()
+            #ctx.pop()
 
     def test_04_reinstate(self):
         self.make_account()
 
         acc = models.Account()
         acc.set_name("testuser")
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc):
+            #ctx = self._make_and_push_test_context(acc=acc)
 
-        sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=False)
-        ids = []
-        articles = []
-        for source in sources:
-            j = models.Journal(**source)
-            j.save()
-            ids.append(j.id)
+            sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=False)
+            ids = []
+            articles = []
+            for source in sources:
+                j = models.Journal(**source)
+                j.save()
+                ids.append(j.id)
 
-            pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
-            eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
-            a = models.Article(**asource)
-            a.save()
-            articles.append(a.id)
+                pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
+                eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
+                asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
+                a = models.Article(**asource)
+                a.save()
+                articles.append(a.id)
 
-        time.sleep(1)
+            time.sleep(1)
 
-        change_in_doaj(ids, True)
+            change_in_doaj(ids, True)
 
-        for id in ids:
-            j = models.Journal.pull(id)
-            assert j.is_in_doaj() is True
+            for id in ids:
+                j = models.Journal.pull(id)
+                assert j.is_in_doaj() is True
 
-        for id in articles:
-            a = models.Article.pull(id)
-            assert a.is_in_doaj() is True
+            for id in articles:
+                a = models.Article.pull(id)
+                assert a.is_in_doaj() is True
 
-        ctx.pop()
+            #ctx.pop()
 
     def test_05_withdraw_with_ur(self):
         account = self.make_account()
