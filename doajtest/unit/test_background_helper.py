@@ -7,7 +7,7 @@ from portality import constants
 from portality.background import BackgroundTask
 from portality.core import app
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running, main_queue
+from portality.tasks.redis_huey import events_queue, scheduled_short_queue, scheduled_long_queue
 
 """ Updated for Huey v2: you can't register a function more than once, so we name each fn individually """
 
@@ -16,8 +16,9 @@ class TestBackgroundHelper(TestCase):
 
     def test_get_queue_id_by_task_queue(self):
         cases = [
-            (long_running, constants.BGJOB_QUEUE_ID_LONG),
-            (main_queue, constants.BGJOB_QUEUE_ID_MAIN),
+            (events_queue, constants.BGJOB_QUEUE_ID_EVENTS),
+            (scheduled_long_queue, constants.BGJOB_QUEUE_ID_SCHEDULED_LONG),
+            (scheduled_short_queue, constants.BGJOB_QUEUE_ID_SCHEDULED_SHORT),
             (None, constants.BGJOB_QUEUE_ID_UNKNOWN),
         ]
 
@@ -59,7 +60,7 @@ class TestRedisHueyTaskHelper(TestCase):
         helpers.patch_config(app, cls.org_config)
 
     def test_01_register_schedule(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, fixture_bgtask_class(self.task_name_a))
+        helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue, fixture_bgtask_class(self.task_name_a))
 
         @helper.register_schedule
         def _fn1():
@@ -68,7 +69,7 @@ class TestRedisHueyTaskHelper(TestCase):
         assert isinstance(_fn1, huey.api.TaskWrapper)
 
     def test_02_register_schedule__a_second_time(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, fixture_bgtask_class(self.task_name_a))
+        helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue, fixture_bgtask_class(self.task_name_a))
 
         @helper.register_schedule
         def _fn1():
@@ -77,7 +78,7 @@ class TestRedisHueyTaskHelper(TestCase):
         assert _fn1 is None # We've added a catch to check if we get ValueError from huey we should return None
 
     def test_03_register_schedule__schedule_not_found(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue,
+        helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue,
                                                        fixture_bgtask_class(self.task_name_schedule_not_exist))
         with self.assertRaises(RuntimeError):
             @helper.register_schedule
@@ -85,7 +86,7 @@ class TestRedisHueyTaskHelper(TestCase):
                 print('fake fn')
 
     def test_04_register_execute(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, fixture_bgtask_class(self.task_name_b))
+        helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue, fixture_bgtask_class(self.task_name_b))
 
         @helper.register_execute(is_load_config=True)
         def _fn3():
@@ -95,7 +96,7 @@ class TestRedisHueyTaskHelper(TestCase):
         assert _fn3.settings['default_retries'] == self.expected_retries
 
     def test_05_register_execute__config_not_found(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue,
+        helper = background_helper.RedisHueyTaskHelper(events_queue,
                                                        fixture_bgtask_class(self.task_name_schedule_not_exist))
 
         with self.assertRaises(RuntimeError):
@@ -104,7 +105,7 @@ class TestRedisHueyTaskHelper(TestCase):
                 print('fake fn')
 
     def test_06_register_execute__a_second_time(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, fixture_bgtask_class(self.task_name_b))
+        helper = background_helper.RedisHueyTaskHelper(events_queue, fixture_bgtask_class(self.task_name_b))
 
         @helper.register_execute(is_load_config=True)
         def _fn3():
@@ -113,7 +114,7 @@ class TestRedisHueyTaskHelper(TestCase):
         assert _fn3 is None   # We've added a catch to check if we get ValueError from huey we should return None
 
     def test_07_register_execute__without_load_config(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue,
+        helper = background_helper.RedisHueyTaskHelper(events_queue,
                                                        fixture_bgtask_class(self.task_name_schedule_not_exist))
 
         @helper.register_execute(is_load_config=False)

@@ -10,7 +10,7 @@ from portality.dao import Facetview2
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import scheduled_short_queue as queue, schedule
 from portality.ui import templates
 
 
@@ -432,7 +432,7 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         async_workflow_notifications.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(main_queue)
+huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

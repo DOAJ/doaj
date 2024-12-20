@@ -13,7 +13,7 @@ from portality.bll.exceptions import IngestException
 from portality.core import app
 from portality.lib import plugin
 from portality.tasks.helpers import background_helper, articles_upload_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 from portality.ui.messages import Messages
 
 DEFAULT_MAX_REMOTE_SIZE = 262144000
@@ -505,7 +505,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             return __fail(record, previous, error="please check it before submitting again; " + str(e))
 
 
-huey_helper = IngestArticlesBackgroundTask.create_huey_helper(main_queue)
+huey_helper = IngestArticlesBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=True)

@@ -2,7 +2,7 @@ from portality import constants
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 from portality.bll import DOAJ
 
 
@@ -88,7 +88,7 @@ class ApplicationAutochecks(BackgroundTask):
         application_autochecks.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = ApplicationAutochecks.create_huey_helper(main_queue)
+huey_helper = ApplicationAutochecks.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=True)

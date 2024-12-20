@@ -19,7 +19,7 @@ from portality.dao import any_pending_tasks, query_data_tasks
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
-from portality.tasks.redis_huey import main_queue, long_running
+from portality.tasks.redis_huey import events_queue, scheduled_short_queue, scheduled_long_queue
 from portality.util import url_for
 
 
@@ -183,8 +183,9 @@ class DoajTestCase(TestCase):
         cls.app_test.logger.setLevel(logging.DEBUG)
 
         # Run huey jobs straight away
-        main_queue.immediate = True
-        long_running.immediate = True
+        events_queue.immediate = True
+        scheduled_short_queue.immediate = True
+        scheduled_long_queue.immediate = True
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")

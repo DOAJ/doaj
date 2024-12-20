@@ -28,6 +28,7 @@ htmlcov/*
 # Don't push our dev configs or the secret app configs.
 dev.cfg
 app.cfg
+instance.cfg
 
 # directories of transient stuff that gets created locally
 media/*
