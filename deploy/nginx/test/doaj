@@ -120,3 +120,20 @@ server {
         proxy_pass http://doaj_index;
     }
 }
+
+# Catch and throw away any requests to an unknown host
+server {
+  listen 80 default_server;
+  return 444;
+}
+
+server {
+  listen [::]:443 ssl http2 default_server;
+  listen 443 ssl http2 default_server;
+  server_name _;
+
+  ssl_certificate /etc/letsencrypt/live/testdoaj.cottagelabs.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
+
+  return 444;
+}
