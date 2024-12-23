@@ -293,7 +293,11 @@ TOP_LEVEL_ROLES = [
     "ultra_bulk_delete",
     "preservation",
     constants.ROLE_PUBLIC_DATA_DUMP,
-    constants.ROLE_PUBLISHER_JOURNAL_CSV
+    constants.ROLE_PUBLISHER_JOURNAL_CSV,
+    constants.ROLE_PREMIUM,
+    constants.ROLE_PREMIUM_OAI,
+    constants.ROLE_PREMIUM_PDD,
+    constants.ROLE_PREMIUM_CSV
 ]
 
 ROLE_MAP = {
@@ -313,6 +317,11 @@ ROLE_MAP = {
         "edit_suggestion",
         "editor_area",
         "read_notifications"
+    ],
+    constants.ROLE_PREMIUM: [
+        constants.ROLE_PREMIUM_OAI,
+        constants.ROLE_PREMIUM_PDD,
+        constants.ROLE_PREMIUM_CSV
     ]
 }
 
@@ -1657,3 +1666,12 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+##################################################
+# Premium membership configurations
+
+# Should the system enforce premium membership mode
+PREMIUM_MODE = True
+
+# What is the delay non-premium users have to data access
+NON_PREMIUM_DELAY_SECONDS = 30 * _DAY

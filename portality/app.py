@@ -463,7 +463,7 @@ def run_server(host=None, port=None, fake_https=False):
 
     if pycharm_debug:
         app.config['DEBUG'] = False
-        import pydevd
+        import pydevd_pycharm as pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'),
                         port=app.config.get('DEBUG_PYCHARM_PORT', 6000),
                         stdoutToServer=True, stderrToServer=True)
