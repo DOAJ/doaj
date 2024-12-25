@@ -50,7 +50,7 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
 
         save_test_datalog()
 
-        journals = save_test_journals(3)
+        journals = save_test_journals(4)
 
         worksheet = MagicMock()
         worksheet.get_all_values.return_value = [
@@ -128,17 +128,18 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
     def test_find_new_datalog_journals(self):
         save_test_journals(3)
 
-        def _find_new_datalog_journals(latest_date_str):
+        def _count_new_datalog_journals(latest_date_str):
             datalog_list = datalog_journal_added_update.find_new_datalog_journals(
                 dates.parse(latest_date_str)
             )
             datalog_list = list(datalog_list)
             return len(datalog_list)
 
-        assert _find_new_datalog_journals('2101-01-01') == 2
-        assert _find_new_datalog_journals('2102-01-01') == 1
-        assert _find_new_datalog_journals('2103-01-01') == 0
-        assert _find_new_datalog_journals('2104-01-01') == 0
+        assert _count_new_datalog_journals('2101-01-01') == 3
+        assert _count_new_datalog_journals('2101-01-01T22:22:22Z') == 2
+        assert _count_new_datalog_journals('2102-01-01') == 2
+        assert _count_new_datalog_journals('2103-01-01') == 1
+        assert _count_new_datalog_journals('2104-01-01') == 0
 
 
 def save_test_datalog():
@@ -153,9 +154,18 @@ def save_test_journals(n_journals: int) -> List[Journal]:
     journals = map(lambda d: Journal(**d), journals)
     journals = list(journals)
     assert len(journals) == n_journals
-    journals[0]['created_date'] = '2103-01-01'
-    journals[1]['created_date'] = '2102-01-01'
-    journals[2]['created_date'] = '2101-01-01'
+
+    test_dates = [
+        '2103-01-01T03:00:00Z',
+        '2102-01-01T02:00:00Z',
+        '2101-01-01T22:22:22Z',
+        '2101-01-01T01:00:00Z',
+    ]
+
+    for i, j in enumerate(journals):
+        if i < len(test_dates):
+            j['created_date'] = test_dates[i]
+
     save_and_block_last(journals)
 
     return journals
