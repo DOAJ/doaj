@@ -14,7 +14,7 @@ import itertools
 import logging
 import re
 import time
-from typing import Callable, NoReturn, List, Iterable
+from typing import Callable, List, Iterable
 
 import gspread
 
@@ -166,7 +166,7 @@ def to_display_data(datalog: DatalogJournalAdded) -> list:
 def records_new_journals(filename,
                          worksheet_name,
                          google_key_path,
-                         logger_fn: Callable[[str], NoReturn] = None
+                         logger_fn: Callable[[str], None] = None
                          ):
     if logger_fn is None:
         logger_fn = print
