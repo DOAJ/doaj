@@ -16,11 +16,13 @@ import re
 import time
 from typing import Callable, List, Iterable
 
+import elasticsearch
 import gspread
 
 from portality import dao, regex
 from portality.background import BackgroundTask
 from portality.core import app
+from portality.dao import ScrollInitialiseException
 from portality.lib import dates, gsheet
 from portality.models import Journal
 from portality.models.datalog_journal_added import DatalogJournalAdded
@@ -106,7 +108,10 @@ class LastDatalogJournalAddedQuery:
 
 
 def get_latest_date_added():
-    record = next(DatalogJournalAdded.iterate(LastDatalogJournalAddedQuery().query()), None)
+    try:
+        record = next(DatalogJournalAdded.iterate(LastDatalogJournalAddedQuery().query()), None)
+    except (elasticsearch.exceptions.NotFoundError, ScrollInitialiseException):
+        record = None
     if record is None:
         return datetime.datetime.now()
     else:
@@ -171,17 +176,7 @@ def records_new_journals(filename,
     if logger_fn is None:
         logger_fn = print
 
-    latest_date = get_latest_date_added()
-    new_datalog_list = find_new_datalog_journals(latest_date)
-    new_datalog_list = (dao.patch_model_for_bulk(r) for r in new_datalog_list)
-    new_datalog_list = list(new_datalog_list)
-    if new_datalog_list:
-        # save new records to DB
-        DatalogJournalAdded.bulk([r.data for r in new_datalog_list], )
-        logger_fn(f'saved new records to datalog [{len(new_datalog_list)}]')
-        time.sleep(6)  # wait for bulk save to complete
-    else:
-        logger_fn('No new records found')
+    sync_datalog_journal_added(logger_fn)
 
     # save new records to google sheet
     client = gsheet.load_client(google_key_path)
@@ -205,6 +200,23 @@ def records_new_journals(filename,
     new_xlsx_rows = find_new_xlsx_rows(last_issn)
     worksheet.insert_rows(new_xlsx_rows, latest_row_idx + 1)
     logger_fn(f'inserted rows to google sheet [{len(new_xlsx_rows)}]')
+
+
+def sync_datalog_journal_added(logger_fn: Callable[[str], None] = None):
+    if logger_fn is None:
+        logger_fn = print
+
+    latest_date = get_latest_date_added()
+    new_datalog_list = find_new_datalog_journals(latest_date)
+    new_datalog_list = (dao.patch_model_for_bulk(r) for r in new_datalog_list)
+    new_datalog_list = list(new_datalog_list)
+    if new_datalog_list:
+        # save new records to DB
+        DatalogJournalAdded.bulk([r.data for r in new_datalog_list], )
+        logger_fn(f'saved new records to datalog [{len(new_datalog_list)}]')
+        time.sleep(6)  # wait for bulk save to complete
+    else:
+        logger_fn('No new records found')
 
 
 class DatalogJournalAddedUpdate(BackgroundTask):

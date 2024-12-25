@@ -39,6 +39,16 @@ testdata_datalog_list = [
 
 class TestDatalogJournalAddedUpdate(DoajTestCase):
 
+    def test_sync_datalog_journal_added(self):
+        journals = create_test_journals(4)
+        save_and_block_last(journals[-1:])
+        datalog_journal_added_update.sync_datalog_journal_added()
+        assert DatalogJournalAdded.count() == 1
+
+        save_and_block_last(journals[:-1])
+        datalog_journal_added_update.sync_datalog_journal_added()
+        assert DatalogJournalAdded.count() == 3
+
     def test_execute__normal(self):
         """
         test background job execute
@@ -149,25 +159,26 @@ def save_test_datalog():
     time.sleep(2)
 
 
-def save_test_journals(n_journals: int) -> List[Journal]:
+def create_test_journals(n_journals):
     journals = JournalFixtureFactory.make_many_journal_sources(count=n_journals, in_doaj=True)
     journals = map(lambda d: Journal(**d), journals)
     journals = list(journals)
     assert len(journals) == n_journals
-
     test_dates = [
         '2103-01-01T03:00:00Z',
         '2102-01-01T02:00:00Z',
         '2101-01-01T22:22:22Z',
         '2101-01-01T01:00:00Z',
     ]
-
     for i, j in enumerate(journals):
         if i < len(test_dates):
             j['created_date'] = test_dates[i]
+    return journals
 
+
+def save_test_journals(n_journals: int) -> List[Journal]:
+    journals = create_test_journals(n_journals)
     save_and_block_last(journals)
-
     return journals
 
 
