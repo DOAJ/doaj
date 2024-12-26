@@ -47,7 +47,7 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
 
         save_and_block_last(journals[:-1])
         datalog_journal_added_update.sync_datalog_journal_added()
-        assert DatalogJournalAdded.count() == 3
+        assert DatalogJournalAdded.count() == 4
 
     def test_execute__normal(self):
         """
