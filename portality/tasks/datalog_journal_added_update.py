@@ -182,7 +182,7 @@ def sync_datalog_journal_added(logger_fn: Callable[[str], None] = None):
     fetch_date = get_fetch_datalog_date()
     logger_fn(f'latest_date of Datalog: {fetch_date}')
     new_datalog_list = find_new_datalog_journals(fetch_date)
-    new_datalog_list = (r for r in new_datalog_list if not datalog_journal_added.is_issn_exists(r.issn, r.date_added))
+    new_datalog_list = (r for r in new_datalog_list if r.issn and not datalog_journal_added.is_issn_exists(r.issn, r.date_added))
     new_datalog_list = (dao.patch_model_for_bulk(r) for r in new_datalog_list)
     new_datalog_list = list(new_datalog_list)
     if new_datalog_list:
