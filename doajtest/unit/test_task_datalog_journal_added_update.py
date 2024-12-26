@@ -1,5 +1,6 @@
 import time
 import unittest
+from datetime import datetime
 from typing import List
 from unittest.mock import MagicMock
 from unittest.mock import patch
@@ -7,7 +8,7 @@ from unittest.mock import patch
 from doajtest.fixtures import JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.lib import dates
-from portality.models import Journal
+from portality.models import Journal, datalog_journal_added
 from portality.models.datalog_journal_added import DatalogJournalAdded
 from portality.tasks import datalog_journal_added_update
 from portality.tasks.datalog_journal_added_update import DatalogJournalAddedUpdate, to_display_data, \
@@ -74,10 +75,10 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
              .open.return_value
              .worksheet.return_value) = worksheet
 
-            background_task = background_helper.execute_by_bg_task_type(DatalogJournalAddedUpdate,
-                                                                        filename=input_filename,
-                                                                        worksheet_name=input_worksheet_name,
-                                                                        google_key_path=input_google_key_path)
+            background_helper.execute_by_bg_task_type(DatalogJournalAddedUpdate,
+                                                      filename=input_filename,
+                                                      worksheet_name=input_worksheet_name,
+                                                      google_key_path=input_google_key_path)
 
         worksheet.get_all_values.assert_called()
         new_rows_added_to_excels, row_idx, *_ = worksheet.insert_rows.call_args.args
@@ -151,12 +152,22 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
         assert _count_new_datalog_journals('2103-01-01') == 1
         assert _count_new_datalog_journals('2104-01-01') == 0
 
+    def test_is_datalog_exist(self):
+        save_test_datalog()
+        # save_all_block_last(testdata_datalog_list)
+
+        assert datalog_journal_added.is_issn_exists('1234-3000', '2021-01-01')
+        assert datalog_journal_added.is_issn_exists('1234-1000', datetime(2020, 1, 1))
+        assert not datalog_journal_added.is_issn_exists('9999-9999', datetime(2021, 1, 1))
+
 
 def save_test_datalog():
     for t in testdata_datalog_list:
         t.save()
 
     time.sleep(2)
+
+    DatalogJournalAdded.refresh()
 
 
 def create_test_journals(n_journals):

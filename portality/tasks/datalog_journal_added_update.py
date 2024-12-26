@@ -16,16 +16,14 @@ import re
 import time
 from typing import Callable, List, Iterable
 
-import elasticsearch
 import gspread
 
 from portality import dao, regex
 from portality.background import BackgroundTask
 from portality.core import app
-from portality.dao import ScrollInitialiseException
 from portality.lib import dates, gsheet
-from portality.models import Journal
-from portality.models.datalog_journal_added import DatalogJournalAdded
+from portality.models import Journal, datalog_journal_added
+from portality.models.datalog_journal_added import DatalogJournalAdded, find_last_datalog, DateAddedDescQuery
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_short_queue as queue
 
@@ -53,20 +51,8 @@ class NewDatalogJournalQuery:
         }
 
 
-class LatestDatalogJournalQuery:
-    def __init__(self):
-        pass
-
-    def query(self):
-        return {
-            'sort': [
-                {'date_added': {'order': 'desc'}}
-            ]
-        }
-
-
-def find_new_datalog_journals(latest_date: datetime.datetime) -> Iterable[DatalogJournalAdded]:
-    records = Journal.iterate(NewDatalogJournalQuery(latest_date).query())
+def find_new_datalog_journals(fetch_date: datetime.datetime) -> Iterable[DatalogJournalAdded]:
+    records = Journal.iterate(NewDatalogJournalQuery(fetch_date).query())
     return (to_datalog_journal_added(j) for j in records)
 
 
@@ -87,35 +73,15 @@ def to_datalog_journal_added(journal: Journal) -> DatalogJournalAdded:
     return record
 
 
-class LastDatalogJournalAddedQuery:
-    def __init__(self):
-        pass
-
-    def query(self):
-        return {
-            "size": 1,
-            "sort": [
-                {
-                    "date_added": {
-                        "order": "desc"
-                    }
-                }
-            ],
-            "query": {
-                "match_all": {}
-            }
-        }
-
-
-def get_latest_date_added():
-    try:
-        record = next(DatalogJournalAdded.iterate(LastDatalogJournalAddedQuery().query()), None)
-    except (elasticsearch.exceptions.NotFoundError, ScrollInitialiseException):
-        record = None
+def get_fetch_datalog_date(n_days=30):
+    record = find_last_datalog()
     if record is None:
-        return datetime.datetime.now()
+        return datetime.datetime(2014, 3, 19)
     else:
-        return dates.parse(record.date_added)
+        d = dates.parse(record.date_added)
+        # subtract n days to avoid missing records
+        d -= datetime.timedelta(days=n_days)
+        return d
 
 
 def find_latest_row_index(records: List[List[str]]):
@@ -155,7 +121,7 @@ def find_new_xlsx_rows(last_issn, page_size=400) -> list:
 
     """
 
-    new_records = DatalogJournalAdded.iterate(LatestDatalogJournalQuery().query(), page_size=page_size)
+    new_records = DatalogJournalAdded.iterate(DateAddedDescQuery().query(), page_size=page_size)
     new_records = itertools.takewhile(lambda r: r.issn != last_issn, new_records)
     new_records = list(new_records)
     new_xlsx_rows = [to_display_data(j) for j in new_records]
@@ -206,8 +172,10 @@ def sync_datalog_journal_added(logger_fn: Callable[[str], None] = None):
     if logger_fn is None:
         logger_fn = print
 
-    latest_date = get_latest_date_added()
-    new_datalog_list = find_new_datalog_journals(latest_date)
+    fetch_date = get_fetch_datalog_date()
+    logger_fn(f'latest_date of Datalog: {fetch_date}')
+    new_datalog_list = find_new_datalog_journals(fetch_date)
+    new_datalog_list = (r for r in new_datalog_list if not datalog_journal_added.is_issn_exists(r.issn, r.date_added))
     new_datalog_list = (dao.patch_model_for_bulk(r) for r in new_datalog_list)
     new_datalog_list = list(new_datalog_list)
     if new_datalog_list:
