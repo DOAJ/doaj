@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import json
-import re
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -1085,6 +1085,13 @@ def find_index_aliases(alias_prefixes=None) -> Iterable[Tuple[str, str]]:
         index_aliases = ((index, alias) for index, alias in index_aliases
                          if any(alias.startswith(p) for p in alias_prefixes))
     return index_aliases
+
+
+def is_exist(query: dict, index):
+    query['size'] = 1
+    query['_source'] = False
+    res = ES.search(body=query, index=index, size=1)
+    return res['hits']['total']['value'] > 0
 
 
 class BlockTimeOutException(Exception):
