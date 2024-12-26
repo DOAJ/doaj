@@ -9,6 +9,8 @@ References
 * [No longer display Seal](https://github.com/DOAJ/doajPM/issues/3829)
 """
 
+from __future__ import annotations
+
 import datetime
 import itertools
 import logging
@@ -97,21 +99,26 @@ def find_latest_row_index(records: List[List[str]]):
             return latest_row_index
 
 
-def find_first_issn(rows):
+def find_latest_issn_list(rows, n=10) -> list[str]:
+    issn_list = []
     for row in rows:
         for c in row:
             if re.match(regex.ISSN, c):
-                return c
-    return None
+                issn_list.append(c)
+
+            if len(issn_list) >= n:
+                return issn_list
+
+    return issn_list
 
 
-def find_new_xlsx_rows(last_issn, page_size=400) -> list:
+def find_new_xlsx_rows(latest_issn_list, page_size=400) -> list:
     """
     find new datalog records and convert to xlsx display format
 
     Parameters
     ----------
-    last_issn
+    latest_issn_list
     page_size
 
     Returns
@@ -122,7 +129,7 @@ def find_new_xlsx_rows(last_issn, page_size=400) -> list:
     """
 
     new_records = DatalogJournalAdded.iterate(DateAddedDescQuery().query(), page_size=page_size)
-    new_records = itertools.takewhile(lambda r: r.issn != last_issn, new_records)
+    new_records = itertools.takewhile(lambda r: r.issn not in latest_issn_list, new_records)
     new_records = list(new_records)
     new_xlsx_rows = [to_display_data(j) for j in new_records]
     return new_xlsx_rows
@@ -160,10 +167,10 @@ def records_new_journals(filename,
     org_rows = worksheet.get_all_values()
     org_rows = list(org_rows)
     latest_row_idx = find_latest_row_index(org_rows)
-    last_issn = find_first_issn(org_rows[latest_row_idx:])
-    logger_fn(f'last_issn: {last_issn}')
+    latest_issn_list = find_latest_issn_list(org_rows[latest_row_idx:])
+    logger_fn(f'latest_issn_list: {latest_issn_list}')
 
-    new_xlsx_rows = find_new_xlsx_rows(last_issn)
+    new_xlsx_rows = find_new_xlsx_rows(latest_issn_list)
     worksheet.insert_rows(new_xlsx_rows, latest_row_idx + 1)
     logger_fn(f'inserted rows to google sheet [{len(new_xlsx_rows)}]')
 
