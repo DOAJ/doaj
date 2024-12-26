@@ -1090,8 +1090,9 @@ def find_index_aliases(alias_prefixes=None) -> Iterable[Tuple[str, str]]:
 def is_exist(query: dict, index):
     query['size'] = 1
     query['_source'] = False
-    res = ES.search(body=query, index=index, size=1)
-    return res['hits']['total']['value'] > 0
+    res = ES.search(body=query, index=index, size=1, ignore=[404])
+
+    return res.get('hits', {}).get('total',{}).get('value', 0) > 0
 
 
 class BlockTimeOutException(Exception):
