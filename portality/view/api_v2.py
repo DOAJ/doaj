@@ -90,7 +90,7 @@ def delete_article(article_id):
 def bulk_article_create():
     # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
     # return redirect(url_for('api_v3.bulk_article_create', **request.args), code=301)
-    return api_v3.bulk_article_create()
+    raise Api400Error(API_UNSUPPORTED_ERROR)
 
 
 @blueprint.route("/bulk/articles", methods=["DELETE"])
