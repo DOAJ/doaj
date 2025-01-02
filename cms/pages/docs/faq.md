@@ -104,9 +104,9 @@ Choose how you want to upload article metadata to us.
 
 Sometimes, article metadata needs to be updated or corrected. When you upload new metadata, we use the Full Text URL and DOI (if present) to identify and match articles. This allows existing metadata to be updated.
 
-If you are updating article metadata with details about title, authors, affiliations, year, volume, issue, page number or adding a DOI to an article that doesn't already have one, you can send us the updated metadata using one of the methods above.
+If you are updating article metadata with bibliographic details such as title, authors, affiliations, year, volume, issue, or page number, you can send us the updated metadata using one of the methods above. For a successful update, the metadata must include an identical identifier, such as Full Text URL or DOI. 
 
-If you need to update or correct the Full Text URL or DOI for articles that already have a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing articles for you before you upload the new version. Submitting new Full Text URLs or DOIs will cause duplicate articles to be created.
+If you need to update or correct either the Full Text URL or DOI for articles that already have either a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing articles for you before you upload the new version. Submitting new Full Text URLs or DOIs will cause duplicate articles to be created. [You may find this table helpful](https://docs.google.com/spreadsheets/d/1rpmzJdut_Nfl6jph5uGTc4q-i3q73iMT7W-qtUY3X0A/edit?usp=sharing). It illustrates which uploads fail and which ones succeed.
 
 To delete article metadata, please contact Help Desk with the following details:
 
