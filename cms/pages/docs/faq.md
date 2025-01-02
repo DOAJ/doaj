@@ -98,21 +98,23 @@ Choose how you want to upload article metadata to us.
 - **Help available?** Yes. [Contact our Help Desk](mailto:helpdesk@doaj.org).
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
 - **Documentation** No
-- **Troubleshooting**: you must be careful to enter the Print ISSN and Electronic ISSN in the right field.
+- **Troubleshooting**: make sure you enter the Print ISSN and Electronic ISSN in the right ISSN field.
 
-### A note about updating articles
+## Correcting or updating article metadata
 
-Sometimes article metadata needs to be updated. We use the Full Text URL and DOI, if present, to identify and match articles. If you are updating article metadata with details about authors, affiliations, year, volume, issue, etc or adding a DOI to an article that doesn't have one in DOAJ, you will be able to send us the updated metadata, using one of the methods above, without any problem.
+Sometimes, article metadata needs to be updated or corrected. When you upload new metadata, we use the Full Text URL and DOI (if present) to identify and match articles. This allows existing metadata to be updated.
 
-However, if you need to update the Full Text URL or DOI of articles that already have that metadata present in DOAJ, you will need to contact us first. Submitting new FUll Text URLs or DOIs will cause duplicate articles to be created. Our preferenc here is that we delete the existing article records first.
+If you are updating article metadata with details about title, authors, affiliations, year, volume, issue, page number or adding a DOI to an article that doesn't already have one, you can send us the updated metadata using one of the methods above.
 
-If you do need us to delete article metadata, please contact Help Desk with the following details:
+If you need to update or correct the Full Text URL or DOI for articles that already have a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing articles for you before you upload the new version. Submitting new Full Text URLs or DOIs will cause duplicate articles to be created.
+
+To delete article metadata, please contact Help Desk with the following details:
 
 - journal title
 - ISSN(s)
-- years to be deleted (we can only delete whole years) or if we should delete all article for a journal
+- years to be deleted (we can only delete whole years) or if we should delete all articles for a journal
 
-We will confirm the number of articles to delete with you. Deleting articles is instantaneous and cannot be reversed.
+We will first confirm with you the number of articles to be deleted. Deleting articles is instantaneous and cannot be reversed.
 
 ## Help with metadata uploads
 
