@@ -32,7 +32,7 @@ doaj.autocheckers.ISSNActive = class {
         let style = this.STYLE[autocheck.advice];
 
         let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>) [last checked: ${doaj.humanDate(doaj.autochecks.created_date)}]</div>`;
         return frag;
     }
 }
@@ -72,7 +72,7 @@ doaj.autocheckers.KeepersRegistry = class {
         let style = this.STYLE[autocheck.advice];
 
         let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}""><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>) [last checked: ${doaj.humanDate(doaj.autochecks.created_date)}]</div>`;
         return frag;
     }
 }
