@@ -7,13 +7,14 @@ from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
-from portality import dao
 import portality.models as models
 from portality import constants
+from portality import dao
 from portality import lock
 from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
+from portality.bll.services.query import Query
 from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
@@ -26,10 +27,9 @@ from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
+from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
-
-from portality.bll.services.query import Query
 from portality.view.view_helper import exparam_editing_user
 
 # ~~Admin:Blueprint~~
@@ -47,7 +47,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template('admin/index.html', admin_page=True)
+    return render_template(templates.ADMIN_JOURNALS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/journals", methods=["GET"])
@@ -212,7 +212,7 @@ def journal_page(journal_id):
     try:
         lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
+        return render_template(templates.JOURNAL_LOCKED, journal=journal, lock=l.lock)
 
     fc = JournalFormFactory.context("admin", extra_param=exparam_editing_user())
     autochecks = models.Autocheck.for_journal(journal_id)
@@ -252,6 +252,18 @@ def journal_page(journal_id):
         else:
             return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
+
+@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
+@login_required
+@ssl_required
+def journal_readonly(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    fc = JournalFormFactory.context("admin_readonly")
+    fc.processor(source=j)
+    return fc.render_template(obj=j, lcc_tree=lcc_jstree, notabs=True)
 
 DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
 
@@ -322,6 +334,31 @@ def journals_bulk_reinstate():
 #
 #####################################################################
 
+@blueprint.route("/journal/<journal_id>/article-info/", methods=["GET"])
+@login_required
+def journal_article_info(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    return {'n_articles': models.Article.count_by_issns(j.bibjson().issns(), in_doaj=True)}
+
+
+@blueprint.route("/journal/<journal_id>/article-info/admin-site-search", methods=["GET"])
+@login_required
+def journal_article_info_admin_site_search(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    issns = j.bibjson().issns()
+    if not issns:
+        abort(404)
+
+    target_url = '/admin/admin_site_search?source={"query":{"bool":{"must":[{"term":{"admin.in_doaj":true}},{"term":{"es_type.exact":"article"}},{"query_string":{"query":"%s","default_operator":"AND","default_field":"index.issn.exact"}}]}},"track_total_hits":true}'
+    return redirect(target_url % issns[0].replace('-', r'\\-'))
+
+
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -335,12 +372,12 @@ def journal_continue(journal_id):
         type = request.values.get("type")
         form = MakeContinuation()
         form.type.data = type
-        return render_template("admin/continuation.html", form=form, current=j)
+        return render_template(templates.CONTINUATION, form=form, current=j)
 
     elif request.method == "POST":
         form = MakeContinuation(request.form)
         if not form.validate():
-            return render_template('admin/continuation.html', form=form, current=j)
+            return render_template(templates.CONTINUATION, form=form, current=j)
 
         if form.type.data is None:
             abort(400)
@@ -366,7 +403,7 @@ def journal_continue(journal_id):
 @ssl_required
 def suggestions():
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
-    return render_template("admin/applications.html",
+    return render_template(templates.APPLICATIONS_SEARCH,
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
@@ -376,7 +413,7 @@ def suggestions():
 @ssl_required
 def update_requests():
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
-    return render_template("admin/update_requests.html",
+    return render_template(templates.UPDATE_REQUESTS_SEARCH,
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
@@ -402,7 +439,7 @@ def application(application_id):
     try:
         lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/application_locked.html", application=ap, lock=l.lock)
+        return render_template(templates.APPLICATION_LOCKED, application=ap, lock=l.lock)
 
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
@@ -432,7 +469,8 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                      lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
@@ -507,7 +545,7 @@ def admin_site_search():
     edit_formulaic_context = JournalFormFactory.context("bulk_edit", extra_param=exparam_editing_user())
     edit_form = edit_formulaic_context.render_template()
 
-    return render_template("admin/admin_site_search.html",
+    return render_template(templates.ADMIN_SITE_SEARCH,
                            admin_page=True,
                            edit_form=edit_form)
 
@@ -516,14 +554,14 @@ def admin_site_search():
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True)
+    return render_template(templates.EDITOR_GROUP_SEARCH, admin_page=True)
 
 
 @blueprint.route("/background_jobs")
 @login_required
 @ssl_required
 def background_jobs_search():
-    return render_template("admin/background_jobs_search.html", admin_page=True)
+    return render_template(templates.BACKGROUND_JOBS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/notifications")
@@ -531,7 +569,7 @@ def background_jobs_search():
 @ssl_required
 def global_notifications_search():
     """ ~~->AdminNotificationsSearch:Page~~ """
-    return render_template("admin/global_notifications_search.html", admin_page=True)
+    return render_template(templates.GLOBAL_NOTIFICATIONS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
@@ -555,7 +593,7 @@ def editor_group(group_id=None):
             form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
-        return render_template("admin/editor_group.html", admin_page=True, form=form)
+        return render_template(templates.EDITOR_GROUP, admin_page=True, form=form)
 
     elif request.method == "POST":
 
@@ -620,7 +658,7 @@ def editor_group(group_id=None):
                 "success")
             return redirect(url_for('admin.editor_group_search'))
         else:
-            return render_template("admin/editor_group.html", admin_page=True, form=form)
+            return render_template(templates.EDITOR_GROUP, admin_page=True, form=form)
 
 
 @blueprint.route("/autocomplete/user")

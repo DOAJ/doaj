@@ -5,6 +5,7 @@ from flask_login import current_user, login_required
 from portality.decorators import ssl_required
 from portality.bll import DOAJ, exceptions
 from portality.util import jsonp
+from portality.ui import templates
 
 import json
 
@@ -19,10 +20,15 @@ blueprint = Blueprint('dashboard', __name__)
 @ssl_required
 def top_todo():
     filter = request.values.get("filter")
-    new_applications, update_requests = True, True
+    new_applications, update_requests, on_hold = True, True, True
     if filter == "na":
+        on_hold = False
         update_requests = False
     elif filter == "ur":
+        on_hold = False
+        new_applications = False
+    elif filter == "oh":
+        update_requests = False
         new_applications = False
 
     # ~~-> Todo:Service~~
@@ -30,10 +36,11 @@ def top_todo():
     todos = svc.top_todo(current_user._get_current_object(),
                          size=app.config.get("TODO_LIST_SIZE"),
                          new_applications=new_applications,
-                         update_requests=update_requests)
+                         update_requests=update_requests,
+                         on_hold=on_hold)
 
     # ~~-> Dashboard:Page~~
-    return render_template('dashboard/index.html', todos=todos)
+    return render_template(templates.DASHBOARD, todos=todos)
 
 
 @blueprint.route("/top_notifications")
@@ -75,4 +82,4 @@ def notification_seen(notification_id):
 @ssl_required
 def notifications():
     # ~~-> Notifications:Page~~
-    return render_template("dashboard/notifications.html")
+    return render_template(templates.NOTIFICATIONS)

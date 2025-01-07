@@ -4,6 +4,12 @@
 This repository provides the software which drives the DOAJ website and the DOAJ 
 directory.
 
+## CI Status
+
+**develop** &nbsp; [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/develop.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/develop)
+
+**master** &nbsp; [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/master)
+
 ## Reporting issues
 
 Please feel free to use the issue tracker on https://github.com/DOAJ/doaj/issues for any bug 

@@ -25,7 +25,7 @@ from portality.lib import dates, gsheet
 from portality.models import Journal
 from portality.models.datalog_journal_added import DatalogJournalAdded
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 log = logging.getLogger(__name__)
 
@@ -242,7 +242,7 @@ class DatalogJournalAddedUpdate(BackgroundTask):
         background_helper.submit_by_background_job(background_job, datalog_journal_added_update)
 
 
-huey_helper = DatalogJournalAddedUpdate.create_huey_helper(main_queue)
+huey_helper = DatalogJournalAddedUpdate.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

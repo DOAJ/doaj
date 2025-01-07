@@ -1,0 +1,57 @@
+{% extends "public/publisher/base.html" %}
+
+{% set form_id = "view_application" %}
+{% set formulaic_after = url_for("publisher.index") %}
+{% set form_action = url_for("publisher.application_readonly", application_id=obj.id) %}
+
+{% set js_validation = False %}
+{% set auto_save = 0 %}
+{% set TAB1 = {"title": "Open access compliance", "fieldsets": ["basic_compliance"]} %}
+{% set TAB2 = {"title": "About the Journal", "fieldsets": ["about_the_journal", "publisher", "society_or_institution"]} %}
+{% set TAB3 = {"title": "Copyright & licensing", "fieldsets": ["licensing", "embedded_licensing", "copyright"]} %}
+{% set TAB4 = {"title": "Editorial", "fieldsets": ["peer_review", "plagiarism", "editorial"]} %}
+{% set TAB5 = {"title": "Business model", "fieldsets": ["apc", "apc_waivers", "other_fees"]} %}
+{% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
+{% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6] %}
+
+{% block page_title %}(Read-only) {{ obj.bibjson().title }}{% endblock %}
+{% block body_id %}apply{% endblock %}
+
+{% block publisher_content scoped %}
+
+    {% import "_application-form/includes/_application_warning_msg.html" as _msg %}
+    {{ _msg.build_journal_withdrawn_deleted_msg(obj) }}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <section class="page-content">
+                    <form id="{{ form_id }}"
+                          data-context = "{{ formulaic_context.name }}"
+                          class="application_form"
+                          novalidate
+                          action="{{ form_action }}"
+                          method="post"
+                          data-formulaic-after="{{ formulaic_after }}">
+
+                        {% include "_application-form/includes/_public_fieldsets.html" %}
+
+                        <div class="tab form-section">
+                            {% include "public/_application-form/includes/_review.html" %}
+                        </div>
+                    </form>
+                </section>
+            </div>
+
+            <div class="col-md-4">
+                <div class="row">
+                    {% include "public/_application-form/includes/_aside_menu.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block publisher_js scoped %}
+    {% include "_application-form/includes/_form_js.html" %}
+{% endblock %}

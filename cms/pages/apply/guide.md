@@ -7,7 +7,9 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-Before you start the application process, you will be asked to log in or register. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
+Before you start the application process, you will be asked to log in or register. The registration process requires an email address. You must use an official email for the journal or an email address that is checked regularly by the journal’s management office.  
+
+Once registered you may begin the application process. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
 
 ## Basic criteria for inclusion
 
@@ -66,9 +68,10 @@ The following information must be available online and easily accessible from th
     - colour charges
   - Any fee waiver must be clearly specified with the conditions of waiver, e.g. amount, time period.
   - If there are charges for withdrawing the article after submission, they cannot exceed the author charges. 
-- Contact details
+- Publisher information
+  - The journal must provide the name and address of the publisher, with a link to the publisher website, if available.  
   - Include the name of a contact person and the journal's dedicated email address.
-  - The country in the application and on the journal website must be where the publisher is registered and carries out its business activities.
+  - The country given in the application and on the journal website must be where the publisher is registered and carries out its business activities.
 
 ---
 
@@ -193,17 +196,31 @@ DOAJ only accepts journals that follow good publishing practice. If our review f
 
 Journals or publishers that have had multiple exclusions totalling six years or more will not be considered for inclusion in DOAJ and applications from them will be automatically rejected.
 
-Journals already accepted into DOAJ may be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
-
 Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and that any necessary changes have been made to the journal website or policies.
+
+---
+
+## If your application is accepted
+
+After your journal is accepted, you are responsible for updating the DOAJ record and ensuring the journal continues to comply with DOAJ criteria. See the [Publisher Information Page](/apply/publisher-responsibilities/) for details of how to submit an update request. 
+
+We undertake periodic re-evaluation of journals accepted into DOAJ, particularly when:
+
+- They have not been updated by the publisher for several years 
+- Reports are received of website unavailability or questionable practices
+
+Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
 
 ---
 
 ## Appeals
 
-You may submit an appeal if your journal has been removed from DOAJ or your application has been rejected and no new application is allowed for at least a year. Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
+Your journal is eligible to submit an appeal if
 
-The appeal should contain the following information:
+- It has been removed from DOAJ.
+- The application has been rejected, and no new application is allowed for at least one year.
+
+Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal should contain the following information:
 
 - Journal title
 - Journal ISSN
@@ -245,12 +262,7 @@ Our criteria are available in:
 
 ## Version history
 
-This is Version 2.2 of our Guide to applying.
+This is Version 2.3 of the DOAJ Guide to applying.
 
-*Version 2.2 (January 2024 - removed 'DOAJ will not accept a journal if all content in the last year/volume is published as special issues' from the Special Issues section of the Basic criteria.)*<br>
-<s>Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)</s><br>
-<s>Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)</s><br>
-<s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
-<s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
-<s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
-<s>Version 1.0 (November 1.0)</s>
+For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
+

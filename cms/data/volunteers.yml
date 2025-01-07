@@ -106,8 +106,8 @@ ass_ed:
 - name: Alain Chaple
   area: Medical Sciences
   year_since:
-  city: La Habana
-  country: Cuba
+  city: Santiago
+  country: Chile
   language: Spanish, English
   photo: "alainchaple.png"
   
@@ -118,15 +118,16 @@ ass_ed:
   country: Poland
   language: Polish, English
   photo: "AleksandraZawadzka.jpg"
-
-- name: Alessandro Pierno
-  area: Humanities
+  
+- name: Ana Melisa Fernandes
+  area: Bird behavior and ecology
   year_since:
-  city: Florence
-  country: Italy
-  language: Italian, English, Spanish
-
-- name: Amber Osman
+  city: Bogotá 
+  country: Colombia
+  language: Spanish, English, Portuguese
+  photo: "Ana Melisa Fernandes.jpg" 
+  
+- name: Amber Osman 
   area: Open Science, Publication Ethics, Scholarly communication
   year_since:
   city: Karachi
@@ -319,13 +320,6 @@ ass_ed:
   city: Malang
   country: Indonesia
   language: Indonesian, English
-
-- name: Eko Supraptono
-  area: Technology
-  year_since:
-  city: Semarang
-  country: Indonesia
-  language: Indonesian, English
   
 - name: Emrah Kaya
   area: Social Sciences, Humanities
@@ -464,7 +458,15 @@ ass_ed:
   country: Iraq
   language: Arabic, English, Swedish
   photo: "karima.jpg"
-
+  
+- name: Kelly Anne Dumayne
+  area: Psychology, linguistics, creative writing
+  year_since:
+  city: Wales
+  country: United Kingdom
+  language: English
+  photo: 
+  
 - name: Khoirul Fathoni
   area: Humanities
   year_since:
@@ -511,7 +513,8 @@ ass_ed:
   city:
   country: Colombia
   language: Spanish, English
-
+  photo: "Lina Blandon.jpg"
+  
 - name: Liping Yang
   area: Material Engineering, Library Studies
   year_since:
@@ -540,6 +543,14 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
+
+- name: Mariano Hernán Corujo
+  area: Library Science
+  year_since:
+  city: Buenos Aires
+  country: Argentina
+  language: Spanish, English
+  photo: "MarianoCorujo.jpeg"
   
 - name: Marie-Eve Dugas
   area: Library Science, Social Sciences
@@ -547,7 +558,15 @@ ass_ed:
   city: Montréal
   country: Canada
   language: French, English
-
+  
+- name: Mario Alejandro Marín Uribe
+  area: Ecology
+  year_since:
+  city: Medellín
+  country: Colombia
+  language: Portuguese, English
+  photo: "Mario Uribe.webp"
+  
 - name: Martyna Mirecka
   area: History, Political Science
   year_since:
@@ -556,6 +575,13 @@ ass_ed:
   language: Polish, English
   photo: "Martyna.JPG"
 
+- name: Mateus de Novaes Maia 
+  area: Literature and Geography
+  year_since:
+  city:
+  country: Brazil
+  language: Portuguese, English 
+ 
 - name: Maxim Mitrofanov
   area: International Relations, Political Science
   year_since:

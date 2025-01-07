@@ -1,0 +1,34 @@
+{% extends "management/admin/base.html" %}
+
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block page_title %}List of users{% endblock %}
+
+{% block admin_content %}
+    <h1 class="sr-only">List of users</h1>
+
+    {% if current_user.has_role("create_user") %}<p><a href="{{ url_for("account.create") }}" class="button button--tertiary">Create new user</a></p>{% endif %}
+
+    <div id="users"></div>
+
+{% endblock %}
+
+{% block admin_js %}
+
+    <script type="text/javascript">
+        $.extend(true, doaj, {
+            userSearchConfig : {
+                userEditUrl : "{{ url_for('account.username', username='') }}",
+                userSearchPath : '/admin_query/account/_search'
+            }
+        });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.users.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% endblock %}

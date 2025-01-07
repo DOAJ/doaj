@@ -26,6 +26,7 @@ from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
+from portality.ui import templates
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -153,7 +154,7 @@ def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
     return send_file(
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
-            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+            mimetype="application/xml", as_attachment=True, download_name=schema_fn
             )
 
 
@@ -212,7 +213,7 @@ def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
     :return: the string formatted datetime
     """
-    local = tzlocal.get_localzone()
+    local = pytz.timezone(str(tzlocal.get_localzone()))
     ld = local.localize(stamp)
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
@@ -422,22 +423,22 @@ def get_site_key():
 
 @app.errorhandler(400)
 def page_not_found(e):
-    return render_template('400.html'), 400
+    return render_template(templates.ERROR_400), 400
 
 
 @app.errorhandler(401)
 def page_not_found(e):
-    return render_template('401.html'), 401
+    return render_template(templates.ERROR_401), 401
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template(templates.ERROR_404), 404
 
 
 @app.errorhandler(500)
 def page_not_found(e):
-    return render_template('500.html'), 500
+    return render_template(templates.ERROR_500), 500
 
 
 @app.errorhandler(elasticsearch.exceptions.RequestError)

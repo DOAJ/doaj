@@ -151,41 +151,6 @@ def status():
         cluster_note = 'CLUSTER UNSTABLE'
     res['notes'].append(cluster_note)
 
-    # if False: # remove this False if happy to test write to the index (could be a setting)
-    #     if res['stable'] and False:
-    #         try:
-    #             ts = str(int(time.time()))
-    #             test_index = 'status_test_writable_' + ts
-    #             test_type = 'test_' + ts
-    #             test_id = ts
-    #             rp = requests.put(es_addr + '/' + test_index + '/' + test_type + '/' + test_id, json={'hello': 'world'})
-    #             if rp.status_code != 201:
-    #                 indexable_note = 'NEW INDEX WRITE OPERATION FAILED TO WRITE, RETURNED ' + str(rp.status_code)
-    #             else:
-    #                 try:
-    #                     rr = requests.get(es_addr + '/' + test_index + '/' + test_type + '/' + test_id).json()
-    #                     if rr['hello'] != 'world':
-    #                         indexable_note = 'INDEX READ DID NOT FIND EXPECTED VALUE IN NEW WRITTEN RECORD'
-    #                     try:
-    #                         rd = requests.delete(es_addr + '/' + test_index)
-    #                         if rd.status_code != 200:
-    #                             indexable_note = 'INDEX DELETE OF TEST INDEX DID NOT RETURNED UNEXPECTED STATUS CODE OF ' + str(rd.status_code)
-    #                         try:
-    #                             rg = requests.get(es_addr + '/' + test_index)
-    #                             if rg.status_code != 404:
-    #                                 indexable_note = 'INDEX READ AFTER DELETE TEST RETURNED UNEXPECTED STATUS CODE OF ' + str(rg.status_code)
-    #                         except:
-    #                             pass
-    #                     except:
-    #                         indexable_note = 'INDEX DELETE OF TEST INDEX FAILED'
-    #                 except:
-    #                     indexable_note = 'INDEX READ OF NEW WRITTEN RECORD DID NOT SUCCEED'
-    #         except:
-    #             indexable_note = 'INDEX/DELETE OPERATIONS CAUSED EXCEPTION'
-    #     else:
-    #         indexable_note = 'INDEX/DELETE OPERATIONS NOT TESTED DUE TO SYSTEM ALREADY UNSTABLE'
-    #     res['notes'].append(indexable_note)
-
     # check background jobs
     # ~~BackgroundTask:Monitoring~~
     bgtask_status_service = DOAJ.backgroundTaskStatusService()
@@ -196,5 +161,3 @@ def status():
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
     return resp
-
-#{"query": {"bool": {"must": [{"term":{"status":"complete"}}]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
