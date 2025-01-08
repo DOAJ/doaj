@@ -64,6 +64,8 @@ entries:
         route: doaj.support           # ~~->Support:WebRoute~~
       - label: Publishers
         route: doaj.publisher_supporters      # ~~->PublisherSupporters:WebRoute~~
+      - label: Funders
+        route: doaj.funders      # ~~->FunderSupporters:WebRoute~~
       - label: Institutional and library supporters
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
   - id: apply
