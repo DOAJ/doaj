@@ -195,7 +195,8 @@ From time to time, other validation errors might be seen if one of the cells con
 
 ## Version history
 
-This is Version 2 of our Metadata help page.
+This is Version 3 of our Metadata help page.
 
-*Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)*<br>
+*Version 3.0 (January 2025 - added a new section: 'Correcting or updating article metadata')*<br>
+<s>Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)</s><br>
 <s>Version 1.0 (November 2023 - created this whole page with new content)</s><br>
