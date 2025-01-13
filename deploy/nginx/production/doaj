@@ -98,6 +98,16 @@ server {
 
 server {
     listen          443 ssl;
+    server_name     www.doaj.org;
+
+    ssl_certificate /etc/letsencrypt/live/doaj.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/doaj.org/privkey.pem;
+
+    return 301 https://doaj.org$request_uri;
+}
+
+server {
+    listen          443 ssl;
     server_name     doaj.org;
 
     ssl_certificate /etc/letsencrypt/live/doaj.org/fullchain.pem;
