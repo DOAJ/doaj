@@ -34,6 +34,12 @@ map $request_uri $new_uri {
     include /etc/nginx/doaj-redirects.map;
 }
 
+# Redirect the old URL for the static site to the current one
+server {
+    server_name  .staticdoaj.cottagelabs.com;
+    rewrite      ^ https://static.doaj.cottagelabs.com$request_uri? permanent;
+}
+
 server {
     listen          443 ssl;
     server_name     testdoaj.cottagelabs.com;
@@ -66,11 +72,6 @@ server {
         autoindex off;
         expires max;
     }
-}
-
-server {
-    server_name  .staticdoaj.cottagelabs.com;
-    rewrite      ^ https://static.doaj.cottagelabs.com$request_uri? permanent;
 }
 
 server {
