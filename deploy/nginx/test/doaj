@@ -24,10 +24,6 @@ upstream doaj_apps {
     server localhost:5050;
 }
 
-upstream doaj_static {
-    server localhost:5051;
-}
-
 upstream doaj_index {
     server localhost:9200;
 }
@@ -73,8 +69,8 @@ server {
 }
 
 server {
-    server_name     .staticdoaj.cottagelabs.com;
-    rewrite ^ https://static.doaj.cottagelabs.com$request_uri? permanent;
+    server_name  .staticdoaj.cottagelabs.com;
+    rewrite      ^ https://static.doaj.cottagelabs.com$request_uri? permanent;
 }
 
 server {
