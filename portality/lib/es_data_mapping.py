@@ -22,6 +22,7 @@ def get_mappings(app):
     for cname in mapping_daos:
         klazz = plugin.load_class_raw(cname)
         mappings[klazz.__type__] = {'mappings': klazz().mappings()}
+        mappings[klazz.__type__]['settings'] = app.config["DEFAULT_INDEX_SETTINGS"]
 
     return mappings
 
