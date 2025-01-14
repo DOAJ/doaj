@@ -20,12 +20,15 @@ import itertools
 import json
 import re
 import shutil
+import tempfile
+import requests
 from dataclasses import dataclass
 from time import sleep
 
 import portality.dao
 from doajtest.helpers import patch_config
 from portality import models
+from portality.scripts.createuser import create_users
 from portality.core import app, es_connection
 from portality.dao import DomainObject
 from portality.lib import dates, es_data_mapping
@@ -46,6 +49,24 @@ def find_toberemoved_indexes(prefix):
             yield index
 
 
+def dl_test_users():
+    """ Download the test user CSV from google sheets and save to tmp file for reading """
+
+    csv_url = app.config.get('TEST_USERS_CSV_DL_PATH')
+    if not csv_url:
+        print("No test user CSV supplied. Skipping.")
+    else:
+
+        with tempfile.NamedTemporaryFile(delete=False) as tf:
+            with requests.get(csv_url, stream=True) as r:
+                for line in r.iter_lines():
+                    tf.write(line + '\n'.encode())
+                tf.close()
+
+            # Supply the temp file to the create_users function
+            create_users(tf.name)
+
+
 def do_import(config):
     # filter for the types we are going to work with
     import_types = {}
@@ -60,9 +81,9 @@ def do_import(config):
     print("\n")
 
     toberemoved_index_prefixes = [ipt_prefix(import_type) for import_type in import_types.keys()]
-    toberemoved_indexes = itertools.chain.from_iterable(
+    toberemoved_indexes = list(itertools.chain.from_iterable(
         find_toberemoved_indexes(p) for p in toberemoved_index_prefixes
-    )
+    ))
     toberemoved_index_aliases = list(portality.dao.find_index_aliases(toberemoved_index_prefixes))
 
     if toberemoved_indexes:
@@ -160,10 +181,14 @@ def do_import(config):
 
                 n += 1
 
-            else:
-                print(("dao class not available for the import {x}. Skipping import {x}".format(x=import_type)))
+        else:
+            print(("dao class not available for the import {x}. Skipping import {x}".format(x=import_type)))
 
-    # once we've finished importing, clean up by deleting the entire temporary container
+        if cfg.get("download_test_users"):
+            dl_test_users()
+
+
+        # once we've finished importing, clean up by deleting the entire temporary container
     tempStore.delete_container(container)
 
 
