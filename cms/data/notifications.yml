@@ -1,4 +1,10 @@
 # ~~Notifications:Data~~
+application:assed:acceptreject:notify:
+  long: |
+    The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
+  short:
+    One of your applications ({issns}) marked as '{decision}'
+
 application:assed:assigned:notify:
   long: |
     An application for **{journal_title}** has been assigned to you by the Editor of **{group_name}**. Please start work on this within 1 week.
@@ -10,6 +16,12 @@ application:assed:inprogress:notify:
     The application for **{application_title}** that you marked as Completed has been assigned back to you with questions or changes.
   short:
     One of your applications ({issns}) has not passed review
+
+application:editor:acceptreject:notify:
+  long: |
+    The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
+  short:
+    One of your applications ({issns}) marked as '{decision}'
 
 application:editor:completed:notify:
   long: |
