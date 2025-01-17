@@ -4,6 +4,7 @@ URL_ADMIN = '/admin'
 URL_ADMIN_BGJOBS = URL_ADMIN + '/background_jobs'
 URL_ACC = '/account'
 URL_LOGOUT = URL_ACC + '/logout'
+URL_APPLY = '/apply'
 
 
 def url_toc(identifier, volume=None, issue=None):
