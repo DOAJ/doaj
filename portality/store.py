@@ -76,6 +76,7 @@ class StoreS3(Store):
     ~~!FileStoreS3:Feature->S3:Technology~~
     """
     def __init__(self, scope):
+        self.dir = None
         self._cfg = app.config.get("STORE_S3_SCOPES", {}).get(scope)
         multipart_threshold = app.config.get("STORE_S3_MULTIPART_THRESHOLD", 5 * 1024**3)
 
@@ -211,9 +212,10 @@ class StoreLocal(Store):
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         cpath = os.path.join(self.dir, container_id)
-        if not os.path.exists(cpath):
-            os.makedirs(cpath)
         tpath = os.path.join(cpath, target_name)
+        directory = os.path.dirname(tpath)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
         if source_path:
             shutil.copyfile(source_path, tpath)
@@ -292,10 +294,11 @@ class TempStore(StoreLocal):
         return [x for x in os.listdir(self.dir) if os.path.isdir(os.path.join(self.dir, x))]
 
 
-def prune_container(storage, container_id, sort, filter=None, keep=1, logger=None):
+def prune_container(storage, container_id, sort, filter=None, keep=1, logger=None, is_directory=False):
     logger = logger if logger is not None else lambda x: x
     action_register = []
 
+    dir_list = []
     filelist = storage.list(container_id)
     #action_register.append("Current cached files (before prune): " + ", ".join(filelist))
 
@@ -309,19 +312,47 @@ def prune_container(storage, container_id, sort, filter=None, keep=1, logger=Non
         filtered = filelist
     #action_register.append("Filtered cached files (before prune): " + ", ".join(filelist))
 
-    if len(filtered) <= keep:
-        # action_register.append("Fewer than {x} files in cache, no further action".format(x=keep))
-        return action_register
+    # treat directories differently
+    # s3 buckets does not have physical directories under the bucket. They are virtual directories.
+    # Retrieve the directories and delete all files related to the directories
+    if is_directory:
+        for fn in filtered:
+            dir = os.path.dirname(fn)
+            if dir:
+                dir_list.append(dir)
+            else:
+                if storage.dir:
+                    if os.path.isdir(os.path.join(storage.dir, container_id, fn)):
+                        dir_list.append(fn)
 
-    filtered_sorted = sort(filtered)
-    #action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))
+    dir_set = set(dir_list)
+
+    if is_directory:
+        if len(dir_set) <= keep:
+            return action_register
+    else:
+        if len(filtered) <= keep:
+            # action_register.append("Fewer than {x} files in cache, no further action".format(x=keep))
+            return action_register
+
+    if is_directory:
+        filtered_sorted = sort(dir_set)
+    else:
+        filtered_sorted = sort(filtered)
+        #action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))
 
     remove = filtered_sorted[keep:]
     msg = "Removed old files: " + ", ".join(remove)
     action_register.append(msg)
     logger(msg)
 
-    for fn in remove:
-        storage.delete_file(container_id, fn)
+    if is_directory:
+        for fn in remove:
+            for file in filtered:
+                if file.startswith(fn):
+                    storage.delete_file(container_id, file)
+    else:
+        for fn in remove:
+            storage.delete_file(container_id, fn)
 
     return action_register

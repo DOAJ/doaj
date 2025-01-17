@@ -60,7 +60,7 @@ class SitemapGenerator:
         self.file.write(url_ele)
 
     def create_sitemap_file(self):
-        self.current_filename = f'{self.filename_prefix}_{self.file_idx}_utf8.xml'
+        self.current_filename = os.path.join(self.filename_prefix, f'_{self.file_idx}_utf8.xml')
         self.current_file_path = os.path.join(self.temp_store, self.current_filename)
         self.file =  open(self.current_file_path, "w")
         self.file.write('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -107,8 +107,7 @@ class SiteService(object):
         lastmod_date = dates.now_str(FMT_DATETIME_STD)
 
         filename_prefix = 'sitemap_doaj_' + run_start_time
-        cache_container_id = app.config.get("STORE_CACHE_CONTAINER")
-        container_id = os.path.join(cache_container_id,filename_prefix)
+        container_id = app.config.get("STORE_CACHE_CONTAINER")
 
         total_static_pages = 0
         total_journals_count = 0
@@ -121,7 +120,7 @@ class SiteService(object):
         # temporary directory
         tmp_store_dir = tmpStore.path(container_id, '', create_container=True)
         # Create the directories if they don't exist
-        os.makedirs(tmp_store_dir, exist_ok=True)
+        os.makedirs(os.path.join(tmp_store_dir,filename_prefix) , exist_ok=True)
 
         sitemap_generator = SitemapGenerator(filename_prefix, tmp_store_dir, mainStore, container_id)
 
@@ -157,7 +156,7 @@ class SiteService(object):
             sitemap_generator.finalize_sitemap_file()
 
         # Create sitemap index file
-        sitemap_index_filename = f'sitemap_index_doaj_{run_start_time}_utf8.xml'
+        sitemap_index_filename = os.path.join(filename_prefix, f'sitemap_index_utf8.xml')
         sitemap_index_path = os.path.join(tmp_store_dir, sitemap_index_filename)
         with open(sitemap_index_path, "w") as f:
             f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -205,8 +204,8 @@ class SiteService(object):
             def _filter(filename):
                 return filename.startswith("sitemap_")
 
-            action_register += prune_container(mainStore, cache_container_id, sort, filter=_filter, keep=2)
-            action_register += prune_container(tmpStore, cache_container_id, sort, filter=_filter, keep=2)
+            action_register += prune_container(mainStore, container_id, sort, filter=_filter, keep=2, is_directory=True)
+            action_register += prune_container(tmpStore, container_id, sort, filter=_filter, keep=2)
 
         # Update the cache record to point to the new sitemap index and all sitemaps
         models.Cache.cache_sitemap(index_url)
