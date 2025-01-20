@@ -78,7 +78,6 @@ On [your dashboard](/publisher/), you can
 - See [a list of your journals](/publisher/journal) indexed in DOAJ
 - [Submit an update request](/publisher-responsibilities/#keeping-your-journal-records-up-to-date) when journal details change
 - [Upload](/publisher/uploadfile) or [enter](/publisher/metadata) article metadata for your journals
-- Download the Seal logo (only for journals awarded the DOAJ Seal).
 - Upload your full-text content (only for journals preserved via JASPER).
 
 ### Settings
@@ -105,12 +104,11 @@ If you don’t get the email, check your Spam folder and which address you regis
 
 ### Displaying the DOAJ logo
 
-To show that your journal is indexed in DOAJ or has the DOAJ Seal:
+To show that your journal is indexed in DOAJ:
 
-- You may use the DOAJ or the Seal logo on your journal's website but not on individual articles
-- You may only use the DOAJ or Seal logo on a platform or portal website if all of the platform's journals are indexed or have been awarded the Seal
+- You may use the DOAJ logo on your journal's website but not on individual articles
+- You may only use the DOAJ logo on a platform or portal website if all of the platform's journals are indexed
 - You can [download the DOAJ logos](https://doaj-kit.netlify.app/building-blocks/logotype/)
-- If awarded, you can download the Seal logo from [your publisher dashboard](/publisher/journal)
 
 We have [guidelines](https://doaj-kit.netlify.app/building-blocks/logotype/) about how you can use our logo on your website or in printed material.
 
@@ -118,7 +116,6 @@ We have [guidelines](https://doaj-kit.netlify.app/building-blocks/logotype/) abo
 When something changes, you must keep your journal records in DOAJ up to date.
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
-- [Contact our Help Desk](mailto:helpdesk@doaj.org) if your journal qualifies for the Seal.
 - Request a CSV file from us that allows you to update multiple journals and values at the same time and in spreadsheet format.
 - For all other changes, log into your DOAJ account to [submit an update request](/publisher/journal). Use the black ‘Update’ button.
 

@@ -306,14 +306,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Eduardo Enrique Chibas Muñoz
-  area: Health Sciences
-  year_since:
-  city: Guantánamo
-  country: Cuba
-  language: Spanish
-  photo: "Eduardo.jpg"
-
 - name: Eko Pramudya Laksana
   area: Social Sciences
   year_since:
@@ -482,14 +474,6 @@ ass_ed:
   country: USA
   language: English, Spanish
   photo: "Kristen.jpg"
-
-- name: Lee Yang Díaz Chieng
-  area: Information Sciences
-  year_since:
-  city: Guantánamo
-  country: Cuba
-  language: Spanish and English
-  photo: "Lee.jpg"
   
 - name: Leila Yang
   area: Scholarly Publishing

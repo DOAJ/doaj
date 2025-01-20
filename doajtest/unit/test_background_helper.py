@@ -75,7 +75,7 @@ class TestRedisHueyTaskHelper(TestCase):
         def _fn1():
             print('fake fn')
 
-        assert _fn1 is None # We've added a catch to check if we get ValueError from huey we should return None
+        assert _fn1 is None  # We've added a catch to check if we get ValueError from huey we should return None
 
     def test_03_register_schedule__schedule_not_found(self):
         helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue,
@@ -86,7 +86,7 @@ class TestRedisHueyTaskHelper(TestCase):
                 print('fake fn')
 
     def test_04_register_execute(self):
-        helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue, fixture_bgtask_class(self.task_name_b))
+        helper = background_helper.RedisHueyTaskHelper(events_queue, fixture_bgtask_class(self.task_name_b))
 
         @helper.register_execute(is_load_config=True)
         def _fn3():

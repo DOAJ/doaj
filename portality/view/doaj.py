@@ -436,6 +436,11 @@ def supporters():
     return render_template(templates.STATIC_PAGE, page_frag="/support/supporters.html")
 
 
+@blueprint.route("/support/funders/")
+def funders():
+    return render_template(templates.STATIC_PAGE, page_frag="/support/funders.html")
+
+
 @blueprint.route("/support/thank-you/")
 def application_thanks():
     return render_template(templates.STATIC_PAGE, page_frag="/support/thank-you.html")

@@ -126,13 +126,13 @@ class ArticleService(object):
 
         is_update = 0
         if duplicate is not None:
-            if duplicate.id != update_article_id:
+            if update_article_id is not None and duplicate.id != update_article_id:
                 # it means that doi or ft url has been changed so that it duplicates existing article
                 raise exceptions.DuplicateArticleException(Messages.EXCEPTION_IDENTIFIER_CHANGE_CLASH)
             elif merge_duplicate:
                 is_update += 1
                 article.merge(duplicate)
-        elif merge_duplicate:  # requested to update article has both url and doi changed to new values - no duplicate detected
+        elif update_article_id is not None and merge_duplicate:  # requested to update article has both url and doi changed to new values - no duplicate detected
             is_update += 1
             art = models.Article.pull(update_article_id)
             article.merge(art)
@@ -227,7 +227,7 @@ class ArticleService(object):
             # ~~!ArticleCreate:Feature->ArticleDeduplication:Feature~~
             duplicate = self.get_duplicate(article)
             try:
-                if account.has_role("admin") and update_article_id is not None:     # is update_article_id is None then treat as normal publisher upload
+                if account.has_role("admin"):     # is update_article_id is None then treat as normal publisher upload
                                                                                     # for testing by admin
                     is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
                 else:
