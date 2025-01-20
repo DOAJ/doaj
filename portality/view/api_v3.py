@@ -250,8 +250,6 @@ def _load_income_articles_json(request):
 @blueprint.route("/bulk/articles", methods=["POST"])
 @api_key_required
 @write_required(api=True)
-@swag(swag_summary='Bulk article creation <span class="red">[Authenticated, not public]</span>',
-      swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_article_create', 'Bulk article create'))
 def bulk_article_create():
     raise Api400Error(API_UNSUPPORTED_ERROR)
