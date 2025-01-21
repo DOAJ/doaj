@@ -216,7 +216,8 @@ SHARED_JOURNAL_LIKE = {
                         "flag": {
                             "fields": {
                                 "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
-                                "deadline": {"coerce" : "bigenddate"}
+                                "deadline": {"coerce" : "bigenddate"},
+                                "resolved": {"coerce" : "unicode"}
                             }
                         }
                     }
