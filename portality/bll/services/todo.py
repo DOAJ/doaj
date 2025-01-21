@@ -182,7 +182,7 @@ class TodoService(object):
                 ])
         # if flagged filter is on than all types of records are displayed and the ownership is not taken into consideration
         if flag:
-            queries.append(TodoRules.flagged_to_me)
+            queries.append(TodoRules.flagged_to_me(account.id, size))
 
         todos = []
         for aid, q, sort, boost in queries:

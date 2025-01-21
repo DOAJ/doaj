@@ -100,6 +100,14 @@
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.associate_suggestions')
+        },
+        constants.TODO_FLAGGED: {
+            "text" : "<strong>Flagged to you</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",
+            "no_deadline_text": "<strong>Flagged to you</strong> <span class='todo-list__status'>No deadline</span>",
+            "show_status": true,
+            "colour" : "var(--sanguine)",
+            "feather": "flag",
+            "link" : ""
         }
     }
         %}
@@ -151,17 +159,11 @@
             {% set app_url =  url_for(app_route, application_id=todo.object_id) %}
             {% set app_date = todo.object.date_applied_timestamp %}
             {% set is_flagged = todo.object.is_flagged %}
+            {% set deadline = todo.object.most_urgent_flag_deadline %}
             <li class="todo-list__item" data-app-url="{{ app_url }}" data-action-ids="{{ todo.action_id|join(",") }}">
                 <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
                     <div class="flex">
                         <div class="flex-col">
-                            {% if is_flagged %}
-                                {% if todo.object.is_assigned_to(current_user.id) %}
-                                    {% include "includes/_flagged_to_me--flag.html" %}
-                                {% else %}
-                                    {% include "includes/_flagged--flag.html" %}
-                                {% endif %}
-                            {% endif %}
                             <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
                                 <time datetime="{{ app_date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="First submitted {{ app_date.strftime('%A, %-d %B %Y') }}">
                                     <span style="font-size: 22px;">{{ app_date.strftime('%d') }}</span><br>
@@ -177,7 +179,11 @@
                                     <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
                                         {% set main_action = todo.action_id[0] %}
                                         {% if action.show_status %}[{{ todo.object.application_status }}]{% endif %}
-                                        {{ action.text | safe }}
+                                        {% if main_action != constants.TODO_FLAGGED %}
+                                            {{ action.text | safe }}
+                                        {% else %}
+                                            {% if deadline == "9999-12-31" %} {{ action.no_deadline_text | safe }} {% else %} {{ action.text | replace('{DEADLINE}', deadline) | safe }}  {% endif %}
+                                        {% endif %}
                                     </a>
                                 </p>
                                 <h3>
