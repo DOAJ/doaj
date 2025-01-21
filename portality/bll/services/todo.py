@@ -288,7 +288,6 @@ class TodoRules(object):
 
     @classmethod
     def maned_completed(cls, size, maned_of):
-        print("maned_completed")
         sort_date = "created_date"
         completed = TodoQuery(
             musts=[
@@ -305,7 +304,6 @@ class TodoRules(object):
     @classmethod
     def maned_assign_pending(cls, size, maned_of):
         sort_date = "created_date"
-
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.exists("admin.editor_group"),
@@ -335,7 +333,7 @@ class TodoRules(object):
                 TodoQuery.cd_older_than(since_som, unit="s"),
                 # TodoQuery.status([constants.APPLICATION_STATUS_UPDATE_REQUEST]),
                 TodoQuery.editor_group(maned_of),
-                TodoQuery.is_update_request(),
+                TodoQuery.is_update_request()
             ],
             must_nots=[
                 TodoQuery.status([
@@ -450,6 +448,7 @@ class TodoRules(object):
         sort_date = "created_date"
         assign_pending = TodoQuery(
             musts=[
+                TodoQuery.editor_groups(groups),
                 TodoQuery.status([constants.APPLICATION_STATUS_PENDING]),
                 TodoQuery.is_new_application()
             ],

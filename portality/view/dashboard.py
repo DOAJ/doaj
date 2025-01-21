@@ -20,16 +20,19 @@ blueprint = Blueprint('dashboard', __name__)
 @ssl_required
 def top_todo():
     filter = request.values.get("filter")
-    new_applications, update_requests, on_hold, flag = True, True, True, False
+    new_applications, update_requests, on_hold, flag = True, True, True, True
     if filter == "na":
         on_hold = False
         update_requests = False
+        flag = False
     elif filter == "ur":
         on_hold = False
         new_applications = False
+        flag = False
     elif filter == "oh":
         update_requests = False
         new_applications = False
+        flag = False
     elif filter == "flag":
         new_applications = False
         update_requests = False
