@@ -15,6 +15,8 @@ from flask_login import current_user
 
 from wtforms import FormField, FieldList
 
+from datetime import date
+
 
 class ApplicationProcessor(FormProcessor):
 
@@ -27,6 +29,7 @@ class ApplicationProcessor(FormProcessor):
         super().patch_target()
 
         self._patch_target_note_id()
+        self._transform_resolved_flags_to_notes()
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -204,6 +207,20 @@ class ApplicationProcessor(FormProcessor):
                         # Skip if we don't have a current_user
                         pass
 
+    def _transform_resolved_flags_to_notes(self):
+        print("before transform flag to note: ", self.target.notes)
+        if self.target.notes:
+            for note in self.target.notes:
+                if note.get("flag") and note.get("flag").get("resolved") == "true":
+                    try:
+                        note['author_id'] = current_user.id
+                    except AttributeError:
+                        # Skip if we don't have a current_user
+                        note['author_id'] = None
+                    new_note_text = "This flag was resolved on " + dates.today() + " by: " + note['author_id'] + "; Original note: " + note['note']
+                    note['note'] = new_note_text
+                    note["flag"] = {} # clear any flag data
+        print("after transform flag to note: ", self.target.notes)
 
 class NewApplication(ApplicationProcessor):
     """

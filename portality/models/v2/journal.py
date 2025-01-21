@@ -293,10 +293,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
+    def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None, resolved=None):
         if not date:
             date = dates.now_str()
-        obj = {"date": date, "note": note, "id": id, "author_id": author_id, "flag":  {"assigned_to": assigned_to, "deadline": deadline}}
+        obj = {"date": date, "note": note, "id": id, "author_id": author_id, "flag":  {"assigned_to": assigned_to, "deadline": deadline, "resolved": resolved}}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
         if not id:
             obj["id"] = uuid.uuid4()
