@@ -14,7 +14,7 @@ class TodoService(object):
     def group_stats(self, group_id):
         # ~~-> EditorGroup:Model~~
         eg = models.EditorGroup.pull(group_id)
-        stats = {"editor_group" : eg.data}
+        stats = {"editor_group": eg.data}
 
         #~~-> Account:Model ~~
         stats["editors"] = {}
@@ -22,8 +22,8 @@ class TodoService(object):
         for editor in editors:
             acc = models.Account.pull(editor)
             stats["editors"][editor] = {
-                    "email" : None if acc is None else acc.email
-                }
+                "email": None if acc is None else acc.email
+            }
 
         q = GroupStatsQuery(eg.name)
         resp = models.Application.query(q=q.query())
@@ -61,7 +61,66 @@ class TodoService(object):
                 elif b["key"] == constants.APPLICATION_TYPE_UPDATE_REQUEST:
                     stats["by_status"][bucket["key"]]["update_requests"] = b["doc_count"]
 
+        stats["historical_numbers"] = self.group_finished_historical_counts(eg)
+
         return stats
+
+    def group_finished_historical_counts(self, editor_group: models.EditorGroup, year=None):
+        """
+        Get the count of applications in an editor group where
+        Associate Editors set to Completed when they have done their review
+        Editors set them to Ready
+        in a given year (current by default)
+        :param editor_group
+        :param year
+        :return: historical for editor and associate editor in dict
+        """
+        year_for_query = dates.now_str(dates.FMT_YEAR) if year is None else year
+        editor_status = "status:" + constants.APPLICATION_STATUS_READY
+        associate_status = "status:" + constants.APPLICATION_STATUS_COMPLETED
+
+        stats = {"year": year_for_query}
+
+        hs = HistoricalNumbersQuery(editor_group.editor, editor_status, editor_group.id)
+        # ~~-> Provenance:Model ~~
+        editor_count = models.Provenance.count(query=hs.query())
+
+        # ~~-> Account:Model ~~
+        acc = models.Account.pull(editor_group.editor)
+        stats["editor"] = {"id": acc.id, "count": editor_count}
+
+        stats["associate_editors"] = []
+        for associate in editor_group.associates:
+            hs = HistoricalNumbersQuery(associate, associate_status, editor_group.id)
+            associate_count = models.Provenance.count(query=hs.query())
+            acc = models.Account.pull(associate)
+            stats["associate_editors"].append({"id": acc.id, "name": acc.name, "count": associate_count})
+
+        return stats
+
+    def user_finished_historical_counts(self, account, year=None):
+        """
+        Get the count of overall applications
+        Associate Editors set to Completed
+        Editors set them to Ready
+        in a given year (current by default)
+        :param account
+        :param year
+        :return:
+        """
+        hs = None
+
+        if account.has_role("editor"):
+            hs = HistoricalNumbersQuery(account.id, "status:" + constants.APPLICATION_STATUS_READY, year)
+        elif account.has_role("associate_editor"):
+            hs = HistoricalNumbersQuery(account.id, "status:" + constants.APPLICATION_STATUS_COMPLETED, year)
+
+        if hs:
+            count = models.Provenance.count(query=hs.query())
+        else:
+            count = None
+
+        return count
 
     def top_todo(self, account, size=25, new_applications=True, update_requests=True, flagged=True, on_hold=True):
         """
@@ -73,7 +132,7 @@ class TodoService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("top_todo", [
-            {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"}
+            {"arg": account, "instance": models.Account, "allow_none": False, "arg_name": "account"}
         ], exceptions.ArgumentException)
 
         queries = []
@@ -127,10 +186,10 @@ class TodoService(object):
                 todos.append({
                     "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
                     "date_type": sort,
-                    "action_id" : [aid],
-                    "title" : ap.bibjson().title,
-                    "object_id" : ap.id,
-                    "object" : ap,
+                    "action_id": [aid],
+                    "title": ap.bibjson().title,
+                    "object_id": ap.id,
+                    "object": ap,
                     "boost": boost
                 })
 
@@ -557,7 +616,7 @@ class TodoQuery(object):
     ~~->$Todo:Query~~
     ~~^->Elasticsearch:Technology~~
     """
-    lmu_sort = {"last_manual_update" : {"order" : "asc"}}
+    lmu_sort = {"last_manual_update": {"order": "asc"}}
     # cd_sort = {"created_date" : {"order" : "asc"}}
     # NOTE that admin.date_applied and created_date should be the same for applications, but for some reason this is not always the case
     # therefore, we take a created_date sort to mean a date_applied sort
@@ -573,13 +632,16 @@ class TodoQuery(object):
     def query(self):
         sort = self.lmu_sort if self._sort == "last_manual_update" else self.cd_sort
         q = {
-            "query" : {
-                "bool" : {}
+            "query": {
+                "bool": {
+                    "must": self._musts,
+                    "must_not": self._must_nots
+                }
             },
-            "sort" : [
+            "sort": [
                 sort
             ],
-            "size" : self._size
+            "size": self._size
         }
 
         if len(self._musts) > 0:
@@ -611,8 +673,8 @@ class TodoQuery(object):
     @classmethod
     def editor_group(cls, groups):
         return {
-            "terms" : {
-                "admin.editor_group.exact" : [g.name for g in groups]
+            "terms": {
+                "admin.editor_group.exact": [g.name for g in groups]
             }
         }
 
@@ -639,16 +701,16 @@ class TodoQuery(object):
     @classmethod
     def status(cls, statuses):
         return {
-            "terms" : {
-                "admin.application_status.exact" : statuses
+            "terms": {
+                "admin.application_status.exact": statuses
             }
         }
 
     @classmethod
     def exists(cls, field):
         return {
-            "exists" : {
-                "field" : field
+            "exists": {
+                "field": field
             }
         }
 
@@ -682,13 +744,14 @@ class GroupStatsQuery():
     ~~->$GroupStats:Query~~
     ~~^->Elasticsearch:Technology~~
     """
+
     def __init__(self, group_name, editor_count=10):
         self.group_name = group_name
         self.editor_count = editor_count
 
     def query(self):
         return {
-            "track_total_hits" : True,
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -698,10 +761,10 @@ class GroupStatsQuery():
                             }
                         }
                     ],
-                    "must_not" : [
+                    "must_not": [
                         {
-                            "terms" : {
-                                "admin.application_status.exact" : [
+                            "terms": {
+                                "admin.application_status.exact": [
                                     constants.APPLICATION_STATUS_ACCEPTED,
                                     constants.APPLICATION_STATUS_REJECTED
                                 ]
@@ -710,26 +773,12 @@ class GroupStatsQuery():
                     ]
                 }
             },
-            "size" : 0,
-            "aggs" : {
-                "editor" : {
-                    "terms" : {
-                        "field" : "admin.editor.exact",
-                        "size" : self.editor_count
-                    },
-                    "aggs" : {
-                        "application_type" : {
-                            "terms" : {
-                                "field": "admin.application_type.exact",
-                                "size": 2
-                            }
-                        }
-                    }
-                },
-                "status" : {
-                    "terms" : {
-                        "field" : "admin.application_status.exact",
-                        "size" : len(constants.APPLICATION_STATUSES_ALL)
+            "size": 0,
+            "aggs": {
+                "editor": {
+                    "terms": {
+                        "field": "admin.editor.exact",
+                        "size": self.editor_count
                     },
                     "aggs": {
                         "application_type": {
@@ -740,18 +789,70 @@ class GroupStatsQuery():
                         }
                     }
                 },
-                "unassigned" : {
-                    "missing" : {
-                        "field": "admin.editor.exact"
+                "status": {
+                    "terms": {
+                        "field": "admin.application_status.exact",
+                        "size": len(constants.APPLICATION_STATUSES_ALL)
                     },
-                    "aggs" : {
-                        "application_type" : {
-                            "terms" : {
+                    "aggs": {
+                        "application_type": {
+                            "terms": {
                                 "field": "admin.application_type.exact",
                                 "size": 2
                             }
                         }
                     }
+                },
+                "unassigned": {
+                    "missing": {
+                        "field": "admin.editor.exact"
+                    },
+                    "aggs": {
+                        "application_type": {
+                            "terms": {
+                                "field": "admin.application_type.exact",
+                                "size": 2
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+class HistoricalNumbersQuery:
+    """
+    ~~->$HistoricalNumbers:Query~~
+    ~~^->Elasticsearch:Technology~~
+    """
+
+    def __init__(self, editor, application_status, editor_group=None, year=None):
+        self.editor_group = editor_group
+        self.editor = editor
+        self.application_status = application_status
+        self.year = year
+
+    def query(self):
+        if self.year is None:
+            date_range = {"gte": "now/y", "lte": "now"}
+        else:
+            date_range = {
+                "gte": f"{self.year}-01-01",
+                "lte": f"{self.year}-12-31"
+            }
+        must_terms = [{"range": {"last_updated": date_range}},
+                      {"term": {"type": "suggestion"}},
+                      {"term": {"user.exact": self.editor}},
+                      {"term": {"action": self.application_status}}
+                      ]
+
+        if self.editor_group:
+            must_terms.append({"term": {"editor_group": self.editor_group}})
+
+        return {
+            "query": {
+                "bool": {
+                    "must": must_terms
                 }
             }
         }

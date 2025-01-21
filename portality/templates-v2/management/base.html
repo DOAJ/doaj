@@ -191,6 +191,16 @@
     </script>
     {% include "_tourist/includes/_tourist.html" %}
 
+    <script>
+        var historical_count = {{ historical_count }};
+        var motivational_banners = {{ data.motivational_banners | tojson }};
+        var current_user = {
+            "id": "{{ current_user['id'] }}",
+            "role": {{ current_user['role'] | tojson }}
+        };
+    </script>
+
+
     {% block management_js %}{% endblock %}
 {% endblock %}
 

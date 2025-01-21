@@ -11,6 +11,7 @@ EDITOR_EDIT_USER = "management/editor/account/edit.html"
 PUBLIC_EDIT_USER = "public/account/edit.html"
 
 # Public pages
+PUBLIC_INDEX = "public/index.html"
 PUBLIC_ARTICLE = "public/article.html"
 PUBLIC_ARTICLE_SEARCH = "public/articles_search.html"
 PUBLIC_JOURNAL_SEARCH = "public/journals_search.html"

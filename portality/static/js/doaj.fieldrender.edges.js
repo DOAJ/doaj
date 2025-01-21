@@ -183,8 +183,52 @@ $.extend(true, doaj, {
                 id: "author_pays",
                 category: "facet",
                 field: "index.has_apc.exact",
-                display: "Publication charges?",
+                display: "Has APC?",
                 deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        adminHasAPC: function() {
+            return doaj.facets.booleanFacet({
+                id: "admin_has_apc",
+                field: "bibjson.apc.has_apc",
+                display: "Has APC?",
+            })
+        },
+        adminHasOtherCharges: function() {
+            return doaj.facets.booleanFacet({
+                id: "admin_has_other_charges",
+                field: "bibjson.other_charges.has_other_charges",
+                display: "Has Other Charges?",
+            })
+        },
+        booleanFacet : function(params) {
+            return edges.newRefiningANDTermSelector({
+                id: params.id,
+                category: "facet",
+                field: params.field,
+                display: params.display,
+                deactivateThreshold: 1,
+                valueMap: {
+                    0: "No",
+                    1: "Yes"
+                },
+                parseSelectedValueString: function(value) {
+                    return value === "1"
+                },
+                filterToAggValue: function(value) {
+                    if (value) {
+                        return 1
+                    } else {
+                        return 0
+                    }
+                },
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: false,
@@ -2628,28 +2672,30 @@ $.extend(true, doaj, {
                 // at search time
                 var articles = "";
 
-                var apcs = '<li>';
+                let apc_frag = "<strong>No</strong> APC";
+                let other_charges_frag = "<strong>No</strong> other charges";
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
-                    apcs += "APCs: ";
+                    apc_frag = "APCs: ";
                     let length = resultobj.bibjson.apc.max.length;
                     for (var i = 0; i < length; i++) {
-                        apcs += "<strong>";
+                        apc_frag += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
-                            apcs += edges.escapeHtml(apcRecord.price);
+                            apc_frag += edges.escapeHtml(apcRecord.price);
                         }
                         if (apcRecord.currency) {
-                            apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                            apc_frag += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
                         }
                         if (i < length - 1) {
-                            apcs += ', ';
+                            apc_frag += ', ';
                         }
-                        apcs += "</strong>";
+                        apc_frag += "</strong>";
                     }
-                } else {
-                    apcs += "<strong>No</strong> charges";
                 }
-                apcs += '</li>';
+                if (edges.hasProp(resultobj,"bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
+                    other_charges_frag = "Has other charges";
+                }
+                let charges = `<li>${apc_frag}; ${other_charges_frag}</li>`;
 
                 var rights = "";
                 if (resultobj.bibjson.copyright) {
@@ -2760,7 +2806,7 @@ $.extend(true, doaj, {
                           ' + articles + '\
                           ' + externalLink + '\
                         <li>\
-                            ' + apcs + '\
+                            ' + charges + '\
                           </li>\
                           <li>\
                             ' + rights + '\
@@ -2930,7 +2976,7 @@ $.extend(true, doaj, {
                 frag += '</a></li>\
                          <li>\
                             <a href="' + export_url + '" target="_blank">\
-                            Export Citation (RIS) '
+                            Export citation (RIS) '
                 if (this.widget){
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/download.svg" alt="external-link icon">'
                 } else {

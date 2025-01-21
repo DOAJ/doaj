@@ -1,4 +1,5 @@
 import json
+import os.path
 import re
 import urllib.error
 import urllib.parse
@@ -28,8 +29,7 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    # return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
-    return render_template('public/index.html', news=news, recent_journals=recent_journals)
+    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals)
 
 
 @blueprint.route('/login/')
@@ -168,12 +168,19 @@ def csv_data():
         store_url = "/store" + store_url
     return redirect(store_url, code=307)
 
-
+@blueprint.route("/sitemap_index.xml")
 @blueprint.route("/sitemap.xml")
 def sitemap():
     sitemap_url = models.Cache.get_latest_sitemap()
     if sitemap_url is None:
         abort(404)
+    if sitemap_url.startswith("/"):
+        sitemap_url = "/store" + sitemap_url
+    return redirect(sitemap_url, code=307)
+
+@blueprint.route("/sitemap<n>.xml")
+def nth_sitemap(n):
+    sitemap_url = models.Cache.get_sitemap(n)
     if sitemap_url.startswith("/"):
         sitemap_url = "/store" + sitemap_url
     return redirect(sitemap_url, code=307)
@@ -206,6 +213,10 @@ def public_data_dump_redirect(record_type):
 
     return redirect(store_url, code=307)
 
+@blueprint.route("/store/<container>/<dir>/<filename>")
+def get_from_local_store_dir(container, dir, filename):
+    file = os.path.join(dir, filename)
+    return get_from_local_store(container, file)
 
 @blueprint.route("/store/<container>/<filename>")
 def get_from_local_store(container, filename):
@@ -215,7 +226,8 @@ def get_from_local_store(container, filename):
     from portality import store
     localStore = store.StoreFactory.get(None)
     file_handle = localStore.get(container, filename)
-    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, download_name=filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True,
+                     download_name=os.path.basename(filename))
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
@@ -422,6 +434,11 @@ def publisher_supporters():
 @blueprint.route("/support/supporters/")
 def supporters():
     return render_template(templates.STATIC_PAGE, page_frag="/support/supporters.html")
+
+
+@blueprint.route("/support/funders/")
+def funders():
+    return render_template(templates.STATIC_PAGE, page_frag="/support/funders.html")
 
 
 @blueprint.route("/support/thank-you/")

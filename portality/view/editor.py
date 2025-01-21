@@ -32,8 +32,9 @@ def index():
     flag_filter = request.values.get("flag_filter", "a2me")
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"), update_requests=False, flagged="flag_filter")
+    count = svc.user_finished_historical_counts(current_user._get_current_object())
     # ~~-> Dashboard:Page~~
-    return render_template(templates.EDITOR_DASHBOARD, todos=todos)
+    return render_template(templates.EDITOR_DASHBOARD, todos=todos, historical_count=count)
 
 
 @blueprint.route('/group_applications')

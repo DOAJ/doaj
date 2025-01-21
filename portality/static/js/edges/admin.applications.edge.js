@@ -51,7 +51,6 @@ $.extend(true, doaj, {
                 doaj.facets.hasEditor(),
                 doaj.facets.editorGroup(),
                 doaj.facets.editor(),
-                doaj.facets.hasAPC(),
                 doaj.facets.classification(),
                 doaj.facets.language(),
                 doaj.facets.countryPublisher(),

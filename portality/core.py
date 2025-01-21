@@ -1,6 +1,7 @@
 import os
 import threading
 import yaml
+import json
 
 from flask import Flask
 from flask_login import LoginManager
@@ -285,6 +286,12 @@ def setup_jinja(app):
         print(text)
         return ''
     app.jinja_env.filters['debug']=jinja_debug
+
+    # a jinja filter that parses a string to json
+    def parse_json(value):
+        return json.loads(value) if isinstance(value, str) else value
+
+    app.jinja_env.filters['parse_json'] = parse_json
 
 
 def _load_data(app):

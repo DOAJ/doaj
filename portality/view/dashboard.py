@@ -42,8 +42,10 @@ def top_todo():
                          flagged=flag_filter,
                          on_hold=on_hold)
 
+    count = svc.user_finished_historical_counts(current_user._get_current_object())
+
     # ~~-> Dashboard:Page~~
-    return render_template(templates.DASHBOARD, todos=todos)
+    return render_template(templates.DASHBOARD, todos=todos, historical_count=count)
 
 
 @blueprint.route("/top_notifications")

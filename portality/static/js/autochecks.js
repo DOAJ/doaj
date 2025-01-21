@@ -32,31 +32,34 @@ doaj.autocheckers.ISSNActive = class {
         let style = this.STYLE[autocheck.advice];
 
         let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>) [last checked: ${doaj.humanDate(doaj.autochecks.created_date)}]</div>`;
         return frag;
     }
 }
 
 doaj.autocheckers.KeepersRegistry = class {
     MESSAGES = {
-        "missing": "Keepers does not show any content archived in {service}.",
-        "present": "The journal content is actively archived in {service}.",
-        "outdated": "The journal has content archived in {service} but it's not current.",
-        "not_recorded": "Keepers Registry does not currently record information about {service}."
+        "missing": "{service} is not shown as receiving content, according to Keepers Registry, but is selected in the form.",
+        "present": "{service} is actively archiving content, according to Keepers Registry.",
+        "outdated": "{service} shows content archived historically, <strong>but not currently</strong>, according to Keepers Registry.",
+        "not_recorded": "{service} is not currently covered by Keepers Registry, no information available.",
+        "should_select": "{service} is shown as receiving content, according to Keepers Registry, but is not selected in the form."
     }
 
     ICONS = {
         "missing": "x-circle",
         "present": "check-circle",
         "outdated": "x-circle",
-        "not_recorded": "info"
+        "not_recorded": "info",
+        "should_select": "alert-circle"
     }
 
     STYLE = {
         "missing": "error",
         "present": "success",
         "outdated": "error",
-        "not_recorded": "info"
+        "not_recorded": "info",
+        "should_select": "warn"
     }
 
     draw(autocheck) {
@@ -69,7 +72,7 @@ doaj.autocheckers.KeepersRegistry = class {
         let style = this.STYLE[autocheck.advice];
 
         let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}""><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>) [last checked: ${doaj.humanDate(doaj.autochecks.created_date)}]</div>`;
         return frag;
     }
 }
