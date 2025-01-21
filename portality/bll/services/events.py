@@ -25,6 +25,7 @@ from portality.events.consumers.application_publisher_inprogress_notify import A
 from portality.events.consumers.update_request_publisher_rejected_notify import UpdateRequestPublisherRejectedNotify
 from portality.events.consumers.journal_discontinuing_soon_notify import JournalDiscontinuingSoonNotify
 from portality.events.consumers.application_editor_acceptreject_notify import ApplicationEditorAcceptRejectNotify
+from portality.events.consumers.update_request_maned_editor_group_assigned_notify import UpdateRequestManedEditorGroupAssignedNotify
 
 
 
@@ -54,6 +55,7 @@ class EventsService(object):
         ApplicationPublisherQuickRejectNotify,
         BGJobFinishedNotify,
         JournalDiscontinuingSoonNotify,
+        UpdateRequestManedEditorGroupAssignedNotify,
         UpdateRequestPublisherAcceptedNotify,
         UpdateRequestPublisherRejectedNotify,
         UpdateRequestPublisherSubmittedNotify
