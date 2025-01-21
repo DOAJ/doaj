@@ -182,7 +182,10 @@ class TodoService(object):
                 ])
         # if flagged filter is on than all types of records are displayed and the ownership is not taken into consideration
         if flag:
-            queries.append(TodoRules.flagged_to_me(account.id, size))
+            queries.extend([
+                TodoRules.urgent_flags(account.id, size),
+                TodoRules.regular_flags(account.id, size)
+            ])
 
         todos = []
         for aid, q, sort, boost in queries:
@@ -554,6 +557,33 @@ class TodoRules(object):
         )
         return constants.TODO_FLAGGED, all, sort_field, -1
 
+    @classmethod
+    def urgent_flags(cls, acc_id, size):
+        sort_field = "most_urgent_flag_deadline"
+        all = TodoQuery(
+            musts=[
+                TodoQuery.flagged_to_me(acc_id),
+                TodoQuery.urgent_flags()
+            ],
+            sort=sort_field,
+            size=size
+        )
+        return constants.TODO_URGENT_FLAGS, all, sort_field, -1
+
+    @classmethod
+    def regular_flags(cls, acc_id, size):
+        sort_field = "most_urgent_flag_deadline"
+        all = TodoQuery(
+            musts=[
+                TodoQuery.flagged_to_me(acc_id)
+            ],
+            must_nots=[
+                TodoQuery.urgent_flags()
+            ],
+            sort=sort_field,
+            size=size
+        )
+        return constants.TODO_REGULAR_FLAGS, all, sort_field, -1
 
 
 class TodoQuery(object):
@@ -684,6 +714,34 @@ class TodoQuery(object):
             }
         }
 
+    @classmethod
+    def urgent_flags(cls):
+        return {
+            "range": {
+                "index.most_urgent_flag_deadline": {
+                    "gte": "now",
+                    "lte": "now+7d/d"
+                }
+            }
+        }
+
+    @classmethod
+    def flags_with_nonurgent_deadline(cls):
+        return {
+            "range": {
+                "index.most_urgent_flag_deadline": {
+                    "gt": "now+7d/d"
+                }
+            }
+        }
+
+    @classmethod
+    def flags_without_deadline(cls):
+        return {
+            "exists": {
+                "field": "index.most_urgent_flag_deadline"
+            }
+        }
 
 class GroupStatsQuery():
     """

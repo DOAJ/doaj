@@ -101,9 +101,16 @@
             "feather": "inbox",
             "link" : url_for('editor.associate_suggestions')
         },
-        constants.TODO_FLAGGED: {
+        constants.TODO_REGULAR_FLAGS: {
             "text" : "<strong>Flagged to you</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",
             "no_deadline_text": "<strong>Flagged to you</strong> <span class='todo-list__status'>No deadline</span>",
+            "show_status": false,
+            "colour" : "var(--grapefruit)",
+            "feather": "flag",
+            "link" : ""
+        },
+        constants.TODO_URGENT_FLAGS: {
+            "text" : "<strong>Flagged to you (Urgent Deadline)</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",
             "show_status": false,
             "colour" : "var(--sanguine)",
             "feather": "flag",
@@ -179,7 +186,7 @@
                                     <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
                                         {% set main_action = todo.action_id[0] %}
                                         {% if action.show_status %}[{{ todo.object.application_status }}]{% endif %}
-                                        {% if main_action != constants.TODO_FLAGGED %}
+                                        {% if main_action != constants.TODO_REGULAR_FLAGS and main_action != constants.TODO_URGENT_FLAGS %}
                                             {{ action.text | safe }}
                                         {% else %}
                                             {% if deadline == "9999-12-31" %} {{ action.no_deadline_text | safe }} {% else %} {{ action.text | replace('{DEADLINE}', deadline) | safe }}  {% endif %}

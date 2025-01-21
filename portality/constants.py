@@ -62,6 +62,8 @@ TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
 TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
 TODO_FLAGGED = "todo_flagged"
+TODO_URGENT_FLAGS = "todo_urgent_flags"
+TODO_REGULAR_FLAGS = "todo_regular_flags"
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
