@@ -1198,7 +1198,7 @@ var formulaic = {
             }
 
             this.getResolveFlagInput = function(idx) {
-                return $("input[id='" + this.fieldDef + "-" + idx + "-flag_resolved']")
+                return $("input[id='" + this.fieldDef.name + "-" + idx + "-flag_resolved']")
             }
 
             this.clearFlag = function(e) {
@@ -1391,7 +1391,7 @@ var formulaic = {
             this.resolveFlag = function(e) {
                 this.markFlagAsResolved();
                 this.getResolveFlagInput(this.existingFlagIdx).val("true");
-                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("disabled", true))
+                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("readonly", true))
                 this.flagExists = false;
                 this.setAddBtnStatus();
             }
@@ -1400,7 +1400,7 @@ var formulaic = {
                 // let flagId = e.target.id.split("--")[1];
                 this.markFlagAsUnresolved();
                 this.getResolveFlagInput().val("false");
-                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("disabled", false))
+                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("readonly", false))
                 this.flagExists = true;
                 this.setAddBtnStatus();
             }
