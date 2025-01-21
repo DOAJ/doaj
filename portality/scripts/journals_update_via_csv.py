@@ -189,6 +189,10 @@ if __name__ == "__main__":
 
             try:
                 if not args.dry_run:
+                    # FIXME: we have to validate, as this pre-filters conditional fields and makes other protections
+                    # on the form values.  This is not really ideal, as validate shouldn't really be changing the data!
+                    fc.validate()
+
                     # Save the update request
                     fc.finalise(email_alert=False)
                     print('Update request created.')

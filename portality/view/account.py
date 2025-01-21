@@ -86,7 +86,13 @@ def username(username):
         if not form.validate():
             return render_template(template, account=acc, form=form)
 
-        newdata = request.json if request.json else request.values
+        newdata = request.values
+        try:
+            newdata = request.json
+        except:
+            pass
+
+        # newdata = request.json if request.json else request.values
         if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
 

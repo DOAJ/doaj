@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='8.0.0',
+    version='8.0.5',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
@@ -19,6 +19,7 @@ setup(
         "jinja2~=3.1.4",
         "jsonpath-ng~=1.6",
         "flask<3",
+        "Werkzeug<3.0",   # FIXME: we have passwords using plain sha1 that are undecodable after 3.0
         "Flask-Cors==5.0.0",
         "Flask-DebugToolbar==0.15.1",
         "Flask-Login==0.6.3",

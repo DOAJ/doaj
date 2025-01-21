@@ -1,87 +1,102 @@
 # List of DOAJ ambassadors
 # ~~Ambassadors:Data~~
 
+senior:
+#  - name: John Doe
+#    region: North America
+#    bio: "John is a software developer with a keen interest in technology and problem-solving. He enjoys outdoor activities like hiking and cycling and has a passion for learning new programming languages. In his free time, he enjoys reading, playing video games, and experimenting with different gadgets. He values personal growth and continuously seeks ways to improve both professionally and personally."
+#    photo: "avatar.jpg"
+#    coi:
+#      2022: https://drive.google.com/file/d/xxxxxxxxxxxxxxxxxxxxxxxx/view?usp=sharing
 
-- name: Amber Osman
-  region: Pakistan
-  bio: "Amber is a passionate expert in open science and a research enthusiast. Over the last decade, she has been actively involved in different international academic, research & publishing organizations and with the Higher Education Commission (Govt. of Pakistan). She has been <a href='https://www.youtube.com/watch?v=n612FOybhIM' target='_blank'>an award-winning journal editor</a> for advancing the publishing process by adopting innovative research and publishing solutions. Amber advocates for best practices in open access scholarly content. She has a Masters of Philosophy in marketing."
-  photo: "amber.jpeg"
-  coi:
-    2022: https://drive.google.com/file/d/18KLtcd-F4q1XbVxh5o54k7feQUY-e-uv/view?usp=sharing
+general:
+  - name: Amber Osman
+    region: Pakistan
+    bio: "Amber is a passionate expert in open science and a research enthusiast. Over the last decade, she has been actively involved in different international academic, research & publishing organizations and with the Higher Education Commission (Govt. of Pakistan). She has been <a href='https://www.youtube.com/watch?v=n612FOybhIM' target='_blank'>an award-winning journal editor</a> for advancing the publishing process by adopting innovative research and publishing solutions. Amber advocates for best practices in open access scholarly content. She has a Masters of Philosophy in marketing."
+    photo: "amber.jpeg"
+    coi:
+      2022: https://drive.google.com/file/d/18KLtcd-F4q1XbVxh5o54k7feQUY-e-uv/view?usp=sharing
 
-- name: Gimena del Rio Riande
-  region: Latin America
-  bio: "Gimena is a researcher at <a href='http://www.iibicrit-conicet.gov.ar/' target='_blank'>IIBICRIT</a>, the Institute for Bibliographic Research and Textual Criticism at CONICET, the main agency that fosters science and technology in Argentina. Most of her research projects are related to Open Science and Digital Humanities, focusing on the Global South. She is also the president of the <a href='https://aahd.net.ar/' target='_blank'>Asociación Argentina de Humanidades Digitales</a> (AAHD), and a member of the Board of Directors of <a href='https://www.force11.org/' target='_blank'>Force11</a>, <a href='https://openmethods.dariah.eu/' target='_blank'>OpenMethods-DARIAH</a>, <a href='https://en.hypotheses.org/'>Hypotheses</a>, and Area (Open Education Network in Argentina)."
-  photo: "del-rio-riande-gimena.jpg"
-  coi:
-    2022: https://drive.google.com/file/d/1wwxuAH15I4k-mQ3NW03x3W12ExUKJ7f9/view?usp=sharing
+  - name: Gimena del Rio Riande
+    region: Latin America
+    bio: "Gimena is a researcher at <a href='http://www.iibicrit-conicet.gov.ar/' target='_blank'>IIBICRIT</a>, the Institute for Bibliographic Research and Textual Criticism at CONICET, the main agency that fosters science and technology in Argentina. Most of her research projects are related to Open Science and Digital Humanities, focusing on the Global South. She is also the president of the <a href='https://aahd.net.ar/' target='_blank'>Asociación Argentina de Humanidades Digitales</a> (AAHD), and a member of the Board of Directors of <a href='https://www.force11.org/' target='_blank'>Force11</a>, <a href='https://openmethods.dariah.eu/' target='_blank'>OpenMethods-DARIAH</a>, <a href='https://en.hypotheses.org/'>Hypotheses</a>, and Area (Open Education Network in Argentina)."
+    photo: "del-rio-riande-gimena.jpg"
+    coi:
+      2022: https://drive.google.com/file/d/1wwxuAH15I4k-mQ3NW03x3W12ExUKJ7f9/view?usp=sharing
 
-- name: Ikhwan Arief
-  region: Indonesia
-  bio: "Ikhwan is a faculty member in the Industrial Engineering Department at Universitas Andalas, Indonesia. He is an enthusiastic photography hobbyist. He joined DOAJ in 2018 as an ambassador and gradually became a volunteer editor. He used to manage the university's library information system, including establishing the online public access catalogue (OPAC) and the repository servers. He is keenly interested in data science, primarily in industrial and manufacturing systems research. He has been assisting Indonesian journal managers in their application to DOAJ."
-  photo: "ikhwan.jpg"
-  coi:
-    2022: https://drive.google.com/file/d/1bmVVvMAPToLQCHGOfNz0D80xi4WyZhwn/view?usp=sharing
-    
-- name: Mochammad Tanzil Multazam
-  region: Indonesia
-  bio: "Mochammad Tanzil Multazam is a prominent academic and legal expert at Universitas Muhammadiyah Sidoarjo, known for his significant contributions to scientific publication and library management. Since 2016, he has played a pivotal role in enhancing the quality of Indonesian journals through his leadership at Relawan Jurnal Indonesia, managing over 13,000 journals as the largest Crossref Sponsoring Organization globally. In 2023, he became Head of the UMSIDA Library, continuing his efforts to integrate digital technology into academic publishing. His influence extends internationally, particularly through the Silkroad Research Network, fostering collaboration among journal managers along the Silk Road Region"
-  photo: "Tanzil.jpg"
-  coi:
-    2024: https://drive.google.com/file/d/1q3h3T45-VRbvJxf8e_HacEDnvJhzg5yY/view?usp=sharing
+  - name: Ikhwan Arief
+    region: Indonesia
+    bio: "Ikhwan is a faculty member in the Industrial Engineering Department at Universitas Andalas, Indonesia. He is an enthusiastic photography hobbyist. He joined DOAJ in 2018 as an ambassador and gradually became a volunteer editor. He used to manage the university's library information system, including establishing the online public access catalogue (OPAC) and the repository servers. He is keenly interested in data science, primarily in industrial and manufacturing systems research. He has been assisting Indonesian journal managers in their application to DOAJ."
+    photo: "ikhwan.jpg"
+    coi:
+      2022: https://drive.google.com/file/d/1bmVVvMAPToLQCHGOfNz0D80xi4WyZhwn/view?usp=sharing
 
-- name: Ina Smith
-  region: Southern Africa
-  bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Science incl. Open Access, scholarly research activities, repositories, and Open Access journal management and publishing."
-  photo: "ina-smith.png"
-  coi:
-    2022: https://drive.google.com/file/d/1bnxk0NzQDU5QzdUdaFWD85A3lEA4Iu8a/view?usp=sharing
-    2024: https://drive.google.com/file/d/1cjkOAuYhyt_8m5EkKxoDe4A596emb9Wb/view?usp=sharing
+  - name: Ina Smith
+    region: Southern Africa
+    bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Science incl. Open Access, scholarly research activities, repositories, and Open Access journal management and publishing."
+    photo: "ina-smith.png"
+    coi:
+      2022: https://drive.google.com/file/d/1bnxk0NzQDU5QzdUdaFWD85A3lEA4Iu8a/view?usp=sharing
+      2024: https://drive.google.com/file/d/1cjkOAuYhyt_8m5EkKxoDe4A596emb9Wb/view?usp=sharing
 
-- name: Ivonne Lujano
-  region: Latin America
-  bio: "Ivonne Lujano Vilchis is a PhD student in Education Policy and Evaluation at Arizona State University. She holds a Master’s degree in Social Sciences with an emphasis on Education. She has worked in scholarly communication and open access since 2011. As DOAJ ambassador, she has collaborated with several universities and government agencies on the adoption of best practices for scholarly publications and open science policies. She is a section editor of Current Issues of Education, a journal produced by doctoral students at Mary Lou Fulton Teachers College of Arizona State University. Her research interests focus on higher education systems, research evaluation, science policy, open access, scholarly communication, and open science. Ivonne also has a background in dance, and she is currently an amateur tango dancer."
-  photo: "ivonne.jpg"
-  coi:
-    2022: https://drive.google.com/file/d/1HnGhYbvbzL34guWOmIqcthcwAN8NADX1/view?usp=sharing
-    
-- name: Mahmoud Khalifa
-  region: Middle East and Persian Gulf
-  bio: "Mahmoud is a PhD candidate at Humboldt University of Berlin, Germany. He is writing his dissertation about national information policies. Mahmoud was an associate at the IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. Professionally, he worked in the Library of Congress Cairo Office from 2006-2018. As a researcher, he published more than 20 articles, book chapters, and conference papers."
-  photo: "mahmoud-new.jpg"
-  coi:
-    2022: https://drive.google.com/file/d/10s7B0WeTPqpaafhThv-i8q03uIFaAAue/view?usp=sharing
+  - name: Ivonne Lujano
+    region: Latin America
+    bio: "Ivonne Lujano Vilchis is a PhD student in Education Policy and Evaluation at Arizona State University. She holds a Master’s degree in Social Sciences with an emphasis on Education. She has worked in scholarly communication and open access since 2011. As DOAJ ambassador, she has collaborated with several universities and government agencies on the adoption of best practices for scholarly publications and open science policies. She is a section editor of Current Issues of Education, a journal produced by doctoral students at Mary Lou Fulton Teachers College of Arizona State University. Her research interests focus on higher education systems, research evaluation, science policy, open access, scholarly communication, and open science. Ivonne also has a background in dance, and she is currently an amateur tango dancer."
+    photo: "ivonne.jpg"
+    coi:
+      2022: https://drive.google.com/file/d/1HnGhYbvbzL34guWOmIqcthcwAN8NADX1/view?usp=sharing
 
-- name: Kamel Belhamel
-  region: North Africa and Middle East
-  bio: "Kamel Belhamel is a Full Professor of Chemistry at the University of Bejaia, Algeria (ORCID). He is the DOAJ Ambassador and Managing Editor for North Africa and the Middle East. His scientific activity is focused on scholarly communications, new developments in academic publishing and the chemistry of Natural Products. Kamel has strongly advocated for open access and open science. He is the Creative Commons Representative to the Global Network Council and editor-in-chief of the Algerian Journal of Natural Products. He is father to three daughters and likes travelling, healthy local foods and home-made snacks."
-  photo: "Kamel.jpg"
-  coi:
-    2024: https://drive.google.com/file/d/1UTUIqeAx-4Q3_gC4sZ7MG3pa0Z3hOsKP/view?usp=sharing
-    
-- name: Melkamu Beyene
-  region: East Africa
-  bio: "Dr. Melkamu Beyene is an Assistant Professor in the School of Information Science at Addis Ababa University. He received his PhD in Information Retrieval from Addis Ababa University in a joint program with the Institut National des Sciences Appliquées de Lyon, France, in 2017. He is a Chief Librarian at Addis Ababa University Library system and Chairperson of the Consortium of Ethiopian Academic and Research Libraries from March 08, 2018."
-  photo: "melkamu.JPG"
-  coi:
+  - name: Kamel Belhamel
+    region: North Africa and Middle East
+    bio: "Kamel Belhamel is a Full Professor of Chemistry at the University of Bejaia, Algeria (ORCID). He is the DOAJ Ambassador and Managing Editor for North Africa and the Middle East. His scientific activity is focused on scholarly communications, new developments in academic publishing and the chemistry of Natural Products. Kamel has strongly advocated for open access and open science. He is the Creative Commons Representative to the Global Network Council and editor-in-chief of the Algerian Journal of Natural Products. He is father to three daughters and likes travelling, healthy local foods and home-made snacks."
+    photo: "Kamel.jpg"
+    coi:
+      2024: https://drive.google.com/file/d/1UTUIqeAx-4Q3_gC4sZ7MG3pa0Z3hOsKP/view?usp=sharing
 
-- name: Muhammad Imtiaz Subhani
-  region: Pakistan
-  bio: "Dr. Subhani is an <a href='https://news.pakistantimes.com/2015/05/05/sajms-secures-third-position-in-scholarone-vision-award-2015-367073.html' target='_blank'>award-winning editor by Thomson Reuters in 2015</a>. He holds a PhD in Financial Econometrics from Iqra University, Pakistan. Dr. Subahni is a Professor and Dean of the Business School at ILMA University, Pakistan. He is currently <a href='https://customer.sspnet.org/ssp/AboutUs/Committee-Roster.aspx?Code=EDUCATION' target='_blank'>working voluntarily for Society for Scholarly Publishing (SSP)</a> as an education committee member. He is also a member of Creative Commons Global Network, CC Open GLAM, and Research Data Publishing Ethics, FORCE 11. He is a scientific publishing consultant & a technical committee member of HEC Journals’ Recognition System at the Higher Education Commission, Government of Pakistan."
-  photo: "subhani-1.jpeg"
-  coi:
-    2022: https://drive.google.com/file/d/1nYQZ8h766UsNY_gWwCbRyVQ_yxdCyQN5/view?usp=sharing 
+  - name: Mahmoud Khalifa
+    region: Middle East and Persian Gulf
+    bio: "Mahmoud is a PhD candidate at Humboldt University of Berlin, Germany. He is writing his dissertation about national information policies. Mahmoud was an associate at the IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. Professionally, he worked in the Library of Congress Cairo Office from 2006-2018. As a researcher, he published more than 20 articles, book chapters, and conference papers."
+    photo: "mahmoud-new.jpg"
+    coi:
+      2022: https://drive.google.com/file/d/10s7B0WeTPqpaafhThv-i8q03uIFaAAue/view?usp=sharing
 
-- name: Shuai Yan
-  region: China
-  bio: "Shuai Yan is an independent consultant since 2020. Since November 2021, Shuai has worked with STM as its China Consultant. From 2017 to 2020, he worked with Springer Nature Greater China as director of academic relationships (including government relations). From 2011 to 2017 he was at Tsinghua University Press (TUP) as an associate chief editor and was TUP's director of Journal Publishing. He was also the editor-in-chief of Journal of Tsinghua University (Science and Technology). He has served as the president of Society of China University Journals (CUJS) from 2004 to 2019, the vice president of China Periodicals Association (CPA) from 2012 to 2018, and the vice president of the China Editology Society for Scientific Periodicals (CESSP) from 2015 to 2021."
-  photo: "Shuai.jpg"
-  coi:
-    2022: https://drive.google.com/file/d/1Xy9OPuTQZp5AS3wBs0Ittd3t_n4onKCy/view?usp=sharing
+  - name: Melkamu Beyene
+    region: East Africa
+    bio: "Dr. Melkamu Beyene is an Assistant Professor in the School of Information Science at Addis Ababa University. He received his PhD in Information Retrieval from Addis Ababa University in a joint program with the Institut National des Sciences Appliquées de Lyon, France, in 2017. He is a Chief Librarian at Addis Ababa University Library system and Chairperson of the Consortium of Ethiopian Academic and Research Libraries from March 08, 2018."
+    photo: "melkamu.JPG"
+    coi:
 
-- name: Vrushali Dandawate
-  region: India
-  bio: "Vrushali is Head Librarian at AISSMS College of Engineering College Pune, Maharashtra, India, and She holds a Ph.D. degree from Reva University Banglore, India. Her research topic is 'OPEN ACCESS E -RESOURCES DEVELOPMENT IN ASIA: A STUDY' Vrushali was the winner of the ALCTS Online Course Grant for Library Professionals from Developing Countries in 2014, and the INASP open access week competition in both 2015 and 2016. She was invited to OpenCon 2017 in Berlin, Germany, and subsequently worked as a member of the organizing committee for OpenCon 2018 in Toronto, Canada. She also served as an advisory committee member for Open Access Week 2018-2019. She is selected as an advisory committee member of OpenDOAR and conference committee member of the FORCE2021 Conference."
-  photo: vrushali.jpg
-  coi:
-    2022: https://drive.google.com/file/d/18Z2wZ9KMxuD0WD_b3pfxg4QJy9-7lUO6/view?usp=sharing
+  - name: Mochammad Tanzil Multazam
+    region: Indonesia
+    bio: "Mochammad Tanzil Multazam is a prominent academic and legal expert at Universitas Muhammadiyah Sidoarjo, known for his significant contributions to scientific publication and library management. Since 2016, he has played a pivotal role in enhancing the quality of Indonesian journals through his leadership at Relawan Jurnal Indonesia, managing over 13,000 journals as the largest Crossref Sponsoring Organization globally. In 2023, he became Head of the UMSIDA Library, continuing his efforts to integrate digital technology into academic publishing. His influence extends internationally, particularly through the Silkroad Research Network, fostering collaboration among journal managers along the Silk Road Region"
+    photo: "Tanzil.jpg"
+    coi:
+      2024: https://drive.google.com/file/d/1q3h3T45-VRbvJxf8e_HacEDnvJhzg5yY/view?usp=sharing
+
+  - name: Muhammad Imtiaz Subhani
+    region: Pakistan
+    bio: "Dr. Subhani is an <a href='https://news.pakistantimes.com/2015/05/05/sajms-secures-third-position-in-scholarone-vision-award-2015-367073.html' target='_blank'>award-winning editor by Thomson Reuters in 2015</a>. He holds a PhD in Financial Econometrics from Iqra University, Pakistan. Dr. Subahni is a Professor and Dean of the Business School at ILMA University, Pakistan. He is currently <a href='https://customer.sspnet.org/ssp/AboutUs/Committee-Roster.aspx?Code=EDUCATION' target='_blank'>working voluntarily for Society for Scholarly Publishing (SSP)</a> as an education committee member. He is also a member of Creative Commons Global Network, CC Open GLAM, and Research Data Publishing Ethics, FORCE 11. He is a scientific publishing consultant & a technical committee member of HEC Journals’ Recognition System at the Higher Education Commission, Government of Pakistan."
+    photo: "subhani-1.jpeg"
+    coi:
+      2022: https://drive.google.com/file/d/1nYQZ8h766UsNY_gWwCbRyVQ_yxdCyQN5/view?usp=sharing
+
+  - name: Ramazan Turgut
+    region: Türkiye
+    bio: "Ramazan Turgut is a teacher at Mardin Artuklu University in Türkiye. He has a Ph.D. in History of Religion and has done research at Radboud University and the University of Chicago. He speaks Kurdish, Turkish, English, and Dutch, which helps him to work with scholars from different countries. Ramazan is a proud father of three children and enjoys reading, cooking, and travelling to learn about new cultures. If he could be a character in Middle Earth, he would have chosen Boromir."
+    photo: "ramazan24.png"
+    coi:
+      2023: https://drive.google.com/file/d/1Mipqt2uTdv968VajWjEkIo5S9rTHSKCT/view?usp=sharing
+
+  - name: Shuai Yan
+    region: China
+    bio: "Shuai Yan is an independent consultant since 2020. Since November 2021, Shuai has worked with STM as its China Consultant. From 2017 to 2020, he worked with Springer Nature Greater China as director of academic relationships (including government relations). From 2011 to 2017 he was at Tsinghua University Press (TUP) as an associate chief editor and was TUP's director of Journal Publishing. He was also the editor-in-chief of Journal of Tsinghua University (Science and Technology). He has served as the president of Society of China University Journals (CUJS) from 2004 to 2019, the vice president of China Periodicals Association (CPA) from 2012 to 2018, and the vice president of the China Editology Society for Scientific Periodicals (CESSP) from 2015 to 2021."
+    photo: "Shuai.jpg"
+    coi:
+      2022: https://drive.google.com/file/d/1Xy9OPuTQZp5AS3wBs0Ittd3t_n4onKCy/view?usp=sharing
+
+  - name: Vrushali Dandawate
+    region: India
+    bio: "Vrushali is Head Librarian at AISSMS College of Engineering College Pune, Maharashtra, India, and She holds a Ph.D. degree from Reva University Banglore, India. Her research topic is 'OPEN ACCESS E -RESOURCES DEVELOPMENT IN ASIA: A STUDY' Vrushali was the winner of the ALCTS Online Course Grant for Library Professionals from Developing Countries in 2014, and the INASP open access week competition in both 2015 and 2016. She was invited to OpenCon 2017 in Berlin, Germany, and subsequently worked as a member of the organizing committee for OpenCon 2018 in Toronto, Canada. She also served as an advisory committee member for Open Access Week 2018-2019. She is selected as an advisory committee member of OpenDOAR and conference committee member of the FORCE2021 Conference."
+    photo: vrushali.jpg
+    coi:
+      2022: https://drive.google.com/file/d/18Z2wZ9KMxuD0WD_b3pfxg4QJy9-7lUO6/view?usp=sharing
