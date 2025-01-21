@@ -52,10 +52,6 @@
     <script type="text/javascript" src="/static/js/dashboard.js?v={{ config.get('DOAJ_VERSION') }}"></script>
     <script type="text/javascript">
         jQuery(document).ready(function () {
-            doaj.dashboard.session = {}
-            doaj.dashboard.session.filter = "{{ request.values.get('filter') }}"
-            doaj.dashboard.session.flag_filter = "{{ request.values.get('flag_filter') }}"
-            doaj.dashboard.dashboardUrl = "{{ url_for('dashboard.top_todo') }}"
             doaj.dashboard.init({"applicationsSearchBase": "{{ url_for('admin.suggestions') }}"})
         });
     </script>
