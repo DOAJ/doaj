@@ -72,6 +72,41 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
+
+                edges.newDateHistogramSelector({
+                    id: "created_date_histogram",
+                    category: "facet",
+                    field: "created_date",
+                    display: "Created Date Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
+                edges.newMultiDateRangeEntry({
+                    id: "created_date_selector",
+                    category: "facet",
+                    field: "created_date",
+                    display: "Created Date Selector",
+                    autoLookupRange: true,
+                    fields: [
+                        {field: "created_date", display: "Created Date"}
+                    ],
+                    renderer: edges.bs3.newBSMultiDateRangeFacet({
+
+                    })
+                }),
+
                 doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "has_seal",
