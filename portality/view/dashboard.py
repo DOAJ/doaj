@@ -31,6 +31,9 @@ def top_todo():
         update_requests = False
         new_applications = False
     elif filter == "flag":
+        new_applications = False
+        update_requests = False
+        on_hold = False
         flag = True
 
 
