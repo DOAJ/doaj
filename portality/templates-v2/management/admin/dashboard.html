@@ -10,20 +10,6 @@
 
 {% block admin_content %}
     <div class="flex-end">
-        <span id="assigned-to-me-filter" class="tag {% if not request.values.get('flag_filter') or request.values.get('flag_filter') == 'a2me' %} tag--primary {% else %} tag--tertiary {% endif %}">
-            <a class="flagged-link">My group</a>
-        </span>
-        {% if request.values.get('flag_filter') == 'flagged' %}
-        <span id="flagged-filter" class="tag flex-start tag--primary">
-            <a class="flagged-link">{% include "includes/_flagged--flag--white.html" %} Flagged to me</a>
-        </span>
-        {% else %}
-        <span id="flagged-filter" class="tag flex-start tag--tertiary">
-            <a class="flagged-link">{% include "includes/_flagged_to_me--flag.html" %} Flagged to me</a>
-        </span>
-        {% endif %}
-    </div>
-    <div class="flex-end">
         {% if request.values.get("filter") == None or request.values.get("filter") == "None" %}
             <span class="tag tag--primary"><a href="{{ url_for('dashboard.top_todo') }}?flag_filter={{ request.values.get('flag_filter') }}">Show all</a></span>
         {% else %}
@@ -47,6 +33,12 @@
             <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=oh">On Hold</a></span>
         {% else %}
             <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=oh">On Hold</a></span>
+        {% endif %}
+
+        {%  if request.values.get("filter") == "flag" %}
+            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=flag" class="flex-start">{% include "includes/_flagged--flag--white.html" %}Flagged to Me</a></span>
+        {% else %}
+            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=flag" class="flex-start">{% include "includes/_flagged_to_me--flag.html" %}Flagged to Me</a></span>
         {% endif %}
     </div>
 

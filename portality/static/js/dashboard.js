@@ -25,16 +25,6 @@ doaj.dashboard.init = function (context) {
     doaj.dashboard.motivationalBanners = motivational_banners;
     doaj.dashboard.context.historical_count = historical_count;
     $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
-    let filter = doaj.dashboard.session.filter;
-    let flaggedUrl = doaj.dashboard.dashboardUrl + '?flag_filter=flagged';
-    let a2meUrl = doaj.dashboard.dashboardUrl + '?flag_filter=a2me';
-    if (filter && filter !== "None") {
-        flaggedUrl += '&filter=' + filter;
-        a2meUrl += '&filter=' + filter;
-    }
-
-    $("#flagged-filter .flagged-link").attr("href", flaggedUrl);
-    $("#assigned-to-me-filter .flagged-link").attr("href", a2meUrl);
 
     // trigger a click on the first one, so there is something for the user to look at
     let first = $(".js-managed-groups-tabs").find("li:first-child a");
