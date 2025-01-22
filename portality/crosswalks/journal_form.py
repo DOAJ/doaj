@@ -3,7 +3,6 @@ from werkzeug.datastructures import MultiDict
 from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
-from portality.lib.dates import FMT_DATE_STD
 from portality.models import Account
 from portality.lib import dates
 from builtins import ValueError
@@ -278,7 +277,7 @@ class JournalGenericXWalk(object):
             for flag in form.flags.data:
                 flag_date = flag["flag_created_date"]
                 try:
-                    flag_deadline = dates.parse(flag.get("flag_deadline"), format=FMT_DATE_STD)
+                    flag_deadline = dates.parse(flag.get("flag_deadline"), format=dates.FMT_DATE_STD)
                 except ValueError:
                     flag_deadline = dates.far_in_the_future()
                 flag_assigned_to = flag["flag_assignee"]
