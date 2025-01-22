@@ -43,6 +43,7 @@ IDENT_TYPE_DOI = "doi"
 LINK_TYPE_FULLTEXT = "fulltext"
 
 # ~~-> Todo:Service~~
+TODO_ASSIGNED_TO_ME = "todo_assigned_to_me"
 TODO_MANED_STALLED = "todo_maned_stalled"
 TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
 TODO_MANED_READY = "todo_maned_ready"
@@ -60,6 +61,8 @@ TODO_ASSOCIATE_PROGRESS_STALLED = "todo_associate_progress_stalled"
 TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
 TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
+TODO_URGENT_FLAGS = "todo_urgent_flags"
+TODO_REGULAR_FLAGS = "todo_regular_flags"
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"

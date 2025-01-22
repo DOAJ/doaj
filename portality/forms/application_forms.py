@@ -2035,6 +2035,110 @@ class FieldDefinitions:
         "input": "hidden"
     }
 
+    FLAGS = {
+        "name": "flags",
+        "input": "group",
+        "label": "Flags",
+        "repeatable": {
+            "initial": 2,
+            "add_button_placement": "top",
+            "add_field_permission": ["admin"]
+        },
+        "subfields": [
+            "flag_setter",
+            "flag_created_date",
+            "flag_assignee",
+            "flag_deadline",
+            "flag_note",
+            "flag_note_id",
+            "flag_resolved"
+        ],
+        "template": templates.FLAGS_LIST,
+        "entry_template": templates.FLAG_ENTRY_GROUP,
+        "widgets": [
+            "multiple_field",
+            "flag_manager"
+        ],
+        "merge_disabled": "merge_disabled_notes",
+        "help": {
+            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+            "render_error_box": False,
+        },
+    }
+
+    FLAG_RESOLVED = {
+        "subfield": True,
+        "name": "flag_resolved",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
+    }
+
+    # ~~->$ NoteAuthor:FormField~~
+    FLAG_SETTER = {
+        "subfield": True,
+        "name": "flag_setter",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    # ~~->$ NoteDate:FormField~~
+    FLAG_CREATED_DATE = {
+        "subfield": True,
+        "name": "flag_created_date",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    FLAG_DEADLINE = {
+        "subfield": True,
+        "optional": True,
+        "label": "Deadline",
+        "name": "flag_deadline",
+        "help": {
+            "placeholder": "deadline (YYYY-MM-DD)",
+        },
+        "group": "flags",
+        "input": "text",
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
+    }
+
+    FLAG_NOTE = {
+        "subfield": True,
+        "name": "flag_note",
+        "group": "flags",
+        "input": "textarea",
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
+    }
+
+    # ~~->$ NoteID:FormField~~
+    FLAG_NOTE_ID = {
+        "subfield": True,
+        "name": "flag_note_id",
+        "group": "flags",
+        "input": "hidden"
+    }
+
+    FLAG_ASSIGNEE = {
+        "subfield": True,
+        "name": "flag_assignee",
+        "label": "Assign a user",
+        "help": {
+        "placeholder": "assigned_to"},
+        "group": "flags",
+        "validate": [
+            "reserved_usernames",
+            "owner_exists"
+        ],
+        "widgets": [
+            {"autocomplete": {"type": "account", "field": "id", "include_input": True}},  # ~~^-> Autocomplete:FormWidget~~
+        ],
+        "input": "text",
+        "disabled": "disable_edit_flag_except_author_admin_assignee"
+    }
+
     # ~~->$ OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name": "make_all_fields_optional",
@@ -2317,12 +2421,20 @@ class FieldSetDefinitions:
         "name": "notes",
         "label": "Notes",
         "fields": [
+            FieldDefinitions.FLAGS["name"],
+            FieldDefinitions.FLAG_SETTER["name"],
+            FieldDefinitions.FLAG_CREATED_DATE["name"],
+            FieldDefinitions.FLAG_DEADLINE["name"],
+            FieldDefinitions.FLAG_NOTE["name"],
+            FieldDefinitions.FLAG_NOTE_ID["name"],
+            FieldDefinitions.FLAG_ASSIGNEE["name"],
+            FieldDefinitions.FLAG_RESOLVED["name"],
             FieldDefinitions.NOTES["name"],
             FieldDefinitions.NOTE["name"],
             FieldDefinitions.NOTE_AUTHOR["name"],
             FieldDefinitions.NOTE_DATE["name"],
             FieldDefinitions.NOTE_ID["name"],
-            FieldDefinitions.NOTE_AUTHOR_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"]
         ]
     }
 
@@ -2717,6 +2829,29 @@ def disable_edit_note_except_editing_user(field: FormulaicField,
     if form_field is None:
         return True
     return cur_user_id != form_field.data.get('note_author_id')
+
+def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
+                                          formulaic_context: FormulaicContext):
+    """
+    Only allow the current user to edit this field if current user is an author, assignee or admin
+
+    :param field:
+    :param formulaic_context:
+    :return:
+        False is editable, True is disabled
+    """
+
+    # ~~->Notes:Feature~~
+    editing_user = formulaic_context.extra_param.get('editing_user')
+    cur_user_id = editing_user and editing_user.id
+    cur_user_is_admin = editing_user and editing_user.is_super
+    form_field: FormField = field.find_related_form_field('notes', formulaic_context)
+    if form_field is None:
+        return True
+
+    return (cur_user_id != form_field.data.get('flag_assignee') and
+            cur_user_id != form_field.data.get('flag_setter') and
+            not cur_user_is_admin)
 
 
 #######################################################
@@ -3114,6 +3249,7 @@ PYTHON_FUNCTIONS = {
     "disabled": {
         "application_status_disabled": application_status_disabled,
         "disable_edit_note_except_editing_user": disable_edit_note_except_editing_user,
+        "disable_edit_flag_except_author_admin_assignee": disable_edit_flag_except_author_admin_assignee
     },
     "merge_disabled": {
         "merge_disabled_notes": merge_disabled_notes
@@ -3186,6 +3322,8 @@ JAVASCRIPT_FUNCTIONS = {
     "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
     "issn_link" : "formulaic.widgets.newIssnLink", # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo", # ~~-> ArticleInfo:FormWidget~~
+    "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+
 }
 
 
@@ -3331,7 +3469,6 @@ class TagListBuilder(WTFormsBuilder):
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         return TagListField(**wtfargs)
-
 
 class IntegerBuilder(WTFormsBuilder):
     @staticmethod

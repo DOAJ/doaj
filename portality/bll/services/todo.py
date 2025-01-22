@@ -17,7 +17,7 @@ class TodoService(object):
         eg = models.EditorGroup.pull(group_id)
         stats = {"editor_group": eg.data}
 
-        #~~-> Account:Model ~~
+        # ~~-> Account:Model ~~
         stats["editors"] = {}
         editors = [eg.editor] + eg.associates
         for editor in editors:
@@ -43,7 +43,8 @@ class TodoService(object):
                     stats["by_editor"][bucket["key"]]["update_requests"] = b["doc_count"]
                     stats["total"]["update_requests"] += b["doc_count"]
 
-        unassigned_buckets = resp.get("aggregations", {}).get("unassigned", {}).get("application_type", {}).get("buckets", [])
+        unassigned_buckets = resp.get("aggregations", {}).get("unassigned", {}).get("application_type", {}).get(
+            "buckets", [])
         stats["unassigned"] = {"applications": 0, "update_requests": 0}
         for ub in unassigned_buckets:
             if ub["key"] == constants.APPLICATION_TYPE_NEW_APPLICATION:
@@ -123,7 +124,7 @@ class TodoService(object):
 
         return count
 
-    def top_todo(self, account, size=25, new_applications=True, update_requests=True, on_hold=True):
+    def top_todo(self, account, size=25, new_applications=True, update_requests=True, flag=True, on_hold=True):
         """
         Returns the top number of todo items for a given user
 
@@ -179,6 +180,12 @@ class TodoService(object):
                     TodoRules.associate_start_pending(account.id, size),
                     TodoRules.associate_all_applications(account.id, size)
                 ])
+        # if flagged filter is on than all types of records are displayed and the ownership is not taken into consideration
+        if flag:
+            queries.extend([
+                TodoRules.urgent_flags(account.id, size),
+                TodoRules.regular_flags(account.id, size)
+            ])
 
         todos = []
         for aid, q, sort, boost in queries:
@@ -225,6 +232,7 @@ class TodoService(object):
 
 
 class TodoRules(object):
+
     @classmethod
     def maned_stalled(cls, size, maned_of):
         sort_date = "created_date"
@@ -335,7 +343,6 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED
                 ])
-                # TodoQuery.exists("admin.editor")
             ],
             sort=sort_date,
             size=size
@@ -358,7 +365,6 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED
                 ])
-                # TodoQuery.exists("admin.editor")
             ],
             sort=sort_date,
             size=size
@@ -539,6 +545,34 @@ class TodoRules(object):
         )
         return constants.TODO_ASSOCIATE_ALL_APPLICATIONS, all, sort_field, -1
 
+    @classmethod
+    def urgent_flags(cls, acc_id, size):
+        sort_field = "most_urgent_flag_deadline"
+        all = TodoQuery(
+            musts=[
+                TodoQuery.flagged_to_me(acc_id),
+                TodoQuery.urgent_flags()
+            ],
+            sort=sort_field,
+            size=size
+        )
+        return constants.TODO_URGENT_FLAGS, all, sort_field, -1
+
+    @classmethod
+    def regular_flags(cls, acc_id, size):
+        sort_field = "most_urgent_flag_deadline"
+        all = TodoQuery(
+            musts=[
+                TodoQuery.flagged_to_me(acc_id)
+            ],
+            must_nots=[
+                TodoQuery.urgent_flags()
+            ],
+            sort=sort_field,
+            size=size
+        )
+        return constants.TODO_REGULAR_FLAGS, all, sort_field, -1
+
 
 class TodoQuery(object):
     """
@@ -657,6 +691,35 @@ class TodoQuery(object):
         return {
             "terms": {
                 "admin.editor.exact": [acc_id],
+            }
+        }
+
+    @classmethod
+    def flagged_to_me(cls, acc_id):
+        return {
+            "terms": {
+                "index.flag_assignees": [acc_id]
+            }
+        }
+
+    @classmethod
+    def urgent_flags(cls):
+        return {
+            "range": {
+                "index.most_urgent_flag_deadline": {
+                    "gte": "now",
+                    "lte": "now+7d/d"
+                }
+            }
+        }
+
+    @classmethod
+    def flags_with_nonurgent_deadline(cls):
+        return {
+            "range": {
+                "index.most_urgent_flag_deadline": {
+                    "gt": "now+7d/d"
+                }
             }
         }
 
