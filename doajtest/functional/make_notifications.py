@@ -3,6 +3,7 @@
 from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from doajtest.mocks.mock_mail import MockMail
+from events.consumers.application_assed_acceptreject_notify import ApplicationAssedAcceptRejectNotify
 from portality import constants
 from portality import models, app_email
 from portality.core import app
@@ -26,6 +27,8 @@ from portality.events.consumers import application_assed_assigned_notify, \
     update_request_publisher_assigned_notify, \
     update_request_publisher_rejected_notify
 from portality.events.consumers.update_request_publisher_submitted_notify import UpdateRequestPublisherSubmittedNotify
+from portality.events.consumers.application_editor_acceptreject_notify import ApplicationEditorAcceptRejectNotify
+from portality.events.consumers.update_request_maned_editor_group_assigned_notify import UpdateRequestManedEditorGroupAssignedNotify
 from portality.models import EditorGroup
 from portality.models.event import Event
 
@@ -58,6 +61,23 @@ NOTIFICATIONS = [ec.ID for ec in DOAJ.eventsService().EVENT_CONSUMERS]
 app.config["ENABLE_EMAIL"] = True
 app_email.Mail = MockMail
 
+
+##############################################
+## ApplicationAssedAcceptRejectNotify
+if "application:assed:acceptreject:notify" in NOTIFICATIONS:
+    aaan_application = ApplicationFixtureFactory.make_application_source()
+    aaan_application["admin"]["editor"] = USER
+    aaan_application["bibjson"]["title"] = "Application Assed Accept/Reject Notify"
+    aaan_application["id"] = "application_assed_acceptreject_notify"
+    aaan_application["admin"]["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
+
+    event = Event(constants.EVENT_APPLICATION_STATUS, context={
+        "application": aaan_application,
+        "new_status": constants.APPLICATION_STATUS_ACCEPTED
+    })
+    aaan = ApplicationAssedAcceptRejectNotify()
+    aaan.consume(event)
+
 ##############################################
 ## ApplicationAssedAssignedNotify
 if "application:assed:assigned:notify" in NOTIFICATIONS:
@@ -87,13 +107,38 @@ if "application:assed:inprogress:notify" in NOTIFICATIONS:
     aain.consume(event)
 
 ##############################################
+## ApplicationEditorAcceptRejectNotify
+if "application:editor:acceptreject:notify" in NOTIFICATIONS:
+    def editor_group_mock_pull(*args, **kwargs):
+        return EditorGroup(**{
+            "editor": USER
+        })
+
+    eg_pull = EditorGroup.pull_by_key
+    EditorGroup.pull_by_key = editor_group_mock_pull
+
+    aaan_application = ApplicationFixtureFactory.make_application_source()
+    aaan_application["admin"]["editor"] = USER
+    aaan_application["bibjson"]["title"] = "Application Editor Accept/Reject Notify"
+    aaan_application["id"] = "application_editor_acceptreject_notify"
+    aaan_application["admin"]["application_status"] = constants.APPLICATION_STATUS_REJECTED
+
+    event = Event(constants.EVENT_APPLICATION_STATUS, context={
+        "application": aaan_application,
+        "new_status": constants.APPLICATION_STATUS_REJECTED
+    })
+    aaan = ApplicationEditorAcceptRejectNotify()
+    aaan.consume(event)
+
+    EditorGroup.pull_by_key = eg_pull
+
+##############################################
 ## ApplicationEditorCompletedNotify
 if "application:editor:completed:notify" in NOTIFICATIONS:
     def editor_group_mock_pull(editor_group_id):
         return EditorGroup(**{
             "editor": USER
         })
-
 
     eg_pull = EditorGroup.pull
     EditorGroup.pull = editor_group_mock_pull
@@ -317,6 +362,31 @@ if "journal:editor_group:assigned:notify" in NOTIFICATIONS:
         "journal": journal
     })
     aegan = journal_editor_group_assigned_notify.JournalEditorGroupAssignedNotify()
+    aegan.consume(event)
+
+    EditorGroup.pull_by_key = eg_pull
+
+##############################################
+## UpdateRequestManedEditorGroupAssignedNotify
+if "application:editor_group:assigned:notify" in NOTIFICATIONS:
+    def editor_group_mock_pull(key, value):
+        return EditorGroup(**{
+            "maned": USER
+        })
+
+
+    eg_pull = EditorGroup.pull_by_key
+    EditorGroup.pull_by_key = editor_group_mock_pull
+
+    aegan_application = ApplicationFixtureFactory.make_application_source()
+    aegan_application["admin"]["application_type"] = constants.APPLICATION_TYPE_UPDATE_REQUEST
+    aegan_application["bibjson"]["title"] = "Application ManEd Editor Group Assigned Notify"
+    aegan_application["id"] = "application_maned_editor_group_assigned_notify"
+
+    event = Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={
+        "application": aegan_application
+    })
+    aegan = UpdateRequestManedEditorGroupAssignedNotify()
     aegan.consume(event)
 
     EditorGroup.pull_by_key = eg_pull
