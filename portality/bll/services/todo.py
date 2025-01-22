@@ -735,13 +735,6 @@ class TodoQuery(object):
             }
         }
 
-    @classmethod
-    def flags_without_deadline(cls):
-        return {
-            "exists": {
-                "field": "index.most_urgent_flag_deadline"
-            }
-        }
 
 class GroupStatsQuery():
     """
