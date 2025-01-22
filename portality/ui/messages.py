@@ -137,6 +137,8 @@ class Messages(object):
 
     PRESERVATION_NO_FILE = "No file provided for upload"
 
+    FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username}; Original note: {note}"
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):

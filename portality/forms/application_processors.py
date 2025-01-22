@@ -217,7 +217,7 @@ class ApplicationProcessor(FormProcessor):
                     except AttributeError:
                         # Skip if we don't have a current_user
                         note['author_id'] = None
-                    new_note_text = "This flag was resolved on " + dates.today() + " by: " + note['author_id'] + "; Original note: " + note['note']
+                    new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(date=dates.today(), username=note['author_id'], note=note['note'])
                     note['note'] = new_note_text
                     note["flag"] = {} # clear any flag data
         print("after transform flag to note: ", self.target.notes)
