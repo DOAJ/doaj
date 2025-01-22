@@ -546,18 +546,6 @@ class TodoRules(object):
         return constants.TODO_ASSOCIATE_ALL_APPLICATIONS, all, sort_field, -1
 
     @classmethod
-    def flagged_to_me(cls, acc_id, size):
-        sort_field = "created_date"
-        all = TodoQuery(
-            musts=[
-                TodoQuery.flagged_to_me(acc_id)
-            ],
-            sort=sort_field,
-            size=size
-        )
-        return constants.TODO_FLAGGED, all, sort_field, -1
-
-    @classmethod
     def urgent_flags(cls, acc_id, size):
         sort_field = "most_urgent_flag_deadline"
         all = TodoQuery(
