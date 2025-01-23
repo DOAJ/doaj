@@ -124,7 +124,7 @@ When something changes, you must keep your journal records in DOAJ up to date.
 - When the URLs of your journal change
 - When you change the fees/APCs
 - When journal information or policies change
-- When your journal is included in a digital archive, starts using DOIs, or has an entry in Sherpa/RoMEO
+- When your journal is included in a digital archive, starts using DOIs, or has registered a deposit policy for authors in a deposit policy registry
 
 If a member of the DOAJ Team has sent you a CSV file, we ask that you complete it as quickly as possible. Full details are available on our [Metadata Help](/docs/faq/) page.
 
