@@ -62,12 +62,6 @@ Kylie is one of the small, dedicated team at [African Journals Online](https://w
 
 She holds an MA and PhD in History from Rhodes University, specialising in the social history of health in South African contexts.
 
-### Matt Hodgkinson
-
-Matt is a publishing and research integrity consultant based in Cambridge, UK. He volunteers as the co-chair of the membership subcommittee of the [Committee on Publication Ethics](https://publicationethics.org/) (COPE) and Treasurer of the [European Association of Science Editors](https://ease.org.uk/) (EASE). 
-
-He has worked at three Open Access journal publishers: as a professional scientific editor at both BioMed Central (BMC) and the Public Library of Science (PLOS), then as Head of Research Integrity and Head of Editorial Policy and Ethics at Hindawi. He was also a Research Integrity Manager at the UK Research Integrity Office (UKRIO).
-
 ### Paulin Ribbe
 
 Paulin holds a Master's degree in digital publishing from [ENSSIB](https://www.enssib.fr/) (French National Library and Information Science School, Lyon, France). He has worked as a project manager for European projects in various research infrastructures in social sciences: Huma-Num, OPERAS (OpenEdition).
