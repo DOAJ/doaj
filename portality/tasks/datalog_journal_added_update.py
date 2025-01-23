@@ -78,7 +78,7 @@ def to_datalog_journal_added(journal: Journal) -> DatalogJournalAdded:
 def get_fetch_datalog_date(n_days=30):
     record = find_last_datalog()
     if record is None:
-        return datetime.datetime(2014, 3, 19)
+        return datetime.datetime(2024, 2, 1)
     else:
         d = dates.parse(record.date_added)
         # subtract n days to avoid missing records
