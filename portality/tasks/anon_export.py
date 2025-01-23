@@ -3,7 +3,7 @@ import gzip
 import os
 import shutil
 import uuid
-from typing import Callable, NoReturn
+from typing import Callable
 
 from portality import models, dao
 from portality.background import BackgroundTask
@@ -111,7 +111,7 @@ def _copy_on_complete(path, logger_fn, tmpStore, mainStore, container):
 
 
 def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, batch_size=100000,
-                    logger_fn: Callable[[str], NoReturn] = None):
+                    logger_fn: Callable[[str], None] = None):
     if logger_fn is None:
         logger_fn = print
     if clean:
