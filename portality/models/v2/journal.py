@@ -215,6 +215,12 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def last_manual_update_timestamp(self):
         return self.__seamless__.get_single("last_manual_update", coerce=coerce.to_datestamp())
 
+    @property
+    def most_urgent_flag_deadline_timestamp(self):
+        fn = coerce.to_datestamp()
+        return fn(self.most_urgent_flag_deadline)
+        # return self.__seamless__.get_single("most_urgent_flag_deadline", coerce=coerce.to_datestamp())
+
     def has_been_manually_updated(self):
         lmut = self.last_manual_update_timestamp
         if lmut is None:

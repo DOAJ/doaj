@@ -191,8 +191,13 @@ class TodoService(object):
         for aid, q, sort, boost in queries:
             applications = models.Application.object_query(q=q.query())
             for ap in applications:
+                sort_map = {
+                    "last_manual_update": ap.last_manual_update_timestamp,
+                    "created_date": ap.date_applied_timestamp,
+                    "most_urgent_flag_deadline": ap.most_urgent_flag_deadline_timestamp
+                }
                 todos.append({
-                    "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
+                    "date": sort_map.get(sort, ap.date_applied_timestamp),
                     "date_type": sort,
                     "action_id": [aid],
                     "title": ap.bibjson().title,
@@ -556,7 +561,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_URGENT_FLAGS, all, sort_field, -1
+        return constants.TODO_URGENT_FLAGS, all, sort_field, 1
 
     @classmethod
     def regular_flags(cls, acc_id, size):
@@ -571,7 +576,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_REGULAR_FLAGS, all, sort_field, -1
+        return constants.TODO_REGULAR_FLAGS, all, sort_field, 0
 
 
 class TodoQuery(object):
@@ -584,16 +589,23 @@ class TodoQuery(object):
     # NOTE that admin.date_applied and created_date should be the same for applications, but for some reason this is not always the case
     # therefore, we take a created_date sort to mean a date_applied sort
     cd_sort = {"admin.date_applied": {"order": "asc"}}
+    flag_sort = {"index.most_urgent_flag_deadline": {"order": "asc"}}
+
+    sort_map = {
+        "last_manual_update": lmu_sort,
+        "created_date": cd_sort,
+        "most_urgent_flag_deadline": flag_sort
+    }
 
     def __init__(self, musts=None, must_nots=None, ors=None, sort="last_manual_update", size=10):
         self._musts = [] if musts is None else musts
         self._must_nots = [] if must_nots is None else must_nots
         self._ors = [] if ors is None else ors
-        self._sort = sort
+        self._sort = self.sort_map.get(sort, self.cd_sort)
         self._size = size
 
     def query(self):
-        sort = self.lmu_sort if self._sort == "last_manual_update" else self.cd_sort
+        print(self._sort)
         q = {
             "query": {
                 "bool": {
@@ -602,7 +614,7 @@ class TodoQuery(object):
                 }
             },
             "sort": [
-                sort
+                self._sort
             ],
             "size": self._size
         }
@@ -707,7 +719,6 @@ class TodoQuery(object):
         return {
             "range": {
                 "index.most_urgent_flag_deadline": {
-                    "gte": "now",
                     "lte": "now+7d/d"
                 }
             }

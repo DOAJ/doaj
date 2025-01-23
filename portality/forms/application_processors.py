@@ -208,19 +208,17 @@ class ApplicationProcessor(FormProcessor):
                         pass
 
     def _transform_resolved_flags_to_notes(self):
-        print("before transform flag to note: ", self.target.notes)
         if self.target.notes:
             for note in self.target.notes:
                 if note.get("flag") and note.get("flag").get("resolved") == "true":
                     try:
-                        note['author_id'] = current_user.id
+                        resolver = current_user.id
                     except AttributeError:
                         # Skip if we don't have a current_user
-                        note['author_id'] = None
-                    new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(date=dates.today(), username=note['author_id'], note=note['note'])
+                        resolver = None
+                    new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(date=dates.today(), username=resolver, note=note['note'])
                     note['note'] = new_note_text
                     note["flag"] = {} # clear any flag data
-        print("after transform flag to note: ", self.target.notes)
 
 class NewApplication(ApplicationProcessor):
     """
@@ -360,6 +358,7 @@ class AdminApplication(ApplicationProcessor):
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
 
         # if we are allowed to finalise, kick this up to the superclass
+        # here I can do something before the crosswalk is called - to do, move the resovled note conversion here
         super(AdminApplication, self).finalise()
 
         # instance of the events service to pick up any events we need to send
