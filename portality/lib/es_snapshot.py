@@ -85,7 +85,7 @@ class ESSnapshotsClient(object):
 
         # If the client doesn't have the snapshots, ask ES for them
         if not self.snapshots:
-            resp = self.conn.snapshot.get(self.repo, '_all', master_timeout='600s')
+            resp = self.conn.snapshot.get(self.repo, '_all', master_timeout='600s', request_timeout=60)
 
             if 'snapshots' in resp:
                 try:
