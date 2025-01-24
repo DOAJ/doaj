@@ -28,6 +28,7 @@ NMSP = "http://www.sitemaps.org/schemas/sitemap/0.9"
 MAX_FILE_SIZE = (49 * 1024 * 1024)
 MAX_URL_COUNT = 49000
 
+
 class SitemapGenerator:
 
     def __init__(self, filename_prefix, temp_store, main_store, container_id):
@@ -86,9 +87,11 @@ class SitemapGenerator:
     def get_sitemap_files(self):
         return self.sitemap_files
 
+
 class SiteService(object):
 
-    def sitemap(self, prune: bool = True):
+    @staticmethod
+    def sitemap(prune: bool = True):
         """
         Generate the sitemap
         ~~Sitemap:Feature~~
@@ -108,7 +111,6 @@ class SiteService(object):
 
         filename_prefix = 'sitemap_doaj_' + run_start_time
         cache_container_id = app.config.get("STORE_CACHE_CONTAINER")
-        container_id = os.path.join(cache_container_id,filename_prefix)
 
         total_static_pages = 0
         total_journals_count = 0
@@ -119,11 +121,11 @@ class SiteService(object):
         mainStore = StoreFactory.get("cache")
 
         # temporary directory
-        tmp_store_dir = tmpStore.path(container_id, '', create_container=True)
+        tmp_store_dir = tmpStore.path(cache_container_id, '', create_container=True)
         # Create the directories if they don't exist
         os.makedirs(tmp_store_dir, exist_ok=True)
 
-        sitemap_generator = SitemapGenerator(filename_prefix, tmp_store_dir, mainStore, container_id)
+        sitemap_generator = SitemapGenerator(filename_prefix, tmp_store_dir, mainStore, cache_container_id)
 
         # Generating URLs for static pages
         _entries = nav.get_nav_entries()
@@ -133,7 +135,7 @@ class SiteService(object):
         _urls = set(_urls)
         _urls = sorted(_urls)
 
-        #static pages
+        # static pages
         for u in _urls:
             sitemap_generator.add_url(u)
             total_static_pages += 1
@@ -183,9 +185,8 @@ class SiteService(object):
                     break
                 sitemap_count += 1
 
-
-        mainStore.store(container_id, sitemap_index_filename, source_path=sitemap_index_path)
-        index_url = mainStore.url(container_id, sitemap_index_filename)
+        mainStore.store(cache_container_id, sitemap_index_filename, source_path=sitemap_index_path)
+        index_url = mainStore.url(cache_container_id, sitemap_index_filename)
 
         action_register.append("Sitemap index written to store with url {x}".format(x=index_url))
 
@@ -200,7 +201,6 @@ class SiteService(object):
                     if (match := re.match(rx, filename))
                 ]
                 return [x for x, _ in sorted(matched_dates, key=lambda x: x[1], reverse=True)]
-
 
             def _filter(filename):
                 return filename.startswith("sitemap_")

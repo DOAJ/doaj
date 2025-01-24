@@ -57,7 +57,7 @@ class Cache(DomainObject):
     @classmethod
     def cache_sitemap(cls, url):
         cobj = cls(**{
-            "filename" : url
+            "filename": url
         })
         cobj.set_id("sitemap")
         cobj.save()
