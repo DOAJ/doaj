@@ -22,7 +22,7 @@ class RequestESBackupBackgroundTask(BackgroundTask):
             resp, success = client.request_snapshot()
             if success:
                 job = self.background_job
-                job.add_audit_message("ElasticSearch backup requested. Response: " + resp)
+                job.add_audit_message("ElasticSearch backup requested. Response: " + str(resp))
             else:
                 raise Exception("Exception {0} received from snapshots plugin.".format(resp))
 
