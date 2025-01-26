@@ -8,6 +8,10 @@
 - name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
+  
+- name: AIP Publishing
+  url: https://publishing.aip.org/
+  logo: AIP.svg
 
 - name: AOSIS
   url: https://aosis.co.za/
@@ -160,6 +164,10 @@
 - name: Springer Nature Ltd
   url: https://www.springernature.com/gp
   logo: SN_stack_logo.png
+
+- name: Sobiad
+  url: https://atif.sobiad.com/
+  logo: logo.png  
 
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
