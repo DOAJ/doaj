@@ -72,7 +72,7 @@ class ESSnapshotsClient(object):
         :return: Tuple of the result as text & True / False for success / fail
         """
         try:
-            resp = self.conn.snapshot.delete(self.repo, snapshot.name, master_timeout='600s')
+            resp = self.conn.snapshot.delete(self.repo, snapshot.name, master_timeout='600s', request_timeout=90)
         except ElasticsearchException as e:
             return str(e), False
         return resp, resp['acknowledged']
