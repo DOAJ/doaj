@@ -8,7 +8,7 @@ featuremap: ~~Seal:Fragment~~
 
 ---
 
-We will retire the Seal at the end of March 2025. Find out more: [[English](https://blog.doaj.org/2025/01/08/results-of-our-community-consultation-forthcoming-changes-to-our-metadata-part-ii/)]  [[Spanish](https://blog.doaj.org/2025/01/17/resultados-de-nuestra-consulta-comunitaria-retiro-del-sello-cambios-en-nuestros-metadatos-parte-ii/)]
+**We will retire the Seal at the end of March 2025.** Find out more: [[English](https://blog.doaj.org/2025/01/08/results-of-our-community-consultation-forthcoming-changes-to-our-metadata-part-ii/)]  [[Spanish](https://blog.doaj.org/2025/01/17/resultados-de-nuestra-consulta-comunitaria-retiro-del-sello-cambios-en-nuestros-metadatos-parte-ii/)]
 
 There are seven criteria which a journal must meet to be eligible for the DOAJ Seal. These relate to best practices in long-term preservation, use of persistent identifiers, discoverability, reuse policies and authors' rights.
 
