@@ -337,7 +337,13 @@ $.extend(true, doaj, {
             var from = params.from;
             var to = params.to;
             var field = params.field;
-            var display = (new Date(parseInt(from))).getUTCFullYear();
+            var frdisplay = (new Date(parseInt(from))).getUTCFullYear();
+            let todisplay = (new Date(parseInt(to - 1))).getUTCFullYear();
+
+            let display = frdisplay;
+            if (frdisplay !== todisplay) {
+                display = frdisplay + " to " + todisplay;
+            }
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
@@ -346,9 +352,16 @@ $.extend(true, doaj, {
             var to = params.to;
             var field = params.field;
 
-            let d = new Date(parseInt(from))
-            let display = d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
-            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+            let df = new Date(parseInt(from))
+            let frdisplay = df.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(df.getUTCMonth() + 1);
+
+            let dt = new Date(parseInt(to - 1))
+            let todisplay = dt.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(dt.getUTCMonth() + 1);
+
+            if (frdisplay !== todisplay) {
+                return {to: to, toType: "lt", from: from, fromType: "gte", display: frdisplay + " to " + todisplay}
+            }
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: frdisplay}
         },
 
         schemaCodeToNameClosure : function(tree) {
@@ -456,6 +469,159 @@ $.extend(true, doaj, {
                     showCounts: false
                 })
             })
+        },
+
+        newDateHistogramSelector : function(params) {
+            if (!params) { params = {} }
+            doaj.components.DateHistogramSelector.prototype = edges.newSelector(params);
+            return new doaj.components.DateHistogramSelector(params);
+        },
+        DateHistogramSelector : function(params) {
+            // "year, quarter, month, week, day, hour, minute ,second"
+            // period to use for date histogram
+            this.interval = params.interval || "year";
+
+            this.sortFunction = edges.getParam(params.sortFunction, false);
+
+            this.displayFormatter = edges.getParam(params.displayFormatter, false);
+
+            this.active = edges.getParam(params.active, true);
+
+            //////////////////////////////////////////////
+            // values to be rendered
+
+            this.values = [];
+            this.filters = [];
+
+            this.contrib = function(query) {
+                query.addAggregation(
+                    es.newDateHistogramAggregation({
+                        name: this.id,
+                        field: this.field,
+                        interval: this.interval
+                    })
+                );
+            };
+
+            this.synchronise = function() {
+                // reset the state of the internal variables
+                this.values = [];
+                this.filters = [];
+
+                if (this.edge.result) {
+                    var buckets = this.edge.result.buckets(this.id);
+                    for (var i = 0; i < buckets.length; i++) {
+                        var bucket = buckets[i];
+                        var key = bucket.key;
+                        if (this.displayFormatter) {
+                            key = this.displayFormatter(key);
+                        }
+                        var obj = {"display" : key, "gte": bucket.key, "count" : bucket.doc_count};
+                        if (i < buckets.length - 1) {
+                            obj["lt"] = buckets[i+1].key;
+                        }
+                        this.values.push(obj);
+                    }
+                }
+
+                if (this.sortFunction) {
+                    this.values = this.sortFunction(this.values);
+                }
+
+                // now check to see if there are any range filters set on this field
+                // this works in a very specific way: if there is a filter on this field, and it
+                // starts from the date of a filter in the result list, then we make they assumption
+                // that they are a match.  This is because a date histogram either has all the results
+                // or only one date bin, if that date range has been selected.  And once a range is selected
+                // there will be no "lt" date field to compare the top of the range to.  So, this is the best
+                // we can do, and it means that if you have both a date histogram and another range selector
+                // for the same field, they may confuse eachother.
+                if (this.edge.currentQuery) {
+                    var filters = this.edge.currentQuery.listMust(es.newRangeFilter({field: this.field}));
+                    for (var i = 0; i < filters.length; i++) {
+                        var from = filters[i].gte;
+                        for (var j = 0; j < this.values.length; j++) {
+                            var val = this.values[j];
+                            if (val.gte.toString() === from) {
+                                this.filters.push(val);
+                            }
+                        }
+                    }
+                }
+            };
+
+            this.selectRange = function(params) {
+                var from = params.gte;
+                var to = params.lt;
+
+                var nq = this.edge.cloneQuery();
+
+
+                var params = {field: this.field};
+
+                // remove any existing range filters on this field
+                nq.removeMust(es.newRangeFilter(params));
+
+                // create the new range query
+                if (from) {
+                    params["gte"] = from;
+                }
+                if (to) {
+                    params["lt"] = to;
+                }
+                params["format"] = "epoch_millis"   // Required for ES7.x date ranges against dateOptionalTime formats
+                nq.addMust(es.newRangeFilter(params));
+
+                // reset the search page to the start and then trigger the next query
+                nq.from = 0;
+                this.edge.pushQuery(nq);
+                this.edge.doQuery();
+            };
+
+            this.removeFilter = function(params) {
+                var from = params.gte;
+                var to = params.lt;
+
+                var nq = this.edge.cloneQuery();
+
+                // just add a new range filter (the query builder will ensure there are no duplicates)
+                var params = {field: this.field};
+                if (from) {
+                    params["gte"] = from;
+                }
+                if (to) {
+                    params["lt"] = to;
+                }
+                nq.removeMust(es.newRangeFilter(params));
+
+                // reset the search page to the start and then trigger the next query
+                nq.from = 0;
+                this.edge.pushQuery(nq);
+                this.edge.doQuery();
+            };
+
+            this.clearFilters = function(params) {
+                var triggerQuery = edges.getParam(params.triggerQuery, true);
+
+                var nq = this.edge.cloneQuery();
+                var qargs = {field: this.field};
+                nq.removeMust(es.newRangeFilter(qargs));
+                this.edge.pushQuery(nq);
+
+                if (triggerQuery) {
+                    this.edge.doQuery();
+                }
+            };
+
+            this.setInterval = function(params) {
+                let interval = edges.getParam(params.interval, "year");
+                this.interval = interval;
+                let q = this.edge.cloneQuery();
+                q.removeAggregation(this.id);
+                this.contrib(q);
+                this.edge.pushQuery(q);
+                this.edge.cycle();
+            }
         }
     },
 
@@ -670,7 +836,10 @@ $.extend(true, doaj, {
                     var short = true;
                     for (var i = 0; i < ts.values.length; i++) {
                         var val = ts.values[i];
-                        if ($.inArray(val.display, filterTerms) === -1) {
+                        if (val.count === 0 && this.hideEmptyDateBin) {
+                            continue;
+                        }
+                        //if ($.inArray(val.display, filterTerms) === -1) {
                             var myLongClass = "";
                             var styles = "";
                             if (this.shortDisplay && this.shortDisplay <= i) {
@@ -690,7 +859,7 @@ $.extend(true, doaj, {
                             results += '<div class="' + resultClass + ' ' + myLongClass + '" '  + styles +  '><a href="#" class="' + valClass + '" data-gte="' + edges.escapeHtml(val.gte) + '"' + ltData + '>' +
                                 edges.escapeHtml(val.display) + "</a> (" + count + ")</div>";
 
-                        }
+                        //}
                     }
                     if (!short) {
                         var showClass = edges.css_classes(namespace, "show-link", this);
@@ -731,13 +900,31 @@ $.extend(true, doaj, {
                 if (ts.values && ts.values.length > 0) {
                     for (let i = 0; i < ts.values.length; i++) {
                         let val = ts.values[i];
-                        from += `<option value="${edges.escapeHtml(val.gte)}">${edges.escapeHtml(val.display)}</option>`;
-                        to += `<option value="${edges.escapeHtml(val.lt)}">${edges.escapeHtml(val.display)}</option>`;
+                        if (val.count === 0 && this.hideEmptyDateBin) {
+                            continue;
+                        }
+                        let toSelected = i === 0 ? "selected" : "";
+                        let fromSelected = i === ts.values.length - 1 ? "selected" : "";
+                        from += `<option value="${edges.escapeHtml(val.gte)}" ${fromSelected}>${edges.escapeHtml(val.display)}</option>`;
+                        to += `<option value="${edges.escapeHtml(val.lt)}" ${toSelected}>${edges.escapeHtml(val.display)}</option>`;
                     }
                 }
 
-                let controls = `<select name="from">${from}</select> to <select name="to">${to}</select>
-                                        by <select name="interval"><option value="year">Year</option><option value="month">Month</option></select>`;
+                let fromClass = edges.css_classes(namespace, "from", this);
+                let toClass = edges.css_classes(namespace, "to", this);
+                let intervalClass = edges.css_classes(namespace, "interval", this);
+                let resetClass = edges.css_classes(namespace, "reset", this);
+
+                let yearSelected = this.component.interval === "year" ? "selected" : "";
+                let monthSelected = this.component.interval === "month" ? "selected" : "";
+
+                let controls = `from <select name="from" class="${fromClass}">${from}</select><br> 
+                                        to <select name="to" class="${toClass}">${to}</select><br>
+                                        <button type="button" class="${resetClass}">Reset</button><br>
+                                        by <select name="interval" class="${intervalClass}">
+                                            <option value="year" ${yearSelected}>Year</option>
+                                            <option value="month" ${monthSelected}>Month</option>
+                                        </select>`;
 
                 // render the overall facet
                 var frag = `<div class=${facetClass}>
@@ -768,6 +955,10 @@ $.extend(true, doaj, {
                 var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
                 var tooltipSelector = edges.css_id_selector(namespace, "tooltip-toggle", this);
                 var shortLongToggleSelector = edges.css_id_selector(namespace, "sl-toggle", this);
+                let fromSelector = edges.css_class_selector(namespace, "from", this);
+                let toSelector = edges.css_class_selector(namespace, "to", this);
+                let intervalSelector = edges.css_class_selector(namespace, "interval", this);
+                let resetSelector = edges.css_class_selector(namespace, "reset", this);
 
                 // for when a value in the facet is selected
                 edges.on(valueSelector, "click", this, "termSelected");
@@ -775,10 +966,11 @@ $.extend(true, doaj, {
                 edges.on(toggleSelector, "click", this, "toggleOpen");
                 // for when a filter remove button is clicked
                 edges.on(filterRemoveSelector, "click", this, "removeFilter");
-                // toggle the full tooltip
-                edges.on(tooltipSelector, "click", this, "toggleTooltip");
-                // toggle show/hide full list
-                edges.on(shortLongToggleSelector, "click", this, "toggleShortLong");
+
+                edges.on(intervalSelector, "change", this, "intervalChanged");
+                edges.on(fromSelector, "change", this, "rangeChanged");
+                edges.on(toSelector, "change", this, "rangeChanged");
+                edges.on(resetSelector, "click", this, "removeFilter");
             };
 
             /////////////////////////////////////////////////////
@@ -825,56 +1017,20 @@ $.extend(true, doaj, {
                 this.setUIOpen();
             };
 
-            this.toggleTooltip = function(element) {
-                var tooltipSpanSelector = edges.css_id_selector(this.namespace, "tooltip-span", this);
-                var container = this.component.jq(tooltipSpanSelector).parent();
-                var tt = "";
-                if (this.tooltipState === "closed") {
-                    tt = this._longTooltip();
-                    this.tooltipState = "open";
-                } else {
-                    tt = this._shortTooltip();
-                    this.tooltipState = "closed";
-                }
-                container.html(tt);
-                var tooltipSelector = edges.css_id_selector(this.namespace, "tooltip-toggle", this);
-                // refresh the event binding
-                edges.on(tooltipSelector, "click", this, "toggleTooltip");
-            };
+            this.intervalChanged = function(element) {
+                let interval = $(element).val();
+                this.component.setInterval({interval: interval});
+            }
 
-            this.toggleShortLong = function(element) {
-                var longSelector = edges.css_class_selector(this.namespace, "long", this);
-                var showSelector = edges.css_id_selector(this.namespace, "show-link", this);
-                var container = this.component.jq(longSelector);
-                var show = this.component.jq(showSelector);
+            this.rangeChanged = function(element) {
+                let fromSelector = edges.css_class_selector(this.namespace, "from", this);
+                let toSelector = edges.css_class_selector(this.namespace, "to", this);
 
-                container.slideToggle(200);
-                show.find(".all").toggle();
-                show.find(".less").toggle();
-            };
+                let from = this.component.jq(fromSelector).val();
+                let to = this.component.jq(toSelector).val();
 
-            //////////////////////////////////////////////////////////
-            // some useful reusable components
-
-            this._shortTooltip = function() {
-                var tt = this.tooltipText;
-                var tooltipLinkId = edges.css_id(this.namespace, "tooltip-toggle", this);
-                var tooltipSpan = edges.css_id(this.namespace, "tooltip-span", this);
-                if (this.tooltip) {
-                    var tooltipLinkClass = edges.css_classes(this.namespace, "tooltip-link", this);
-                    tt = '<span id="' + tooltipSpan + '"><a id="' + tooltipLinkId + '" class="' + tooltipLinkClass + '" href="#">' + tt + '</a></span>'
-                }
-                return tt;
-            };
-
-            this._longTooltip = function() {
-                var tt = this.tooltip;
-                var tooltipLinkId = edges.css_id(this.namespace, "tooltip-toggle", this);
-                var tooltipLinkClass = edges.css_classes(this.namespace, "tooltip-link", this);
-                var tooltipSpan = edges.css_id(this.namespace, "tooltip-span", this);
-                tt = '<span id="' + tooltipSpan + '">' + this.tooltip + ' <a id="' + tooltipLinkId + '" class="' + tooltipLinkClass + '" href="#">less</a></span>';
-                return tt;
-            };
+                this.component.selectRange({gte: from, lt: to});
+            }
         },
 
         newSearchingNotificationRenderer: function (params) {
