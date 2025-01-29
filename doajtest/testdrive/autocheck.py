@@ -25,17 +25,19 @@ class Autocheck(TestDrive):
         ##
         ## - Print ISSN registered at ISSN.org
         ## - Electronic ISSN not registered at ISSN.org
-        ## - 3 preservation services:
+        ## - 5 preservation services:
         ##    - CLOCKSS - currently archived
         ##    - LOCKSS - not currently archived
         ##    - PMC - not registered
+        ##     - PKP PN - no info
+        ##     - national_library - BL
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
         ap.remove_current_journal()
         ap.remove_related_journal()
         apbj = ap.bibjson()
-        apbj.set_preservation(["CLOCKSS", "LOCKSS", "PMC", "PKP PN"], "http://policy.example.com")
+        apbj.set_preservation(["LOCKSS", "Internet Archive", "PKP PN", "PMC", ["a national library", "BL"]], "http://policy.example.com")
         ap.set_id(ap.makeid())
         ap.save()
 
@@ -62,6 +64,13 @@ class Autocheck(TestDrive):
                     "holdingArchive": {
                         "@id": "http://issn.org/organization/keepers#lockss"
                     },
+                    "temporalCoverage": "2022/" + str(thisyear)
+                },
+                {
+                    "@type": "ArchiveComponent",
+                    "holdingArchive": {
+                        "@id": "http://issn.org/organization/keepers#internetarchive"
+                    },
                     "temporalCoverage": "2019/2020"
                 }
             ]
@@ -83,6 +92,13 @@ class Autocheck(TestDrive):
                     "@type": "ArchiveComponent",
                     "holdingArchive": {
                         "@id": "http://issn.org/organization/keepers#lockss"
+                    },
+                    "temporalCoverage": "2022/" + str(thisyear)
+                },
+                {
+                    "@type": "ArchiveComponent",
+                    "holdingArchive": {
+                        "@id": "http://issn.org/organization/keepers#internetarchive"
                     },
                     "temporalCoverage": "2019/2020"
                 }
@@ -114,15 +130,20 @@ class Autocheck(TestDrive):
         ##
         ## - Print ISSN registered at ISSN.org
         ## - Electronic ISSN not found
-        ## - 3 preservation services:
+        ## - 5 preservation services:
         ##    - CLOCKSS - currently archived
         ##    - LOCKSS - not currently archived
         ##    - PMC - not registered
+        ##     - PKP PN - no info
+        ##     - national_library - BL
 
         source = JournalFixtureFactory.make_journal_source()
         j = models.Journal(**source)
         j.remove_current_application()
         j.set_id(ap.makeid())
+        jbj = j.bibjson()
+        jbj.set_preservation(["LOCKSS", "Internet Archive", "PKP PN", "PMC", ["a national library", "BL"]],
+                              "http://policy.example.com")
         j.save()
 
         bj = j.bibjson()

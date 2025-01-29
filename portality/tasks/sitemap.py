@@ -3,7 +3,7 @@ from portality.background import BackgroundTask, BackgroundApi, BackgroundExcept
 from portality.bll.doaj import DOAJ
 from portality.core import app
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import scheduled_long_queue as queue
 
 
 class SitemapBackgroundTask(BackgroundTask):
@@ -61,10 +61,10 @@ class SitemapBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        generate_sitemap.schedule(args=(background_job.id,), delay=10)
+        generate_sitemap.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = SitemapBackgroundTask.create_huey_helper(main_queue)
+huey_helper = SitemapBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

@@ -9,29 +9,33 @@
 # ~~Promo:Data~~
 
 - title: Provisional ISSNs versus confirmed ISSNs
-  summary: "At DOAJ, the ISSN for your journal must be fully registered _and_ confirmed at the time you submit an application to us. DOAJ does not allow provisional ISSNs."
-  url: https://blog.doaj.org/2020/04/21/provisional-issns-versus-confirmed-issns/
+  summary: "The ISSN for your journal must be fully registered and confirmed before you apply to us. DOAJ does not allow provisional ISSNs."
+  url: /apply/guide/#issn
 
 - title: Support open infrastructure
-  summary: "DOAJ is an important piece of infrastructure that benefits from sustainable funding. By choosing a sustaining contribution, we are able to commit to long-term growth and development of the platform."
+  summary: "DOAJ is an important piece of infrastructure that benefits from sustainable funding. By funding us with one of our recommended contribution amounts, you enable DOAJ's long-term growth and development."
   url: /support/
 
 - title: Understanding copyright and licensing
-  summary: "Copyright declares who owns the rights to the website’s content and its published academic content. Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content."
+  summary: "Copyright declares who owns the rights to published academic content. Licensing describes the terms under which the journal's readers can use or re-use the copyrighted content."
   url: /apply/guide/#licensing
 
 - title: Plagiarism checking
-  summary: "Using a plagiarism checking service is recommended for your journal, but it is not required for inclusion in DOAJ."
+  summary: "Using a plagiarism checking service is recommended for your journal, but it's not required for inclusion in DOAJ."
   url: /apply/guide/#quality-control-process
 
 - title: Our definition of open access
-  summary: "At DOAJ, we believe that for Open Access to work effectively, user rights, via licensing, and copyright ownership need to be clear."
+  summary: "For Open Access to work effectively, user rights via licensing and copyright ownership need to be clear."
   url: /apply/guide/#the-type-of-open-access
 
-- title: A journal doesn't need the Seal to be indexed
-  summary: "We have a basic set of criteria which need to be fulfilled for a journal to be indexed. Seal criteria are optional."
-  url: /apply/guide/#basic-criteria-for-inclusion
+- title: Publishers, you can update your journals
+  summary: "You don't need to contact us or to submit a new application. Log in to your account and click the 'Update' button next to a journal."
+  url: /apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date
 
-- title: Publishers can update their journals
-  summary: "You don't need to contact us or to submit a new application. Just log in to your account and click the 'Update' button next to a journal."
-  url: /apply/guide/#updating-your-journal-record
+- title: DOAJ's metadata is distributed throughout the scholarly research ecosystem 
+  summary: "Uploading article metadata to DOAJ means it is automatically picked up by different metadata aggregators and discovery services and your article metadata appears in libraries around the world."
+  url: /docs/faq/#uploading-article-metadata
+
+- title: DOAJ is the most diverse and inclusive directory of open access journals in the world 
+  summary: "DOAJ indexes more open access journals, regardless of language, country and subject matter, than many commercial, closed databases. For example, DOAJ is vital for visibility of African open access journals."
+  url: https://blog.doaj.org/2023/07/06/doaj-is-confirmed-as-a-unique-platform-for-many-open-access-journals-and-a-key-index-for-african-journals/

@@ -1,6 +1,5 @@
 import json
 from copy import deepcopy
-from datetime import datetime
 
 from flask_login import current_user
 
@@ -8,8 +7,7 @@ from portality import models, lock
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 from portality.bll import DOAJ
 from portality.core import app
-from portality.lib import dates
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 from portality.ui.messages import Messages
 
 
@@ -32,7 +30,8 @@ def journal_bulk_delete_manage(selection_query, dry_run=True):
     job_id = None
     if job is not None:
         job_id = job.id
-    return BackgroundSummary(job_id, affected={"journals" : estimates["journals-to-be-deleted"], "articles" : estimates["articles-to-be-deleted"]})
+    return BackgroundSummary(job_id, affected={"journals": estimates["journals-to-be-deleted"], "articles": estimates["articles-to-be-deleted"]})
+
 
 # ~~JournalBulkDelete:Task~~
 class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
@@ -151,10 +150,10 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         :return:
         """
         background_job.save(blocking=True)
-        journal_bulk_delete.schedule(args=(background_job.id,), delay=10)
+        journal_bulk_delete.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)
