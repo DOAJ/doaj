@@ -733,8 +733,10 @@ $.extend(true, doaj, {
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
 
-                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
-                edges.on(toggleSelector, "click", this, "toggleOpen");
+                if (this.togglable) {
+                    var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                    edges.on(toggleSelector, "click", this, "toggleOpen");
+                }
 
                 var searchSelector = edges.css_id_selector(namespace, "search", this);
                 edges.on(searchSelector, "keyup", this, "filterSubjects");
@@ -891,6 +893,11 @@ $.extend(true, doaj, {
             }
 
             this._findRenderedElement = function(st, value) {
+                let label = this.component.jq("label[for='" + value + "']");
+                if (label.length > 0) {
+                    return label[0];
+                }
+
                 // Step 1: Find HTML element with id=lastClickedEl
                 const element = document.getElementById(value);
 
@@ -916,7 +923,11 @@ $.extend(true, doaj, {
                 var st = this.component.syncTree;
                 var elemToScroll = this._findRenderedElement(st, this.lastClickedEl);
                 if (elemToScroll) {
-                    browser.scrollTop = elemToScroll.offsetTop - browser.offsetTop - this.viewWindowScrollOffset;
+                    elemToScroll.scrollIntoView();
+                    if (browser.clientHeight > 0) {
+                        browser.scrollBy(0, -1 * browser.clientHeight / 2);
+                    }
+                    // browser.scrollTop = elemToScroll.offsetTop - browser.offsetTop - this.viewWindowScrollOffset;
                 }
             }
 

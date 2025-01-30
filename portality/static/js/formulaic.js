@@ -867,6 +867,8 @@ var formulaic = {
 
             this.ns = "formulaic-subjecttree";
 
+            this.nestedEdge = false;
+
             this.init = function () {
 
                 var tree = doaj.af.lccTree;
@@ -935,11 +937,12 @@ var formulaic = {
                     renderer: doaj.renderers.newSubjectBrowserRenderer({
                         title: "Subjects",
                         open: true,
-                        showCounts: false
+                        showCounts: false,
+                        togglable: false
                     })
                 });
 
-                var e = edges.newEdge({
+                this.nestedEdge = edges.newEdge({
                     selector: containerSelector,
                     manageUrl: false,
                     components: [
