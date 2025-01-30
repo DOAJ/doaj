@@ -1897,6 +1897,7 @@ class FieldDefinitions:
             "tagentry"  # ~~-> TagEntry:FormWidget~~
         ],
         "help": {
+            "short_help": "Enter the ISSN(s) of the previous title(s) of this journal.",
             "render_error_box": False
         }
     }
@@ -1919,6 +1920,7 @@ class FieldDefinitions:
             }
         ],
         "help": {
+            "short_help": "Enter the ISSN(s) of the later title(s) that continue this publication.",
             "render_error_box": False
         },
         "widgets": [

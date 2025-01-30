@@ -959,8 +959,8 @@ class DomainObject(UserDict, object):
         return cls.q2obj(size=size, **kwargs)
 
     @classmethod
-    def count(cls):
-        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type())
+    def count(cls, query=None):
+        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type(), body=query)
         return res.get("count")
         # return requests.get(cls.target() + '_count').json()['count']
 
