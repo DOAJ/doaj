@@ -8,7 +8,7 @@ featuremap: ~~About:Fragment~~
 
 ---
 
-Our Editorial Policy Advisory Board assists the editorial team in matters of publishing policies and practices. Members of the Board are chosen from trusted organisations working in scholarly publishing.
+Our Editorial Policy Advisory Board assists the editorial team with publishing policies and practices. Members of the Board are chosen from trusted organisations working in scholarly publishing.
 
 The Board helps us ensure that DOAJ criteria are effective for the widest range of publishers across the globe.
 
@@ -32,9 +32,15 @@ Budianto is a senior lecturer in the Faculty of Education and Vocational Studies
 
 He serves on the editorial boards of several SINTA-accredited journals in Indonesia and is a reviewer for numerous international scientific journals.
 
+### Esther Jackson
+
+Esther is the Scholarly Communications Technology Librarian at Columbia University Libraries, where she primarily works with the repository ([Academic Commons](https://academiccommons.columbia.edu/)) and supports the Digital Publishing Program which includes [journals](https://journals.library.columbia.edu/) and [podcasts](https://podcasts.library.columbia.edu/). She holds a BA and a BSci from the University of Toronto (Celtic Studies, East Asian Studies, Art History) and an MLS from SUNY Buffalo.
+
+In addition to her work with researchers, code, and metadata, she is an active member of the Wikiverse, including serving as a committee member of the [Wikimedia Foundation’s Regional Fund for North America](https://meta.wikimedia.org/wiki/Grants:Regions/North_America). She serves as a member of [DataCite](https://datacite.org/)'s Services and Technologies Steering Group, on [OpenRefine](https://openrefine.org/)'s Advisory Committee, and is a member of the [Library Freedom Project](https://libraryfreedom.org/).
+
 ### José Florencio Fabella Lapeña, Jr.
 
-Joey is a retired Professor of Otolaryngology at U.P. College of Medicine, former Vice Chancellor at the University of the Philippines Manila and Attending Otolaryngologist at the Philippine General Hospital. He has special interests in pediatric cleft and aero-digestive surgery, medical education, mentoring, writing and peer review. He is Secretary of the [World Association of Medical Editors](https://wame.org/), Past President of the Asia-Pacific Association of Medical Journal Editors, and Charter President of the [Philippine Association of Medical Journal Editors](https://www.philippinemedicalassociation.org/). 
+Joey is a retired Professor of Otolaryngology at U.P. College of Medicine, former Vice Chancellor at the University of the Philippines Manila and Attending Otolaryngologist at the Philippine General Hospital. He has a special interest in pediatric cleft and aero-digestive surgery, medical education, mentoring, writing, and peer review. He is Vice President of the [World Association of Medical Editors](https://wame.org/), Past President of the Asia-Pacific Association of Medical Journal Editors, and Charter President of the [Philippine Association of Medical Journal Editors](https://www.philippinemedicalassociation.org/). 
 
 He is Editor-in-Chief of the *[Philippine Journal of Otolaryngology Head and Neck Surgery](https://doaj.org/toc/1908-4889)*, and chairs the Philippine National Journal Selection Committee for the Western Pacific Region Index Medicus of the World Health Organization.
 
@@ -55,12 +61,6 @@ He led the translation of the following educational materials into Japanese: [Co
 Kylie is one of the small, dedicated team at [African Journals Online](https://www.ajol.info/index.php/ajol), a South Africa-based NPO dedicated to quality African-published scholarly journals, where she handles JPPS assessments of new applicant journals. 
 
 She holds an MA and PhD in History from Rhodes University, specialising in the social history of health in South African contexts.
-
-### Matt Hodgkinson
-
-Matt is a publishing and research integrity consultant based in Cambridge, UK. He volunteers as the co-chair of the membership subcommittee of the [Committee on Publication Ethics](https://publicationethics.org/) (COPE) and Treasurer of the [European Association of Science Editors](https://ease.org.uk/) (EASE). 
-
-He has worked at three Open Access journal publishers: as a professional scientific editor at both BioMed Central (BMC) and the Public Library of Science (PLOS), then as Head of Research Integrity and Head of Editorial Policy and Ethics at Hindawi. He was also a Research Integrity Manager at the UK Research Integrity Office (UKRIO).
 
 ### Paulin Ribbe
 

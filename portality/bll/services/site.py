@@ -88,7 +88,8 @@ class SitemapGenerator:
 
 class SiteService(object):
 
-    def sitemap(self, prune: bool = True):
+    @staticmethod
+    def sitemap(prune: bool = True):
         """
         Generate the sitemap
         ~~Sitemap:Feature~~
@@ -132,7 +133,7 @@ class SiteService(object):
         _urls = set(_urls)
         _urls = sorted(_urls)
 
-        #static pages
+        # static pages
         for u in _urls:
             sitemap_generator.add_url(u)
             total_static_pages += 1
@@ -199,7 +200,6 @@ class SiteService(object):
                     if (match := re.match(rx, filename))
                 ]
                 return [x for x, _ in sorted(matched_dates, key=lambda x: x[1], reverse=True)]
-
 
             def _filter(filename):
                 return filename.startswith("sitemap_")

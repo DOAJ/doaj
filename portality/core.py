@@ -1,6 +1,7 @@
 import os
 import threading
 import yaml
+import json
 
 from flask import Flask
 from flask_login import LoginManager
@@ -179,7 +180,7 @@ def create_es_connection(app):
 
     conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'],
                                        verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True),
-                                       request_timeout=app.config.get('ELASTICSEARCH_REQ_TIMEOUT', 15))
+                                       timeout=app.config.get('ELASTICSEARCH_REQ_TIMEOUT', 15))
 
     return conn
 
@@ -285,6 +286,12 @@ def setup_jinja(app):
         print(text)
         return ''
     app.jinja_env.filters['debug']=jinja_debug
+
+    # a jinja filter that parses a string to json
+    def parse_json(value):
+        return json.loads(value) if isinstance(value, str) else value
+
+    app.jinja_env.filters['parse_json'] = parse_json
 
 
 def _load_data(app):
