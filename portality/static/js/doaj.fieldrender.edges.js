@@ -3757,7 +3757,7 @@ $.extend(true, doaj, {
             }
         },
         deadline: function(val, resultobj, renderer) {
-            if (resultobj.index.most_urgent_flag_deadline !== "9999-12-31") {
+            if ((typeof resultobj.index.most_urgent_flag_deadline != 'undefined' ) && resultobj.index.most_urgent_flag_deadline !== "9999-12-31") {
                 return "<strong>Flag's deadline: </strong>" + resultobj.index.most_urgent_flag_deadline;
             }
         },
