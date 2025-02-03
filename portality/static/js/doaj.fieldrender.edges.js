@@ -3720,14 +3720,6 @@ $.extend(true, doaj, {
         titleField : function (val, resultobj, renderer) {
             let field = '<div class="flex-space-between"><h3 class="type-01 font-serif">';
             let display = '';
-            if (resultobj.index.is_flagged) {
-                if (resultobj.index.flag_assignees.includes(doaj.session.currentUserId)) {
-                    display += doaj.fieldRender.fragment.fullFlagHTML;
-                }
-                else {
-                    display += doaj.fieldRender.fragment.emptyFlagHTML;
-                }
-            }
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
                     display += edges.escapeHtml(resultobj.bibjson.title);
@@ -3740,8 +3732,17 @@ $.extend(true, doaj, {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 field += "</h3>";
-                if (resultobj.admin && resultobj.admin.seal) {
-                    field += '<div><a href="/apply/seal" target="_blank">\
+                if (resultobj.index.is_flagged || (resultobj.admin && resultobj.admin.seal)) {
+                    field += '<div class="badges flex-start">'
+                    if (resultobj.index.is_flagged) {
+                        if (resultobj.index.flag_assignees.includes(doaj.session.currentUserId)) {
+                            field += doaj.fieldRender.fragment.fullFlagHTML;
+                        } else {
+                            field += doaj.fieldRender.fragment.emptyFlagHTML;
+                        }
+                    }
+                    if (resultobj.admin && resultobj.admin.seal) {
+                        field += '<div><a href="/apply/seal" target="_blank">\
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1rem; width: auto; margin-left: .5em;">\
                               <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
                               <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
@@ -3750,6 +3751,8 @@ $.extend(true, doaj, {
                               </svg>\
                             <span class="sr-only">DOAJ Seal</span>\
                           </a></div>';
+                    }
+                    field += "</div>"
                 }
                 return field + "</div>";
             } else {
