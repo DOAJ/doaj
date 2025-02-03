@@ -34,12 +34,6 @@
         {% else %}
             <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=oh">On Hold</a></span>
         {% endif %}
-
-        {%  if request.values.get("filter") == "flag" %}
-            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=flag" class="flex-start">{% include "includes/_flagged--flag--white.html" %}Flagged to Me</a></span>
-        {% else %}
-            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=flag" class="flex-start">{% include "includes/_flagged_to_me--flag.html" %}Flagged to Me</a></span>
-        {% endif %}
     </div>
 
     {% include "management/includes/_todo.html" %}
