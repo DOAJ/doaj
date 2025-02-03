@@ -4,6 +4,14 @@
 
 ## All editors
 ed:
+- name: Andista Candra Yusro
+  area: Social Sciences
+  year_since:
+  city: Madiun
+  country: Indonesia
+  language: Indonesian, English
+  photo: "Andista.jpg"
+  
 - name: Christine Davidian
   area: Technology
   year_since:
@@ -18,6 +26,14 @@ ed:
   country: Australia
   language: Chinese, English
   featured: true
+
+- name: Handoko
+  area: Humanities, Social Sciences
+  year_since:
+  city: Padang
+  country: Indonesia
+  language: Bahasa Indonesian, English
+  photo: "handoko.jpg"
   
 - name: Jiayi Xu
   area: Academic Publishing
@@ -118,6 +134,14 @@ ass_ed:
   country: Poland
   language: Polish, English
   photo: "AleksandraZawadzka.jpg"
+
+- name: Alifia Taati Ikhvan
+  area: Literature
+  year_since:
+  city: Padang
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "Alifia.HEIC"
   
 - name: Ana Melisa Fernandes
   area: Bird behavior and ecology
@@ -142,14 +166,6 @@ ass_ed:
   country: Iran
   language: Persian (Farsi), English
   photo: "Amir Reza Asnafi.jpg"
-  
-- name: Andista Candra Yusro
-  area: Social Sciences
-  year_since:
-  city: Madiun
-  country: Indonesia
-  language: Indonesian, English
-  photo: "Andista.jpg"
 
 - name: Andrea Imre
   area: Library Science, Music
@@ -179,6 +195,7 @@ ass_ed:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
+  photo: "ARBAIN.jpg"
   
 - name: Azhar Aziz Lubis
   area: Social Sciences
@@ -202,7 +219,8 @@ ass_ed:
   city: Bandung
   country: Indonesia
   language: Indonesian, English
-
+  photo: "Busro_Kemeja Resmi.JPG"
+  
 - name: Carlos Alegre
   area: Social Sciences
   year_since:
@@ -305,7 +323,8 @@ ass_ed:
   city: Jakarta
   country: Indonesia
   language: Indonesian, English
-
+  photo: "Dwi saptura.jpeg"
+  
 - name: Eko Pramudya Laksana
   area: Social Sciences
   year_since:
@@ -342,14 +361,6 @@ ass_ed:
   city: Rabat
   country: Morocco
   language: Arab, French, English
-
-- name: Handoko
-  area: Humanities, Social Sciences
-  year_since:
-  city: Padang
-  country: Indonesia
-  language: Indonesian, English
-  photo: "handoko.jpg"
 
 - name: Ina Smith
   area: Scholarly Publishing, Instructional Design
@@ -603,6 +614,14 @@ ass_ed:
   language: Spanish, English
   photo: "MilagroCastro.jpg"
 
+- name: Mohammad Rizki Fadhil Pratama
+  area: Medicine, Chemistry
+  year_since:
+  city: Palangka Raya
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "Mohammad Rizkif.png"
+  
 - name: Muhamad Taufik Hidayat
   area: Humanities, Social Sciences
   year_since:
