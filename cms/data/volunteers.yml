@@ -791,13 +791,6 @@ ass_ed:
   country: Mali
   language: French
   photo: "sogoba1.jpg"
-
-- name: Sudarmin
-  area: Science
-  year_since:
-  city:
-  country: Indonesia
-  language: Indonesian, English
   
 - name: Susana Costa
   area: Library and Information Sciences
@@ -806,13 +799,6 @@ ass_ed:
   country: Portugal
   language: Portuguese, English
   photo: "Costa.jpeg"
-
-- name: Swasti Maharani
-  area: Mathematics
-  year_since:
-  city: Jawa Timur
-  country: Indonesia
-  language: Indonesian, English
 
 - name: Utiya Hikmah
   area: Material Physics
