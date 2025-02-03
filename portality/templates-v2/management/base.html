@@ -192,7 +192,7 @@
     {% include "_tourist/includes/_tourist.html" %}
 
     <script>
-        var historical_count = {{ historical_count }};
+        var historical_count = {{ historical_count | default(0) }};
         var motivational_banners = {{ data.motivational_banners | tojson }};
         var current_user = {
             "id": "{{ current_user['id'] }}",
