@@ -67,3 +67,8 @@ She holds an MA and PhD in History from Rhodes University, specialising in the s
 Paulin holds a Master's degree in digital publishing from [ENSSIB](https://www.enssib.fr/) (French National Library and Information Science School, Lyon, France). He has worked as a project manager for European projects in various research infrastructures in social sciences: Huma-Num, OPERAS (OpenEdition).
 
 He currently works at [Sciences Po Lyon](https://www.sciencespo-lyon.fr/) as an Open Science Officer and as a project manager for [Mir@bel](https://reseau-mirabel.info/), a website and community aiming to facilitate access to online journals. He participates in various projects, including major French publishing platforms and agencies working together to increase the visibility of French scientific journals.
+
+### Stacey Burke
+
+Stacey Burke is Publications Director - Open Access Transformation, Digital & Marketing Engagement at the American Physiological Society and has participated in the scholarly publishing community for nearly 20 years. She has held leadership roles at a diverse group of organizations, including Springer Nature, American Society for Microbiology, Special Libraries Association and AAAS/Science and currently serves on the board of the Society Publishers’ Coalition (SocPC), which represents over 100 non-profit publishing societies all united in efforts to see an orderly and sustainable transition to open scholarship. In addition to leading marketing initiatives, she engages extensively with research, library, and publishing communities, including exploring pathways to Open Access publishing.
+ 
