@@ -267,15 +267,7 @@ ass_ed:
   city: Bengkulu
   country: Indonesia
   language: Indonesian, English
-  photo: "Danner..png"
-  
-- name: Daria Chrześcijańska
-  area: Computer Science, Social Sciences
-  year_since:
-  city: Toruń
-  country: Poland
-  language: Polish, English
-  photo: "daria.jpg" 
+  photo: "Danner..png" 
 
 - name: Dawam M. Rohmatulloh
   area: Social Sciences, Humanities
@@ -331,6 +323,7 @@ ass_ed:
   city: Malang
   country: Indonesia
   language: Indonesian, English
+  photo: "Laksana.jpg"
   
 - name: Emrah Kaya
   area: Social Sciences, Humanities
