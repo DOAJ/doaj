@@ -41,7 +41,15 @@ ed:
   city: Chongqing
   country: China
   language: Chinese, English
-  
+
+- name: Khayala Hajiyeva
+  area: Library and Information Sciences
+  year_since:
+  city: Baku
+  country: Azerbaijan
+  language: Turkish, English, Russian
+  photo: 
+
 - name: Lut Tamam
   area: Medicine
   year_since:
