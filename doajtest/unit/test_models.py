@@ -1288,7 +1288,7 @@ class TestModels(DoajTestCase):
 
         models.Provenance.make(acc, "act2", obj2, "sub")
 
-        time.sleep(1)
+        time.sleep(2)
 
         prov = models.Provenance.get_latest_by_resource_id("obj2")
         assert prov.type == "suggestion"
@@ -1782,8 +1782,15 @@ class TestModels(DoajTestCase):
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
 
+    def test_43_add_remove_apc_bibjson(self):
+        bj = models.JournalLikeBibJSON()
+        bj.add_apc("GBP", 100)
+        assert bj.has_apc is True
+        assert bj.apc == [{"currency": "GBP", "price": 100}]
 
-
+        bj.has_apc = False
+        assert bj.has_apc is False
+        assert bj.apc == []
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

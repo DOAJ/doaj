@@ -87,86 +87,87 @@ class TestEditorAppReview(DoajTestCase):
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("editor")
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc) as ctx:
+            #ctx = self._make_and_push_test_context(acc=acc)
 
-        APPLICATION_SOURCE = make_application_source()
+            APPLICATION_SOURCE = make_application_source()
 
-        # we start by constructing it from source
-        formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
-        assert isinstance(fc, EditorApplication)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is None
-        # assert fc.template is not None
+            # we start by constructing it from source
+            formulaic_context = ApplicationFormFactory.context("editor")
+            fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
+            assert isinstance(fc, EditorApplication)
+            assert fc.form is not None
+            assert fc.source is not None
+            assert fc.form_data is None
+            # assert fc.template is not None
 
-        # TODO: we are no longer testing the render here - should we move this?
-        """
-        # check that we can render the form
-        # FIXME: we can't easily render the template - need to look into Flask-Testing for this
-        # html = fc.render_template(edit_suggestion=True)
-        html = fc.render_field_group("editorial") # we know all these disabled fields are in the editorial section
-        assert html is not None
-        assert html != ""
+            # TODO: we are no longer testing the render here - should we move this?
+            """
+            # check that we can render the form
+            # FIXME: we can't easily render the template - need to look into Flask-Testing for this
+            # html = fc.render_template(edit_suggestion=True)
+            html = fc.render_field_group("editorial") # we know all these disabled fields are in the editorial section
+            assert html is not None
+            assert html != ""
+    
+            # check that the fields that should be disabled are disabled
+            # "editor_group"
+            rx_template = '(<input [^>]*?disabled[^>]+?name="{field}"[^>]*?>)'
+            eg_rx = rx_template.replace("{field}", "editor_group")
+    
+            assert re.search(eg_rx, html)
+            """
 
-        # check that the fields that should be disabled are disabled
-        # "editor_group"
-        rx_template = '(<input [^>]*?disabled[^>]+?name="{field}"[^>]*?>)'
-        eg_rx = rx_template.replace("{field}", "editor_group")
+            # now construct it from form data (with a known source)
+            formulaic_context = ApplicationFormFactory.context("editor")
+            fc = formulaic_context.processor(formdata=MultiDict(make_application_form()),
+                                             source=models.Application(**APPLICATION_SOURCE))
 
-        assert re.search(eg_rx, html)
-        """
+            assert isinstance(fc, EditorApplication)
+            assert fc.form is not None
+            assert fc.source is not None
+            assert fc.form_data is not None
 
-        # now construct it from form data (with a known source)
-        formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(formdata=MultiDict(make_application_form()),
-                                         source=models.Application(**APPLICATION_SOURCE))
+            # test each of the workflow components individually ...
 
-        assert isinstance(fc, EditorApplication)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is not None
+            # pre-validate and ensure that the disabled fields get re-set
+            fc.pre_validate()
+            assert fc.form.editor_group.data == "editorgroup"
 
-        # test each of the workflow components individually ...
+            # run the validation itself
+            fc.form.subject.choices = mock_lcc_choices  # set the choices allowed for the subject manually (part of the test)
+            assert fc.validate(), fc.form.errors
 
-        # pre-validate and ensure that the disabled fields get re-set
-        fc.pre_validate()
-        assert fc.form.editor_group.data == "editorgroup"
+            # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
+            fc.form2target()
+            assert fc.target is not None
 
-        # run the validation itself
-        fc.form.subject.choices = mock_lcc_choices  # set the choices allowed for the subject manually (part of the test)
-        assert fc.validate(), fc.form.errors
+            # patch the target with data from the source
+            fc.patch_target()
+            assert fc.target.created_date == "2000-01-01T00:00:00Z"
+            assert fc.target.id == "abcdefghijk"
+            assert len(fc.target.notes) == 2
+            assert fc.target.owner == "publisher"
+            assert fc.target.editor_group == "editorgroup"
+            assert fc.target.editor == "associate"
+            assert fc.target.application_status == constants.APPLICATION_STATUS_PENDING, fc.target.application_status  # is updated by the form
+            assert fc.target.bibjson().replaces == ["1111-1111"]
+            assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
+            assert fc.target.bibjson().discontinued_date == "2001-01-01"
+            assert fc.target.bibjson().labels == ["s2o"]
+            assert fc.target.current_journal == "123456789987654321"
+            assert fc.target.related_journal == "987654321123456789"
 
-        # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
-        fc.form2target()
-        assert fc.target is not None
+            # now do finalise (which will also re-run all of the steps above)
+            fc.finalise()
 
-        # patch the target with data from the source
-        fc.patch_target()
-        assert fc.target.created_date == "2000-01-01T00:00:00Z"
-        assert fc.target.id == "abcdefghijk"
-        assert len(fc.target.notes) == 2
-        assert fc.target.owner == "publisher"
-        assert fc.target.editor_group == "editorgroup"
-        assert fc.target.editor == "associate"
-        assert fc.target.application_status == constants.APPLICATION_STATUS_PENDING, fc.target.application_status  # is updated by the form
-        assert fc.target.bibjson().replaces == ["1111-1111"]
-        assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
-        assert fc.target.bibjson().discontinued_date == "2001-01-01"
-        assert fc.target.bibjson().labels == ["s2o"]
-        assert fc.target.current_journal == "123456789987654321"
-        assert fc.target.related_journal == "987654321123456789"
+            time.sleep(1.5)
 
-        # now do finalise (which will also re-run all of the steps above)
-        fc.finalise()
+            # now check that a provenance record was recorded
+            prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
+            assert prov is not None
 
-        time.sleep(1.5)
-
-        # now check that a provenance record was recorded
-        prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
-        assert prov is not None
-
-        ctx.pop()
+            #ctx.pop()
 
     def test_02_classification_required(self):
         # Check we can mark an application 'ready' with a subject classification present
@@ -203,36 +204,37 @@ class TestEditorAppReview(DoajTestCase):
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("editor")
-        ctx = self._make_and_push_test_context(acc=acc)
-        APPLICATION_SOURCE = make_application_source()
+        with self._make_and_push_test_context_manager(acc=acc) as ctx:
+            #ctx = self._make_and_push_test_context(acc=acc)
+            APPLICATION_SOURCE = make_application_source()
 
-        eg = models.EditorGroup()
-        eg.set_name(APPLICATION_SOURCE["admin"]["editor_group"])
-        eg.set_editor("contextuser")
-        eg.save()
+            eg = models.EditorGroup()
+            eg.set_name(APPLICATION_SOURCE["admin"]["editor_group"])
+            eg.set_editor("contextuser")
+            eg.save()
 
-        time.sleep(1.5)
+            time.sleep(1.5)
 
-        # construct a context from a form submission
-        source = deepcopy(make_application_form())
-        source["application_status"] = constants.APPLICATION_STATUS_READY
-        fd = MultiDict(source)
-        formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(formdata=fd,
-                                         source=models.Application(**APPLICATION_SOURCE))
-        fc.finalise()
-        time.sleep(1.5)
+            # construct a context from a form submission
+            source = deepcopy(make_application_form())
+            source["application_status"] = constants.APPLICATION_STATUS_READY
+            fd = MultiDict(source)
+            formulaic_context = ApplicationFormFactory.context("editor")
+            fc = formulaic_context.processor(formdata=fd,
+                                             source=models.Application(**APPLICATION_SOURCE))
+            fc.finalise()
+            time.sleep(1.5)
 
-        # now check that a provenance record was recorded
-        count = 0
-        for prov in models.Provenance.iterall():
-            if prov.action == "edit":
-                count += 1
-            if prov.action == "status:ready":
-                count += 10
-        assert count == 11
+            # now check that a provenance record was recorded
+            count = 0
+            for prov in models.Provenance.iterall():
+                if prov.action == "edit":
+                    count += 1
+                if prov.action == "status:ready":
+                    count += 10
+            assert count == 11
 
-        ctx.pop()
+            #ctx.pop()
 
     def test_04_editor_review_disallowed_statuses(self):
         """ Check that editors can't access applications beyond their review process """
@@ -240,66 +242,67 @@ class TestEditorAppReview(DoajTestCase):
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("editor")
-        ctx = self._make_and_push_test_context(acc=acc)
-        APPLICATION_SOURCE = make_application_source()
-        APPLICATION_FORM = make_application_form()
+        with self._make_and_push_test_context_manager(acc=acc) as ctx:
+            #ctx = self._make_and_push_test_context(acc=acc)
+            APPLICATION_SOURCE = make_application_source()
+            APPLICATION_FORM = make_application_form()
 
-        # Check that an accepted application can't be regressed by an editor
-        accepted_source = APPLICATION_SOURCE.copy()
-        accepted_source['admin']['application_status'] = constants.APPLICATION_STATUS_ACCEPTED
+            # Check that an accepted application can't be regressed by an editor
+            accepted_source = APPLICATION_SOURCE.copy()
+            accepted_source['admin']['application_status'] = constants.APPLICATION_STATUS_ACCEPTED
 
-        ready_form = APPLICATION_FORM.copy()
-        ready_form['application_status'] = constants.APPLICATION_STATUS_READY
+            ready_form = APPLICATION_FORM.copy()
+            ready_form['application_status'] = constants.APPLICATION_STATUS_READY
 
-        # Construct the formcontext from form data (with a known source)
-        formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(formdata=MultiDict(ready_form),
-                                         source=models.Application(**accepted_source))
+            # Construct the formcontext from form data (with a known source)
+            formulaic_context = ApplicationFormFactory.context("editor")
+            fc = formulaic_context.processor(formdata=MultiDict(ready_form),
+                                             source=models.Application(**accepted_source))
 
-        assert isinstance(fc, EditorApplication)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is not None
+            assert isinstance(fc, EditorApplication)
+            assert fc.form is not None
+            assert fc.source is not None
+            assert fc.form_data is not None
 
-        # Finalise the form processor. This should raise an exception because the application has already been accepted.
-        self.assertRaises(Exception, fc.finalise)
+            # Finalise the form processor. This should raise an exception because the application has already been accepted.
+            self.assertRaises(Exception, fc.finalise)
 
-        # Check that an application status can't be edited by editors when on hold,
-        # since this status must have been set by a managing editor.
-        held_source = APPLICATION_SOURCE.copy()
-        held_source['admin']['application_status'] = constants.APPLICATION_STATUS_ON_HOLD
+            # Check that an application status can't be edited by editors when on hold,
+            # since this status must have been set by a managing editor.
+            held_source = APPLICATION_SOURCE.copy()
+            held_source['admin']['application_status'] = constants.APPLICATION_STATUS_ON_HOLD
 
-        progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
+            progressing_form = APPLICATION_FORM.copy()
+            progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
-        # Construct the formulaic context from form data (with a known source)
-        formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(formdata=MultiDict(progressing_form),
-                                         source=models.Application(**held_source))
+            # Construct the formulaic context from form data (with a known source)
+            formulaic_context = ApplicationFormFactory.context("editor")
+            fc = formulaic_context.processor(formdata=MultiDict(progressing_form),
+                                             source=models.Application(**held_source))
 
-        assert isinstance(fc, EditorApplication)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is not None
+            assert isinstance(fc, EditorApplication)
+            assert fc.form is not None
+            assert fc.source is not None
+            assert fc.form_data is not None
 
-        # Finalise the formcontext. This should raise an exception because the application status is out of bounds.
-        self.assertRaises(Exception, fc.finalise)
+            # Finalise the formcontext. This should raise an exception because the application status is out of bounds.
+            self.assertRaises(Exception, fc.finalise)
 
-        # Check that an application status can't be brought backwards in the review process
-        pending_source = APPLICATION_SOURCE.copy()
+            # Check that an application status can't be brought backwards in the review process
+            pending_source = APPLICATION_SOURCE.copy()
 
-        progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
+            progressing_form = APPLICATION_FORM.copy()
+            progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
-        # Construct the formcontext from form data (with a known source)
-        formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(formdata=MultiDict(progressing_form),
-                                         source=models.Application(**pending_source))
+            # Construct the formcontext from form data (with a known source)
+            formulaic_context = ApplicationFormFactory.context("editor")
+            fc = formulaic_context.processor(formdata=MultiDict(progressing_form),
+                                             source=models.Application(**pending_source))
 
-        # Finalise the formcontext. This should raise an exception because the application status can't go backwards.
-        self.assertRaises(Exception, fc.finalise)
+            # Finalise the formcontext. This should raise an exception because the application status can't go backwards.
+            self.assertRaises(Exception, fc.finalise)
 
-        ctx.pop()
+            #ctx.pop()
 
     def test_05_editor_revert_to_in_progress(self):
         """ Check that editors are permitted to revert applications from 'completed' to 'in progress' """
@@ -307,36 +310,37 @@ class TestEditorAppReview(DoajTestCase):
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("editor")
-        ctx = self._make_and_push_test_context(acc=acc)
+        with self._make_and_push_test_context_manager(acc=acc) as ctx:
+            #ctx = self._make_and_push_test_context(acc=acc)
 
-        # There should be an associate editor to receive an email when the status is changed
-        associate_account = models.Account(**AccountFixtureFactory.make_assed1_source())
-        associate_account.save(blocking=True)
+            # There should be an associate editor to receive an email when the status is changed
+            associate_account = models.Account(**AccountFixtureFactory.make_assed1_source())
+            associate_account.save(blocking=True)
 
-        # Check that an editor can change from 'completed' to 'in progress' after a failed review
-        completed_source = make_application_source().copy()
-        completed_source['admin']['application_status'] = constants.APPLICATION_STATUS_COMPLETED
+            # Check that an editor can change from 'completed' to 'in progress' after a failed review
+            completed_source = make_application_source().copy()
+            completed_source['admin']['application_status'] = constants.APPLICATION_STATUS_COMPLETED
 
-        in_progress_form = make_application_form().copy()
-        in_progress_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
+            in_progress_form = make_application_form().copy()
+            in_progress_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
-        # Construct the formcontext from form data (with a known source)
-        formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(formdata=MultiDict(in_progress_form),
-                                         source=models.Application(**completed_source))
+            # Construct the formcontext from form data (with a known source)
+            formulaic_context = ApplicationFormFactory.context("editor")
+            fc = formulaic_context.processor(formdata=MultiDict(in_progress_form),
+                                             source=models.Application(**completed_source))
 
-        assert isinstance(fc, EditorApplication)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is not None
+            assert isinstance(fc, EditorApplication)
+            assert fc.form is not None
+            assert fc.source is not None
+            assert fc.form_data is not None
 
-        # Finalise the formcontext. This should raise an exception because the application has already been accepted.
-        fc.finalise()
+            # Finalise the formcontext. This should raise an exception because the application has already been accepted.
+            fc.finalise()
 
-        time.sleep(1.5)
+            time.sleep(1.5)
 
-        # now check that a provenance record was recorded
-        prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
-        assert prov is not None
+            # now check that a provenance record was recorded
+            prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
+            assert prov is not None
 
-        ctx.pop()
+            #ctx.pop()

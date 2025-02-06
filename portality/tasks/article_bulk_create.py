@@ -9,7 +9,7 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality.lib import dataobj
 from portality.models.uploads import BulkArticles
 from portality.tasks.helpers import background_helper, articles_upload_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 
 
 def get_upload_dir_path() -> Path:
@@ -78,7 +78,7 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
         background_helper.submit_by_background_job(background_job, article_bulk_create)
 
 
-huey_helper = ArticleBulkCreateBackgroundTask.create_huey_helper(main_queue)
+huey_helper = ArticleBulkCreateBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)

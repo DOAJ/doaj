@@ -124,7 +124,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Here is an example of a suitable Open Access "
                           "statement that meets our criteria: <blockquote>This"
-                          " is an open access journal which means that all "
+                          " is an open access journal, which means that all "
                           "content is freely available without charge to the "
                           "user or his/her institution. Users are allowed to "
                           "read, download, copy, distribute, print, search, or"
@@ -1346,7 +1346,7 @@ class FieldDefinitions:
              "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": "Other", "value": "other",
              "subfields": ["preservation_service_other", "preservation_service_url"]},
-            {"display": "<em>The journal content isn’t archived with a long-term preservation service</em>",
+            {"display": HTMLString("<em>The journal content isn’t archived with a long-term preservation service</em>"),
              "value": "none", "exclusive": True}
         ],
         "help": {
@@ -1481,18 +1481,17 @@ class FieldDefinitions:
             {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
-            {"display": "<em>The journal has no repository policy</em>", "value": "none", "exclusive": True}
+            {"display": HTMLString("<em>The journal has no repository policy</em>"), "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
                           "of their choice. What is the journal’s policy for this?",
-                          "You should state your policy with regard to the different versions of the paper:"
+                          "You should state your policy about the different versions of the paper:"
                           "<ul style='list-style-type: none;'>"
                           "<li>Submitted version</li>"
                           "<li>Accepted version (Author Accepted Manuscript)</li>"
                           "<li>Published version (Version of Record)</li>"
-                          "</ul>",
-                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author’s choice without embargo."
+                          "</ul>"
                           ]},
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
@@ -1595,7 +1594,7 @@ class FieldDefinitions:
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
             {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]},
-            {"display": "<em>The journal does not use persistent article identifiers</em>", "value": "none",
+            {"display": HTMLString("<em>The journal does not use persistent article identifiers</em>"), "value": "none",
              "exclusive": True}
         ],
         "help": {
@@ -1908,6 +1907,7 @@ class FieldDefinitions:
             "tagentry"  # ~~-> TagEntry:FormWidget~~
         ],
         "help": {
+            "short_help": "Enter the ISSN(s) of the previous title(s) of this journal.",
             "render_error_box": False
         }
     }
@@ -1930,6 +1930,7 @@ class FieldDefinitions:
             }
         ],
         "help": {
+            "short_help": "Enter the ISSN(s) of the later title(s) that continue this publication.",
             "render_error_box": False
         },
         "widgets": [
@@ -3242,7 +3243,8 @@ class ListWidgetWithSubfields(object):
             if self.prefix_label:
                 html.append('<li tabindex=0>%s %s' % (subfield.label, subfield(**kwargs)))
             else:
-                html.append('<li tabindex=0>%s %s' % (subfield(**kwargs), subfield.label))
+                label = str(subfield.label)
+                html.append('<li tabindex=0>%s %s' % (subfield(**kwargs), label))
 
             html.append("</li>")
 

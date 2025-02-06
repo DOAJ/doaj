@@ -49,20 +49,20 @@ class TestAccountCreatedEmail(DoajTestCase):
         assert not AccountCreatedEmail.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
+        with self._make_and_push_test_context_manager("/"):
 
-        source = AccountFixtureFactory.make_publisher_source()
-        acc = models.Account(**source)
-        acc.clear_password()
-        reset_token = uuid.uuid4().hex
-        acc.set_reset_token(reset_token, 86400)
+            source = AccountFixtureFactory.make_publisher_source()
+            acc = models.Account(**source)
+            acc.clear_password()
+            reset_token = uuid.uuid4().hex
+            acc.set_reset_token(reset_token, 86400)
 
-        event = models.Event(constants.EVENT_ACCOUNT_CREATED, context={"account": acc.data})
+            event = models.Event(constants.EVENT_ACCOUNT_CREATED, context={"account": acc.data})
 
-        AccountCreatedEmail.consume(event)
+            AccountCreatedEmail.consume(event)
 
-        # Use the captured info stream to get email send logs
-        info_stream_contents = self.info_stream.getvalue()
+            # Use the captured info stream to get email send logs
+            info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email sent:
         #   * to the applicant, informing them the application was received

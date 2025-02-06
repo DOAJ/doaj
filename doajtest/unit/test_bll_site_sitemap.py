@@ -1,3 +1,4 @@
+import os.path
 from io import StringIO
 
 from combinatrix.testintegration import load_parameter_sets
@@ -5,7 +6,7 @@ from lxml import etree
 from parameterized import parameterized
 
 from doajtest import helpers
-from doajtest.fixtures import JournalFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_config
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from doajtest.mocks.store import StoreMockFactory
@@ -67,6 +68,10 @@ class TestBLLSitemap(DoajTestCase):
             }
         ]
 
+        self.base_url = app.config.get("BASE_URL")
+        if not self.base_url.endswith("/"):
+            self.base_url += "/"
+
     def tearDown(self):
         self.localStore.delete_container(self.container_id)
         self.tmpStore.delete_container(self.container_id)
@@ -110,12 +115,21 @@ class TestBLLSitemap(DoajTestCase):
 
         expectations = [(j.bibjson().get_preferred_issn(), j.last_updated) for j in journals]
 
+        articles = []
+        for s in ArticleFixtureFactory.make_many_article_sources(count=10, in_doaj=True):
+            a = models.Article(**s)
+            a.save()
+            articles.append(a)
+        models.Article.blockall([(a.id, a.last_updated) for a in articles])
+
+        articles_expectations = [(a.id, a.last_updated) for a in articles]
+
         if prune:
-            self.localStore.store(self.container_id, "sitemap__doaj_20180101_0000_utf8.xml",
+            self.localStore.store(self.container_id, "sitemap_doaj_20180101_0000/_0_utf8.xml",
                                   source_stream=StringIO("test1"))
-            self.localStore.store(self.container_id, "sitemap__doaj_20180601_0000_utf8.xml",
+            self.localStore.store(self.container_id, "sitemap_doaj_20180601_0000/_0_utf8.xml",
                                   source_stream=StringIO("test2"))
-            self.localStore.store(self.container_id, "sitemap__doaj_20190101_0000_utf8.xml",
+            self.localStore.store(self.container_id, "sitemap_doaj_20190101_0000/_0_utf8.xml",
                                   source_stream=StringIO("test3"))
 
         ###########################################################
@@ -139,41 +153,63 @@ class TestBLLSitemap(DoajTestCase):
             filenames = self.localStore.list(self.container_id)
             if prune:
                 assert len(filenames) == 2, "expected 0, received {}".format(len(filenames))
-                assert "sitemap__doaj_20180101_0000_utf8.xml" not in filenames
-                assert "sitemap__doaj_20180601_0000_utf8.xml" not in filenames
-                assert "sitemap__doaj_20190101_0000_utf8.xml" in filenames
+                assert "sitemap_doaj_20180101_0000" not in filenames
+                assert "sitemap_doaj_20180601_0000" not in filenames
+                assert "sitemap_doaj_20190101_0000" in filenames
             else:
                 assert len(filenames) == 1, "expected 0, received {}".format(len(filenames))
 
             latest = None
             for fn in filenames:
-                if fn != "sitemap__doaj_20190101_0000_utf8.xml":
+                if fn != "sitemap_doaj_20190101_0000":
                     latest = fn
                     break
 
-            handle = self.localStore.get(self.container_id, latest, encoding="utf-8")
+            NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
-            # check the contents
+            file_date = '_'.join(latest.split('_')[2:])
+            index_file = os.path.join(latest, 'sitemap_index_utf8.xml')
+
+            handle = self.localStore.get(self.container_id, index_file, encoding="utf-8")
+
+            # check sitemap index file
+            tree = etree.parse(handle)
+            urlElements = tree.getroot().getchildren()
+            for urlElement in urlElements:
+                loc = urlElement.find(NS + "loc").text
+                assert loc.startswith(self.base_url + "sitemap")
 
             tocs = []
             statics = []
-            NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+            article_ids = []
+
+            # check sitemap file
+            sitemap_file = os.path.join(latest, '_0_utf8.xml')
+            handle = self.localStore.get(self.container_id, sitemap_file, encoding="utf-8")
 
             tree = etree.parse(handle)
             urlElements = tree.getroot().getchildren()
+
             for urlElement in urlElements:
                 loc = urlElement.find(NS + "loc").text
                 lm = urlElement.find(NS + "lastmod")
                 if lm is not None:
                     lm = lm.text
                 cf = urlElement.find(NS + "changefreq").text
-
+                assert cf == "daily"
+                # check journals
                 if "/toc" in loc:
                     for exp in expectations:
                         if loc.endswith(exp[0]):
                             tocs.append(exp[0])
                             assert lm == exp[1]
-                            assert cf == "daily"
+                # check articles
+                elif "/article/" in loc:
+                    for exp in articles_expectations:
+                        if loc.endswith(exp[0]):
+                            article_ids.append(exp[0])
+                            assert lm == exp[1]
+                # check static pages
                 else:
                     statics.append(loc)
                     assert lm is None
@@ -182,6 +218,10 @@ class TestBLLSitemap(DoajTestCase):
             # deduplicate the list of tocs, to check that we saw all journals
             list(set(tocs))
             assert len(tocs) == len(expectations)
+
+            # deduplicate the list of articles, to check that we saw all articles
+            list(set(article_ids))
+            assert len(article_ids) == len(articles_expectations)
 
             # deduplicate the statics, to check we saw all of them too
             _urls = (get_full_url_safe(r)

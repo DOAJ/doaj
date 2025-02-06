@@ -1,14 +1,13 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.response import ResponseMockFactory
+from portality import models
 
 from portality.tasks import ingestarticles
-
 from portality.bll.services import article as articleSvc
-
-from portality import models
 from portality.core import app
+from portality.background import BackgroundException
 
-from portality.background import BackgroundException, RetryException
+from huey.exceptions import RetryTask
 
 import ftplib, os, requests
 
@@ -29,6 +28,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
 
         self.upload_dir = app.config["UPLOAD_DIR"]
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
+        self.ingest_articles_retry_delay = app.config['HUEY_TASKS']['ingest_articles']['retry_delay']
 
     def tearDown(self):
         super(TestIngestArticlesSchemaIndependent, self).tearDown()
@@ -41,6 +41,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
 
         app.config["UPLOAD_DIR"] = self.upload_dir
         app.config["HUEY_TASKS"]["ingest_articles"]["retries"] = self.ingest_articles_retries
+        app.config['HUEY_TASKS']['ingest_articles']['retry_delay'] = self.ingest_articles_retry_delay
 
         for id in self.cleanup_ids:
             path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -111,6 +112,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
 
     def test_3_submit_retry(self):
         app.config["HUEY_TASKS"]["ingest_articles"]["retries"] = 1
+        app.config['HUEY_TASKS']['ingest_articles']['retry_delay'] = 0
 
         fu = models.FileUpload()
         fu.validated("doaj")
@@ -125,16 +127,9 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
 
         # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
         # which in turn calls execute, which ultimately calls run
-        with self.assertRaises(RetryException):
-            ingestarticles.IngestArticlesBackgroundTask.submit(job)
 
-        job = models.BackgroundJob.pull(job.id)
-        assert job.params.get("ingest_articles__attempts") == 1
-        assert job.status == "processing"
-
-        # now do it again, to see the retry cause the job to fail on the second attempt as per the config
-        with self.assertRaises(RetryException):
-            ingestarticles.IngestArticlesBackgroundTask.submit(job)
+        # Should retry once due to failing to find the file path
+        ingestarticles.IngestArticlesBackgroundTask.submit(job)
 
         job = models.BackgroundJob.pull(job.id)
         assert job.params.get("ingest_articles__attempts") == 2

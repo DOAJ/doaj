@@ -212,6 +212,9 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.add_to_list_with_struct("apc.max", {"currency": currency, "price" : price})
         self.__seamless__.set_with_struct("apc.has_apc", True)
 
+    def clear_apcs(self):
+        self.__seamless__.delete("apc.max")
+
     @property
     def apc_url(self):
         return self.__seamless__.get_single("apc.url")
@@ -227,6 +230,8 @@ class JournalLikeBibJSON(SeamlessMixin):
     @has_apc.setter
     def has_apc(self, val):
         self.__seamless__.set_with_struct("apc.has_apc", val)
+        if val is False:
+            self.clear_apcs()
 
     @property
     def article_license_display(self):

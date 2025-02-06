@@ -16,4 +16,5 @@
     </ul>
 {%- endmacro %}
 
-{{ toc(page.toc_tokens, False) }}
+{% set manual_toc_tokens = page.manual_toc_tokens | parse_json %}
+{{ toc(manual_toc_tokens if manual_toc_tokens else page.toc_tokens, False) }}

@@ -3,7 +3,7 @@ from portality.bll import DOAJ
 from portality.lib import dates
 from portality import models
 
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 from portality.background import BackgroundTask, BackgroundApi
 from portality.tasks.helpers import background_helper
@@ -99,10 +99,10 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        find_discontinued_soon.schedule(args=(background_job.id,), delay=10)
+        find_discontinued_soon.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = FindDiscontinuedSoonBackgroundTask.create_huey_helper(main_queue)
+huey_helper = FindDiscontinuedSoonBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule
