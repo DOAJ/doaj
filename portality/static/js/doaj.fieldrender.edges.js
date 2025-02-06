@@ -2785,7 +2785,7 @@ $.extend(true, doaj, {
                           ` + articles + `
                           ` + externalLink + `
                         <li>
-                            ` + apcs + `
+                            ` + charges + `
                           </li>
                           <li>
                             ` + rights + `
