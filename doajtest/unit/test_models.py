@@ -1731,6 +1731,7 @@ class TestModels(DoajTestCase):
 
         t.save(blocking=True)
         assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
+        time.sleep(3)
 
         t2 = models.ArticleTombstone.pull("1234")
         assert t2.id == "1234"
@@ -1754,6 +1755,7 @@ class TestModels(DoajTestCase):
         a.delete()
         assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
 
+        time.sleep(3)
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
 
@@ -1771,7 +1773,7 @@ class TestModels(DoajTestCase):
             }
         }
         models.Article.delete_selected(query)
-        time.sleep(1)
+        time.sleep(3)
 
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
