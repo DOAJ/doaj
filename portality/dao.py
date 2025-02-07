@@ -391,11 +391,15 @@ class DomainObject(UserDict, object):
         try:
             # out = requests.get(cls.target() + id_)
             out = ES.get(cls.index_name(), id_, doc_type=cls.doc_type())
-        except elasticsearch.NotFoundError:
+            print("pull", out)
+        except elasticsearch.NotFoundError as e:
+            print('pull', str(e))
             return None
         except elasticsearch.TransportError as e:
+            print('pull', str(e))
             raise Exception("ES returned an error: {x}".format(x=e.info))
         except Exception as e:
+            print('pull', str(e))
             return None
         if out is None:
             return None
