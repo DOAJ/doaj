@@ -1729,6 +1729,7 @@ class TestModels(DoajTestCase):
         t.set_in_doaj(True) # should have no effect
 
         t.save(blocking=True)
+        time.sleep(1)
 
         t2 = models.ArticleTombstone.pull("1234")
         assert t2.id == "1234"
@@ -1750,7 +1751,7 @@ class TestModels(DoajTestCase):
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
         a.set_id(a.makeid())
         a.delete()
-        time.sleep(1)
+        time.sleep(2)
 
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
