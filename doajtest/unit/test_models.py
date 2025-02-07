@@ -1733,6 +1733,10 @@ class TestModels(DoajTestCase):
         assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
         time.sleep(3)
 
+        print(t.id)
+        for at in models.ArticleTombstone.all():
+            print(at)
+
         t2 = models.ArticleTombstone.pull("1234")
         assert t2.id == "1234"
         assert t2.is_in_doaj() is False
@@ -1756,6 +1760,9 @@ class TestModels(DoajTestCase):
         assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
 
         time.sleep(3)
+        print(a.id)
+        for at in models.ArticleTombstone.all():
+            print(at)
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
 
