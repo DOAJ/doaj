@@ -1,4 +1,4 @@
-# Straightening out the APC model
+# Fixing inconsistent conditional fields
 
 For each journal and application, ensure key conditional fields are consistent in the data
 
