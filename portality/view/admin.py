@@ -859,3 +859,11 @@ def bulk_articles_delete():
     return make_json_resp(summary.as_dict(), status_code=200)
 
 #################################################
+
+################################################
+## Reporting endpoint
+
+@blueprint.route("/report")
+@write_required()
+def report():
+    query = get_web_json_payload()

@@ -11,6 +11,11 @@
 {% block admin_content %}
     <h1 class="sr-only">Journals</h1>
 
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary" id="export_as_csv">Export as CSV</button>
+        </div>
+    </div>
     <div id="admin_journals"></div>
 {% endblock %}
 
@@ -27,4 +32,14 @@
 
     {% include "includes/_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#export_as_csv").on("click", function() {
+                let cq = doaj.adminJournalsSearch.activeEdges["#admin_journals"].currentQuery;
+                $.post("/");
+            })
+
+        });
+    </script>
 {% endblock %}
