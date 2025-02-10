@@ -184,6 +184,14 @@ def create_es_connection(app):
     return conn
 
 
+def prepare_type(es_type):
+    """ Ensure a type has an index correctly prepared - e.g. LCC on app startup """
+    expected_alias = app.config['ELASTIC_SEARCH_DB_PREFIX'] + es_type
+
+    if not es_connection.indices.exists(expected_alias):
+        initialise_index(app, es_connection, only_mappings=es_type)
+
+
 def put_mappings(conn, mappings):
 
     for key, mapping in iter(mappings.items()):
@@ -214,6 +222,7 @@ def initialise_index(app, conn, only_mappings=None):
     ~~InitialiseIndex:Framework->Elasticsearch:Technology~~
     :param app:
     :param conn:
+    :param only_mappings: Init a subset of the index types
     :return:
     """
     if not app.config['INITIALISE_INDEX']:
@@ -228,7 +237,7 @@ def initialise_index(app, conn, only_mappings=None):
     mappings = es_data_mapping.get_mappings(app)
 
     if only_mappings is not None:
-        mappings = {key:value for (key, value) in mappings.items() if key in only_mappings}
+        mappings = {key: value for (key, value) in mappings.items() if key in only_mappings}
 
     # Send the mappings to ES
     put_mappings(conn, mappings)
