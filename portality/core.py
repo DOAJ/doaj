@@ -171,7 +171,6 @@ def load_crossref_schema(app):
                 message="There was an error attempting to load schema from " + path, inner=e)
 
 
-
 ############################################
 # Elasticsearch initialisation
 
@@ -194,13 +193,17 @@ def put_mappings(conn, mappings):
         if conn.indices.exists(altered_key):
             print("Alias {0} already exists for type {1}".format(altered_key, key))
         else:
+            print("Preparing new index / alias for " + key)
             # Set up a new index and corresponding alias
             idx_name = altered_key + '-{}'.format(dates.today(dates.FMT_DATE_SHORT))
 
-            resp = es_connection.indices.create(index=idx_name,
-                                                body=mapping,
-                                                request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
-            print("Initialised index: {}".format(resp['index']))
+            try:
+                resp = es_connection.indices.create(index=idx_name,
+                                                    body=mapping,
+                                                    request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
+                print("Initialised index: {}".format(resp['index']))
+            except elasticsearch.exceptions.RequestError as e:
+                print('Could not create index: ' + str(e))
 
             resp2 = es_connection.indices.put_alias(index=idx_name, name=altered_key)
             print("Created alias:     {:<25} -> {},  status {}".format(idx_name, altered_key, resp2))
