@@ -7,7 +7,8 @@
     min-height: 100px;
   }
 
-  a {
+  /* do not underline the links, unless in an alert */
+  a:not(.alert a) {
     text-decoration: none;
   }
 

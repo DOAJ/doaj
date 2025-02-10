@@ -10,6 +10,7 @@ from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
+from portality.lib.thread_utils import wait_until
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -1729,6 +1730,7 @@ class TestModels(DoajTestCase):
         t.set_in_doaj(True) # should have no effect
 
         t.save(blocking=True)
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
 
         t2 = models.ArticleTombstone.pull("1234")
         assert t2.id == "1234"
@@ -1750,7 +1752,7 @@ class TestModels(DoajTestCase):
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
         a.set_id(a.makeid())
         a.delete()
-        time.sleep(1)
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
 
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
@@ -1774,8 +1776,15 @@ class TestModels(DoajTestCase):
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
 
+    def test_43_add_remove_apc_bibjson(self):
+        bj = models.JournalLikeBibJSON()
+        bj.add_apc("GBP", 100)
+        assert bj.has_apc is True
+        assert bj.apc == [{"currency": "GBP", "price": 100}]
 
-
+        bj.has_apc = False
+        assert bj.has_apc is False
+        assert bj.apc == []
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

@@ -8,7 +8,7 @@ featuremap: ~~About:Fragment~~
 
 ---
 
-DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone. 
+DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community. It is committed to ensuring quality content is openly available online for everyone. 
 
 OPEN - DOAJ is a vital part of the global open access infrastructure.
 
@@ -20,7 +20,7 @@ TRUSTED – Globally, DOAJ's [criteria](/apply/guide/#basic-criteria-for-inclusi
 
 DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language.
 
-DOAJ is committed to being 100% independent and maintaining all of its primary services and metadata as free for everyone.
+DOAJ is committed to being 100% independent and maintaining all of its primary services and metadata as open for everyone.
 
 ## Our vision
 

@@ -49,7 +49,7 @@ We only accept support through our publisher supporter model from publishers wit
 1. Your logo on the DOAJ website
 2. A blog post during the year thanking all our supporters
 3. A DOAJ Supporter logo that you can use on your website
-4. Access to our Public Data Dump
+4. An option to download [a copy of all our data](/docs/public-data-dump/)
 5. A personal DOAJ contact to whom all enquiries regarding your applications and updates can be directed
 
 ## Sponsorship opportunities

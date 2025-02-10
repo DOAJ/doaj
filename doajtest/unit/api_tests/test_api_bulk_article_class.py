@@ -245,45 +245,51 @@ class TestBulkArticle(DoajTestCase):
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 # Bulk create
-                # The wrong owner can't create articles
+                # The wrong owner can't create articles - job will fail but initial request is successful
+                resp = t_client.post(url_for('api.bulk_article_create', api_key=somebody_else.api_key),
+                                     data=json.dumps(dataset))
+                assert resp.status_code == 202, resp.status_code
+
+                # Assert there's no effect
+                time.sleep(2)
+                assert len(models.Article.all()) == 0
+
+                # Bulk create
+                # disallowed from v3 (removed version)
                 resp = t_client.post(url_for('api_v3.bulk_article_create', api_key=somebody_else.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 400, resp.status_code
 
-                # Bulk create
-                # redirected from v1
-                # resp = t_client.post(url_for('api_v1.bulk_article_create', api_key=somebody_else.api_key),
-                #                      data=json.dumps(dataset))
-                # assert resp.status_code == 301, resp.status_code
-
-                # But the correct owner can create articles
-                resp = t_client.post(url_for('api_v3.bulk_article_create', api_key=article_owner.api_key),
+                # The correct owner can create articles
+                resp = t_client.post(url_for('api.bulk_article_create', api_key=article_owner.api_key),
                                      data=json.dumps(dataset))
-                assert resp.status_code == 201
+                assert resp.status_code == 202  # Job is created, we get a message to say it's queued
                 reply = json.loads(resp.data.decode("utf-8"))
-                assert len(reply) == len(dataset)
-                first_art = reply.pop()
-                assert first_art['status'] == 'created'
+                assert len(reply['upload_id']) > 0
+
                 # Check we actually created new records
                 assert wait_until(lambda: len(models.Article.all()) == len(dataset))
 
                 # Bulk delete
-                all_but_one = [new_art['id'] for new_art in reply]
-                resp = t_client.delete(url_for('api_v3.bulk_article_delete', api_key=article_owner.api_key),
+                omitted_art = models.Article.all()[0]
+                all_but_one = [new_art['id'] for new_art in models.Article.all()[1:]]
+                resp = t_client.delete(url_for('api.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
                 # we should have deleted all but one of the articles.
                 assert wait_until(lambda: len(models.Article.all()) == 1)
                 # And our other user isn't allowed to delete the remaining one.
-                resp = t_client.delete(url_for('api_v3.bulk_article_delete', api_key=somebody_else.api_key),
-                                       data=json.dumps([first_art['id']]))
+                resp = t_client.delete(url_for('api.bulk_article_delete', api_key=somebody_else.api_key),
+                                       data=json.dumps([omitted_art['id']]))
                 assert resp.status_code == 400
 
     @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
              warm_mappings=[models.Article.__type__])
     def test_07_v1_no_redirects(self):
-        """ v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
-        # TODO: this is a copy of the test above, with v1 instead of current. If redirects are reinstated, uncomment above
+        """
+        v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664
+         https://github.com/DOAJ/doaj/pull/2445
+        """
 
         # set up all the bits we need
         dataset = []
@@ -322,25 +328,27 @@ class TestBulkArticle(DoajTestCase):
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 # Bulk create
-                # The wrong owner can't create articles
+                # The wrong owner can't create articles via v1
                 resp = t_client.post(url_for('api_v1.bulk_article_create', api_key=somebody_else.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 400, resp.status_code
 
                 # Bulk create
-                # But the correct owner can create articles
+                # The correct owner can't create articles (removed method for v1 api)
                 resp = t_client.post(url_for('api_v1.bulk_article_create', api_key=article_owner.api_key),
                                      data=json.dumps(dataset))
-                assert resp.status_code == 201
-                reply = json.loads(resp.data.decode("utf-8"))
-                assert len(reply) == len(dataset)
-                first_art = reply.pop()
-                assert first_art['status'] == 'created'
+                assert resp.status_code == 400
+
+                # Use latest bulk create to make the records for deletion
+                # The correct owner can create articles
+                resp = t_client.post(url_for('api.bulk_article_create', api_key=article_owner.api_key),
+                                     data=json.dumps(dataset))
                 # Check we actually created new records
                 assert wait_until(lambda: len(models.Article.all()) == len(dataset))
 
                 # Bulk delete
-                all_but_one = [new_art['id'] for new_art in reply]
+                omitted_art = models.Article.all()[0]
+                all_but_one = [new_art['id'] for new_art in models.Article.all()[1:]]
                 resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
@@ -348,14 +356,13 @@ class TestBulkArticle(DoajTestCase):
                 assert wait_until(lambda: len(models.Article.all()) == 1)
                 # And our other user isn't allowed to delete the remaining one.
                 resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=somebody_else.api_key),
-                                       data=json.dumps([first_art['id']]))
+                                       data=json.dumps([omitted_art['id']]))
                 assert resp.status_code == 400
 
     @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
              warm_mappings=[models.Article.__type__])
     def test_08_v2_no_redirects(self):
         """ v2, like v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
-        # TODO: this is a copy of the test above, with v2 instead of current. If redirects are reinstated, uncomment in test 6
 
         # set up all the bits we need
         dataset = []
@@ -400,27 +407,29 @@ class TestBulkArticle(DoajTestCase):
                 assert resp.status_code == 400, resp.status_code
 
                 # Bulk create
-                # But the correct owner can create articles
+                # The correct owner can't create articles via the removed method: https://github.com/DOAJ/doaj/pull/2445
                 resp = t_client.post(url_for('api_v2.bulk_article_create', api_key=article_owner.api_key),
                                      data=json.dumps(dataset))
-                assert resp.status_code == 201
-                reply = json.loads(resp.data.decode("utf-8"))
-                assert len(reply) == len(dataset)
-                first_art = reply.pop()
-                assert first_art['status'] == 'created'
+                assert resp.status_code == 400
+
+                # Use latest bulk create to make the records for deletion
+                # The correct owner can create articles
+                resp = t_client.post(url_for('api.bulk_article_create', api_key=article_owner.api_key),
+                                     data=json.dumps(dataset))
                 # Check we actually created new records
                 assert wait_until(lambda: len(models.Article.all()) == len(dataset))
 
                 # Bulk delete
-                all_but_one = [new_art['id'] for new_art in reply]
+                omitted_art = models.Article.all()[0]
+                all_but_one = [new_art['id'] for new_art in models.Article.all()[1:]]
                 resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
                 # we should have deleted all but one of the articles.
-                wait_until(lambda: len(models.Article.all()) == 1)
+                assert wait_until(lambda: len(models.Article.all()) == 1)
                 # And our other user isn't allowed to delete the remaining one.
                 resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=somebody_else.api_key),
-                                       data=json.dumps([first_art['id']]))
+                                       data=json.dumps([omitted_art['id']]))
                 assert resp.status_code == 400
 
     def test_09_article_unacceptable(self):

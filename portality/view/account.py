@@ -3,7 +3,7 @@ import uuid, json
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from wtforms import StringField, HiddenField, PasswordField, validators, Form
+from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form
 
 from portality import util
 from portality import constants
@@ -12,6 +12,7 @@ from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.bll import DOAJ
+from portality.ui.messages import Messages
 
 from portality.ui import templates
 
@@ -85,7 +86,13 @@ def username(username):
         if not form.validate():
             return render_template(template, account=acc, form=form)
 
-        newdata = request.json if request.json else request.values
+        newdata = request.values
+        try:
+            newdata = request.json
+        except:
+            pass
+
+        # newdata = request.json if request.json else request.values
         if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
 
@@ -308,33 +315,44 @@ def logout():
 class RegisterForm(RedirectForm):
     identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
     name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
-    email = StringField('Email address', [
+    sender_email = StringField('Email address', [
         validators.DataRequired(),
         validators.Length(min=3, max=254),
         validators.Email(message='Must be a valid email address'),
         EmailAvailable(message="That email address is already in use. Please <a href='/account/forgot'>reset your password</a>. If you still cannot login, <a href='/contact'>contact us</a>.")
     ])
     roles = StringField('Roles')
-    recaptcha_value = HiddenField()
+    # These are honeypot (bot-trap) fields
+    email = StringField('email')
+    hptimer = DecimalField('hptimer', [validators.Optional()])
 
+    def is_bot(self):
+        """
+        Checks honeypot fields and determines whether the form was submitted by a bot
+        :return: True, if bot suspected; False, if human
+        """
+        return self.email.data != "" or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
 @write_required()
 def register(template=templates.REGISTER):
+    # ~~-> Honeypot:Feature ~~
     # 3rd-party registration only for those with create_user role, only allow public registration when configured
     if current_user.is_authenticated and not current_user.has_role("create_user") \
             or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
         abort(401)      # todo: we may need a template to explain this since it's linked from the application form
 
     form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
-    if request.method == 'POST' and form.validate():
-        if app.config.get("RECAPTCHA_ENABLE"):
-            recap_data = util.verify_recaptcha(form.recaptcha_value.data)
-        else:
-            recap_data = {"success": True}
-        if recap_data["success"]:
-            account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
+
+    if request.method == 'POST':
+
+        if not current_user.is_authenticated and form.is_bot():
+            flash(Messages.ARE_YOU_A_HUMAN, "error")
+            return render_template(template, form=form)
+
+        if form.validate():
+            account = Account.make_account(email=form.sender_email.data, username=form.identifier.data, name=form.name.data,
                                            roles=[r.strip() for r in form.roles.data.split(',')])
             account.save()
 
@@ -349,17 +367,14 @@ def register(template=templates.REGISTER):
                 util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
                 return redirect(url_for('.index'))
             else:
-                flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
+                flash('Thank you, please verify email address ' + form.sender_email.data + ' to set your password and login.',
                       'success')
 
             # We must redirect home because the user now needs to verify their email address.
             return redirect(url_for('doaj.home'))
+        else:
+            flash('Please correct the errors', 'error')
 
-        else:  # recaptcha fail
-            util.flash("reCAPTCHA failed, please retry.")
-
-    if request.method == 'POST' and not form.validate():
-        flash('Please correct the errors', 'error')
     return render_template(template, form=form)
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
