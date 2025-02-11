@@ -1,3 +1,31 @@
+{% set FLAG_CONST = [
+        constants.TODO_REGULAR_FLAGS_ALL,
+        constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS,
+        constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS,
+        constants.TODO_REGULAR_FLAGS_ONHOLD,
+        constants.TODO_URGENT_FLAGS_ALL,
+        constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS,
+        constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS,
+        constants.TODO_URGENT_FLAGS_ONHOLD ]
+%}
+
+{% set URGENT_FLAG_ATTRS = {
+        "text" : "<strong>Flagged to you (Urgent Deadline)</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",
+        "show_status": false,
+        "colour" : "var(--sanguine)",
+        "feather": "flag",
+        "link" : ""
+    }
+%}
+{% set REGULAR_FLAG_ATTRS = {
+        "text" : "<strong>Flagged to you</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",
+        "no_deadline_text": "<strong>Flagged to you</strong> <span class='todo-list__status'>No deadline</span>",
+        "show_status": false,
+        "colour" : "var(--grapefruit)",
+        "feather": "flag",
+        "link" : ""
+    }
+%}
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Editor</span>",
@@ -101,23 +129,16 @@
             "feather": "inbox",
             "link" : url_for('editor.associate_suggestions')
         },
-        constants.TODO_REGULAR_FLAGS: {
-            "text" : "<strong>Flagged to you</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",
-            "no_deadline_text": "<strong>Flagged to you</strong> <span class='todo-list__status'>No deadline</span>",
-            "show_status": false,
-            "colour" : "var(--grapefruit)",
-            "feather": "flag",
-            "link" : ""
-        },
-        constants.TODO_URGENT_FLAGS: {
-            "text" : "<strong>Flagged to you (Urgent Deadline)</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",
-            "show_status": false,
-            "colour" : "var(--sanguine)",
-            "feather": "flag",
-            "link" : ""
-        }
+        constants.TODO_REGULAR_FLAGS_ALL: REGULAR_FLAG_ATTRS,
+        constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS: REGULAR_FLAG_ATTRS,
+        constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS: REGULAR_FLAG_ATTRS,
+        constants.TODO_REGULAR_FLAGS_ONHOLD: REGULAR_FLAG_ATTRS,
+        constants.TODO_URGENT_FLAGS_ALL: URGENT_FLAG_ATTRS,
+        constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS: URGENT_FLAG_ATTRS,
+        constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS: URGENT_FLAG_ATTRS,
+        constants.TODO_URGENT_FLAGS_ONHOLD: URGENT_FLAG_ATTRS
     }
-        %}
+%}
 
 <section>
 
@@ -186,10 +207,10 @@
                                     <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
                                         {% set main_action = todo.action_id[0] %}
                                         {% if action.show_status %}[{{ todo.object.application_status }}]{% endif %}
-                                        {% if main_action != constants.TODO_REGULAR_FLAGS and main_action != constants.TODO_URGENT_FLAGS %}
+                                        {% if not main_action in FLAG_CONST %}
                                             {{ action.text | safe }}
                                         {% else %}
-                                            {% if deadline == "9999-12-31" %} {{ action.no_deadline_text | safe }} {% else %} {{ action.text | replace('{DEADLINE}', deadline) | safe }}  {% endif %}
+                                            {% if deadline == "9999-12-31" %} {{ action.no_deadline_text | safe }} {% else %} {{ action.text | replace('{DEADLINE}', deadline) | safe }} {% endif %}
                                         {% endif %}
                                     </a>
                                 </p>

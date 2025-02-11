@@ -20,24 +20,16 @@ blueprint = Blueprint('dashboard', __name__)
 @ssl_required
 def top_todo():
     filter = request.values.get("filter")
-    new_applications, update_requests, on_hold, flag = True, True, True, True
+    new_applications, update_requests, on_hold = True, True, True
     if filter == "na":
         on_hold = False
         update_requests = False
-        flag = False
     elif filter == "ur":
         on_hold = False
         new_applications = False
-        flag = False
     elif filter == "oh":
         update_requests = False
         new_applications = False
-        flag = False
-    elif filter == "flag":
-        new_applications = False
-        update_requests = False
-        on_hold = False
-        flag = True
 
 
     # ~~-> Todo:Service~~
@@ -46,7 +38,6 @@ def top_todo():
                          size=app.config.get("TODO_LIST_SIZE"),
                          new_applications=new_applications,
                          update_requests=update_requests,
-                         flag=flag,
                          on_hold=on_hold)
 
     count = svc.user_finished_historical_counts(current_user._get_current_object())
