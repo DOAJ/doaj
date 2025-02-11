@@ -561,7 +561,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_URGENT_FLAGS, all, sort_field, 1
+        return constants.TODO_URGENT_FLAGS, all, sort_field, 3
 
     @classmethod
     def regular_flags(cls, acc_id, size):
@@ -710,7 +710,7 @@ class TodoQuery(object):
     def flagged_to_me(cls, acc_id):
         return {
             "terms": {
-                "index.flag_assignees": [acc_id]
+                "index.flag_assignees.exact": [acc_id]
             }
         }
 
