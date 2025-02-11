@@ -277,9 +277,12 @@ class JournalGenericXWalk(object):
             for flag in form.flags.data:
                 flag_date = flag["flag_created_date"]
                 try:
-                    flag_deadline = dates.parse(flag.get("flag_deadline"), format=dates.FMT_DATE_STD)
-                except ValueError:
-                    flag_deadline = dates.far_in_the_future()
+                    if flag.get("flag_deadline") == "":
+                        flag_deadline = dates.far_in_the_future()
+                    else:
+                        flag_deadline = dates.parse(flag.get("flag_deadline"), format=dates.FMT_DATE_STD)
+                except:
+                    raise ValueError("Flag deadline must be a valid date in BigEnd format (ie. YYYY-MM-DD)")
                 flag_assigned_to = flag["flag_assignee"]
                 flag_author = flag["flag_setter"]
                 flag_id = flag["flag_note_id"]

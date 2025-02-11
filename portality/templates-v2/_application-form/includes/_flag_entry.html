@@ -8,6 +8,9 @@
             {% if subfield.label %}<label>{{ subfield.label }} {% if subfield.optional %}<span
                 class="form__question--optional">(Optional)</span>{% endif %} </label>{% endif %}
             {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
+            {% if f.help("render_error_box") != False %} {# some fields have custom error boxes #}
+                <div id="{{ f.name }}_checkbox-errors"></div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>

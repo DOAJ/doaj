@@ -2094,10 +2094,11 @@ class FieldDefinitions:
         "label": "Deadline",
         "name": "flag_deadline",
         "validate": [
-            {"bigenddate": {"message": "Date must be a big-end formatted date (e.g. 2020-11-23)"}}
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
         ],
         "help": {
             "placeholder": "deadline (YYYY-MM-DD)",
+            "render_error_box": True
         },
         "group": "flags",
         "input": "text",
