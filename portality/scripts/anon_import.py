@@ -26,14 +26,13 @@ from dataclasses import dataclass
 from time import sleep
 
 import portality.dao
-from doajtest.helpers import patch_config
 from portality import models
 from portality.scripts.createuser import create_users
 from portality.core import app, es_connection
 from portality.dao import DomainObject
 from portality.lib import dates, es_data_mapping
 from portality.store import StoreFactory
-from portality.util import ipt_prefix
+from portality.util import ipt_prefix, patch_config
 
 
 @dataclass
@@ -187,8 +186,7 @@ def do_import(config):
         if cfg.get("download_test_users"):
             dl_test_users()
 
-
-        # once we've finished importing, clean up by deleting the entire temporary container
+    # once we've finished importing, clean up by deleting the entire temporary container
     tempStore.delete_container(container)
 
 

@@ -2,7 +2,8 @@ from copy import deepcopy
 from flask_login import login_user
 
 from doajtest.fixtures import AccountFixtureFactory, EditorGroupFixtureFactory, ApplicationFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from portality import models
 from portality.lib import query_filters
 from portality.bll.services.query import Query
