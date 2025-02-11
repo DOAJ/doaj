@@ -519,7 +519,7 @@ class FieldDefinitions:
                 "validate": [
                     {"required": {"message": "Enter the name of the journal's publisher"}},
                     {"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
                 ]
                 # ~~^-> DifferetTo:FormValidator~~
 
@@ -528,7 +528,7 @@ class FieldDefinitions:
                 "validate": [
                     {"required": {"message": "Enter the name of the journal's publisher"}},
                     {"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
                 ]
                 # ~~^-> DifferetTo:FormValidator~~
 
@@ -1359,7 +1359,7 @@ class FieldDefinitions:
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
         ],
-        "contexts" : {
+        "contexts": {
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
@@ -2060,10 +2060,6 @@ class FieldDefinitions:
             "flag_manager"
         ],
         "merge_disabled": "merge_disabled_notes",
-        "help": {
-            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
-            "render_error_box": False,
-        },
     }
 
     FLAG_RESOLVED = {
@@ -2129,14 +2125,17 @@ class FieldDefinitions:
         "name": "flag_assignee",
         "label": "Assign a user",
         "help": {
-        "placeholder": "assigned_to"},
+            "placeholder": "assigned_to",
+            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+        },
         "group": "flags",
         "validate": [
             "reserved_usernames",
             "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type": "account", "field": "id", "include_input": True}},  # ~~^-> Autocomplete:FormWidget~~
+            {"autocomplete": {"type": "account", "field": "id", "include_input": True}},
+            # ~~^-> Autocomplete:FormWidget~~
         ],
         "input": "text",
         "disabled": "disable_edit_flag_except_author_admin_assignee"
@@ -2749,7 +2748,8 @@ def application_statuses(field, formulaic_context):
     # It would be nice to be able to somehow disable it being changed, perhaps we can do that
     # via a widget
     _application_status_admin = _application_status_base + [
-        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
+        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW,
+         Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
         (constants.APPLICATION_STATUS_UPDATE_REQUEST, Messages.FORMS__APPLICATION_STATUS__UPDATE_REQUEST),
         (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, Messages.FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED),
         (constants.APPLICATION_STATUS_ON_HOLD, Messages.FORMS__APPLICATION_STATUS__ON_HOLD),
@@ -2772,7 +2772,8 @@ def application_statuses(field, formulaic_context):
     elif formulaic_context_name == "editor":
         status_list = _application_status_editor
     elif formulaic_context_name == "accepted":
-        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
+        status_list = [(constants.APPLICATION_STATUS_ACCEPTED,
+                        Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
     else:
         status_list = _application_status_base
 
@@ -2833,8 +2834,9 @@ def disable_edit_note_except_editing_user(field: FormulaicField,
         return True
     return cur_user_id != form_field.data.get('note_author_id')
 
+
 def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
-                                          formulaic_context: FormulaicContext):
+                                                   formulaic_context: FormulaicContext):
     """
     Only allow the current user to edit this field if current user is an author, assignee or admin
 
@@ -3142,7 +3144,8 @@ class OnlyIfBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True),
+                      message=settings.get('message'))
 
 
 class OnlyIfExistsBuilder:
@@ -3154,7 +3157,8 @@ class OnlyIfExistsBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIfExists(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIfExists(other_fields=settings.get('fields') or fields,
+                            ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
 
 
 class NotIfBuildier:
@@ -3322,9 +3326,9 @@ JAVASCRIPT_FUNCTIONS = {
     "load_editors": "formulaic.widgets.newLoadEditors",  # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace": "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
-    "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
-    "issn_link" : "formulaic.widgets.newIssnLink", # ~~-> IssnLink:FormWidget~~,
-    "article_info": "formulaic.widgets.newArticleInfo", # ~~-> ArticleInfo:FormWidget~~
+    "autocheck": "formulaic.widgets.newAutocheck",  # ~~-> Autocheck:FormWidget~~
+    "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
+    "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
 
 }
@@ -3473,6 +3477,7 @@ class TagListBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         return TagListField(**wtfargs)
 
+
 class IntegerBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
@@ -3534,8 +3539,10 @@ WTFORMS_BUILDERS = [
     HiddenFieldBuilder
 ]
 
-ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
-JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
+                                   javascript_functions=JAVASCRIPT_FUNCTIONS)
+JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
+                               javascript_functions=JAVASCRIPT_FUNCTIONS)
 
 if __name__ == "__main__":
     """

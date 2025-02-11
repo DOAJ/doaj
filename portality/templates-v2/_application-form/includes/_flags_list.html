@@ -21,7 +21,7 @@
     {% if f.help("short_help") %}
        <p class="form__short-help" style="margin-left: .5rem"><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
-    <div class="editorial-panel__questions-content {{ f.name }}__question--content">
+    <div class="editorial-panel__questions-content {{ f.name }}__question--content" style="padding: 0 .75rem">
     {% for entry in f.wtfield %}
         {% set entry_template = f.entry_template %}
         {% set idx = loop.index0 %}
