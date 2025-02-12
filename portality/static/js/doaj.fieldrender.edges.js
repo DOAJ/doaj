@@ -19,7 +19,8 @@ $.extend(true, doaj, {
         isFlagged : function() {
             return {
                 id: "is_flagged",
-                display: "Flagged records ony",
+                display: "All flagged records",
+                includes: "flagged_to_me",
                 must: [
                     es.newTermFilter({
                         field: "index.is_flagged",
@@ -32,6 +33,7 @@ $.extend(true, doaj, {
             return {
                 id: "flagged_to_me",
                 display: "Flagged to me",
+                includedIn: "is_flagged",
                 must: [
                     es.newTermFilter({
                         field: "index.flag_assignees.exact",
@@ -1652,6 +1654,8 @@ $.extend(true, doaj, {
             // whether the facet should be open or closed
             // can be initialised and is then used to track internal state
             this.open = edges.getParam(params.open, false);
+            this.isIncludedIn = edges.getParam(params.isIncludedIn, null);
+            this.includes = edges.getParam(params.includes, null);
 
             // whether the facet can be opened and closed
             this.togglable = edges.getParam(params.togglable, true);
@@ -1749,11 +1753,18 @@ $.extend(true, doaj, {
 
             this.filterToggle = function(element) {
                 var filter_id = this.component.jq(element).attr("id");
+                var filter = this.component.filters.find(obj => obj.id === filter_id)
                 var checked = this.component.jq(element).is(":checked");
                 if (checked) {
                     this.component.addFilter(filter_id);
+                    if (filter.includedIn) {
+                        this.component.addFilter(filter.includedIn)
+                    }
                 } else {
                     this.component.removeFilter(filter_id);
+                    if (filter.includes) {
+                        this.component.removeFilter(filter.includes);
+                    }
                 }
             };
 

@@ -32,6 +32,7 @@ $.extend(true, doaj, {
                 edges.newFilterSetter({
                     id : "flagged",
                     category: "facet",
+                    showCount: true,
                     filters : [
                         doaj.filters.isFlagged(),
                         doaj.filters.flaggedToMe()
