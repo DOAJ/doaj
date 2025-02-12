@@ -7,7 +7,7 @@ from parameterized import parameterized
 
 from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from doajtest.mocks.store import StoreMockFactory
 from portality import models
@@ -17,7 +17,7 @@ from portality.bll import exceptions
 from portality.core import app
 from portality.lib import nav
 from portality.lib.paths import rel2abs
-from portality.util import get_full_url_safe
+from portality.util import get_full_url_safe, patch_config
 
 
 def load_cases():
@@ -125,11 +125,11 @@ class TestBLLSitemap(DoajTestCase):
         articles_expectations = [(a.id, a.last_updated) for a in articles]
 
         if prune:
-            self.localStore.store(self.container_id, "sitemap_doaj_20180101_0000_utf8.xml",
+            self.localStore.store(self.container_id, "sitemap_doaj_20180101_0000/_0_utf8.xml",
                                   source_stream=StringIO("test1"))
-            self.localStore.store(self.container_id, "sitemap_doaj_20180601_0000_utf8.xml",
+            self.localStore.store(self.container_id, "sitemap_doaj_20180601_0000/_0_utf8.xml",
                                   source_stream=StringIO("test2"))
-            self.localStore.store(self.container_id, "sitemap_doaj_20190101_0000_utf8.xml",
+            self.localStore.store(self.container_id, "sitemap_doaj_20190101_0000/_0_utf8.xml",
                                   source_stream=StringIO("test3"))
 
         ###########################################################
@@ -153,22 +153,22 @@ class TestBLLSitemap(DoajTestCase):
             filenames = self.localStore.list(self.container_id)
             if prune:
                 assert len(filenames) == 2, "expected 0, received {}".format(len(filenames))
-                assert "sitemap_doaj_20180101_0000_utf8.xml" not in filenames
-                assert "sitemap_doaj_20180601_0000_utf8.xml" not in filenames
-                assert "sitemap_doaj_20190101_0000_utf8.xml" in filenames
+                assert "sitemap_doaj_20180101_0000" not in filenames
+                assert "sitemap_doaj_20180601_0000" not in filenames
+                assert "sitemap_doaj_20190101_0000" in filenames
             else:
                 assert len(filenames) == 1, "expected 0, received {}".format(len(filenames))
 
             latest = None
             for fn in filenames:
-                if fn != "sitemap_doaj_20190101_0000_utf8.xml":
+                if fn != "sitemap_doaj_20190101_0000":
                     latest = fn
                     break
 
             NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
             file_date = '_'.join(latest.split('_')[2:])
-            index_file = os.path.join(latest, 'sitemap_index_doaj_'+file_date+'_utf8.xml')
+            index_file = os.path.join(latest, 'sitemap_index_utf8.xml')
 
             handle = self.localStore.get(self.container_id, index_file, encoding="utf-8")
 
@@ -184,7 +184,7 @@ class TestBLLSitemap(DoajTestCase):
             article_ids = []
 
             # check sitemap file
-            sitemap_file = os.path.join(latest, 'sitemap_doaj_' + file_date + '_0_utf8.xml')
+            sitemap_file = os.path.join(latest, '_0_utf8.xml')
             handle = self.localStore.get(self.container_id, sitemap_file, encoding="utf-8")
 
             tree = etree.parse(handle)

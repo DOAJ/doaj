@@ -8,7 +8,7 @@ featuremap: ~~About:Fragment~~
 
 ---
 
-DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is openly available online for everyone. 
+DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community. It is committed to ensuring quality content is openly available online for everyone. 
 
 OPEN - DOAJ is a vital part of the global open access infrastructure.
 

@@ -63,7 +63,8 @@ def dismiss_site_note():
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"), max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
+    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"),
+                    max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
     return resp
 
 
@@ -109,7 +110,7 @@ def search():
 def search_post():
     """ Redirect a query from the box on the index page to the search page. """
     if request.form.get('origin') != 'ui':
-        abort(400)                                              # bad request - we must receive searches from our own UI
+        abort(400)  # bad request - we must receive searches from our own UI
 
     ref = request.form.get("ref")
     if ref is None:
@@ -124,14 +125,14 @@ def search_post():
 
     # lhs for journals, rhs for articles
     field_map = {
-        "all" : (None, None),
-        "title" : ("bibjson.title", "bibjson.title"),
-        "abstract" : (None, "bibjson.abstract"),
-        "subject" : ("index.classification", "index.classification"),
-        "author" : (None, "bibjson.author.name"),
-        "issn" : ("index.issn.exact", None),
-        "publisher" : ("bibjson.publisher.name", None),
-        "country" : ("index.country", None)
+        "all": (None, None),
+        "title": ("bibjson.title", "bibjson.title"),
+        "abstract": (None, "bibjson.abstract"),
+        "subject": ("index.classification", "index.classification"),
+        "author": (None, "bibjson.author.name"),
+        "issn": ("index.issn.exact", None),
+        "publisher": ("bibjson.publisher.name", None),
+        "country": ("index.country", None)
     }
     default_field_opts = field_map.get(field, None)
     default_field = None
@@ -151,6 +152,7 @@ def search_post():
     query = dao.Facetview2.make_query(kw, default_field=default_field, default_operator="AND")
 
     return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
+
 
 #############################################
 
@@ -234,11 +236,13 @@ def get_from_local_store(container, filename):
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q', '')
     if not prefix:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "",
+                                         "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
 
     m = models.lookup_model(doc_type)
     if not m:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "",
+                                         "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
 
@@ -327,6 +331,7 @@ def find_correct_redirect_identifier(identifier, bibjson) -> str:
         # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
         # and the user is referring to the toc page via that ID
 
+
 @blueprint.route("/toc/<identifier>")
 def toc(identifier=None):
     """ Table of Contents page for a journal. identifier may be the journal id or an issn """
@@ -358,7 +363,7 @@ def toc_articles(identifier=None):
         return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, tab="articles")
 
 
-#~~->Article:Page~~
+# ~~->Article:Page~~
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
@@ -516,9 +521,11 @@ def faq():
 def about():
     return render_template(templates.STATIC_PAGE, page_frag="/about/index.html")
 
+
 @blueprint.route("/at-20/")
 def at_20():
     return render_template(templates.STATIC_PAGE, page_frag="/about/at-20.html")
+
 
 
 @blueprint.route("/about/ambassadors/")

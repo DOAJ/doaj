@@ -60,9 +60,6 @@ def load_function(fnpath, cache_fn_ref=True):
     if fn is not None:
         return fn
 
-    if isinstance(fnpath, str):
-        print(type(fnpath))
-
     fn = load_function_raw(fnpath)
     if fn is None:
         app.logger.info("Could not load function {x}".format(x=fnpath))
