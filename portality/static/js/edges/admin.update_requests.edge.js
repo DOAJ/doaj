@@ -76,7 +76,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'}
+                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
@@ -124,6 +125,11 @@ $.extend(true, doaj, {
                                     "pre": '<span class="alt_title">Alternative title: ',
                                     "field": "bibjson.alternative_title",
                                     "post": "</span>"
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: doaj.fieldRender.deadline
                                 }
                             ],
                             [
