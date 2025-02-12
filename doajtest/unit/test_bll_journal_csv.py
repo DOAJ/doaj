@@ -7,7 +7,8 @@ from parameterized import parameterized
 
 from doajtest import helpers
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from doajtest.mocks.store import StoreMockFactory
 from portality import models

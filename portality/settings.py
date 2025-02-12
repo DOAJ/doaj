@@ -1601,6 +1601,10 @@ UR_CONCURRENCY_TIMEOUT = 10
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
 
+# The /export path to test users CSV file on google sheets (file is public)
+TEST_USERS_CSV_DL_PATH = ""
+
+
 #############################################
 # Datalog
 # ~~->Datalog:Feature~~
