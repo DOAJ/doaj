@@ -156,9 +156,6 @@ class Flags(TestDrive):
 
                 self.apps.append(app.id)
 
-        print(self.apps)
-
-
     def teardown(self, params):
         for acc in params.get("accounts").values():
             models.Account.remove_by_id(acc["username"])
