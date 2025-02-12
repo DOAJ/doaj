@@ -1,0 +1,111 @@
+suite: Flagged Journals
+testset: Flagged Journals
+tests:
+  - title: Admin - Managing Flags
+    context:
+      role: Admin
+    steps:
+      - step: Navigate to /testdrive/flags
+      - step: Login as Admin (from this point on, "you" refers to the logged-in user)
+        results:
+        - On your dashboard there are 5 records ** flagged to you ** are displayed on the dashboard, ordered by deadline
+        - Urgent Flags (with deadline within a week - including past dates) are marked with a different colour than Regular Flags (with deadline further than 7 days in advance or no deadline at all)
+      - step: Click New Applications tab
+        results: There is no applications in that tab
+      - step: Click On Hold tab
+        results: There is no applications in that tab
+      - step: Click Update Requests tab
+        results: The flagged records are listed
+      - step: Go to http://localhost:5004/admin/update_requests
+      - step: Check the "All flagged records" filter
+        results:
+          - All flagged records (20) are displayed
+          - Records flagged to you are marked with the red flag icon
+          - All other flagged records are marked with the empty flag icon
+      - step: Check the "All flagged records" filter
+        results:
+          - Only records flagged to you are displayed (5)
+          - Records are marked with the red flag icon
+      - step: Clear the filters
+      - step: Open any flagged record that is not flagged for you
+      - step: Edit the flag and save the record
+        results:
+          - The record is saved correctly, and the flag is updated
+      - step: Attempt to add a new flag
+        results:
+          - The "Add" button is disabled
+      - step: Click "Resolve" button next to the flag
+        results:
+          - The flag is marked as resolved
+      - step: Attempt to add a new flag
+        results:
+          - Adding a new flag is now possible
+      - step: Attempt to unresolve the previous flag
+        results:
+          - The "Unresolve" button is disabled
+      - step: Cancel the new flag
+        results:
+          - The "Unresolve" button is now active again
+      - step: Resolve the old flag, add a new flag, and save the record
+        results:
+          - The resolved flag is converted into a note with information about who resolved it and when
+          - The new flag is saved correctly
+      - step: Unlock and close the record
+      - step: Go to "Search Applications," open a record, and add a new flag
+      - step: Save, and Unlock and Close the record
+        results:
+          - The newly flagged record appears on the dashboard under "All" and "New Applications" tabs
+
+  - title: Editor - Managing Flags
+    context:
+      role: Editor
+    steps:
+      - step: Navigate to /testdrive/flags
+      - step: Login as Editor (from this point on, "you" refers to the logged-in user)
+        results:
+          - On your dashboard, flagged records assigned to you are displayed, ordered by deadline
+          - Urgent Flags (with deadline within a week - including past dates) are marked with a different colour than Regular Flags (with deadline further than 7 days in advance or no deadline at all)
+      - step: Click New Applications tab
+        results: There are no applications in that tab
+      - step: Click On Hold tab
+        results: There are no applications in that tab
+      - step: Click Update Requests tab
+        results: The flagged records are listed
+      - step: Go to http://localhost:5004/editor/update_requests
+      - step: Check the "All flagged records" filter
+        results:
+          - All flagged records (20) are displayed
+          - Records flagged to you are marked with the red flag icon
+          - All other flagged records are marked with the empty flag icon
+      - step: Check the "Flagged to me" filter
+        results:
+          - Only records flagged to you are displayed
+          - Records are marked with the red flag icon
+      - step: Clear the filters
+      - step: Open any flagged record that is **not** flagged for you
+      - step: Attempt to edit the flag
+        results:
+          - Editing is **not** possible
+      - step: Attempt to resolve the flag
+        results:
+          - Resolving is **not** possible
+      - step: Close and Unlock the record
+      - step: Open a flagged record that **is** assigned to you
+      - step: Edit the flag and save the record
+        results:
+          - The record is saved correctly, and the flag is updated
+      - step: Attempt to add a new flag
+        results:
+          - The "Add" button is disabled
+      - step: Click "Resolve" button next to the flag
+        results:
+          - The flag is marked as resolved
+      - step: Attempt to unresolve the previous flag
+        results:
+          - The "Unresolve" button is disabled
+      - step: Save the record
+        results:
+          - The resolved flag is converted into a note with information about who resolved it and when
+      - step: Unlock and close the record
+      - step: Go to "Search Applications" and confirm that "Flagged records" and "Flagged to me" filters work correctly
+
