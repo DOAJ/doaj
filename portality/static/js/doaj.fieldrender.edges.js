@@ -622,6 +622,78 @@ $.extend(true, doaj, {
                 this.edge.pushQuery(q);
                 this.edge.cycle();
             }
+        },
+
+        newReportExporter: function (params) {
+            return edges.instantiate(doaj.components.ReportExporter, params, edges.newComponent);
+        },
+        ReportExporter: function(params) {
+
+            this.model = edges.getParam(params.model, "journal");
+
+            this.reportUrl = edges.getParam(params.reportUrl, "/admin/report");
+
+            this.namespace = "doajreportexporter";
+            this.component = this;
+
+            this.draw = function(edge) {
+                this.edge = edge;
+
+                let toggleClass = edges.css_classes(this.namespace, "toggle", this);
+                let controlsClass = edges.css_classes(this.namespace, "controls", this);
+                let nameClass = edges.css_classes(this.namespace, "name", this);
+                let exportClass = edges.css_classes(this.namespace, "export", this);
+
+                let frag = `<div class="row">
+                    <div class="col-md-12">
+                        <a href="#" class="${toggleClass}">Generate Report</a>
+                        <div class="${controlsClass}" style="display:none">
+                            <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the report"><br>
+                            <button type="button" class="btn btn-primary ${exportClass}">Generate</button>
+                        </div>
+                    </div>
+                </div>`;
+
+                this.context.html(frag);
+
+                let toggleSelector = edges.css_class_selector(this.namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleControls");
+
+                let exportSelector = edges.css_class_selector(this.namespace, "export", this);
+                edges.on(exportSelector, "click", this, "export");
+            };
+
+            this.toggleControls = function(element) {
+                let controlsSelector = edges.css_class_selector(this.namespace, "controls", this);
+                let controls = this.jq(controlsSelector);
+                controls.toggle();
+            }
+
+            this.export = function(element) {
+                let cq = this.edge.currentQuery;
+                let query = cq.objectify({
+                    include_paging: false,
+                    include_fields: false,
+                    include_aggregations: false,
+                    include_source_filters: false
+                });
+                let qa = JSON.stringify(query);
+
+                let nameSelector = edges.css_class_selector(this.namespace, "name", this);
+                let name = this.context.find(nameSelector).val();
+                $.post({
+                    url: this.reportUrl,
+                    data: {
+                        query: qa,
+                        name: name,
+                        model: this.model
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        alert("Export requested, you will be notified when it is ready");
+                    }
+                });
+            }
         }
     },
 

@@ -110,6 +110,12 @@ bg:job_finished:notify:
   short:
     Background job finished
 
+bg:job:admin_reports:export_available:
+  long: |
+    Your report `{name}` has been generated and is ready for download.
+  short:
+    Report ready for download
+
 journal:assed:assigned:notify:
   long: |
     The journal **{journal_name}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.

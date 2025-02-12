@@ -10,12 +10,6 @@
 
 {% block admin_content %}
     <h1 class="sr-only">Journals</h1>
-
-    <div class="row">
-        <div class="col-md-12">
-            <button type="button" class="btn btn-primary" id="export_as_csv">Export as CSV</button>
-        </div>
-    </div>
     <div id="admin_journals"></div>
 {% endblock %}
 
@@ -34,12 +28,33 @@
     <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
-            $("#export_as_csv").on("click", function() {
-                let cq = doaj.adminJournalsSearch.activeEdges["#admin_journals"].currentQuery;
-                $.post("/");
-            })
-
-        });
+        {# $(document).ready(function() {#}
+        {#    $("#export_as_csv").on("click", function() {#}
+        {#        $(".export_request").toggle();#}
+        {#    });#}
+        {#    $("#generate_csv").on("click", function() {#}
+        {#        let cq = doaj.adminJournalsSearch.activeEdges["#admin_journals"].currentQuery;#}
+        {#        let query = cq.objectify({#}
+        {#            include_paging: false,#}
+        {#            include_fields: false,#}
+        {#            include_aggregations: false,#}
+        {#            include_source_filters: false#}
+        {#        });#}
+        {#        let qa = JSON.stringify(query);#}
+        {#        let name = $("input[name=export_name]").val();#}
+        {#        $.post({#}
+        {#            url: "/admin/report",#}
+        {#            data: {#}
+        {#                query: qa,#}
+        {#                name: name,#}
+        {#                model: "journal"#}
+        {#            },#}
+        {#            dataType: "json",#}
+        {#            success: function(data) {#}
+        {#                alert("Export requested, you will be notified when it is ready");#}
+        {#            }#}
+        {#        });#}
+        {#    });#}
+        {# });#}
     </script>
 {% endblock %}

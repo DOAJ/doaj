@@ -302,6 +302,11 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
+                doaj.components.newReportExporter({
+                    id: "report-exporter",
+                    category: "facet",
+                    model: "journal"
+                }),
 
                 // configure the search controller
                 edges.newFullSearchController({

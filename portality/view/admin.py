@@ -7,7 +7,7 @@ from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
-import portality.models as models
+from portality import models
 from portality import constants
 from portality import dao
 from portality import lock
@@ -25,7 +25,7 @@ from portality.lcc import lcc_jstree
 from portality.lib.query_filters import remove_search_limits, update_request, not_update_request
 from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
-    article_bulk_delete
+    article_bulk_delete, admin_reports
 from portality.ui.messages import Messages
 from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
@@ -863,7 +863,26 @@ def bulk_articles_delete():
 ################################################
 ## Reporting endpoint
 
-@blueprint.route("/report")
+@blueprint.route("/report", methods=["POST"])
 @write_required()
-def report():
-    query = get_web_json_payload()
+@login_required
+def request_report():
+    model = request.values.get("model")
+    query_raw = request.values.get("query")
+    name = request.values.get("name")
+
+    query = json.loads(query_raw)
+    sane_query = {"query": query.get("query")}
+    if "sort" in query:
+        sane_query["sort"] = query["sort"]
+
+    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, query=sane_query, name=name)
+    admin_reports.AdminReportsBackgroundTask.submit(job)
+
+    return make_json_resp({"job_id": job.id}, status_code=200)
+
+
+@blueprint.route("/report/<report_id>", methods=["GET"])
+@login_required
+def get_report(report_id):
+    pass

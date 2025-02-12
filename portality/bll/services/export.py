@@ -4,13 +4,12 @@ import random
 import string
 import os
 
-from pydevd_file_utils import basename
-
 from portality.core import app
 from portality.store import StoreFactory, StoreException
 from portality.util import no_op
 from portality import models
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
+from portality.lib import dates
 
 class ExportService(object):
     def csv(self, model: models.JournalLikeObject, query=None, logger=None, out_file=None,
@@ -172,3 +171,19 @@ class ExportService(object):
         tmpStore = StoreFactory.tmp()
         container_id = "csv_export_tmp_container"
         tmpStore.delete_file(container_id, filename)
+
+    def publish(self, source_file, filename, requester=None, request_date=None, name=None, query=None):
+        mainStore = StoreFactory.get("export")
+        container_id = app.config.get("STORE_EXPORT_CONTAINER")
+        mainStore.store(container_id, filename, source_path=source_file)
+
+        e = models.Export()
+        e.generated_date = dates.now_str()
+        e.requester = requester if requester is not None else None
+        e.request_date = request_date if request_date is not None else None
+        e.name = name if name is not None else filename
+        e.filename = filename
+        e.constraints = query if query is not None else None
+        e.save()
+
+        return e
