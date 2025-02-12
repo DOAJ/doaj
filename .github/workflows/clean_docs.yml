@@ -5,6 +5,7 @@ on:
 
 jobs:
   delete_docs_folder:
+    if: github.event.ref_type == 'branch'
     name: Remove corresponding documentation folder in DOAJ/doaj-docs when a branch is deleted
     runs-on: ubuntu-latest
     permissions:
@@ -21,7 +22,7 @@ jobs:
 
       - name: Delete corresponding folder
         env:
-          BRANCH_NAME: ${{ github.ref_name }}
+          BRANCH_NAME: ${{ github.event.ref }}
         run: |
           FOLDER_PATH="${{ env.BRANCH_NAME }}"
           BASE_FOLDER=$(dirname "$FOLDER_PATH")
