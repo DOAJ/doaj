@@ -62,7 +62,7 @@ class TestQueryFilters(DoajTestCase):
             'query': {
                 'bool': {
                     'filter': [
-                        {"range": {"created_date": {"gte": '2018-05-03'}}},
+                        {"range": {"admin.date_applied": {"gte": '2018-05-03'}}},
                         {"term": {"admin.application_type.exact": "update_request"}}
                     ]
                 }
