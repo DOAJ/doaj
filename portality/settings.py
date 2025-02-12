@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.0.6"
+DOAJ_VERSION = "8.1.1"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -1329,15 +1329,6 @@ HARVEST_ACCOUNTS = []
 HARVESTER_ZOMBIE_AGE = 604800
 
 #######################################################
-# ReCAPTCHA configuration
-# ~~->ReCAPTCHA:ExternalService
-
-# Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
-RECAPTCHA_ENABLE = True
-RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
-RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
-
-#######################################################
 # Preservation configuration
 # ~~->Preservation:Feature
 PRESERVATION_URL = "http://PresevatinURL"
@@ -1610,6 +1601,10 @@ UR_CONCURRENCY_TIMEOUT = 10
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
 
+# The /export path to test users CSV file on google sheets (file is public)
+TEST_USERS_CSV_DL_PATH = ""
+
+
 #############################################
 # Datalog
 # ~~->Datalog:Feature~~
@@ -1638,3 +1633,7 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1  # seconds between requests
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+##################################################
+# Honeypot bot-trap settings for forms (now: only registration form)
+HONEYPOT_TIMER_THRESHOLD = 5000;

@@ -1,7 +1,8 @@
 import unittest
 import datetime
 
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 
 from portality import models
 from portality.tasks import find_discontinued_soon

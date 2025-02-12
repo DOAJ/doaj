@@ -7,7 +7,7 @@ from parameterized import parameterized
 
 from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from doajtest.mocks.store import StoreMockFactory
 from portality import models
@@ -17,7 +17,7 @@ from portality.bll import exceptions
 from portality.core import app
 from portality.lib import nav
 from portality.lib.paths import rel2abs
-from portality.util import get_full_url_safe
+from portality.util import get_full_url_safe, patch_config
 
 
 def load_cases():

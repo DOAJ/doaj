@@ -11,7 +11,8 @@ from selenium.common.exceptions import StaleElementReferenceException, ElementCl
 from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from portality import app, models, core
 from portality.dao import ESMappingMissingError
 

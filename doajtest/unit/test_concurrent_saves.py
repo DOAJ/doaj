@@ -1,4 +1,5 @@
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from doajtest.fixtures import JournalFixtureFactory
 from portality.models import Journal
 from portality.bll.exceptions import ConcurrentUpdateRequestException
