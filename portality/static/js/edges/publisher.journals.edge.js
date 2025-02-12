@@ -23,10 +23,6 @@ $.extend(true, doaj, {
         },
 
         shareSealLogo: function(resultobj) {
-            // Add Display Seal as an action
-            if (!edges.objVal("admin.seal", resultobj, false)) {
-                return false;
-            }
             let result = {
                 label: "Download the Seal",
                 link: "#",
@@ -173,7 +169,6 @@ $.extend(true, doaj, {
                         }
                     ],
                     fieldDisplays : {
-                        "index.has_seal.exact" : "With a DOAJ Seal",
                         "index.schema_codes_tree.exact" : "Subject",
                         "index.license.exact" : "Licenses",
                         "bibjson.publisher.name.exact" : "Publishers",
