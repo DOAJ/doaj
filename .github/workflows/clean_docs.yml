@@ -21,11 +21,13 @@ jobs:
 
       - name: Delete corresponding folder
         env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          BRANCH_NAME: ${{ github.ref_name }}
         run: |
           FOLDER_PATH="${{ env.BRANCH_NAME }}"
           BASE_FOLDER=$(dirname "$FOLDER_PATH")
           TARGET_FOLDER=$(basename "$FOLDER_PATH")
+          
+          echo "Cleaning up docs for branch $FOLDER_PATH"
 
           # Check if base folder and target folder exist
           if [ -d "$GITHUB_WORKSPACE/doaj-docs/$BASE_FOLDER" ]; then
