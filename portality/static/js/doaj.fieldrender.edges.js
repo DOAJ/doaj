@@ -1757,14 +1757,15 @@ $.extend(true, doaj, {
                 var checked = this.component.jq(element).is(":checked");
                 if (checked) {
                     this.component.addFilter(filter_id);
-                    if (filter.includedIn) {
-                        this.component.addFilter(filter.includedIn)
-                    }
+                    // to do: these filters should be synched but it this doesn't work
+                    // if (filter.includedIn) {
+                    //     this.component.addFilter(filter.includedIn)
+                    // }
                 } else {
                     this.component.removeFilter(filter_id);
-                    if (filter.includes) {
-                        this.component.removeFilter(filter.includes);
-                    }
+                    // if (filter.includes) {
+                    //     this.component.removeFilter(filter.includes);
+                    // }
                 }
             };
 
