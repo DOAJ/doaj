@@ -102,7 +102,7 @@ tests:
       Chemical Technology)
     results:
     - The subject and any parents are selected in the facet
-    - The search box clears
+    - The facet status hasn't changed - the search query is still visible in the search box and the tree is filtered
   - step: Enter another search of 3 or more characters, which will also return the
       values you selected in the previous step (e.g. "Bio")
     results:
@@ -113,14 +113,17 @@ tests:
   - step: Select another subject from another part of the tree (e.g. Medicine)
     results:
     - All your subjects and any parents are selected in the facet
-    - The search box clears
+    - The facet status hasn't changed - the last search query is displayed in the input field and the tree is filtered
   - step: Enter your second search again (e.g. "Bio")
   - step: Unselect one of the subjects you had previously selected (e.g. Chemical
       Technology)
     results:
     - Your second subject is still present (e.g. Medicine) and any parents of the
       subject you unselected are still present (e.g. Technology)
-    - The search box clears
+    - The facet status hasn't changed - the last search query is displayed in the input field and the tree is filtered
   - step: Enter a long random string into the search box
     results:
     - A message is displayed "No subjects match your search"
+  - step: Remove a string from the search box
+    results:
+    - The facet shows all subjects with all levels folded
