@@ -1,4 +1,9 @@
-from portality.dao import DomainObject
+from __future__ import annotations
+
+import elasticsearch
+
+from portality import dao
+from portality.dao import DomainObject, ScrollInitialiseException
 from portality.lib import coerce
 from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
@@ -77,3 +82,61 @@ class DatalogJournalAdded(SeamlessMixin, DomainObject):
     @journal_id.setter
     def journal_id(self, val):
         self.__seamless__.set_single('journal_id', val)
+
+
+class LastDatalogJournalAddedQuery:
+
+    def query(self):
+        return {
+            "size": 1,
+            "sort": [
+                {
+                    "date_added": {
+                        "order": "desc"
+                    }
+                }
+            ],
+            "query": {
+                "match_all": {}
+            }
+        }
+
+
+def find_last_datalog():
+    try:
+        record = next(DatalogJournalAdded.iterate(LastDatalogJournalAddedQuery().query()), None)
+    except (elasticsearch.exceptions.NotFoundError, ScrollInitialiseException):
+        record = None
+    return record
+
+
+class DateAddedDescQuery:
+
+    def query(self):
+        return {
+            'sort': [
+                {'date_added': {'order': 'desc'}}
+            ]
+        }
+
+
+class IssnDateMatchQuery:
+    def __init__(self, issn, date_added):
+        self.issn = issn
+        self.date_added = date_added
+
+    def query(self):
+        return {
+            "query": {
+                "bool": {
+                    "filter": [
+                        {"term": {"issn.keyword": self.issn}},
+                        {"term": {"date_added": self.date_added}}
+                    ]
+                }
+            },
+        }
+
+
+def is_issn_exists(issn, date_added):
+    return dao.is_exist(IssnDateMatchQuery(issn, date_added).query(), DatalogJournalAdded.index_name())

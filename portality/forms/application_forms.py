@@ -124,7 +124,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Here is an example of a suitable Open Access "
                           "statement that meets our criteria: <blockquote>This"
-                          " is an open access journal which means that all "
+                          " is an open access journal, which means that all "
                           "content is freely available without charge to the "
                           "user or his/her institution. Users are allowed to "
                           "read, download, copy, distribute, print, search, or"
@@ -1486,13 +1486,12 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
                           "of their choice. What is the journal’s policy for this?",
-                          "You should state your policy with regard to the different versions of the paper:"
+                          "You should state your policy about the different versions of the paper:"
                           "<ul style='list-style-type: none;'>"
                           "<li>Submitted version</li>"
                           "<li>Accepted version (Author Accepted Manuscript)</li>"
                           "<li>Published version (Version of Record)</li>"
-                          "</ul>",
-                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author’s choice without embargo."
+                          "</ul>"
                           ]},
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}

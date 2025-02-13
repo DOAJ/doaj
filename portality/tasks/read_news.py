@@ -5,6 +5,7 @@ from portality.background import BackgroundTask, BackgroundApi
 from portality.core import app
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_short_queue as queue
+from portality.lib import dates
 
 
 class FeedError(Exception):
@@ -88,9 +89,9 @@ def save_entry(entry):
     news.remote_id = entry.id
     news.url = alts[0]
     news.title = entry.title
-    news.updated = entry.updated
+    news.updated = dates.format(dates.timestruct2datetime(entry.updated_parsed))
     news.summary = entry.summary
-    news.published = entry.published
+    news.published = dates.format(dates.timestruct2datetime(entry.published_parsed))
 
     news.save()
 
