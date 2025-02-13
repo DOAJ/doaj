@@ -1726,6 +1726,17 @@ class FieldDefinitions:
         ],
     }
 
+    S2O = {
+        "name": "s2o",
+        "label": "Subscribe to Open",
+        "input": "checkbox",
+        "help": {
+            "long_help": [
+                "Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
+                "Subscribe to Open</a> initiative?"],
+        }
+    }
+
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
     # ~~->$ QuickReject:FormField~~
     QUICK_REJECT = {
@@ -2251,6 +2262,14 @@ class FieldSetDefinitions:
         ]
     }
 
+    LABELS = {
+        "name": "labels",
+        "label": "Specify labels for this journal",
+        "fields": [
+            FieldDefinitions.S2O["name"]
+        ]
+    }
+
     # ~~->$ QuickReject:FieldSet~~
     # ~~^-> QuickReject:Feature~~
     QUICK_REJECT = {
@@ -2437,6 +2456,7 @@ class ApplicationContextDefinitions:
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
         FieldSetDefinitions.SEAL["name"],
+        FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
@@ -2522,6 +2542,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.SEAL["name"],
+        FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview

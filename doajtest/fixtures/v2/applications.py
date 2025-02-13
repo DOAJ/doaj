@@ -46,10 +46,12 @@ class ApplicationFixtureFactory(object):
         form = deepcopy(APPLICATION_FORM)
         if role == "assed" or role == "editor":
             del form["editor_group"]
+            del form["s2o"]
         elif role == "publisher":
             form = deepcopy(JOURNAL_FORM)
             del form["pissn"]
             del form["eissn"]
+            del form["s2o"]
 
         return form
 

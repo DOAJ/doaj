@@ -211,5 +211,6 @@ JOURNAL_QUESTION_ANSWERS = [
     'http://oa.statement',
     "1111-1111",
     "2222-2222",
-    "HB1-3840|H|SF600-1100"
+    "HB1-3840|H|SF600-1100",
+    "Yes"
 ]
