@@ -213,7 +213,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        classification: function() {
+        classification: function () {
             return edges.newRefiningANDTermSelector({
                 id: "classification",
                 category: "facet",
