@@ -1,6 +1,6 @@
 from portality.dao import DomainObject
 from datetime import datetime, timedelta
-import tzlocal
+import tzlocal, pytz
 
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
@@ -55,7 +55,7 @@ class Lock(DomainObject):
 
     def utc_expires(self):
         ed = dates.parse(self.expires)
-        local = tzlocal.get_localzone()
+        local = pytz.timezone(str(tzlocal.get_localzone()))
         ld = local.localize(ed)
         tt = ld.utctimetuple()
         utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec)

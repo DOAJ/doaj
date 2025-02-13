@@ -1,0 +1,107 @@
+# redirect to SSL version (except xsd schemas)
+server {
+    listen          80;
+    server_name     testdoaj.cottagelabs.com testdoajes.cottagelabs.com staticdoaj.cottagelabs.com;
+
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location =/static/doaj/iso_639-2b.xsd {
+        alias /home/cloo/doaj/portality/static/doaj/iso_639-2b.xsd;
+    }
+
+    location /static/crossref {
+        alias /home/cloo/doaj/portality/static/crossref;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+upstream doaj_apps {
+    server localhost:5050;
+}
+
+upstream doaj_index {
+    server localhost:9200;
+}
+
+# Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
+map_hash_bucket_size 64;
+map $request_uri $new_uri {
+    include /etc/nginx/doaj-redirects.map;
+}
+
+# Redirect the old URL for the static site to the current one
+server {
+    server_name  .staticdoaj.cottagelabs.com;
+    rewrite      ^ https://static.doaj.cottagelabs.com$request_uri? permanent;
+}
+
+server {
+    listen          443 ssl;
+    server_name     testdoaj.cottagelabs.com;
+
+    # Separate doajtest app htpasswd file to include additional users
+    #auth_basic "Restricted";
+    #auth_basic_user_file /etc/nginx/doajtest_users;
+
+    ssl_certificate /etc/letsencrypt/live/testdoaj.cottagelabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
+    if ($new_uri != "") {
+        rewrite ^(.*)$ $new_uri permanent;
+    }
+
+    location / {
+        proxy_pass http://doaj_apps;
+    }
+    location =/robots.txt {
+        alias /home/cloo/doaj/deploy/robots-test.txt;
+    }
+    location /static/ {
+        alias /home/cloo/doaj/portality/static/;
+        autoindex off;
+        expires max;
+    }
+}
+
+server {
+    listen          443 ssl;
+    server_name     testdoajes.cottagelabs.com;
+
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/htpasswd;
+
+    ssl_certificate /etc/letsencrypt/live/testdoaj.cottagelabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
+
+    location / {
+        proxy_pass http://doaj_index;
+    }
+}
+
+# Catch and throw away any requests to an unknown host
+server {
+  listen 80 default_server;
+  return 444;
+}
+
+server {
+  listen [::]:443 ssl http2 default_server;
+  listen 443 ssl http2 default_server;
+  server_name _;
+
+  ssl_certificate /etc/letsencrypt/live/testdoaj.cottagelabs.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
+
+  return 444;
+}

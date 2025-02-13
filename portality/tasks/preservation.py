@@ -17,7 +17,7 @@ from portality.lib import dates
 from portality.models import Account, Article, BackgroundJob, PreservationState
 from portality.regex import DOI_COMPILED, HTTP_URL_COMPILED
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 
 
 class PreservationException(Exception):
@@ -422,10 +422,10 @@ class PreservationBackgroundTask(BackgroundTask):
         """
         Submit Background job"""
         background_job.save(blocking=True)
-        preserve.schedule(args=(background_job.id,), delay=10)
+        preserve.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = PreservationBackgroundTask.create_huey_helper(main_queue)
+huey_helper = PreservationBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=True)

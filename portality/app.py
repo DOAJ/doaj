@@ -154,7 +154,7 @@ def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
     return send_file(
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
-            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+            mimetype="application/xml", as_attachment=True, download_name=schema_fn
             )
 
 
@@ -213,7 +213,7 @@ def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
     :return: the string formatted datetime
     """
-    local = tzlocal.get_localzone()
+    local = pytz.timezone(str(tzlocal.get_localzone()))
     ld = local.localize(stamp)
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
@@ -412,14 +412,6 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
                 }
             )
         return jsonify({'api_versions': vers})
-
-
-# Make the reCAPTCHA key available to the js
-# ~~-> ReCAPTCHA:ExternalService~~
-@app.route('/get_recaptcha_site_key')
-def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY', '')
-
 
 @app.errorhandler(400)
 def page_not_found(e):

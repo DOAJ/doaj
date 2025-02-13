@@ -26,32 +26,32 @@ from portality.events.consumers.journal_discontinuing_soon_notify import Journal
 
 
 class EventsService(object):
-    # disabled events - to enable move the event to EVENT_CONSUMENRS array
+    # disabled events - to enable move the event to EVENT_CONSUMERS array
     DISABLED_EVENTS = [
-        ApplicationPublisherRevisionNotify
+        ApplicationPublisherAssignedNotify, # https://github.com/DOAJ/doajPM/issues/3974
+        ApplicationPublisherInprogressNotify, # https://github.com/DOAJ/doajPM/issues/3974
+        ApplicationPublisherRevisionNotify,
+        JournalEditorGroupAssignedNotify, # https://github.com/DOAJ/doajPM/issues/3974
+        JournalAssedAssignedNotify, # https://github.com/DOAJ/doajPM/issues/3974
+        UpdateRequestPublisherAssignedNotify, # https://github.com/DOAJ/doajPM/issues/3974
     ]
     EVENT_CONSUMERS = [
-        ApplicationPublisherQuickRejectNotify,
         AccountCreatedEmail,
         AccountPasswordResetEmail,
-        ApplicationAssedInprogressNotify,
         ApplicationAssedAssignedNotify,
+        ApplicationAssedInprogressNotify,
         ApplicationEditorCompletedNotify,
-        ApplicationEditorInProgressNotify,
         ApplicationEditorGroupAssignedNotify,
+        ApplicationEditorInProgressNotify,
         ApplicationManedReadyNotify,
-        ApplicationPublisherCreatedNotify,
-        ApplicationPublisherInprogressNotify,
         ApplicationPublisherAcceptedNotify,
-        ApplicationPublisherAssignedNotify,
+        ApplicationPublisherCreatedNotify,
+        ApplicationPublisherQuickRejectNotify,
         BGJobFinishedNotify,
-        JournalAssedAssignedNotify,
-        JournalEditorGroupAssignedNotify,
-        UpdateRequestPublisherAcceptedNotify,
-        UpdateRequestPublisherAssignedNotify,
-        UpdateRequestPublisherRejectedNotify,
-        UpdateRequestPublisherSubmittedNotify,
         JournalDiscontinuingSoonNotify,
+        UpdateRequestPublisherAcceptedNotify,
+        UpdateRequestPublisherRejectedNotify,
+        UpdateRequestPublisherSubmittedNotify
     ]
 
     def __init__(self):

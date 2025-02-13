@@ -10,6 +10,7 @@ from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
+from portality.lib.thread_utils import wait_until
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -1280,7 +1281,7 @@ class TestModels(DoajTestCase):
 
         models.Provenance.make(acc, "act2", obj2, "sub")
 
-        time.sleep(1)
+        time.sleep(2)
 
         prov = models.Provenance.get_latest_by_resource_id("obj2")
         assert prov.type == "suggestion"
@@ -1355,6 +1356,7 @@ class TestModels(DoajTestCase):
         app2.set_id(app2.makeid())
         app2.set_current_journal(j.id)
         app2.set_created("1971-01-01T00:00:00Z")
+        app2.set_date_applied("2004-01-01T00:00:00Z")
         app2.save(blocking=True)
 
         # check that we find the right application when we search
@@ -1721,6 +1723,69 @@ class TestModels(DoajTestCase):
 
         ap2 = models.Autocheck.for_journal("9876")
         assert ap2.journal == "9876"
+
+    def test_41_article_tombstone(self):
+        t = models.ArticleTombstone()
+        t.set_id("1234")
+        t.bibjson().add_subject("LCC", "Medicine", "KM22")
+        t.set_in_doaj(True) # should have no effect
+
+        t.save(blocking=True)
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
+
+        t2 = models.ArticleTombstone.pull("1234")
+        assert t2.id == "1234"
+        assert t2.is_in_doaj() is False
+        assert t2.last_updated is not None
+        assert t2.bibjson().subjects()[0].get("scheme") == "LCC"
+        assert t2.bibjson().subjects()[0].get("term") == "Medicine"
+        assert t2.bibjson().subjects()[0].get("code") == "KM22"
+
+    def test_42_make_article_tombstone(self):
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+
+        t = a._tombstone()
+        assert t.id == a.id
+        assert t.bibjson().subjects() == a.bibjson().subjects()
+        assert t.is_in_doaj() is False
+
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+        a.delete()
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
+
+        stone = models.ArticleTombstone.pull(a.id)
+        assert stone is not None
+
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+        a.save(blocking=True)
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"id.exact": a.id}}
+                    ]
+                }
+            }
+        }
+        models.Article.delete_selected(query)
+        time.sleep(1)
+
+        stone = models.ArticleTombstone.pull(a.id)
+        assert stone is not None
+
+    def test_43_add_remove_apc_bibjson(self):
+        bj = models.JournalLikeBibJSON()
+        bj.add_apc("GBP", 100)
+        assert bj.has_apc is True
+        assert bj.apc == [{"currency": "GBP", "price": 100}]
+
+        bj.has_apc = False
+        assert bj.has_apc is False
+        assert bj.apc == []
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

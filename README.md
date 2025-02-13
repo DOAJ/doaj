@@ -4,6 +4,21 @@
 This repository provides the software which drives the DOAJ website and the DOAJ 
 directory.
 
+## CI Status
+
+**develop** &nbsp; [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/develop.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/develop)
+
+**master** &nbsp; [![CircleCI](https://dl.circleci.com/status-badge/img/gh/DOAJ/doaj/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/DOAJ/doaj/tree/master)
+
+## GitHub Actions
+
+There are 2 workflows in GitHub Actions:
+
+* `gen_docs.yml` installs the app and generates the documentation in the repo https://github.com/doaj/doaj-docs on push.
+* `clean_docs.yml` removes the docs folder for a branch when it is deleted (i.e. feature branches, on merge).
+
+See the Actions tab for individual runs https://github.com/DOAJ/doaj/actions.
+
 ## Reporting issues
 
 Please feel free to use the issue tracker on https://github.com/DOAJ/doaj/issues for any bug 
@@ -33,4 +48,5 @@ to open a pull request!
 
 <!-- ~~->DocSite:Documentation~~ -->
 * [DOAJ Auto-generated docs](https://doaj.github.io/doaj-docs/) - here you will find 
-data models, test coverage reports, form documentation and a map of the software
+data models, test coverage reports, form documentation and a map of the software.
+Its repo is at https://github.com/doaj/doaj-docs.

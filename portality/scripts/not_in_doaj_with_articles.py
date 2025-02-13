@@ -1,7 +1,5 @@
 from portality import models
-from portality.core import es_connection
 from portality.util import ipt_prefix
-import esprit
 import csv
 
 
@@ -33,8 +31,7 @@ if __name__ == "__main__":
         writer = csv.writer(f)
         writer.writerow(["ID", "Journal Name", "E-ISSN", "P-ISSN", "Article Count"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=NOT_IN_DOAJ, page_size=100, keepalive='5m'):
-            journal = models.Journal(_source=j)
+        for journal in Journal.scroll(q=ALL, page_size=100, keepalive='5m'):
             bibjson = journal.bibjson()
             issns = bibjson.issns()
             count = models.Article.count_by_issns(issns)

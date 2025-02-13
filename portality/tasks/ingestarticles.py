@@ -7,12 +7,13 @@ from urllib.parse import urlparse
 import requests
 
 from portality import models
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from huey.exceptions import RetryTask
 from portality.bll.exceptions import IngestException
 from portality.core import app
 from portality.lib import plugin
 from portality.tasks.helpers import background_helper, articles_upload_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import events_queue as queue
 from portality.ui.messages import Messages
 
 DEFAULT_MAX_REMOTE_SIZE = 262144000
@@ -24,7 +25,7 @@ def load_xwalk(schema):
     try:
         return plugin.load_class(xwalk_name)()
     except IngestException:
-        raise RetryException("Unable to load schema {}".format(xwalk_name))
+        raise RetryTask("Unable to load schema {}".format(xwalk_name))
 
 
 def ftp_upload(job, path, parsed_url, file_upload):
@@ -283,8 +284,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             if retry_limit <= count:
                 job.add_audit_message("File still not found at path {} . Giving up.".format(path))
                 job.fail()
-
-            raise RetryException()
+            else:
+                raise RetryTask()
 
         job.add_audit_message("Importing from {x}".format(x=path))
 
@@ -357,7 +358,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save(blocking=True)
-        ingest_articles.schedule(args=(background_job.id,), delay=10)
+        ingest_articles.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10), retries=app.config.get("HUEY_TASKS", {}).get("ingest_articles", {}).get("retries", 10), retry_delay=app.config.get("HUEY_TASKS", {}).get("ingest_articles", {}).get("retry_delay", 15))
 
     @classmethod
     def _file_upload(cls, username, f, schema, previous):
@@ -504,7 +505,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             return __fail(record, previous, error="please check it before submitting again; " + str(e))
 
 
-huey_helper = IngestArticlesBackgroundTask.create_huey_helper(main_queue)
+huey_helper = IngestArticlesBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=True)
