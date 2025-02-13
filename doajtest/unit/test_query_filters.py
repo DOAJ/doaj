@@ -2,7 +2,8 @@ from copy import deepcopy
 from flask_login import login_user
 
 from doajtest.fixtures import AccountFixtureFactory, EditorGroupFixtureFactory, ApplicationFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from portality import models
 from portality.lib import query_filters
 from portality.bll.services.query import Query
@@ -61,7 +62,7 @@ class TestQueryFilters(DoajTestCase):
             'query': {
                 'bool': {
                     'filter': [
-                        {"range": {"created_date": {"gte": '2018-05-03'}}},
+                        {"range": {"admin.date_applied": {"gte": '2018-05-03'}}},
                         {"term": {"admin.application_type.exact": "update_request"}}
                     ]
                 }

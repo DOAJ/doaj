@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.1.1"
+DOAJ_VERSION = "8.1.2"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -1600,6 +1600,10 @@ UR_CONCURRENCY_TIMEOUT = 10
 # Google Sheet API
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
+
+# The /export path to test users CSV file on google sheets (file is public)
+TEST_USERS_CSV_DL_PATH = ""
+
 
 #############################################
 # Datalog

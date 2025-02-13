@@ -179,3 +179,11 @@ def get_full_url_safe(endpoint):
 def no_op(*args, **kwargs):
     """ noop (no operation) function """
     pass
+
+
+def patch_config(inst, properties):
+    originals = {}
+    for k, v in properties.items():
+        originals[k] = inst.config.get(k)
+        inst.config[k] = v
+    return originals
