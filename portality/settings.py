@@ -1107,9 +1107,9 @@ TOC_CHANGEFREQ = "monthly"
 # News feed settings
 # ~~->News:Feature~~
 
-BLOG_URL = "http://doajournals.wordpress.com/"
+BLOG_URL = "https://blog.doaj.org/"
 
-BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
+BLOG_FEED_URL = "https://blog.doaj.org/feed/"
 
 FRONT_PAGE_NEWS_ITEMS = 4
 
