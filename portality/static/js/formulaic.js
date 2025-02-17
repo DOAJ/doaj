@@ -1131,10 +1131,14 @@ var formulaic = {
                 this.flagExists = false;
                 this.existingFlagIdx = null;
                 this.newFlagIdx = null;
+                this.isEditable = true;
 
                 for (var j = 0; j < this.assigneeInputs.length; j++) {
                     if ($(this.assigneeInputs[j]).val()) {
                         this.flagExists = true;
+                        if ($(this.assigneeInputs[j]).is(":disabled")) {
+                            this.isEditable = false;
+                        }
                         break;
                     }
                 }
@@ -1259,6 +1263,7 @@ var formulaic = {
             this.setUI = function() {
 
                 this.removeResolveButtonsIfResolveDisabled();
+
                 this.setupFlagIndices();
                 if (this.flagExists) {
                     this.initializeExistingFlag();
@@ -1301,7 +1306,7 @@ var formulaic = {
             this.setUpNoteDetails = function() {
                 let $authorInput = $("input[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_setter']");
                 let $flagDateInput = $("input[id='" + this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_created_date']");
-                let newNoteText = `<strong>Created by: </strong>` + $authorInput.val() + ", " + doaj.dates.reformat($flagDateInput.val(), doaj.dates.format.FMT_DATETIME_STD, doaj.dates.format.FMT_DATETIME_NO_SECS);
+                let newNoteText = `<strong>Created by: </strong>` + $authorInput.val() + ", " + $flagDateInput.val();
                 let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), newNoteText)
                 $authorInput.before($newSpan);
                 $authorInput.hide();
@@ -1311,19 +1316,42 @@ var formulaic = {
             this.setUpFlagDetails = function() {
                 let $assigneeInput = $(this.assigneeInputs[this.existingFlagIdx]);
                 let $flagDeadlineInput = $("[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_deadline']");
-                let flagDetailsText = "";
+                let flagDetailsText = `<span>`;
+                let flagDetailsText_assignee = "";
+                let flagDetailsText_deadline = "";
 
                 if ($assigneeInput.is(":disabled")) {
                     if ($assigneeInput.val() === doaj.session.currentUserId) {
                         flagDetailsText += this.fullFlagHTML();
                     }
-                    if ($flagDeadlineInput.val())
-                        flagDetailsText += `, <strong>Deadline: </strong>` + doaj.dates.reformat($flagDeadlineInput.val(), doaj.dates.format.FMT_DATETIME_STD, doaj.dates.format.FMT_DATE_STD);
-                    flagDetailsText += `</span>`
-                    let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), flagDetailsText)
-                    $assigneeInput.before($newSpan);
-                    $assigneeInput.hide();
-                    $flagDeadlineInput.hide();
+                    else {
+                        flagDetailsText_assignee = `<strong>Assigned to: </strong>` + $assigneeInput.val();
+                    }
+
+                    if ($flagDeadlineInput.val()) {
+                        flagDetailsText_deadline = `<strong>Deadline: </strong>` + $flagDeadlineInput.val();
+                    }
+
+                    if (flagDetailsText_assignee !== "") {
+                        if (flagDetailsText_deadline) {
+                            flagDetailsText += flagDetailsText_assignee + `, ` + flagDetailsText_deadline;
+                        }
+                        else {
+                            flagDetailsText += flagDetailsText_assignee;
+                        }
+                    }
+                    else {
+                        if (flagDetailsText_deadline) {
+                            flagDetailsText += flagDetailsText_deadline;
+                        }
+                    }
+
+                    flagDetailsText += `</span>`;
+
+                    let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), flagDetailsText);
+                    $assigneeInput.parent().before($newSpan);
+                    $assigneeInput.parent().hide();
+                    $flagDeadlineInput.parent().hide();
                 }
                 else {
                     if ($(".flag").length > 0) {

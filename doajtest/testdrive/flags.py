@@ -136,7 +136,7 @@ class Flags(TestDrive):
         for key, val in accounts.items():
             for days in deadlines_in_days:
                 note = {"id": self.create_random_str(),
-                        "note": self.create_random_str(),
+                        "note": f'This is a note for {key}! Please don\'t forget about this important flag!',
                         "date": dates.now(),
                         "author_id": self.admin.id,
 
