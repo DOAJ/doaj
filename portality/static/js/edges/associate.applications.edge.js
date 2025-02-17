@@ -25,7 +25,22 @@ $.extend(true, doaj, {
 
             var components = [
                 doaj.components.searchingNotification(),
-
+                edges.newFilterSetter({
+                    id : "flagged",
+                    category: "facet",
+                    showCount: true,
+                    filters : [
+                        doaj.filters.isFlagged(),
+                        doaj.filters.flaggedToMe()
+                    ],
+                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle : "",
+                        open: true,
+                        togglable: false,
+                        showCount: true,
+                        countFormat: doaj.valueMaps.countFormat
+                    })
+                }),
                 // facets
                 doaj.facets.openOrClosed(),
 
@@ -150,7 +165,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'}
+                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
@@ -208,6 +224,11 @@ $.extend(true, doaj, {
                                     "pre": '<span class="alt_title">Alternative title: ',
                                     "field": "bibjson.alternative_title",
                                     "post": "</span>"
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: doaj.fieldRender.deadline
                                 }
                             ],
                             [
@@ -310,8 +331,16 @@ $.extend(true, doaj, {
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'index.license.exact' : 'License',
-                        "index.has_apc.exact" : "Charges?"
-                    }
+                        "index.has_apc.exact" : "Charges?",
+                        'index.is_flagged': "Only Flagged Records",
+                        'index.flag_assignees.exact': "Flagged to me"
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({
+                        hideValues: [
+                            'index.is_flagged',
+                            'index.flag_assignees.exact'
+                        ]
+                    })
                 })
             ];
 
