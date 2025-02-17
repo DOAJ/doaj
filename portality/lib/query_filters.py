@@ -104,6 +104,11 @@ def associate(q):
     q.add_must_filter({"term" : {"admin.editor.exact" : current_user.id}})
     return q
 
+def flagged_to_current_user(q):
+    q.clear_march_all()
+    q.add_must_filter({"term": {"index.flag_assignees.exact": current_user.id}})
+    return q
+
 
 def editor(q):
     gnames = []
