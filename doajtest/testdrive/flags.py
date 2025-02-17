@@ -6,15 +6,6 @@ from portality import models, constants
 
 class Flags(TestDrive):
 
-    # Setup:
-    # 5 accounts: Maned, Ed1, AssEd1, AssEd2, RandomUser (with Maned permissions) all from the same group
-    # 4 records:
-    #     R1: owned by Maned, flag assigned to Ed, deadline yesterday
-    #     R2: owned by Ed, flag assigned to Ed, deadline tomorrow
-    #     R3: owned by Ed, flag assigned to Maned, deadline in 9 days
-    #     R4: owned by AssEd1, flag assigned to AssEd2, deadline in 11 days
-    #     R4, owned by AssEd2, flag assigned to AssEd2, no deadline
-
     def __init__(self):
         self.another_eg = None
         self.apps = []
