@@ -2,11 +2,11 @@
     <div class="form__question_inputs_div--{{ idx }}">
         {% for subfield in f.group_subfields() %}
         <div class="form-inputs--container {{ f.name }}-inputs--container--{{ idx }}">
+             {% if subfield.label %}<label style="margin-left: 0">{{ subfield.label }} {% if subfield.optional %}<span
+                class="form__question--optional">(Optional)</span>{% endif %} </label>{% endif %}
             {% if subfield.help("short_help") %}
                 <p class="form__short-help"><small>{{ subfield.help("short_help") | safe }}</small></p>
             {% endif %}
-            {% if subfield.label %}<label>{{ subfield.label }} {% if subfield.optional %}<span
-                class="form__question--optional">(Optional)</span>{% endif %} </label>{% endif %}
             {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
             {% if f.help("render_error_box") != False %} {# some fields have custom error boxes #}
                 <div id="{{ f.name }}_checkbox-errors"></div>
