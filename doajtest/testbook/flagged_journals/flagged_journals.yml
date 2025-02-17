@@ -11,11 +11,14 @@ tests:
         - On your dashboard there are 5 records ** flagged to you ** are displayed on the dashboard, ordered by deadline
         - Urgent Flags (with deadline within a week - including past dates) are marked with a different colour than Regular Flags (with deadline further than 7 days in advance or no deadline at all)
       - step: Click Update Requests tab
-        results: There is no applications in that tab
+        results:
+        - There is no applications in that tab
       - step: Click On Hold tab
-        results: There is no applications in that tab
+        results:
+        - There is no applications in that tab
       - step: Click Applications tab
-        results: The flagged records are listed
+        results:
+        - The flagged records are listed
       - step: Go to http://localhost:5004/admin/applications
       - step: Check the "All flagged records" filter
         results:
