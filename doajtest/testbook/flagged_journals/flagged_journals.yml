@@ -10,13 +10,13 @@ tests:
         results:
         - On your dashboard there are 5 records ** flagged to you ** are displayed on the dashboard, ordered by deadline
         - Urgent Flags (with deadline within a week - including past dates) are marked with a different colour than Regular Flags (with deadline further than 7 days in advance or no deadline at all)
-      - step: Click New Applications tab
+      - step: Click Update Requests tab
         results: There is no applications in that tab
       - step: Click On Hold tab
         results: There is no applications in that tab
-      - step: Click Update Requests tab
+      - step: Click Applications tab
         results: The flagged records are listed
-      - step: Go to http://localhost:5004/admin/update_requests
+      - step: Go to http://localhost:5004/admin/applications
       - step: Check the "All flagged records" filter
         results:
           - All flagged records (20) are displayed
@@ -32,7 +32,7 @@ tests:
       - step: Edit the flag and save the record
         results:
           - The record is saved correctly, and the flag is updated
-      - step: Attempt to add a new flag
+      - step: In the same record attempt to add a new flag
         results:
           - The "Add" button is disabled
       - step: Click "Resolve" button next to the flag
@@ -52,10 +52,10 @@ tests:
           - The resolved flag is converted into a note with information about who resolved it and when
           - The new flag is saved correctly
       - step: Unlock and close the record
-      - step: Go to "Search Applications," open a record, and add a new flag
+      - step: Go to "Search Update Requests," open a record, and add a new flag and assign it to yourself
       - step: Save, and Unlock and Close the record
         results:
-          - The newly flagged record appears on the dashboard under "All" and "New Applications" tabs
+          - The newly flagged record appears on the dashboard under "Show All" and "Update Requests" tabs in your Dashboard
 
   - title: Editor - Managing Flags
     context:
@@ -66,13 +66,7 @@ tests:
         results:
           - On your dashboard, flagged records assigned to you are displayed, ordered by deadline
           - Urgent Flags (with deadline within a week - including past dates) are marked with a different colour than Regular Flags (with deadline further than 7 days in advance or no deadline at all)
-      - step: Click New Applications tab
-        results: There are no applications in that tab
-      - step: Click On Hold tab
-        results: There are no applications in that tab
-      - step: Click Update Requests tab
-        results: The flagged records are listed
-      - step: Go to http://localhost:5004/editor/update_requests
+      - step: Go to http://localhost:5004/editor/your_applications
       - step: Check the "All flagged records" filter
         results:
           - All flagged records (20) are displayed

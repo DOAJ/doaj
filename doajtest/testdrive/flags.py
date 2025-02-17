@@ -1,4 +1,4 @@
-from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.testdrive.factory import TestDrive
 from portality.lib import dates
 from portality import models, constants
@@ -104,9 +104,11 @@ class Flags(TestDrive):
 
     def build_application(self, aid, title, lmu_diff, cd_diff, status, notes=None,
                           additional_fn=None):
+
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
-        ap.set_current_journal(self.create_random_str())
+        source["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
+        source["admin"]["current_journal"] = None
         bj = ap.bibjson()
         bj.title = title
         ap.set_id(aid)
@@ -127,6 +129,9 @@ class Flags(TestDrive):
                     "Assed2": self.assed2}
         deadlines_in_days = [-2, 2, 9, 12, None]
         deadline = lambda d: dates.days_after_now(d) if days else ""
+        one_app_flagged_to_editor = False
+        one_app_flagged_to_assed = False
+
 
         for key, val in accounts.items():
             for days in deadlines_in_days:
@@ -144,6 +149,20 @@ class Flags(TestDrive):
                                              title=f'Application flagged for {key}, with deadline in {days} days',
                                              lmu_diff=0, cd_diff=31, status=constants.APPLICATION_STATUS_IN_PROGRESS,
                                              notes=note)
+
+                if (not one_app_flagged_to_assed) and key == "Assed1":
+                    app.set_editor_group(self.eg.name)
+                    app.set_editor(self.editor.id)
+                    app.save()
+                    print("one_app_flagged_to_assed: ", app.id, self.editor.id)
+                    one_app_flagged_to_assed = True
+
+                if (not one_app_flagged_to_editor) and key == "Editor":
+                    app.set_editor_group(self.eg.name)
+                    app.set_editor(self.editor.id)
+                    app.save()
+                    print("one_app_flagged_to_editor: ", app.id, self.editor.id)
+                    one_app_flagged_to_editor = True
 
                 self.apps.append(app.id)
 
