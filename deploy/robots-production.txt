@@ -7,4 +7,4 @@ Disallow: /account/
 Disallow: /admin/
 Disallow: /editor/
 Disallow: /publisher/
-Disallow: /cookie_consent/
+Disallow: /cookie_consent
