@@ -53,6 +53,7 @@ Further reading and more examples are [available as a downloadable presentation]
 ## In other languages
 
 [French](https://www.erudit.org/public/documents/licencedroitsauteursDOAJ.pdf) - hosted by Érudit
+[Turkish](https://drive.google.com/file/d/1gcdB3bfMvlOMeWeRV4UFCPoTQiouHDtb/view?usp=sharing)
 
 ## Version history
 
