@@ -1,0 +1,20 @@
+{
+  "types": [
+    {
+      "type" : "journal",
+      "init_with_model" : true,
+      "keepalive" : "20m",
+      "functions" : [
+        "portality.migrate.20250130_4028_inconsistent_conditional_fields.operations.enforce_consistency"
+      ]
+    },
+    {
+      "type" : "application",
+      "init_with_model" : true,
+      "keepalive" : "20m",
+      "functions" : [
+        "portality.migrate.20250130_4028_inconsistent_conditional_fields.operations.enforce_consistency"
+      ]
+    }
+  ]
+}
