@@ -20,7 +20,7 @@ TRUSTED – Globally, DOAJ's [criteria](/apply/guide/#basic-criteria-for-inclusi
 
 DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language.
 
-DOAJ is committed to being 100% independent and maintaining all of its primary services and metadata as open for everyone.
+DOAJ is committed to being 100% independent and maintaining all of its primary services and metadata as open to everyone.
 
 ## Our vision
 
