@@ -172,18 +172,19 @@ class ExportService(object):
         container_id = "csv_export_tmp_container"
         tmpStore.delete_file(container_id, filename)
 
-    def publish(self, source_file, filename, requester=None, request_date=None, name=None, query=None):
+    def publish(self, source_file, filename, requester=None, request_date=None, name=None, query=None, model=None):
         mainStore = StoreFactory.get("export")
         container_id = app.config.get("STORE_EXPORT_CONTAINER")
         mainStore.store(container_id, filename, source_path=source_file)
 
         e = models.Export()
         e.generated_date = dates.now_str()
-        e.requester = requester if requester is not None else None
-        e.request_date = request_date if request_date is not None else None
+        e.requester = requester
+        e.request_date = request_date
         e.name = name if name is not None else filename
         e.filename = filename
-        e.constraints = query if query is not None else None
+        e.constraints = query
+        e.model = model
         e.save()
 
         return e

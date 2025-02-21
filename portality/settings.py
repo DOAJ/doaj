@@ -816,6 +816,11 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
             "required_parameters": None
+        },
+        "reports": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Export"
         }
     },
     "associate_query": {

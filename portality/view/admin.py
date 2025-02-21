@@ -876,7 +876,15 @@ def request_report():
     if "sort" in query:
         sane_query["sort"] = query["sort"]
 
-    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, query=sane_query, name=name)
+    model_endpoint_map = {
+        "journal": "journal",
+        "application": "suggestion"
+    }
+
+    query_svc = DOAJ.queryService()
+    real_query = query_svc.make_actionable_query("admin_query", model_endpoint_map.get(model), current_user, sane_query)
+
+    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, true_query=real_query, ui_query=sane_query, name=name)
     admin_reports.AdminReportsBackgroundTask.submit(job)
 
     return make_json_resp({"job_id": job.id}, status_code=200)
@@ -886,3 +894,8 @@ def request_report():
 @login_required
 def get_report(report_id):
     pass
+
+@blueprint.route("/reports", methods=["GET"])
+@login_required
+def reports_search():
+    return render_template(templates.ADMIN_REPORTS_SEARCH)

@@ -33,6 +33,7 @@ class AdminReportsBackgroundTask(BackgroundTask):
         params = job.params
         model_type = self.get_param(params, "model", "journal")
         query_raw = self.get_param(params, "query", None)
+        ui_query_raw = self.get_param(params, "ui_query", None)
         name = self.get_param(params, "name", None)
 
         model = self.MODELS.get(model_type, models.Journal)
@@ -49,7 +50,7 @@ class AdminReportsBackgroundTask(BackgroundTask):
         self.filename = filename
 
         # publish it to the main store and record its existence
-        export = export_svc.publish(filepath, filename, requester=job.user, request_date=job.created_date, name=name, query=query)
+        export = export_svc.publish(filepath, filename, requester=job.user, request_date=job.created_date, name=name, query=ui_query_raw, model=model)
         job.add_audit_message("Export generated with id {id}".format(id=export.id))
 
         # send a notification to the requesting user
@@ -90,12 +91,14 @@ class AdminReportsBackgroundTask(BackgroundTask):
         """
         # prepare a job record
         model = kwargs.get("model", "journal")
-        query = kwargs.get("query", None)
+        query = kwargs.get("true_query", None)
+        ui_query = kwargs.get("ui_query", None)
         name = kwargs.get("name", None)
 
         params = {}
         cls.set_param(params, "model", model)
         cls.set_param(params, "query", json.dumps(query))
+        cls.set_param(params, "ui_query", json.dumps(ui_query))
         cls.set_param(params, "name", name)
 
         # first prepare a job record

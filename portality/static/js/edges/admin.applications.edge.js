@@ -43,6 +43,12 @@ $.extend(true, doaj, {
                 doaj.facets.publisher(),
                 doaj.facets.journalLicence(),
 
+                doaj.components.newReportExporter({
+                    id: "report-exporter",
+                    category: "facet",
+                    model: "application"
+                }),
+
                 // configure the search controller
                 edges.newFullSearchController({
                     id: "search-controller",

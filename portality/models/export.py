@@ -18,6 +18,7 @@ EXPORT_STRUCT = {
         "name": {"coerce": "unicode"},
         "filename": {"coerce": "unicode"},
         "constraints": {"coerce": "unicode"},
+        "model": {"coerce": "unicode"}
     }
 }
 
@@ -118,3 +119,11 @@ class Export(SeamlessMixin, DomainObject):
         if not isinstance(value, str):
             value = json.dumps(value)
         self.__seamless__.set_with_struct("constraints", value)
+
+    @property
+    def model(self):
+        return self.__seamless__.get_single("model")
+
+    @model.setter
+    def model(self, value):
+        self.__seamless__.set_with_struct("model", value)

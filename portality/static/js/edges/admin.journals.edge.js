@@ -73,6 +73,19 @@ $.extend(true, doaj, {
 
                 // facets
 
+                edges.newMultiDateRangeEntry({
+                    display: "Apply Date Ranges",
+                    fields: [
+                        {"field": "created_date", "display": "Created Date"},
+                        {"field": "last_manual_update", "display": "Last Updated"}
+                    ],
+                    autoLookupRange: true,
+                    category: "facet",
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet({
+
+                    })
+                }),
+
                 doaj.components.newDateHistogramSelector({
                     id: "created_date_histogram",
                     category: "facet",
