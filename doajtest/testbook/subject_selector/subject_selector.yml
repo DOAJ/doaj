@@ -160,11 +160,11 @@ tests:
       - step: Scroll to Subject classification question
       - step: Click "Open Subject Classifier" button to open the modal
         results:
-        - "Subject classifications" modal opens
+        - Subject classifications modal opens
       - step: unselect any selected subjects to ensure clean state
       - step: close the modal
         results:
-          - "Subject classifications" modal opens
+          - Subject classifications modal opens
           - Subject list is scrolled to the top and all levels are collapsed
       - step: search for any string
         results:
