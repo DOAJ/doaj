@@ -606,14 +606,6 @@ ass_ed:
   city: Bucharest
   country: Romania
   language: Romanian, English, French
-  
-- name: Milagro Castro
-  area: Social Sciences
-  year_since:
-  city: Palmares
-  country: Costa Rica
-  language: Spanish, English
-  photo: "MilagroCastro.jpg"
 
 - name: Mohammad Rizki Fadhil Pratama
   area: Medicine, Chemistry
@@ -702,22 +694,6 @@ ass_ed:
   country: Spain
   language: Euskera, Spanish, English
   photo: "Agirre.JPG"
-
-- name: Paula Carina de Araújo
-  area: Library and Information Science
-  year_since:
-  city:
-  country: Brazil
-  language: Portuguese, English
-  photo: "paulacarina.JPG"
-
-- name: Patrícia Aragão
-  area: Academic Publications, Languages and Literature
-  year_since:
-  city: Rio Grande Do Sul
-  country: Brazil
-  language: Portuguese, Spanish, Italian, English
-  photo: "Patricia.jpg"
 
 - name: Princess Uju E. Nwafor-Orizu
   area: Medicine
