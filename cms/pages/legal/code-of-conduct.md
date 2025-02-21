@@ -8,13 +8,11 @@ featuremap: ~~CodeofConduct:Fragment~~
 
 ---
 
-# Code of conduct and zero tolerance policy
-
 At DOAJ, we foster a welcoming and inclusive community for everyone. Our code of conduct and zero tolerance policy help us create an environment where you feel comfortable and valued. 
 
 ## What this policy covers
 
-Our policy applies to all kinds of communication within our community or the spaces we create. They cover interactions among our team, volunteers, ambassadors, and individuals involved in events, activities and projects initiated or organised by us. This includes:
+Our policy applies to all communication within our community or the spaces we create. It covers interactions among our team, volunteers, ambassadors, and individuals involved in events, activities and projects initiated or organised by us. This includes:
 
 - Communication via email or social media
 - Participation in webinars and events organised by us
