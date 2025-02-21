@@ -74,7 +74,6 @@ tests:
         results:
           - No statistics are displayed in the Activity section.
       - step: Log out.
-      - step:
   - title: Historical Statistics Display - Associate Editor 2
     context:
       role: associate editor
