@@ -1,0 +1,300 @@
+suite: Subject Selector
+testset: Subject Selector
+
+tests:
+  - title: Subject selector - search
+    context:
+      role: anonymous
+    steps:
+      - step: Go to the admin journals search at /admin/journals
+      - step: search any string
+        results:
+          - search results shown
+          - tree fully expanded
+      - step: scroll results
+      - step: select top level
+        results:
+          - top level selected
+          - search constraints remain in place
+          - selected element remains in view
+          - Top level element reflected in "selected filters" pills
+      - step: Remove selected filter pill
+        results:
+          - selected filter pill removed
+          - top level element unselected from facet
+          - search constraints remain in place
+          - last selected filter still in view (in unselected state)
+      - step: Clear All pill
+        results:
+          - Search reset to initial state
+          - search constraints removed
+          - all entries unselected
+          - scroll position at top
+      - step: select sub level
+        results:
+          - sub level selected
+          - all parents of sub level selected
+          - search constraints remain in place
+          - last selected element remains in view
+          - Sub level element reflected in "selected filters" pills
+      - step: clear search string
+        results:
+          - full subject list is shown
+          - last selected element is in view (parents are expanded)
+      - step: re do original search
+        results:
+          - search results shown
+          - tree fully expanded
+          - last selected element is in view
+      - step: do new search which includes last item
+        results:
+          - search results shown
+          - tree fully expanded
+          - last selected element is in view
+      - step: do new search which excludes last item
+        results:
+          - search results shown
+          - tree fully expanded
+          - scroll position at top
+      - step: select another
+        results:
+          - sub level selected
+          - all parents of sub level selected
+          - search constraints remain in place
+          - last selected element remains in view
+          - Sub level element reflected in "selected filters" pills
+      - step: unselect sub level
+        results:
+          - sub level unselected
+          - all parents of sub level remain selected
+          - search constraints remain in place
+          - last unselected element remains in view
+          - Selected filters pill shows nearest parent as selected
+      - step: unselect parent
+        results:
+          - parent unselected
+          - all children of parent unselected
+          - search constraints remain in place
+          - unselected parent element remains in view
+      - step: Remove selected filter pill
+        results:
+          - selected filter pill removed
+          - sub level element and all parents removed from facet
+          - search constraints remain in place
+          - last selected filter still in view (in unselected state)
+      - step: Clear All pill
+        results:
+          - Search reset to initial state
+          - search constraints removed
+          - all entries unselected
+      - step: select top level entry
+        results:
+          - Entry selected
+          - sub levels expanded
+          - last selected element in view
+          - Selected filters pill shows selected element
+      - step: unselect top level entry
+        results:
+          - Entry unselected
+          - Sub levels collapsed
+          - unselected element still in view
+      - step: scroll
+      - step: select sub level
+        results:
+          - sub level selected (parent remains selected too)
+          - further sub levels expanded
+          - latest selected sub level in view
+          - Selected filters pill shows selected sub element
+      - step: unselect sub level
+        results:
+          - sub level is unselected (parent remains selected)
+          - unselected sub level remains in view
+          - Selected filters pill shows nearest parent
+      - step: unselect parent
+        results:
+          - parent and all sub levels are unselected
+          - unselected parent remains in view
+          - Selected filters pill is removed
+      - step: select another (sub level or top level)
+        results:
+          - Entry selected
+          - sub levels expanded
+          - last selected element in view
+          - Selected filters pill shows selected element
+      - step: Remove selected filter pill
+        results:
+          - selected filter pill removed
+          - sub level element and all parents removed from facet
+          - top level element for last element selected in view
+      - step: select a different top level
+        results:
+          - Entry selected
+          - sub levels expanded
+          - last selected element in view
+          - Selected filters pill shows selected element
+      - step: Remove selected filter pill
+        results:
+          - selected filter pill removed
+          - last selected filter still in view (in unselected state)
+      - step: Clear All pill
+        results:
+          - Search reset to initial state
+          - all entries unselected
+          - scroll position at top
+
+
+  - title: Subject selector - form
+    context:
+      role: admin
+    steps:
+      - step: Open any Journal record
+      - step: Scroll to Subject classification question
+      - step: Click "Open Subject Classifier" button to open the modal
+        results:
+        - Subject classifications modal opens
+      - step: unselect any selected subjects to ensure clean state
+      - step: close the modal
+        results:
+          - Subject classifications modal opens
+          - Subject list is scrolled to the top and all levels are collapsed
+      - step: search for any string
+        results:
+          - search results shown
+          - tree fully expanded
+      - step: scroll results
+      - step: select top level
+          - top level selected
+          - selected element remains in view
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
+      - step: select sub level
+        results:
+          - sub level selected
+          - all parents of sub level selected
+          - last selected element remains in view
+      - step: close the modal
+        results:
+          - Sub level element reflected in "Selected"
+      - step: open the modal
+      - step: clear search string
+        results:
+          - full subject list is shown
+          - last selected element is in view (parents are expanded)
+      - step: re do original search
+        results:
+          - search results shown
+          - tree fully expanded
+          - last selected element is in view
+      - step: do new search which includes last item
+        results:
+          - search results shown
+          - tree fully expanded
+          - last selected element is in view
+      - step: do new search which excludes last item
+        results:
+          - search results shown
+          - tree fully expanded
+          - scroll position at top
+      - step: select another
+        results:
+          - sub level selected
+          - all parents of sub level selected
+          - last selected element remains in view
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
+      - step: unselect sub level
+        results:
+          - sub level unselected
+          - all parents of sub level remain selected
+          - search constraints remain in place
+          - last unselected element remains in view
+      - step: close the modal
+        results:
+          - Selected filters pill shows nearest parent as selected
+      - step: open the modal
+        results:
+          - the view hasn't changed
+      - step: unselect parent
+        results:
+          - parent unselected
+          - all children of parent unselected
+          - search constraints remain in place
+          - unselected parent element remains in view
+      - step: select top level entry
+        results:
+          - Entry selected
+          - sub levels expanded
+          - last selected element in view
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
+      - step: unselect top level entry
+        results:
+          - Entry unselected
+          - Sub levels collapsed
+          - unselected element still in view
+      - step: scroll
+      - step: select sub level
+        results:
+          - sub level selected (parent remains selected too)
+          - further sub levels expanded
+          - latest selected sub level in view
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
+      - step: unselect sub level
+        results:
+          - sub level is unselected (parent remains selected)
+          - unselected sub level remains in view
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
+      - step: unselect parent
+        results:
+          - parent and all sub levels are unselected
+          - unselected parent remains in view
+      - step: close the modal
+        results:
+          - Unselected element is removed from "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
+      - step: select another (sub level or top level)
+        results:
+          - Entry selected
+          - sub levels expanded
+          - last selected element in view
+          - Selected filters pill shows selected element
+      - step: Remove selected filter pill
+        results:
+          - selected filter pill removed
+          - sub level element and all parents removed from facet
+          - top level element for last element selected in view
+      - step: select a different top level
+        results:
+          - Entry selected
+          - sub levels expanded
+          - last selected element in view
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
