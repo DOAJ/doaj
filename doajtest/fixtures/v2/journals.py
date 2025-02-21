@@ -5,7 +5,7 @@ from typing import Iterable
 import rstr
 
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
-    OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
+    OWNER_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
 from portality.regex import ISSN_COMPILED
 
 
@@ -78,7 +78,6 @@ JOURNAL_SOURCE = {
             {"application_id": "asdfghjkl", "date_accepted": "2018-01-01T00:00:00Z"},
             {"application_id": "zxcvbnm"}
         ],
-        "seal": False,
         "ticked": True
     },
     "bibjson": JOURNAL_LIKE_BIBJSON
@@ -87,7 +86,6 @@ JOURNAL_SOURCE = {
 JOURNAL_FORM_EXPANDED = {}
 JOURNAL_FORM_EXPANDED.update(JOURNAL_LIKE_BIBJSON_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(EDITORIAL_FORM_EXPANDED)
-JOURNAL_FORM_EXPANDED.update(SEAL_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(SUBJECT_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(NOTES_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(OWNER_FORM_EXPANDED)
@@ -98,7 +96,6 @@ JOURNAL_FORM = JournalFormXWalk.forminfo2multidict(JOURNAL_FORM_EXPANDED)
 
 JOURNAL_BULK_EDIT = {
     "publisher": "Test Publisher",
-    "doaj_seal": True,
     "country": "DZ",
     "platform": "HighWire",
     "contact_email": "richard@example.com",
@@ -156,7 +153,6 @@ CSV_HEADERS = [
     "Continued By",
     "LCC Codes",
     'Subjects',  # (added outside journal2questions)
-    'DOAJ Seal',  # (added outside journal2questions)
     'Added on Date',  # (added outside journal2questions)
     'Last updated Date',  # (added outside journal2questions)
     # 'Tick: Accepted after March 2014', Removed 2020-12-11

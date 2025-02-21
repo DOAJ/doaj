@@ -57,7 +57,6 @@ class TestModels(DoajTestCase):
 
         # check some properties of empty objects
         assert not j.has_been_manually_updated()
-        assert not j.has_seal()
         assert not j.is_in_doaj()
         assert not j.is_ticked()
 
@@ -66,7 +65,6 @@ class TestModels(DoajTestCase):
         j.set_created("2001-01-01T00:00:00Z")
         j.set_last_updated("2002-01-01T00:00:00Z")
         j.set_last_manual_update("2004-01-01T00:00:00Z")
-        j.set_seal(True)
         j.set_owner("richard")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
@@ -82,7 +80,6 @@ class TestModels(DoajTestCase):
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
         assert j.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
         assert j.has_been_manually_updated() is True
-        assert j.has_seal() is True
         assert j.owner == "richard"
         assert j.editor_group == "worldwide"
         assert j.editor == "eddie"
@@ -204,16 +201,13 @@ class TestModels(DoajTestCase):
         """Read and write properties into the article model"""
         a = models.Article()
         assert not a.is_in_doaj()
-        assert not a.has_seal()
 
         a.set_in_doaj(True)
-        a.set_seal(True)
         a.set_publisher_record_id("abcdef")
         a.set_upload_id("zyxwvu")
 
         assert a.data.get("admin", {}).get("publisher_record_id") == "abcdef"
         assert a.is_in_doaj()
-        assert a.has_seal()
         assert a.upload_id() == "zyxwvu"
 
     def test_04_suggestion_model_rw(self):
@@ -222,14 +216,12 @@ class TestModels(DoajTestCase):
 
         # check some properties of empty objects
         assert not s.has_been_manually_updated()
-        assert not s.has_seal()
 
         # methods for all journal-like objects
         s.set_id("abcd")
         s.set_created("2001-01-01T00:00:00Z")
         s.set_last_updated("2002-01-01T00:00:00Z")
         s.set_last_manual_update("2004-01-01T00:00:00Z")
-        s.set_seal(True)
         s.set_owner("richard")
         s.set_editor_group("worldwide")
         s.set_editor("eddie")
@@ -245,7 +237,6 @@ class TestModels(DoajTestCase):
         assert s.last_manual_update == "2004-01-01T00:00:00Z"
         assert s.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
         assert s.has_been_manually_updated() is True
-        assert s.has_seal() is True
         assert s.owner == "richard"
         assert s.editor_group == "worldwide"
         assert s.editor == "eddie"
@@ -1324,14 +1315,12 @@ class TestModels(DoajTestCase):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=False, with_journal_info=False))
 
-        assert a.has_seal() is False
         assert a.bibjson().journal_issns != j.bibjson().issns()
 
         reg = models.Journal()
         changed = a.add_journal_metadata(j, reg)
 
         assert changed is True
-        assert a.has_seal() is False
         assert a.is_in_doaj() is True
         assert a.bibjson().journal_issns == j.bibjson().issns()
         assert a.bibjson().publisher == j.bibjson().publisher

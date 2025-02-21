@@ -184,7 +184,6 @@ SHARED_JOURNAL_LIKE = {
     "structs" : {
         "admin" : {
             "fields" : {
-                "seal" : {"coerce" : "bool"},
                 "owner" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},

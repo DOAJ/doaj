@@ -200,12 +200,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             return False
         return lmut > datetime.utcfromtimestamp(0)
 
-    def has_seal(self):
-        return self.__seamless__.get_single("admin.seal", default=False)
-
-    def set_seal(self, value):
-        self.__seamless__.set_with_struct("admin.seal", value)
-
     def has_oa_start_date(self):
         return self.__seamless__.get_single("bibjson.oa_start", default=False)
 
@@ -372,7 +366,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         country = None
         license = []
         publisher = []
-        has_seal = None
         classification_paths = []
         unpunctitle = None
         asciiunpunctitle = None
@@ -429,9 +422,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         license = list(set(license))
         schema_codes = list(set(schema_codes))
 
-        # determine if the seal is applied
-        has_seal = "Yes" if self.has_seal() else "No"
-
         # get the full classification paths for the subjects
         classification_paths = cbib.lcc_paths()
         schema_codes_tree = cbib.lcc_codes_full_list()
@@ -460,8 +450,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
         if country is not None:
             index["country"] = country
-        if has_seal:
-            index["has_seal"] = has_seal
         if unpunctitle is not None:
             index["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:

@@ -24,10 +24,6 @@ EDITORIAL_FORM_EXPANDED = {
     "editor": "associate"
 }
 
-SEAL_FORM_EXPANDED = {
-    "doaj_seal": [],
-}
-
 JOURNAL_LIKE_BIBJSON = {
     "alternative_title": "Alternative Title",
     "apc": {

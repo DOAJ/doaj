@@ -399,7 +399,6 @@ class TestCrudApplication(DoajTestCase):
         assert "notes" not in oa.data.get("admin", {})
         assert "editor_group" not in oa.data.get("admin", {})
         assert "editor" not in oa.data.get("admin", {})
-        assert "seal" not in oa.data.get("admin", {})
         assert "related_journal" not in oa.data.get("admin", {})
 
         # check that it does contain admin information that it should

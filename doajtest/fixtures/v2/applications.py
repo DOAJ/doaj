@@ -4,7 +4,7 @@ from datetime import datetime
 import rstr
 
 from portality import constants, regex
-from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
+from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.lib import dates
 from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
@@ -121,7 +121,6 @@ APPLICATION_SOURCE = {
         ],
         "owner" : "publisher",
         "related_journal" : "987654321123456789",
-        "seal": False,
         "date_applied" : "2003-01-01T00:00:00Z"
     },
     "bibjson" : JOURNAL_LIKE_BIBJSON
@@ -153,7 +152,6 @@ APPLICATION_FORM_EXPANDED.update(deepcopy(NOTES_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(SUBJECT_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(OWNER_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
-APPLICATION_FORM_EXPANDED.update(deepcopy(SEAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
 from portality.crosswalks.application_form import ApplicationFormXWalk

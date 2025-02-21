@@ -728,8 +728,7 @@ class FieldDefinitions:
                           "ic_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' "
                           "rel='noopener'>What is the difference between CC0 "
                           "and the Public Domain Mark (\"PDM\")?</a>"],
-            "doaj_criteria": "Content must be licensed",
-            "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
+            "doaj_criteria": "Content must be licensed"
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> type of license"}}
@@ -790,8 +789,7 @@ class FieldDefinitions:
             "long_help": ["It is recommended that licensing information is included in full-text articles "
                           "but it is not required for inclusion. "
                           "Answer <strong>Yes</strong> if licensing is displayed or "
-                          "embedded in all versions of each article."],
-            "seal_criteria": "If the answer is Embed"
+                          "embedded in all versions of each article."]
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
@@ -844,8 +842,7 @@ class FieldDefinitions:
                           " (including commercial rights). <br/><br/> Answer "
                           "<strong>Yes</strong> only if authors publishing "
                           "under any license allowed by the journal "
-                          "retain all rights."],
-            "seal_criteria": "The author must retain the copyright"
+                          "retain all rights."]
         }
     }
 
@@ -1689,43 +1686,6 @@ class FieldDefinitions:
     #######################################
     ## Editorial fields
 
-    # ~~->$ DOAJSeal:FormField~~
-    DOAJ_SEAL = {
-        "name": "doaj_seal",
-        "label": "The journal may have fulfilled all the criteria for the Seal.",
-        "multiple": True,
-        "input": "checkbox",
-        "options": [
-            {"display": "Award the Seal?", "value": 'y'},
-        ],
-
-        "validate": [
-            {
-                "only_if": {
-                    "fields": [
-                        {"field": "license_display", "value": "y"},
-                        {"field": "copyright_author_retains", "value": "y"},
-                        {"field": "preservation_service", "not": "none"},
-                        {"field": "preservation_service_url", "not": ""},
-                        {"field": "deposit_policy", "not": "none"},
-                        {"field": "persistent_identifiers", "not": "none"},
-                        {"field": "license", "or": ["CC BY", "CC BY-SA", "CC BY-NC", "CC BY-NC-SA"]}
-                    ],
-                    "message": "In order to award the query: the license must be CC BY, CC BY-SA, CC BY-NC, or CC BY-NC-SA; "
-                               "the license must be displayed or embedded; "
-                               "the author must retain their copyright; "
-                               "the journal must make use of a preservation service; "
-                               "a url for the preservation service must be provided; "
-                               "the journal must have a deposit policy; "
-                               "the journal must use a persistent identifier"
-                }
-            }
-        ],
-        "widgets": [
-            "article_info",
-        ],
-    }
-
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
     # ~~->$ QuickReject:FormField~~
     QUICK_REJECT = {
@@ -2044,20 +2004,6 @@ class FieldDefinitions:
         }
     }
 
-    # Bulk Edit fields (that couldn't be overriden in the normal way)
-    # ~~->$ BulkDOAJSeal:FormField~~
-    BULK_DOAJ_SEAL = {
-        "name": "change_doaj_seal",
-        "label": 'Award the Seal',
-        "input": "select",
-        "default": "",
-        "options": [
-            {"value": "", "display": "Leave unchanged"},
-            {"value": "True", "display": "Yes"},
-            {"value": "False", "display": "No"}
-        ],
-    }
-
 
 ##########################################################
 # Define our fieldsets
@@ -2242,14 +2188,6 @@ class FieldSetDefinitions:
         ]
     }
 
-    # ~~->$ Seal:FieldSet~~
-    SEAL = {
-        "name": "seal",
-        "label": "Award the seal",
-        "fields": [
-            FieldDefinitions.DOAJ_SEAL["name"]
-        ]
-    }
 
     # ~~->$ QuickReject:FieldSet~~
     # ~~^-> QuickReject:Feature~~
@@ -2341,7 +2279,6 @@ class FieldSetDefinitions:
         "label": "Bulk edit",
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
-            FieldDefinitions.BULK_DOAJ_SEAL["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
             FieldDefinitions.OWNER["name"]
         ]
@@ -2436,7 +2373,6 @@ class ApplicationContextDefinitions:
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
-        FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
@@ -2521,7 +2457,6 @@ class JournalContextDefinitions:
     MANED["fieldsets"] += [
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
-        FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.CONTINUATIONS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
