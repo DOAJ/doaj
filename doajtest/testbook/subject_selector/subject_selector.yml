@@ -1,21 +1,12 @@
 suite: Subject Selector
 testset: Subject Selector
 
-fragments:
-  confirm_selected_subjects:
-    - step: close the modal
-      results:
-        - Selected element reflected in "Selected"
-    - step: open the modal
-      results:
-        - the view hasn't changed
-
 tests:
   - title: Subject selector - search
     context:
       role: anonymous
     steps:
-      - Go to the admin journals search at /admin/journals
+      - step: Go to the admin journals search at /admin/journals
       - step: search any string
         results:
           - search results shown
@@ -174,8 +165,12 @@ tests:
       - step: select top level
           - top level selected
           - selected element remains in view
-      - include:
-        fragment: confirm_selected_subjects
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
       - step: select sub level
         results:
           - sub level selected
@@ -238,8 +233,12 @@ tests:
           - Entry selected
           - sub levels expanded
           - last selected element in view
-      - include:
-        fragment: confirm_selected_subjects
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
       - step: unselect top level entry
         results:
           - Entry unselected
@@ -251,14 +250,22 @@ tests:
           - sub level selected (parent remains selected too)
           - further sub levels expanded
           - latest selected sub level in view
-      - include:
-        fragment: confirm_selected_subjects
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
       - step: unselect sub level
         results:
           - sub level is unselected (parent remains selected)
           - unselected sub level remains in view
-      - include:
-        fragment: confirm_selected_subjects
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
       - step: unselect parent
         results:
           - parent and all sub levels are unselected
@@ -285,5 +292,9 @@ tests:
           - Entry selected
           - sub levels expanded
           - last selected element in view
-      - include:
-        fragment: confirm_selected_subjects
+      - step: close the modal
+        results:
+          - Selected element reflected in "Selected"
+      - step: open the modal
+        results:
+          - the view hasn't changed
