@@ -185,7 +185,6 @@ $.extend(true, doaj, {
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
-                            "index.has_seal.exact"
                         ],
                         omit : [
                             "bibjson.apc.has_apc",

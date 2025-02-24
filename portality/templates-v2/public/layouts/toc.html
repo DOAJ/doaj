@@ -31,15 +31,7 @@
                         <span aria-hidden="true" class="journal-details__alt-title">{{ bibjson.alternative_title }}</span>
                     {% endif %}
                 </span>
-                {%- set seal = journal.has_seal() -%}
-                {%- if seal -%}
-                    <div class="col-xs-3 col-md-4 flex-end">
-                        <a href="/apply/seal/">
-                            {% include "includes/svg/seal.svg" %}
-                            <p class="sr-only">This journal has been awarded the DOAJ Seal.</p>
-                        </a>
-                    </div>
-                {%- endif %}
+
             </h1>
 
             <p>

@@ -215,7 +215,6 @@ SHARED_JOURNAL_LIKE = {
             "fields" : {
                 "country" : {"coerce" : "unicode"},
                 "has_apc" : {"coerce" : "unicode"},
-                "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},

@@ -1,0 +1,13 @@
+{
+	"types": [
+		{
+			"type": "journal",
+			"init_with_model": false,
+			"action": "index",
+			"keepalive": "1m",
+			"functions" : [
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_seal"
+			]
+		}
+	]
+}
