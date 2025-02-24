@@ -91,6 +91,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
+        assert fc.target.bibjson().labels == ["s2o"]
         assert fc.target.current_journal == "123456789987654321"
         assert fc.target.related_journal == "987654321123456789"
         assert fc.target.bibjson().subject == fc.source.bibjson().subject
@@ -369,5 +370,31 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
             journal = models.Journal.pull(journal.id)
             assert journal.related_application_record(ur1.id) is not None
 
+    def test_07_prevent_forbidden_from_publisher(self):
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.bibjson().clear_labels()
+        journal.set_id("123456789987654321")
+        journal.save(blocking=True)
 
+        # we start by constructing it from source
+        formulaic_context = ApplicationFormFactory.context("update_request")
 
+        # now construct it from form data (with a known source)
+        source = models.Application(**UPDATE_REQUEST_SOURCE)
+        source.bibjson().clear_labels()
+        acc = models.Account()
+        acc.set_id(source.owner)
+        acc.set_name("Test Owner")
+        acc.set_email("test@example.com")
+        acc.save(blocking=True)
+
+        # create a form that has all the admin properties in it
+        admin_form = ApplicationFixtureFactory.make_application_form(role="admin")
+        assert admin_form["s2o"] is True
+        fc = formulaic_context.processor(
+            formdata=admin_form,
+            source=source)
+
+        # now do finalise and check that carried values are carried and not overwritten
+        fc.finalise()
+        assert fc.target.bibjson().labels == []

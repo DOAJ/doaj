@@ -20,7 +20,8 @@ JOURNAL_BIBJSON = {
                 "language" : {"contains" : "field", "coerce" : "isolang_2letter_lax"},
                 "license" : {"contains" : "object"},
                 "replaces" : {"contains" : "field", "coerce" : "issn", "set__allow_coerce_failure" : True},
-                "subject" : {"contains" : "object"}
+                "subject" : {"contains" : "object"},
+                "labels": {"contains": "field", "coerce": "unicode", "allowed_values": ["s2o"]},
             },
             "objects" : [
                 "apc",
