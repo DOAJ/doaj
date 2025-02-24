@@ -579,6 +579,96 @@ class DomainObject(UserDict, object):
         :param limit: Limit the number of results returned (e.g. to take a slice)
         :param wrap: Whether to return the results in raw json or wrapped as an object
         :param keepalive: scroll timeout
+
+        TODO: this is the old method, we should evaluate and aim to make iterate_pit the default scroll method.
+        """
+        theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
+        theq["size"] = page_size
+        theq["from"] = 0
+        if "sort" not in theq:
+            # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
+            theq["sort"] = ["_doc"]
+
+        # Initialise the scroll
+        try:
+            res = cls.send_query(theq, scroll=keepalive)
+        except Exception as e:
+            raise ScrollInitialiseException("Unable to initialise scroll - could be your mappings are broken", e)
+
+        # unpack scroll response
+        scroll_id = res.get('_scroll_id')
+        total_results = res.get('hits', {}).get('total', {}).get('value')
+
+        # Supply the first set of results
+        counter = 0
+        for r in cls.handle_es_raw_response(
+                res,
+                wrap=wrap,
+                extra_trace_info=
+                "\nScroll initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+            counter += 1
+            if wrap:
+                yield cls(**r)
+            else:
+                yield r
+
+        # Continue to scroll through the rest of the results
+        while True:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+
+            # if we consumed all the results we were expecting, we can just stop here
+            if counter >= total_results:
+                break
+
+            # get the next page and check that we haven't timed out
+            try:
+                res = ES.scroll(scroll_id=scroll_id, scroll=keepalive)
+            except elasticsearch.exceptions.NotFoundError as e:
+                raise ScrollTimeoutException(
+                    "Scroll timed out; {status} - {message}".format(status=e.status_code, message=e.info))
+            except Exception as e:
+                # if any other exception occurs, make sure it's at least logged.
+                app.logger.exception("Unhandled exception in scroll method of DAO")
+                raise ScrollException(e)
+
+            # if we didn't get any results back, this means we're at the end
+            if len(res.get('hits', {}).get('hits')) == 0:
+                break
+
+            for r in cls.handle_es_raw_response(
+                    res,
+                    wrap=wrap,
+                    extra_trace_info=
+                    "\nScroll:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                            .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+                # apply the limit
+                if limit is not None and counter >= int(limit):
+                    break
+                counter += 1
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
+
+    @classmethod
+    def iterate_pit(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
+                    keepalive: str = '1m'):
+        """ Provide an iterable of all items in a model, reimplemented using point-in-time queries
+        :param q: The query to scroll results on
+        :param page_size: limited by ElasticSearch, check settings to override
+        :param limit: Limit the number of results returned (e.g. to take a slice)
+        :param wrap: Whether to return the results in raw json or wrapped as an object
+        :param keepalive: scroll timeout
         """
         theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
         theq["size"] = page_size
@@ -660,10 +750,12 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def iterall(cls, page_size=1000, limit=None, **kwargs):
+        # TODO: Another candidate for swapping to iterate_pit (or rename iterate_pit to iterate when we're happy)
         return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
-    # an alias for the iterate function
+    # Aliases for the iterate functions
     scroll = iterate
+    scroll_pit = iterate_pit
 
     @classmethod
     def dump(cls, q=None, page_size=1000, limit=None, out=None, out_template=None, out_batch_sizes=100000,
@@ -685,7 +777,7 @@ class DomainObject(UserDict, object):
             out = sys.stdout
 
         count = 0
-        for record in cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
+        for record in cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
             if transform is not None:
                 record = transform(record)
 
