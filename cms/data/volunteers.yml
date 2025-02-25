@@ -18,6 +18,14 @@ ed:
   city: Glassboro, NJ
   country: USA
   language: English, French
+
+- name: Eko Pramudya Laksana
+  area: Social Sciences
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Indonesian, English
+  photo: "Laksana.jpg"
   
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
@@ -48,7 +56,7 @@ ed:
   city: Baku
   country: Azerbaijan
   language: Turkish, English, Russian
-  photo: 
+  photo: "Khayala Hajiyeva.jpg" 
 
 - name: Lut Tamam
   area: Medicine
@@ -100,13 +108,6 @@ ed:
   country: Iran
   language: Persian, English, Azeri
   photo: "Rasoul.jpg"
-  
-- name: S.Suharto
-  area: Humanities, Social Sciences
-  year_since:
-  city: Semarang
-  country: Indonesia
-  language: Indonesian, English
 
 - name: Souheil Houissa
   area: Library and Information Science
@@ -324,14 +325,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "Dwi saptura.jpeg"
-  
-- name: Eko Pramudya Laksana
-  area: Social Sciences
-  year_since:
-  city: Malang
-  country: Indonesia
-  language: Indonesian, English
-  photo: "Laksana.jpg"
   
 - name: Emrah Kaya
   area: Social Sciences, Humanities
