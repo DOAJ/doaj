@@ -1364,6 +1364,7 @@ class TestModels(DoajTestCase):
         app2.set_id(app2.makeid())
         app2.set_current_journal(j.id)
         app2.set_created("1971-01-01T00:00:00Z")
+        app2.set_date_applied("2004-01-01T00:00:00Z")
         app2.save(blocking=True)
 
         # check that we find the right application when we search

@@ -1,10 +1,10 @@
 on:
   push:
     branches:
-    - master
-    - develop
-    - feature/*
-    
+      - master
+      - develop
+      - feature/*
+
 jobs:
   gen_docs:
     name: generate DOAJ documentation and functional tests and push to the docs repo
