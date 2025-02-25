@@ -2742,7 +2742,10 @@ $.extend(true, doaj, {
 
                 let s2o = "";
                 if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
-                    s2o = `<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">`;
+                    s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank">' +
+                        '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
+                        '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
+                        '</a>';
                 }
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
@@ -2793,7 +2796,7 @@ $.extend(true, doaj, {
                           <li>
                             ` + licenses + `
                           </li>
-                          <li style="display: flex; align-items: center; gap: .5rem;">
+                          <li class="badges">
                           ${s2o} ` + seal + `
                           </li>
                         </ul>
