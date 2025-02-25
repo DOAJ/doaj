@@ -1,0 +1,34 @@
+.badges {
+  &--toc {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+
+    #seal-logo {
+      height: unset;
+      width: unset;
+      max-width: unset;
+    }
+
+    #s20-logo {
+      max-width: 50%;
+    }
+
+  }
+
+  &--search-result {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    &--public {
+      margin-top: .5rem;
+    }
+
+    &--maned {
+
+    }
+  }
+}

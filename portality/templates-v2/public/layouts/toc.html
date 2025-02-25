@@ -34,7 +34,7 @@
                 </span>
             {%- set seal = journal.has_seal() -%}
             {%- set s2o = "s2o" in bibjson.labels -%}
-            <div class="col-xs-3 col-md-4 badges">
+            <div class="col-xs-3 col-md-4 badges badges--toc">
                 {%- if seal -%}
                 <a href="/apply/seal/" id="seal-logo">
                     {% include "includes/svg/seal.svg" %}

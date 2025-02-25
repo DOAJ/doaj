@@ -8,23 +8,6 @@
     font-weight: 400;
   }
 
-  .badges {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: flex-end;
-
-    #seal-logo {
-      height: unset;
-      width: unset;
-      max-width: unset;
-    }
-
-    #s20-logo {
-        max-width: 50%;
-    }
-  }
-
   .three-col {
     display: flex;
     justify-content: space-between;

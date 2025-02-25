@@ -146,6 +146,12 @@
   display: flex;
 }
 
+.flex-start {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -176,6 +182,11 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .no-margins {
