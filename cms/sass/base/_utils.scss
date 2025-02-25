@@ -189,6 +189,11 @@
   flex-wrap: wrap;
 }
 
+.flex-wrap-reverse {
+  display: flex;
+  flex-wrap: wrap-reverse;
+}
+
 .no-margins {
   margin: 0;
 }
