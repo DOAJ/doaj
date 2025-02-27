@@ -30,7 +30,6 @@ $.extend(true, doaj, {
                     category: "facet",
                     showCount: true,
                     filters : [
-                        doaj.filters.isFlagged(),
                         doaj.filters.flaggedToMe()
                     ],
                     renderer : doaj.renderers.newFacetFilterSetterRenderer({
