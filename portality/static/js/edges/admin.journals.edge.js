@@ -72,46 +72,6 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
-
-                edges.newMultiDateRangeEntry({
-                    display: "Apply Date Ranges",
-                    fields: [
-                        {"field": "created_date", "display": "Created Date"},
-                        {"field": "last_manual_update", "display": "Last Updated"}
-                    ],
-                    autoLookupRange: true,
-                    category: "facet",
-                    renderer: doaj.renderers.newBSMultiDateRangeFacet({
-
-                    })
-                }),
-
-                doaj.components.newDateHistogramSelector({
-                    id: "created_date_histogram",
-                    category: "facet",
-                    field: "created_date",
-                    display: "Created Date Histogram",
-                    interval: "year",
-                    displayFormatter : function(val) {
-                        let date = new Date(parseInt(val));
-                        let interval = doaj.adminJournalsSearch.activeEdges[selector].getComponent({id: "created_date_histogram"}).interval;
-                        if (interval === "year") {
-                            return date.toLocaleString('default', { year: 'numeric' });
-                        } else if (interval === "month") {
-                            return date.toLocaleString('default', { month: 'long', year: 'numeric' });
-                        }
-                    },
-                    sortFunction : function(values) {
-                        values.reverse();
-                        return values;
-                    },
-                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
-                        showSelected: false,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-
                 doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "has_seal",
@@ -315,6 +275,76 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
+
+                doaj.components.newFacetDivider({
+                    id: "reporting_tools_divider",
+                    category: "facet",
+                    display: "Reporting Tools"
+                }),
+                doaj.components.newSimultaneousDateRangeEntry({
+                    id: "date_limiter",
+                    display: "Limit by Date Range",
+                    fields: [
+                        {"field": "created_date", "display": "Created Date"},
+                        {"field": "last_manual_update", "display": "Last Updated"}
+                    ],
+                    autoLookupRange: true,
+                    category: "facet",
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet()
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "created_date_histogram",
+                    category: "facet",
+                    field: "created_date",
+                    display: "Created Date Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminJournalsSearch.activeEdges[selector].getComponent({id: "created_date_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "last_updated_histogram",
+                    category: "facet",
+                    field: "last_manual_update",
+                    display: "Last Update Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminJournalsSearch.activeEdges[selector].getComponent({id: "last_updated_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
                 doaj.components.newReportExporter({
                     id: "report-exporter",
                     category: "facet",
@@ -518,7 +548,8 @@ $.extend(true, doaj, {
                         "bibjson.discontinued_date" : "Discontinued Year",
                         "bibjson.apc.has_apc": "Has APC?",
                         "bibjson.other_charges.has_other_charges": "Has other charges?",
-                        "created_date": "Created Date"
+                        "created_date": "Created Date",
+                        "last_manual_update": "Last Updated"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
@@ -536,14 +567,8 @@ $.extend(true, doaj, {
                     },
                     rangeFunctions : {
                         "bibjson.discontinued_date" : doaj.valueMaps.displayYearPeriod,
-                        "created_date" : function(params) {
-                            let interval = doaj.adminJournalsSearch.activeEdges[selector].getComponent({id: "created_date_histogram"}).interval;
-                            if (interval === "year") {
-                                return doaj.valueMaps.displayYearPeriod(params);
-                            } else {
-                                return doaj.valueMaps.displayYearMonthPeriod(params);
-                            }
-                        }
+                        "created_date" : doaj.valueMaps.displayYearMonthPeriod,
+                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod
                     }
                 })
             ];

@@ -13,6 +13,10 @@ $.extend(true, doaj, {
             var selector = params.selector || "#admin_applications";
             var search_url = current_scheme + "//" + current_domain + doaj.adminApplicationsSearchConfig.searchPath;
 
+            var countFormat = edges.numFormat({
+                thousandsSeparator: ","
+            });
+
             var components = [
                 doaj.components.searchingNotification(),
                 // filters
@@ -43,6 +47,74 @@ $.extend(true, doaj, {
                 doaj.facets.publisher(),
                 doaj.facets.journalLicence(),
 
+                doaj.components.newFacetDivider({
+                    id: "reporting_tools_divider",
+                    category: "facet",
+                    display: "Reporting Tools"
+                }),
+                doaj.components.newSimultaneousDateRangeEntry({
+                    id: "date_limiter",
+                    display: "Limit by Date Range",
+                    fields: [
+                        {"field": "admin.date_applied", "display": "Date Applied"},
+                        {"field": "last_manual_update", "display": "Last Updated"}
+                    ],
+                    autoLookupRange: true,
+                    category: "facet",
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet()
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "date_applied_histogram",
+                    category: "facet",
+                    field: "admin.date_applied",
+                    display: "Date Applied Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "date_applied_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "last_updated_histogram",
+                    category: "facet",
+                    field: "last_manual_update",
+                    display: "Last Update Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "last_updated_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
                 doaj.components.newReportExporter({
                     id: "report-exporter",
                     category: "facet",

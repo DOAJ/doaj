@@ -350,18 +350,27 @@ $.extend(true, doaj, {
         displayYearMonthPeriod : function(params) {
             var from = params.from;
             var to = params.to;
-            var field = params.field;
 
-            let df = new Date(parseInt(from))
-            let frdisplay = df.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(df.getUTCMonth() + 1);
-
-            let dt = new Date(parseInt(to - 1))
-            let todisplay = dt.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(dt.getUTCMonth() + 1);
-
-            if (frdisplay !== todisplay) {
-                return {to: to, toType: "lt", from: from, fromType: "gte", display: frdisplay + " to " + todisplay}
+            let frdisplay = false;
+            if (from) {
+                frdisplay = new Date(parseInt(from)).toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
             }
-            return {to: to, toType: "lt", from: from, fromType: "gte", display: frdisplay}
+
+            let todisplay = false;
+            if (to) {
+                todisplay = new Date(parseInt(to - 1)).toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+            }
+
+            let range = frdisplay;
+            if (to) {
+                if (todisplay !== frdisplay) {
+                    range += ` to ${todisplay}`;
+                }
+            } else {
+                range += "+";
+            }
+
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: range}
         },
 
         schemaCodeToNameClosure : function(tree) {
@@ -694,6 +703,302 @@ $.extend(true, doaj, {
                     }
                 });
             }
+        },
+
+        newSimultaneousDateRangeEntry: function (params) {
+            if (!params) { params = {}}
+            doaj.components.SimultaneousDateRangeEntry.prototype = edges.newComponent(params);
+            return new doaj.components.SimultaneousDateRangeEntry(params);
+        },
+        SimultaneousDateRangeEntry: function (params) {
+            ///////////////////////////////////////////////
+            // fields that can be passed in, and their defaults
+
+            // free text to prefix entry boxes with
+            this.display = edges.getParam(params.display, false);
+
+            // list of field objects, which provide the field itself, and the display name.  e.g.
+            // [{field : "monitor.rioxxterms:publication_date", display: "Publication Date"}]
+            this.fields = edges.getParam(params.fields, []);
+
+            // map from field name (as in this.field[n].field) to a function which will provide
+            // the earliest allowed date for that field.  e.g.
+            // {"monitor.rioxxterms:publication_date" : earliestDate}
+            this.earliest = edges.getParam(params.earliest, {});
+
+            // map from field name (as in this.field[n].field) to a function which will provide
+            // the latest allowed date for that field.  e.g.
+            // {"monitor.rioxxterms:publication_date" : latestDate}
+            this.latest = edges.getParam(params.latest, {});
+
+            this.autoLookupRange = edges.getParam(params.autoLookupRange, false);
+
+            // category for this component, defaults to "selector"
+            this.category = edges.getParam(params.category, "selector");
+
+            // default earliest date to use in all cases (defaults to start of the unix epoch)
+            this.defaultEarliest = edges.getParam(params.defaultEarliest, new Date(0));
+
+            // default latest date to use in all cases (defaults to now)
+            this.defaultLatest = edges.getParam(params.defaultLatest, new Date());
+
+            // default renderer from render pack to use
+            this.defaultRenderer = edges.getParam(params.defaultRenderer, "newMultiDateRangeRenderer");
+
+            ///////////////////////////////////////////////
+            // fields used to track internal state
+
+            this.lastField = false;
+            this.currentField = false;
+            this.fromDate = false;
+            this.toDate = false;
+
+            this.touched = false;
+            this.dateOptions = {};
+            this.existingFilters = {};
+
+            this.init = function(edge) {
+                Object.getPrototypeOf(this).init.call(this, edge);
+
+                // set the initial field
+                this.currentField = this.fields[0].field;
+
+                // if required, load the dates once at init
+                if (!this.autoLookupRange) {
+                    this.loadDates();
+                } else {
+                    if (edge.secondaryQueries === false) {
+                        edge.secondaryQueries = {};
+                    }
+                    edge.secondaryQueries["multidaterange_" + this.id] = this.getSecondaryQueryFunction();
+                }
+            };
+
+            this.synchronise = function() {
+                this.currentField = false;
+                this.fromDate = false;
+                this.toDate = false;
+                this.existingFilters = {};
+
+                if (this.autoLookupRange) {
+                    for (var i = 0; i < this.fields.length; i++) {
+                        var field = this.fields[i].field;
+                        var agg = this.edge.secondaryResults["multidaterange_" + this.id].aggregation(field);
+
+                        var min = this.defaultEarliest;
+                        var max = this.defaultLatest;
+                        if (agg.min !== null) {
+                            min = new Date(agg.min);
+                        }
+                        if (agg.max !== null) {
+                            max = new Date(agg.max);
+                        }
+
+                        this.dateOptions[field] = {
+                            earliest: min,
+                            latest: max
+                        }
+                    }
+                }
+
+                for (var i = 0; i < this.fields.length; i++) {
+                    var field = this.fields[i].field;
+                    var filters = this.edge.currentQuery.listMust(es.newRangeFilter({field: field}));
+                    if (filters.length > 0) {
+                        for (let filter of filters) {
+                            if (!this.currentField || (this.lastField && this.lastField === field)) {
+                                this.currentField = field;
+                                this.fromDate = parseInt(filter.gte);
+                                this.toDate = parseInt(filter.lt);
+                            }
+                            this.existingFilters[field] = {
+                                fromDate: filter.gte,
+                                toDate: filter.lt
+                            }
+                        }
+                    }
+                }
+
+                if (!this.currentField && this.lastField) {
+                    this.currentField = this.lastField;
+                }
+
+                if (!this.currentField && this.fields.length > 0) {
+                    this.currentField = this.fields[0].field;
+                }
+            };
+
+            //////////////////////////////////////////////
+            // functions that can be used to trigger state change
+
+            this.currentEarliest = function () {
+                if (!this.currentField) {
+                    return false;
+                }
+                if (this.dateOptions[this.currentField]) {
+                    return this.dateOptions[this.currentField].earliest;
+                }
+            };
+
+            this.currentLatest = function () {
+                if (!this.currentField) {
+                    return false;
+                }
+                if (this.dateOptions[this.currentField]) {
+                    return this.dateOptions[this.currentField].latest;
+                }
+            };
+
+            this.changeField = function (newField) {
+                this.lastField = this.currentField;
+                if (newField !== this.currentField) {
+                    this.touched = true;
+                    this.currentField = newField;
+                    if (this.currentField in this.existingFilters) {
+                        this.setFrom(this.existingFilters[this.currentField].fromDate);
+                        this.setTo(this.existingFilters[this.currentField].toDate);
+                    } else {
+                        this.setFrom(false);
+                        this.setTo(false);
+                    }
+                }
+            };
+
+            this.setFrom = function (from) {
+                if (from !== this.fromDate) {
+                    this.touched = true;
+                    this.fromDate = from;
+                }
+            };
+
+            this.setTo = function (to) {
+                if (to !== this.toDate) {
+                    this.touched = true;
+                    this.toDate = to;
+                }
+            };
+
+            this.triggerSearch = function () {
+                if (this.touched) {
+                    this.touched = false;
+                    var nq = this.edge.cloneQuery();
+
+                    // remove any old filters for this field
+                    var removeCount = nq.removeMust(es.newRangeFilter({field: this.currentField}));
+
+                    // in order to avoid unnecessary searching, check the state of the data and determine
+                    // if we need to.
+                    // - we need to add a new filter to the query if there is a current field and one/both of from and to dates
+                    // - we need to do a search if we removed filters before, or are about to add one
+                    var addFilter = this.currentField && (this.toDate || this.fromDate);
+                    var doSearch = removeCount > 0 || addFilter;
+
+                    // if we're not going to do a search, return
+                    if (!doSearch) {
+                        return false;
+                    }
+
+                    // if there's a filter to be added, do that here
+                    if (addFilter) {
+                        var range = {field: this.currentField};
+                        if (this.toDate) {
+                            range["lt"] = this.toDate;
+                        }
+                        if (this.fromDate) {
+                            range["gte"] = this.fromDate;
+                        }
+                        range["format"] = "epoch_millis"   // Required for ES7.x date ranges against dateOptionalTime formats
+                        nq.addMust(es.newRangeFilter(range));
+                    }
+
+                    // push the new query and trigger the search
+                    this.edge.pushQuery(nq);
+                    this.edge.doQuery();
+
+                    return true;
+                }
+                return false;
+            };
+
+            this.loadDates = function () {
+                for (var i = 0; i < this.fields.length; i++) {
+                    var field = this.fields[i].field;
+
+                    // start with the default earliest and latest
+                    var early = this.defaultEarliest;
+                    var late = this.defaultLatest;
+
+                    // if specific functions are provided for getting the dates, run them
+                    var earlyFn = this.earliest[field];
+                    var lateFn = this.latest[field];
+                    if (earlyFn) {
+                        early = earlyFn();
+                    }
+                    if (lateFn) {
+                        late = lateFn();
+                    }
+
+                    this.dateOptions[field] = {
+                        earliest: early,
+                        latest: late
+                    }
+                }
+            };
+
+            this.getSecondaryQueryFunction = function() {
+                var that = this;
+                return function(edge) {
+                    // clone the current query, which will be the basis for the averages query
+                    var query = edge.cloneQuery();
+
+                    // remove any range constraints
+                    for (var i = 0; i < that.fields.length; i++) {
+                        var field = that.fields[i];
+                        query.removeMust(es.newRangeFilter({field: field.field}));
+                    }
+
+                    // remove any existing aggregations, we don't need them
+                    query.clearAggregations();
+
+                    // add the new aggregation(s) which will actually get the data
+                    for (var i = 0; i < that.fields.length; i++) {
+                        var field = that.fields[i].field;
+                        query.addAggregation(
+                            es.newStatsAggregation({
+                                name: field,
+                                field : field
+                            })
+                        );
+                    }
+
+                    // finally set the size and from parameters
+                    query.size = 0;
+                    query.from = 0;
+
+                    // return the secondary query
+                    return query;
+                }
+            }
+        },
+
+        newFacetDivider: function (params) {
+            return edges.instantiate(doaj.components.FacetDivider, params, edges.newComponent);
+        },
+        FacetDivider: function(params) {
+            this.display = edges.getParam(params.display, "");
+            this.namespace = "doajfacetdivider";
+
+            this.drawn = false;
+
+            this.draw = function() {
+                if (this.drawn) {
+                    return
+                }
+
+                let frag = `<hr><strong>${this.display}</strong><br>`;
+                this.context.html(frag);
+                this.drawn = true;
+            };
         }
     },
 
@@ -859,34 +1164,36 @@ $.extend(true, doaj, {
             this.dre = false;
 
             this.selectId = false;
-            this.rangeId = false;
-            // this.toId = false;
+            this.fromId = false;
+            this.toId = false;
 
             this.selectJq = false;
-            this.rangeJq = false;
-            // this.toJq = false;
+            this.fromJq = false;
+            this.toJq = false;
 
             this.drp = false;
+            this.months = doaj.listMonthsInLocale();
 
-            this.namespace = "edges-bs3-bs-multi-date-range-facet";
+            this.namespace = "doaj-multidaterange";
 
             this.draw = function () {
                 var dre = this.component;
 
                 var selectClass = edges.css_classes(this.namespace, "select", this);
-                var inputClass = edges.css_classes(this.namespace, "input", this);
-                var prefixClass = edges.css_classes(this.namespace, "prefix", this);
                 var facetClass = edges.css_classes(this.namespace, "facet", this);
                 var headerClass = edges.css_classes(this.namespace, "header", this);
                 var bodyClass = edges.css_classes(this.namespace, "body", this);
 
                 var toggleId = edges.css_id(this.namespace, "toggle", this);
                 var formId = edges.css_id(this.namespace, "form", this);
-                var rangeDisplayId = edges.css_id(this.namespace, "range", this);
-                var pluginId = edges.css_id(this.namespace, dre.id + "_plugin", this);
 
-                this.selectId = edges.css_id(this.namespace, dre.id + "_date-type", this);
-                this.rangeId = edges.css_id(this.namespace, dre.id + "_range", this);
+                this.selectId = edges.css_id(this.namespace, "date-type", this);
+                let fromMonthId = edges.css_id(this.namespace, "from-month", this);
+                let fromYearId = edges.css_id(this.namespace, "from-year", this);
+                let toMonthId = edges.css_id(this.namespace, "to-month", this);
+                let toYearId = edges.css_id(this.namespace, "to-year", this);
+
+                let header = this.headerLayout({toggleId: toggleId});
 
                 var options = "";
                 for (var i = 0; i < dre.fields.length; i++) {
@@ -895,40 +1202,83 @@ $.extend(true, doaj, {
                     options += '<option value="' + field.field + '"' + selected + '>' + field.display + '</option>';
                 }
 
-                var frag = '<div class="form-inline">';
+                // create the controls
+                let toFromFrags = this.dateOptionsFrags();
 
-                if (dre.display) {
-                    frag += '<span class="' + prefixClass + '">' + this.prefix + '</span>';
+                let frag = `<div class="form-inline">
+                                        <div class="form-group">
+                                            Type: <select class="${selectClass} form-control input-sm" name="${this.selectId}" id="${this.selectId}">
+                                                ${options}
+                                            </select><br>
+                                            From:
+                                            <select class="form-control input-sm" id="${fromMonthId}">
+                                                ${toFromFrags.fromMonths}
+                                            </select>
+                                            <select class="form-control input-sm" id="${fromYearId}">
+                                                ${toFromFrags.fromYears}
+                                            </select><br>
+                                            To: 
+                                            <select class="form-control input-sm" id="${toMonthId}">
+                                                ${toFromFrags.toMonths}
+                                            </select>
+                                            <select class="form-control input-sm" id="${toYearId}">
+                                                ${toFromFrags.toYears}
+                                            </select>
+                                        </div>
+                                    </div>`;
+
+                let filterRemoveClass = edges.css_classes(this.namespace, "filter-remove", this);
+                let existing = ``;
+                for (let field in dre.existingFilters) {
+                    for (let fd of dre.fields) {
+                        if (fd.field === field) {
+                            let map = doaj.valueMaps.displayYearMonthPeriod({
+                                from: dre.existingFilters[field].fromDate,
+                                to: dre.existingFilters[field].toDate
+                            })
+                            // let from = false;
+                            // if (dre.existingFilters[field].fromDate) {
+                            //     from = new Date(parseInt(dre.existingFilters[field].fromDate)).toLocaleString('default', { month: 'long', year: 'numeric' });
+                            // }
+                            //
+                            // let to = false;
+                            // if (dre.existingFilters[field].toDate) {
+                            //     to = new Date(parseInt(dre.existingFilters[field].toDate - 1)).toLocaleString('default', { month: 'long', year: 'numeric' });
+                            // }
+                            //
+                            // let range = from;
+                            // if (to) {
+                            //     range += ` - ${to}`;
+                            // } else {
+                            //     range += "+";
+                            // }
+                            let range = map.display;
+
+                            existing += `<strong>${fd.display}</strong>: 
+                                            ${range}<a href="#" class="${filterRemoveClass}" data-field="${field}"><i class="glyphicon glyphicon-black glyphicon-remove"></i></a><br>`;
+                        }
+                    }
                 }
 
-                frag += '<div class="form-group"><select class="' + selectClass + ' form-control input-sm" name="' + this.selectId + '" id="' + this.selectId + '">' + options + '</select></div>';
-
-                frag += '<div id="' + this.rangeId + '" class="' + inputClass + '">\
-                    <div class="row"><div class="col-md-1"><i class="glyphicon glyphicon-calendar"></i></div>\
-                    <div class="col-md-9"><div id="' + rangeDisplayId + '"></div></div>\
-                    <div class="col-md-1"><b class="caret"></b></div></div>\
-                </div>';
-
-                frag += "</div>";
-
-                var header = this.headerLayout({toggleId: toggleId});
-
-                // render the overall facet
-                var facet = '<div class="' + facetClass + '">\
-                    <div class="' + headerClass + '"><div class="row"> \
-                        <div class="col-md-12">\
-                            ' + header + '\
-                        </div>\
-                    </div></div>\
-                    <div class="' + bodyClass + '">\
-                        <div class="row" style="display:none" id="' + formId + '">\
-                            <div class="col-md-12">\
-                                {{FORM}}\
-                            </div>\
-                        </div>\
-                    </div>\
-                    </div></div>';
-                facet = facet.replace(/{{FORM}}/g, frag);
+                let facet = `<div class="${facetClass}">
+                    <div class="${headerClass}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                ${header}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="${bodyClass}">
+                        <div class="row" style="display:none" id="${formId}">
+                            <div class="col-md-12">
+                                ${frag}
+                            </div>
+                            <div class="col-md-12">
+                                ${existing}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
 
                 dre.context.html(facet);
 
@@ -937,33 +1287,84 @@ $.extend(true, doaj, {
 
                 // sort out the selectors we're going to be needing
                 var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
-
-                // for when the open button is clicked
                 edges.on(toggleSelector, "click", this, "toggleOpen");
 
-                // date range picker features
-                var selectIdSelector = edges.css_id_selector(this.namespace, dre.id + "_date-type", this);
-                var rangeIdSelector = edges.css_id_selector(this.namespace, dre.id + "_range", this);
-
-                this.selectJq = dre.jq(selectIdSelector);
-                this.rangeJq = dre.jq(rangeIdSelector);
-
-                var cb = edges.objClosure(this, "updateDateRange", ["start", "end"]);
-                var props = {
-                    locale: {
-                        format: "DD/MM/YYYY"
-                    },
-                    opens: "right"
-                };
-                if (this.ranges) {
-                    props["ranges"] = this.ranges;
-                }
-
-                // this.prepDates();
+                let selectIdSelector = edges.css_id_selector(this.namespace, "date-type", this);
                 edges.on(selectIdSelector, "change", this, "typeChanged");
+
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                edges.on(fromMonthSelector, "change", this, "updateDateRange");
+                edges.on(fromYearSelector, "change", this, "updateDateRange");
+                edges.on(toMonthSelector, "change", this, "updateDateRange");
+                edges.on(toYearSelector, "change", this, "updateDateRange");
+
+                let filterRemoveSelector = edges.css_class_selector(this.namespace, "filter-remove", this);
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
             };
 
-            this.headerLayout = function(params) {
+            this.dateOptionsFrags = function (params) {
+                let dre = this.component;
+
+                let fromMonths = "";
+                let toMonths = "";
+                let fromYears = "";
+                let toYears = "";
+
+                let earliest = dre.currentEarliest();
+                let latest = dre.currentLatest();
+                if (earliest && latest) {
+
+                    let startYear = earliest.getUTCFullYear();
+                    let endYear = latest.getUTCFullYear();
+                    let years = [];
+                    for (let year = startYear; year <= endYear; year++) {
+                        years.push(year);
+                    }
+
+                    let selectedFromYear = 0;
+                    let selectedToYear = 0;
+
+                    let fromDate = dre.fromDate ? new Date(parseInt(dre.fromDate)): false;
+                    let toDate = dre.toDate ? new Date(parseInt(dre.toDate - 1)) : false;
+
+                    for (let i = 0; i < years.length; i++) {
+                        let year = years[i];
+                        let fromSelected = "";
+                        if ((!fromDate && i === 0) || (fromDate && year === fromDate.getUTCFullYear())) {
+                            fromSelected = "selected"
+                            selectedFromYear = year;
+                        }
+                        let toSelected = "";
+                        if ((!toDate && i === years.length - 1) || (toDate && year === toDate.getUTCFullYear())) {
+                            toSelected = "selected"
+                            selectedToYear = year;
+                        }
+                        fromYears += `<option value="${year}" ${fromSelected}>${year}</option>`;
+                        toYears += `<option value="${year}" ${toSelected}>${year}</option>`;
+                    }
+
+                    for (let i = 0; i < this.months.length; i++) {
+                        let month = this.months[i];
+                        let fromSelected = "";
+                        if ((!fromDate && i === 0) || (fromDate && i === fromDate.getUTCMonth() && selectedFromYear === fromDate.getUTCFullYear())) {
+                            fromSelected = "selected"
+                        }
+                        let toSelected = "";
+                        if ((!toDate && i === this.months.length - 1) || (toDate && i === toDate.getUTCMonth() && selectedToYear === toDate.getUTCFullYear())) {
+                            toSelected = "selected"
+                        }
+                        fromMonths += `<option value="${i}" ${fromSelected}>${month}</option>`;
+                        toMonths += `<option value="${i}" ${toSelected}>${month}</option>`;
+                    }
+                }
+
+                return {fromMonths: fromMonths, toMonths: toMonths, fromYears: fromYears, toYears: toYears};
+            };
+
+            this.headerLayout = function (params) {
                 var toggleId = params.toggleId;
                 var iconClass = edges.css_classes(this.namespace, "icon", this);
 
@@ -1022,115 +1423,77 @@ $.extend(true, doaj, {
                 this.setUIOpen();
             };
 
-            this.dateRangeDisplay = function(params) {
-                var start = params.start;
-                var end = params.end;
-                var rangeDisplaySelector = edges.css_id_selector(this.namespace, "range", this);
-                this.rangeJq.find(rangeDisplaySelector).html("<strong>From</strong>: " + start.utc().format(this.dateFormat) + '<br><strong>To</strong>: ' + end.utc().format(this.dateFormat));
+            this.dateRangeDisplay = function() {
+                let frags = this.dateOptionsFrags();
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                this.component.jq(fromMonthSelector).html(frags.fromMonths);
+                this.component.jq(fromYearSelector).html(frags.fromYears);
+                this.component.jq(toMonthSelector).html(frags.toMonths);
+                this.component.jq(toYearSelector).html(frags.toYears);
             };
 
-            this.updateDateRange = function (params) {
-                var start = params.start;
-                var end = params.end;
-
-                // a date or type has been changed, so set up the parent object
-
+            this.updateDateRange = function () {
                 // ensure that the correct field is set (it may initially be not set)
-                var date_type = null;
-                if (this.useSelect2) {
-                    date_type = this.selectJq.select2("val");
-                } else {
-                    date_type = this.selectJq.val();
-                }
-
+                let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                let date_type = this.component.jq(typeSelector).val();
                 this.component.changeField(date_type);
 
-                this.component.setFrom(start.toDate());
-                this.component.setTo(end.toDate());
-                this.dateRangeDisplay(params);
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                let fromMonth = this.component.jq(fromMonthSelector).val()
+                let fromYear = this.component.jq(fromYearSelector).val()
+                let toMonth = this.component.jq(toMonthSelector).val()
+                let toYear = this.component.jq(toYearSelector).val()
+
+                let start = new Date(fromYear, fromMonth, 1, 0, 0, 0);
+                if (parseInt(toMonth) > 11) {
+                    toMonth = 0;
+                    toYear = parseInt(toYear) + 1;
+                }
+                let end = new Date(toYear, toMonth, 1, 0, 0, 0);
+
+                this.component.setFrom(start.getTime());
+                this.component.setTo(end.getTime());
 
                 // this action should trigger a search (the parent object will
                 // decide if that's required)
-                var triggered = this.component.triggerSearch();
-
-                // if a search didn't get triggered, we still may need to modify the min/max specified dates
-                if (!triggered) {
-                    this.prepDates();
-                }
+                this.component.triggerSearch();
             };
 
             this.typeChanged = function(element) {
                 // ensure that the correct field is set (it may initially be not set)
-                var date_type = null;
-                if (this.useSelect2) {
-                    date_type = this.selectJq.select2("val");
-                } else {
-                    date_type = this.selectJq.val();
-                }
-
+                let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                let date_type = this.component.jq(typeSelector).val();
                 this.component.changeField(date_type);
 
                 // unset the range
+                // this.component.setFrom(false);
+                // this.component.setTo(false);
+
+                this.dateRangeDisplay();
+
+                // // this action should trigger a search (the parent object will
+                // // decide if that's required)
+                // var triggered = this.component.triggerSearch();
+                //
+                // // if a search didn't get triggered, we still may need to modify the min/max specified dates
+                // if (!triggered) {
+                //     this.dateRangeDisplay();
+                // }
+            };
+
+            this.removeFilter = function(element) {
+                let field = $(element).attr("data-field");
+                this.component.changeField(field);
                 this.component.setFrom(false);
                 this.component.setTo(false);
-
-                // this action should trigger a search (the parent object will
-                // decide if that's required)
-                var triggered = this.component.triggerSearch();
-
-                // if a search didn't get triggered, we still may need to modify the min/max specified dates
-                if (!triggered) {
-                    this.prepDates();
-                }
-            };
-
-            this.prepDates = function () {
-                var min = this.component.currentEarliest();
-                var max = this.component.currentLatest();
-                var fr = this.component.fromDate;
-                var to = this.component.toDate;
-
-                if (min) {
-                    this.drp.minDate = moment(min);
-                    this.drp.setStartDate(moment(min));
-                } else {
-                    this.drp.minDate = moment(this.component.defaultEarliest);
-                    this.drp.setStartDate(moment(this.component.defaultEarliest));
-                }
-
-                if (max) {
-                    this.drp.maxDate = moment(max);
-                    this.drp.setEndDate(moment(max));
-                } else {
-                    this.drp.maxDate = moment(this.component.defaultLatest);
-                    this.drp.setEndDate(moment(this.component.defaultLatest));
-                }
-
-                if (fr) {
-                    // if from lies before the min date, extend the min range
-                    if (fr < this.drp.minDate) {
-                        this.drp.minDate = moment(fr);
-                    }
-                    // if from lies after the max date, extend the max range
-                    if (fr > this.drp.maxDate) {
-                        this.drp.maxDate = moment(fr);
-                    }
-                    this.drp.setStartDate(moment(fr));
-                }
-                if (to) {
-                    // if to lies before the min date, extend the min range
-                    if (to < this.drp.minDate) {
-                        this.drp.minDate = moment(to);
-                    }
-                    // if to lies after the max date, extend the max range
-                    if (to > this.drp.maxDate) {
-                        this.drp.maxDate = moment(to);
-                    }
-                    this.drp.setEndDate(moment(to));
-                }
-
-                this.dateRangeDisplay({start: this.drp.startDate, end: this.drp.endDate});
-            };
+                this.component.triggerSearch();
+            }
         },
 
         newFlexibleDateHistogramSelectorRenderer: function (params) {
@@ -1274,33 +1637,11 @@ $.extend(true, doaj, {
                 }
 
                 // create the controls
-                let from = "";
-                let to = "";
-                if (ts.values && ts.values.length > 0) {
-                    for (let i = 0; i < ts.values.length; i++) {
-                        let val = ts.values[i];
-                        if (val.count === 0 && this.hideEmptyDateBin) {
-                            continue;
-                        }
-                        let toSelected = i === 0 ? "selected" : "";
-                        let fromSelected = i === ts.values.length - 1 ? "selected" : "";
-                        from += `<option value="${edges.escapeHtml(val.gte)}" ${fromSelected}>${edges.escapeHtml(val.display)}</option>`;
-                        to += `<option value="${edges.escapeHtml(val.lt)}" ${toSelected}>${edges.escapeHtml(val.display)}</option>`;
-                    }
-                }
-
-                let fromClass = edges.css_classes(namespace, "from", this);
-                let toClass = edges.css_classes(namespace, "to", this);
                 let intervalClass = edges.css_classes(namespace, "interval", this);
-                let resetClass = edges.css_classes(namespace, "reset", this);
-
                 let yearSelected = this.component.interval === "year" ? "selected" : "";
                 let monthSelected = this.component.interval === "month" ? "selected" : "";
 
-                let controls = `from <select name="from" class="${fromClass}">${from}</select><br> 
-                                        to <select name="to" class="${toClass}">${to}</select><br>
-                                        <button type="button" class="${resetClass}">Reset</button><br>
-                                        by <select name="interval" class="${intervalClass}">
+                let controls = `Granularity <select name="interval" class="${intervalClass}">
                                             <option value="year" ${yearSelected}>Year</option>
                                             <option value="month" ${monthSelected}>Month</option>
                                         </select>`;
