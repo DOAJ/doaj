@@ -822,7 +822,7 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "associate_editor",
             "query_validators": ["non_public_fields_validator"],
-            "query_filters": ["associate", "search_all_meta"],
+            "query_filters": ["associate", "search_all_meta", "flagged"],
             "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
@@ -904,7 +904,6 @@ QUERY_FILTERS = {
     "update_request": "portality.lib.query_filters.update_request",
     "associate": "portality.lib.query_filters.associate",
     "editor": "portality.lib.query_filters.editor",
-    "flagged_to_current_user": "portality.lib.query_filters.flagged_to_current_user",
     "strip_facets": "portality.lib.query_filters.strip_facets",
     "es_type_fix": "portality.lib.query_filters.es_type_fix",
     "last_update_fallback": "portality.lib.query_filters.last_update_fallback",
