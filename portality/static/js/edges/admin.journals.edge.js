@@ -348,7 +348,28 @@ $.extend(true, doaj, {
                 doaj.components.newReportExporter({
                     id: "report-exporter",
                     category: "facet",
-                    model: "journal"
+                    model: "journal",
+                    facetExports: [
+                        {component_id: "in_doaj", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_seal", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "owner", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "admin_has_apc", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "admin_has_other_charges", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "journal_license", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "classification", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "subject", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "language", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "country_publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "continued", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "discontinued_date", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "created_date_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
+                    ]
                 }),
 
                 // configure the search controller

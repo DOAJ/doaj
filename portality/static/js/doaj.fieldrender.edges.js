@@ -402,7 +402,15 @@ $.extend(true, doaj, {
 
         monthPadding: edges.numFormat({
             zeroPadding: 2
-        })
+        }),
+
+        refiningANDTermSelectorExporter: function(component) {
+            return component.values;
+        },
+
+        dateHistogramSelectorExporter: function(component) {
+            return component.values;
+        }
     },
     components : {
         pager : function(id, category) {
@@ -642,6 +650,11 @@ $.extend(true, doaj, {
 
             this.reportUrl = edges.getParam(params.reportUrl, "/admin/report");
 
+            // list of dictionaries of the form
+            // [{component_id: "component_id", display: "display name", exporter: function(component)}]
+            // display is optional, if not provided, will attempt to use component.display
+            this.facetExports = edges.getParam(params.facetExports, []);
+
             this.namespace = "doajreportexporter";
             this.component = this;
 
@@ -652,13 +665,28 @@ $.extend(true, doaj, {
                 let controlsClass = edges.css_classes(this.namespace, "controls", this);
                 let nameClass = edges.css_classes(this.namespace, "name", this);
                 let exportClass = edges.css_classes(this.namespace, "export", this);
+                let downloadClass = edges.css_classes(this.namespace, "download", this);
+                let facetId = edges.css_id(this.namespace, "facet", this);
+
+                let facetOptions = ``;
+                for (let facetExport of this.facetExports) {
+                    let display = this._exportDisplayName(facetExport);
+                    facetOptions += `<option value="${facetExport.component_id}">${display}</option>`;
+                }
 
                 let frag = `<div class="row">
                     <div class="col-md-12">
-                        <a href="#" class="${toggleClass}">Export Search as CSV</a>
+                        <a href="#" class="${toggleClass}">Export Data as CSV</a>
                         <div class="${controlsClass}" style="display:none">
+                            Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
                             <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
-                            <button type="button" class="btn btn-primary ${exportClass}">Generate</button>
+                            <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
+                            Or download the current facets<br>
+                            <select name="${facetId}" id="${facetId}">
+                                <option value="all">All</option>
+                                ${facetOptions}
+                            </select><br>
+                            <button type="button" class="btn btn-primary ${downloadClass}">Download</button>
                         </div>
                     </div>
                 </div>`;
@@ -670,6 +698,9 @@ $.extend(true, doaj, {
 
                 let exportSelector = edges.css_class_selector(this.namespace, "export", this);
                 edges.on(exportSelector, "click", this, "export");
+
+                let downloadSelector = edges.css_class_selector(this.namespace, "download", this);
+                edges.on(downloadSelector, "click", this, "download");
             };
 
             this.toggleControls = function(element) {
@@ -702,6 +733,97 @@ $.extend(true, doaj, {
                         alert("Export requested, you will be notified when it is ready");
                     }
                 });
+            }
+
+            this.download = function(element) {
+                let facetSelector = edges.css_id_selector(this.namespace, "facet", this);
+                let selection = this.context.find(facetSelector).val();
+                let selectedExports = [];
+                if (selection === "all") {
+                    selectedExports = this.facetExports;
+                } else {
+                    selectedExports = this.facetExports.filter(f => f.component_id === selection);
+                }
+
+                let data = [];
+                let columns = [];
+                for (let selectedExport of selectedExports) {
+                    let component = this.edge.getComponent({id: selectedExport.component_id});
+                    let exporter = selectedExport.exporter;
+                    let componentData = exporter(component);
+
+                    let prefix = this._exportDisplayName(selectedExport);
+                    let termKey = prefix + " Term";
+                    let countKey = prefix + " Count";
+                    for (let entry of componentData) {
+                        let obj = {}
+                        obj[termKey] = entry.display;
+                        obj[countKey] = entry.count;
+                        data.push(obj);
+                    }
+                    columns.push(termKey);
+                    columns.push(countKey);
+                }
+
+                let collapsedData = []
+                while(data.length > 0) {
+                    let rowAssembly = {}
+                    let removals = [];
+                    for (let i = 0; i < data.length; i++) {
+                        let entry = data[i];
+                        if (!(Object.keys(entry)[0] in rowAssembly)) {
+                            rowAssembly = {...rowAssembly, ...entry}
+                            removals.push(i);
+                        }
+                    }
+                    collapsedData.push(rowAssembly);
+                    data = data.filter((_, i) => !removals.includes(i));
+                }
+
+                this._deliverCSV(collapsedData, columns);
+            }
+
+            this._exportDisplayName = function(facetExport) {
+                let display = facetExport.display;
+                if (!display) {
+                    let component = this.edge.getComponent({id: facetExport.component_id});
+                    display = component.display;
+                }
+                if (!display) {
+                    display = facetExport.component_id;
+                }
+                return display;
+            }
+
+            this._convertToCSV = function(data, columns) {
+                // Use the columns array as the header row
+                const array = [columns].concat(data);
+
+                return array.map((row, index) => {
+                    // If it's the header row, return it as is
+                    if (index === 0) {
+                        return row.join(',');
+                    }
+                    // Otherwise, map the row values according to the columns
+                    return columns.map(col => {
+                        const value = row[col] !== undefined ? row[col] : '';
+                        return typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value;
+                    }).join(',');
+                }).join('\n');
+            }
+
+            // Function to trigger CSV download
+            this._deliverCSV = function(data, columns, filename = 'facets.csv') {
+                const csv = this._convertToCSV(data, columns);
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                // document.body.removeChild(link);
             }
         },
 

@@ -118,7 +118,23 @@ $.extend(true, doaj, {
                 doaj.components.newReportExporter({
                     id: "report-exporter",
                     category: "facet",
-                    model: "application"
+                    model: "application",
+                    facetExports: [
+                        {component_id: "application_type", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "application_status", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "classification", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "language", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "country_publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "subject", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "journal_license", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "date_applied_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
+                    ]
                 }),
 
                 // configure the search controller
