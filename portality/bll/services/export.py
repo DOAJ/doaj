@@ -188,3 +188,10 @@ class ExportService(object):
         e.save()
 
         return e
+
+    def retrieve(self, report_id):
+        report = models.Export.pull(report_id)
+        mainStore = StoreFactory.get("export")
+        container_id = app.config.get("STORE_EXPORT_CONTAINER")
+        fh = mainStore.get(container_id, report.filename)
+        return report, fh

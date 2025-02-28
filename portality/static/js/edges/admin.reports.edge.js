@@ -121,31 +121,43 @@ $.extend(true, doaj, {
                                     post: "</strong>"
                                 },
                                 {
-                                    pre: " at <strong> ",
+                                    pre: " on <strong> ",
                                     field: "request_date",
-                                    post: "</strong>"
+                                    post: "</strong>",
+                                    valueFunction: function (val, resultobj, renderer) {
+                                        return doaj.humanDateTime(val);
+                                    }
                                 },
                                 {
-                                    pre: " and generated at <strong> ",
+                                    pre: " and generated on <strong> ",
                                     field: "generated_date",
-                                    post: "</strong>"
+                                    post: "</strong>",
+                                    valueFunction: function (val, resultobj, renderer) {
+                                        return doaj.humanDateTime(val);
+                                    }
                                 }
                             ],
                             [
                                 {
-                                    field: "constraints"
-                                }
-                            ],
-                            // [
-                            //     {
-                            //         valueFunction: function(val, res, component) {
-                            //             return markdownConverter.makeHtml(res.long);
-                            //         }
-                            //     }
-                            // ],
-                            [
+                                    field: "constraints",
+                                    valueFunction: function(val, res, component) {
+                                        // let source = encodeURIComponent(val);
+                                        let modelMap = {
+                                            "journal" : "/admin",
+                                            "application": "/admin/applications",
+                                        }
+                                        let route = modelMap[res.model];
+                                        if (route === undefined) {
+                                            route = "/admin";
+                                        }
+                                        return `<a href="${route}?source=${val}">Search again</a> `;
+                                    }
+                                },
                                 {
-                                    field: "filename"
+                                    field: "id",
+                                    valueFunction: function(val, res, component) {
+                                        return `<a href="/admin/report/${val}">Download report</a>`;
+                                    }
                                 }
                             ]
                         ]

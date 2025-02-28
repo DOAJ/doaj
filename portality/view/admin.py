@@ -1,9 +1,9 @@
-import json
+import json, re
 from collections import namedtuple
 from typing import Iterable, List
 
 from flask import Blueprint, request, flash, abort, make_response
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, send_file
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
@@ -893,7 +893,13 @@ def request_report():
 @blueprint.route("/report/<report_id>", methods=["GET"])
 @login_required
 def get_report(report_id):
-    pass
+    def safe(filename):
+        return re.sub(r'[^a-zA-Z0-9-_]', '_', filename)
+
+    exporter = DOAJ.exportService()
+    record, fh = exporter.retrieve(report_id)
+    safe_filename = safe(record.name) + "_" + safe(record.generated_date) + ".csv"
+    return send_file(fh, as_attachment=True, download_name=safe_filename)
 
 @blueprint.route("/reports", methods=["GET"])
 @login_required
