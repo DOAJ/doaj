@@ -730,7 +730,7 @@ $.extend(true, doaj, {
                     },
                     dataType: "json",
                     success: function(data) {
-                        alert("Export requested, you will be notified when it is ready");
+                        alert(`Your export "${name}" is being generated! You will be notified when it is ready to download.`);
                     }
                 });
             }
@@ -739,6 +739,8 @@ $.extend(true, doaj, {
                 let facetSelector = edges.css_id_selector(this.namespace, "facet", this);
                 let selection = this.context.find(facetSelector).val();
                 let selectedExports = [];
+                let filename = this.model + "_facets_" + selection + ".csv";
+
                 if (selection === "all") {
                     selectedExports = this.facetExports;
                 } else {
@@ -780,7 +782,7 @@ $.extend(true, doaj, {
                     data = data.filter((_, i) => !removals.includes(i));
                 }
 
-                this._deliverCSV(collapsedData, columns);
+                this._deliverCSV(collapsedData, columns, filename);
             }
 
             this._exportDisplayName = function(facetExport) {
@@ -814,7 +816,16 @@ $.extend(true, doaj, {
 
             // Function to trigger CSV download
             this._deliverCSV = function(data, columns, filename = 'facets.csv') {
-                const csv = this._convertToCSV(data, columns);
+                let csv = this._convertToCSV(data, columns);
+
+                let dateGenerated = new Date();
+                let header = `"Date generated","${dateGenerated.toISOString()}"\n`;
+
+                let searchURL = this.component.edge.fullUrl();
+                header += `"Search URL","${searchURL}"\n"",""\n`;
+
+                csv = header + csv;
+
                 const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
@@ -1314,6 +1325,7 @@ $.extend(true, doaj, {
                 let fromYearId = edges.css_id(this.namespace, "from-year", this);
                 let toMonthId = edges.css_id(this.namespace, "to-month", this);
                 let toYearId = edges.css_id(this.namespace, "to-year", this);
+                let applyClass = edges.css_classes(this.namespace, "apply", this);
 
                 let header = this.headerLayout({toggleId: toggleId});
 
@@ -1345,7 +1357,8 @@ $.extend(true, doaj, {
                                             </select>
                                             <select class="form-control input-sm" id="${toYearId}">
                                                 ${toFromFrags.toYears}
-                                            </select>
+                                            </select><br>
+                                            <button type="button" class="btn btn-primary ${applyClass}" id="">Apply</button>
                                         </div>
                                     </div>`;
 
@@ -1357,23 +1370,7 @@ $.extend(true, doaj, {
                             let map = doaj.valueMaps.displayYearMonthPeriod({
                                 from: dre.existingFilters[field].fromDate,
                                 to: dre.existingFilters[field].toDate
-                            })
-                            // let from = false;
-                            // if (dre.existingFilters[field].fromDate) {
-                            //     from = new Date(parseInt(dre.existingFilters[field].fromDate)).toLocaleString('default', { month: 'long', year: 'numeric' });
-                            // }
-                            //
-                            // let to = false;
-                            // if (dre.existingFilters[field].toDate) {
-                            //     to = new Date(parseInt(dre.existingFilters[field].toDate - 1)).toLocaleString('default', { month: 'long', year: 'numeric' });
-                            // }
-                            //
-                            // let range = from;
-                            // if (to) {
-                            //     range += ` - ${to}`;
-                            // } else {
-                            //     range += "+";
-                            // }
+                            });
                             let range = map.display;
 
                             existing += `<strong>${fd.display}</strong>: 
@@ -1418,10 +1415,13 @@ $.extend(true, doaj, {
                 let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
                 let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
                 let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
-                edges.on(fromMonthSelector, "change", this, "updateDateRange");
-                edges.on(fromYearSelector, "change", this, "updateDateRange");
-                edges.on(toMonthSelector, "change", this, "updateDateRange");
-                edges.on(toYearSelector, "change", this, "updateDateRange");
+                edges.on(fromMonthSelector, "change", this, "checkDateRange");
+                edges.on(fromYearSelector, "change", this, "checkDateRange");
+                edges.on(toMonthSelector, "change", this, "checkDateRange");
+                edges.on(toYearSelector, "change", this, "checkDateRange");
+
+                let applySelector = edges.css_class_selector(this.namespace, "apply", this);
+                edges.on(applySelector, "click", this, "updateDateRange");
 
                 let filterRemoveSelector = edges.css_class_selector(this.namespace, "filter-remove", this);
                 edges.on(filterRemoveSelector, "click", this, "removeFilter");
@@ -1470,14 +1470,29 @@ $.extend(true, doaj, {
 
                     for (let i = 0; i < this.months.length; i++) {
                         let month = this.months[i];
+
                         let fromSelected = "";
-                        if ((!fromDate && i === 0) || (fromDate && i === fromDate.getUTCMonth() && selectedFromYear === fromDate.getUTCFullYear())) {
-                            fromSelected = "selected"
+                        if (fromDate) {
+                            if (i === fromDate.getUTCMonth() && selectedFromYear === fromDate.getUTCFullYear()) {
+                                fromSelected = "selected"
+                            }
+                        } else {
+                            if (i === earliest.getUTCMonth()) {
+                                fromSelected = "selected"
+                            }
                         }
+
                         let toSelected = "";
-                        if ((!toDate && i === this.months.length - 1) || (toDate && i === toDate.getUTCMonth() && selectedToYear === toDate.getUTCFullYear())) {
-                            toSelected = "selected"
+                        if (toDate) {
+                            if (i === toDate.getUTCMonth() && selectedToYear === toDate.getUTCFullYear()) {
+                                toSelected = "selected"
+                            }
+                        } else {
+                            if (i === latest.getUTCMonth()) {
+                                toSelected = "selected"
+                            }
                         }
+
                         fromMonths += `<option value="${i}" ${fromSelected}>${month}</option>`;
                         toMonths += `<option value="${i}" ${toSelected}>${month}</option>`;
                     }
@@ -1561,7 +1576,6 @@ $.extend(true, doaj, {
                 // ensure that the correct field is set (it may initially be not set)
                 let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
                 let date_type = this.component.jq(typeSelector).val();
-                this.component.changeField(date_type);
 
                 let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
                 let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
@@ -1572,13 +1586,22 @@ $.extend(true, doaj, {
                 let toMonth = this.component.jq(toMonthSelector).val()
                 let toYear = this.component.jq(toYearSelector).val()
 
-                let start = new Date(fromYear, fromMonth, 1, 0, 0, 0);
-                if (parseInt(toMonth) > 11) {
+                let start = new Date(Date.UTC(fromYear, fromMonth, 1, 0, 0, 0));
+
+                toMonth = parseInt(toMonth);
+                toMonth += 1;
+                if (toMonth > 11) {
                     toMonth = 0;
                     toYear = parseInt(toYear) + 1;
                 }
-                let end = new Date(toYear, toMonth, 1, 0, 0, 0);
+                let end = new Date(Date.UTC(toYear, toMonth, 1, 0, 0, 0));
 
+                if (end < start) {
+                    alert("You must choose a 'to' date that is after the 'from' date");
+                    return;
+                }
+
+                this.component.changeField(date_type);
                 this.component.setFrom(start.getTime());
                 this.component.setTo(end.getTime());
 
@@ -1587,26 +1610,41 @@ $.extend(true, doaj, {
                 this.component.triggerSearch();
             };
 
+            this.checkDateRange = function(element) {
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                let fromMonth = this.component.jq(fromMonthSelector).val()
+                let fromYear = this.component.jq(fromYearSelector).val()
+                let toMonth = this.component.jq(toMonthSelector).val()
+                let toYear = this.component.jq(toYearSelector).val()
+
+                let start = new Date(Date.UTC(fromYear, fromMonth, 1, 0, 0, 0));
+
+                toMonth = parseInt(toMonth);
+                toMonth += 1;
+                if (toMonth > 11) {
+                    toMonth = 0;
+                    toYear = parseInt(toYear) + 1;
+                }
+                let end = new Date(Date.UTC(toYear, toMonth, 1, 0, 0, 0));
+
+                let applySelector = edges.css_class_selector(this.namespace, "apply", this);
+                if (end <= start) {
+                    this.component.jq(applySelector).prop("disabled", true);
+                } else {
+                    this.component.jq(applySelector).prop("disabled", false);
+                }
+            }
+
             this.typeChanged = function(element) {
                 // ensure that the correct field is set (it may initially be not set)
                 let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
                 let date_type = this.component.jq(typeSelector).val();
                 this.component.changeField(date_type);
-
-                // unset the range
-                // this.component.setFrom(false);
-                // this.component.setTo(false);
-
                 this.dateRangeDisplay();
-
-                // // this action should trigger a search (the parent object will
-                // // decide if that's required)
-                // var triggered = this.component.triggerSearch();
-                //
-                // // if a search didn't get triggered, we still may need to modify the min/max specified dates
-                // if (!triggered) {
-                //     this.dateRangeDisplay();
-                // }
+                this.checkDateRange();
             };
 
             this.removeFilter = function(element) {

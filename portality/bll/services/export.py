@@ -97,16 +97,19 @@ class ExportService(object):
             kvs = [
                 ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
                 ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
-                # ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
-                ("Added on Date", journal.created_date),
+                ("Added on Date", journal.created_date if isinstance(journal, models.Journal) else journal.date_applied),
                 ("Last updated Date", journal.last_manual_update)
             ]
             return kvs
 
         def _get_doaj_toc_kv(journal):
+            if not isinstance(journal, models.Journal):
+                return "URL in DOAJ", app.config.get("BASE_URL", "https://doaj.org") + "/admin/application/" + journal.id
             return "URL in DOAJ", app.config.get('JOURNAL_TOC_URL_FRAG', 'https://doaj.org/toc/') + journal.id
 
         def _get_article_kvs(journal):
+            if not isinstance(journal, models.Journal):
+                return []
             stats = journal.article_stats()
             kvs = [
                 ("Number of Article Records", str(stats.get("total"))),

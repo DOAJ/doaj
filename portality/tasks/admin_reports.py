@@ -50,7 +50,7 @@ class AdminReportsBackgroundTask(BackgroundTask):
         self.filename = filename
 
         # publish it to the main store and record its existence
-        export = export_svc.publish(filepath, filename, requester=job.user, request_date=job.created_date, name=name, query=ui_query_raw, model=model)
+        export = export_svc.publish(filepath, filename, requester=job.user, request_date=job.created_date, name=name, query=ui_query_raw, model=model_type)
         job.add_audit_message("Export generated with id {id}".format(id=export.id))
 
         # send a notification to the requesting user
@@ -66,7 +66,7 @@ class AdminReportsBackgroundTask(BackgroundTask):
         notification.created_by = source_id
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_FINISHED
         notification.long = notify_svc.long_notification(source_id).format(name=name)
-        notification.short = notify_svc.short_notification(source_id)
+        notification.short = notify_svc.short_notification(source_id).format(name=name)
         notification.action = url
         notify_svc.notify(notification)
 

@@ -112,9 +112,9 @@ bg:job_finished:notify:
 
 bg:job:admin_reports:export_available:
   long: |
-    Your report `{name}` has been generated and is ready for download.
+    Your report "{name}" has been generated and is ready for download.
   short:
-    Report ready for download
+    Report "{name}" ready for download
 
 journal:assed:assigned:notify:
   long: |

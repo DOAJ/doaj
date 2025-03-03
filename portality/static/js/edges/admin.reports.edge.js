@@ -42,8 +42,8 @@ $.extend(true, doaj, {
                     interval: "month",
                     display: "Generated Date",
                     displayFormatter : function(val) {
-                        let d = new Date(parseInt(val))
-                        return d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
+                        let date = new Date(parseInt(val));
+                        return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
                     },
                     sortFunction : function(values) {
                         values.reverse();
@@ -107,13 +107,21 @@ $.extend(true, doaj, {
                                     pre: "<strong>",
                                     field: "name",
                                     post: "</strong>"
+                                },
+                                {
+                                    pre: " <strong>(",
+                                    field: "generated_date",
+                                    post: ")</strong>",
+                                    valueFunction: function (val, resultobj, renderer) {
+                                        return doaj.humanDateTime(val);
+                                    }
                                 }
                             ],
                             [
                                 {
                                     "pre": "A <strong>",
                                     field: "model",
-                                    post: "</strong> report"
+                                    post: "</strong> report "
                                 },
                                 {
                                     pre : "requested by <strong>",

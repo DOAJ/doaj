@@ -313,7 +313,9 @@ $.extend(true, doaj, {
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Charges?",
-                        'index.license.exact' : 'License'
+                        'index.license.exact' : 'License',
+                        "admin.date_applied": "Date Applied",
+                        "last_manual_update": "Last Updated"
                     },
                     valueMaps : {
                         "index.application_type.exact" : {
@@ -321,6 +323,10 @@ $.extend(true, doaj, {
                             "update request": "Open",
                             "new application": "Open"
                         }
+                    },
+                    rangeFunctions : {
+                        "admin.date_applied" : doaj.valueMaps.displayYearMonthPeriod,
+                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         omit : [
