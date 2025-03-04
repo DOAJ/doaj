@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from portality.core import app
 from portality.bll.doaj import DOAJ
+from portality import models
 
 """
 This script is the first step of generating csv file with the details validity of the urls in the journal
@@ -58,10 +59,11 @@ def extra_columns(j):
 
 def generate_journals_csv(csv_file):
     """Generate the csv file for all journals"""
-    journal_service = DOAJ.journalService()
+    # journal_service = DOAJ.journalService()
     extra_cols = [extra_columns]
-    with open(csv_file, 'w', encoding='utf-8') as csvfile:
-        journal_service._make_journals_csv(csvfile, extra_cols)
+    query = models.JournalQuery().all_in_doaj()
+    export_svc = DOAJ.exportService()
+    export_svc.csv(models.Journal, query, out_file=csv_file, custom_columns=extra_cols)
 
 
 def add_link(df, url_column):

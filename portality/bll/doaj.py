@@ -25,6 +25,16 @@ class DOAJ(object):
         return application.ApplicationService()
 
     @classmethod
+    def exportService(cls):
+        """
+        Obtain an instance of the export service ~~->Export:Service~~
+
+        :return: ExportService
+        """
+        from portality.bll.services import export
+        return export.ExportService()
+
+    @classmethod
     def journalService(cls):
         """
         Obtain an instance of the journal service ~~->Journal:Service~~
