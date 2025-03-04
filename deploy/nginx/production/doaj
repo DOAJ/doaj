@@ -123,6 +123,21 @@ server {
         rewrite ^(.*)$ $new_uri permanent;
     }
 
+    # Use the background server for bulk API requests, since that's where the event consumer runs
+    location ~ /api(.*)/bulk {
+        if ($http_user_agent ~* (bot|spider) ) {
+            return 403;
+        }
+        limit_req zone=api burst=8 nodelay;
+        proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
     location /api {
         if ($http_user_agent ~* (bot|spider) ) {
             return 403;

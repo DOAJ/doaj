@@ -228,7 +228,7 @@ def execute(args):
         # Iterate through all the applications and query Provenance with application id and status
         # to get rejected applications
         for record in models.Application.iterate(q=application_query(args.from_year, args.to_year), page_size=20):
-            application_year = dates.parse(record["created_date"], dates.FMT_DATETIME_MS_STD).year
+            application_year = dates.parse(record["admin"]["date_applied"], dates.FMT_DATETIME_MS_STD).year
 
             provenance_res = models.Provenance.query(q=provenance_query(record["id"]), size=2)
             if provenance_res["hits"]["total"]["value"] > 0:

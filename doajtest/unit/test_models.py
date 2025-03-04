@@ -10,6 +10,7 @@ from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
+from portality.lib.thread_utils import wait_until
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -1355,6 +1356,7 @@ class TestModels(DoajTestCase):
         app2.set_id(app2.makeid())
         app2.set_current_journal(j.id)
         app2.set_created("1971-01-01T00:00:00Z")
+        app2.set_date_applied("2004-01-01T00:00:00Z")
         app2.save(blocking=True)
 
         # check that we find the right application when we search
@@ -1729,6 +1731,7 @@ class TestModels(DoajTestCase):
         t.set_in_doaj(True) # should have no effect
 
         t.save(blocking=True)
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
 
         t2 = models.ArticleTombstone.pull("1234")
         assert t2.id == "1234"
@@ -1750,7 +1753,7 @@ class TestModels(DoajTestCase):
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
         a.set_id(a.makeid())
         a.delete()
-        time.sleep(1)
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
 
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
