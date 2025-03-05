@@ -30,47 +30,49 @@ def create_logfile(log_dir=None):
 def send_event(goal: str, on_completed=None, **props_kwargs):
     """ Send event data to Plausible Analytics. (ref: https://plausible.io/docs/events-api )
     """
+    if app.config.get("DOAJENV") == 'dev':
+        print(f"Plausible Analytics Event: Goal: {goal}, Payload: {props_kwargs}")
+    else:
+        plausible_api_url = app.config.get('PLAUSIBLE_API_URL', '')
+        if not app.config.get('PLAUSIBLE_URL', '') and not plausible_api_url:
+            global _failstate
+            if not _failstate:
+                logger.warning('skip send_event, PLAUSIBLE_URL undefined')
+                _failstate = True
+            return
 
-    plausible_api_url = app.config.get('PLAUSIBLE_API_URL', '')
-    if not app.config.get('PLAUSIBLE_URL', '') and not plausible_api_url:
-        global _failstate
-        if not _failstate:
-            logger.warning('skip send_event, PLAUSIBLE_URL undefined')
-            _failstate = True
-        return
+        # prepare request payload
+        payload = {'name': goal,
+                   'url': app.config.get('BASE_URL', 'http://localhost'),
+                   'domain': app.config.get('PLAUSIBLE_SITE_NAME', 'localhost'), }
+        if props_kwargs:
+            payload['props'] = props_kwargs
 
-    # prepare request payload
-    payload = {'name': goal,
-               'url': app.config.get('BASE_URL', 'http://localhost'),
-               'domain': app.config.get('PLAUSIBLE_SITE_NAME', 'localhost'), }
-    if props_kwargs:
-        payload['props'] = props_kwargs
+        # headers for plausible API
+        headers = {'Content-Type': 'application/json'}
+        if request:
+            # Add IP from CloudFlare header or remote_addr - this works because we have ProxyFix on the app
+            headers["X-Forwarded-For"] = request.headers.get("cf-connecting-ip", request.remote_addr)
+            user_agent_key = 'User-Agent'
+            user_agent_val = request.headers.get(user_agent_key)
+            if user_agent_val:
+                headers[user_agent_key] = user_agent_val
 
-    # headers for plausible API
-    headers = {'Content-Type': 'application/json'}
-    if request:
-        # Add IP from CloudFlare header or remote_addr - this works because we have ProxyFix on the app
-        headers["X-Forwarded-For"] = request.headers.get("cf-connecting-ip", request.remote_addr)
-        user_agent_key = 'User-Agent'
-        user_agent_val = request.headers.get(user_agent_key)
-        if user_agent_val:
-            headers[user_agent_key] = user_agent_val
+            # Supply detailed URL if we have it from the request context
+            payload['url'] = request.base_url
 
-        # Supply detailed URL if we have it from the request context
-        payload['url'] = request.base_url
+        def _send():
+            resp = requests.post(plausible_api_url, json=payload, headers=headers)
+            if resp.status_code >= 300:
+                logger.warning(f'Send plausible event API fail. snd: [{resp.url}] [{headers}] [{payload}] rcv: [{resp.status_code}] [{resp.text}]')
+            if on_completed:
+                on_completed(resp)
 
-    def _send():
-        resp = requests.post(plausible_api_url, json=payload, headers=headers)
-        if resp.status_code >= 300:
-            logger.warning(f'Send plausible event API fail. snd: [{resp.url}] [{headers}] [{payload}] rcv: [{resp.status_code}] [{resp.text}]')
-        if on_completed:
-            on_completed(resp)
-
-    try:
-        Thread(target=_send).start()
-    except RuntimeError as e:
-        # When we can't create a thread; don't escalate further since we'd rather the app works than the analytics
-        logger.error(str(e))
+        try:
+            Thread(target=_send).start()
+        except RuntimeError as e:
+            # When we can't create a thread; don't escalate further since we'd rather the app works than the analytics
+            logger.error(str(e))
 
 
 def pa_event(goal, action, label='',
