@@ -33,7 +33,6 @@ if __name__ == "__main__":
                     review_process_url = sheet.cell(row=r, column=7).value
                     aims_scope_url = sheet.cell(row=r, column=8).value
                     author_instructions = sheet.cell(row=r, column=9).value
-                    plagiarism_url = sheet.cell(row=r, column=10).value
                     oa_url = sheet.cell(row=r, column=11).value
                     license_url = sheet.cell(row=r, column=12).value
 
@@ -63,9 +62,6 @@ if __name__ == "__main__":
                     if author_instructions is not None:
                         jbib.remove_urls("author_instructions")
                         jbib.add_url(author_instructions, "author_instructions")
-
-                    if plagiarism_url is not None:
-                        jbib.set_plagiarism_detection(plagiarism_url)
 
                     if oa_url is not None:
                         jbib.remove_urls("oa_statement")

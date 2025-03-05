@@ -49,7 +49,6 @@ class TestCrudJournal(DoajTestCase):
         invalid_url = 'an invalid url $321 >>,'
         bjson._set_attr_with_no_check(bjson.other_charges_url,invalid_url)
         bjson._set_attr_with_no_check(bjson.editorial_review_url, invalid_url)
-        bjson._set_attr_with_no_check(bjson.plagiarism_url, invalid_url)
         bjson._set_attr_with_no_check(bjson.copyright_url, invalid_url)
         bjson._set_attr_with_no_check(bjson.journal_url, invalid_url)
         j.save(blocking=True)

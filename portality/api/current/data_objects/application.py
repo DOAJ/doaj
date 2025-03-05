@@ -50,8 +50,7 @@ INTERNAL_APPLICATION_STRUCT = {
                 "related_journal" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
-                "owner" : {"coerce" : "unicode"},
-                "seal" : {"coerce" : "unicode"}
+                "owner" : {"coerce" : "unicode"}
             },
             "lists": {
                 "notes" : {"contains" : "object"},
@@ -98,7 +97,7 @@ INCOMING_APPLICATION_REQUIREMENTS = {
                     "required" : ["review_process", "review_url"]
                 },
                 "plagiarism": {
-                    "required": ["detection","url"]
+                    "required": ["detection"]
                 },
                 "publisher": {
                     "required": ["name"]
@@ -185,17 +184,8 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if self.data["bibjson"]["ref"]["journal"] is None or self.data["bibjson"]["ref"]["journal"] == "":
             raise seamless.SeamlessException("You must specify the journal homepage in bibjson.ref.journal")
 
-        # if plagiarism detection is done, then the url is a required field
-        if self.data["bibjson"]["plagiarism"]["detection"] is True:
-            url = self.data["bibjson"]["plagiarism"]["url"]
-            if url is None:
-                raise seamless.SeamlessException("In this context bibjson.plagiarism.url is required")
-
         # if licence_display is "embed", then the url is a required field   #TODO: what with "display"
         art = self.data["bibjson"]["article"]
-        if "embed" in art["license_display"] or "display" in art["license_display"]:
-            if art["license_display_example_url"] is None or art["license_display_example_url"] ==  "":
-                raise seamless.SeamlessException("In this context bibjson.article.license_display_example_url is required")
 
         # if the author does not hold the copyright the url is optional, otherwise it is required
         if self.data["bibjson"]["copyright"]["author_retains"] is not False:
@@ -280,12 +270,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if lmut is None:
             return False
         return lmut > datetime.utcfromtimestamp(0)
-
-    def has_seal(self):
-        return self.__seamless__.get_single("admin.seal", default=False)
-
-    def set_seal(self, value):
-        self.__seamless__.set_with_struct("admin.seal", value)
 
     @property
     def owner(self):
