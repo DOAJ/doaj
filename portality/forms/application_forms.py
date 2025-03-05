@@ -1540,6 +1540,17 @@ class FieldDefinitions:
     #######################################
     ## Editorial fields
 
+    S2O = {
+        "name": "s2o",
+        "label": "Subscribe to Open",
+        "input": "checkbox",
+        "help": {
+            "long_help": [
+                "Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
+                "Subscribe to Open</a> initiative?"],
+        }
+    }
+
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
     # ~~->$ QuickReject:FormField~~
     QUICK_REJECT = {
