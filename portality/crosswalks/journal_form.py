@@ -173,17 +173,11 @@ class JournalGenericXWalk(object):
         if form.license_display.data:
             bibjson.article_license_display = ["Embed"] if form.license_display.data == "y" else ["No"]
 
-        if form.license_display_example_url.data:
-            bibjson.article_license_display_example_url = form.license_display_example_url.data
-
         if form.boai.data:
             bibjson.boai = form.boai.data == "y"
 
         if form.oa_start.data:
             bibjson.oa_start = form.oa_start.data
-
-        if form.oa_statement_url.data:
-            bibjson.oa_statement_url = form.oa_statement_url.data
 
         if form.journal_url.data:
             bibjson.journal_url = form.journal_url.data
@@ -208,7 +202,7 @@ class JournalGenericXWalk(object):
 
         if form.plagiarism_detection.data:
             has_detection = form.plagiarism_detection.data == "y"
-            bibjson.set_plagiarism_detection(form.plagiarism_url.data, has_detection)
+            bibjson.set_plagiarism_detection(has_detection)
 
         if form.publication_time_weeks.data:
             bibjson.publication_time_weeks = form.publication_time_weeks.data
@@ -229,14 +223,6 @@ class JournalGenericXWalk(object):
         if form.has_waiver.data:
             has_waiver = form.has_waiver.data == "y"
             bibjson.has_waiver = has_waiver
-
-        if form.orcid_ids.data:
-            orcids = form.orcid_ids.data == "y"
-            bibjson.article_orcid = orcids
-
-        if form.open_citations.data:
-            oc = form.open_citations.data == "y"
-            bibjson.article_i4oc_open_citations = oc
 
         if form.deposit_policy_url.data:
             bibjson.deposit_policy_url = form.deposit_policy_url.data
@@ -381,13 +367,11 @@ class JournalGenericXWalk(object):
 
         if bibjson.article_license_display is not None and len(bibjson.article_license_display) > 0:
             forminfo["license_display"] = "y" if "Embed" in bibjson.article_license_display else "n"
-        forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
         if bibjson.boai is not None:
             forminfo["boai"] = 'y' if bibjson.boai else 'n'
         forminfo["license_terms_url"] = bibjson.license_terms_url
         if bibjson.oa_start:
             forminfo["oa_start"] = bibjson.oa_start
-        forminfo["oa_statement_url"] = bibjson.oa_statement_url
         forminfo["journal_url"] = bibjson.journal_url
         forminfo["aims_scope_url"] = bibjson.aims_scope_url
         forminfo["editorial_board_url"] = bibjson.editorial_board_url
@@ -405,7 +389,6 @@ class JournalGenericXWalk(object):
 
         if bibjson.plagiarism_detection is not None:
             forminfo["plagiarism_detection"] = "y" if bibjson.plagiarism_detection else "n"
-        forminfo["plagiarism_url"] = bibjson.plagiarism_url
         forminfo["publication_time_weeks"] = bibjson.publication_time_weeks
         forminfo["other_charges_url"] = bibjson.other_charges_url
         forminfo['title'] = bibjson.title

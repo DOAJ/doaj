@@ -127,7 +127,6 @@ CSV_HEADERS = [
     "Review process",
     "Review process information URL",
     "Journal plagiarism screening policy",
-    "Plagiarism information URL",
     "URL for journal's aims & scope",
     "URL for the Editorial Board page",
     "URL for journal's instructions for authors",

@@ -24,6 +24,7 @@ def migrate(data):
         j = models.Journal(**obj)
         j.set_in_doaj(admin.get("in_doaj", False))
         j.set_ticked(admin.get("ticked", False))
+        j.set_seal(admin.get("seal", False))
         j.set_owner(admin.get("owner"))
         j.set_editor_group(admin.get("editor_group"))
         j.set_editor(admin.get("editor"))

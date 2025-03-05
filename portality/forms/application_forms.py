@@ -116,39 +116,6 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->$ OAStatementURL:FormField~~
-    OA_STATEMENT_URL = {
-        "name": "oa_statement_url",
-        "label": "The journal website must display its open access statement. Where can we find this information?",
-        "input": "text",
-        "help": {
-            "long_help": ["Here is an example of a suitable Open Access "
-                          "statement that meets our criteria: <blockquote>This"
-                          " is an open access journal, which means that all "
-                          "content is freely available without charge to the "
-                          "user or his/her institution. Users are allowed to "
-                          "read, download, copy, distribute, print, search, or"
-                          " link to the full texts of the articles, or use "
-                          "them for any other lawful purpose, without asking "
-                          "prior permission from the publisher or the author. "
-                          "This is in accordance with the BOAI definition of "
-                          "open access.</blockquote>"],
-            "short_help": "Link to the journal’s open access statement",
-            "placeholder": "https://www.my-journal.com/open-access"
-        },
-        "validate": [
-            {"required": {"message": "Enter the URL for the journal’s Open Access statement page"}},
-            "is_url"  # ~~^->IsURL:FormValidator~~
-        ],
-        "widgets": [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url"  # ~~^-> ClickableURL:FormWidget~~
-        ],
-        "attr": {
-            "type": "url"
-        }
-    }
-
     # ~~->$ Title:FormField~~
     TITLE = {
         "name": "title",
@@ -782,7 +749,7 @@ class FieldDefinitions:
         "label": "Does the journal embed and/or display licensing information in its articles?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y", "subfields": ["license_display_example_url"]},
+            {"display": "Yes", "value": "y", "subfields": []},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -793,33 +760,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ]
-    }
-
-    # ~~->$ LicenseDisplayExampleUrl:FormField~~
-    LICENSE_DISPLAY_EXAMPLE_URL = {
-        "name": "license_display_example_url",
-        "label": "Recent article displaying or embedding a license in the full text",
-        "input": "text",
-        "conditional": [
-            {"field": "license_display", "value": "y"}
-        ],
-        "help": {
-            "short_help": "Link to an example article",
-            "placeholder": "https://www.my-journal.com/articles/article-page"
-        },
-        "validate": [
-            {"required_if": {
-                "field": "license_display",
-                "value": "y",
-                "message": "Enter the URL for any recent article that displays or embeds a license"
-            }
-            },
-            "is_url"  # ~~^->IsURL:FormValidator~~
-        ],
-        "widgets": [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url"  # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -993,35 +933,6 @@ class FieldDefinitions:
         ],
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ]
-    }
-
-    # ~~->$ PlagiarismURL:FormField~~
-    PLAGIARISM_URL = {
-        "name": "plagiarism_url",
-        "label": "Where can we find this information?",
-        "diff_table_context": "Plagiarism screening",
-        "input": "text",
-        "conditional": [{"field": "plagiarism_detection", "value": "y"}],
-        "help": {
-            "doaj_criteria": "You must provide a URL",
-            "placeholder": "https://www.my-journal.com/about#plagiarism",
-            "short_help": "Link to the journal’s plagiarism policy",
-            "long_help": ["The page should state that the journal actively checks for plagiarism and explain how this "
-                          "is done (including the name of any software or service used)."]
-        },
-        "validate": [
-            {"required_if": {
-                "field": "plagiarism_detection",
-                "value": "y",
-                "message": "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
-            }
-            },
-            "is_url"  # ~~^->IsURL:FormValidator~~
-        ],
-        "widgets": [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url"  # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -1626,63 +1537,6 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~->$ Orcids:FormField~~
-    ORCID_IDS = {
-        "name": "orcid_ids",
-        "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "An <a href='https://orcid.org/' target='_blank' rel='noopener'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
-                "authors."],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
-    # ~~->$ OpenCitations:FormField~~
-    OPEN_CITATIONS = {
-        "name": "open_citations",
-        "label": "Does the journal comply with I4OC standards for open citations?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "The <a href='https://i4oc.org/#goals' target='_blank' rel='noopener'>I4OC standards</a> ask that citations are structured, separable, and open. "],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
     #######################################
     ## Editorial fields
 
@@ -2016,7 +1870,6 @@ class FieldSetDefinitions:
         "label": "Open access compliance",
         "fields": [
             FieldDefinitions.BOAI["name"],
-            FieldDefinitions.OA_STATEMENT_URL["name"],
             FieldDefinitions.OA_START["name"]
         ]
     }
@@ -2072,8 +1925,7 @@ class FieldSetDefinitions:
         "name": "embedded_licensing",
         "label": "Embedded licenses",
         "fields": [
-            FieldDefinitions.LICENSE_DISPLAY["name"],
-            FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]
+            FieldDefinitions.LICENSE_DISPLAY["name"]
         ]
     }
 
@@ -2103,8 +1955,7 @@ class FieldSetDefinitions:
         "name": "plagiarism",
         "label": "Plagiarism",
         "fields": [
-            FieldDefinitions.PLAGIARISM_DETECTION["name"],
-            FieldDefinitions.PLAGIARISM_URL["name"]
+            FieldDefinitions.PLAGIARISM_DETECTION["name"]
         ]
     }
 
@@ -2182,9 +2033,7 @@ class FieldSetDefinitions:
         "label": "Unique identifiers & structured data",
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
-            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
-            FieldDefinitions.ORCID_IDS["name"],
-            FieldDefinitions.OPEN_CITATIONS["name"]
+            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]
         ]
     }
 

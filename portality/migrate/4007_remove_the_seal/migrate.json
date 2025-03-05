@@ -6,7 +6,20 @@
 			"action": "index",
 			"keepalive": "1m",
 			"functions" : [
-				"portality.migrate.4007_remove_the_seal.operations.journal_remove_seal"
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_seal",
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_plagiarism_url",
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_license_display_example_url"
+			]
+		},
+		{
+			"type": "application",
+			"init_with_model": false,
+			"action": "index",
+			"keepalive": "1m",
+			"functions" : [
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_seal",
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_plagiarism_url",
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_license_display_example_url"
 			]
 		}
 	]

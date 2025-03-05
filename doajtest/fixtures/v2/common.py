@@ -35,7 +35,6 @@ JOURNAL_LIKE_BIBJSON = {
     },
     "article": {
         "license_display": ["Embed"],
-        "license_display_example_url": "http://licence.embedded",
         "orcid": True,
         "i4oc_open_citations": False
     },
@@ -84,8 +83,7 @@ JOURNAL_LIKE_BIBJSON = {
     },
     "pissn": "1234-5678",
     "plagiarism": {
-        "detection": True,
-        "url": "http://plagiarism.screening"
+        "detection": True
     },
     "preservation": {
         "has_preservation" : True,
@@ -149,11 +147,9 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "language": ["EN", "FR"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",
-    "license_display_example_url": "http://licence.embedded",
     "boai": "y",
     "license": ["Publisher's own license"],
     "license_terms_url" : "http://licence.url",
-    "oa_statement_url" : "http://oa.statement",
     "oa_start":2012,
     "journal_url" : "http://journal.url",
     "aims_scope_url" : "http://aims.scope",
@@ -163,7 +159,6 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "persistent_identifiers" : ["DOI", "ARK", "PURL", "other"],
     "persistent_identifiers_other" : "PIDMachine",
     "plagiarism_detection" : "y",
-    "plagiarism_url" : "http://plagiarism.screening",
     "publication_time_weeks" : 8,
     "other_charges_url" : "http://other.charges",
     "title": "The Title",

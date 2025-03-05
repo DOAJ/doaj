@@ -638,7 +638,6 @@ class TestModels(DoajTestCase):
         assert bj.apc_url == "http://apc.com"
         assert bj.has_apc is True
         assert bj.article_license_display == ["Embed"]
-        assert bj.article_license_display_example_url == "http://licence.embedded"
         assert bj.article_orcid is True
         assert bj.article_i4oc_open_citations is False
         assert bj.author_retains_copyright is True
@@ -655,13 +654,11 @@ class TestModels(DoajTestCase):
         assert bj.other_charges_url == "http://other.charges"
         assert bj.pid_scheme == ["DOI", "ARK", "PURL", "PIDMachine"]
         assert bj.plagiarism_detection is True
-        assert bj.plagiarism_url == "http://plagiarism.screening"
         assert bj.preservation is not None
         assert bj.preservation_summary == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"], ["A national library", "Imperial"]]
         assert bj.preservation_url == "http://digital.archiving.policy"
         assert bj.publisher_name == "The Publisher"
         assert bj.publisher_country == "US"
-        assert bj.oa_statement_url == "http://oa.statement"
         assert bj.journal_url == "http://journal.url"
         assert bj.aims_scope_url == "http://aims.scope"
         assert bj.author_instructions_url == "http://author.instructions.com"
@@ -683,7 +680,6 @@ class TestModels(DoajTestCase):
         bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
         bj.apc_url = "http://apc2.com"
         bj.article_license_display = "No"
-        bj.article_license_display_example_url = "http://licence2.embedded"
         bj.article_orcid = False
         bj.article_i4oc_open_citations = False
         bj.author_retains_copyright = False
@@ -697,11 +693,10 @@ class TestModels(DoajTestCase):
         bj.has_other_charges = False
         bj.other_charges_url = "http://other2.url"
         bj.pid_scheme = "Handle"
-        bj.set_plagiarism_detection("http://test1", False)
+        bj.set_plagiarism_detection(False)
         bj.set_preservation(["LOCKSS", ["a national library", "UCL"]], "http://preservation")
         bj.publisher_name = "Me"
         bj.publisher_country = "GB"
-        bj.oa_statement_url = "http://oa2.statement"
         bj.journal_url = "http://journal2.url"
         bj.aims_scope_url = "http://aims2.url"
         bj.author_instructions_url = "http://inst2.url"
@@ -724,7 +719,6 @@ class TestModels(DoajTestCase):
         assert len(bj.subject) == 1
         assert bj.apc_url == "http://apc2.com"
         assert bj.article_license_display == ["No"]
-        assert bj.article_license_display_example_url == "http://licence2.embedded"
         assert bj.article_orcid is False
         assert bj.article_i4oc_open_citations is False
         assert bj.author_retains_copyright is False
@@ -741,13 +735,11 @@ class TestModels(DoajTestCase):
         assert bj.other_charges_url == "http://other2.url"
         assert bj.pid_scheme == ["Handle"]
         assert bj.plagiarism_detection is False
-        assert bj.plagiarism_url == "http://test1"
         assert bj.preservation is not None
         assert bj.preservation_summary == ["LOCKSS", ["A national library", "UCL"]]
         assert bj.preservation_url == "http://preservation"
         assert bj.publisher_name == "Me"
         assert bj.publisher_country == "GB"
-        assert bj.oa_statement_url == "http://oa2.statement"
         assert bj.journal_url == "http://journal2.url"
         assert bj.aims_scope_url == "http://aims2.url"
         assert bj.author_instructions_url == "http://inst2.url"
@@ -837,28 +829,24 @@ class TestModels(DoajTestCase):
         bj.add_url("http://editorial", bj.EDITORIAL_BOARD)
         bj.add_url("http://aims", bj.AIMS_SCOPE)
         bj.add_url("http://author", bj.AUTHOR_INSTRUCTIONS)
-        bj.add_url("http://oa", bj.OA_STATEMENT)
 
         assert bj.journal_url == "http://homepage"
         assert bj.waiver_url == "http://waiver"
         assert bj.editorial_board_url == "http://editorial"
         assert bj.aims_scope_url == "http://aims"
         assert bj.author_instructions_url == "http://author"
-        assert bj.oa_statement_url == "http://oa"
 
         assert bj.get_urls(bj.HOMEPAGE) == ["http://homepage"]
         assert bj.get_urls(bj.WAIVER_POLICY) == ["http://waiver"]
         assert bj.get_urls(bj.EDITORIAL_BOARD) == ["http://editorial"]
         assert bj.get_urls(bj.AIMS_SCOPE) == ["http://aims"]
         assert bj.get_urls(bj.AUTHOR_INSTRUCTIONS) == ["http://author"]
-        assert bj.get_urls(bj.OA_STATEMENT) == ["http://oa"]
 
         assert bj.get_single_url(bj.HOMEPAGE) == "http://homepage"
         assert bj.get_single_url(bj.WAIVER_POLICY) == "http://waiver"
         assert bj.get_single_url(bj.EDITORIAL_BOARD) == "http://editorial"
         assert bj.get_single_url(bj.AIMS_SCOPE) == "http://aims"
         assert bj.get_single_url(bj.AUTHOR_INSTRUCTIONS) == "http://author"
-        assert bj.get_single_url(bj.OA_STATEMENT) == "http://oa"
 
         assert bj.first_eissn == bj.eissn
         assert bj.first_pissn == bj.pissn
