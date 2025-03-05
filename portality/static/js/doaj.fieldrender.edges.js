@@ -2740,42 +2740,53 @@ $.extend(true, doaj, {
                     externalLink += '</a></li>';
                 }
 
-                frag +='</sup>\
-                            </a>\
-                            ' + subtitle + '\
-                          </h3>\
-                        </header>\
-                        <div class="search-results__body">\
-                          <ul class="inlined-list">\
-                            <li>\
-                              ' + published + '\
-                            </li>\
-                            ' + language + '\
-                          </ul>\
-                          ' + subjects + '\
-                        </div>\
-                      </div>\
-                      <aside class="col-sm-4 search-results__aside">\
-                        <ul>\
-                          <li>\
-                            ' + update_or_added + '\
-                          </li>\
-                          ' + articles + '\
-                          ' + externalLink + '\
-                        <li>\
-                            ' + charges + '\
-                          </li>\
-                          <li>\
-                            ' + rights + '\
-                          </li>\
-                          <li>\
-                            ' + licenses + '\
-                          </li>\
-                        </ul>\
-                        ' + actions + modals + '\
-                      </aside>\
-                    </article>\
-                  </li>';
+                let s2o = "";
+                if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
+                    s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank">' +
+                        '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
+                        '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
+                        '</a>';
+                }
+
+                frag +=`</sup>
+                            </a>
+                            ` + subtitle + `
+                          </h3>
+                        </header>
+                        <div class="search-results__body">
+                          <ul class="inlined-list">
+                            <li>
+                              ` + published + `
+                            </li>
+                            ` + language + `
+                          </ul>
+                          ` + subjects + `
+                        </div>
+                      </div>
+                      <aside class="col-sm-4 search-results__aside">
+                        <ul>
+                          <li>
+                            ` + update_or_added + `
+                          </li>
+                          ` + articles + `
+                          ` + externalLink + `
+                        <li>
+                            ` + charges + `
+                          </li>
+                          <li>
+                            ` + rights + `
+                          </li>
+                          <li>
+                            ` + licenses + `
+                          </li>
+                          <li class="badges badges--search-result badges--search-result--public">
+                          ${s2o}
+                          </li>
+                        </ul>
+                        ` + actions + modals + `
+                      </aside>
+                    </article>
+                  </li>`;
 
                 return frag;
             };
@@ -3638,21 +3649,34 @@ $.extend(true, doaj, {
     },
 
     fieldRender: {
-        titleField : function (val, resultobj, renderer) {
-            var field = '<div class="flex-space-between"><h3 class="type-01 font-serif">';
+        titleField: function (val, resultobj, renderer) {
+            var field = '<div class="flex-start flex-space-between flex-wrap"><h3 class="type-01 font-serif" >';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
                     var display = edges.escapeHtml(resultobj.bibjson.title);
                     if (resultobj.admin.in_doaj) {
-                        display =  "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
+                        display = "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
                     }
                     field += display;
                 } else {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 field += "</h3>";
+
+                var s2o = '';
+                if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
+                    s2o = s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank" style="padding: .25rem;"> ' +
+                        '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
+                        '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
+                        '</a>';;
+                }
+
+                if (s2o) {
+                    field += '<div class="badges badges--search-result badges--search-result--maned">' + s2o + '</div>';
+                }
                 return field + "</div>";
-            } else {
+            }
+            else {
                 return false;
             }
         },

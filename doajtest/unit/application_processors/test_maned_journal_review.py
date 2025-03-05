@@ -137,6 +137,25 @@ class TestManEdJournalReview(DoajTestCase):
         # right, so let's see if we managed to get a title-less journal from this
         assert fc.target.bibjson().title is None, fc.target.bibjson().title
 
+    def test_04_maned_review_doaj_labels(self):
+        """Test the seal checkbox on the maned review form"""
+
+        # construct it from form data (with a known source)
+        formulaic_context = JournalFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
+            source=models.Journal(**JOURNAL_SOURCE)
+        )
+
+        # set the s2o data to False using the form
+        fc.form.s2o.data = False
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+        # patch the target with data from the source
+        fc.patch_target()
+
+        assert fc.target.bibjson().labels == []
 
     def test_05_maned_review_continuations(self):
         # construct it from form data (with a known source)

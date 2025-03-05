@@ -49,6 +49,7 @@ class TestAPIDataObj(DoajTestCase):
         assert do.data['bibjson']["publication_time_weeks"] == self.jm.bibjson().publication_time_weeks
         assert do.data["bibjson"]["preservation"]["url"] == self.jm.bibjson().preservation_url
         assert isinstance(do.data["bibjson"]["preservation"]["service"], list)
+        assert do.data["bibjson"]["labels"] == self.jm.bibjson().labels
 
     def test_03_merge_outside_construct(self):
         struct = {

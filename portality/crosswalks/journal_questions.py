@@ -61,7 +61,8 @@ class Journal2QuestionXwalk(object):
         ("orcid_ids", "Article metadata includes ORCIDs"),
         ("open_citations", "Journal complies with I4OC standards for open citations"),
         ("deposit_policy_url", "URL for deposit policy"),
-        ("subject", "LCC Codes")
+        ("subject", "LCC Codes"),
+        ("s2o", "Subscribe to Open"),
     ]
 
     DEGEN = {
@@ -72,24 +73,13 @@ class Journal2QuestionXwalk(object):
     }
 
     @classmethod
-    def q(cls, ident):
+    def q(cls, ident, val=None):
         if ident in cls.DEGEN:
             ident = cls.DEGEN[ident]
         for k, q in cls.QTUP:
             if k == ident:
                 return q
         return None
-
-    @classmethod
-    def q2idx(cls, ident):
-        if ident in cls.DEGEN:
-            ident = cls.DEGEN[ident]
-        i = 0
-        for k, q in cls.QTUP:
-            if k.lower() == ident.lower():
-                return i
-            i += 1
-        return -1
 
     @classmethod
     def p(cls, ident):
@@ -235,6 +225,7 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("continued_by"), ", ".join(forminfo.get("continued_by"))))
 
         kvs.append((cls.q("subject"), "|".join(forminfo.get("subject"))))
+        kvs.append((cls.q("s2o"), "Yes" if forminfo.get("s2o", False) else "No"))
 
         return kvs
 
@@ -296,6 +287,7 @@ class Journal2QuestionXwalk(object):
             'orcid_ids': _y_n_or_blank,
             'open_citations': _y_n_or_blank,
             'boai': _y_or_blank,
+            's2o': _y_n_or_blank
         }
 
         def csv2formval(key, value):

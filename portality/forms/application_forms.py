@@ -2038,6 +2038,14 @@ class FieldSetDefinitions:
     }
 
 
+    LABELS = {
+        "name": "labels",
+        "label": "Specify labels for this journal",
+        "fields": [
+            FieldDefinitions.S2O["name"]
+        ]
+    }
+
     # ~~->$ QuickReject:FieldSet~~
     # ~~^-> QuickReject:Feature~~
     QUICK_REJECT = {
@@ -2222,6 +2230,7 @@ class ApplicationContextDefinitions:
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
+        FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
@@ -2306,6 +2315,7 @@ class JournalContextDefinitions:
     MANED["fieldsets"] += [
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
+        FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview

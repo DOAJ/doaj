@@ -145,6 +145,9 @@ class TestCrudApplication(DoajTestCase):
         assert "LOCKSS" in preservation.get("service")
         assert "A safe place" in preservation.get("service")
 
+        # check the stuff that should not be processed through
+        assert a.bibjson().labels == []
+
         time.sleep(1)
 
         s = models.Application.pull(a.id)
@@ -468,6 +471,7 @@ class TestCrudApplication(DoajTestCase):
         # now check the properties to make sure the update tool
         assert updated.bibjson().title == "An updated title"
         assert updated.created_date == created.created_date
+        assert updated.bibjson().labels == []
 
     def test_09_update_application_fail(self):
         # set up all the bits we need
