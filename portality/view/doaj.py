@@ -356,11 +356,12 @@ def toc_articles_legacy(identifier=None):
 def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
+    articles_no = len(list(journal.all_articles()))
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
-        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, tab="articles")
+        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, articles_no=articles_no, tab="articles")
 
 
 # ~~->Article:Page~~
