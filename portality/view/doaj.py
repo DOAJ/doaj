@@ -413,6 +413,14 @@ def terms():
     return render_template(templates.STATIC_PAGE, page_frag="/legal/terms.html")
 
 
+@blueprint.route("/code-of-conduct/")
+def conduct():
+    """
+    ~~Conduct:WebRoute~~
+    """
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/code-of-conduct.html")
+
+
 @blueprint.route("/media/")
 def media():
     """
