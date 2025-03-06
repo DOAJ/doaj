@@ -427,7 +427,7 @@ class DomainObject(UserDict, object):
         return cls.send_query(query)
 
     @classmethod
-    def send_query(cls, qobj, retry=50, **kwargs):
+    def send_query(cls, qobj, retry=50, pit_query=False, **kwargs):
         """Actually send a query object to the backend.
         :param kwargs are passed directly to Elasticsearch search() function
         """
@@ -445,7 +445,8 @@ class DomainObject(UserDict, object):
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
                 if kwargs.get('timeout') is None:
                     kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', None)
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
+                index = cls.index_name() if pit_query is False else None
+                r = ES.search(body=json.dumps(qobj), index=index, doc_type=cls.doc_type(),
                               headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
@@ -677,23 +678,27 @@ class DomainObject(UserDict, object):
             # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
             theq["sort"] = ["_doc"]
 
-        # Initialise the scroll
-        try:
-            res = cls.send_query(theq, scroll=keepalive)
-        except Exception as e:
-            raise ScrollInitialiseException("Unable to initialise scroll - could be your mappings are broken", e)
+        # Open a point in time query context
+        res = ES.open_point_in_time(index=cls.index_name(), keep_alive=keepalive)
+        pit_id = res.get("id")
 
-        # unpack scroll response
-        scroll_id = res.get('_scroll_id')
+        theq["pit"] = {
+            "id": pit_id,
+            "keep_alive": keepalive
+        }
+        theq["track_total_hits"] = True
+
+        first_resp = cls.send_query(theq, pit_query=True)
+        search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
         total_results = res.get('hits', {}).get('total', {}).get('value')
 
         # Supply the first set of results
         counter = 0
         for r in cls.handle_es_raw_response(
-                res,
+                first_resp,
                 wrap=wrap,
                 extra_trace_info=
-                "\nScroll initialised:\n{q}\n"
+                "\nPIT Initialised:\n{q}\n"
                 "\n\nPage #{counter} of the ES response with size {page_size}."
                         .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
 
@@ -706,6 +711,8 @@ class DomainObject(UserDict, object):
             else:
                 yield r
 
+        del theq["track_total_hits"]
+
         # Continue to scroll through the rest of the results
         while True:
             # apply the limit
@@ -716,15 +723,22 @@ class DomainObject(UserDict, object):
             if counter >= total_results:
                 break
 
+            theq["search_after"] = search_after
+
             # get the next page and check that we haven't timed out
             try:
-                res = ES.scroll(scroll_id=scroll_id, scroll=keepalive)
+                res = cls.send_query(theq, pit_query=True)
+                search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
             except elasticsearch.exceptions.NotFoundError as e:
                 raise ScrollTimeoutException(
-                    "Scroll timed out; {status} - {message}".format(status=e.status_code, message=e.info))
+                    "PIT timed out; {status} - {message}".format(status=e.status_code, message=e.info))
             except Exception as e:
                 # if any other exception occurs, make sure it's at least logged.
-                app.logger.exception("Unhandled exception in scroll method of DAO")
+                app.logger.exception("Unhandled exception in iterate_pit method of DAO")
+                try:
+                    ES.close_point_in_time({"id": pit_id})
+                except:
+                    pass
                 raise ScrollException(e)
 
             # if we didn't get any results back, this means we're at the end
@@ -735,7 +749,7 @@ class DomainObject(UserDict, object):
                     res,
                     wrap=wrap,
                     extra_trace_info=
-                    "\nScroll:\n{q}\n"
+                    "\nPIT:\n{q}\n"
                     "\n\nPage #{counter} of the ES response with size {page_size}."
                             .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
 
@@ -747,6 +761,8 @@ class DomainObject(UserDict, object):
                     yield cls(**r)
                 else:
                     yield r
+
+        ES.close_point_in_time({"id": pit_id})
 
     @classmethod
     def iterall(cls, page_size=1000, limit=None, **kwargs):

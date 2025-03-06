@@ -118,7 +118,9 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         mainStore.delete_container(container)
 
     doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-    type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
+    aliases = es_connection.indices.get_alias(index=app.config['ELASTIC_SEARCH_DB_PREFIX'] + "*")
+    # type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types] + [a[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for a in aliases]
+    type_list = [a[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for a in aliases]
 
     for type_ in type_list:
         model = models.lookup_models_by_type(type_, dao.DomainObject)
