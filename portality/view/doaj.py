@@ -356,7 +356,7 @@ def toc_articles_legacy(identifier=None):
 def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
-    articles_no = len(list(journal.all_articles()))
+    articles_no = journal.article_stats()["total"]
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
