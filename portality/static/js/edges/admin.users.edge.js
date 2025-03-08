@@ -182,7 +182,11 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "role.exact": "Role"
+                        "role.exact": "Role",
+                        "created_date": "Created Date"
+                    },
+                    rangeFunctions : {
+                        "created_date" : doaj.valueMaps.displayYearPeriod
                     }
                 })
             ];
