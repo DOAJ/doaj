@@ -30,6 +30,7 @@ def create_logfile(log_dir=None):
 def send_event(goal: str, on_completed=None, **props_kwargs):
     """ Send event data to Plausible Analytics. (ref: https://plausible.io/docs/events-api )
     """
+    
     plausible_api_url = app.config.get('PLAUSIBLE_API_URL', '')
     if not app.config.get('PLAUSIBLE_URL', '') and not plausible_api_url:
         global _failstate
