@@ -4,7 +4,16 @@
 
     <section id="all-articles" class="row tabs__panel" role="tabpanel">
         <div class="col-md-12">
-            <div id="journal_toc_articles"></div>
+            <div id="journal_toc_articles">
+                <div class="articles-loading-placeholder">
+                    <h2>Loading {{ articles_no }} articles</h2>
+                    <div class="loading">
+                        <div id="first_dot"></div>
+                        <div id="second_dot"></div>
+                        <div id="third_dot"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
