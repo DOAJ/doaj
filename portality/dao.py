@@ -689,8 +689,11 @@ class DomainObject(UserDict, object):
         theq["track_total_hits"] = True
 
         first_resp = cls.send_query(theq, pit_query=True)
+        if len(first_resp.get('hits', {}).get('hits', [])) == 0:
+            return
+
         search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
-        total_results = res.get('hits', {}).get('total', {}).get('value')
+        total_results = first_resp.get('hits', {}).get('total', {}).get('value')
 
         # Supply the first set of results
         counter = 0
