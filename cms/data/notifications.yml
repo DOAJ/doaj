@@ -94,7 +94,7 @@ application:publisher:quickreject:notify:
     
     {note}
     
-    You may submit a new application 6 months after the date of this email. Before you apply again, make the necessary changes to ensure your journal adheres to our criteria: ([{doaj_guide_url}]({doaj_guide_url}))
+     You may submit a new application 6 months after the date of this email. Please note that the reasons for our decision listed in this email may not be all the issues with your journal/publisher and we may raise additional issues in our new assessment. Before you apply again, we encourage you to review our guidelines : ([{doaj_guide_url}]({doaj_guide_url})), the [Priniciples of Transparency and Best Practices in Scholarly Publishing] (https://doaj.org/apply/transparency/) and relevant guidelines from the [Committee on Publication Ethics, COPE] (https://publicationethics.org/guidance).  
   short:
     Your application ({issns}) was rejected
 
