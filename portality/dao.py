@@ -731,6 +731,8 @@ class DomainObject(UserDict, object):
             # get the next page and check that we haven't timed out
             try:
                 res = cls.send_query(theq, pit_query=True)
+                if len(res.get('hits', {}).get('hits', [])) == 0:
+                    break
                 search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
             except elasticsearch.exceptions.NotFoundError as e:
                 raise ScrollTimeoutException(
@@ -743,10 +745,6 @@ class DomainObject(UserDict, object):
                 except:
                     pass
                 raise ScrollException(e)
-
-            # if we didn't get any results back, this means we're at the end
-            if len(res.get('hits', {}).get('hits')) == 0:
-                break
 
             for r in cls.handle_es_raw_response(
                     res,
@@ -768,6 +766,98 @@ class DomainObject(UserDict, object):
         ES.close_point_in_time({"id": pit_id})
 
     @classmethod
+    def iterate_unstable(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True):
+        """ Provide an iterable of all items in a model, using search_after but with no scroll context or
+        PIT.  This means that if the index changes as the iterate is happening, there may be repeated or
+        missed elements.  This is useful for cases where the index is not changing during the iteration, or the
+        exact export is not important (e.g. for anon_export for testing purposes)
+
+        :param q: The query to scroll results on
+        :param page_size: limited by ElasticSearch, check settings to override
+        :param limit: Limit the number of results returned (e.g. to take a slice)
+        :param wrap: Whether to return the results in raw json or wrapped as an object
+        """
+        theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
+        theq["size"] = page_size
+        theq["from"] = 0
+        if "sort" not in theq:
+            # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
+            theq["sort"] = ["_doc"]
+
+        theq["track_total_hits"] = True
+
+        first_resp = cls.send_query(theq)
+        if len(first_resp.get('hits', {}).get('hits', [])) == 0:
+            return
+
+        search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+        total_results = first_resp.get('hits', {}).get('total', {}).get('value')
+
+        # Supply the first set of results
+        counter = 0
+        for r in cls.handle_es_raw_response(
+                first_resp,
+                wrap=wrap,
+                extra_trace_info=
+                "\nUnstable Iterate Initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+            counter += 1
+            if wrap:
+                yield cls(**r)
+            else:
+                yield r
+
+        del theq["track_total_hits"]
+
+        # Continue to scroll through the rest of the results
+        while True:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+
+            # if we consumed all the results we were expecting, we can just stop here
+            if counter >= total_results:
+                break
+
+            theq["search_after"] = search_after
+
+            # get the next page and check that we haven't timed out
+            try:
+                res = cls.send_query(theq)
+                if len(res.get('hits', {}).get('hits', [])) == 0:
+                    break
+                search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+            except elasticsearch.exceptions.NotFoundError as e:
+                raise ScrollTimeoutException(
+                    "PIT timed out; {status} - {message}".format(status=e.status_code, message=e.info))
+            except Exception as e:
+                # if any other exception occurs, make sure it's at least logged.
+                app.logger.exception("Unhandled exception in iterate_unstable method of DAO")
+                raise ScrollException(e)
+
+            for r in cls.handle_es_raw_response(
+                    res,
+                    wrap=wrap,
+                    extra_trace_info=
+                    "\nUnstable Iterate:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                            .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+                # apply the limit
+                if limit is not None and counter >= int(limit):
+                    break
+                counter += 1
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
+
+    @classmethod
     def iterall(cls, page_size=1000, limit=None, **kwargs):
         # TODO: Another candidate for swapping to iterate_pit (or rename iterate_pit to iterate when we're happy)
         return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
@@ -779,7 +869,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def dump(cls, q=None, page_size=1000, limit=None, out=None, out_template=None, out_batch_sizes=100000,
              out_rollover_callback=None, transform=None, es_bulk_format=True, idkey='id', es_bulk_fields=None,
-             scroll_keepalive='2m'):
+             iterate_method="unstable", scroll_keepalive='2m'):
         """ Export to file, bulk format or just a json dump of the record """
 
         q = q if q is not None else {"query": {"match_all": {}}}
@@ -796,7 +886,20 @@ class DomainObject(UserDict, object):
             out = sys.stdout
 
         count = 0
-        for record in cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
+
+        iterator = None
+        if iterate_method == "unstable":
+            iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
+        elif iterate_method == "pit":
+            iterator = cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
+        elif iterate_method == "scroll":
+            iterator = cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
+        if iterator is None:
+            raise Exception("Unknown iterate method: {0}".format(iterate_method))
+        # for record in cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
+        # for record in cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False):
+
+        for record in iterator:
             if transform is not None:
                 record = transform(record)
 
