@@ -135,6 +135,14 @@ ass_ed:
   country: Chile
   language: Spanish, English
   photo: "alainchaple.png"
+
+- name: Aldy Rialdy
+  area: Computational Linguistics
+  year_since:
+  city: Bandung
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "foto_aldy.jpg"
   
 - name: Aleksandra Zawadzka
   area: Library Science
