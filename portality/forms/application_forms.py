@@ -273,7 +273,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                           "Use the link under the ISSN you provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 2049-3630",
@@ -281,7 +281,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
-                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
                                                            "online)'"}}  # ~~^-> DifferetTo:FormValidator~~
@@ -295,7 +295,7 @@ class FieldDefinitions:
             "public": {
                 "validate": [
                     {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "eissn",
                                       "message": "This field must contain a different value to 'ISSN ("
@@ -306,7 +306,7 @@ class FieldDefinitions:
             "admin": {
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -321,7 +321,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -331,7 +331,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -350,15 +350,15 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
-                          "Use the link under the ISSN your provided to check it.",
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
+                          "Use the link under the ISSN you provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 0378-5955",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
             {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "pissn",
                               "message": "This field must contain a different value to 'ISSN (print)'"}}
@@ -373,7 +373,7 @@ class FieldDefinitions:
             "public": {
                 "validate": [
                     {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "pissn",
                                       "message": "This field must contain a different value to 'ISSN (print)'"}},
@@ -384,7 +384,7 @@ class FieldDefinitions:
             "admin": {
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -399,7 +399,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -409,7 +409,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -419,7 +419,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "validate": [
                     {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "pissn",  # ~~^-> DifferetTo:FormValidator~~
                                       "message": "This field must contain a different value to 'ISSN (print)'"}}
@@ -970,7 +970,7 @@ class FieldDefinitions:
             {"required": {"message": "Enter the Year (YYYY)."}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {
-                "message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be greater than {}".format(
+                "message": "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}".format(
                     app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
@@ -1136,7 +1136,7 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": [" If the journal charges a range of fees for "
-                          "publication of an article, enter the highest fee. "
+                          "the publication of an article, enter the highest fee. "
                           "If the fee can be paid in more than one currency, "
                           "you may list them here."]
         },
