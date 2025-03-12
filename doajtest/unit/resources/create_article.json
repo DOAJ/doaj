@@ -2,7 +2,6 @@
     "id": "abcdefghijk_article",
     "admin": {
         "in_doaj": true,
-        "seal": false,
         "publisher_record_id": "some_identifier",
         "upload_id": "zyxwvutsrqpo_upload_id"
     },

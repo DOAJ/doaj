@@ -79,14 +79,13 @@ class TestCrudApplication(DoajTestCase):
         # plagiarism detection but no url
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["plagiarism"]["detection"] = True
-        del data["bibjson"]["plagiarism"]["url"]
-        with self.assertRaises(SeamlessException):
-            ia = IncomingApplication(data)
+        ia = IncomingApplication(data)
+        self.assertTrue(ia.data["bibjson"]["plagiarism"]["detection"])
+        self.assertTrue("url" not in ia.data["bibjson"]["plagiarism"])
 
         # embedded licence but no url
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["article"]["embedded_licence"] = True
-        del data["bibjson"]["article"]["license_display_example_url"]
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
@@ -208,19 +207,6 @@ class TestCrudApplication(DoajTestCase):
         # formcontext.FormContext.finalise = self.old_finalise
         ApplicationProcessor.finalise = self.old_finalise
 
-        # validation fails at formulaic form processor
-        IncomingApplication.custom_validate = mock_custom_validate_always_pass
-        with self.assertRaises(Api400Error) as ex:
-            data = ApplicationFixtureFactory.incoming_application()
-            del data["admin"]["current_journal"]
-            # a bungled URL should trigger the form validation failure
-            data["bibjson"]["plagiarism"]["url"] = "quite frankly not a URL"
-            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
-            try:
-                a = ApplicationsCrudApi.create(data, publisher)
-            except Api400Error as e:
-                raise
-        assert str(ex.exception).startswith("The following validation errors were received: bibjson.plagiarism.url")
         IncomingApplication.custom_validate = self.old_custom_validate
 
         # issns are the same
@@ -402,7 +388,6 @@ class TestCrudApplication(DoajTestCase):
         assert "notes" not in oa.data.get("admin", {})
         assert "editor_group" not in oa.data.get("admin", {})
         assert "editor" not in oa.data.get("admin", {})
-        assert "seal" not in oa.data.get("admin", {})
         assert "related_journal" not in oa.data.get("admin", {})
 
         # check that it does contain admin information that it should

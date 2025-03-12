@@ -116,39 +116,6 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->$ OAStatementURL:FormField~~
-    OA_STATEMENT_URL = {
-        "name": "oa_statement_url",
-        "label": "The journal website must display its open access statement. Where can we find this information?",
-        "input": "text",
-        "help": {
-            "long_help": ["Here is an example of a suitable Open Access "
-                          "statement that meets our criteria: <blockquote>This"
-                          " is an open access journal, which means that all "
-                          "content is freely available without charge to the "
-                          "user or his/her institution. Users are allowed to "
-                          "read, download, copy, distribute, print, search, or"
-                          " link to the full texts of the articles, or use "
-                          "them for any other lawful purpose, without asking "
-                          "prior permission from the publisher or the author. "
-                          "This is in accordance with the BOAI definition of "
-                          "open access.</blockquote>"],
-            "short_help": "Link to the journal’s open access statement",
-            "placeholder": "https://www.my-journal.com/open-access"
-        },
-        "validate": [
-            {"required": {"message": "Enter the URL for the journal’s Open Access statement page"}},
-            "is_url"  # ~~^->IsURL:FormValidator~~
-        ],
-        "widgets": [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url"  # ~~^-> ClickableURL:FormWidget~~
-        ],
-        "attr": {
-            "type": "url"
-        }
-    }
-
     # ~~->$ Title:FormField~~
     TITLE = {
         "name": "title",
@@ -728,8 +695,7 @@ class FieldDefinitions:
                           "ic_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' "
                           "rel='noopener'>What is the difference between CC0 "
                           "and the Public Domain Mark (\"PDM\")?</a>"],
-            "doaj_criteria": "Content must be licensed",
-            "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
+            "doaj_criteria": "Content must be licensed"
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> type of license"}}
@@ -783,45 +749,17 @@ class FieldDefinitions:
         "label": "Does the journal embed and/or display licensing information in its articles?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y", "subfields": ["license_display_example_url"]},
+            {"display": "Yes", "value": "y", "subfields": []},
             {"display": "No", "value": "n"}
         ],
         "help": {
             "long_help": ["It is recommended that licensing information is included in full-text articles "
                           "but it is not required for inclusion. "
                           "Answer <strong>Yes</strong> if licensing is displayed or "
-                          "embedded in all versions of each article."],
-            "seal_criteria": "If the answer is Embed"
+                          "embedded in all versions of each article."]
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ]
-    }
-
-    # ~~->$ LicenseDisplayExampleUrl:FormField~~
-    LICENSE_DISPLAY_EXAMPLE_URL = {
-        "name": "license_display_example_url",
-        "label": "Recent article displaying or embedding a license in the full text",
-        "input": "text",
-        "conditional": [
-            {"field": "license_display", "value": "y"}
-        ],
-        "help": {
-            "short_help": "Link to an example article",
-            "placeholder": "https://www.my-journal.com/articles/article-page"
-        },
-        "validate": [
-            {"required_if": {
-                "field": "license_display",
-                "value": "y",
-                "message": "Enter the URL for any recent article that displays or embeds a license"
-            }
-            },
-            "is_url"  # ~~^->IsURL:FormValidator~~
-        ],
-        "widgets": [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url"  # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -844,8 +782,7 @@ class FieldDefinitions:
                           " (including commercial rights). <br/><br/> Answer "
                           "<strong>Yes</strong> only if authors publishing "
                           "under any license allowed by the journal "
-                          "retain all rights."],
-            "seal_criteria": "The author must retain the copyright"
+                          "retain all rights."]
         }
     }
 
@@ -996,35 +933,6 @@ class FieldDefinitions:
         ],
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ]
-    }
-
-    # ~~->$ PlagiarismURL:FormField~~
-    PLAGIARISM_URL = {
-        "name": "plagiarism_url",
-        "label": "Where can we find this information?",
-        "diff_table_context": "Plagiarism screening",
-        "input": "text",
-        "conditional": [{"field": "plagiarism_detection", "value": "y"}],
-        "help": {
-            "doaj_criteria": "You must provide a URL",
-            "placeholder": "https://www.my-journal.com/about#plagiarism",
-            "short_help": "Link to the journal’s plagiarism policy",
-            "long_help": ["The page should state that the journal actively checks for plagiarism and explain how this "
-                          "is done (including the name of any software or service used)."]
-        },
-        "validate": [
-            {"required_if": {
-                "field": "plagiarism_detection",
-                "value": "y",
-                "message": "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
-            }
-            },
-            "is_url"  # ~~^->IsURL:FormValidator~~
-        ],
-        "widgets": [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url"  # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -1629,102 +1537,8 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~->$ Orcids:FormField~~
-    ORCID_IDS = {
-        "name": "orcid_ids",
-        "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "An <a href='https://orcid.org/' target='_blank' rel='noopener'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
-                "authors."],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
-    # ~~->$ OpenCitations:FormField~~
-    OPEN_CITATIONS = {
-        "name": "open_citations",
-        "label": "Does the journal comply with I4OC standards for open citations?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "The <a href='https://i4oc.org/#goals' target='_blank' rel='noopener'>I4OC standards</a> ask that citations are structured, separable, and open. "],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
     #######################################
     ## Editorial fields
-
-    # ~~->$ DOAJSeal:FormField~~
-    DOAJ_SEAL = {
-        "name": "doaj_seal",
-        "label": "The journal may have fulfilled all the criteria for the Seal.",
-        "multiple": True,
-        "input": "checkbox",
-        "options": [
-            {"display": "Award the Seal?", "value": 'y'},
-        ],
-
-        "validate": [
-            {
-                "only_if": {
-                    "fields": [
-                        {"field": "license_display", "value": "y"},
-                        {"field": "copyright_author_retains", "value": "y"},
-                        {"field": "preservation_service", "not": "none"},
-                        {"field": "preservation_service_url", "not": ""},
-                        {"field": "deposit_policy", "not": "none"},
-                        {"field": "persistent_identifiers", "not": "none"},
-                        {"field": "license", "or": ["CC BY", "CC BY-SA", "CC BY-NC", "CC BY-NC-SA"]}
-                    ],
-                    "message": "In order to award the query: the license must be CC BY, CC BY-SA, CC BY-NC, or CC BY-NC-SA; "
-                               "the license must be displayed or embedded; "
-                               "the author must retain their copyright; "
-                               "the journal must make use of a preservation service; "
-                               "a url for the preservation service must be provided; "
-                               "the journal must have a deposit policy; "
-                               "the journal must use a persistent identifier"
-                }
-            }
-        ],
-        "widgets": [
-            "article_info",
-        ],
-    }
 
     S2O = {
         "name": "s2o",
@@ -2055,20 +1869,6 @@ class FieldDefinitions:
         }
     }
 
-    # Bulk Edit fields (that couldn't be overriden in the normal way)
-    # ~~->$ BulkDOAJSeal:FormField~~
-    BULK_DOAJ_SEAL = {
-        "name": "change_doaj_seal",
-        "label": 'Award the Seal',
-        "input": "select",
-        "default": "",
-        "options": [
-            {"value": "", "display": "Leave unchanged"},
-            {"value": "True", "display": "Yes"},
-            {"value": "False", "display": "No"}
-        ],
-    }
-
 
 ##########################################################
 # Define our fieldsets
@@ -2081,7 +1881,6 @@ class FieldSetDefinitions:
         "label": "Open access compliance",
         "fields": [
             FieldDefinitions.BOAI["name"],
-            FieldDefinitions.OA_STATEMENT_URL["name"],
             FieldDefinitions.OA_START["name"]
         ]
     }
@@ -2137,8 +1936,7 @@ class FieldSetDefinitions:
         "name": "embedded_licensing",
         "label": "Embedded licenses",
         "fields": [
-            FieldDefinitions.LICENSE_DISPLAY["name"],
-            FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]
+            FieldDefinitions.LICENSE_DISPLAY["name"]
         ]
     }
 
@@ -2168,8 +1966,7 @@ class FieldSetDefinitions:
         "name": "plagiarism",
         "label": "Plagiarism",
         "fields": [
-            FieldDefinitions.PLAGIARISM_DETECTION["name"],
-            FieldDefinitions.PLAGIARISM_URL["name"]
+            FieldDefinitions.PLAGIARISM_DETECTION["name"]
         ]
     }
 
@@ -2247,20 +2044,10 @@ class FieldSetDefinitions:
         "label": "Unique identifiers & structured data",
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
-            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
-            FieldDefinitions.ORCID_IDS["name"],
-            FieldDefinitions.OPEN_CITATIONS["name"]
+            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]
         ]
     }
 
-    # ~~->$ Seal:FieldSet~~
-    SEAL = {
-        "name": "seal",
-        "label": "Award the seal",
-        "fields": [
-            FieldDefinitions.DOAJ_SEAL["name"]
-        ]
-    }
 
     LABELS = {
         "name": "labels",
@@ -2360,7 +2147,6 @@ class FieldSetDefinitions:
         "label": "Bulk edit",
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
-            FieldDefinitions.BULK_DOAJ_SEAL["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
             FieldDefinitions.OWNER["name"]
         ]
@@ -2455,7 +2241,6 @@ class ApplicationContextDefinitions:
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
-        FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
@@ -2541,7 +2326,6 @@ class JournalContextDefinitions:
     MANED["fieldsets"] += [
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
-        FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"]
     ]

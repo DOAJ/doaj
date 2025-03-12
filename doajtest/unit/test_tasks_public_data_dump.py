@@ -177,7 +177,7 @@ class TestPublicDataDumpTask(DoajTestCase):
                         assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
                     if "admin" in record:
                         for key in list(record["admin"].keys()):
-                            assert key in ["ticked", "seal"]
+                            assert key in ["ticked"]
 
             if types_arg in ["-", "all", "journal"]:
                 journal_file = "doaj_journal_data_" + day_at_start + ".tar.gz"
@@ -198,7 +198,7 @@ class TestPublicDataDumpTask(DoajTestCase):
                         assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
                     if "admin" in record:
                         for key in list(record["admin"].keys()):
-                            assert key in ["ticked", "seal"]
+                            assert key in ["ticked"]
 
         else:
             # in the case of an error, we expect the tmp store to have been cleaned up
