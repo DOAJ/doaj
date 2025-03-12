@@ -825,18 +825,13 @@ class DomainObject(UserDict, object):
                 break
 
             theq["search_after"] = search_after
-
-            # get the next page and check that we haven't timed out
             try:
                 res = cls.send_query(theq)
                 if len(res.get('hits', {}).get('hits', [])) == 0:
                     break
                 search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
-            except elasticsearch.exceptions.NotFoundError as e:
-                raise ScrollTimeoutException(
-                    "PIT timed out; {status} - {message}".format(status=e.status_code, message=e.info))
             except Exception as e:
-                # if any other exception occurs, make sure it's at least logged.
+                # if any exception occurs, make sure it's at least logged.
                 app.logger.exception("Unhandled exception in iterate_unstable method of DAO")
                 raise ScrollException(e)
 
@@ -888,16 +883,16 @@ class DomainObject(UserDict, object):
         count = 0
 
         iterator = None
-        if iterate_method == "unstable":
-            iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
-        elif iterate_method == "pit":
-            iterator = cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
-        elif iterate_method == "scroll":
-            iterator = cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
+        match iterate_method:
+            case "unstable":
+                iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
+            case "pit":
+                iterator = cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
+            case "scroll":
+                iterator = cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
+
         if iterator is None:
-            raise Exception("Unknown iterate method: {0}".format(iterate_method))
-        # for record in cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
-        # for record in cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False):
+                raise Exception("Unknown iterate method: {0}".format(iterate_method))
 
         for record in iterator:
             if transform is not None:
