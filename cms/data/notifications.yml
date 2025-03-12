@@ -1,9 +1,11 @@
 # ~~Notifications:Data~~
 application:assed:acceptreject:notify:
   long: |
-    The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
+    This is for your information only. The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
   short:
     One of your applications ({issns}) marked as '{decision}'
+  action_intro:
+    "Related link: "
 
 application:assed:assigned:notify:
   long: |
@@ -19,9 +21,11 @@ application:assed:inprogress:notify:
 
 application:editor:acceptreject:notify:
   long: |
-    The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
+    This is for your information only. The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
   short:
     One of your applications ({issns}) marked as '{decision}'
+  action_intro:
+    "Related link: "
 
 application:editor:completed:notify:
   long: |
