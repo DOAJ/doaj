@@ -277,6 +277,14 @@ ass_ed:
   country: Nigeria
   language: English, French
   photo: "aleru.jpg"
+
+- name: Daniela Hahn
+  area: Arts & Humanities, Social Sciences
+  year_since:
+  city: Zurich
+  country: Switzerland
+  language: German, English, French
+  photo: "Portrait_Daniela Hahn.jpg"
   
 - name: Danner Sagala
   area: Agricultural Sciences
