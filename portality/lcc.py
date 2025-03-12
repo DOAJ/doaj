@@ -3,6 +3,7 @@
 """
 from portality.lib import paths
 from portality.models import LCC
+from portality.core import prepare_type
 
 
 def loadLCC(source=None):
@@ -57,6 +58,9 @@ def loadLCC(source=None):
         pn["children"].append(cn)
 
     lcc = LCC(**tree)
+
+    # Initialise the LCC index correctly if it doesn't exist - otherwise it'll be created badly on save
+    prepare_type(lcc.__type__)
     lcc.save()
 
 

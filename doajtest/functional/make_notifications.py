@@ -3,7 +3,7 @@
 from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from doajtest.mocks.mock_mail import MockMail
-from events.consumers.application_assed_acceptreject_notify import ApplicationAssedAcceptRejectNotify
+from portality.events.consumers.application_assed_acceptreject_notify import ApplicationAssedAcceptRejectNotify
 from portality import constants
 from portality import models, app_email
 from portality.core import app

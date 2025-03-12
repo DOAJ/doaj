@@ -138,6 +138,8 @@ class Messages(object):
 
     PRESERVATION_NO_FILE = "No file provided for upload"
 
+    ARE_YOU_A_HUMAN = "Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>."
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
