@@ -11,7 +11,7 @@ tests:
       - you receive a page which contains at least a set of admin account credentials and publisher account credentials
   - step: Log in with a publisher account
     path: /account/login
-  - step: Go to the application form
+  - step: Go to the application form (or open the draft application prepared for you by the testdrive)
     path: /apply/
   - step: | 
       Complete the application form as you like, but ensure to set the following values:
