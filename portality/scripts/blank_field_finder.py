@@ -44,8 +44,7 @@ def write_bad_data_domain_object(domain_object_class: Any, out_path):
 
 
 def main2():
-    with open('/tmp/journals.csv', 'w') as f:
-        JournalService._make_journals_csv(f)
+    JournalService().public_csv('/tmp/journals.csv')
 
 
 def is_bad_str(v: str):

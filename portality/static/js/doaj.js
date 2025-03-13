@@ -209,6 +209,16 @@ var doaj = {
         return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year) + " at " + String(hour) + ":" + String(minute);
     },
 
+    listMonthsInLocale : function() {
+        const months = [];
+        for (let i = 0; i < 12; i++) {
+            const date = new Date(2000, i, 1); // Year 2000 is arbitrary
+            const monthName = date.toLocaleString('default', { month: 'long' });
+            months.push(monthName);
+        }
+        return months;
+    },
+
     iso_datetime2date : function(isodate_str) {
         /* >>> '2003-04-03T00:00:00Z'.substring(0,10)
          * "2003-04-03"
