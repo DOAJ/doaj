@@ -25,6 +25,10 @@ class NotificationsService(object):
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - " + notification.short
 
+        action_intro = ""
+        if notification.action is not None:
+            action_intro = self.action_intro(notification.created_by)
+
         # ~~-> Email:Library ~~
         app_email.send_markdown_mail(to=to,
                             fro=fro,
@@ -34,6 +38,7 @@ class NotificationsService(object):
                             user=acc,
                             message=notification.long,
                             action=notification.action,
+                            action_intro=action_intro,
                             url_root=app.config.get("BASE_URL"))
 
         return notification
@@ -45,6 +50,10 @@ class NotificationsService(object):
     def short_notification(self, message_id):
         # ~~-> Notifications:Data ~~
         return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("short", Messages.NOTIFY__DEFAULT_SHORT_NOTIFICATION)
+
+    def action_intro(self, consumer_id):
+        return app.jinja_env.globals["data"]["notifications"].get(consumer_id, {}).get("action_intro",
+                                                                                      Messages.NOTIFY__DEFAULT_ACTION_INTRO)
 
     def top_notifications(self, account: models.Account, size: int = 10):
         # ~~-> TopNotifications:Query ~~

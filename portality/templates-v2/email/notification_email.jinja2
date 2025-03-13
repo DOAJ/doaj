@@ -3,7 +3,7 @@
 {{ message }}
 
 {% if action %}
-To take action based on this notification, follow this link: [{{ url_root }}{{ action }}]({{ url_root }}{{ action }})
+{{ action_intro }} [{{ url_root }}{{ action }}]({{ url_root }}{{ action }})
 {% endif %}
 
 

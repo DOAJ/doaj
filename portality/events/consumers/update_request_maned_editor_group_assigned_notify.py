@@ -8,8 +8,8 @@ from portality.bll import DOAJ
 from portality.bll import exceptions
 
 
-class ApplicationEditorGroupAssignedNotify(EventConsumer):
-    ID = "application:editor_group:assigned:notify"
+class UpdateRequestManedEditorGroupAssignedNotify(EventConsumer):
+    ID = "update_request:maned:editor_group_assigned:notify"
 
     @classmethod
     def should_consume(cls, event):
@@ -22,7 +22,7 @@ class ApplicationEditorGroupAssignedNotify(EventConsumer):
 
         application = consumer_utils.parse_application(app_source)
 
-        if application.application_type != constants.APPLICATION_TYPE_NEW_APPLICATION:
+        if application.application_type != constants.APPLICATION_TYPE_UPDATE_REQUEST:
             return
 
         if not application.editor_group:
@@ -30,19 +30,19 @@ class ApplicationEditorGroupAssignedNotify(EventConsumer):
 
         editor_group = models.EditorGroup.pull_by_key("name", application.editor_group)
 
-        if not editor_group.editor:
-            raise exceptions.NoSuchPropertyException("Editor Group {x} does not have property `editor`".format(x=editor_group.id))
+        if not editor_group.maned:
+            raise exceptions.NoSuchPropertyException("Editor Group {x} does not have property `maned`".format(x=editor_group.id))
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
-        notification.who = editor_group.editor
+        notification.who = editor_group.maned
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
 
         notification.long = svc.long_notification(cls.ID).format(
-            journal_name=application.bibjson().title
+            journal_title=application.bibjson().title
         )
         notification.short = svc.short_notification(cls.ID).format(
             issns=application.bibjson().issns_as_text()
