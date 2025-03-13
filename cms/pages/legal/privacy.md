@@ -30,9 +30,9 @@ This is the website for Directory of Open Access Journals, which is managed by [
 
 Before you submit an application, you must register an account or sign into your account. Your account stores:
 
-Your name
-Your email address
-Your password
+- Your name
+- Your email address
+- Your password
 
 An account is created and stored in our User database. We need these details to process your application. You are the **Account holder**. We will use the email address you provided to contact you:
 
