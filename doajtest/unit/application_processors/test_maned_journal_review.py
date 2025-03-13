@@ -137,7 +137,7 @@ class TestManEdJournalReview(DoajTestCase):
         # right, so let's see if we managed to get a title-less journal from this
         assert fc.target.bibjson().title is None, fc.target.bibjson().title
 
-    def test_04_maned_review_doaj_seal(self):
+    def test_04_maned_review_doaj_seal_and_labels(self):
         """Test the seal checkbox on the maned review form"""
 
         # construct it from form data (with a known source)
@@ -147,8 +147,9 @@ class TestManEdJournalReview(DoajTestCase):
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
-        # set the seal to False using the form
+        # set the seal and s2o data to False using the form
         fc.form.doaj_seal.data = []
+        fc.form.s2o.data = False
 
         # run the crosswalk, don't test it at all in this test
         fc.form2target()
@@ -157,6 +158,7 @@ class TestManEdJournalReview(DoajTestCase):
 
         # ensure the model has seal set to False
         assert fc.target.has_seal() is False
+        assert fc.target.bibjson().labels == []
 
         # Set the seal to True in the object and check the form reflects this
         fc.source.set_seal(True)

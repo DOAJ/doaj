@@ -356,11 +356,12 @@ def toc_articles_legacy(identifier=None):
 def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
+    articles_no = journal.article_stats()["total"]
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
-        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, tab="articles")
+        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, articles_no=articles_no, tab="articles")
 
 
 # ~~->Article:Page~~
@@ -411,6 +412,14 @@ def contact():
 @blueprint.route("/terms/")
 def terms():
     return render_template(templates.STATIC_PAGE, page_frag="/legal/terms.html")
+
+
+@blueprint.route("/code-of-conduct/")
+def conduct():
+    """
+    ~~Conduct:WebRoute~~
+    """
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/code-of-conduct.html")
 
 
 @blueprint.route("/media/")
