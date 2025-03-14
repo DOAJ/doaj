@@ -1,5 +1,6 @@
 from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks.helpers import background_helper
+from portality.models.background import StdOutBackgroundJob
 
 if __name__ == '__main__':
 
@@ -17,5 +18,10 @@ if __name__ == '__main__':
     else:
         limit = None
 
-    background_helper.execute_by_bg_task_type(AnonExportBackgroundTask, clean=args.clean,
+    # job = AnonExportBackgroundTask.prepare(args.username, upload_file=fs, schema=args.schema)
+    # job = StdOutBackgroundJob(job)
+    # task = IngestArticlesBackgroundTask(job)
+    # BackgroundApi.execute(task)
+
+    background_helper.execute_by_bg_task_type(AnonExportBackgroundTask, job_wrapper=StdOutBackgroundJob, clean=args.clean,
                                               limit=limit, batch=args.batch)
