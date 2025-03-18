@@ -11,7 +11,7 @@
 			"query": {
 				"query": {
 					"term": {
-						"bibjson.deposit_policy.service": "Sherpa/Romeo"
+						"bibjson.deposit_policy.service.exact": "Sherpa/Romeo"
 					}
 				}
 			}
