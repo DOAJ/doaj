@@ -1,0 +1,35 @@
+{
+	"batch": 10000,
+	"types": [
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"functions" : [
+				"portality.migrate.4047_OpenPolicyFinder.functions.rename_policy"
+			],
+			"query": {
+				"query": {
+					"term": {
+						"bibjson.deposit_policy.service": "Sherpa/Romeo"
+					}
+				}
+			}
+		},
+		{
+			"type": "application",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"functions" : [
+				"portality.migrate.4047_OpenPolicyFinder.functions.rename_policy"
+			],
+			"query": {
+				"query": {
+					"term": {
+						"bibjson.deposit_policy.service.exact": "Sherpa/Romeo"
+					}
+				}
+			}
+		}
+	]
+}
