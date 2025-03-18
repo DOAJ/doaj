@@ -1478,7 +1478,7 @@ class FieldDefinitions:
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Mir@bel", "value": "Mir@bel", "subfields": ["deposit_policy_url"]},
-            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
+            {"display": "Open Policy Finder", "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
             {"display": HTMLString("<em>The journal has no repository policy</em>"), "value": "none", "exclusive": True}
@@ -1529,7 +1529,7 @@ class FieldDefinitions:
         "conditional": [{"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
                         {"field": "deposit_policy", "value": "Mir@bel"},
-                        {"field": "deposit_policy", "value": "Sherpa/Romeo"},
+                        {"field": "deposit_policy", "value": "Open Policy Finder"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -1553,7 +1553,7 @@ class FieldDefinitions:
                                 "Diadorim",
                                 "Dulcinea",
                                 "Mir@bel",
-                                "Sherpa/Romeo",
+                                "Open Policy Finder",
                                 "other"
                             ]
                         }
@@ -1570,7 +1570,7 @@ class FieldDefinitions:
                                 "Diadorim",
                                 "Dulcinea",
                                 "Mir@bel",
-                                "Sherpa/Romeo",
+                                "Open Policy Finder",
                                 "other"
                             ]
                         }
