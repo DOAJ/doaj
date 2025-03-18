@@ -1,5 +1,4 @@
 # ~~Anonymisation:Feature~~
-import hashlib
 from faker import Faker
 
 from portality.core import app
@@ -11,13 +10,13 @@ def anon_email(email):
     if not email:
         return email
 
-    return hashlib.sha256(app.config['ANON_SALT'].encode('utf-8') + email.encode('utf-8')).hexdigest() + '@example.com'
+    return basic_hash(email) + '@example.com'
 
 
 def basic_hash(content):
     if not content:
         return content
-    return hashlib.sha256(app.config['ANON_SALT'].encode('utf-8') + content.encode('utf-8')).hexdigest()
+    return hex(hash(app.config['ANON_SALT']) + hash(content))[2:]
 
 
 def anon_name():

@@ -180,7 +180,6 @@ def create_es_connection(app):
     conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'],
                                        verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True),
                                        timeout=app.config.get('ELASTICSEARCH_REQ_TIMEOUT', 15))
-
     return conn
 
 
