@@ -26,17 +26,15 @@ DOAJ is committed to being 100% independent and maintaining all of its primary s
 
 DOAJ works to build an equitable and diverse scholarly ecosystem where trusted research can be accessed globally without barriers.
 
-## Constitution
+## Our organisation
 
-DOAJ is an independent, non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) registered in the United Kingdom and with a branch in Denmark. 
+DOAJ is run and managed by the [DOAJ Foundation](https://datacvr.virk.dk/enhed/virksomhed/45040984), a non-profit community-governed Danish foundation based in Denmark and with its registered office in Roskilde, Denmark. The DOAJ Foundation is governed by its Articles of Association and the [Foundation Board](/about/advisory-board-council/), established in September 2024 to support the transition.
 
-DOAJ relies entirely on the voluntary donations of its supporters. Neither DOAJ nor IS4OA receive grants or funding from any other source.
+Information on IS4OA, the previous managing organisation for DOAJ, can still be found on the [IS4OA website](https://is4oa.org/), and the company will continue to operate until mid-2026 when the transition to the Foundation is complete.
 
-DOAJ has an [Advisory Board and Council](/about/advisory-board-council), the members of which carry out their duties voluntarily.
+The work done by the [DOAJ Team](/about/team/) is supported by over 100 voluntary editorial staff who help us to review applications. All volunteers are bound by an agreement, and they must declare any conflicts of interest.
 
-The work done by the [DOAJ Team](/about/team/) is supported by over 100 voluntary editorial staff who help us to review applications. All volunteers are bound by an agreement and must declare any conflicts of interest.
-
-DOAJ also has a global network of Ambassadors who promote open access and best practice in their regions. Our Ambassadors are bound by an agreement and must declare all conflicts of interest.
+DOAJ also has a global network of Ambassadors who promote open access and best practices in their regions. Our Ambassadors are bound by an agreement and must declare all conflicts of interest.
 
 ## Partnerships and collaborations
 
