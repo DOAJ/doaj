@@ -779,10 +779,12 @@ class DomainObject(UserDict, object):
         """
         theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
         theq["size"] = page_size
-        theq["from"] = 0
+        if "from" in theq:
+            del theq["from"]
+
         if "sort" not in theq:
             # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
-            theq["sort"] = ["_doc"]
+            theq["sort"] = [{"_shard_doc": "desc"}]
 
         theq["track_total_hits"] = True
 
@@ -792,6 +794,7 @@ class DomainObject(UserDict, object):
 
         search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
         total_results = first_resp.get('hits', {}).get('total', {}).get('value')
+
 
         # Supply the first set of results
         counter = 0
@@ -829,7 +832,7 @@ class DomainObject(UserDict, object):
                 res = cls.send_query(theq)
                 if len(res.get('hits', {}).get('hits', [])) == 0:
                     break
-                search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+                search_after = res.get('hits', {}).get('hits', [])[-1].get('sort', [])
             except Exception as e:
                 # if any exception occurs, make sure it's at least logged.
                 app.logger.exception("Unhandled exception in iterate_unstable method of DAO")
