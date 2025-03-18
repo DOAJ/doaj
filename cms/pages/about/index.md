@@ -28,7 +28,7 @@ DOAJ works to build an equitable and diverse scholarly ecosystem where trusted r
 
 ## Our organisation
 
-DOAJ is run and managed by the [DOAJ Foundation](https://datacvr.virk.dk/enhed/virksomhed/45040984), a non-profit community-governed Danish foundation based in Denmark and with its registered office in Roskilde, Denmark. The DOAJ Foundation is governed by its Articles of Association and the [Foundation Board](/about/advisory-board-council/), established in September 2024 to support the transition.
+DOAJ is run and managed by the [DOAJ Foundation](https://datacvr.virk.dk/enhed/virksomhed/45040984), a non-profit community-governed Danish foundation based in Denmark and with its registered office in Roskilde, Denmark. The DOAJ Foundation is governed by its [Articles of Association](https://drive.google.com/file/d/1Z9P7KG0pkOmOsxmTjtU2TRiRZzoKx3QB/view?usp=sharing) and the [Foundation Board](/about/advisory-board-council/), established in September 2024 to support the transition.
 
 Information on IS4OA, the previous managing organisation for DOAJ, can still be found on the [IS4OA website](https://is4oa.org/), and the company will continue to operate until mid-2026 when the transition to the Foundation is complete.
 
