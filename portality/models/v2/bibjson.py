@@ -301,6 +301,11 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.add_to_list_with_struct("deposit_policy.service", policy)
         self.__seamless__.set_with_struct("deposit_policy.has_policy", True)
 
+    def remove_deposit_policy(self, policy):
+        self.__seamless__.delete_from_list("deposit_policy.service", policy)
+        if len(self.deposit_policy) == 0:
+            self.__seamless__.set_with_struct("deposit_policy.has_policy", False)
+
     @property
     def has_deposit_policy(self):
         return self.__seamless__.get_single("deposit_policy.has_policy")
