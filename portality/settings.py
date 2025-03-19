@@ -822,7 +822,7 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "associate_editor",
             "query_validators": ["non_public_fields_validator"],
-            "query_filters": ["associate", "search_all_meta"],
+            "query_filters": ["associate", "search_all_meta", "flagged"],
             "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
