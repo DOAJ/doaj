@@ -25,7 +25,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 - You will [upload article metadata](/publisher/uploadfile) to us if you are able to.
 - You will regularly review your indexed journals and ensure their compliance with current DOAJ criteria.
 
-We have [a zero-tolerance policy](/about/#zero-tolerance-policy). We will treat you with respect and courtesy. We expect you to do the same.
+We will treat you with respect and courtesy. We expect you to do the same.
 
 ### Emails from us
 
@@ -63,7 +63,7 @@ If you found your journal in DOAJ but didn’t get an email from us, there are [
 
 During the review process, we might correct some of the information in your application.
 
-You can [submit an update request](/apply/guide/#updating-your-journal-record) if something about your journal has changed since you applied.
+You can [submit an update request](/apply/publisher-responsibilities/#when-should-i-submit-an-update) if something about your journal has changed since you applied.
 
 ## Your DOAJ account
 
@@ -124,7 +124,7 @@ When something changes, you must keep your journal records in DOAJ up to date.
 - When the URLs of your journal change
 - When you change the fees/APCs
 - When journal information or policies change
-- When your journal is included in a digital archive, starts using DOIs, or has an entry in Sherpa/RoMEO
+- When your journal is included in a digital archive, starts using DOIs, or has registered a deposit policy for authors in a deposit policy registry
 
 If a member of the DOAJ Team has sent you a CSV file, we ask that you complete it as quickly as possible. Full details are available on our [Metadata Help](/docs/faq/) page.
 

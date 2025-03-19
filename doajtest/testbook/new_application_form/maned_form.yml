@@ -18,6 +18,7 @@ tests:
     - Status, Re-assign publisher account, Continuation Information and Subject Classification
       sections are available
     - Award the Seal is available
+    - The Journal Labels section is available, offering one option for "Subscribe to Open"
     - The main application form questions are available
     - The Notes section is available
   - step: Assign an editor group

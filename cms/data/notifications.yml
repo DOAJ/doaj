@@ -1,4 +1,12 @@
 # ~~Notifications:Data~~
+application:assed:acceptreject:notify:
+  long: |
+    This is for your information only. The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
+  short:
+    One of your applications ({issns}) marked as '{decision}'
+  action_intro:
+    "Related link: "
+
 application:assed:assigned:notify:
   long: |
     An application for **{journal_title}** has been assigned to you by the Editor of **{group_name}**. Please start work on this within 1 week.
@@ -10,6 +18,14 @@ application:assed:inprogress:notify:
     The application for **{application_title}** that you marked as Completed has been assigned back to you with questions or changes.
   short:
     One of your applications ({issns}) has not passed review
+
+application:editor:acceptreject:notify:
+  long: |
+    This is for your information only. The application for **{application_title}** that you reviewed has been **{decision}** by the Managing Editor.
+  short:
+    One of your applications ({issns}) marked as '{decision}'
+  action_intro:
+    "Related link: "
 
 application:editor:completed:notify:
   long: |
@@ -42,12 +58,11 @@ application:publisher:accepted:notify:
 
     You may access the journal record from your Publisher dashboard: [{publisher_dashboard_url}]({publisher_dashboard_url}) using your DOAJ account ID or email address, and password.
 
-    It is your responsibility to keep the information about your journal in DOAJ up to date. When there are changes or updates needed please [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
+    It is your responsibility to keep the information about your journal in DOAJ up to date. Please promptly [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard when changes or updates are needed. Please be aware that failure to do this may result in removal of your journal from DOAJ.
 
     [How to submit an Update Request](https://doaj.org/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date)    
 
-    For more information on managing your DOAJ account and journal records, see our Publisher Information page (https://doaj.org/apply/publisher-responsibilities)                                                                                                                                                                                
-
+    For more information on managing your DOAJ account and journal records, see our Publisher Information page (https://doaj.org/apply/publisher-responsibilities)                                                                                                                
     To increase the visibility, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
 
     [How to upload article metadata]({faq_url}#uploading-article-metadata)
@@ -60,7 +75,7 @@ application:publisher:assigned:notify:
   long: |
     Your application for **{application_title}** submitted on {application_date} has been assigned to an editor for review for inclusion in the DOAJ. Please look out for further communications about the application. These may come from someone who is not using a DOAJ email address: [{volunteers_url}]({volunteers_url})
   short:
-    Your application ({issns}) has been assigned to an editor for review
+    Your application for {issns} has been assigned to an editor for review
 
 application:publisher:created:notify:
   long: |
@@ -68,25 +83,22 @@ application:publisher:created:notify:
 
     Thank you for your application submitted to DOAJ on {application_date}.
 
-    Our average review time is 3 months due to the large number of applications we receive. 
-    You may request a status update only after three months have passed since you submitted an application.  
+    Due to the many applications we receive, our average review time is 3 months. You may request a status update only after three months since you applied. We cannot reply to emails requesting a status update within 3 months of application.
     
-    During the review, you may receive an email from us if we have questions. You may be contacted by one of our volunteer editors who will not be using a DOAJ email address so please check your spam folder regularly. 
+    You may get an email from us during the review if we have questions. One of our volunteer editors who will not be using a DOAJ email address might contact you. These emails might be in your spam folder, so please check it regularly.
     You can see our volunteers listed here: [{volunteers_url}]({volunteers_url})
     
-    If you need to make a change to your application, send an email to our Help desk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org). Please include your ISSN. 
-    We cannot reply to emails requesting a status update within 3 months of application.
-    
+    If you need to make a change to your application, please send an email to our Help desk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org). Please include your ISSN. 
   short:
-    Your application ({issns}) to DOAJ has been received
+    Your application for {issns} to DOAJ has been received
 
 application:publisher:inprogress:notify:
   long: |
     Your submission for **{title}** submitted on {date_applied} is now being reviewed by an Associate Editor.
 
-    The Associate Editor ([{volunteers_url}]({volunteers_url})) may contact you by email with questions. They may not be using a doaj.org email address. These emails can end up in your Spam folder so please check your Spam folder regularly.
+    The Associate Editor ([{volunteers_url}]({volunteers_url})) may contact you by email with questions. They may not be using a doaj.org email address. These emails might be in your spam folder, so please check it regularly.
   short:
-    Your submission ({issns}) is under review
+    Your submission for {issns} is under review
 
 application:publisher:quickreject:notify:
   long: |
@@ -94,15 +106,15 @@ application:publisher:quickreject:notify:
     
     {note}
     
-    You may submit a new application 6 months after the date of this email. Before you apply again, make the necessary changes to ensure your journal adheres to our criteria: ([{doaj_guide_url}]({doaj_guide_url}))
+     You can submit a new application 6 months after the date on this email. Please note that the reasons for our decision listed in this email may not be all the issues with your journal/publisher and we may raise additional issues in our new assessment. Before you apply again, we encourage you to review our guidelines: ([{doaj_guide_url}]({doaj_guide_url})), the [Principles of Transparency and Best Practices in Scholarly Publishing](https://doaj.org/apply/transparency/) and relevant guidelines from the [Committee on Publication Ethics, COPE](https://publicationethics.org/guidance). 
   short:
-    Your application ({issns}) was rejected
+    Your application for {issns} was rejected
 
 application:publisher:revision:notify:
   long: |
-    The update you submitted for **{application_title}** on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed.
+    The update you submitted for **{application_title}** on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes needed.
   short:
-    Your update request ({issns}) needs revisions
+    Your update request for {issns} needs revisions
 
 bg:job_finished:notify:
   long: |
@@ -122,9 +134,15 @@ journal:editor_group:assigned:notify:
   short:
     New journal ({issns}) assigned to your group
 
+update_request:maned:editor_group_assigned:notify:
+    long: |
+        An update request for **{journal_title}** has been assigned to you. Please review it within 1 month.
+    short:
+        New update request ({issns}) assigned to you
+
 update_request:publisher:accepted:notify:
   long: |
-    The changes which you submitted for **{application_title}** on {application_date} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been edited by our editorial team. Review the journal record here: [{publisher_dashboard_url}]({publisher_dashboard_url}).
+    The changes you submitted for **{application_title}** on {application_date} have been reviewed and the journal record updated. Please note that our editorial team may have edited some of the changes you suggested. Review the journal record here: [{publisher_dashboard_url}]({publisher_dashboard_url}).
 
     Thank you for helping to keep the DOAJ database up-to-date.
   short:
@@ -140,9 +158,9 @@ update_request:publisher:assigned:notify:
 
 update_request:publisher:rejected:notify:
   long: |
-    The update which you submitted for **{title}** on {date_applied} has been rejected. 
+    The update you submitted for **{title}** on {date_applied} has been rejected. 
 
-    If you have any questions about this or require further details, please contact our Help Desk: helpdesk@doaj.org.
+    If you have any questions or require further details, please get in touch with our Help Desk: helpdesk@doaj.org.
 
   short:
     Your update request ({issns}) was rejected
@@ -151,7 +169,7 @@ update_request:publisher:submitted:notify:
   long: |
     "{application_title}"
 
-    Thank you for submitting an update to your journal on {date_applied}. This has been safely received. A Managing Editor will start to review it soon. In the meantime, your original journal record is still visible in DOAJ and you may continue to upload article metadata to us.
+    Thank you for submitting an update to your journal on {date_applied}. It has been safely received. A Managing Editor will review it soon. In the meantime, your original journal record is still visible in DOAJ and you may continue to upload article metadata to us.
 
     Please save this email as a record of when you submitted your update. Before you contact us requesting a status update, please check your Spam folder to ensure that a member of our editorial team has not already contacted you.
 

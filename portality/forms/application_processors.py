@@ -550,6 +550,7 @@ class EditorApplication(ApplicationProcessor):
 
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:
@@ -653,6 +654,7 @@ class AssociateApplication(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self.target.set_seal(self.source.has_seal())
+        self.target.bibjson().labels = self.source.bibjson().labels
         self._carry_continuations()
 
     def finalise(self):
@@ -711,6 +713,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
@@ -889,6 +892,7 @@ class EditorJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self._merge_notes_forward()
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def pre_validate(self):
         # call to super handles all the basic disabled field
@@ -948,6 +952,7 @@ class AssEdJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:

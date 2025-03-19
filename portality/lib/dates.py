@@ -3,6 +3,7 @@
 import math
 from datetime import datetime, timedelta
 from random import randint
+import time
 
 # Extracted from settings.py to prevent circular import
 config = {
@@ -188,3 +189,5 @@ def is_before(mydate, comparison=None):
         comparison = parse(comparison)
     return mydate < comparison
 
+def timestruct2datetime(ts):
+    return datetime.fromtimestamp(time.mktime(ts))

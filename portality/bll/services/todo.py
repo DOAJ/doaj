@@ -1,9 +1,11 @@
-from portality.lib.argvalidate import argvalidate
+from __future__ import annotations
+
+from portality import constants
 from portality import models
 from portality.bll import exceptions
-from portality import constants
 from portality.lib import dates
-from datetime import datetime
+from portality.lib.argvalidate import argvalidate
+
 
 
 class TodoService(object):
@@ -43,8 +45,8 @@ class TodoService(object):
                     stats["by_editor"][bucket["key"]]["update_requests"] = b["doc_count"]
                     stats["total"]["update_requests"] += b["doc_count"]
 
-        unassigned_buckets = resp.get("aggregations", {}).get("unassigned", {}).get("application_type", {}).get(
-            "buckets", [])
+        unassigned_buckets = resp.get("aggregations", {}).get("unassigned", {}).get(
+            "application_type", {}).get("buckets", [])
         stats["unassigned"] = {"applications": 0, "update_requests": 0}
         for ub in unassigned_buckets:
             if ub["key"] == constants.APPLICATION_TYPE_NEW_APPLICATION:
@@ -124,7 +126,7 @@ class TodoService(object):
 
         return count
 
-    def top_todo(self, account, size=25, new_applications=True, update_requests=True, on_hold=True):
+    def top_todo(self, account, size=25, new_applications=True, update_requests=True, on_hold=True) -> list[dict]:
         """
         Returns the top number of todo items for a given user
 
@@ -412,7 +414,8 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
-                    constants.APPLICATION_STATUS_ON_HOLD
+                    constants.APPLICATION_STATUS_ON_HOLD,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED
                 ])
             ],
             sort=sort_date,
@@ -434,6 +437,7 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                     constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
@@ -488,6 +492,7 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
                     constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                     constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
@@ -511,6 +516,7 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
                     constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                     constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
@@ -547,6 +553,7 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_REJECTED,
                     constants.APPLICATION_STATUS_READY,
                     constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_REVISIONS_REQUIRED,
                     constants.APPLICATION_STATUS_ON_HOLD
                 ])
             ],
@@ -950,3 +957,4 @@ class HistoricalNumbersQuery:
                 }
             }
         }
+

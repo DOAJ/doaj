@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.0.5"
+DOAJ_VERSION = "8.1.5"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -440,7 +440,7 @@ HUEY_SCHEDULE = {
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
-    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"}
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"}
 }
 
 
@@ -1107,9 +1107,9 @@ TOC_CHANGEFREQ = "monthly"
 # News feed settings
 # ~~->News:Feature~~
 
-BLOG_URL = "http://doajournals.wordpress.com/"
+BLOG_URL = "https://blog.doaj.org/"
 
-BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
+BLOG_FEED_URL = "https://blog.doaj.org/feed/"
 
 FRONT_PAGE_NEWS_ITEMS = 4
 
@@ -1241,6 +1241,11 @@ ANALYTICS_CATEGORY_OPENURL = 'OpenURL'
 ANALYTICS_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
 ANALYTICS_ACTION_PUBLICDATADUMP = 'Download'
 
+# Plausible for RIS
+# ~~->PublicDataDump:Feature~~
+ANALYTICS_CATEGORY_RIS = 'RIS'
+ANALYTICS_ACTION_RISEXPORT = 'Export'
+
 # Plausible for API
 # ~~-> API:Feature~~
 ANALYTICS_CATEGORY_API = 'API Hit'
@@ -1327,15 +1332,6 @@ HARVEST_ACCOUNTS = []
 # Amount of time a harvester record is allowed to be in "queued" or "processing" state before we
 # assume it's a zombie, and ignore it
 HARVESTER_ZOMBIE_AGE = 604800
-
-#######################################################
-# ReCAPTCHA configuration
-# ~~->ReCAPTCHA:ExternalService
-
-# Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
-RECAPTCHA_ENABLE = True
-RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
-RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
 #######################################################
 # Preservation configuration
@@ -1610,6 +1606,10 @@ UR_CONCURRENCY_TIMEOUT = 10
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
 
+# The /export path to test users CSV file on google sheets (file is public)
+TEST_USERS_CSV_DL_PATH = ""
+
+
 #############################################
 # Datalog
 # ~~->Datalog:Feature~~
@@ -1638,3 +1638,7 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1  # seconds between requests
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+##################################################
+# Honeypot bot-trap settings for forms (now: only registration form)
+HONEYPOT_TIMER_THRESHOLD = 5000;

@@ -21,6 +21,10 @@ class ApplicationEditorGroupAssignedNotify(EventConsumer):
         app_source = event.context.get("application")
 
         application = consumer_utils.parse_application(app_source)
+
+        if application.application_type != constants.APPLICATION_TYPE_NEW_APPLICATION:
+            return
+
         if not application.editor_group:
             return
 
