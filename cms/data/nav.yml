@@ -120,8 +120,10 @@ entries:
         route: doaj.contact         # ~~->Contact:WebRoute~~
       - label: T&Cs
         route: doaj.terms           # ~~->Terms:WebRoute~~
+      - label: Code of Conduct
+        route: doaj.conduct         # ~~->Conduct:WebRoute~~
       - label: Media
-        route: doaj.media           # ~~-> Media:WebRoute~~
+        route: doaj.media           # ~~->Media:WebRoute~~
   - id: companies
     entries:
       - label: IS4OA

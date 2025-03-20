@@ -7,7 +7,9 @@ from flask_login import current_user, login_required
 from portality import lock, models
 from portality.bll import DOAJ
 from portality.crosswalks.article_ris import ArticleRisXWalk
+from portality.core import app
 from portality.decorators import ssl_required, write_required
+from portality.lib import plausible
 from portality.util import jsonp
 from portality.ui import templates
 
@@ -147,6 +149,8 @@ def undismiss_autocheck(autocheck_set_id, autocheck_id):
 
 
 @blueprint.route('/export/article/<article_id>/<fmt>')
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_RIS', 'RIS'),
+                    action=app.config.get('ANALYTICS_ACTION_RISEXPORT', 'Export'), record_value_of_which_arg='article_id')
 def export_article_ris(article_id, fmt):
     article = models.Article.pull(article_id)
     if not article:

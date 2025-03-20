@@ -31,5 +31,6 @@ bibjson.subject.term: Library of Congress Subject Term.  You can retrieve this v
 bibjson.title: Article title **required**
 bibjson.year: Year of publication for this article
 created_date: Date the record was created in DOAJ. You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+es_type: You can retrieve this value from DOAJ, but if you provide it back it will be ignored.
 id: DOAJ ID for this article.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
 last_updated: Date this article was last modified in DOAJ.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
