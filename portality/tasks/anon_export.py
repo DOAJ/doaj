@@ -3,7 +3,7 @@ import gzip
 import os
 import shutil
 import uuid
-from typing import Callable, NoReturn
+from typing import Callable
 
 from portality import models, dao
 from portality.background import BackgroundTask
@@ -13,7 +13,7 @@ from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_long_queue as queue
 
 
 def _anonymise_email(record):
@@ -111,7 +111,7 @@ def _copy_on_complete(path, logger_fn, tmpStore, mainStore, container):
 
 
 def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, batch_size=100000,
-                    logger_fn: Callable[[str], NoReturn] = None):
+                    logger_fn: Callable[[str], None] = None):
     if logger_fn is None:
         logger_fn = print
     if clean:
@@ -179,10 +179,10 @@ class AnonExportBackgroundTask(BackgroundTask):
     @classmethod
     def submit(cls, background_job):
         background_job.save()
-        anon_export.schedule(args=(background_job.id,), delay=10)
+        anon_export.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = AnonExportBackgroundTask.create_huey_helper(long_running)
+huey_helper = AnonExportBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

@@ -8,13 +8,13 @@ How to create a background job
 * choice a task queue, details of task queue can have find in `portality/tasks/redis_huey.py`
 
 ```python
-huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(queue)
 ```
 
 * add execute function below BackgroundTask class
 
 ```python
-huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_execute(is_load_config=False)
@@ -26,8 +26,10 @@ def journal_bulk_delete(job_id):
 
 or, using a shortcut function
 
-```
-journal_bulk_delete = huey_helper.create_common_execute_fn()
+```python
+@huey_helper.register_execute(is_load_config=False)
+def journal_bulk_delete(job_id):
+    huey_helper.execute_common(job_id)
 ```
 
 ### For Schedule job
@@ -47,8 +49,7 @@ or, using a shortcut function
 ```python
 @huey_helper.register_schedule
 def scheduled_find_discontinued_soon():
-    background_helper.submit_by_bg_task_type(
-        MonitorBgjobsBackgroundTask,
+    huey_helper.scheduled_common(
         to_address_list=app.config.get("TASKS_MONITOR_BGJOBS_TO", [get_system_email(), ]),
         from_address=app.config.get("TASKS_MONITOR_BGJOBS_FROM", get_system_email()),
     )
@@ -75,5 +76,5 @@ HUEY_SCHEDULE = {
 
 ### Register your task
 
-* add your execute and schedule function in `portality/tasks/consumer_long_running.py`
-  or `portality/tasks/consumer_main_queue.py`
+* add your execute and/or schedule function in `portality/tasks/consumer_scheduled_long.py`
+  `portality/tasks/consumer_scheduled_short.py` or `portality/tasks/consumer_events_queue.py`

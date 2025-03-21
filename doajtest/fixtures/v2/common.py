@@ -25,7 +25,7 @@ EDITORIAL_FORM_EXPANDED = {
 }
 
 SEAL_FORM_EXPANDED = {
-    "doaj_seal": False,
+    "doaj_seal": [],
 }
 
 JOURNAL_LIKE_BIBJSON = {
@@ -66,6 +66,7 @@ JOURNAL_LIKE_BIBJSON = {
         "country": "US"
     },
     "keywords": ["word", "key"],
+    "labels": ["s2o"],
     "language": ["EN", "FR"],
     "license": [
         {
@@ -150,6 +151,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "institution_name" : "Society Institution",
     "institution_country" : "US",
     "keywords": ["word", "key"],
+    "s2o": True,
     "language": ["EN", "FR"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",

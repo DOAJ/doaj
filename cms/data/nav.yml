@@ -46,6 +46,8 @@ entries:
         route: doaj.ambassadors       # ~~->Ambassadors:WebRoute~~
       - label: Advisory Board & Council
         route: doaj.abc               # ~~->AdvisoryBoardCouncil:WebRoute~~
+      - label: Editorial Policy Advisory Group
+        route: doaj.epag              # ~~->EditorialPolicyAdvisoryGroup:WebRoute~~
       - label: Volunteers
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: News
@@ -64,6 +66,8 @@ entries:
         route: doaj.publisher_supporters      # ~~->PublisherSupporters:WebRoute~~
       - label: Institutional and library supporters
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
+      - label: Funders
+        route: doaj.funders           # ~~->Funders:WebRoute~~
   - id: apply
     label: Apply
     footer: true
@@ -104,7 +108,7 @@ entries:
         url: '#'
         modal:
           id: wechat
-          include: "includes/_wechat_modal.html"
+          include: "public/includes/_wechat_modal.html"
       - label: Atom feed
         feather: rss
         route: atom.feed  # ~~->Atom:WebRoute~~
@@ -118,8 +122,10 @@ entries:
         route: doaj.contact         # ~~->Contact:WebRoute~~
       - label: T&Cs
         route: doaj.terms           # ~~->Terms:WebRoute~~
+      - label: Code of Conduct
+        route: doaj.conduct         # ~~->Conduct:WebRoute~~
       - label: Media
-        route: doaj.media           # ~~-> Media:WebRoute~~
+        route: doaj.media           # ~~->Media:WebRoute~~
   - id: companies
     entries:
       - label: IS4OA

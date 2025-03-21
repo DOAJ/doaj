@@ -68,3 +68,9 @@ How to setup for dev with Plausible
 
 
 
+How to upgrade swagger-ui
+-------------------------
+* run download_swagger_ui.py to download version of swagger-ui you want
+* change url of js and css in api_docs.html
+* ref: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md
+

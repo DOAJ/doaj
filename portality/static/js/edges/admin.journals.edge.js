@@ -157,21 +157,8 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-
-                edges.newRefiningANDTermSelector({
-                    id: "author_pays",
-                    category: "facet",
-                    field: "index.has_apc.exact",
-                    display: "Publication charges?",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                doaj.facets.adminHasAPC(),
+                doaj.facets.adminHasOtherCharges(),
 
                 edges.newRefiningANDTermSelector({
                     id: "journal_license",
@@ -484,10 +471,19 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Country",
                         "index.continued.exact" : "Continued",
                         "bibjson.discontinued_date" : "Discontinued Year",
-                        "index.has_apc.exact" : "Charges?"
+                        "bibjson.apc.has_apc": "Has APC?",
+                        "bibjson.other_charges.has_other_charges": "Has other charges?"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
+                            true : "Yes",
+                            false : "No"
+                        },
+                        "bibjson.apc.has_apc" : {
+                            true : "Yes",
+                            false : "No"
+                        },
+                        "bibjson.other_charges.has_other_charges" : {
                             true : "Yes",
                             false : "No"
                         }

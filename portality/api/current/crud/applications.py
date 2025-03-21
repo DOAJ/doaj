@@ -13,6 +13,7 @@ from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.ui import templates
 
 from copy import deepcopy
 
@@ -35,8 +36,8 @@ class ApplicationsCrudApi(CrudApi):
         "description": """<div class=\"search-query-docs\">
             Application JSON that you would like to create or update. The contents should comply with the schema displayed in the
             <a href=\"/api/docs#CRUD_Applications_get_api_application_application_id\"> GET (Retrieve) an application route</a>.
-            Explicit documentation for the structure of this data is also <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIApplication">provided here</a>.
-            Partial updates are not allowed, you have to supply the full JSON.</div>""",
+            <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIApplication">Explicit documentation for the structure of this data is available</a>.
+            Partial updates are not allowed; you have to supply the full JSON.</div>""",
         "required": True,
         "schema": {"type" : "string"},
         "name": "application_json",
@@ -55,12 +56,12 @@ class ApplicationsCrudApi(CrudApi):
 
     @classmethod
     def create(cls, data, account, dry_run=False):
-        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # as long as authentication (in the layer above) has been successful and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()
 
-        # first thing to do is a structural validation, by instantiating the data object
+        # first thing to do is a structural validation by instantiating the data object
         try:
             ia = IncomingApplication(data)  # ~~-> APIIncomingApplication:Model~~
         except seamless.SeamlessException as e:
@@ -78,7 +79,7 @@ class ApplicationsCrudApi(CrudApi):
                 app_email.send_mail(to=to,
                                      fro=fro,
                                      subject=subject,
-                                     template_name="email/script_tag_detected.jinja2",
+                                     template_name=templates.EMAIL_SCRIPT_TAG_DETECTED,
                                      es_type=es_type,
                                      data=jdata)
             except app_email.EmailException:
@@ -96,6 +97,11 @@ class ApplicationsCrudApi(CrudApi):
 
         # they are not allowed to set "subject"
         ap.bibjson().remove_subjects()
+
+        # they are not allowed to set "labels"
+        # (though in reality, this is handled by the form transitions which don't contain this facility in this context
+        # so labels wouldn't be transmitted anyway.  This is here for absolute clarity)
+        ap.bibjson().clear_labels()
 
         # if this is an update request on an existing journal
         if ap.current_journal is not None:
@@ -185,7 +191,7 @@ class ApplicationsCrudApi(CrudApi):
 
     @classmethod
     def retrieve(cls, id, account):
-        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # as long as authentication (in the layer above) has been successful and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()
@@ -195,12 +201,12 @@ class ApplicationsCrudApi(CrudApi):
         if ap is None:
             raise Api404Error()
 
-        # is the current account the owner of the application
-        # if not we raise a 404 because that id does not exist for that user account.
-        if ap.owner != account.id:
+        # is the current account the owner of the application?
+        # if not we raise a 404 because that ID does not exist for that user account.
+        if not account.is_super and ap.owner != account.id:
             raise Api404Error()
 
-        # if we get to here we're going to give the user back the application
+        # if we get to here, we're going to give the user back the application
         oa = OutgoingApplication.from_model(ap) # ~~->APIOutgoingApplication:Model~~
         return oa
 
@@ -219,12 +225,12 @@ class ApplicationsCrudApi(CrudApi):
 
     @classmethod
     def update(cls, id, data, account):
-        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # as long as authentication (in the layer above) has been successful and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()
 
-        # next thing to do is a structural validation of the replacement data, by instantiating the object
+        # next thing to do is a structural validation of the replacement data by instantiating the object
         try:
             ia = IncomingApplication(data)  # ~~->APIIncomingApplication:Model~~
         except seamless.SeamlessException as e:
@@ -304,7 +310,7 @@ class ApplicationsCrudApi(CrudApi):
                 authService.can_edit_application(account, ap)
             except AuthoriseException as e:
                 if e.reason == e.WRONG_STATUS:
-                    raise Api403Error("The application is no longer in a state in which it can be edited via the API")
+                    raise Api403Error("The application can no longer be edited via the API")
                 else:
                     raise Api404Error()
 
@@ -337,7 +343,7 @@ class ApplicationsCrudApi(CrudApi):
 
     @classmethod
     def delete(cls, id, account, dry_run=False):
-        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # as long as authentication (in the layer above) has been successful and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()

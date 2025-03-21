@@ -306,10 +306,12 @@ class AdminApplication(ApplicationProcessor):
         # to bypass WTForms insistence that choices on a select field match the value, outside of the actual validation
         # chain
         super(AdminApplication, self).pre_validate()
-        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
+        self.form.editor.validate_choice = False
+        # self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
 
         # TODO: Should quick_reject be set through this form at all?
-        self.form.quick_reject.choices = [(self.form.quick_reject.data, self.form.quick_reject.data)]
+        self.form.quick_reject.validate_choice = False
+        # self.form.quick_reject.choices = [(self.form.quick_reject.data, self.form.quick_reject.data)]
 
     def patch_target(self):
         super(AdminApplication, self).patch_target()
@@ -456,11 +458,6 @@ class AdminApplication(ApplicationProcessor):
                 #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
                 #     app.logger.exception("Email to associate failed.")
 
-            # If this is the first time this application has been assigned to an editor, notify the publisher.
-            old_ed = self.source.editor
-            if (old_ed is None or old_ed == '') and self.target.editor is not None:
-                self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
-
             # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
             if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
                 # First, the editor
@@ -537,6 +534,7 @@ class EditorApplication(ApplicationProcessor):
 
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:
@@ -585,11 +583,6 @@ class EditorApplication(ApplicationProcessor):
             # except app_email.EmailException:
             #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
             #     app.logger.exception('Error sending associate assigned email')
-
-        # If this is the first time this application has been assigned to an editor, notify the publisher.
-        old_ed = self.source.editor
-        if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
         if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
@@ -645,6 +638,7 @@ class AssociateApplication(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self.target.set_seal(self.source.has_seal())
+        self.target.bibjson().labels = self.source.bibjson().labels
         self._carry_continuations()
 
     def finalise(self):
@@ -703,6 +697,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
@@ -756,12 +751,13 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # email the publisher to tell them we received their update request
         if email_alert:
-            try:
-                # ~~-> Email:Notifications~~
-                self._send_received_email()
-            except app_email.EmailException as e:
-                self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
-                app.logger.exception('Error sending reapplication received email to publisher')
+            DOAJ.eventsService().trigger(models.Event(
+                constants.EVENT_APPLICATION_UR_SUBMITTED,
+                current_user and current_user.id,
+                context={
+                    'application': self.target.data,
+                }
+            ))
 
     def _carry_subjects_and_seal(self):
         # carry over the subjects
@@ -770,33 +766,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # carry over the seal
         self.target.set_seal(self.source.has_seal())
-
-    def _send_received_email(self):
-        # ~~-> Account:Model~~
-        acc = models.Account.pull(self.target.owner)
-        if acc is None:
-            self.add_alert("Unable to locate account for specified owner")
-            return
-
-        # ~~-> Email:Library~~
-        to = [acc.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - update request received"
-
-        try:
-            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                app_email.send_mail(to=to,
-                                    fro=fro,
-                                    subject=subject,
-                                    template_name="email/publisher_update_request_received.jinja2",
-                                    application=self.target,
-                                    owner=acc)
-                self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
-        except app_email.EmailException as e:
-            magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the "update request received" email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.error(magic + "\n" + repr(e))
-            raise e
 
 
 class PublisherUpdateRequestReadOnly(ApplicationProcessor):
@@ -907,6 +876,7 @@ class EditorJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self._merge_notes_forward()
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def pre_validate(self):
         # call to super handles all the basic disabled field
@@ -966,6 +936,7 @@ class AssEdJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:

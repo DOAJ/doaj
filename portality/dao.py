@@ -1,15 +1,18 @@
-import time
+from __future__ import annotations
+
+import json
+import os
 import re
 import sys
-import uuid
-import json
-import elasticsearch
+import time
 import urllib.parse
-
+import uuid
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List
+from typing import List, Iterable, Tuple
+
+import elasticsearch
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -446,9 +449,13 @@ class DomainObject(UserDict, object):
                               headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
-                exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
-                if isinstance(exception, ESMappingMissingError):
-                    raise exception
+                try:
+                    exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
+                    if isinstance(exception, ESMappingMissingError):
+                        raise exception
+                except TypeError:
+                    raise e
+
             time.sleep(0.5)
 
         if r is not None:
@@ -719,6 +726,107 @@ class DomainObject(UserDict, object):
         return filenames
 
     @classmethod
+    def bulk_load_from_file(cls, source_file, index=None, limit=None, max_content_length=100000000):
+        """ ported from esprit.tasks - bulk load to index from file """
+        index = index or cls.index_name()
+
+        source_size = os.path.getsize(source_file)
+        with open(source_file, "r") as f:
+            if limit is None and source_size < max_content_length:
+                # if we aren't selecting a portion of the file, and the file is below the max content length, then
+                # we can just serve it directly
+                ES.bulk(body=f.read(), index=index, doc_type=cls.doc_type(), request_timeout=120)
+                return -1
+            else:
+                count = 0
+                while True:
+                    chunk = DomainObject._make_next_chunk(f, max_content_length)
+                    if chunk == "":
+                        break
+
+                    finished = False
+                    if limit is not None:
+                        newlines = chunk.count("\n")
+                        records = newlines // 2
+                        if count + records > limit:
+                            max = (limit - count) * 2
+                            lines = chunk.split("\n")
+                            allowed = lines[:max]
+                            chunk = "\n".join(allowed) + "\n"
+                            count += max
+                            finished = True
+                        else:
+                            count += records
+
+                    ES.bulk(body=chunk, index=index, doc_type=cls.doc_type(), request_timeout=120)
+                    if finished:
+                        break
+                if limit is not None:
+                    return count
+                else:
+                    return -1
+
+    @staticmethod
+    def make_bulk_chunk_files(source_file, out_file_prefix, max_content_length=100000000):
+        """ ported from esprit.tasks - break out a bulk file into smaller chunks """
+
+        source_size = os.path.getsize(source_file)
+        with open(source_file, "r") as f:
+            if source_size < max_content_length:
+                return [source_file]
+            else:
+                filenames = []
+                count = 0
+                while True:
+                    count += 1
+                    chunk = DomainObject._make_next_chunk(f, max_content_length)
+                    if chunk == "":
+                        break
+
+                    filename = out_file_prefix + "." + str(count)
+                    with open(filename, "w") as g:
+                        g.write(chunk)
+                    filenames.append(filename)
+
+                return filenames
+
+    @staticmethod
+    def _make_next_chunk(f, max_content_length):
+        """ ported from esprit.tasks - create a bulk chunk, ensuring it's not a partial instruction """
+
+        def is_command(line):
+            try:
+                command = json.loads(line)
+            except (json.JSONDecodeError, TypeError):
+                return False
+            keys = list(command.keys())
+            if len(keys) > 1:
+                return False
+            if "index" not in keys:
+                return False
+            subkeys = list(command["index"].keys())
+            for sk in subkeys:
+                if sk not in ["_id"]:
+                    return False
+
+            return True
+
+        offset = f.tell()
+        chunk = f.read(max_content_length)
+        while True:
+            last_newline = chunk.rfind("\n")
+            tail = chunk[last_newline + 1:]
+            chunk = chunk[:last_newline]
+
+            if is_command(tail):
+                f.seek(offset + last_newline)
+                if chunk.startswith("\n"):
+                    chunk = chunk[1:]
+                return chunk
+            else:
+                continue
+
+    @classmethod
     def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):
         # example of a prefix query
         # {
@@ -851,8 +959,8 @@ class DomainObject(UserDict, object):
         return cls.q2obj(size=size, **kwargs)
 
     @classmethod
-    def count(cls):
-        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type())
+    def count(cls, query=None):
+        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type(), body=query)
         return res.get("count")
         # return requests.get(cls.target() + '_count').json()['count']
 
@@ -958,6 +1066,33 @@ def refresh():
     refresh all indexes to make newly added or deleted documents immediately searchable
     """
     return ES.indices.refresh()
+
+
+def find_indexes_by_prefix(index_prefix) -> list[str]:
+    data = ES.indices.get(f'{index_prefix}*')
+    return list(data.keys())
+
+
+def find_index_aliases(alias_prefixes=None) -> Iterable[Tuple[str, str]]:
+    def _yield_index_alias():
+        data = ES.indices.get_alias()
+        for index, d in data.items():
+            for alias in d['aliases'].keys():
+                yield index, alias
+
+    index_aliases = _yield_index_alias()
+    if alias_prefixes:
+        index_aliases = ((index, alias) for index, alias in index_aliases
+                         if any(alias.startswith(p) for p in alias_prefixes))
+    return index_aliases
+
+
+def is_exist(query: dict, index):
+    query['size'] = 1
+    query['_source'] = False
+    res = ES.search(body=query, index=index, size=1, ignore=[404])
+
+    return res.get('hits', {}).get('total',{}).get('value', 0) > 0
 
 
 class BlockTimeOutException(Exception):

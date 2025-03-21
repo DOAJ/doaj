@@ -4,14 +4,11 @@ from typing import Type
 from portality.background import BackgroundTask
 from portality.core import app
 from portality.dao import DomainObject
-from portality.decorators import write_required
 from portality.lib import dates
 from portality.lib.es_queries import ES_DATETIME_FMT
 from portality.models import Notification, BackgroundJob
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import schedule, long_running
-
-target_queue = long_running
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 class RetentionQuery:
@@ -82,16 +79,18 @@ class OldDataCleanupBackgroundTask(BackgroundTask):
     @classmethod
     def submit(cls, background_job):
         background_helper.submit_by_background_job(
-            background_job, execute_old_data_cleanup
+            background_job, old_data_cleanup
         )
 
 
-@target_queue.periodic_task(schedule(OldDataCleanupBackgroundTask.__action__))
-@write_required(script=True)
+huey_helper = OldDataCleanupBackgroundTask.create_huey_helper(queue)
+
+
+@huey_helper.register_schedule
 def scheduled_old_data_cleanup():
-    background_helper.submit_by_bg_task_type(OldDataCleanupBackgroundTask)
+    huey_helper.scheduled_common()
 
 
-execute_old_data_cleanup = background_helper.create_execute_fn(
-    target_queue, OldDataCleanupBackgroundTask
-)
+@huey_helper.register_execute(is_load_config=False)
+def old_data_cleanup(job_id):
+    huey_helper.scheduled_common(job_id)

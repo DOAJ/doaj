@@ -1,17 +1,20 @@
 import json
+from io import BytesIO
 from urllib.parse import urlparse
 
-from flask import Blueprint, make_response, request, abort, render_template
+from flask import Blueprint, make_response, request, abort, render_template, send_file
 from flask_login import current_user, login_required
 
 from portality import lock, models
 from portality.bll import DOAJ
 from portality.bll.services import urlshort
+from portality.crosswalks.article_ris import ArticleRisXWalk
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.lib import plausible
-from portality.models.url_shortener import CountWithinDaysQuery
 from portality.util import jsonp
+from portality.ui import templates
+from portality.models.url_shortener import CountWithinDaysQuery
 
 blueprint = Blueprint('doajservices', __name__)
 
@@ -56,7 +59,10 @@ def unlocked():
     Redirect to this route on completion of an unlock
     :return:
     """
-    return render_template("unlocked.html")
+    if current_user.is_super:
+        return render_template(templates.ADMIN_UNLOCKED)
+    else:
+        return render_template(templates.EDITOR_UNLOCKED)
 
 
 @blueprint.route("/shorten", methods=["POST"])
@@ -130,3 +136,26 @@ def undismiss_autocheck(autocheck_set_id, autocheck_id):
     if not done:
         abort(404)
     return make_response(json.dumps({"status": "success"}))
+
+
+@blueprint.route('/export/article/<article_id>/<fmt>')
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_RIS', 'RIS'),
+                    action=app.config.get('ANALYTICS_ACTION_RISEXPORT', 'Export'), record_value_of_which_arg='article_id')
+def export_article_ris(article_id, fmt):
+    article = models.Article.pull(article_id)
+    if not article:
+        abort(404)
+
+    if fmt != 'ris':
+        # only support ris for now
+        abort(404)
+
+    byte_stream = BytesIO()
+    ris = ArticleRisXWalk.article2ris(article)
+    byte_stream.write(ris.to_text().encode('utf-8', errors='ignore'))
+    byte_stream.seek(0)
+
+    filename = f'article-{article_id[:10]}.ris'
+
+    resp = make_response(send_file(byte_stream, as_attachment=True, download_name=filename))
+    return resp

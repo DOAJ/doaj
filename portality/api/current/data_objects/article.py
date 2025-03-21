@@ -161,7 +161,9 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
         self._add_struct(INCOMING_ARTICLE_REQUIRED)
-        super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
+        super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True,
+                                                coerce_map=BASE_ARTICLE_COERCE,
+                                                swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
     def _trim_empty_strings(self):
 
@@ -208,7 +210,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         # check that there are identifiers at all
         identifiers = self.bibjson.identifier
         if identifiers is None or len(identifiers) == 0:
-            raise dataobj.DataStructureException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
+            raise dataobj.DataStructureException("You must specify at least one Print ISSN or online ISSN in bibjson.identifier")
 
         # extract the p/e-issn identifier objects
         pissn = None
@@ -221,7 +223,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
 
         # check that at least one of them appears
         if pissn is None and eissn is None:
-            raise dataobj.DataStructureException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
+            raise dataobj.DataStructureException("You must specify at least one Print ISSN or online ISSN in bibjson.identifier")
 
         # normalise the ids
         if pissn is not None:
@@ -232,7 +234,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         # check they are not the same
         if pissn is not None and eissn is not None:
             if pissn.id == eissn.id:
-                raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
+                raise dataobj.DataStructureException("Print ISSN and online ISSN should be different")
 
 
         # check removed: https://github.com/DOAJ/doajPM/issues/2950

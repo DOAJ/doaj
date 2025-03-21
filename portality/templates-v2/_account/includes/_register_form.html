@@ -1,0 +1,32 @@
+{% from "includes/_formhelpers.html" import render_field %}
+
+<form method="post" action="" id="registrationForm">
+    <input type="hidden" name="next" value="/register"/>
+        {# This input is a bot-bait, it should stay invisible to the users and empty. #}
+        {# Make sure it's invisible on the screen AND FOR SCREEN READERS/KEYBOARD USERS' #}
+        <div aria-hidden="true" class="hpemail">
+            <label for="email">This field is for robots only. If you're human, leave it blank.</label>
+            <input type="text" id="email" name="email" autocomplete="off" tabindex="-1" value="">
+        </div>
+        <div class="form__question">
+            {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+                {# Admins can specify a user ID #}
+                {{ render_field(form.identifier) }}<br/>
+            {% endif %}
+            {{ render_field(form.name, placeholder="Firstname Lastname") }}
+        </div>
+        <div class="form__question">
+            {{ render_field(form.sender_email, placeholder="user@example.com") }}
+        </div>
+        {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+            {# Admins can specify a user ID #}
+            <div class="form__question">
+                {{ render_field(form.roles) }}
+            </div>
+        {% endif %}
+        {{ render_field(form.next) }}
+        <input type="hidden" name="hptimer" value="" id="hptimer"/>
+        <div class="actions">
+            <input type="submit" id="submitBtn" class="button button--primary" value="Register"/>
+        </div>
+    </form>

@@ -3,13 +3,14 @@ import time
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
     BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_history_dir
+from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
 from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
+from portality.lib.thread_utils import wait_until
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -637,6 +638,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
         assert bj.language == ["EN", "FR"]
+        assert bj.labels == ["s2o"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 3, bj.subject
@@ -687,6 +689,7 @@ class TestModels(DoajTestCase):
         bj.keywords = ["new", "terms"]
         bj.is_replaced_by = ["4444-4444"]
         bj.language = ["IT"]
+        bj.labels = ["diamond"]
         bj.replaces = ["3333-3333"]
         bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
         bj.apc_url = "http://apc2.com"
@@ -727,6 +730,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444"]
         assert bj.keywords == ["new", "terms"]
         assert bj.language == ["IT"]
+        assert bj.labels == ["diamond"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["3333-3333"]
         assert len(bj.subject) == 1
@@ -769,6 +773,7 @@ class TestModels(DoajTestCase):
         bj.add_is_replaced_by("4321-4321")
         bj.add_keyword("keyword")
         bj.add_language("CZ")
+        bj.add_label("s2o")
         bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
         bj.add_replaces("1234-1234")
         bj.add_subject("SCH", "TERM", "CDE")
@@ -781,6 +786,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
         assert bj.language == ["IT", "CZ"]
+        assert bj.labels == ["diamond", "s2o"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
@@ -801,6 +807,9 @@ class TestModels(DoajTestCase):
 
         with self.assertRaises(seamless.SeamlessException):
             bj.article_license_display = "notallowedvalue"
+
+        bj.clear_labels()
+        assert bj.labels == []
 
         # deprecated methods (they still need to work)
         bj.publication_time = 3
@@ -944,6 +953,33 @@ class TestModels(DoajTestCase):
         assert len(future) == 2
         assert future[0].bibjson().get_one_identifier(bj.E_ISSN) == "2222-2222"
         assert future[1].bibjson().get_one_identifier(bj.E_ISSN) == "3333-3333"
+
+
+    def test_journal__recursive_future_continuations(self):
+        journal_a, journal_b = [models.Journal(**j) for j in
+                                JournalFixtureFactory.make_many_journal_sources(count=2, in_doaj=True)]
+
+        journal_a.bibjson().is_replaced_by = journal_b.bibjson().issns()[0]
+        journal_b.bibjson().is_replaced_by = journal_a.bibjson().issns()[0]
+
+        save_all_block_last([journal_a, journal_b])
+
+        assert {j.id for j in journal_a.get_future_continuations()} == {journal_b.id}
+
+
+    def test_journal__recursive_pass_continuations(self):
+        journal_a, journal_b, journal_c = [
+            models.Journal(**j)
+            for j in JournalFixtureFactory.make_many_journal_sources(count=3, in_doaj=True)]
+
+        journal_a.bibjson().replaces = journal_b.bibjson().issns()[0]
+        journal_b.bibjson().replaces = journal_c.bibjson().issns()[0]
+        journal_c.bibjson().replaces = journal_a.bibjson().issns()[0]
+
+        save_all_block_last([journal_a, journal_b, journal_c])
+
+        assert {j.id for j in journal_b.get_past_continuations()} == {journal_a.id, journal_c.id}
+
 
     def test_16_article_bibjson(self):
         source = BibJSONFixtureFactory.article_bibjson()
@@ -1204,7 +1240,7 @@ class TestModels(DoajTestCase):
         s.data["junk"] = "in here"
         with self.assertRaises(seamless.SeamlessException):
             s.save()
-        assert s.id is None
+        assert s.id is not None   # ID is necessary for duplication check
 
         p = models.Provenance()
         p.type = "suggestion"
@@ -1253,7 +1289,7 @@ class TestModels(DoajTestCase):
 
         models.Provenance.make(acc, "act2", obj2, "sub")
 
-        time.sleep(1)
+        time.sleep(2)
 
         prov = models.Provenance.get_latest_by_resource_id("obj2")
         assert prov.type == "suggestion"
@@ -1328,6 +1364,7 @@ class TestModels(DoajTestCase):
         app2.set_id(app2.makeid())
         app2.set_current_journal(j.id)
         app2.set_created("1971-01-01T00:00:00Z")
+        app2.set_date_applied("2004-01-01T00:00:00Z")
         app2.save(blocking=True)
 
         # check that we find the right application when we search
@@ -1694,6 +1731,69 @@ class TestModels(DoajTestCase):
 
         ap2 = models.Autocheck.for_journal("9876")
         assert ap2.journal == "9876"
+
+    def test_41_article_tombstone(self):
+        t = models.ArticleTombstone()
+        t.set_id("1234")
+        t.bibjson().add_subject("LCC", "Medicine", "KM22")
+        t.set_in_doaj(True) # should have no effect
+
+        t.save(blocking=True)
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
+
+        t2 = models.ArticleTombstone.pull("1234")
+        assert t2.id == "1234"
+        assert t2.is_in_doaj() is False
+        assert t2.last_updated is not None
+        assert t2.bibjson().subjects()[0].get("scheme") == "LCC"
+        assert t2.bibjson().subjects()[0].get("term") == "Medicine"
+        assert t2.bibjson().subjects()[0].get("code") == "KM22"
+
+    def test_42_make_article_tombstone(self):
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+
+        t = a._tombstone()
+        assert t.id == a.id
+        assert t.bibjson().subjects() == a.bibjson().subjects()
+        assert t.is_in_doaj() is False
+
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+        a.delete()
+        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
+
+        stone = models.ArticleTombstone.pull(a.id)
+        assert stone is not None
+
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
+        a.set_id(a.makeid())
+        a.save(blocking=True)
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"id.exact": a.id}}
+                    ]
+                }
+            }
+        }
+        models.Article.delete_selected(query)
+        time.sleep(1)
+
+        stone = models.ArticleTombstone.pull(a.id)
+        assert stone is not None
+
+    def test_43_add_remove_apc_bibjson(self):
+        bj = models.JournalLikeBibJSON()
+        bj.add_apc("GBP", 100)
+        assert bj.has_apc is True
+        assert bj.apc == [{"currency": "GBP", "price": 100}]
+
+        bj.has_apc = False
+        assert bj.has_apc is False
+        assert bj.apc == []
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

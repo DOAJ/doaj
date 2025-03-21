@@ -1,4 +1,5 @@
 # ~~ApplicationManedReadyNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -10,7 +11,7 @@ class ApplicationManedReadyNotify(EventConsumer):
     ID = "application:maned:ready:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                 event.context.get("application") is not None and \
                 event.context.get("old_status") != constants.APPLICATION_STATUS_READY and \
@@ -20,11 +21,7 @@ class ApplicationManedReadyNotify(EventConsumer):
     def consume(cls, event):
         app_source = event.context.get("application")
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         if not application.editor_group:
             return
 
@@ -47,10 +44,11 @@ class ApplicationManedReadyNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
-            editor=editor
+            editor=editor,
+            group_name=application.editor_group
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
         notification.action = url_for("admin.application", application_id=application.id)
 

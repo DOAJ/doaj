@@ -10,7 +10,8 @@ from portality.dao import Facetview2
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import scheduled_short_queue as queue, schedule
+from portality.ui import templates
 
 
 class AgeQuery(object):
@@ -177,6 +178,8 @@ class AssEdAgeQuery(object):
                 }
             }
         }
+
+
 # Functions for each notification recipient - ManEd, Editor, Assoc_editor
 def managing_editor_notifications(emails_dict):
     """
@@ -200,7 +203,7 @@ def managing_editor_notifications(emails_dict):
     idle_res = models.Suggestion.query(q=age_query.query())
     num_idle = idle_res.get('hits', {}).get('total', {}).get('value', 0)
 
-    text = render_template('email/workflow_reminder_fragments/admin_age_frag', num_idle=num_idle, x_weeks=X_WEEKS)
+    text = render_template(templates.EMAIL_WF_ADMIN_AGE, num_idle=num_idle, x_weeks=X_WEEKS)
     _add_email_paragraph(emails_dict, MAN_ED_EMAIL, 'Managing Editors', text)
 
     # The second notification - the number of ready records
@@ -214,7 +217,7 @@ def managing_editor_notifications(emails_dict):
     ready_res = models.Suggestion.query(q=ready_query.query())
     num_ready = ready_res.get('hits').get('total', {}).get('value', 0)
 
-    text = render_template('email/workflow_reminder_fragments/admin_ready_frag', num=num_ready, url=ready_url)
+    text = render_template(templates.EMAIL_WF_ADMIN_READY, num=num_ready, url=ready_url)
     _add_email_paragraph(emails_dict, MAN_ED_EMAIL, 'Managing Editors', text)
 
 
@@ -255,7 +258,7 @@ def editor_notifications(emails_dict, limit=None):
         editor = eg.get_editor_account()
         ed_email = editor.email
 
-        text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag', num=group_count, ed_group=group_name, url=ed_url)
+        text = render_template(templates.EMAIL_WF_EDITOR_GROUPCOUNT, num=group_count, ed_group=group_name, url=ed_url)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
     # Second note - records within editor group not touched for so long
@@ -286,7 +289,7 @@ def editor_notifications(emails_dict, limit=None):
         editor = eg.get_editor_account()
         ed_email = editor.email
 
-        text = render_template('email/workflow_reminder_fragments/editor_age_frag', num=group_count, ed_group=group_name, url=ed_age_url, x_weeks=X_WEEKS)
+        text = render_template(templates.EMAIL_WF_EDITOR_AGE, num=group_count, ed_group=group_name, url=ed_age_url, x_weeks=X_WEEKS)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
 
@@ -336,7 +339,7 @@ def associate_editor_notifications(emails_dict, limit=None):
             app.logger.warning("No account found for ID {0}".format(assoc_id))
             continue
 
-        text = render_template('email/workflow_reminder_fragments/assoc_ed_age_frag', num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)
+        text = render_template(templates.EMAIL_WF_ASSED_AGE, num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)
         _add_email_paragraph(emails_dict, assoc_email, assoc_id, text)
 
 
@@ -429,17 +432,17 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         async_workflow_notifications.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(main_queue)
+huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(queue)
 
 
-@huey_helper.task_queue.periodic_task(schedule("async_workflow_notifications"))
+@huey_helper.register_schedule
 def scheduled_async_workflow_notifications():
     user = app.config.get("SYSTEM_USERNAME")
     job = AsyncWorkflowBackgroundTask.prepare(user)
     AsyncWorkflowBackgroundTask.submit(job)
 
 
-@huey_helper.task_queue.task()
+@huey_helper.register_execute(is_load_config=False)
 def async_workflow_notifications(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = AsyncWorkflowBackgroundTask(job)

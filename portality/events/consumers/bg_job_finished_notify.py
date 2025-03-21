@@ -13,7 +13,7 @@ class BGJobFinishedNotify(EventConsumer):
     ID = "bg:job_finished:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.BACKGROUND_JOB_FINISHED and \
                event.context.get("job") is not None
 
@@ -44,7 +44,10 @@ class BGJobFinishedNotify(EventConsumer):
         notification.who = acc.id
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_FINISHED
-        notification.long = svc.long_notification(cls.ID).format(job_id=job.id, action=job.action, status=job.status)
+        notification.long = svc.long_notification(cls.ID).format(
+            job_id=job.id,
+            action=job.action,
+            status=job.status)
         notification.short = svc.short_notification(cls.ID)
         notification.action = url
 

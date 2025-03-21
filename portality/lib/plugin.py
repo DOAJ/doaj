@@ -1,11 +1,13 @@
 import importlib
 
+
 # Note that we delay import of app to the functions which need it,
 # since we may want to load plugins during app creation too, and otherwise
 # we'd get circular import problems
 
 class PluginException(Exception):
     pass
+
 
 def load_class_raw(classpath):
     modpath = ".".join(classpath.split(".")[:-1])
@@ -16,6 +18,7 @@ def load_class_raw(classpath):
         return None
     klazz = getattr(mod, classname, None)
     return klazz
+
 
 def load_class(classpath, cache_class_ref=True):
     from portality.core import app
@@ -35,8 +38,10 @@ def load_class(classpath, cache_class_ref=True):
 
     return klazz
 
+
 def load_module(modpath):
     return importlib.import_module(modpath)
+
 
 def load_function_raw(fnpath):
     modpath = ".".join(fnpath.split(".")[:-1])
@@ -47,6 +52,7 @@ def load_function_raw(fnpath):
         return None
     fn = getattr(mod, fnname, None)
     return fn
+
 
 def load_function(fnpath, cache_fn_ref=True):
     from portality.core import app

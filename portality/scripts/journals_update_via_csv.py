@@ -45,6 +45,15 @@ SYSTEM_ACCOUNT = {
 
 sys_acc = Account(**SYSTEM_ACCOUNT)
 
+
+def confirm_prompt():
+    doit = input('Proceed? [y\\N] ')
+
+    if doit.lower() != 'y':
+        print('\nExiting.')
+        exit(0)
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -67,11 +76,7 @@ if __name__ == "__main__":
     print('\nNote supplied via $DOAJ_CSV_NOTE: ' + note)
 
     if not args.yes:
-        doit = input('Proceed? [y\\N] ')
-
-        if doit.lower() != 'y':
-            print('\nExiting.')
-            exit(0)
+        confirm_prompt()
 
     # Disable app emails so this doesn't spam users
     app.config['ENABLE_EMAIL'] = False
@@ -102,14 +107,18 @@ if __name__ == "__main__":
             if not validation_results.has_errors() and args.force:
                 print('Forcing update despite warnings...')
             elif validation_results.has_errors() and args.force:
-                print("Can't force update on file with errors.")
-                exit(1)
+                if args.sys:
+                    print("DANGER - do you want to force these changes despite errors (some may not work)?")
+                    confirm_prompt()
+                else:
+                    print("Can't force update on file with errors using publisher account.")
+                    exit(1)
             else:
                 print(f'No updates processed due to errors or warnings. Supply -f arg to ignore warnings.')
                 exit(1)
 
-    # if we get to here, the records can all be imported, so we can go ahead with minimal
-    # additional checks
+    # if we get to here, the records can all be imported*, so we can go ahead with minimal additional checks
+    # * unless we're forcing with errors
 
     # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
     with open(args.infile, 'r', encoding='utf-8-sig') as g:
@@ -157,7 +166,7 @@ if __name__ == "__main__":
             alock = None
             try:
                 # ~~ ^->UpdateRequest:Feature ~~
-                update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=j.owner_account)
+                update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=acc)
             except AuthoriseException as e:
                 print('Could not create update request: {0}'.format(e.reason))
                 continue
@@ -180,6 +189,10 @@ if __name__ == "__main__":
 
             try:
                 if not args.dry_run:
+                    # FIXME: we have to validate, as this pre-filters conditional fields and makes other protections
+                    # on the form values.  This is not really ideal, as validate shouldn't really be changing the data!
+                    fc.validate()
+
                     # Save the update request
                     fc.finalise(email_alert=False)
                     print('Update request created.')
