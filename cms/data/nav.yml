@@ -79,8 +79,6 @@ entries:
         route: apply.public_application   # ~~->Apply:WebRoute~~
       - label: Guide to applying
         route: doaj.guide             # ~~->ApplicationGuide:WebRoute~~
-      - label: The DOAJ Seal
-        route: doaj.seal              # ~~->Seal:WebRoute~~
       - label: Transparency & best practice
         route: doaj.transparency      # ~~->Transparency:WebRoute~~
       - label: Publisher information

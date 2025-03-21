@@ -230,14 +230,6 @@ class JournalGenericXWalk(object):
             has_waiver = form.has_waiver.data == "y"
             bibjson.has_waiver = has_waiver
 
-        if form.orcid_ids.data:
-            orcids = form.orcid_ids.data == "y"
-            bibjson.article_orcid = orcids
-
-        if form.open_citations.data:
-            oc = form.open_citations.data == "y"
-            bibjson.article_i4oc_open_citations = oc
-
         if form.deposit_policy_url.data:
             bibjson.deposit_policy_url = form.deposit_policy_url.data
 
@@ -291,9 +283,6 @@ class JournalGenericXWalk(object):
             if editor:
                 editor = editor.strip()
                 obj.set_editor(editor)
-
-        if getattr(form, "doaj_seal", None):
-            obj.set_seal('y' in form.doaj_seal.data)
 
     @classmethod
     def bibjson2form(cls, bibjson, forminfo):
@@ -425,10 +414,6 @@ class JournalGenericXWalk(object):
             forminfo["has_other_charges"] = "y" if bibjson.has_other_charges else "n"
         if bibjson.has_waiver is not None:
             forminfo["has_waiver"] = "y" if bibjson.has_waiver else "n"
-        if bibjson.article_orcid is not None:
-            forminfo["orcid_ids"] = "y" if bibjson.article_orcid else "n"
-        if bibjson.article_i4oc_open_citations is not None:
-            forminfo["open_citations"] = "y" if bibjson.article_i4oc_open_citations else "n"
 
         forminfo["deposit_policy_url"] = bibjson.deposit_policy_url
 
@@ -463,8 +448,6 @@ class JournalGenericXWalk(object):
             forminfo['editor_group'] = obj.editor_group
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
-
-        forminfo['doaj_seal'] = ['y'] if obj.has_seal() else []
 
 
 class JournalFormXWalk(JournalGenericXWalk):

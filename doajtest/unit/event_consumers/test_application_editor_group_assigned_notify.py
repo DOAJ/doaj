@@ -29,6 +29,7 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
 
             source = ApplicationFixtureFactory.make_application_source()
             app = models.Application(**source)
+            app.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
             # app.save()
 
             acc = models.Account()
@@ -64,6 +65,8 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
 
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
+        app.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
+        # app.remove_editor()
         # app.save(blocking=True)
 
         eg = models.EditorGroup()

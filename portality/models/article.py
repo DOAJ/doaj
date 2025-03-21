@@ -183,18 +183,6 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["in_doaj"] = value
 
-    def has_seal(self):
-        try:
-            return self.data['admin'].get("seal", False)
-        except KeyError:
-            # If we have no admin section, return None instead
-            return None
-
-    def set_seal(self, value):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        self.data["admin"]["seal"] = value
-
     def publisher_record_id(self):
         return self.data.get("admin", {}).get("publisher_record_id")
 
@@ -325,16 +313,11 @@ class Article(DomainObject):
                 trip = True
             rbj.publisher = jbib.publisher
 
-        # Copy the seal info, in_doaj status and the journal's ISSNs
+        # Copy the in_doaj status and the journal's ISSNs
         if journal.is_in_doaj() != self.is_in_doaj():
             self.set_in_doaj(journal.is_in_doaj())
             trip = True
         reg.set_in_doaj(journal.is_in_doaj())
-
-        if journal.has_seal() != self.has_seal():
-            self.set_seal(journal.has_seal())
-            trip = True
-        reg.set_seal(journal.has_seal())
 
         try:
             aissns = bibjson.journal_issns
@@ -490,9 +473,6 @@ class Article(DomainObject):
             except:
                 asciiunpunctitle = unpunctitle
 
-        # determine if the seal is applied
-        has_seal = "Yes" if self.has_seal() else "No"
-
         # create a normalised version of the DOI for deduplication
         source_doi = cbib.get_one_identifier(constants.IDENT_TYPE_DOI)
         try:
@@ -538,8 +518,6 @@ class Article(DomainObject):
             self.data["index"]["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
             self.data["index"]["asciiunpunctitle"] = unpunctitle
-        if has_seal:
-            self.data["index"]["has_seal"] = has_seal
         if doi is not None:
             self.data["index"]["doi"] = doi
         if fulltext is not None:
