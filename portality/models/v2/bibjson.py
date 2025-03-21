@@ -248,20 +248,12 @@ class JournalLikeBibJSON(SeamlessMixin):
     #     self.__seamless__.add_to_list_with_struct("article.license_display", val)
 
     @property
-    def article_orcid(self):
-        return self.__seamless__.get_single("article.orcid")
+    def article_license_display_example_url(self):
+        return self.__seamless__.get_single("article.license_display_example_url")
 
-    @article_orcid.setter
-    def article_orcid(self, val):
-        self.__seamless__.set_with_struct("article.orcid", val)
-
-    @property
-    def article_i4oc_open_citations(self):
-        return self.__seamless__.get_single("article.i4oc_open_citations")
-
-    @article_i4oc_open_citations.setter
-    def article_i4oc_open_citations(self, val):
-        self.__seamless__.set_with_struct("article.i4oc_open_citations", val)
+    @article_license_display_example_url.setter
+    def article_license_display_example_url(self, url):
+        self.__seamless__.set_with_struct("article.license_display_example_url", url)
 
     @property
     def author_retains_copyright(self):
@@ -401,12 +393,21 @@ class JournalLikeBibJSON(SeamlessMixin):
     def has_pid_scheme(self, val):
         self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", val)
 
-    def set_plagiarism_detection(self, has_detection=True):
+    def set_plagiarism_detection(self, url, has_detection=True):
         self.__seamless__.set_with_struct("plagiarism.detection", has_detection)
+        self.__seamless__.set_with_struct("plagiarism.url", url)
 
     @property
     def plagiarism_detection(self):
         return self.__seamless__.get_single("plagiarism.detection")
+
+    @property
+    def plagiarism_url(self):
+        return self.__seamless__.get_single("plagiarism.url")
+
+    @plagiarism_url.setter
+    def plagiarism_url(self, url):
+        self.__seamless__.set_with_struct("plagiarism.url", url)
 
     @property
     def preservation(self):
@@ -529,6 +530,14 @@ class JournalLikeBibJSON(SeamlessMixin):
     @review_process_url.setter
     def review_process_url(self, url):
         self.__seamless__.set_with_struct("editorial.review_url", url)
+
+    @property
+    def oa_statement_url(self):
+        return self.__seamless__.get_single("ref.oa_statement")
+
+    @oa_statement_url.setter
+    def oa_statement_url(self, url):
+        self.__seamless__.set_with_struct("ref.oa_statement", url)
 
     @property
     def journal_url(self):
@@ -828,7 +837,8 @@ class JournalLikeBibJSON(SeamlessMixin):
         WAIVER_POLICY: "waiver_url",
         EDITORIAL_BOARD: "editorial_board_url",
         AIMS_SCOPE: "aims_scope_url",
-        AUTHOR_INSTRUCTIONS: "author_instructions_url"
+        AUTHOR_INSTRUCTIONS: "author_instructions_url",
+        OA_STATEMENT: "oa_statement_url"
     }
 
     def add_url(self, url, urltype=None, content_type=None):

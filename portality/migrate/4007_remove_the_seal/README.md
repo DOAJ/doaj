@@ -1,4 +1,4 @@
-Migration script to be run to remove DOAJ seal.  See issue 4007.
+Migration script to be run to remove DOAJ seal and other metadata fields.  See issues 4007 and 4015.
 
 Run
 

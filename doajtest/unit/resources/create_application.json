@@ -22,8 +22,7 @@
             ]
         },
         "article": {
-            "orcid": true,
-            "i4oc_open_citations": false,
+            "license_display_example_url": "http://licence.embedded",
             "license_display": [
                 "Embed"
             ]
@@ -66,7 +65,8 @@
             ]
         },
         "plagiarism": {
-            "detection": true
+            "detection": true,
+            "url": "http://plagiarism.screening"
         },
         "preservation": {
             "has_preservation": true,

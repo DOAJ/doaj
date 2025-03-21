@@ -58,8 +58,7 @@ JOURNAL_BIBJSON = {
                 },
                 "article" : {
                     "fields" : {
-                        "orcid" : {"coerce" : "bool"},
-                        "i4oc_open_citations" : {"coerce" : "bool"}
+                        "license_display_example_url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     },
                     "lists" : {
                         "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["Embed", "Display", "No"]},
@@ -122,7 +121,8 @@ JOURNAL_BIBJSON = {
                 },
                 "plagiarism" : {
                     "fields" : {
-                        "detection" : {"coerce" : "bool"}
+                        "detection" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     }
                 },
                 "preservation": {

@@ -58,8 +58,6 @@ class Journal2QuestionXwalk(object):
         ("apc", "APC"),
         ("has_other_charges", "Has other fees"),
         ("has_waiver", "Journal waiver policy (for developing country authors etc)"),
-        ("orcid_ids", "Article metadata includes ORCIDs"),
-        ("open_citations", "Journal complies with I4OC standards for open citations"),
         ("deposit_policy_url", "URL for deposit policy"),
         ("subject", "LCC Codes"),
         ("s2o", "Subscribe to Open"),
@@ -215,8 +213,6 @@ class Journal2QuestionXwalk(object):
 
         article_identifiers = other_list("persistent_identifiers", "persistent_identifiers_other", "other")
         kvs.append((cls.q("persistent_identifiers"), article_identifiers))
-        kvs.append((cls.q("orcid_ids"), yes_no_or_blank(forminfo.get("orcid_ids"))))
-        kvs.append((cls.q("open_citations"), yes_no_or_blank(forminfo.get("open_citations"))))
 
         # Open Access Compliance (usually first on form)
         kvs.append((cls.q("boai"), yes_or_blank(forminfo.get("boai"))))
@@ -284,8 +280,6 @@ class Journal2QuestionXwalk(object):
             'deposit_policy': _comma_to_list,
             'preservation_service': _comma_to_list,
             'persistent_identifiers': _comma_to_list,
-            'orcid_ids': _y_n_or_blank,
-            'open_citations': _y_n_or_blank,
             'boai': _y_or_blank,
             's2o': _y_n_or_blank
         }

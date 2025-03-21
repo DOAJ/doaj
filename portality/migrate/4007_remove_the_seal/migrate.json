@@ -7,8 +7,8 @@
 			"keepalive": "1m",
 			"functions" : [
 				"portality.migrate.4007_remove_the_seal.operations.journal_remove_seal",
-				"portality.migrate.4007_remove_the_seal.operations.journal_remove_plagiarism_url",
-				"portality.migrate.4007_remove_the_seal.operations.journal_remove_license_display_example_url"
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_orcid",
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_open_citations"
 			]
 		},
 		{
@@ -18,8 +18,8 @@
 			"keepalive": "1m",
 			"functions" : [
 				"portality.migrate.4007_remove_the_seal.operations.journal_remove_seal",
-				"portality.migrate.4007_remove_the_seal.operations.journal_remove_plagiarism_url",
-				"portality.migrate.4007_remove_the_seal.operations.journal_remove_license_display_example_url"
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_orcid",
+				"portality.migrate.4007_remove_the_seal.operations.journal_remove_open_citations"
 			]
 		}
 	]

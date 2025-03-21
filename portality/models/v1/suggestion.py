@@ -157,6 +157,7 @@ APPLICATION_STRUCT = {
     "structs" : {
         "admin" : {
             "fields" : {
+                "seal" : {"coerce" : "bool"},
                 "bulk_upload" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
@@ -194,6 +195,7 @@ APPLICATION_STRUCT = {
                 "author_instructions_url" : {"coerce" : "unicode"},
                 "oa_statement_url" : {"coerce" : "unicode"},
                 "has_apc" : {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},

@@ -32,10 +32,12 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         "license_attributes" : (["bibjson.license.BY", "bibjson.license.NC", "bibjson.license.ND", "bibjson.license.SA"],
                                 "bibjson.license[].BY, NC, ND and SA"),
         "license_display" : "bibjson.article.license_display",
+        "license_display_example_url" : "bibjson.article.license_display_example_url",
         "boai" : "bibjson.boai",
         "license" : "bibjson.license.type",
         "license_terms_url" : "bibjson.license.url",
         "oa_start": "bibjson.oa_start",
+        "oa_statement_url" : "bibjson.ref.oa_statement",
         "journal_url" : "bibjson.ref.journal",
         "aims_scope_url" : "bibjson.ref.aims_scope",
         "editorial_board_url" : "bibjson.editorial.board_url",
@@ -44,6 +46,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         "persistent_identifiers" : "bibjson.pid_scheme.scheme",
         "persistent_identifiers_other" : "bibjson.pid_scheme.scheme",
         "plagiarism_detection" : "bibjson.plagiarism.detection",
+        "plagiarism_url" : "bibjson.plagiarism.url",
         "publication_time_weeks" : "bibjson.publication_time_weeks",
         "other_charges_url" : "bibjson.other_charges_url",
         "title" : "bibjson.title",
@@ -51,8 +54,6 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         "apc" : "bibjson.apc.has_apc",
         "has_other_charges" : "bibjson.other_charges.has_other_charges",
         "has_waiver" : "bibjson.waiver.has_waiver",
-        "orcid_ids" : "bibjson.article.orcid",
-        "open_citations" : "bibjson.article.i4oc_open_citations",
         "deposit_policy_url" : "bibjson.deposit_policy.url"
     }
 

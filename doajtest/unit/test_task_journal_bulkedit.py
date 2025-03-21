@@ -241,6 +241,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [journal.id]}}},
+                                 editor_group="editorgroup",
                                  dry_run=False)
 
         sleep(2)

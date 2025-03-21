@@ -7,14 +7,14 @@ def journal_remove_seal(record):
         del record["index"]["has_seal"]
     return record
 
-def journal_remove_plagiarism_url(record):
-    if "url" in record.get("bibjson", {}).get("plagiarism", {}):
-        del record["bibjson"]["plagiarism"]["url"]
+def journal_remove_orcid(record):
+    if "orcid" in record.get("bibjson", {}).get("article", {}):
+        del record["bibjson"]["article"]["orcid"]
 
     return record
 
-def journal_remove_license_display_example_url(record):
-    if "license_display_example_url" in record.get("bibjson", {}).get("article", {}):
-        del record["bibjson"]["article"]["license_display_example_url"]
+def journal_remove_open_citations(record):
+    if "i4oc_open_citations" in record.get("bibjson", {}).get("article", {}):
+        del record["bibjson"]["article"]["i4oc_open_citations"]
 
     return record
