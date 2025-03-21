@@ -100,12 +100,6 @@ tests:
     role: anonymous
   steps:
   - step: Go to the DOAJ search page at /search/journals
-  - step: Under 'See journals' facet on the left, click 'With a DOAJ Seal'
-    results:
-    - All Journals have the DOAJ Seal displayed in the search results
-  - step: Clear the "Journal has DOAJ Seal" filter
-    results:
-    - All Journals are shown
   - step: Open the facet "Journal License"
   - step: Select any CC licence from this facet
     results:

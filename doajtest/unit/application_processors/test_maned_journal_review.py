@@ -138,8 +138,6 @@ class TestManEdJournalReview(DoajTestCase):
         assert fc.target.bibjson().title is None, fc.target.bibjson().title
 
     def test_04_maned_review_doaj_labels(self):
-        """Test the seal checkbox on the maned review form"""
-
         # construct it from form data (with a known source)
         formulaic_context = JournalFormFactory.context("admin")
         fc = formulaic_context.processor(

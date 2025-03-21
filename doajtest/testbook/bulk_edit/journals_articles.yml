@@ -134,8 +134,7 @@ tests:
       metadata ..."'
     results:
     - 'Form unfold below the pull down that includes fields: "Publisher", "Platform,
-      Host or Aggregator", "Country", "Owner", "Contact Name", "Contact''s email address",
-      "Qualifies for Seal"'
+      Host or Aggregator", "Country", "Owner", "Contact Name", "Contact''s email address"'
   - step: Input value for one or many of the fields
   - step: Click "Submit" button
     results:
