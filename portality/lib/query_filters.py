@@ -117,12 +117,12 @@ def editor(q):
 
 def private_source(q):
     q.add_include(["admin.application_status", "admin.ticked",
-        "admin.seal", "last_updated", "created_date", "id", "bibjson"])
+        "last_updated", "created_date", "id", "bibjson"])
     return q
 
 
 def public_source(q):
-    q.add_include(["admin.ticked", "admin.seal", "last_updated",
+    q.add_include(["admin.ticked", "last_updated",
         "created_date", "id", "bibjson"])
     return q
 
@@ -193,7 +193,7 @@ def public_result_filter(results, unpacked=False):
     if unpacked:
         if "admin" in results:
             for k in list(results["admin"]):
-                if k not in ["ticked", "seal"]:
+                if k not in ["ticked"]:
                     del results["admin"][k]
         return results
 
@@ -207,7 +207,7 @@ def public_result_filter(results, unpacked=False):
         if "_source" in hit:
             if "admin" in hit["_source"]:
                 for k in list(hit["_source"]["admin"]):
-                    if k not in ["ticked", "seal"]:
+                    if k not in ["ticked"]:
                         del hit["_source"]["admin"][k]
 
     return results
@@ -241,7 +241,7 @@ def prune_author_emails(results, unpacked=False):
 
 
 def publisher_result_filter(results, unpacked=False):
-    allowed_admin = ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]
+    allowed_admin = ["ticked", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]
     # Dealing with single unpacked ES result
     if unpacked:
         if "admin" in results:
@@ -315,13 +315,6 @@ def add_fqw_facets(results, unpacked=False):
             "terms": []
         },
         "index.publisher.exact": {
-            "_type": "terms",
-            "missing": 0,
-            "total": 0,
-            "other": 0,
-            "terms": []
-        },
-        "index.has_seal.exact": {
             "_type": "terms",
             "missing": 0,
             "total": 0,

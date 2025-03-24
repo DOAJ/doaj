@@ -53,7 +53,6 @@ def application_matches(journal, application):
     assert application.current_journal == journal.id
     assert application.notes == journal.notes
     assert application.owner == journal.owner
-    assert application.has_seal() is journal.has_seal()
 
 
 class TestBLLObjectConversions(DoajTestCase):
@@ -76,7 +75,6 @@ class TestBLLObjectConversions(DoajTestCase):
         #########################################
 
         cj = None
-        has_seal = bool(randint(0, 1))
         application = None
         if application_type == "present":
             application = Suggestion(**ApplicationFixtureFactory.make_application_source())
@@ -94,7 +92,6 @@ class TestBLLObjectConversions(DoajTestCase):
                 application.set_editor("appeditor")
                 application.set_owner("appowner")
 
-            application.set_seal(has_seal)
             application.add_note("Application Note")
 
             if current_journal == "present":
@@ -153,7 +150,6 @@ class TestBLLObjectConversions(DoajTestCase):
                 assert journal.editor_group == "appeditorgroup"
                 assert journal.editor == "appeditor"
                 assert journal.owner == "appowner"
-                assert journal.has_seal() == has_seal
 
                 if current_journal == "present":
                     assert len(journal.notes) == 2
@@ -165,14 +161,12 @@ class TestBLLObjectConversions(DoajTestCase):
                     assert journal.editor_group == "journaleditorgroup"
                     assert journal.editor == "journaleditor"
                     assert journal.owner == "journalowner"
-                    assert journal.has_seal() == has_seal
                     assert len(journal.notes) == 2
 
                 elif current_journal == "none" or current_journal == "missing":
                     assert journal.editor_group is None
                     assert journal.editor is None
                     assert journal.owner is None
-                    assert journal.has_seal() == has_seal
                     assert len(journal.notes) == 1
 
             if current_journal == "present":
