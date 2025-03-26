@@ -22,7 +22,7 @@
 		},
 		"deposit_policy": {
 			"has_policy": "True",
-			"service": ["Sherpa/Romeo", "Store it"],
+			"service": ["Open Policy Finder", "Store it"],
 			"url": "http://deposit.policy"
 		},
 		"discontinued_date": "2001-01-01",
