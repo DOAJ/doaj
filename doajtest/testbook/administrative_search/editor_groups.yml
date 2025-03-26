@@ -81,3 +81,42 @@ tests:
   - step: Do any other changes and the save the changes
     results:
     - Changes saved successfully
+- title: Test New Editor Group Form
+  context:
+    role: admin
+  steps:
+    - step: go to a new Editor Group form at /admin/editor_group
+      results:
+      - An Editor group form is rendered with 4 fields - "Group Name", "Managin Editor", "Editor" and "Associate Editors"
+    - step: without putting any data click "Save group" button
+      results:
+      - First input "Group name" is focused and the message "Please fill in this field" is displayed
+    - step: add a name to the Group Name field
+    - step: click "Save group" button
+      results:
+      - Error is displayed under "Managing Editor" field and "Editor" group
+    - step:  click on the "Managing Editor" field
+      results:
+      - a search input is displayed with "Please enter 1 or more character" prompt under the input
+    - step: start typing a name in the input
+      results:
+      - a list of matching names is display in a dropdown below the input
+    - step: choose one of the names
+    - step: click "Save group" button
+      results:
+      - The error under the "Managing Editor" field dissapears
+      - The error under the "Editor" field is still displayed
+    - step: choose and editor
+    - step: click "Save group" button
+      results:
+      - Group is successfully created
+    - step: Open new form at /admin/editor_group
+    - step: click on the "Associate Editors"
+      results:
+      - The "Please enter 1 or more character" prompt is displayed
+    - step: type a name and choose one account from the list
+      results:
+      - the name is added to the "Associate Editors" input
+    - step: add another name to the input
+      results:
+      - it is possible to add more than one account to the "Associate Editors" input
