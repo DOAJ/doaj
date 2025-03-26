@@ -18,7 +18,7 @@
         {% for k1, v1 in v.items() %}
             <dt>{{ k1 }}</dt>
             <dd>
-                {% if v1 is iterable and (var is not string and var is not mapping) %}
+                {% if v1 is iterable and (v1 is not string and v1 is not mapping) %}
                     {{ v1 }}
                 {% else %}
                     {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>

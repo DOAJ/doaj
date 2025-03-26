@@ -84,8 +84,7 @@ class ApplicationAutochecks(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
-        background_job.save()
-        application_autochecks.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
+        background_helper.submit_by_background_job(background_job, application_autochecks)
 
 
 huey_helper = ApplicationAutochecks.create_huey_helper(queue)
