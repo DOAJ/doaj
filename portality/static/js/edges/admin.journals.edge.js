@@ -72,6 +72,22 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
+                edges.newFilterSetter({
+                    id : "flagged",
+                    category: "facet",
+                    showCount: true,
+                    filters : [
+                        doaj.filters.isFlagged(),
+                        doaj.filters.flaggedToMe()
+                    ],
+                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle : "",
+                        open: true,
+                        togglable: false,
+                        showCount: true,
+                        countFormat: doaj.valueMaps.countFormat
+                    })
+                }),
                 doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "has_seal",
@@ -283,7 +299,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date added to DOAJ','field':'created_date'},
                         {'display':'Last updated','field':'last_manual_update'}, // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'}
+                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
                     ],
                     fieldOptions: [
                         {'display':'Owner','field':'admin.owner'},
@@ -346,6 +363,11 @@ $.extend(true, doaj, {
                                     "pre": '<span class="alt_title">Alternative title: ',
                                     "field": "bibjson.alternative_title",
                                     "post": "</span>"
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: doaj.fieldRender.deadline
                                 }
                             ],
                             [
@@ -472,7 +494,9 @@ $.extend(true, doaj, {
                         "index.continued.exact" : "Continued",
                         "bibjson.discontinued_date" : "Discontinued Year",
                         "bibjson.apc.has_apc": "Has APC?",
-                        "bibjson.other_charges.has_other_charges": "Has other charges?"
+                        "bibjson.other_charges.has_other_charges": "Has other charges?",
+                        'index.is_flagged': "Only Flagged Records",
+                        'index.flag_assignees.exact': "Flagged to me"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
@@ -488,6 +512,12 @@ $.extend(true, doaj, {
                             false : "No"
                         }
                     },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({
+                        hideValues: [
+                            'index.is_flagged',
+                            'index.flag_assignees.exact'
+                        ]
+                    }),
                     rangeFunctions : {
                         "bibjson.discontinued_date" : doaj.valueMaps.displayYearPeriod
                     }
