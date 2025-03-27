@@ -134,6 +134,41 @@ Journals that publish special issues or other content curated by guest editors m
 
 ---
 
+## Best practices
+
+The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We ask for information on these practices but they are not mandatory for DOAJ indexing.
+
+### Archiving policy
+
+- The journal content should be continuously deposited in a long-term digital archiving system. Deposits should be into one of these archives:
+  - any archiving agency included in Keepers Registry 
+  - Internet Archive
+  - PubMed Central
+
+---
+
+### Repository policy
+
+- This is also known as self-archiving. Does the journal have a policy allowing authors to deposit versions of their work in an institutional or other repository of their choice?
+- Authors should be permitted to deposit all versions of their paper in an institutional or subject repository:
+  - Preprint
+  - Author's Accepted Manuscript
+  - Published article (Version of Record)
+- An embargo should not be applied.
+
+---
+
+### Persistent article identifiers
+
+- Articles should use persistent article identifiers. DOI, ARK or Handle are the most commonly used.
+- All persistent links should resolve correctly.
+
+### Metadata supply to DOAJ	
+
+- Article metadata should be uploaded to DOAJ regularly. Uploading article metadata increases the visibility and impact of published research.
+
+---
+
 ## Additional criteria for some journal types
 
 {:.tabular-list}
