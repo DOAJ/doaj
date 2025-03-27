@@ -285,6 +285,7 @@ Please note that these translations may not include the latest changes made to t
 Our criteria are available in:
 
 - [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
+- [Bahasa Indonesia]()
 - [Chinese (application form)](https://zenodo.org/record/4350096)
 - [Chinese](https://zenodo.org/record/4633341)
 - [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
