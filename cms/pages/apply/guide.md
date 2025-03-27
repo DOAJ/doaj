@@ -136,7 +136,7 @@ Journals that publish special issues or other content curated by guest editors m
 
 ## Best practices
 
-The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We ask for information on these practices but they are not mandatory for DOAJ indexing.
+The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We recommend journals to adopt these best practices but they are not mandatory for DOAJ indexing.
 
 ### Archiving policy
 
@@ -163,9 +163,11 @@ The best practices in this section are about publishing standards based on finda
 - Articles should use persistent article identifiers. DOI, ARK or Handle are the most commonly used.
 - All persistent links should resolve correctly.
 
+---
+
 ### Metadata supply to DOAJ	
 
-- Article metadata should be uploaded to DOAJ regularly. Uploading article metadata increases the visibility and impact of published research.
+- Article metadata should be uploaded to DOAJ regularly. [Uploading article metadata](https://doaj.org/docs/faq/#uploading-article-metadata) increases the visibility and impact of published research.
 
 ---
 
