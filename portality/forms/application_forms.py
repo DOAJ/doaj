@@ -2438,6 +2438,19 @@ class FieldSetDefinitions:
         "name": "notes",
         "label": "Notes",
         "fields": [
+            FieldDefinitions.NOTES["name"],
+            FieldDefinitions.NOTE["name"],
+            FieldDefinitions.NOTE_AUTHOR["name"],
+            FieldDefinitions.NOTE_DATE["name"],
+            FieldDefinitions.NOTE_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"]
+        ]
+    }
+
+    FLAGS = {
+        "name": "flags",
+        "label": "Flag",
+        "fields": [
             FieldDefinitions.FLAGS["name"],
             FieldDefinitions.FLAG_SETTER["name"],
             FieldDefinitions.FLAG_CREATED_DATE["name"],
@@ -2446,12 +2459,6 @@ class FieldSetDefinitions:
             FieldDefinitions.FLAG_NOTE_ID["name"],
             FieldDefinitions.FLAG_ASSIGNEE["name"],
             FieldDefinitions.FLAG_RESOLVED["name"],
-            FieldDefinitions.NOTES["name"],
-            FieldDefinitions.NOTE["name"],
-            FieldDefinitions.NOTE_AUTHOR["name"],
-            FieldDefinitions.NOTE_DATE["name"],
-            FieldDefinitions.NOTE_ID["name"],
-            FieldDefinitions.NOTE_AUTHOR_ID["name"]
         ]
     }
 
@@ -2574,7 +2581,8 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
@@ -2654,7 +2662,8 @@ class JournalContextDefinitions:
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.LABELS["name"],
-        FieldSetDefinitions.CONTINUATIONS["name"]
+        FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
     MANED["templates"]["form"] = templates.MANED_JOURNAL_FORM

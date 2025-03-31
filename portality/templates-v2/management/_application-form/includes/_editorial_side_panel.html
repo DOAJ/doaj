@@ -49,7 +49,7 @@
 
     <aside class="editorial-panel__content">
         <fieldset>
-            {% set fs = formulaic_context.fieldset("flag") %}
+            {% set fs = formulaic_context.fieldset("flags") %}
             {% if fs %}
                 {% for f in fs.fields() %}
                     {% set field_template = f.template %}
