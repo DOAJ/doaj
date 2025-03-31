@@ -1175,11 +1175,9 @@ class PrefixAutocompleteQuery(object):
         }
 
         if self._filter_condition:
-            print(type(self._filter_condition))
-            # query_body["query"]["bool"]["filter"] = [
-            #     {"term": self._filter_condition}
-            # ]
-        print(query_body)
+            query_body["query"]["bool"]["filter"] = [
+                {"term": self._filter_condition}
+            ]
 
         return query_body
 
