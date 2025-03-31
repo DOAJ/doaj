@@ -2145,7 +2145,7 @@ class FieldDefinitions:
             "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type": "account", "field": "id", "include_input": True}},
+            {"autocomplete": {"type": "admin", "include_input": True}},
             # ~~^-> Autocomplete:FormWidget~~
         ],
         "input": "text",

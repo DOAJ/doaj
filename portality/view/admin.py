@@ -667,7 +667,8 @@ def editor_group(group_id=None):
 def user_autocomplete():
     q = request.values.get("q")
     s = request.values.get("s", 10)
-    ac = models.Account.autocomplete("id", q, size=s)
+    admin_only = "admin_only" in request.args
+    ac = models.Account.autocomplete("id", q, admin_only, size=s)
 
     # return a json response
     resp = make_response(json.dumps(ac))

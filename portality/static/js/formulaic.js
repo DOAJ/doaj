@@ -2146,8 +2146,16 @@ var formulaic = {
                 let include_input = this.params.include === undefined ? true : this.params.include;
                 let allow_clear = this.params.allow_clear_input === undefined ? true : this.params.allow_clear_input;
 
+                let url = current_scheme + "//" + current_domain
+                if (doc_type === "admin") {
+                    url = url + "/admin/autocomplete/user?admin_only=True"
+                }
+                else {
+                    url = url + "/autocomplete/" + doc_type + "/" + doc_field
+                }
+
                 let ajax = {
-                    url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
+                    url: url,
                     dataType: 'json',
                     data: function (term, page) {
                         return {
@@ -2155,6 +2163,7 @@ var formulaic = {
                         };
                     },
                     results: function (data, page) {
+                        console.log("data: ", data)
                         return {results: data["suggestions"]};
                     }
                 };
