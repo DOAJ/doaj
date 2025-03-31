@@ -77,16 +77,6 @@ $.extend(true, doaj, {
                     filters : [
                         doaj.filters.noCharges(),
                         {
-                            id: "with_seal",
-                            display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
-                            must : [
-                                es.newTermFilter({
-                                    field: "index.has_seal.exact",
-                                    value: "Yes"
-                                })
-                            ]
-                        },
-                        {
                             id : "retains_copyrigths",
                             display: "Author retains all rights",
                             must : [
@@ -278,7 +268,6 @@ $.extend(true, doaj, {
                         }
                     ],
                     fieldDisplays : {
-                        "index.has_seal.exact" : "With a DOAJ Seal",
                         "index.schema_codes_tree.exact" : "Subject",
                         "index.license.exact" : "Licenses",
                         "bibjson.publisher.name.exact" : "Publishers",
@@ -296,7 +285,6 @@ $.extend(true, doaj, {
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
-                            "index.has_seal.exact",
                             "bibjson.copyright.author_retains"
                         ],
                         omit : [

@@ -466,11 +466,6 @@ def guide():
     return render_template(templates.STATIC_PAGE, page_frag="/apply/guide.html")
 
 
-@blueprint.route("/apply/seal/")
-def seal():
-    return render_template(templates.STATIC_PAGE, page_frag="/apply/seal.html")
-
-
 @blueprint.route("/apply/transparency/")
 def transparency():
     return render_template(templates.STATIC_PAGE, page_frag="/apply/transparency.html")

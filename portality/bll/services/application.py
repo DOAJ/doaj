@@ -414,7 +414,6 @@ class ApplicationService(object):
         # * editor
         # * editor_group
         # * owner
-        # * seal
         notes = application.notes
 
         if application.editor is not None:
@@ -425,7 +424,6 @@ class ApplicationService(object):
             journal.add_note_by_dict(note)
         if application.owner is not None:
             journal.set_owner(application.owner)
-        journal.set_seal(application.has_seal())
 
         b = application.bibjson()
         if b.pissn == "":
