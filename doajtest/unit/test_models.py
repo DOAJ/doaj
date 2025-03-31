@@ -1212,6 +1212,8 @@ class TestModels(DoajTestCase):
 
     def test_24_save_valid_seamless_or_dataobj(self):
         j = models.Journal()
+        j.__seamless_silent_prune__ = False
+
         bj = j.bibjson()
         bj.title = "A legitimate title"
         j.data["junk"] = "in here"
@@ -1220,6 +1222,7 @@ class TestModels(DoajTestCase):
         assert j.id is None
 
         s = models.Suggestion()
+        s.__seamless_silent_prune__ = False
         sbj = s.bibjson()
         sbj.title = "A legitimate title"
         s.data["junk"] = "in here"

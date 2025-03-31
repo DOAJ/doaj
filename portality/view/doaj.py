@@ -642,9 +642,9 @@ def new_password_reset():
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
                     action=app.config.get('ANALYTICS_ACTION_URLSHORT_REDIRECT', 'Redirect'))
 def shortened_url(alias):
-    url = DOAJ.shortUrlService().find_url_by_alias(alias)
-    if url:
-        return redirect(url)
+    short = DOAJ.shortUrlService().find_url_by_alias(alias)
+    if short:
+        return redirect(short.url)
 
     app.logger.debug(f"Shortened URL not found: [{alias}]")
     abort(404)

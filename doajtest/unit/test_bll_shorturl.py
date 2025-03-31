@@ -16,7 +16,7 @@ def wait_any_url_shortener():
     return models.ShortenedUrl.count() > 0
 
 
-class TestLibUrlshort(DoajTestCase):
+class TestShortURL(DoajTestCase):
 
     def test_create_new_alias(self):
         n_samples = 3
@@ -62,12 +62,12 @@ class TestLibUrlshort(DoajTestCase):
             # alias = surl[surl.rfind('/') + 1:]
             data[alias] = url
 
-        # wait_until(wait_any_url_shortener)
+        wait_until(wait_any_url_shortener)
 
         results = models.ShortenedUrl.q2obj()
 
         alias = results[0].alias
-        assert urlshort.find_url_by_alias(alias) == data[alias]
+        assert urlshort.find_url_by_alias(alias).url == data[alias]
 
 
 def surl_to_alias(surl):
@@ -101,7 +101,7 @@ class TestUrlshortRoute(DoajTestCase):
             assert rv.json['short_url']
 
         wait_until(wait_any_url_shortener)
-        assert urlshort.find_url_by_alias(surl_to_alias(rv.json['short_url'])) == data['url']
+        assert urlshort.find_url_by_alias(surl_to_alias(rv.json['short_url'])).url == data['url']
 
     def test_create_shorten_url__invalid(self):
         data = {'url': 'http://invalid.domain.abc/aaaaa'}

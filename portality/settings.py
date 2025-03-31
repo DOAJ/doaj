@@ -696,7 +696,7 @@ MAPPINGS['provenance'] = MAPPINGS["account"]  # ~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]  # ~~->Preservation:Model~~
 MAPPINGS['notification'] = MAPPINGS["account"]  # ~~->Notification:Model~~
 MAPPINGS['article_tombstone'] = MAPPINGS["account"]  # ~~->ArticleTombstone:Model~~
-MAPPINGS['url_shortener'] = MAPPINGS["account"]    #~~->URLShortener:Model~~
+MAPPINGS['shortened_url'] = MAPPINGS["account"]    #~~->URLShortener:Model~~
 
 #########################################
 # Query Routes
@@ -1250,8 +1250,8 @@ ANALYTICS_ACTION_RISEXPORT = 'Export'
 
 # Plausible for Urlshort
 # ~~->URLShortener:Feature~~
-ANALYTICS_CATEGORY_URLSHORT = 'Urlshort'
-ANALYTICS_ACTION_URLSHORT_ADD = 'Find or create shortener url'
+ANALYTICS_CATEGORY_URLSHORT = 'ShortURL'
+ANALYTICS_ACTION_URLSHORT_ADD = 'Find or create short url'
 ANALYTICS_ACTION_URLSHORT_REDIRECT = 'Redirect'
 
 # Plausible for API
