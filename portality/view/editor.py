@@ -29,7 +29,6 @@ def restrict():
 @ssl_required
 def index():
     # ~~-> Todo:Service~~
-    flag_filter = request.values.get("flag_filter", "a2me")
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"), update_requests=False)
     count = svc.user_finished_historical_counts(current_user._get_current_object())

@@ -342,6 +342,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @property
     def most_urgent_flag_deadline(self):
+        # We allow only 1 flag per record now, but this code allows more
         # Filter notes to only include those with a 'flag' and a 'deadline'
         deadlines = [
             flag["flag"].get("deadline") for flag in self.flags

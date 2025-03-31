@@ -27,7 +27,6 @@ def date_str(in_format=None, out_format=None):
 def find_earliest_date(dates_arr, dates_format, out_format=None):
     parsed_dates = [dates.parse(date, dates_format) for date in dates_arr]
     earliest_date = min(parsed_dates)
-    result = dates.format(earliest_date, out_format or dates_format)
     return dates.format(earliest_date, out_format or dates_format)
 
 
