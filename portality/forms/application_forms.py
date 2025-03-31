@@ -2077,7 +2077,6 @@ class FieldDefinitions:
         "name": "flag_resolved",
         "group": "flags",
         "input": "hidden",
-        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     # ~~->$ NoteAuthor:FormField~~
@@ -2112,7 +2111,6 @@ class FieldDefinitions:
         },
         "group": "flags",
         "input": "text",
-        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     FLAG_NOTE = {
@@ -2120,7 +2118,6 @@ class FieldDefinitions:
         "name": "flag_note",
         "group": "flags",
         "input": "textarea",
-        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     # ~~->$ NoteID:FormField~~
@@ -2149,7 +2146,6 @@ class FieldDefinitions:
             # ~~^-> Autocomplete:FormWidget~~
         ],
         "input": "text",
-        "disabled": "disable_edit_flag_except_author_admin_assignee"
     }
 
     # ~~->$ OptionalValidation:FormField~~
@@ -2858,6 +2854,8 @@ def disable_edit_note_except_editing_user(field: FormulaicField,
 
 def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
                                                    formulaic_context: FormulaicContext):
+    # This is currently not used but will be needed again when the flags feature will be made available for non-admin users
+
     """
     Only allow the current user to edit this field if current user is an author, assignee or admin
 
