@@ -11,10 +11,6 @@ class Flags(TestDrive):
         self.apps = []
         self.admin_password = None
         self.admin = None
-        self.assed1_password = None
-        self.assed1 = None
-        self.assed2 = None
-        self.assed2_password = None
         self.editor = None
         self.editor_password = None
         self.random_user = None
@@ -23,24 +19,16 @@ class Flags(TestDrive):
 
     def setup(self) -> dict:
         self.create_accounts()
-        self.create_applications()
+        self.build_applications()
         return {
             "accounts": {
                 "admin": {
                     "username": self.admin.id,
                     "password": self.admin_password
                 },
-                "editor_1": {
+                "editor": {
                     "username": self.editor.id,
                     "password": self.editor_password
-                },
-                "associate_editor_1": {
-                    "username": self.assed1.id,
-                    "password": self.assed1_password
-                },
-                "associate_editor_2": {
-                    "username": self.assed2.id,
-                    "password": self.assed2_password
                 },
                 "random_user": {
                     "username": self.random_user.id,
@@ -48,10 +36,8 @@ class Flags(TestDrive):
                 }
             },
             "applications": self.apps,
-            "editor group": [self.editor.name],
             "non_renderable": {
-                "eg": self.eg.id,
-                "applications": self.apps
+                "editor_groups": [self.eg.name, self.another_eg.name]
             }
         }
 
@@ -78,102 +64,133 @@ class Flags(TestDrive):
         self.editor.set_password(self.editor_password)
         self.editor.save()
 
-        assed1_name = self.create_random_str()
-        self.assed1_password = self.create_random_str()
-        self.assed1 = models.Account.make_account(assed1_name + "@example.com", assed1_name,
-                                                  "Associate Editor 1 " + assed1_name, ["associate_editor"])
-        self.assed1.set_password(self.assed1_password)
-        self.assed1.save()
-
-        assed2_name = self.create_random_str()
-        self.assed2_password = self.create_random_str()
-        self.assed2 = models.Account.make_account(assed2_name + "@example.com", assed2_name,
-                                                  "Associate Editor 1 " + assed2_name, ["associate_editor"])
-        self.assed2.set_password(self.assed1_password)
-        self.assed2.save()
-
         gn = self.create_random_str()
-        group_name = "Maned Group " + gn
+        group_name = "Your Group " + gn
         self.eg = models.EditorGroup(**{
             "name": group_name
         })
         self.eg.set_maned(self.admin.id)
         self.eg.set_editor(self.editor.id)
-        self.eg.set_associates([self.assed1.id, self.assed2.id])
         self.eg.save()
 
-    def build_application(self, aid, title, lmu_diff, cd_diff, status, notes=None,
-                          additional_fn=None):
+        gn = self.create_random_str()
+        group_name = "Another Group " + gn
+        self.another_eg = models.EditorGroup(**{"name": group_name})
+        self.another_eg.set_maned(self.random_user.id)
+        self.another_eg.set_editor(self.editor.id)
+        self.another_eg.save()
 
-        source = ApplicationFixtureFactory.make_application_source()
-        ap = models.Application(**source)
-        source["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
-        source["admin"]["current_journal"] = None
-        bj = ap.bibjson()
-        bj.title = title
-        ap.set_id(aid)
-        ap.set_last_manual_update(dates.before_now(lmu_diff))
-        ap.set_created(dates.before_now(cd_diff))
-        ap.set_application_status(status)
-        if notes is not None:
-            ap.set_notes(notes)
-        if additional_fn is not None:
-            additional_fn(ap)
-        ap.save()
-        return ap
+    def build_applications(self):
+        applications = [
+            {
+                "type": models.Journal,
+                "title": "Journal of Quantum Homeopathy",
+                "assigned_to": self.admin.id,
+                "flagged_to": self.admin.id,
+                "group": self.eg.name,
+                "deadline": 2,
+                "note": "Peer review process unclear. The journal claims to use “ancient wisdom and telepathic consensus” to select papers. Should we request further clarification, or just accept that the universe decides?"
+            },
+            {
+                "type": models.Application,
+                "title": "The Mars Agricultural Review",
+                "application_type": constants.APPLICATION_TYPE_NEW_APPLICATION,
+                "status": "in progress",
+                "assigned_to": self.editor.id,
+                "flagged_to": self.admin.id,
+                "group": self.eg.name,
+                "deadline": 10,
+                "note": "Ethical concerns? Their conflict of interest statement is just 'Trust us.' Also, every editorial board member shares the same last name. Suspicious? Or just an enthusiastic family business?"
+            },
+            {
+                "type": models.Application,
+                "title": "Cryptid Behavioral Studies Quarterly",
+                "application_type": constants.APPLICATION_TYPE_UPDATE_REQUEST,
+                "assigned_to": self.editor.id,
+                "flagged_to": self.admin.id,
+                "group": self.eg.name,
+                "deadline": 10,
+                "note": "Formatting issues. Their abstracts are in Comic Sans, their references are in Wingdings, and their figures appear to be hand-drawn with crayon. Surprisingly, it almost adds to the charm."
+            },
+            {
+                "type": models.Application,
+                "title": "The Bermuda Triangle Journal of Lost and Found",
+                "application_type": constants.APPLICATION_TYPE_UPDATE_REQUEST,
+                "status": "on hold",
+                "assigned_to": self.editor.id,
+                "flagged_to": self.editor.id,
+                "group": self.eg.name,
+                "note": "Reviewer qualifications unclear. The journal states that all peer reviews are conducted by 'a highly trained team of clairvoyant pigeons.' While I admire their commitment to interdisciplinary methods, I feel we should request ORCID iDs… or at least some proof that the pigeons exist."
+            },
+            {
+                "type": models.Journal,
+                "title": "Feline Aerodynamics Review",
+                "assigned_to": self.admin.id,
+                "group": self.eg.name
+            },
+            {
+                "type": models.Application,
+                "title": "Journal of Intergalactic Diplomacy",
+                "application_type": constants.APPLICATION_TYPE_NEW_APPLICATION,
+                "assigned_to": self.random_user.id,
+                "flagged_to": self.admin.id,
+                "group": self.another_eg.name,
+                "deadline": 0,
+                "note": "Editorial process... innovative? They claim to have a 100% acceptance rate because “rejecting knowledge is against our values.” Admirable, but I feel like that’s not how this works."
+            },
+            {
+                "type": models.Application,
+                "title": "Applied Alchemy & Unstable Chemistry",
+                "application_type": constants.APPLICATION_TYPE_UPDATE_REQUEST,
+                "assigned_to": self.random_user.id,
+                "flagged_to": self.editor.id,
+                "note": "Journal scope mismatch. The journal is called The International Review of Advanced Neuroscience but 90\% of its articles are about cat memes. Honestly, I’d subscribe, but should we approve it?",
+                "group": self.another_eg.name
+            }
+        ]
 
-    def create_applications(self):
-        accounts = {"Admin": self.admin,
-                    "Editor": self.editor,
-                    "Assed1": self.assed1,
-                    "Assed2": self.assed2}
-        deadlines_in_days = [-2, 2, 9, 12, None]
-        deadline = lambda d: dates.days_after_now(d) if days else ""
-        one_app_flagged_to_editor = False
-        one_app_flagged_to_assed = False
-
-
-        for key, val in accounts.items():
-            for days in deadlines_in_days:
+        for record in applications:
+            source = ApplicationFixtureFactory.make_application_source()
+            ap = models.Application(**source)
+            if "application_type" in record:
+                source["admin"]["application_type"] = record["application_type"]
+            bj = ap.bibjson()
+            bj.title = record["title"]
+            ap.set_id(self.create_random_str())
+            ap.set_last_manual_update(dates.today())
+            ap.set_created(dates.before_now(200))
+            ap.remove_current_journal()
+            ap.remove_related_journal()
+            ap.set_editor_group(record["group"])
+            ap.is_assigned_to(record["assigned_to"])
+            if "status" in record:
+                ap.set_application_status(record["status"])
+            if "flagged_to" in record:
                 note = {"id": self.create_random_str(),
-                        "note": f'This is a note for {key}! Please don\'t forget about this important flag!',
+                        "note": record["note"],
                         "date": dates.now(),
                         "author_id": self.admin.id,
 
                         "flag": {
-                            "assigned_to": val.id,
-                            "deadline": deadline(days) if days is not None else dates.far_in_the_future(),
+                            "assigned_to": record["flagged_to"],
+                            "deadline": dates.days_after_now(record["deadline"]) if "deadline" in record.keys() else dates.far_in_the_future(),
                             "resolved": False
                         }}
-                app = self.build_application(aid=self.create_random_str(),
-                                             title=f'Application flagged for {key}, with deadline in {days} days',
-                                             lmu_diff=0, cd_diff=31, status=constants.APPLICATION_STATUS_IN_PROGRESS,
-                                             notes=note)
-
-                if (not one_app_flagged_to_assed) and key == "Assed1":
-                    app.set_editor_group(self.eg.name)
-                    app.set_editor(self.editor.id)
-                    app.save()
-                    print("one_app_flagged_to_assed: ", app.id, self.editor.id)
-                    one_app_flagged_to_assed = True
-
-                if (not one_app_flagged_to_editor) and key == "Editor":
-                    app.set_editor_group(self.eg.name)
-                    app.set_editor(self.editor.id)
-                    app.save()
-                    print("one_app_flagged_to_editor: ", app.id, self.editor.id)
-                    one_app_flagged_to_editor = True
-
-                self.apps.append(app.id)
+                ap.set_notes(note)
+            ap.save(blocking=True)
+            self.apps.append(ap.id)
 
     def teardown(self, params):
         for acc in params.get("accounts").values():
             models.Account.remove_by_id(acc["username"])
 
-        non_renderable = params.get("non_renderable", {})
-        models.EditorGroup.remove_by_id(non_renderable["eg"])
-        for app in non_renderable["applications"]:
+        for app in params.get("applications"):
             models.Application.remove_by_id(app)
+
+        print(params.get("non_renderable"))
+        print(params.get("non_renderable").get("editor_groups"))
+        for eg in params.get("non_renderable").get("editor_groups"):
+            models.EditorGroup.remove_by_id(eg)
 
         return {"success": True}
 

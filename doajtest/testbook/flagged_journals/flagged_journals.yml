@@ -6,7 +6,6 @@ tests:
       role: Admin
     steps:
       - step: Navigate to /testdrive/flags
-      - step: Login as Admin (from this point on, "you" refers to the logged-in user)
         results:
         - On your dashboard there are 5 records ** flagged to you ** are displayed on the dashboard, ordered by deadline
         - Urgent Flags (with deadline within a week - including past dates) are marked with a different colour than Regular Flags (with deadline further than 7 days in advance or no deadline at all)
