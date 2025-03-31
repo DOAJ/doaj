@@ -854,7 +854,7 @@ class DomainObject(UserDict, object):
         if not facet_field.endswith(suffix):
             facet_field = facet_field + suffix
 
-        q = PrefixAutocompleteQuery(query_field, prefix, filter_condition, field, facet_field, size)
+        q = PrefixAutocompleteQuery(query_field, prefix, field, facet_field, size, filter_condition)
         return cls.send_query(q.query())
 
     @classmethod
@@ -1151,7 +1151,7 @@ class BlockQuery(object):
 
 
 class PrefixAutocompleteQuery(object):
-    def __init__(self, query_field, prefix, filter_condition, agg_name, agg_field, agg_size):
+    def __init__(self, query_field, prefix, agg_name, agg_field, agg_size, filter_condition=None):
         self._query_field = query_field
         self._prefix = prefix
         self._agg_name = agg_name
@@ -1175,9 +1175,11 @@ class PrefixAutocompleteQuery(object):
         }
 
         if self._filter_condition:
-            query_body["query"]["bool"]["filter"] = [
-                {"term": {field: value}} for field, value in self._filter_condition.items()
-            ]
+            print(type(self._filter_condition))
+            # query_body["query"]["bool"]["filter"] = [
+            #     {"term": self._filter_condition}
+            # ]
+        print(query_body)
 
         return query_body
 
