@@ -1,20 +1,18 @@
 import json
 from io import BytesIO
-from urllib.parse import urlparse
 
-from flask import Blueprint, make_response, request, abort, render_template, send_file
+from flask import Blueprint, make_response, request, abort, render_template, send_file, url_for
 from flask_login import current_user, login_required
 
 from portality import lock, models
 from portality.bll import DOAJ
-from portality.bll.services import urlshort
 from portality.crosswalks.article_ris import ArticleRisXWalk
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.lib import plausible
 from portality.util import jsonp
 from portality.ui import templates
-from portality.models.url_shortener import CountWithinDaysQuery
+from portality.bll.services.shorturl import InvalidURL, UrlShortenerLimitExceeded
 
 blueprint = Blueprint('doajservices', __name__)
 
@@ -70,26 +68,17 @@ def unlocked():
                     action=app.config.get('ANALYTICS_ACTION_URLSHORT_ADD', 'Find or create shortener url'))
 def shorten():
     """ create shortener url """
-
-    # check if limit reached
-    n_created = models.UrlShortener.hit_count(CountWithinDaysQuery(
-        app.config.get("URLSHORT_LIMIT_WITHIN_DAYS", 7)
-    ).query())
-    n_created_limit = app.config.get("URLSHORT_LIMIT", 100_000)
-    if n_created >= n_created_limit:
-        app.logger.warning(f"Url shortener limit reached: [{n_created=}] >= [{n_created_limit=}]")
-        abort(429)
-
     url = json.loads(request.data)['url']
+    urlshort = DOAJ.shortUrlService()
 
-    # validate url
-    hostname = urlparse(url).hostname
-    if not any((hostname == d or hostname.endswith(f".{d}"))
-               for d in app.config.get("URLSHORT_ALLOWED_SUPERDOMAINS", [])):
-        app.logger.warning(f"Invalid url shorten request: {url}")
+    try:
+        short_url_record = urlshort.get_short_url(url)
+    except UrlShortenerLimitExceeded:
+        abort(429)
+    except InvalidURL:
         abort(400)
 
-    short_url = urlshort.add_url_shortener(url)
+    short_url = app.config.get("BASE_URL") + url_for('doaj.shortened_url', alias=short_url_record.alias)
     resp = make_response(json.dumps({"short_url": short_url}))
     resp.mimetype = "application/json"
     return resp

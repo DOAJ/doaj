@@ -643,11 +643,11 @@ def new_password_reset():
     return redirect(url_for('account.forgot'), code=301)
 
 
-@blueprint.route("/sc/<alias>")
+@blueprint.route("/u/<alias>")
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
                     action=app.config.get('ANALYTICS_ACTION_URLSHORT_REDIRECT', 'Redirect'))
 def shortened_url(alias):
-    url = DOAJ.urlshortService().find_url_by_alias(alias)
+    url = DOAJ.shortUrlService().find_url_by_alias(alias)
     if url:
         return redirect(url)
 

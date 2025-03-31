@@ -143,9 +143,9 @@ class DOAJ(object):
         return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)
 
     @classmethod
-    def urlshortService(cls):
-        from portality.bll.services import urlshort
-        return urlshort
+    def shortUrlService(cls):
+        from portality.bll.services import shorturl
+        return shorturl.ShortUrlService()
 
     @classmethod
     def hueyJobService(cls):

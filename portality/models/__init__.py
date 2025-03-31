@@ -28,7 +28,7 @@ from portality.models.harvester import HarvestState
 from portality.models.event import Event
 from portality.models.notifications import Notification
 from portality.models.autocheck import Autocheck
-from portality.models.url_shortener import UrlShortener
+from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
 
 import sys
 

@@ -1,12 +1,12 @@
 from portality.dao import DomainObject
 
 
-class UrlShortener(DomainObject):
+class ShortenedUrl(DomainObject):
     """~~UrlShortener:Model->DomainObject:Model~~"""
-    __type__ = "url_shortener"
+    __type__ = "shortened_url"
 
     def __init__(self, **kwargs):
-        super(UrlShortener, self).__init__(**kwargs)
+        super(ShortenedUrl, self).__init__(**kwargs)
 
     @property
     def url(self):
