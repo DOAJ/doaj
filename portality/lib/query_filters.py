@@ -101,8 +101,6 @@ def not_update_request(q):
 
 def associate(q):
     q.clear_match_all()
-    q.add_should({"term" : {"admin.editor.exact" : current_user.id}})
-    q.add_should({"term": {"index.flag_assignees.exact": current_user.id}})
     return q
 
 def editor(q):
