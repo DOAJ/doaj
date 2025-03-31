@@ -149,7 +149,7 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Title','field':'index.unpunctitle.exact'}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
@@ -309,7 +309,7 @@ $.extend(true, doaj, {
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'index.license.exact' : 'License',
-                        "index.has_apc.exact" : "Charges?",
+                        "index.has_apc.exact" : "Charges?"
                     }
                 })
             ];
