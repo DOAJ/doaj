@@ -163,8 +163,6 @@ class TodoService(object):
 
         if new_applications:  # editor and associate editor roles only deal with new applications
             if account.has_role("editor"):
-                queries.append(TodoRules.urgent_flags_new_applications(account.id, size))
-                queries.append(TodoRules.regular_flags_new_applications(account.id, size))
                 groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
                 regular_groups = [g for g in groups if g.maned != account.id]
                 maned_groups = [g for g in groups if g.maned == account.id]
@@ -185,8 +183,6 @@ class TodoService(object):
                     queries.append((constants.TODO_EDITOR_ASSIGN_PENDING_LOW_PRIORITY, qi[1], qi[2], -2))
 
             if account.has_role(constants.ROLE_ASSOCIATE_EDITOR):
-                queries.append(TodoRules.urgent_flags_new_applications(account.id, size))
-                queries.append(TodoRules.regular_flags_new_applications(account.id, size))
                 queries.extend([
                     TodoRules.associate_follow_up_old(account.id, size),
                     TodoRules.associate_stalled(account.id, size),
