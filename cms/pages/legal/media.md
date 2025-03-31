@@ -21,7 +21,6 @@ Katrine Sundsbø [katrine@doaj.org](mailto:katrine@doaj.org?subject=Press Enquir
 
 ## Social media and online
 
-- [ X ](https://twitter.com/doajplus)
 - [Facebook](https://www.facebook.com/DirectoryofOpenAccessJournals/)
 - [Instagram](https://www.instagram.com/doajplus/)
 - [Bluesky](https://bsky.app/profile/doaj.bsky.social)

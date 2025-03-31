@@ -2,143 +2,42 @@
 # ~~AdvisoryBoardCouncil:Data~~
 
 board:
-- name: Andreas Ferus
-  institution: Academy of Fine Arts Vienna
-  country: Austria
-  coi:
-    2022: https://drive.google.com/file/d/1gnyyJTzD98fuBs7cVaeWpDerGfPR8CHl/view?usp=sharing
-
-- name: Anja Oberländer
-  institution: University of Konstanz
-  country: Germany
-  coi:
-    2019: https://drive.google.com/file/d/19kF_rKIqvsUJpBapnkiVcRHpneeMw6Lz/view?usp=sharing
-
-- name: Emma Molls
-  institution: University of Minnesota
-  country: United States
-  coi:
-    2019: https://drive.google.com/file/d/1FHkg6seMBKTDwlO6XbRr0iEjlKjwMUV2/view?usp=sharing
- 
-- name: Karen Hytteballe Ibanez
-  institution: NORA at Technical University of Denmark, representing the Danish Ministry of Higher Education and Science
-  country: Denmark
-  coi:
-    2022: https://drive.google.com/file/d/1hq4ZVzBsBZvJNw3It44S36T2ZHNpLw8W/view?usp=sharing
-
-- name: Leslie Chan
-  institution: University of Toronto
-  country: Canada
-  coi:
-    2023: https://drive.google.com/file/d/12GGWk1D6zb0YlPhSmFwCvp8ApnXOKekG/view?usp=sharing
-
-- name: Lisa Schiff
-  institution: California Digital Library
-  country: United States
-  coi:
-    2019: https://drive.google.com/file/d/1PG8alnPEbKDLhr6E3Ly1it-kQ_0srnNi/view?usp=sharing
-
-- name: Mark Hahnel
-  institution: Digital Science (Figshare)
-  country: United Kingdom
-  coi:
-    2019: https://drive.google.com/file/d/1rSCL0KHewtg6626kf2_YB-0i18IxcoiN/view?usp=sharing
-
-- name: Pierre De Villiers
-  institution: AOSIS
-  country: South Africa
-  coi:
-    2022: https://drive.google.com/file/d/1Gb4yxUmeI8EW0uF3J8XFD49e8lwIjTx1/view?usp=sharing
-
-- name: Solange Maria Dos Santos
-  institution: SciELO
-  country: Brazil
-  coi:
-    2019: https://drive.google.com/file/d/1rEzGvX4qU3KsDbOtPjYltLNjX0ifs_8m/view?usp=sharing
-
-- name: Steven Vidovic (Chair)
-  institution: University of Southampton
-  country: United Kingdom
-  coi:
-    2019: https://drive.google.com/file/d/1JxIGgxW03CAHyVepbQyOin9unhbrQAif/view?usp=sharing
-
-- name: Xenia Rueda
-  institution: National Autonomous University of Mexico
+- name: Ana Maria Cetto
+  institution: LatIndex
   country: Mexico
   coi:
-    2022: https://drive.google.com/file/d/1wY208VRF128QGg-sAn-gikUID1z_SSC1/view?usp=sharing
+    2024: https://docs.google.com/document/d/1SjH4jFductQClV0MYi9nJeO_gm4q9F1H6iqknsnuWlI/edit?usp=drive_link
+
+- name: David Prosser
+  institution: Research Libraries UK
+  country: United Kingdom
+  coi:
+    2024: https://docs.google.com/document/d/14goBp4Q2AY7I9C4QG8MTQJl6z9XpkDpPb_fBA85mP5c/edit?usp=drive_link
+
+- name: Ioannis Tsakonas
+  institution: University of Patras
+  country: Greece
+  coi:
+    2024: https://drive.google.com/file/d/1a1CJ_ioTDUF0tZrgWf3ax8aF_JNfxMFV/view?usp=drive_link
+ 
+- name: Hans de Jonge
+  institution: Dutch Research Council NWO
+  country: The Netherlands
+  coi:
+    2024: https://docs.google.com/document/d/1EH5xRa3Zxee8k8LGwSMDK3UPbKSHjVHdqgVAy8KCyWs/edit?usp=drive_link
+
+- name: Lars Bjørnshauge
+  institution: DOAJ Founder
+  country: Denmark
+  coi:
+    2024: https://docs.google.com/document/d/1U1hoHCXRrstCj4_wJgm54RSChxkHVPLVcqn38oMlheY/edit?usp=drive_link
+
+- name: Susan Veldsman
+  institution: Academy of Sciences in South Africa
+  country: South Africa
+  coi:
+    2024: https://docs.google.com/document/d/1Uqcx-AwTuPYHdJOy5gfsBH8ykKuelg7U6Pf511pvVcY/edit?usp=drive_link
 
 # List of council members
 
-council:
-- name: Arianna Becerril García
-  institution: Autonomous University of the State of Mexico, Redalyc, AmeliCA
-  country: Mexico
-  coi:
-    2020: https://drive.google.com/file/d/1btqZywR1lo1ZDH_cv11OE-YuLJsFNHPA/view?usp=sharing
-    
-- name: Christian Knudsen
-  institution: Royal Danish Library
-  country: Denmark
-  coi:
-    2019: https://drive.google.com/file/d/1KLdiHr_iKgeh6rvSstsP_sgVYIa1GyvK/view?usp=sharing
 
-- name: Christine Davidian
-  institution: Rowan University Libraries
-  country: USA
-  coi:
-    2022: https://drive.google.com/file/d/1lh_5UBCdeLMhCE55CyzWg0wPHHWw-uuq/view?usp=sharing
-
-- name: Dora Elvira García-González
-  institution: Tecnológico de Monterrey
-  country: Mexico
-  coi:
-    2019: https://drive.google.com/file/d/1rmJyLwgFY3OQhNt0yWV2GLpt3eq8Z1q7/view?usp=sharing
-
-- name: Frederick Fenter
-  institution: Frontiers
-  country: Switzerland
-  coi:
-    2019: https://drive.google.com/file/d/1ehhPw3sBU-wey2i4YCcD2LQMUilmTz8l/view?usp=sharing
-
-- name: Hans de Jonge
-  institution: Dutch Research Council (NWO)
-  country: The Netherlands
-  coi:
-    2022: https://drive.google.com/file/d/1G-F1iEp0pT_t5ro_djxTMjUqbPvqed8U/view?usp=sharing
-
-- name: Karen Rowlett
-  institution: University of Reading
-  country: United Kingdom
-  coi:
-    2019: https://drive.google.com/file/d/1AzMj698GNGuqjCKSKQayq_dfYb3PLqbu/view?usp=sharing
- 
-- name: Mahrya Burnett
-  institution: University of Iowa Libraries
-  country: USA
-  coi:
-    2022: https://drive.google.com/file/d/1mtnV6QMQqsgorsCSFeU2KSmL3WGYi3NA/view?usp=sharing
-
-- name: Matthew Day
-  institution: Cambridge University Press
-  country: United Kingdom
-  coi:
-    2022: https://drive.google.com/file/d/1f3swt5p_G7v4XkhREOGefQN0T6fi5mDm/view?usp=sharing
-
-- name: Rainer Rees-Mertins
-  institution: Swiss Federal Institute of Technology Zurich
-  country: Switzerland
-  coi:
-    2019: https://drive.google.com/file/d/1S2H8XZwWkZzB8oYjRFxuKX6A2AQKh-2O/view?usp=sharing
-
-- name: Stephanie Savage
-  institution: University of British Columbia
-  country: Canada
-  coi:
-    2019: https://drive.google.com/file/d/1fnMmSYPnsU9ElbBx3PCCy-s00N0ZEYUM/view?usp=sharing
-
-- name: Titia van der Werf-Davelaar
-  institution: OCLC
-  country: The Netherlands
-  coi:
-    2021: https://drive.google.com/file/d/1x0DIz2DUKygRSlVEy0GNqKGh6BB0pXKf/view?usp=sharing

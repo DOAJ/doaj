@@ -44,7 +44,7 @@ entries:
         route: doaj.team              # ~~->Team:WebRoute~~
       - label: Ambassadors
         route: doaj.ambassadors       # ~~->Ambassadors:WebRoute~~
-      - label: Advisory Board & Council
+      - label: Foundation and Advisory Boards
         route: doaj.abc               # ~~->AdvisoryBoardCouncil:WebRoute~~
       - label: Editorial Policy Advisory Group
         route: doaj.epag              # ~~->EditorialPolicyAdvisoryGroup:WebRoute~~

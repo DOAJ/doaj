@@ -46,7 +46,7 @@ Open access journals published in any language may apply. Journals should adhere
   - one unique URL per article
   - HTML or PDF, as a minimum
 - Journals that include intrusive advertising will not be accepted. See best practice [recommendations](https://www.doaj.org/apply/transparency) for advertising. 
-- DOAJ does not approve of using Impact Factors or ranking metrics. However, journals may display the Journal Impact Factor calculated by Clarivate and metrics from Scopus. Journals must not display any reference (images, links, logos) to Impact Factors or ranking metrics from any other service.
+- As a signatory to the San Francisco Declaration on Research Assessment (DORA), DOAJ does not endorse using Impact Factors or other bibliometrics to assess the quality of journals or researchers. However, journals may display widely adopted metrics, including Clarivate’s (e.g., the Journal Impact Factor), Scopus’ (e.g., CiteScore, SCImagoJR), official national accreditation lists such as Qualis in Brazil or the Norwegian Register, the Eigenfactor, Google Scholar’s h5-index, or article-level metrics including Altmetric and Crossref Event Data.  Journals must not display any reference (images, links, logos) to Impact Factors or ranking metrics from any other service. Journals must avoid being listed in unreliable indexes.
 - The website does not need to be in English. If the site is available in multiple languages, the information provided must be the same in all languages.
 
 The following information must be available online and easily accessible from the journal homepage:
@@ -97,6 +97,8 @@ The following information must be available online and easily accessible from th
 - Endogeny should be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
   - Where content is not divided into issues, for example in a continuous publication model, endogeny must not exceed 25% in the last calendar year (minimum 5 articles per year).
+- It is strongly recommended that articles should display submitted/accepted/published dates.
+
   
 ---
 
@@ -194,7 +196,10 @@ You are responsible for providing accurate information when you submit an applic
 
 DOAJ only accepts journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, has provided information that is untrue or misleading, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
 
-Journals or publishers that have had multiple exclusions totalling six years or more will not be considered for inclusion in DOAJ and applications from them will be automatically rejected.
+Applications will be automatically rejected for:
+
+- Journals or publishers that have had multiple exclusions totalling six years or more.
+- Journals or publishers with three or more exclusions, regardless of whether the total duration reaches six years, will not be considered for inclusion in DOAJ if no adequate improvements are demonstrated in the most recent review.
 
 Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and that any necessary changes have been made to the journal website or policies.
 
@@ -215,7 +220,7 @@ Journals will be removed if they no longer adhere to DOAJ criteria or publishing
 
 ## Appeals
 
-Your journal is eligible to submit an appeal if
+Appeals must be submitted within six months from the decision date. Your journal is eligible to submit an appeal if
 
 - It has been removed from DOAJ.
 - The application has been rejected, and no new application is allowed for at least one year.
@@ -228,11 +233,11 @@ Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal should c
 - Evidence for the DOAJ Appeals Committee to consider
 - The original notification of rejection/removal
 
-Appeals are considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
+Appeals related to the outcome of a [quality investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
 
-Appeals or complaints that include abuse of DOAJ editors will not be considered. See our [Zero tolerance policy](https://doaj.org/about/#zero-tolerance-policy). DOAJ reserves the right to impose a penalty on publishers for such behaviour. 
+Appeals or complaints that include abuse of DOAJ editors will not be considered. See our [Zero tolerance policy](https://doaj.org/code-of-conduct/). DOAJ reserves the right to impose a penalty on publishers for such behaviour. 
 
 ---
 
@@ -240,7 +245,7 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
 
-Please note that these translations may not include the latest changes made to the Guide in November 2023.
+Please note that these translations may not include the latest changes made to the Guide.
 
 Our criteria are available in:
 
@@ -262,7 +267,7 @@ Our criteria are available in:
 
 ## Version history
 
-This is Version 2.3 of the DOAJ Guide to applying.
+This is Version 2.4 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 
