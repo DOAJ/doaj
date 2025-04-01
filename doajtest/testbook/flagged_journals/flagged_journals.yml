@@ -1,119 +1,120 @@
 suite: Flagged Journals
+
 testset: Flagged Journals
+
 tests:
   - title: Admin - Add, Edit, Resolve
     context:
       role: Admin
     steps:
       - step: Navigate to /testdrive/flags
-      - step: Login as an `admin`
-      - step: Open "Feline Aerodynamics Review" application (available on your dashboard)
+      - step: Login as an admin
+      - step: Open Feline Aerodynamics Review application (available on your dashboard)
         results:
-          - Above the notes there is the "Add Flag" button visible and active
-      - step: Click "Add Flag" button
+          - Above the notes there is the Add Flag button visible and active
+      - step: Click Add Flag button
         results:
           - An empty flag form is displayed
-      - step: In `assigned_to` input attempt to add editor's id (you can find it in your testdrive/flags data)
+      - step: In assigned_to input attempt to add editor's id (you can find it in your testdrive/flags data)
         results:
           - No matches found is displayed and it is not possible to assign the editor
-      - step: In `assigned_to` input add `random_user`'s id (you can find it in your testdrive/flags data)
+      - step: In assigned_to input add random_user's id (you can find it in your testdrive/flags data)
         results:
           - Id is found and it can be selected
-      - step: select the `random_user`'s id
-      - step: in deadline input add improbable date (eg. "2025-02-31")
+      - step: Select the random_user's id
+      - step: In deadline input add an improbable date (e.g., 2025-02-31)
         results:
-          - The error "Please enter a valid date in YYYY-MM-DD format."
-      - step: in deadline input add valid date
-      - step: in text area add flag's note (any text)
-      - step: save application
+          - The error Please enter a valid date in YYYY-MM-DD format.
+      - step: In deadline input add a valid date
+      - step: In text area add flag's note (any text)
+      - step: Save application
         results:
           - The flag is saved and additional data (Created by <i>user</i> at <i>date</i>) are displayed
           - All fields are editable
-          - "Add flag" button is disabled
-      - step: close the application with "Unlock & Close"
-      - step: open "The Bermuda Triangle Journal of Lost and Found" record (available on your dashboard)
+          - Add Flag button is disabled
+      - step: Close the application with Unlock & Close
+      - step: Open The Bermuda Triangle Journal of Lost and Found record (available on your dashboard)
         results:
-          - the record has a flag assigned to another user, with no deadline and with a note.
-          - all flag fields are editable
-          - "add flag" button is disabled
-      - step: add valid deadline to a flag (ie. "2025-04-01")
-      - step: save the record
+          - The record has a flag assigned to another user, with no deadline and with a note.
+          - All flag fields are editable
+          - Add Flag button is disabled
+      - step: Add a valid deadline to a flag (e.g., 2025-04-01)
+      - step: Save the record
         results:
-          - the flag is correctly saved with a new deadline
-      - step: click "Resolve flag" button
+          - The flag is correctly saved with a new deadline
+      - step: Click Resolve Flag button
         results:
-          - the flag is marked as resolved
-          - "add flag" button is active
-          - "undo resolving" button is active
-      - step: click "undo resolving"
+          - The flag is marked as resolved
+          - Add Flag button is active
+          - Undo Resolving button is active
+      - step: Click Undo Resolving
         results:
-          - the flag is displayed in a normal mode
-      - step: click "resolve flag"
-      - step: click "add flag"
+          - The flag is displayed in normal mode
+      - step: Click Resolve Flag
+      - step: Click Add Flag
         results:
-          - new empty flag form is displayed above the resolved flag
-          - "add flag" button is disabled
-          - "resolve flag" under the previous flag is disabled
-      - step: click "cancel" to cancel adding a flag
+          - A new empty flag form is displayed above the resolved flag
+          - Add Flag button is disabled
+          - Resolve Flag under the previous flag is disabled
+      - step: Click Cancel to cancel adding a flag
         results:
-          - the empty form is hidden
-          - "undo resolving" and "add flag" buttons are active
-      - step: click "add flag" button
-      - step: add a new flag by assigning an admin and providing a note, and saving the application
+          - The empty form is hidden
+          - Undo Resolving and Add Flag buttons are active
+      - step: Click Add Flag button
+      - step: Add a new flag by assigning an admin and providing a note, then saving the application
         results:
-          - the new flag is saved and displayed
-          - the old flag was converted to note with text 'This flag was resolved on <i>date</i> by <your id>;' and flag's note
-      - step: click "Unlock & close" to close the application
-      - step: open "Journal of Intergalactic Diplomacy" record
+          - The new flag is saved and displayed
+          - The old flag was converted to a note with text This flag was resolved on <i>date</i> by <your id>; and flag's note
+      - step: Click Unlock & Close to close the application
+      - step: Open Journal of Intergalactic Diplomacy record
         results:
-          - this record has a flag assigned to you
-          - in the flag form, in the "assign a user" input there is your id with a red flag icon
-          - "resolve flag" button is active and all fields are editable
+          - This record has a flag assigned to you
+          - In the flag form, in the Assign a User input, there is your id with a red flag icon
+          - Resolve Flag button is active and all fields are editable
 
   - title: Admin - Dashboard
     context:
       role: Admin
     steps:
       - step: Navigate to /testdrive/flags
-      - step: Login as an `admin`
+      - step: Login as an admin
         results:
-          - you are presented with your dashboard
+          - You are presented with your dashboard
           - The following records are displayed in your dashboard
-          - ... Journal of Intergalactic Diplomacy - an application flagged to you with an urgent deadline (within 7 days), assigned to an associate in a group you are not a member of, marked as "Flagged to you (urgent deadline)"
-          - ... Journal of Quantum Homeopathy - an update request flagged to you with an urgent deadline (within 7 days), assigned to an associate from your group, marked as "Flagged to you (urgent deadline)"
-          - ... The Mars Agricultural Review - an application with a non-urgent flag (deadline in more than 7 days), marked as "Flagged to you"
-          - ... Cryptid Behavioral Studies Quarterly - an update request with a non-urgent flag (with no deadline), marked as "Flagged to you"
-          - ... The Bermuda Triangle Journal of Lost and Found - an application assigned to an editor from your group, flagged to someone else, NOT marked as flagged
-          - ... Feline Aerodynamics Review - an update request assigned to you, with no flags
-          - You DO NOT see the "Applied Alchemy & Unstable Chemistry" update request (flagged to someone else and not assigned to your group)
+          - Journal of Intergalactic Diplomacy - an application flagged to you with an urgent deadline (within 7 days), assigned to an associate in a group you are not a member of, marked as Flagged to you (Urgent Deadline)
+          - Journal of Quantum Homeopathy - an update request flagged to you with an urgent deadline (within 7 days), assigned to an associate from your group, marked as Flagged to you (Urgent Deadline)
+          - The Mars Agricultural Review - an application with a non-urgent flag (deadline in more than 7 days), marked as Flagged to you
+          - Cryptid Behavioral Studies Quarterly - an update request with a non-urgent flag (with no deadline), marked as Flagged to you
+          - The Bermuda Triangle Journal of Lost and Found - an application assigned to an editor from your group, flagged to someone else, NOT marked as flagged
+          - Feline Aerodynamics Review - an update request assigned to you, with no flags
+          - You DO NOT see the Applied Alchemy & Unstable Chemistry update request (flagged to someone else and not assigned to your group)
           - Records with deadlines are ordered from the most urgent to the least urgent
-      - step: Open "Cryptid Behavioral Studies Quarterly" journal
-      - step: Change the deadline of the flag to the past (ie. "2020-01-01")
+      - step: Open Cryptid Behavioral Studies Quarterly journal
+      - step: Change the deadline of the flag to the past (e.g., 2020-01-01)
       - step: Save the record and then unlock and close
       - step: Go back to your dashboard and refresh the page
         results:
-          - The "Cryptid Behavioral Studies Quarterly" is now displayed first as the most urgent, and it is marked as "Flagged to you (Urgent Deadline)"
-      - step: click on the New Applications filter
+          - Cryptid Behavioral Studies Quarterly is now displayed first as the most urgent, and it is marked as Flagged to you (Urgent Deadline)
+      - step: Click on the New Applications filter
         results:
-          - Records "Journal of Journal of Intergalactic Diplomacy" and "The Mars Agricultural Review" are listed
-      - step: click on the Update Requests filter
-          - Records "Cryptid Behavioral Studies Quarterly", "Journal of Quantum Homeopathy" and "Feline Aerodynamics Review" are displayed
-      - step: click on the "On Hold" filter
-          - Record "The Bermuda Triangle Journal of Lost and Found" is listed
+          - Records Journal of Intergalactic Diplomacy and The Mars Agricultural Review are listed
+      - step: Click on the Update Requests filter
+        results:
+          - Records Cryptid Behavioral Studies Quarterly, Journal of Quantum Homeopathy and Feline Aerodynamics Review are displayed
+      - step: Click on the On Hold filter
+        results:
+          - Record The Bermuda Triangle Journal of Lost and Found is listed
 
   - title: Admin - Search
     context:
       role: Admin
     steps:
       - step: Navigate to /testdrive/flags
-      - step: Login as an `admin`
+      - step: Login as an admin
       - step: Navigate to /admin/applications
-      - step: select "Only flagged records"
+      - step: Select Only Flagged Records
         results:
-          - only flagged records are listed
-          - records flagged to someone else are marked with an empty flag
-          - records flagged to you are marked with a full flag
-          - When flag has a deadline it is displayed under "Alternative Title"
-
-
-
+          - Only flagged records are listed
+          - Records flagged to someone else are marked with an empty flag
+          - Records flagged to you are marked with a full flag
+          - When a flag has a deadline, it is displayed under Alternative Title
