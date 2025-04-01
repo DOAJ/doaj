@@ -975,7 +975,7 @@ var formulaic = {
             this.setUpNoteDetails = function() {
                 let $authorInput = $("input[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_setter']");
                 let $flagDateInput = $("input[id='" + this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_created_date']");
-                let newNoteText = `<strong>Created by: </strong>` + $authorInput.val() + ", " + $flagDateInput.val();
+                let newNoteText = `<strong>Created by: </strong>` + $authorInput.val() + ", " + doaj.dates.humanDateTime($flagDateInput.val());
                 let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), newNoteText)
                 $authorInput.before($newSpan);
                 $authorInput.hide();

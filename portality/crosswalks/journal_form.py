@@ -484,7 +484,7 @@ class JournalGenericXWalk(object):
             # display only the newest flag
             flag = obj.flags[0]
             author_id = flag["author_id"]
-            flag_setter = f'{Account.get_name_safe(author_id)} {author_id}' if author_id else ''
+            flag_setter = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
             deadline = flag["flag"].get("deadline")
             flag_deadline = (
                 deadline if (deadline and deadline != dates.far_in_the_future()) else ""

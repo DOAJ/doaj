@@ -3229,7 +3229,7 @@ class BigEndDateBuilder:
     # ~~->$ BigEndDate:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-pattern"] = "\d{4}-\d{2}-\d{2}"
+        html_attrs["data-parsley-validdate"] = ""
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
