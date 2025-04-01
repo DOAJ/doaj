@@ -2140,6 +2140,7 @@ var formulaic = {
             this.params = params.args;
 
             this.init = function () {
+                console.log(this.params["field"])
                 let doc_type = this.params.type || "journal";
                 let doc_field = this.params.field;
                 let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;
@@ -2163,7 +2164,6 @@ var formulaic = {
                         };
                     },
                     results: function (data, page) {
-                        console.log("data: ", data)
                         return {results: data["suggestions"]};
                     }
                 };
@@ -2195,7 +2195,8 @@ var formulaic = {
                         createSearchChoice: csc,
                         initSelection: initSel,
                         allowClear: allow_clear,
-                        width: 'resolve'
+                        width: 'resolve',
+                        newOption: true
                     });
                 } else {
                     // go without the create search choice option
@@ -2204,7 +2205,8 @@ var formulaic = {
                         ajax: ajax,
                         initSelection: initSel,
                         allowClear: allow_clear,
-                        width: 'resolve'
+                        width: 'resolve',
+                        newOption: true
                     });
                 }
 

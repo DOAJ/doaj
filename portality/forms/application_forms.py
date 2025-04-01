@@ -2142,7 +2142,7 @@ class FieldDefinitions:
             "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type": "admin", "include_input": True}},
+            {"autocomplete": {"type": "admin", "include": False}},
             # ~~^-> Autocomplete:FormWidget~~
         ],
         "input": "text",
