@@ -109,7 +109,6 @@ class Flags(TestDrive):
                 "assigned_to": self.editor.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
-                "deadline": 10,
                 "note": "Formatting issues. Their abstracts are in Comic Sans, their references are in Wingdings, and their figures appear to be hand-drawn with crayon. Surprisingly, it almost adds to the charm."
             },
             {
