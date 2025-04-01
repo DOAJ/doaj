@@ -19,7 +19,7 @@ $.extend(true, doaj, {
         isFlagged : function() {
             return {
                 id: "is_flagged",
-                display: "All flagged records",
+                display: "Only flagged records",
                 includes: "flagged_to_me",
                 must: [
                     es.newTermFilter({
