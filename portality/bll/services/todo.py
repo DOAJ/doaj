@@ -570,7 +570,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_URGENT_FLAGS_ALL, all, sort_field, 3
+        return constants.TODO_URGENT_FLAGS_ALL, all, sort_field, 4
 
     @classmethod
     def regular_flags_all(cls, acc_id, size):
@@ -585,7 +585,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_REGULAR_FLAGS_ALL, all, sort_field, 0
+        return constants.TODO_REGULAR_FLAGS_ALL, all, sort_field, 3
 
     @classmethod
     def urgent_flags_new_applications(cls, acc_id, size):
@@ -599,7 +599,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS, all, sort_field, 3
+        return constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS, all, sort_field, 4
 
     @classmethod
     def urgent_flags_update_requests(cls, acc_id, size):
@@ -613,7 +613,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS, all, sort_field, 3
+        return constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS, all, sort_field, 4
 
     @classmethod
     def urgent_flags_onhold(cls, acc_id, size):
@@ -628,7 +628,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_URGENT_FLAGS_ONHOLD, all, sort_field, 3
+        return constants.TODO_URGENT_FLAGS_ONHOLD, all, sort_field, 4
 
     @classmethod
     def regular_flags_new_applications(cls, acc_id, size):
@@ -644,7 +644,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS, all, sort_field, 0
+        return constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS, all, sort_field, 3
 
     @classmethod
     def regular_flags_update_requests(cls, acc_id, size):
@@ -660,7 +660,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS, all, sort_field, 0
+        return constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS, all, sort_field, 3
 
     @classmethod
     def regular_flags_onhold(cls, acc_id, size):
@@ -678,7 +678,7 @@ class TodoRules(object):
             sort=sort_field,
             size=size
         )
-        return constants.TODO_REGULAR_FLAGS_ONHOLD, all, sort_field, 0
+        return constants.TODO_REGULAR_FLAGS_ONHOLD, all, sort_field, 3
 
 
 class TodoQuery(object):
