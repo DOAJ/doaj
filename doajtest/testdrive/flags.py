@@ -45,7 +45,7 @@ class Flags(TestDrive):
         admin_name = self.create_random_str()
         self.admin_password = self.create_random_str()
         self.admin = models.Account.make_account(admin_name + "@example.com", admin_name, "FlagsManed " + admin_name,
-                                                 ["admin"])
+                                                 ["admin", "editor"])
         self.admin.set_password(self.admin_password)
         self.admin.save()
 
@@ -114,7 +114,7 @@ class Flags(TestDrive):
             {
                 "type": models.Application,
                 "title": "The Bermuda Triangle Journal of Lost and Found",
-                "application_type": constants.APPLICATION_TYPE_UPDATE_REQUEST,
+                "application_type": constants.APPLICATION_TYPE_NEW_APPLICATION,
                 "status": "on hold",
                 "assigned_to": self.editor.id,
                 "flagged_to": self.editor.id,
@@ -161,7 +161,7 @@ class Flags(TestDrive):
             ap.remove_current_journal()
             ap.remove_related_journal()
             ap.set_editor_group(record["group"])
-            ap.is_assigned_to(record["assigned_to"])
+            ap.set_editor(record["assigned_to"])
             if "status" in record:
                 ap.set_application_status(record["status"])
             if "flagged_to" in record:
