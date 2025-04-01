@@ -1212,6 +1212,7 @@ class TestModels(DoajTestCase):
 
     def test_24_save_valid_seamless_or_dataobj(self):
         j = models.Journal()
+        j.__seamless_silent_prune__ = False
         bj = j.bibjson()
         bj.title = "A legitimate title"
         j.data["junk"] = "in here"
@@ -1220,6 +1221,7 @@ class TestModels(DoajTestCase):
         assert j.id is None
 
         s = models.Suggestion()
+        s.__seamless_silent_prune__ = False
         sbj = s.bibjson()
         sbj.title = "A legitimate title"
         s.data["junk"] = "in here"
@@ -1722,7 +1724,7 @@ class TestModels(DoajTestCase):
         t.set_in_doaj(True) # should have no effect
 
         t.save(blocking=True)
-        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
+        assert wait_until(lambda: models.ArticleTombstone.pull("1234") is not None)
 
         t2 = models.ArticleTombstone.pull("1234")
         assert t2.id == "1234"
@@ -1744,7 +1746,7 @@ class TestModels(DoajTestCase):
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
         a.set_id(a.makeid())
         a.delete()
-        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
+        assert wait_until(lambda: models.ArticleTombstone.pull(a.id) is not None)
 
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
@@ -1763,8 +1765,8 @@ class TestModels(DoajTestCase):
             }
         }
         models.Article.delete_selected(query)
-        time.sleep(1)
 
+        assert wait_until(lambda: models.ArticleTombstone.pull(a.id) is not None)
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
 
