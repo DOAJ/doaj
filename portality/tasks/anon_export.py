@@ -4,6 +4,7 @@ import os
 import shutil
 import uuid
 from typing import Callable
+from werkzeug.security import generate_password_hash
 
 from portality import models, dao
 from portality.background import BackgroundTask
@@ -15,16 +16,23 @@ from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_long_queue as queue
 
+email_subs = {}
+email_counter = 0
+password = None
 
 def _anonymise_email(record):
-    record.set_email(anon_email(record.email))
+    if record.email not in email_subs:
+        global email_counter
+        email_counter += 1
+        email_subs[record.email] = str(email_counter) + "@example.com"
+    record.set_email(email_subs[record.email])
     return record
 
 
 def _anonymise_admin(record):
     for note in record.notes[:]:
         record.remove_note(note)
-        record.add_note(basic_hash(note['note']), id=note["id"])
+        record.add_note("---note removed for data security---", id=note["id"])
 
     return record
 
@@ -36,7 +44,10 @@ def _reset_api_key(record):
 
 
 def _reset_password(record):
-    record.set_password(uuid.uuid4().hex)
+    global password
+    if password is None:
+        password = generate_password_hash(uuid.uuid4().hex)
+    record.set_password_hash(password)
     return record
 
 
@@ -118,7 +129,22 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         mainStore.delete_container(container)
 
     doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-    type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
+    true_names = []
+    for t, d in doaj_types.items():
+        if "aliases" in d:
+            aliases = list(d["aliases"].keys())
+            if len(aliases) > 0:
+                true_names.append(aliases[0])
+            else:
+                true_names.append(t)
+        else:
+            true_names.append(t)
+
+    # aliases = es_connection.indices.get_alias(index=app.config['ELASTIC_SEARCH_DB_PREFIX'] + "*")
+    # aliased_types = [item for sublist in [list(v.get("aliases").keys()) for k, v in aliases.items()] for item in sublist]
+    # prefixed_types = list(set(doaj_types + aliased_types))
+    # type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types] + [a[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for a in aliases]
+    type_list = [a[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for a in true_names]
 
     for type_ in type_list:
         model = models.lookup_models_by_type(type_, dao.DomainObject)
@@ -138,7 +164,9 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore,
                                             mainStore=mainStore, container=container)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"],
+                       iterate_method="unstable")
+                #scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m')
 
         logger_fn((dates.now_str() + " done\n"))
 
