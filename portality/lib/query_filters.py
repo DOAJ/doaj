@@ -101,7 +101,7 @@ def not_update_request(q):
 
 def associate(q):
     q.clear_match_all()
-    q.add_must_filter({"term" : {"admin.editor.exact" : current_user.id}})
+    q.add_must_filter({"term": {"admin.editor.exact": current_user.id}})
     return q
 
 

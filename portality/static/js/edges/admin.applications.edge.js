@@ -17,7 +17,7 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
                 // filters
                 edges.newFilterSetter({
-                    id : "see_applications",
+                    id : "see_applications_no_charges",
                     category: "facet",
                     filters : [
                         doaj.filters.noCharges()
@@ -27,6 +27,22 @@ $.extend(true, doaj, {
                         open: true,
                         togglable: false,
                         showCount: false
+                    })
+                }),
+                edges.newFilterSetter({
+                    id : "flagged",
+                    category: "facet",
+                    showCount: true,
+                    filters : [
+                        doaj.filters.isFlagged(),
+                        doaj.filters.flaggedToMe()
+                    ],
+                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle : "",
+                        open: true,
+                        togglable: false,
+                        showCount: true,
+                        countFormat: doaj.valueMaps.countFormat
                     })
                 }),
                 // facets
@@ -50,7 +66,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'}
+                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
@@ -97,6 +114,11 @@ $.extend(true, doaj, {
                                 {
                                     "pre": '<strong>Alternative title: </strong>',
                                     "field": "bibjson.alternative_title"
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: doaj.fieldRender.deadline
                                 }
                             ],
                             [
@@ -219,7 +241,9 @@ $.extend(true, doaj, {
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Charges?",
-                        'index.license.exact' : 'License'
+                        'index.license.exact' : 'License',
+                        'index.is_flagged': "Only Flagged Records",
+                        'index.flag_assignees.exact': "Flagged to me"
                     },
                     valueMaps : {
                         "index.application_type.exact" : {
@@ -232,6 +256,10 @@ $.extend(true, doaj, {
                         omit : [
                             "bibjson.apc.has_apc",
                             "bibjson.other_charges.has_other_charges"
+                        ],
+                        hideValues: [
+                            'index.is_flagged',
+                            'index.flag_assignees.exact'
                         ]
                     })
                 })
