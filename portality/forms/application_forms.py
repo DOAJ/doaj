@@ -2422,6 +2422,10 @@ class ApplicationContextDefinitions:
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
     READ_ONLY["templates"]["form"] = templates.PUBLISHER_READ_ONLY_APPLICATION
 
+    EDITOR_READ_ONLY = deepcopy(READ_ONLY)
+    EDITOR_READ_ONLY["name"] = "application_editor_read_only"
+    EDITOR_READ_ONLY["templates"]["form"] = templates.EDITOR_READ_ONLY_APPLICATION
+
     # ~~->$ AssociateEditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
     # ~~^-> AssociateEditorApplication:FormProcessor~~
@@ -2578,6 +2582,7 @@ APPLICATION_FORMS = {
         ApplicationContextDefinitions.PUBLIC["name"]: ApplicationContextDefinitions.PUBLIC,
         ApplicationContextDefinitions.UPDATE["name"]: ApplicationContextDefinitions.UPDATE,
         ApplicationContextDefinitions.READ_ONLY["name"]: ApplicationContextDefinitions.READ_ONLY,
+        ApplicationContextDefinitions.EDITOR_READ_ONLY["name"]: ApplicationContextDefinitions.EDITOR_READ_ONLY,
         ApplicationContextDefinitions.ASSOCIATE["name"]: ApplicationContextDefinitions.ASSOCIATE,
         ApplicationContextDefinitions.EDITOR["name"]: ApplicationContextDefinitions.EDITOR,
         ApplicationContextDefinitions.MANED["name"]: ApplicationContextDefinitions.MANED
