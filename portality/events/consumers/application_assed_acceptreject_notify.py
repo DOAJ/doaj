@@ -21,8 +21,16 @@ class ApplicationAssedAcceptRejectNotify(EventConsumer):
         app_source = event.context.get("application")
 
         application = consumer_utils.parse_application(app_source)
+
+        if application.application_type != constants.APPLICATION_TYPE_NEW_APPLICATION:
+            return None
+
         if not application.editor:
-            return
+            return None
+
+        acc = models.Account.pull(application.editor)
+        if acc.has_role(constants.ROLE_EDITOR) or acc.has_role(constants.ROLE_ADMIN):
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -40,6 +48,7 @@ class ApplicationAssedAcceptRejectNotify(EventConsumer):
             issns=application.bibjson().issns_as_text(),
             decision=application.application_status
         )
-        notification.action = url_for("editor.application", application_id=application.id)
+        notification.action = url_for("editor.application_readonly", application_id=application.id)
 
         svc.notify(notification)
+        return notification

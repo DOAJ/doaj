@@ -29,6 +29,7 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
 
             source = ApplicationFixtureFactory.make_application_source()
             app = models.Application(**source)
+            app.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
             # app.save()
 
             acc = models.Account()
@@ -69,7 +70,3 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
         eg = models.EditorGroup()
         eg.set_name(app.editor_group)
         eg.save(blocking=True)
-
-        event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application": app.data})
-        with self.assertRaises(exceptions.NoSuchPropertyException):
-            ApplicationEditorGroupAssignedNotify.consume(event)

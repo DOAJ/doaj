@@ -6,20 +6,27 @@ import rstr
 from portality import constants, regex
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
-from portality.lib import dates
+from portality.lib import dates, dicts
 from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
 from portality.models.v2.application import Application
 
 class ApplicationFixtureFactory(object):
     @staticmethod
-    def make_update_request_source():
+    def make_update_request_source(overlay=None):
         template = deepcopy(APPLICATION_SOURCE)
         template["admin"]["current_journal"] = '123456789987654321'
+        if overlay is not None:
+            template = dicts.deep_merge(template, overlay, overlay=True)
         return template
 
     @staticmethod
-    def make_application_source():
-        return deepcopy(APPLICATION_SOURCE)
+    def make_application_source(overlay=None):
+        result = deepcopy(APPLICATION_SOURCE)
+        result["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
+        del result["admin"]["current_journal"]
+        if overlay is not None:
+            result = dicts.deep_merge(result, overlay, overlay=True)
+        return result
     
     @staticmethod
     def make_many_application_sources(count=2, in_doaj=False):
