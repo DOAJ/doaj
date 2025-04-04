@@ -61,7 +61,12 @@ $.extend(true, doaj, {
                     ],
                     autoLookupRange: true,
                     category: "facet",
-                    renderer: doaj.renderers.newBSMultiDateRangeFacet()
+                    autoLookupFilters : [
+                        es.newRangeFilter({field: "last_manual_update", gte:"2000-01-01T00:00:00Z"})
+                    ],
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet({
+                        open: true
+                    })
                 }),
 
                 doaj.components.newDateHistogramSelector({
@@ -106,6 +111,9 @@ $.extend(true, doaj, {
                         }
                     },
                     sortFunction : function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
                         values.reverse();
                         return values;
                     },

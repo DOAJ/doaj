@@ -289,15 +289,20 @@ $.extend(true, doaj, {
                         {"field": "last_manual_update", "display": "Last Updated"}
                     ],
                     autoLookupRange: true,
+                    autoLookupFilters : [
+                        es.newRangeFilter({field: "last_manual_update", gte:"2000-01-01T00:00:00Z"})
+                    ],
                     category: "facet",
-                    renderer: doaj.renderers.newBSMultiDateRangeFacet()
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet({
+                        open: true
+                    })
                 }),
 
                 doaj.components.newDateHistogramSelector({
                     id: "created_date_histogram",
                     category: "facet",
                     field: "created_date",
-                    display: "Created Date Histogram",
+                    display: "Date Added Histogram",
                     interval: "year",
                     displayFormatter : function(val) {
                         let date = new Date(parseInt(val));
@@ -335,6 +340,9 @@ $.extend(true, doaj, {
                         }
                     },
                     sortFunction : function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
                         values.reverse();
                         return values;
                     },

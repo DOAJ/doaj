@@ -875,6 +875,9 @@ $.extend(true, doaj, {
             // default latest date to use in all cases (defaults to now)
             this.defaultLatest = edges.getParam(params.defaultLatest, new Date());
 
+            // list of filters to apply to the autolookup secondary query
+            this.autoLookupFilters = edges.getParam(params.autoLookupFilters, false);
+
             // default renderer from render pack to use
             this.defaultRenderer = edges.getParam(params.defaultRenderer, "newMultiDateRangeRenderer");
 
@@ -1088,6 +1091,13 @@ $.extend(true, doaj, {
                     for (var i = 0; i < that.fields.length; i++) {
                         var field = that.fields[i];
                         query.removeMust(es.newRangeFilter({field: field.field}));
+                    }
+
+                    // add the filters that are required for the secondary query
+                    if (that.autoLookupFilters) {
+                        for (let filter of that.autoLookupFilters) {
+                            query.addMust(filter);
+                        }
                     }
 
                     // remove any existing aggregations, we don't need them
