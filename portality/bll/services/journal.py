@@ -79,7 +79,6 @@ class JournalService(object):
             # check the origin of some journal notes by comparing ids to application notes.
             application.add_note_by_dict(n)
         application.set_owner(journal.owner)
-        application.set_seal(journal.has_seal())
         application.set_bibjson(bj)
         application.date_applied = dates.now_str()
 
@@ -247,7 +246,6 @@ class JournalService(object):
             """
             kvs = [
                 ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
-                ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
                 # ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
                 ("Added on Date", journal.created_date),
                 ("Last updated Date", journal.last_manual_update)

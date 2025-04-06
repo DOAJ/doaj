@@ -134,8 +134,7 @@ OLD_JOURNAL_FORMAT = {
         ],
         "owner": "Owner",
         "editor_group": "editorgroup",
-        "editor": "associate",
-        "seal": True
+        "editor": "associate"
     }
 }
 

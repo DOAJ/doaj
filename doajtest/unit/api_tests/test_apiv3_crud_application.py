@@ -82,6 +82,8 @@ class TestCrudApplication(DoajTestCase):
         del data["bibjson"]["plagiarism"]["url"]
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
+        self.assertTrue(ia.data["bibjson"]["plagiarism"]["detection"])
+        self.assertTrue("url" in ia.data["bibjson"]["plagiarism"])
 
         # embedded licence but no url
         data = ApplicationFixtureFactory.incoming_application()
@@ -402,7 +404,6 @@ class TestCrudApplication(DoajTestCase):
         assert "notes" not in oa.data.get("admin", {})
         assert "editor_group" not in oa.data.get("admin", {})
         assert "editor" not in oa.data.get("admin", {})
-        assert "seal" not in oa.data.get("admin", {})
         assert "related_journal" not in oa.data.get("admin", {})
 
         # check that it does contain admin information that it should

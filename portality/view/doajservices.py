@@ -1,7 +1,7 @@
 import json
 from io import BytesIO
 
-from flask import Blueprint, make_response, abort, render_template, send_file
+from flask import Blueprint, make_response, request, abort, render_template, send_file, url_for
 from flask_login import current_user, login_required
 
 from portality import lock, models
@@ -12,6 +12,7 @@ from portality.decorators import ssl_required, write_required
 from portality.lib import plausible
 from portality.util import jsonp
 from portality.ui import templates
+from portality.bll.services.shorturl import InvalidURL, UrlShortenerLimitExceeded
 
 blueprint = Blueprint('doajservices', __name__)
 
@@ -62,47 +63,25 @@ def unlocked():
         return render_template(templates.EDITOR_UNLOCKED)
 
 
-# @blueprint.route("/shorten", methods=["POST"])
-# @jsonp
-# def shorten():
-#     # Enable this if you are testing and you want to see the front end work, without working bit.ly credentials
-#     # return make_response(json.dumps({"url" : "testing url"}))
-#     try:
-#         # parse the json
-#         d = json.loads(request.data)
-#         p = d['page']
-#         q = d['query']
-#
-#         # re-serialise the query, and url encode it
-#         source = urllib.parse.quote(json.dumps(q))
-#
-#         # assemble the DOAJ url
-#         doajurl = p + "?source=" + source
-#
-#         # assemble the bitly url.  Note that we re-encode the doajurl to include in the
-#         # query arguments, so by this point it is double-encoded
-#         bitly = app.config.get("BITLY_SHORTENING_API_URL")
-#         bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
-#
-#         # Set an Auth Bearer token (Bitly 4.0)
-#         headers = {'Authorization': 'Bearer ' + bitly_oauth}
-#
-#         # Add the long url as a payload
-#         payload = {'long_url': doajurl}
-#
-#         # make the request
-#         resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
-#         shorturl = resp.json().get('link')
-#
-#         if not shorturl:
-#             abort(400)
-#
-#         # make the response
-#         answer = make_response(json.dumps({"url": shorturl}))
-#         answer.mimetype = "application/json"
-#         return answer
-#     except:
-#         abort(400)
+@blueprint.route("/shorten", methods=["POST"])
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
+                    action=app.config.get('ANALYTICS_ACTION_URLSHORT_ADD', 'Find or create shortener url'))
+def shorten():
+    """ create shortener url """
+    url = json.loads(request.data)['url']
+    urlshort = DOAJ.shortUrlService()
+
+    try:
+        short_url_record = urlshort.get_short_url(url)
+    except UrlShortenerLimitExceeded:
+        abort(429)
+    except InvalidURL:
+        abort(400)
+
+    short_url = app.config.get("BASE_URL") + url_for('doaj.shortened_url', alias=short_url_record.alias)
+    resp = make_response(json.dumps({"short_url": short_url}))
+    resp.mimetype = "application/json"
+    return resp
 
 
 @blueprint.route("/groupstatus/<group_id>", methods=["GET"])

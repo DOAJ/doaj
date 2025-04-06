@@ -24,10 +24,6 @@ EDITORIAL_FORM_EXPANDED = {
     "editor": "associate"
 }
 
-SEAL_FORM_EXPANDED = {
-    "doaj_seal": [],
-}
-
 JOURNAL_LIKE_BIBJSON = {
     "alternative_title": "Alternative Title",
     "apc": {
@@ -39,9 +35,7 @@ JOURNAL_LIKE_BIBJSON = {
     },
     "article": {
         "license_display": ["Embed"],
-        "license_display_example_url": "http://licence.embedded",
-        "orcid": True,
-        "i4oc_open_citations": False
+        "license_display_example_url": "http://licence.embedded"
     },
     "boai": True,
     "copyright": {
@@ -175,8 +169,6 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "title": "The Title",
     "has_other_charges" : "y",
     "has_waiver" : "y",
-    "orcid_ids" : "y",
-    "open_citations" : "n",
     "deposit_policy_url" : "http://deposit.policy",
     "continues": ["1111-1111"],
     "continued_by": ["2222-2222"],

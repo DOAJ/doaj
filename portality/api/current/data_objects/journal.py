@@ -18,8 +18,7 @@ JOURNAL_STRUCT = {
         "admin": {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
-                "ticked": {"coerce": "bool", "get__default": False},
-                "seal": {"coerce": "bool", "get__default": False}
+                "ticked": {"coerce": "bool", "get__default": False}
             }
         }
     }
