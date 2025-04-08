@@ -21,15 +21,7 @@ from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
 from portality.tasks.redis_huey import events_queue, scheduled_short_queue, scheduled_long_queue
-from portality.util import url_for
-
-
-def patch_config(inst, properties):
-    originals = {}
-    for k, v in properties.items():
-        originals[k] = inst.config.get(k)
-        inst.config[k] = v
-    return originals
+from portality.util import url_for, patch_config
 
 
 def with_es(_func=None, *, indices=None, warm_mappings=None):

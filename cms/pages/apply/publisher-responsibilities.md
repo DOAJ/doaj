@@ -12,8 +12,8 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 
 ### Our commitment to you
 
-- **No charge** - we do not charge fees for reviewing your applications
-- **Fairness** - we assess all journals using the same criteria. Our [Guide to applying](/apply/guide/) fully describes these criteria.
+- **No charge** - we do not charge fees for reviewing or indexing your applications
+- **Fairness** - we assess all journals using the criteria in our [Guide to applying](/apply/guide/) However we acknowledge that publishing practices and interpretation of our criteria may vary across regions and disciplines and we encourage you to contact us if you have any concerns.
 - **Confidentiality** - we will only share or discuss details and information collected during the review process with the applicant or an entity authorised to represent the journal.
 - **Privacy** - we [will not share your personal data](https://doaj.org/privacy/) with third parties unless you have permitted us to do so. We will always ask you first.
 
@@ -25,7 +25,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 - You will [upload article metadata](/publisher/uploadfile) to us if you are able to.
 - You will regularly review your indexed journals and ensure their compliance with current DOAJ criteria.
 
-We have [a zero-tolerance policy](/about/#zero-tolerance-policy). We will treat you with respect and courtesy. We expect you to do the same.
+We will treat you with respect and courtesy. We expect you to do the same.
 
 ### Emails from us
 
@@ -63,7 +63,7 @@ If you found your journal in DOAJ but didn’t get an email from us, there are [
 
 During the review process, we might correct some of the information in your application.
 
-You can [submit an update request](/apply/guide/#updating-your-journal-record) if something about your journal has changed since you applied.
+You can [submit an update request](/apply/publisher-responsibilities/#when-should-i-submit-an-update) if something about your journal has changed since you applied.
 
 ## Your DOAJ account
 

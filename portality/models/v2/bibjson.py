@@ -615,6 +615,20 @@ class JournalLikeBibJSON(SeamlessMixin):
     def waiver_url(self):
         self.__seamless__.delete("waiver.url")
 
+    @property
+    def labels(self):
+        return self.__seamless__.get_list("labels")
+
+    @labels.setter
+    def labels(self, val):
+        self.__seamless__.set_with_struct("labels", val)
+
+    def add_label(self, val):
+        self.__seamless__.add_to_list_with_struct("labels", val)
+
+    def clear_labels(self):
+        self.__seamless__.delete("labels")
+
     #####################################################
     ## External utility functions
 

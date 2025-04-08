@@ -44,7 +44,7 @@ entries:
         route: doaj.team              # ~~->Team:WebRoute~~
       - label: Ambassadors
         route: doaj.ambassadors       # ~~->Ambassadors:WebRoute~~
-      - label: Advisory Board & Council
+      - label: Foundation and Advisory Boards
         route: doaj.abc               # ~~->AdvisoryBoardCouncil:WebRoute~~
       - label: Editorial Policy Advisory Group
         route: doaj.epag              # ~~->EditorialPolicyAdvisoryGroup:WebRoute~~
@@ -122,8 +122,10 @@ entries:
         route: doaj.contact         # ~~->Contact:WebRoute~~
       - label: T&Cs
         route: doaj.terms           # ~~->Terms:WebRoute~~
+      - label: Code of Conduct
+        route: doaj.conduct         # ~~->Conduct:WebRoute~~
       - label: Media
-        route: doaj.media           # ~~-> Media:WebRoute~~
+        route: doaj.media           # ~~->Media:WebRoute~~
   - id: companies
     entries:
       - label: IS4OA
