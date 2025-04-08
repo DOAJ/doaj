@@ -861,12 +861,13 @@ class DomainObject(UserDict, object):
         return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
     @classmethod
-    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, **kwargs):
+    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, limit=None, **kwargs):
         def hex_prefixes(n=3):
             """ Generate a list of hex prefixes of length n """
             return [str(hex(i))[2:].zfill(3) for i in range(0, 16 ** 3)]
 
         if striped:
+            count = 0
             prefixes = prefix_generator() if prefix_generator is not None else hex_prefixes()
             for prefix in prefixes:
                 q = {
@@ -874,10 +875,14 @@ class DomainObject(UserDict, object):
                         "prefix": {stripe_field: prefix}
                     }
                 }
-                for record in cls.iterate_unstable(q, page_size, **kwargs):
+                for record in cls.iterate_unstable(q, page_size, limit=limit, **kwargs):
+                    if limit is not None:
+                        count += 1
+                        if count > limit:
+                            return
                     yield record
         else:
-            for record in cls.iterate_unstable(q=None, page_size=page_size, **kwargs):
+            for record in cls.iterate_unstable(q=None, page_size=page_size, limit=limit, **kwargs):
                 yield record
 
     # Aliases for the iterate functions
