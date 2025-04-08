@@ -48,7 +48,7 @@ class ApplicationAssedAcceptRejectNotify(EventConsumer):
             issns=application.bibjson().issns_as_text(),
             decision=application.application_status
         )
-        notification.action = url_for("editor.application_readonly", application_id=application.id)
+        notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)
         return notification

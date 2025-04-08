@@ -114,21 +114,6 @@ def journal_readonly(journal_id):
     fc.processor(source=j)
     return fc.render_template(obj=j, lcc_tree=lcc_jstree, notabs=True)
 
-@blueprint.route("/application/readonly/<application_id>", methods=["GET"])
-@login_required
-@ssl_required
-def application_readonly(application_id):
-    # DOAJ BLL for this request
-    applicationService = DOAJ.applicationService()
-    authService = DOAJ.authorisationService()
-
-    application, _ = applicationService.application(application_id)
-    if application is None:
-        abort(404)
-
-    fc = ApplicationFormFactory.context("application_editor_read_only")
-    fc.processor(source=application)
-    return fc.render_template(obj=application)
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
 @write_required()
