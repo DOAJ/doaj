@@ -256,22 +256,6 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("article.license_display_example_url", url)
 
     @property
-    def article_orcid(self):
-        return self.__seamless__.get_single("article.orcid")
-
-    @article_orcid.setter
-    def article_orcid(self, val):
-        self.__seamless__.set_with_struct("article.orcid", val)
-
-    @property
-    def article_i4oc_open_citations(self):
-        return self.__seamless__.get_single("article.i4oc_open_citations")
-
-    @article_i4oc_open_citations.setter
-    def article_i4oc_open_citations(self, val):
-        self.__seamless__.set_with_struct("article.i4oc_open_citations", val)
-
-    @property
     def author_retains_copyright(self):
         return self.__seamless__.get_single("copyright.author_retains")
 
@@ -602,6 +586,20 @@ class JournalLikeBibJSON(SeamlessMixin):
     @waiver_url.setter
     def waiver_url(self, url):
         self.__seamless__.set_with_struct("waiver.url", url)
+
+    @property
+    def labels(self):
+        return self.__seamless__.get_list("labels")
+
+    @labels.setter
+    def labels(self, val):
+        self.__seamless__.set_with_struct("labels", val)
+
+    def add_label(self, val):
+        self.__seamless__.add_to_list_with_struct("labels", val)
+
+    def clear_labels(self):
+        self.__seamless__.delete("labels")
 
     #####################################################
     ## External utility functions

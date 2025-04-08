@@ -1,4 +1,5 @@
 import json
+import os.path
 import re
 import urllib.error
 import urllib.parse
@@ -62,7 +63,8 @@ def dismiss_site_note():
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"), max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
+    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"),
+                    max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
     return resp
 
 
@@ -108,7 +110,7 @@ def search():
 def search_post():
     """ Redirect a query from the box on the index page to the search page. """
     if request.form.get('origin') != 'ui':
-        abort(400)                                              # bad request - we must receive searches from our own UI
+        abort(400)  # bad request - we must receive searches from our own UI
 
     ref = request.form.get("ref")
     if ref is None:
@@ -123,14 +125,14 @@ def search_post():
 
     # lhs for journals, rhs for articles
     field_map = {
-        "all" : (None, None),
-        "title" : ("bibjson.title", "bibjson.title"),
-        "abstract" : (None, "bibjson.abstract"),
-        "subject" : ("index.classification", "index.classification"),
-        "author" : (None, "bibjson.author.name"),
-        "issn" : ("index.issn.exact", None),
-        "publisher" : ("bibjson.publisher.name", None),
-        "country" : ("index.country", None)
+        "all": (None, None),
+        "title": ("bibjson.title", "bibjson.title"),
+        "abstract": (None, "bibjson.abstract"),
+        "subject": ("index.classification", "index.classification"),
+        "author": (None, "bibjson.author.name"),
+        "issn": ("index.issn.exact", None),
+        "publisher": ("bibjson.publisher.name", None),
+        "country": ("index.country", None)
     }
     default_field_opts = field_map.get(field, None)
     default_field = None
@@ -151,6 +153,7 @@ def search_post():
 
     return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
 
+
 #############################################
 
 @blueprint.route("/csv")
@@ -167,12 +170,19 @@ def csv_data():
         store_url = "/store" + store_url
     return redirect(store_url, code=307)
 
-
+@blueprint.route("/sitemap_index.xml")
 @blueprint.route("/sitemap.xml")
 def sitemap():
     sitemap_url = models.Cache.get_latest_sitemap()
     if sitemap_url is None:
         abort(404)
+    if sitemap_url.startswith("/"):
+        sitemap_url = "/store" + sitemap_url
+    return redirect(sitemap_url, code=307)
+
+@blueprint.route("/sitemap<n>.xml")
+def nth_sitemap(n):
+    sitemap_url = models.Cache.get_sitemap(n)
     if sitemap_url.startswith("/"):
         sitemap_url = "/store" + sitemap_url
     return redirect(sitemap_url, code=307)
@@ -205,6 +215,10 @@ def public_data_dump_redirect(record_type):
 
     return redirect(store_url, code=307)
 
+@blueprint.route("/store/<container>/<dir>/<filename>")
+def get_from_local_store_dir(container, dir, filename):
+    file = os.path.join(dir, filename)
+    return get_from_local_store(container, file)
 
 @blueprint.route("/store/<container>/<filename>")
 def get_from_local_store(container, filename):
@@ -214,18 +228,21 @@ def get_from_local_store(container, filename):
     from portality import store
     localStore = store.StoreFactory.get(None)
     file_handle = localStore.get(container, filename)
-    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, download_name=filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True,
+                     download_name=os.path.basename(filename))
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q', '')
     if not prefix:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "",
+                                         "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
 
     m = models.lookup_model(doc_type)
     if not m:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "",
+                                         "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
 
@@ -314,6 +331,7 @@ def find_correct_redirect_identifier(identifier, bibjson) -> str:
         # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
         # and the user is referring to the toc page via that ID
 
+
 @blueprint.route("/toc/<identifier>")
 def toc(identifier=None):
     """ Table of Contents page for a journal. identifier may be the journal id or an issn """
@@ -338,14 +356,15 @@ def toc_articles_legacy(identifier=None):
 def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
+    articles_no = journal.article_stats()["total"]
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
-        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, tab="articles")
+        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, articles_no=articles_no, tab="articles")
 
 
-#~~->Article:Page~~
+# ~~->Article:Page~~
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
@@ -395,6 +414,14 @@ def terms():
     return render_template(templates.STATIC_PAGE, page_frag="/legal/terms.html")
 
 
+@blueprint.route("/code-of-conduct/")
+def conduct():
+    """
+    ~~Conduct:WebRoute~~
+    """
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/code-of-conduct.html")
+
+
 @blueprint.route("/media/")
 def media():
     """
@@ -423,6 +450,11 @@ def supporters():
     return render_template(templates.STATIC_PAGE, page_frag="/support/supporters.html")
 
 
+@blueprint.route("/support/funders/")
+def funders():
+    return render_template(templates.STATIC_PAGE, page_frag="/support/funders.html")
+
+
 @blueprint.route("/support/thank-you/")
 def application_thanks():
     return render_template(templates.STATIC_PAGE, page_frag="/support/thank-you.html")
@@ -431,11 +463,6 @@ def application_thanks():
 @blueprint.route("/apply/guide/")
 def guide():
     return render_template(templates.STATIC_PAGE, page_frag="/apply/guide.html")
-
-
-@blueprint.route("/apply/seal/")
-def seal():
-    return render_template(templates.STATIC_PAGE, page_frag="/apply/seal.html")
 
 
 @blueprint.route("/apply/transparency/")
@@ -498,9 +525,11 @@ def faq():
 def about():
     return render_template(templates.STATIC_PAGE, page_frag="/about/index.html")
 
+
 @blueprint.route("/at-20/")
 def at_20():
     return render_template(templates.STATIC_PAGE, page_frag="/about/at-20.html")
+
 
 
 @blueprint.route("/about/ambassadors/")

@@ -108,6 +108,7 @@ class Messages(object):
     BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
 
     NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
+    NOTIFY__DEFAULT_ACTION_INTRO = "To take action based on this notification, follow this link: "
 
     DISCONTINUED_JOURNAL_FOUND_LOG = "Journal discontinuing soon found: {id}"
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_SENT_LOG = "Notification with journals discontinuing soon sent."
@@ -136,6 +137,8 @@ class Messages(object):
     JOURNAL_CSV_VALIDATE__INVALID_DATA = "We couldn't understand the information in '{question}'"
 
     PRESERVATION_NO_FILE = "No file provided for upload"
+
+    ARE_YOU_A_HUMAN = "Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>."
 
     @classmethod
     def flash(cls, tup):

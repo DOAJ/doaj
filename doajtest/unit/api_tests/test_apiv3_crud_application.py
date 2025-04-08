@@ -82,6 +82,8 @@ class TestCrudApplication(DoajTestCase):
         del data["bibjson"]["plagiarism"]["url"]
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
+        self.assertTrue(ia.data["bibjson"]["plagiarism"]["detection"])
+        self.assertTrue("url" in ia.data["bibjson"]["plagiarism"])
 
         # embedded licence but no url
         data = ApplicationFixtureFactory.incoming_application()
@@ -145,6 +147,9 @@ class TestCrudApplication(DoajTestCase):
         assert "CLOCKSS" in preservation.get("service")
         assert "LOCKSS" in preservation.get("service")
         assert "A safe place" in preservation.get("service")
+
+        # check the stuff that should not be processed through
+        assert a.bibjson().labels == []
 
         time.sleep(1)
 
@@ -399,7 +404,6 @@ class TestCrudApplication(DoajTestCase):
         assert "notes" not in oa.data.get("admin", {})
         assert "editor_group" not in oa.data.get("admin", {})
         assert "editor" not in oa.data.get("admin", {})
-        assert "seal" not in oa.data.get("admin", {})
         assert "related_journal" not in oa.data.get("admin", {})
 
         # check that it does contain admin information that it should
@@ -483,6 +487,7 @@ class TestCrudApplication(DoajTestCase):
         # now check the properties to make sure the update tool
         assert updated.bibjson().title == "An updated title"
         assert updated.created_date == created.created_date
+        assert updated.bibjson().labels == []
 
     def test_09_update_application_fail(self):
         # set up all the bits we need
