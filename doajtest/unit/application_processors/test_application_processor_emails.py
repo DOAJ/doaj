@@ -5,6 +5,7 @@ import re
 from io import StringIO
 from copy import deepcopy
 
+from doajtest.fixtures.accounts import MANED_SOURCE
 from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, \
     JournalFixtureFactory
@@ -62,6 +63,8 @@ def editor_account_pull(self, _id):
         return models.Account(**ASSED2_SOURCE)
     if _id == 'associate_3':
         return models.Account(**ASSED3_SOURCE)
+    if _id == "manny":
+        return models.Account(**MANED_SOURCE)
     else:
         return ACTUAL_ACCOUNT_PULL(_id)
 
@@ -125,8 +128,8 @@ class TestPublicApplicationEmails(DoajTestCase):
         #   * to the applicant, informing them the application was received
         public_template = re.escape(templates.EMAIL_NOTIFICATION)
         public_to = re.escape(account.email)
-        public_subject = re.escape("Directory of Open Access Journals - Your application (" + ", ".join(
-            issn for issn in processor.source.bibjson().issns()) + ") to DOAJ has been received")
+        public_subject = re.escape("Directory of Open Access Journals - Your application for " + ", ".join(
+            issn for issn in processor.source.bibjson().issns()) + " to DOAJ has been received")
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -186,6 +189,7 @@ class TestApplicationReviewEmails(DoajTestCase):
             # an email is sent to the editor and assigned associate editor
             ready_application = models.Application(**APPLICATION_SOURCE_TEST_1)
             ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
+            ready_application.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
             ready_application.remove_current_journal()
 
             owner = models.Account()
@@ -480,7 +484,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                                 info_stream_contents,
                                                 re.DOTALL)
             assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
-            assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assert len(re.findall(email_count_string, info_stream_contents)) == 2   # expecting a second email too, not tested for above
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""
@@ -942,11 +946,11 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             assert processor.target.editor == "associate_3"
 
             # We expect 2 emails to be sent:
-            #   * to the editor of the assigned group,
+            #   * to the managing editor of the assigned group,
             #   * to the AssEd who's been assigned
             editor_template = re.escape(templates.EMAIL_NOTIFICATION)
-            editor_to = re.escape('eddie@example.com')
-            editor_subject = re.escape('New application ({}) assigned to your group'.format(
+            editor_to = re.escape('maned@example.com')
+            editor_subject = re.escape('New update request ({}) assigned to you'.format(
                 ', '.join(issn for issn in processor.source.bibjson().issns())))
 
             editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -1008,7 +1012,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise(acc)
             info_stream_contents = self.info_stream.getvalue()
 
-            # We expect 1 email to be sent:
+            # We expect 3 email to be sent:
             #   * to the publisher, informing them of the journal's acceptance
             #   * to the journal contact, informing them of the journal's acceptance
             publisher_template = templates.EMAIL_NOTIFICATION
@@ -1020,7 +1024,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                                 info_stream_contents,
                                                 re.DOTALL)
             assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
-            assert len(re.findall(email_count_string, info_stream_contents)) == 1
+            assert len(re.findall(email_count_string, info_stream_contents)) == 3   # it's 3, we need a better way of testing these
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""

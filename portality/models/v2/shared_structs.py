@@ -58,9 +58,7 @@ JOURNAL_BIBJSON = {
                 },
                 "article" : {
                     "fields" : {
-                        "license_display_example_url" : {"coerce" : "url", "set__allow_coerce_failure" : True},
-                        "orcid" : {"coerce" : "bool"},
-                        "i4oc_open_citations" : {"coerce" : "bool"}
+                        "license_display_example_url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     },
                     "lists" : {
                         "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["Embed", "Display", "No"]},
@@ -185,7 +183,6 @@ SHARED_JOURNAL_LIKE = {
     "structs" : {
         "admin" : {
             "fields" : {
-                "seal" : {"coerce" : "bool"},
                 "owner" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
@@ -217,7 +214,6 @@ SHARED_JOURNAL_LIKE = {
             "fields" : {
                 "country" : {"coerce" : "unicode"},
                 "has_apc" : {"coerce" : "unicode"},
-                "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},
