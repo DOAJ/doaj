@@ -162,7 +162,8 @@ class DoajTestCase(TestCase):
             "UR_CONCURRENCY_TIMEOUT": 0,
             'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
             'HUEY_IMMEDIATE': True,
-            'HUEY_ASYNC_DELAY': 0
+            'HUEY_ASYNC_DELAY': 0,
+            "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False
         }
 
     @classmethod
