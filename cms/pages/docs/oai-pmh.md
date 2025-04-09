@@ -13,6 +13,8 @@ featuremap:
 
 Journal records are announced in the feed when they are added or removed.
 
+Premium users should supply an `api_key` parameter to their OAI-PMH requests to access the premium feed with the most up-to-date information.
+
 ## Journal feed
 
 {:.tabular-list}
@@ -101,6 +103,9 @@ The metadata held by us is mapped to Dublin Core in the OAI-PMH feed, with the f
 ---
 
 ## Article feed
+
+Premium users should supply an `api_key` parameter to their OAI-PMH requests to access the premium feed with the most up-to-date information.
+
 
 {:.tabular-list}
 - `Identify`
