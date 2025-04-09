@@ -784,7 +784,7 @@ class DomainObject(UserDict, object):
 
         if "sort" not in theq:
             # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
-            theq["sort"] = [{"_shard_doc": "desc"}]
+            theq["sort"] = [{"_doc": "desc"}]
 
         theq["track_total_hits"] = True
 
@@ -860,6 +860,31 @@ class DomainObject(UserDict, object):
         # TODO: Another candidate for swapping to iterate_pit (or rename iterate_pit to iterate when we're happy)
         return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
+    @classmethod
+    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, limit=None, **kwargs):
+        def hex_prefixes(n=3):
+            """ Generate a list of hex prefixes of length n """
+            return [str(hex(i))[2:].zfill(3) for i in range(0, 16 ** 3)]
+
+        if striped:
+            count = 0
+            prefixes = prefix_generator() if prefix_generator is not None else hex_prefixes()
+            for prefix in prefixes:
+                q = {
+                    "query": {
+                        "prefix": {stripe_field: prefix}
+                    }
+                }
+                for record in cls.iterate_unstable(q, page_size, limit=limit, **kwargs):
+                    if limit is not None:
+                        count += 1
+                        if count > limit:
+                            return
+                    yield record
+        else:
+            for record in cls.iterate_unstable(q=None, page_size=page_size, limit=limit, **kwargs):
+                yield record
+
     # Aliases for the iterate functions
     scroll = iterate
     scroll_pit = iterate_pit
@@ -867,10 +892,8 @@ class DomainObject(UserDict, object):
     @classmethod
     def dump(cls, q=None, page_size=1000, limit=None, out=None, out_template=None, out_batch_sizes=100000,
              out_rollover_callback=None, transform=None, es_bulk_format=True, idkey='id', es_bulk_fields=None,
-             iterate_method="unstable", scroll_keepalive='2m'):
+             stripe_field="id", striped=False, prefix_generator=None):
         """ Export to file, bulk format or just a json dump of the record """
-
-        q = q if q is not None else {"query": {"match_all": {}}}
 
         filenames = []
         n = 1
@@ -884,18 +907,12 @@ class DomainObject(UserDict, object):
             out = sys.stdout
 
         count = 0
-
-        iterator = None
-        match iterate_method:
-            case "unstable":
-                iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
-            case "pit":
-                iterator = cls.scroll_pit(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
-            case "scroll":
-                iterator = cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive)
-
-        if iterator is None:
-                raise Exception("Unknown iterate method: {0}".format(iterate_method))
+        if q is None:
+            iterator = cls.iterall_unstable(page_size=page_size, stripe_field=stripe_field,
+                                            striped=striped, prefix_generator=prefix_generator,
+                                            limit=limit, wrap=False)
+        else:
+            iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
 
         for record in iterator:
             if transform is not None:
