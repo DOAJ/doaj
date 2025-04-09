@@ -20,6 +20,7 @@ email_subs = {}
 email_counter = 0
 password = None
 
+
 def _anonymise_email(record):
     if record.email not in email_subs:
         global email_counter
