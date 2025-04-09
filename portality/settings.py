@@ -291,7 +291,11 @@ TOP_LEVEL_ROLES = [
     "ultra_bulk_delete",
     "preservation",
     constants.ROLE_PUBLIC_DATA_DUMP,
-    constants.ROLE_PUBLISHER_JOURNAL_CSV
+    constants.ROLE_PUBLISHER_JOURNAL_CSV,
+    constants.ROLE_PREMIUM,
+    constants.ROLE_PREMIUM_OAI,
+    constants.ROLE_PREMIUM_PDD,
+    constants.ROLE_PREMIUM_CSV
 ]
 
 ROLE_MAP = {
@@ -311,6 +315,11 @@ ROLE_MAP = {
         "edit_suggestion",
         "editor_area",
         "read_notifications"
+    ],
+    constants.ROLE_PREMIUM: [
+        constants.ROLE_PREMIUM_OAI,
+        constants.ROLE_PREMIUM_PDD,
+        constants.ROLE_PREMIUM_CSV
     ]
 }
 
@@ -434,7 +443,7 @@ HUEY_SCHEDULE = {
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
-    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "public_data_dump": {"month": "*", "day": "*", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
@@ -1641,4 +1650,13 @@ BGJOB_MANAGE_REDUNDANT_ACTIONS = [
 
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
-HONEYPOT_TIMER_THRESHOLD = 5000;
+HONEYPOT_TIMER_THRESHOLD = 5000
+
+##################################################
+# Premium membership configurations
+
+# Should the system enforce premium membership mode
+PREMIUM_MODE = True
+
+# What is the delay non-premium users have to data access
+NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
