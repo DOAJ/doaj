@@ -276,7 +276,6 @@ class OAI_DC_Journal(OAI_DC):
 
         # We have removed the list of URLs in in model v2, so we need to gather the URLS one by one
         all_urls = [
-            bibjson.oa_statement_url,
             bibjson.journal_url,
             bibjson.aims_scope_url,
             bibjson.author_instructions_url,

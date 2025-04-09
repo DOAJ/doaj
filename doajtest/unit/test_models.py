@@ -57,7 +57,6 @@ class TestModels(DoajTestCase):
 
         # check some properties of empty objects
         assert not j.has_been_manually_updated()
-        assert not j.has_seal()
         assert not j.is_in_doaj()
         assert not j.is_ticked()
 
@@ -66,7 +65,6 @@ class TestModels(DoajTestCase):
         j.set_created("2001-01-01T00:00:00Z")
         j.set_last_updated("2002-01-01T00:00:00Z")
         j.set_last_manual_update("2004-01-01T00:00:00Z")
-        j.set_seal(True)
         j.set_owner("richard")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
@@ -82,7 +80,6 @@ class TestModels(DoajTestCase):
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
         assert j.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
         assert j.has_been_manually_updated() is True
-        assert j.has_seal() is True
         assert j.owner == "richard"
         assert j.editor_group == "worldwide"
         assert j.editor == "eddie"
@@ -204,16 +201,13 @@ class TestModels(DoajTestCase):
         """Read and write properties into the article model"""
         a = models.Article()
         assert not a.is_in_doaj()
-        assert not a.has_seal()
 
         a.set_in_doaj(True)
-        a.set_seal(True)
         a.set_publisher_record_id("abcdef")
         a.set_upload_id("zyxwvu")
 
         assert a.data.get("admin", {}).get("publisher_record_id") == "abcdef"
         assert a.is_in_doaj()
-        assert a.has_seal()
         assert a.upload_id() == "zyxwvu"
 
     def test_04_suggestion_model_rw(self):
@@ -222,14 +216,12 @@ class TestModels(DoajTestCase):
 
         # check some properties of empty objects
         assert not s.has_been_manually_updated()
-        assert not s.has_seal()
 
         # methods for all journal-like objects
         s.set_id("abcd")
         s.set_created("2001-01-01T00:00:00Z")
         s.set_last_updated("2002-01-01T00:00:00Z")
         s.set_last_manual_update("2004-01-01T00:00:00Z")
-        s.set_seal(True)
         s.set_owner("richard")
         s.set_editor_group("worldwide")
         s.set_editor("eddie")
@@ -245,7 +237,6 @@ class TestModels(DoajTestCase):
         assert s.last_manual_update == "2004-01-01T00:00:00Z"
         assert s.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
         assert s.has_been_manually_updated() is True
-        assert s.has_seal() is True
         assert s.owner == "richard"
         assert s.editor_group == "worldwide"
         assert s.editor == "eddie"
@@ -649,8 +640,6 @@ class TestModels(DoajTestCase):
         assert bj.has_apc is True
         assert bj.article_license_display == ["Embed"]
         assert bj.article_license_display_example_url == "http://licence.embedded"
-        assert bj.article_orcid is True
-        assert bj.article_i4oc_open_citations is False
         assert bj.author_retains_copyright is True
         assert bj.copyright_url == "http://copyright.com"
         assert bj.deposit_policy == ["Sherpa/Romeo", "Store it"]
@@ -689,14 +678,12 @@ class TestModels(DoajTestCase):
         bj.keywords = ["new", "terms"]
         bj.is_replaced_by = ["4444-4444"]
         bj.language = ["IT"]
-        bj.labels = ["diamond"]
+        bj.labels = []
         bj.replaces = ["3333-3333"]
         bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
         bj.apc_url = "http://apc2.com"
         bj.article_license_display = "No"
         bj.article_license_display_example_url = "http://licence2.embedded"
-        bj.article_orcid = False
-        bj.article_i4oc_open_citations = False
         bj.author_retains_copyright = False
         bj.copyright_url = "http://copyright2.url"
         bj.deposit_policy = ["Never"]
@@ -730,15 +717,13 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444"]
         assert bj.keywords == ["new", "terms"]
         assert bj.language == ["IT"]
-        assert bj.labels == ["diamond"]
+        assert bj.labels == []
         assert len(bj.licences) == 1
         assert bj.replaces == ["3333-3333"]
         assert len(bj.subject) == 1
         assert bj.apc_url == "http://apc2.com"
         assert bj.article_license_display == ["No"]
         assert bj.article_license_display_example_url == "http://licence2.embedded"
-        assert bj.article_orcid is False
-        assert bj.article_i4oc_open_citations is False
         assert bj.author_retains_copyright is False
         assert bj.copyright_url == "http://copyright2.url"
         assert bj.deposit_policy == ["Never"]
@@ -786,7 +771,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
         assert bj.language == ["IT", "CZ"]
-        assert bj.labels == ["diamond", "s2o"]
+        assert bj.labels == ["s2o"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
@@ -1227,6 +1212,7 @@ class TestModels(DoajTestCase):
 
     def test_24_save_valid_seamless_or_dataobj(self):
         j = models.Journal()
+        j.__seamless_silent_prune__ = False
         bj = j.bibjson()
         bj.title = "A legitimate title"
         j.data["junk"] = "in here"
@@ -1235,6 +1221,7 @@ class TestModels(DoajTestCase):
         assert j.id is None
 
         s = models.Suggestion()
+        s.__seamless_silent_prune__ = False
         sbj = s.bibjson()
         sbj.title = "A legitimate title"
         s.data["junk"] = "in here"
@@ -1332,14 +1319,12 @@ class TestModels(DoajTestCase):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=False, with_journal_info=False))
 
-        assert a.has_seal() is False
         assert a.bibjson().journal_issns != j.bibjson().issns()
 
         reg = models.Journal()
         changed = a.add_journal_metadata(j, reg)
 
         assert changed is True
-        assert a.has_seal() is False
         assert a.is_in_doaj() is True
         assert a.bibjson().journal_issns == j.bibjson().issns()
         assert a.bibjson().publisher == j.bibjson().publisher
@@ -1739,7 +1724,7 @@ class TestModels(DoajTestCase):
         t.set_in_doaj(True) # should have no effect
 
         t.save(blocking=True)
-        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 1)
+        assert wait_until(lambda: models.ArticleTombstone.pull("1234") is not None)
 
         t2 = models.ArticleTombstone.pull("1234")
         assert t2.id == "1234"
@@ -1761,7 +1746,7 @@ class TestModels(DoajTestCase):
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
         a.set_id(a.makeid())
         a.delete()
-        assert wait_until(lambda: len(models.ArticleTombstone.all()) == 2)
+        assert wait_until(lambda: models.ArticleTombstone.pull(a.id) is not None)
 
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
@@ -1780,8 +1765,8 @@ class TestModels(DoajTestCase):
             }
         }
         models.Article.delete_selected(query)
-        time.sleep(1)
 
+        assert wait_until(lambda: models.ArticleTombstone.pull(a.id) is not None)
         stone = models.ArticleTombstone.pull(a.id)
         assert stone is not None
 
