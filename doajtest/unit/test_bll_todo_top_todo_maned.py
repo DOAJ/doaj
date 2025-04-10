@@ -1,25 +1,22 @@
-from time import sleep
-
-from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
-
 from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks
+from parameterized import parameterized
 from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.lib.paths import rel2abs
 from portality.lib import dates
+from portality.lib.paths import rel2abs
 
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_todo_maned"), "top_todo_maned", "test_id",
-                               {"test_id" : []})
+                               {"test_id": []})
 
 
 EXCEPTIONS = {
-    "ArgumentException" : exceptions.ArgumentException
+    "ArgumentException": exceptions.ArgumentException
 }
 
 
@@ -43,11 +40,13 @@ class TestBLLTopTodoManed(DoajTestCase):
             "todo_maned_follow_up_old",
             "todo_maned_ready",
             "todo_maned_completed",
-            "todo_maned_assign_pending"
+            "todo_maned_assign_pending",
+            "todo_maned_new_update_request",
+            "todo_maned_on_hold"
         ]
 
         category_args = {
-            cat : (
+            cat: (
                 int(kwargs.get(cat)),
                 int(kwargs.get(cat + "_order") if kwargs.get(cat + "_order") != "" else -1)
             ) for cat in categories
@@ -97,6 +96,13 @@ class TestBLLTopTodoManed(DoajTestCase):
 
         self.build_application("maned_assign_pending", 4 * w, 4 * w, constants.APPLICATION_STATUS_PENDING, apps,
                                assign_pending)
+
+        # an update request
+        self.build_application("maned_update_request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST, apps,
+                               update_request=True)
+
+        # an application that was modifed recently into the ready status (todo_maned_completed)
+        self.build_application("maned_on_hold", 2 * w, 2 * w, constants.APPLICATION_STATUS_ON_HOLD, apps)
 
         # Applications that should never be reported
         ############################################
@@ -158,10 +164,11 @@ class TestBLLTopTodoManed(DoajTestCase):
         # counter to maned_assign_pending
         self.build_application("no_assed", 3 * w, 3 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps, assign_pending)
 
-        sleep(2)
+        wait_until_no_es_incomplete_tasks()
+        models.Application.refresh()
 
         # size = int(size_arg)
-        size=25
+        size = 25
 
         raises = None
         if raises_arg:
@@ -191,10 +198,10 @@ class TestBLLTopTodoManed(DoajTestCase):
                 assert actions.get(k, 0) == v[0]
                 if v[1] > -1:
                     assert v[1] in positions.get(k, [])
-                else:   # the todo item is not positioned at all
+                else:  # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
 
-    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
+    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None, update_request=False):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.set_id(id)
@@ -202,8 +209,71 @@ class TestBLLTopTodoManed(DoajTestCase):
         ap.set_date_applied(dates.before_now(cd_diff))
         ap.set_application_status(status)
 
+        if update_request:
+            ap.application_type = constants.APPLICATION_TYPE_UPDATE_REQUEST
+        else:
+            ap.remove_current_journal()
+            ap.remove_related_journal()
+            ap.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
+
         if additional_fn is not None:
             additional_fn(ap)
 
         ap.save()
         app_registry.append(ap)
+
+    def test_historical_count(self):
+        EDITOR_GROUP_SOURCE = EditorGroupFixtureFactory.make_editor_group_source()
+        eg = models.EditorGroup(**EDITOR_GROUP_SOURCE)
+        maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+
+        EDITOR_SOURCE = AccountFixtureFactory.make_editor_source()
+        ASSED1_SOURCE = AccountFixtureFactory.make_assed1_source()
+        ASSED2_SOURCE = AccountFixtureFactory.make_assed2_source()
+        ASSED3_SOURCE = AccountFixtureFactory.make_assed3_source()
+        editor = models.Account(**EDITOR_SOURCE)
+        assed1 = models.Account(**ASSED1_SOURCE)
+        assed2 = models.Account(**ASSED2_SOURCE)
+        assed3 = models.Account(**ASSED3_SOURCE)
+        editor.save(blocking=True)
+        assed1.save(blocking=True)
+        assed2.save(blocking=True)
+        assed3.save(blocking=True)
+        eg.set_maned(maned.id)
+        eg.set_editor(editor.id)
+        eg.set_associates([assed1.id, assed2.id, assed3.id])
+        eg.save(blocking=True)
+
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_READY, "editor", editor.id, eg)
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_COMPLETED, "associate_editor", assed1.id, eg)
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_COMPLETED, "associate_editor", assed2.id, eg)
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_COMPLETED, "associate_editor", assed3.id, eg)
+
+        stats = self.svc.group_finished_historical_counts(eg)
+
+        self.assertEqual(stats["year"], dates.now_str(dates.FMT_YEAR))
+        self.assertEqual(stats["editor"]["id"], editor.id)
+        self.assertEqual(stats["editor"]["count"], 1)
+
+        associate_editors = [assed1.id, assed2.id, assed3.id]
+
+        for assed in stats["associate_editors"]:
+            self.assertTrue(assed["id"] in associate_editors)
+            self.assertEqual(assed["count"], 1)
+
+        editor_count = self.svc.user_finished_historical_counts(editor)
+        self.assertEqual(editor_count, 1)
+        assed_count = self.svc.user_finished_historical_counts(assed1)
+        self.assertEqual(assed_count, 1)
+
+
+    def add_provenance_record(self, status, role, user, editor_group):
+        data = {
+            "user": user,
+            "roles": [role],
+            "type": "suggestion",
+            "action": status,
+            "editor_group": [editor_group.id]
+        }
+        p1 = models.Provenance(**data)
+        p1.save(blocking=True)

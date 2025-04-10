@@ -14,44 +14,44 @@ class TestBGJobFinishedNotify(DoajTestCase):
     def tearDown(self):
         super(TestBGJobFinishedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : {}})
-        assert BGJobFinishedNotify.consumes(event)
+        assert BGJobFinishedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"job" : "2345"})
-        assert not BGJobFinishedNotify.consumes(event)
+        assert not BGJobFinishedNotify.should_consume(event)
 
         event = models.Event(constants.BACKGROUND_JOB_FINISHED)
-        assert not BGJobFinishedNotify.consumes(event)
+        assert not BGJobFinishedNotify.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
+        with self._make_and_push_test_context_manager("/"):
 
-        source = BackgroundFixtureFactory.example()
-        bj = models.BackgroundJob(**source)
-        # bj.save(blocking=True)
+            source = BackgroundFixtureFactory.example()
+            bj = models.BackgroundJob(**source)
+            # bj.save(blocking=True)
 
-        acc = models.Account()
-        acc.set_id('testuser')
-        acc.set_email("test@example.com")
-        acc.add_role('admin')
-        acc.save(blocking=True)
+            acc = models.Account()
+            acc.set_id('testuser')
+            acc.set_email("test@example.com")
+            acc.add_role('admin')
+            acc.save(blocking=True)
 
-        event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : bj.data})
-        BGJobFinishedNotify.consume(event)
+            event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : bj.data})
+            BGJobFinishedNotify.consume(event)
 
-        time.sleep(1)
-        ns = models.Notification.all()
-        assert len(ns) == 1
+            time.sleep(1)
+            ns = models.Notification.all()
+            assert len(ns) == 1
 
-        n = ns[0]
-        assert n.who == acc.id
-        assert n.created_by == BGJobFinishedNotify.ID
-        assert n.classification == constants.NOTIFICATION_CLASSIFICATION_FINISHED
-        assert n.long is not None
-        assert n.short is not None
-        assert n.action is not None
-        assert not n.is_seen()
+            n = ns[0]
+            assert n.who == acc.id
+            assert n.created_by == BGJobFinishedNotify.ID
+            assert n.classification == constants.NOTIFICATION_CLASSIFICATION_FINISHED
+            assert n.long is not None
+            assert n.short is not None
+            assert n.action is not None
+            assert not n.is_seen()
 
     def test_consume_fail(self):
         event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job": "abcd"})

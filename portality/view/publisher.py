@@ -4,13 +4,15 @@ from flask_login import current_user, login_required
 
 from portality.app_email import EmailException
 from portality import models, constants
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, ArticleNotAcceptable
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, \
+    ArticleNotAcceptable, NoSuchObjectException
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.tasks.preservation import *
 from portality.ui.messages import Messages
+from portality.ui import templates
 from portality import lock
 from portality.models import DraftApplication
 from portality.lcc import lcc_jstree
@@ -34,14 +36,14 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html")
+    return render_template(templates.PUBLISHER_DRAFTS)
 
 
 @blueprint.route("/journal")
 @login_required
 @ssl_required
 def journals():
-    return render_template("publisher/journals.html", lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLISHER_JOURNAL_SEARCH, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/application/<application_id>/delete", methods=["GET"])
@@ -54,14 +56,17 @@ def delete_application(application_id):
 
     # otherwise delegate to the application service to sort this out
     appService = DOAJ.applicationService()
-    appService.delete_application(application_id, current_user._get_current_object())
+    try:
+        appService.delete_application(application_id, current_user._get_current_object())
+    except NoSuchObjectException:
+        abort(404)
 
     return redirect(url_for("publisher.deleted_thanks"))
 
 
 @blueprint.route("/application/deleted")
 def deleted_thanks():
-    return render_template("publisher/application_deleted.html")
+    return render_template(templates.PUBLISHER_APPLICATION_DELETED)
 
 
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
@@ -92,12 +97,12 @@ def update_request(journal_id):
     except AuthoriseException as e:
         if e.reason == AuthoriseException.WRONG_STATUS:
             journal, _ = journalService.journal(journal_id)
-            return render_template("publisher/application_already_submitted.html", journal=journal)
+            return render_template(templates.PUBLISHER_APPLICATION_ALREADY_SUBMITTED, journal=journal)
         else:
             abort(404)
     except lock.Locked as e:
         journal, _ = journalService.journal(journal_id)
-        return render_template("publisher/locked.html", journal=journal, lock=e.lock)
+        return render_template(templates.PUBLISHER_LOCKED, journal=journal, lock=e.lock)
 
     # if we didn't find an application or journal, 404 the user
     if application is None:
@@ -174,7 +179,7 @@ def update_request_readonly(application_id):
 @login_required
 @ssl_required
 def updates_in_progress():
-    return render_template("publisher/updates_in_progress.html")
+    return render_template(templates.PUBLISHER_UPDATE_REQUESTS)
 
 
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
@@ -195,11 +200,13 @@ def upload_file():
         schema = request.cookies.get("schema")
         if schema is None:
             schema = ""
-        return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema, error=False)
+        return render_template(templates.PUBLISHER_XML_UPLOAD, previous=previous, schema=schema, error=False)
 
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
     schema = request.values.get("schema")
+    if not schema:
+        abort(400)
     url = request.values.get("upload-xml-link")
     resp = make_response(redirect(url_for("publisher.upload_file")))
     resp.set_cookie("schema", schema)
@@ -212,21 +219,18 @@ def upload_file():
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
     except TaskException as e:
-        magic = str(uuid.uuid1())
-        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str="", id=magic))
-        app.logger.exception('File upload error. ' + magic)
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e)))
+        app.logger.exception('File upload error. ' + str(e))
         return resp
     except BackgroundException as e:
         if str(e) == Messages.NO_FILE_UPLOAD_ID:
             schema = request.cookies.get("schema")
             if schema is None:
                 schema = ""
-            return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema, error=True)
+            return render_template(templates.PUBLISHER_XML_UPLOAD, previous=previous, schema=schema, error=True)
 
-
-        magic = str(uuid.uuid1())
-        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e), id=magic))
-        app.logger.exception('File upload error. ' + magic + '; ' + str(e))
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e)))
+        app.logger.exception('File upload error. ' + str(e))
         return resp
 
     if f is not None and f.filename != "":
@@ -234,7 +238,7 @@ def upload_file():
         return resp
 
     if url is not None and url != "":
-        flash("File reference successfully received - it will be processed shortly", "success")
+        flash("File successfully received - it will be processed shortly", "success")
         return resp
 
     flash("No file or URL provided", "error")
@@ -251,7 +255,7 @@ def preservation():
     """
 
     if app.config.get('PRESERVATION_PAGE_UNDER_MAINTENANCE', False):
-        return render_template('publisher/readonly.html')
+        return render_template(templates.PUBLISHER_PRESERVATION_READONLY)
 
     previous = []
     try:
@@ -261,30 +265,34 @@ def preservation():
         pass
 
     if request.method == "GET":
-        return render_template('publisher/preservation.html', previous=previous)
+        return render_template(templates.PUBLISHER_PRESERVATION, previous=previous)
 
     if request.method == "POST":
 
         f = request.files.get("file")
-        app.logger.info(f"Preservation file {f.filename}")
+
         resp = make_response(redirect(url_for("publisher.preservation")))
 
         # create model object to store status details
         preservation_model = models.PreservationState()
         preservation_model.set_id()
-        preservation_model.initiated(current_user.id, f.filename)
+
 
         previous.insert(0, preservation_model)
 
         app.logger.debug(f"Preservation model created with id {preservation_model.id}")
 
         if f is None or f.filename == "":
-            error_str = "No file provided to upload"
+            error_str = Messages.PRESERVATION_NO_FILE
             flash(error_str, "error")
+            preservation_model.initiated(current_user.id, "none")
             preservation_model.failed(error_str)
             preservation_model.save()
             return resp
 
+        app.logger.info(f"Preservation file {f.filename}")
+
+        preservation_model.initiated(current_user.id, f.filename)
         preservation_model.validated()
         preservation_model.save()
 
@@ -373,7 +381,7 @@ def metadata():
 @write_required()
 def journal_csv():
     if current_user.has_role(constants.ROLE_PUBLISHER_JOURNAL_CSV):
-        return render_template('publisher/journal_csv.html')
+        return render_template(templates.PUBLISHER_CSV_UPLOAD)
     abort(403)
 
 @blueprint.route("/journal-csv/validate", methods=["POST"])
@@ -409,7 +417,7 @@ def journal_csv_validate():
 @login_required
 @ssl_required
 def help():
-    return render_template("publisher/help.html")
+    return render_template(templates.PUBLISHER_XML_HELP)
 
 
 def _validate_authors(form, require=1):

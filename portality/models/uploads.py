@@ -1,27 +1,21 @@
-from portality.dao import DomainObject, ESMappingMissingError
 from copy import deepcopy
 
+from portality.dao import DomainObject, ESMappingMissingError
 from portality.lib import dates
 
 
-class FileUpload(DomainObject):
-    __type__ = "upload"
+class BaseArticlesUpload(DomainObject):
+    """
+    Base class for article uploads. which handle status and error messages.
+
+    This is abstract class. it has no __type__ attribute.
+    For object creation and query please use FileUpload or BulkArticles instead.
+
+    """
 
     @property
     def status(self):
         return self.data.get("status")
-
-    @property
-    def local_filename(self):
-        return self.id + ".xml"
-
-    @property
-    def filename(self):
-        return self.data.get("filename")
-
-    @property
-    def schema(self):
-        return self.data.get("schema")
 
     @property
     def owner(self):
@@ -61,23 +55,14 @@ class FileUpload(DomainObject):
             return None
         return dates.parse(self.data["created_date"])
 
-    def set_schema(self, s):
-        self.data["schema"] = s
-
-    def upload(self, owner, filename, status="incoming"):
-        self.data["filename"] = filename
-        self.data["owner"] = owner
-        self.data["status"] = status
-
     def failed(self, message, details=None):
         self.data["status"] = "failed"
         self.data["error"] = message
         if details is not None:
             self.data["error_details"] = details
 
-    def validated(self, schema):
+    def validated(self):
         self.data["status"] = "validated"
-        self.data["schema"] = schema
 
     def processed(self, count, update, new):
         self.data["status"] = "processed"
@@ -104,9 +89,6 @@ class FileUpload(DomainObject):
     def exists(self):
         self.data["status"] = "exists"
 
-    def downloaded(self):
-        self.data["status"] = "downloaded"
-
     @classmethod
     def list_valid(cls):
         q = ValidFileQuery()
@@ -124,13 +106,57 @@ class FileUpload(DomainObject):
             res = cls.query(q=q.query())
         except ESMappingMissingError:
             return []
-        rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        rs = [cls(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
         return rs
+
+
+class FileUpload(BaseArticlesUpload):
+    __type__ = "upload"
+
+    @property
+    def schema(self):
+        return self.data.get("schema")
+
+    def set_schema(self, s):
+        self.data["schema"] = s
+
+    @property
+    def filename(self):
+        return self.data.get("filename")
+
+    @property
+    def local_filename(self):
+        return self.id + ".xml"
+
+    def downloaded(self):
+        self.data["status"] = "downloaded"
+
+    def validated(self, schema=None):
+        self.data["status"] = "validated"
+        if schema is not None:
+            self.data["schema"] = schema
+
+    def upload(self, owner, filename, status="incoming"):
+        self.data["filename"] = filename
+        self.data["owner"] = owner
+        self.data["status"] = status
+
+
+class BulkArticles(BaseArticlesUpload):
+    __type__ = "bulk_articles"
+
+    @property
+    def local_filename(self):
+        return self.id + ".json"
+
+    def incoming(self, owner):
+        self.data["owner"] = owner
+        self.data["status"] = "incoming"
 
 
 class ValidFileQuery(object):
     base_query = {
-        "track_total_hits" : True,
+        "track_total_hits": True,
         "query": {
             "term": {"status.exact": "validated"}
         },
@@ -148,7 +174,7 @@ class ValidFileQuery(object):
 
 class ExistsFileQuery(object):
     base_query = {
-        "track_total_hits" : True,
+        "track_total_hits": True,
         "query": {
             "term": {"status.exact": "exists"}
         },
@@ -166,7 +192,7 @@ class ExistsFileQuery(object):
 
 class OwnerFileQuery(object):
     base_query = {
-        "track_total_hits" : True,
+        "track_total_hits": True,
         "query": {
             "bool": {
                 "must": []

@@ -14,48 +14,49 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
     def tearDown(self):
         super(TestApplicationEditorGroupAssignedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application" : {}})
-        assert ApplicationEditorGroupAssignedNotify.consumes(event)
+        assert ApplicationEditorGroupAssignedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"application" : {}})
-        assert not ApplicationEditorGroupAssignedNotify.consumes(event)
+        assert not ApplicationEditorGroupAssignedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED)
-        assert not ApplicationEditorGroupAssignedNotify.consumes(event)
+        assert not ApplicationEditorGroupAssignedNotify.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
+        with self._make_and_push_test_context_manager("/"):
 
-        source = ApplicationFixtureFactory.make_application_source()
-        app = models.Application(**source)
-        # app.save()
+            source = ApplicationFixtureFactory.make_application_source()
+            app = models.Application(**source)
+            app.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
+            # app.save()
 
-        acc = models.Account()
-        acc.set_id("editor")
-        acc.set_email("test@example.com")
-        acc.save()
+            acc = models.Account()
+            acc.set_id("editor")
+            acc.set_email("test@example.com")
+            acc.save()
 
-        eg = models.EditorGroup()
-        eg.set_name(app.editor_group)
-        eg.set_editor("editor")
-        eg.save(blocking=True)
+            eg = models.EditorGroup()
+            eg.set_name(app.editor_group)
+            eg.set_editor("editor")
+            eg.save(blocking=True)
 
-        event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application" : app.data})
-        ApplicationEditorGroupAssignedNotify.consume(event)
+            event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application" : app.data})
+            ApplicationEditorGroupAssignedNotify.consume(event)
 
-        time.sleep(1)
-        ns = models.Notification.all()
-        assert len(ns) == 1
+            time.sleep(1)
+            ns = models.Notification.all()
+            assert len(ns) == 1
 
-        n = ns[0]
-        assert n.who == "editor"
-        assert n.created_by == ApplicationEditorGroupAssignedNotify.ID
-        assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
-        assert n.long is not None
-        assert n.short is not None
-        assert n.action is not None
-        assert not n.is_seen()
+            n = ns[0]
+            assert n.who == "editor"
+            assert n.created_by == ApplicationEditorGroupAssignedNotify.ID
+            assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
+            assert n.long is not None
+            assert n.short is not None
+            assert n.action is not None
+            assert not n.is_seen()
 
     def test_consume_fail(self):
         event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application": {"key" : "value"}})
@@ -64,6 +65,8 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
 
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
+        app.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
+        # app.remove_editor()
         # app.save(blocking=True)
 
         eg = models.EditorGroup()

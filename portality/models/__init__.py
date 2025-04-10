@@ -2,7 +2,7 @@ from typing import Any
 # import the versioned objects, so that the current version is the default one
 from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
-from portality.models.v2.journal import Journal, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
+from portality.models.v2.journal import JournalLikeObject, Journal, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
 from portality.models.v2.application import Application, SuggestionQuery, OwnerStatusQuery, DraftApplication, AllPublisherApplications
 
 from portality.models.v2.application import Application as Suggestion
@@ -11,10 +11,10 @@ from portality.models.v2.application import Application as Suggestion
 from portality.models.lcc import LCC
 from portality.models.account import Account
 from portality.models.editors import EditorGroup, EditorGroupMemberQuery, EditorGroupQuery
-from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery
+from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery, BulkArticles
 from portality.models.lock import Lock
 from portality.models.history import ArticleHistory, JournalHistory
-from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException
+from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException, ArticleTombstone
 from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
 from portality.models.atom import AtomRecord
 from portality.models.search import JournalArticle, JournalStatsQuery, ArticleStatsQuery
@@ -27,6 +27,7 @@ from portality.models.news import News
 from portality.models.harvester import HarvestState
 from portality.models.event import Event
 from portality.models.notifications import Notification
+from portality.models.autocheck import Autocheck
 
 import sys
 

@@ -6,9 +6,9 @@ from doajtest.helpers import DoajTestCase
 from portality import app, models
 from urllib.parse import urlparse
 
-QUERY = 'url_ver=Z39.88-2004' \
-      '&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx' \
-      '&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal'
+QUERY = ('url_ver=Z39.88-2004'
+         '&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx'
+         '&rft_val_fmt=info:ofi/fmt:kev:mtx:journal')
 
 
 class TestOpenURL(DoajTestCase):
@@ -116,7 +116,10 @@ class TestOpenURL(DoajTestCase):
                                             volume="1"))
 
                 assert resp.status_code == 302
-                assert resp.location == url_for('doaj.toc', identifier=j_matching.id, volume="1")
+
+                # FIXME: we have removed volumes from the ToC so we can't resolve the volume in the query
+                # assert resp.location == url_for('doaj.toc', identifier=j_matching.id, volume="1")
+                assert resp.location == url_for('doaj.toc', identifier=j_matching.id)
 
                 # A query without genre to show it's the default
                 resp = t_client.get(url_for('openurl.openurl',

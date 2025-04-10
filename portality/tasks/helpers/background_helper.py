@@ -12,7 +12,7 @@ from portality import models, constants
 from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
 from portality.decorators import write_required
-from portality.tasks.redis_huey import long_running, main_queue, configure, schedule
+from portality.tasks.redis_huey import long_running, main_queue, events_queue, scheduled_long_queue, scheduled_short_queue, configure, schedule
 
 TaskFactory = Callable[[models.BackgroundJob], BackgroundTask]
 _queue_for_action = None
@@ -25,6 +25,12 @@ def get_queue_id_by_task_queue(task_queue: RedisHuey):
         return constants.BGJOB_QUEUE_ID_LONG
     elif task_queue.name == main_queue.name:
         return constants.BGJOB_QUEUE_ID_MAIN
+    elif task_queue.name == events_queue.name:
+        return constants.BGJOB_QUEUE_ID_EVENTS
+    elif task_queue.name == scheduled_long_queue.name:
+        return constants.BGJOB_QUEUE_ID_SCHEDULED_LONG
+    elif task_queue.name == scheduled_short_queue.name:
+        return constants.BGJOB_QUEUE_ID_SCHEDULED_SHORT
     else:
         app.logger.warning(f'unknown task_queue[{task_queue}]')
         return constants.BGJOB_QUEUE_ID_UNKNOWN
@@ -49,36 +55,62 @@ def create_job(username, action,
 
 
 def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwargs):
-    """ Common way to submit task by BackgroundTask Class
-    """
+    """ Common way for BackgroundTask register_schedule """
     user = app.config.get("SYSTEM_USERNAME")
     job = background_task.prepare(user, **prepare_kwargs)
     background_task.submit(job)
 
 
 def execute_by_job_id(job_id, task_factory: TaskFactory):
-    """ Common way to execute BackgroundTask by job_id
-    """
+    """ Common way to execute BackgroundTask by job_id """
     job = models.BackgroundJob.pull(job_id)
     task = task_factory(job)
     BackgroundApi.execute(task)
 
 
-def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], **prepare_kwargs):
-    """ wrapper for execute by BackgroundTask
-    """
+def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], job_wrapper=None, **prepare_kwargs):
+    """ wrapper for execute by BackgroundTask """
     user = app.config.get("SYSTEM_USERNAME")
     job = bg_task_type.prepare(user, **prepare_kwargs)
+    if job_wrapper is not None:
+        job = job_wrapper(job)
     task = bg_task_type(job)
     BackgroundApi.execute(task)
 
     return task
 
 
+def register_execute(task_queue, task_name=None, script=True):
+    """
+    decorator for register background job execute function
+    """
+
+    def wrapper(fn):
+        if task_name:
+            conf = configure(task_name)
+        else:
+            conf = {}
+
+        fn = write_required(script=script)(fn)
+        try:
+            fn = task_queue.task(**conf)(fn)
+        except ValueError:
+            # It's already registered - that's okay, we've probably accessed the _status endpoint and loaded the module
+            return None
+        return fn
+
+    return wrapper
+
+
 class RedisHueyTaskHelper:
-    def __init__(self, task_queue: RedisHuey, task_name: str):
+    """
+    some shortcut functions that help you implement functions that background job needed
+    """
+
+    def __init__(self, task_queue: RedisHuey, bgtask: Type[BackgroundTask]):
         self.task_queue = task_queue
-        self.task_name = task_name
+        self.task_name = bgtask.__action__
+        self.task_factory = bgtask
 
     @property
     def queue_id(self):
@@ -86,21 +118,24 @@ class RedisHueyTaskHelper:
 
     def register_schedule(self, fn):
         fn = write_required(script=True)(fn)
-        fn = self.task_queue.periodic_task(schedule(self.task_name))(fn)
+        try:
+            fn = self.task_queue.periodic_task(schedule(self.task_name))(fn)
+        except ValueError:
+            # It's already registered - that's okay, we've probably accessed the _status endpoint and loaded the module
+            return None
         return fn
 
     def register_execute(self, is_load_config=False):
-        def wrapper(fn):
-            if is_load_config:
-                conf = configure(self.task_name)
-            else:
-                conf = {}
+        return register_execute(self.task_queue,
+                                self.task_name if is_load_config else None)
 
-            fn = write_required(script=True)(fn)
-            fn = self.task_queue.task(**conf)(fn)
-            return fn
+    def execute_common(self, job_id):
+        """ Common way to execute BackgroundTask by job_id """
+        execute_by_job_id(job_id, self.task_factory)
 
-        return wrapper
+    def scheduled_common(self, **prepare_kwargs):
+        """ Common way for BackgroundTask register_schedule """
+        submit_by_bg_task_type(self.task_factory, **prepare_kwargs)
 
 
 def _get_background_task_spec(module):
@@ -167,12 +202,13 @@ def submit_by_background_job(background_job, execute_fn):
     """ Common way of `BackgroundTask.submit`
     """
     background_job.save()
-    execute_fn.schedule(args=(background_job.id,), delay=10)
+    execute_fn.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-def create_execute_fn(redis_huey, task_factory: TaskFactory):
-    @redis_huey.task()
-    @write_required(script=True)
+def create_execute_fn(task_queue: RedisHuey, task_factory: TaskFactory, task_name=None, script=True):
+    """ Common way to create execute_fn for BackgroundTask """
+
+    @register_execute(task_queue, task_name=task_name, script=script)
     def _execute_fn(job_id):
         execute_by_job_id(job_id, task_factory)
 

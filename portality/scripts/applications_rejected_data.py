@@ -29,7 +29,7 @@ FIELDS = [
     field.AUTHOR_INSTRUCTIONS_URL, field.PUBLICATION_TIME_WEEKS, field.APC, field.APC_CHARGES,
     field.APC_URL, field.HAS_WAIVER, field.WAIVER_URL, field.HAS_OTHER_CHARGES, field.OTHER_CHARGES_URL,
     field.PRESERVATION_SERVICE, field.PRESERVATION_SERVICE_URL, field.DEPOSIT_POLICY, field.DEPOSIT_POLICY_OTHER,
-    field.DEPOSIT_POLICY_URL, field.PERSISTENT_IDENTIFIERS, field.ORCID_IDS, field.OPEN_CITATIONS,
+    field.DEPOSIT_POLICY_URL, field.PERSISTENT_IDENTIFIERS,
     {"name": "id", "label": "Id", "input": "text"},
 ]
 FIELD_NAMES = {"application_type":"admin.application_type", "last_updated":"last_updated", "notes":"admin.notes",
@@ -228,7 +228,7 @@ def execute(args):
         # Iterate through all the applications and query Provenance with application id and status
         # to get rejected applications
         for record in models.Application.iterate(q=application_query(args.from_year, args.to_year), page_size=20):
-            application_year = dates.parse(record["created_date"], dates.FMT_DATETIME_MS_STD).year
+            application_year = dates.parse(record["admin"]["date_applied"], dates.FMT_DATETIME_MS_STD).year
 
             provenance_res = models.Provenance.query(q=provenance_query(record["id"]), size=2)
             if provenance_res["hits"]["total"]["value"] > 0:

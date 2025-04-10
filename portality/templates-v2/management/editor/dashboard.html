@@ -1,0 +1,27 @@
+{% extends "management/editor/base.html" %}
+
+{% block page_title %}Editor Dashboard{% endblock %}
+
+{% block page_header %}
+    Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+    {{ current_user.id }}{% endif %}!
+{% endblock %}
+
+{% block editor_content %}
+    <div class="container">
+        {% include "management/includes/_motivational_banner.html" %}
+        {% include "management/includes/_todo.html" %}
+        {% set groups = editor_of_groups %}
+        {% set person_of_assignments =  editor_of_assignments %}
+        {% include "management/includes/_activity.html" %}
+    </div>
+{% endblock %}
+
+{% block editor_js %}
+    <script type="text/javascript" src="/static/js/dashboard.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            doaj.dashboard.init({"applicationsSearchBase": "{{ url_for('editor.group_suggestions') }}" })
+        });
+    </script>
+{% endblock %}

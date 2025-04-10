@@ -1,58 +1,6 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 # ~~Sponsors:Data~~
 
-- name: Royal Society of Chemistry
-  url: https://www.rsc.org/
-  logo: rsc.png
-
-- name: Georg Thieme Verlag KG
-  url: https://www.thieme.com/
-  logo: thieme.svg
-
-- name: AOSIS
-  url: https://aosis.co.za/
-  logo: aosis.png
-
-- name: Cappelen Damm Akademisk
-  url: https://www.cappelendammundervisning.no/
-  logo: cda.jpg
-
-- name: Copernicus Publications
-  url: https://publications.copernicus.org
-  logo: copernicus.svg
-
-- name: EBSCO
-  url: https://www.ebsco.com/
-  logo: ebsco.svg
-
-- name: Frontiers
-  url: https://www.frontiersin.org/
-  logo: frontiers.svg
-
-- name: Knowledge E
-  url: https://knowledgee.com/
-  logo: knowledgee.png
-
-- name: MDPI
-  url: https://www.mdpi.com/
-  logo: mdpi.svg  
-
-- name: OA.Works
-  url: https://oa.works/
-  logo: oaworks.png
-
-- name: SAGE Publishing
-  url: https://www.sagepublications.com/
-  logo: sage.svg
-
-- name: Taylor & Francis Group
-  url: https://www.taylorandfrancisgroup.com/
-  logo: tf.svg  
-
-- name: John Wiley and Sons LTD
-  url: https://www.wiley.com/en-us 
-  logo: Wiley_Wordmark_black.png
-
 - name: American Chemical Society
   url: https://pubs.acs.org/
   logo: acs.jpg
@@ -60,34 +8,94 @@
 - name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
+  
+- name: AIP Publishing
+  url: https://publishing.aip.org/
+  logo: AIP_Logo.png
+
+- name: AOSIS
+  url: https://aosis.co.za/
+  logo: aosis.png
+
+- name: Association of Learned and Professional Society Publishers
+  url: https://www.alpsp.org/
+  logo: ALPSP.png
+
+- name: Beijing Lanbotu Technology Co., Ltd
+  url: https://xueshu.libtools.com.cn/?tenant_id=1 
+  logo: LIB.png
 
 - name: Cambridge University Press
   url: https://www.cambridge.org/
   logo: cambridge.svg
+  
+- name: Cappelen Damm Akademisk
+  url: https://www.cappelendammundervisning.no/
+  logo: cda.jpg
+
+- name: Cogitatio Press
+  url: https://www.cogitatiopress.com/
+  logo: cogitatio.png
+
+- name: Copernicus Publications
+  url: https://publications.copernicus.org
+  logo: copernicus.svg
+
+- name: De Gruyter
+  url: https://www.degruyter.com/
+  logo: de_gruyter.svg
+
+- name: Delta Think Inc
+  url: https://deltathink.com/
+  logo: delta.png
 
 - name: Digital Science
   url: https://www.digital-science.com/
   logo: ds.svg
 
-- name: De Gruyter
-  url: https://www.degruyter.com/
-  logo: Degruyter.svg
+- name: EBSCO
+  url: https://www.ebsco.com/
+  logo: ebsco.svg
 
 - name: eLife Sciences Publications
   url: https://elifesciences.org/
-  logo: elife.svg
+  logo: Elife-logo-2020.png
 
 - name: Elsevier
   url: https://www.elsevier.com/
-  logo: elsevier.svg
+  logo: Elsevier_logo_2019.svg
 
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
   logo: emerald.svg
 
+- name: Le Consortium Érudit
+  url: https://www.erudit.org/en/
+  logo: Logo_of_Erudit.svg.png 
+
+- name: Frontiers
+  url: https://www.frontiersin.org/
+  logo: frontiers.svg
+
+- name: Gruppo Italiano Frattura
+  url: https://www.gruppofrattura.eu/
+  logo: igf.png  
+
+- name: Iași University of Life Sciences
+  url: https://iuls.ro/en/
+  logo: Lasi.png 
+  
 - name: IEEE
   url: https://www.ieee.org/
   logo: ieee.png
+
+- name: IET
+  url: https://www.theiet.org/
+  logo: iet.svg
+
+- name: INCAS - National Institute for Aerospace Research “Elie Carafoli”
+  url: https://www.incas.ro/
+  logo: Logo1.png
 
 - name: Institute of Physics
   url: https://www.iop.org/
@@ -97,51 +105,87 @@
   url: https://iucn.org/
   logo: IUCN.svg
 
-- name: JMIR Publications
-  url: https://jmirpublications.com/
-  logo: jmir.svg
-
 - name: Karger
   url: https://www.karger.com/
   logo: karger.png
 
-- name: KeAI Communications
-  url: https://www.keaipublishing.com/
+- name: KEAI - Guest Marketing Service Ltd
+  url: https://www.keaipublishing.com/en/
   logo: keai.svg
+
+- name: MDPI
+  url: https://www.mdpi.com/
+  logo: mdpi.svg  
 
 - name: NERAC Inc.
   url: https://www.nerac.com/
   logo: nerac.jpg
 
-- name: OASPA
-  url: https://oaspa.org/
+- name: Open Access Scholarly Publishers Association
+  url: https://www.oaspa.org/
   logo: oaspa.png
+
+- name: OA.Works
+  url: https://oa.works/
+  logo: oaworks.png
 
 - name: OCLC
   url: https://www.oclc.org/
   logo: oclc.svg
 
+- name: Our Research
+  url: https://ourresearch.org/
+  logo: OurResearch.png
+
+- name: Pensoft Publishers
+  url: https://pensoft.net/media
+  logo: pensoftlogo.jpg
+
 - name: PLOS
   url: https://plos.org/
   logo: plos.svg
+  
+- name: SAGE Publishing
+  url: https://www.sagepublications.com/
+  logo: sage.svg
 
+- name: Scandinavian University Press
+  url: https://www.universitetsforlaget.no/en/
+  logo: SCUP-logo.png
+  
 - name: SciFree
   url: https://scifree.se/
   logo: scifree.svg
 
-- name: The IET
-  url: https://www.theiet.org/
-  logo: iet.svg
+- name: SirsiDynix
+  url: https://www.sirsidynix.com/
+  logo: Sirsi.png
+  
+- name: Springer Nature Ltd
+  url: https://www.springernature.com/gp
+  logo: SN_stack_logo.png
+
+- name: Sobiad
+  url: https://atif.sobiad.com/
+  logo: logo.png  
+
+- name: Taylor & Francis Group
+  url: https://www.taylorandfrancisgroup.com/
+  logo: tf.svg  
+  
+- name: Tsinghua University Press
+  url: https://www.tsinghua.edu.cn/en/
+  logo: TSPlogo.jpg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg 
 
-- name: Iași University of Life Sciences
-  url: https://iuls.ro/en/
-  logo: Lasi.png 
+- name: University of Johannesburg
+  url: https://www.uj.ac.za/
+  logo: uj.png
 
-- name: Beijing Lanbotu Technology Co
-  url: https://xueshu.libtools.com.cn/?tenant_id=1 
-  logo: Beijing.jpg
+- name: John Wiley and Sons LTD
+  url: https://www.wiley.com/en-us 
+  logo: Wiley_Wordmark_black.png
 

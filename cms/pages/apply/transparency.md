@@ -171,7 +171,7 @@ Any direct marketing activities, including solicitation of manuscripts, that are
 
 ## Version history
 
-- This is Version 4.0 of the Principles of Transparency and Best Practice in Scholarly Publishing
+- This is Version 4.0 - September 2022
 - [Version 3.0](https://docs.google.com/document/d/1wtnA5zj02Hn3XY_SUWvs3U22DC9MaaNVrdiCHYXlrGE/edit?usp=sharing) - January 2018
 - [Version 2.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing-2/?highlight=principles) - June 2015 (on the OASPA website)
 - [Version 1.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing/?highlight=principles) - December 2013 (on the OASPA website)
@@ -188,7 +188,7 @@ COPE provides advice to editors and publishers on all aspects of publication eth
 
 The mission of the DOAJ is: to curate, maintain and develop a source of reliable information about open access scholarly journals on the web; to verify that entries on the list comply with reasonable standards; to increase the visibility, dissemination, discoverability and attraction of open access journals; to enable scholars, libraries, universities, research funders and other stakeholders to benefit from the information and services provided; to facilitate the integration of open access journals into library and aggregator services; to assist, where possible, publishers and their journals to meet reasonable digital publishing standards; and to thereby support the transition of the system of scholarly communication and publishing into a model that serves science, higher education, industry, innovation, societies and the people. Through this work, DOAJ will cooperate and collaborate with all interested parties working toward these objectives.
 
-### [Open Access Scholarly Publishing Association](https://publicationethics.org/) (OASPA)
+### [Open Access Scholarly Publishing Association](https://www.oaspa.org/) (OASPA)
 
 OASPA is a trade association that was established in 2008 in order to represent the interests of Open Access (OA) publishers globally across all disciplines. By encouraging collaboration in developing appropriate business models, tools and standards to support OA publishing, OASPA aims to help ensure a prosperous and sustainable future for the benefit of its members and the scholarly communities they serve. This mission is carried out through exchanging information, setting standards, advancing models, advocacy, education, and the promotion of innovation.
 
@@ -196,6 +196,9 @@ OASPA is a trade association that was established in 2008 in order to represent 
 
 WAME is a global nonprofit voluntary association of editors of peer-reviewed medical journals who seek to foster cooperation and communication among editors; improve editorial standards; promote professionalism in medical editing through education, self-criticism, and self-regulation; and encourage research on the principles and practice of medical editing. WAME develops policies and recommendations of best practices for medical journal editors and has a syllabus for editors that members are encouraged to follow.
 
+## License for this work
+
+[Principles of transparency and best practice in scholarly publishing](https://doi.org/10.24318/cope.2019.1.12) by COPE, DOAJ, OASPA, WAME is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1)
 
 ## In other languages
 
@@ -203,6 +206,7 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 
 - [Bengali](https://docs.google.com/document/d/1hsCynqvYbnaUwnu7VxlEPNKn076mz1KrRUdQ4vefYX4/edit?usp=sharing) - Google document
 - [Chinese](https://zenodo.org/records/10401800) - PDF, Zenodo
+- [French](https://www.erudit.org/public/documents/transparenceDOAJ.pdf) - hosted by Érudit
 - [Korean](https://drive.google.com/file/d/1Uyh5uZR1vbkPwcIvN1h7PPlHVwu0fMHA/view?usp=sharing) - PDF
 - [Portuguese](https://docs.google.com/document/d/155dAHllL2KhPhzTsR3UhbMEASYjkxP157fAtiZ1jw2w/edit?usp=sharing) - Google document
 - [Serbian](https://www.ceon.rs/index.php?option=com_content&view=article&id=654:transparentnost-i-najbolja-praksa&catid=94&lang=sr&Itemid=578) (hosted at ceon.rs)

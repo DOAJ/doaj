@@ -1,16 +1,13 @@
-from time import sleep
-
-from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
-
 from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks
+from parameterized import parameterized
 from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.lib.paths import rel2abs
 from portality.lib import dates
+from portality.lib.paths import rel2abs
 
 
 def load_cases():
@@ -93,7 +90,8 @@ class TestBLLTopTodoEditor(DoajTestCase):
 
         self.build_application("editor_assign_pending", 2 * w, 2 * w, constants.APPLICATION_STATUS_PENDING, apps, additional_fn=assign_pending)
 
-        sleep(2)
+        wait_until_no_es_incomplete_tasks()
+        models.Application.refresh()
 
         # size = int(size_arg)
         size=25
@@ -128,6 +126,15 @@ class TestBLLTopTodoEditor(DoajTestCase):
                     assert v[1] in positions.get(k, [])
                 else:   # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
+
+            # prevent revision on dashboard
+            assert all([
+                self._todo_app_status(t) != constants.APPLICATION_STATUS_REVISIONS_REQUIRED
+                for t in todos
+            ])
+
+    def _todo_app_status(self, todo: dict) -> str:
+        return todo['object']['admin']['application_status']
 
     def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
         source = ApplicationFixtureFactory.make_application_source()

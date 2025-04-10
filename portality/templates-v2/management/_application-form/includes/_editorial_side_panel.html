@@ -1,0 +1,61 @@
+<div class="editorial-panel__wrapper">
+    {% include "management/_application-form/includes/_autochecks.html" %}
+    {% include "management/_application-form/includes/_contact.html" %}
+    {% if obj %}
+        <h3 class="label"> Locked for editing until <span id="lock_expires"
+                                                          data-timestamp="{{ lock.utc_expires() }}">{{ lock.expire_formatted() }}</span>
+        </h3>
+        <div class="editorial_panel--exit_buttons">
+            {% if obj.application_status != constants.APPLICATION_STATUS_ACCEPTED %}
+                <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><em>You cannot save the
+                    application because it contains some invalid fields. Please review the answers and admin fields and
+                    try
+                    again.</em></p>
+                <button id="submitBtn" class="button button--cta" type="button">Save</button>
+            {% endif %}
+            <button type="button" class="button" id="unlock" data-type="{{ obj.es_type }}" data-id="{{ obj.id }}">Unlock
+                & Close
+            </button>
+            <input type="hidden" name="id" value="{{ obj.id }}">
+        </div>
+    {% endif %}
+
+    {% if withdrawable %}
+        <div>
+            {% set withdraw_reinstate = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
+            {% if job %}
+                {% set withdraw_reinstate = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
+            {% endif %}
+            <button class="button button--primary" type="button" id="open_withdraw_reinstate" data-toggle="modal"
+                    data-target="#modal-withdraw_reinstate">{{ withdraw_reinstate }}</button>
+        </div>
+    {% endif %}
+
+    {% if quick_reject and obj.application_status not in ["accepted", "rejected"] and obj.current_journal == None %}
+        <div>
+            <button class="button" type="button" id="open_quick_reject" data-toggle="modal"
+                    data-target="#modal-quick_reject">Quick Reject
+            </button>
+        </div>
+    {% endif %}
+
+    {% set fs = formulaic_context.fieldset("optional_validation") %}
+    {% if fs %}
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {% include field_template %}
+        {% endfor %}
+    {% endif %}
+
+    <aside class="editorial-panel__content">
+        <fieldset>
+            {% set fs = formulaic_context.fieldset("notes") %}
+            {% if fs %}
+                {% for f in fs.fields() %}
+                    {% set field_template = f.template %}
+                    {% include field_template %}
+                {% endfor %}
+            {% endif %}
+        </fieldset>
+    </aside>
+</div>

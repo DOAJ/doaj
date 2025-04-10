@@ -1,5 +1,8 @@
+import re
+
 from faker import Faker
 from freezegun import freeze_time
+from copy import deepcopy
 
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, BackgroundFixtureFactory
 from doajtest.helpers import DoajTestCase
@@ -21,18 +24,31 @@ class TestAnon(DoajTestCase):
         app.config['ANON_SALT'] = self.old_anon_salt
 
     def test_01_basic_hash(self):
-        assert basic_hash('test content') == '259ea4fab4e03a26c25f2b55f37a2f571931797d67f033e8898e76481d2a8563', basic_hash('test content')
+        assert re.match(r'x?[0-9a-f]+', basic_hash('test content'))
 
     def test_02_anon_name(self):
         assert anon_name() == 'Ryan Gallagher', anon_name()
 
     def test_03_anon_email(self):
-        assert anon_email('test@doaj.org') == '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com'
+        # Anon email should be basic_hash() + @example.com
+        assert re.match(r'x?[0-9a-f]+@example\.com', anon_email('test@doaj.org'))
 
     def test_04_anonymise_email(self):
         record = models.Account(**AccountFixtureFactory.make_publisher_source())
+        record_copy = deepcopy(record)
         e = anon_export._anonymise_email(record).email
-        assert e == '25011d8de5bfcb72ee529fcc38b518ea6a46f99a81a412c065fe7147272b8f2a@example.com', e
+
+        # Anon method changed to be a sequence
+        assert e == '1@example.com', e
+
+        # Second anon should give the same result
+        e2 = anon_export._anonymise_email(record_copy).email
+        assert e2 == '1@example.com', e2
+
+        # A different email address should be #2
+        reversed(record.email)
+        e3 = anon_export._anonymise_email(record).email
+        assert e3 == '2@example.com', e3
 
     def test_05_anonymise_admin_with_notes(self):
         journal_src = JournalFixtureFactory.make_journal_source()
@@ -42,12 +58,12 @@ class TestAnon(DoajTestCase):
             'editor': 'testeditor',
             'notes': [
                 {
-                    "id" : "note1",
+                    "id": "note1",
                     'note': 'Test note',
                     'date': '2017-02-23T00:00:00Z'
                 },
                 {
-                    "id" : "note2",
+                    "id": "note2",
                     'note': 'Test note 2',
                     'date': '2017-02-23T00:00:00Z'
                 }
@@ -64,13 +80,13 @@ class TestAnon(DoajTestCase):
             'editor': 'testeditor',
             'notes': [
                 {
-                    "id" : "note1",
-                    'note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895',
+                    "id": "note1",
+                    'note': '---note removed for data security---',
                     'date': '2017-02-23T00:00:00Z'
                 },
                 {
-                    "id" : "note2",
-                    'note': '772cf6f91219db969e4aa28e4fd606b92316948545ad528fd34feb1b9b12a3ad',
+                    "id": "note2",
+                    'note': '---note removed for data security---',
                     'date': '2017-02-23T00:00:00Z'
                 }
             ]
@@ -99,9 +115,10 @@ class TestAnon(DoajTestCase):
     def test_07_anonymise_account(self):
         anon_a = anon_export.anonymise_account(AccountFixtureFactory.make_publisher_source())
         assert anon_a['id'] == 'publisher', anon_a['id']
-        assert anon_a['email'] == '25011d8de5bfcb72ee529fcc38b518ea6a46f99a81a412c065fe7147272b8f2a@example.com', anon_a['email']
+        assert anon_a['email'] == '1@example.com', anon_a['email']
 
     def test_10_anonymise_background_job(self):
         bgjob = BackgroundFixtureFactory.example()
         bgjob['params'].update({'suggestion_bulk_edit__note': 'Test note'})
-        assert anon_export.anonymise_background_job(bgjob)['params'] == {'suggestion_bulk_edit__note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895'}
+        assert re.match(r'x?[0-9a-f]+',
+                        anon_export.anonymise_background_job(bgjob)['params']['suggestion_bulk_edit__note'])

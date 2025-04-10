@@ -1,4 +1,6 @@
 # ~~Constants:Config~~
+
+# ~~-> ApplicationStatuses:Config~~
 APPLICATION_STATUS_ACCEPTED = "accepted"
 APPLICATION_STATUS_REJECTED = "rejected"
 APPLICATION_STATUS_UPDATE_REQUEST = "update_request"
@@ -8,6 +10,7 @@ APPLICATION_STATUS_IN_PROGRESS = "in progress"
 APPLICATION_STATUS_COMPLETED = "completed"
 APPLICATION_STATUS_ON_HOLD = "on hold"
 APPLICATION_STATUS_READY = "ready"
+APPLICATION_STATUS_POST_SUBMISSION_REVIEW = "post_submission_review"
 
 APPLICATION_STATUSES_ALL = [
     APPLICATION_STATUS_ACCEPTED,
@@ -18,7 +21,8 @@ APPLICATION_STATUSES_ALL = [
     APPLICATION_STATUS_IN_PROGRESS,
     APPLICATION_STATUS_COMPLETED,
     APPLICATION_STATUS_ON_HOLD,
-    APPLICATION_STATUS_READY
+    APPLICATION_STATUS_READY,
+    APPLICATION_STATUS_POST_SUBMISSION_REVIEW
 ]
 
 APPLICATION_TYPE_UPDATE_REQUEST = "update_request"
@@ -44,6 +48,9 @@ TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
 TODO_MANED_READY = "todo_maned_ready"
 TODO_MANED_COMPLETED = "todo_maned_completed"
 TODO_MANED_ASSIGN_PENDING = "todo_maned_assign_pending"
+TODO_MANED_LAST_MONTH_UPDATE_REQUEST = "todo_maned_last_month_update_request"
+TODO_MANED_NEW_UPDATE_REQUEST = "todo_maned_new_update_request"
+TODO_MANED_ON_HOLD = "todo_maned_on_hold"
 TODO_EDITOR_STALLED = "todo_editor_stalled"
 TODO_EDITOR_FOLLOW_UP_OLD = "todo_editor_follow_up_old"
 TODO_EDITOR_COMPLETED = "todo_editor_completed"
@@ -54,14 +61,12 @@ TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
 TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
 
-# Roles
-ROLE_ASSOCIATE_EDITOR = 'associate_editor'
-
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
 EVENT_APPLICATION_STATUS = "application:status"
 EVENT_APPLICATION_ASSED_ASSIGNED = "application:assed:assigned"
 EVENT_APPLICATION_CREATED = "application:created"
+EVENT_APPLICATION_UR_SUBMITTED = "application:ur_submitted"
 EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
 EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
@@ -77,18 +82,22 @@ BACKGROUND_JOB_FINISHED = "bg:job_finished"
 
 PROCESS__QUICK_REJECT = "quick_reject"
 
-# Role
+# Roles
+ROLE_ADMIN = "admin"
+ROLE_PUBLISHER = "publisher"
+ROLE_EDITOR = "editor"
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
-ROLE_PUBLISHER = "publisher"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
+ROLE_API = "api"
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
 # ~~-> BackgroundTask:Monitoring~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
+BGJOB_STATUS_PROCESSING = 'processing'
 BGJOB_STATUS_ERROR = 'error'
 BGJOB_STATUS_COMPLETE = 'complete'
 
@@ -97,6 +106,9 @@ BGJOB_STATUS_COMPLETE = 'complete'
 BGJOB_QUEUE_ID_LONG = 'long_running'
 BGJOB_QUEUE_ID_MAIN = 'main_queue'
 BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
+BGJOB_QUEUE_ID_EVENTS = "events"
+BGJOB_QUEUE_ID_SCHEDULED_SHORT = "scheduled_short"
+BGJOB_QUEUE_ID_SCHEDULED_LONG = "scheduled_long"
 
 # Background monitor status
 BG_STATUS_STABLE = 'stable'
@@ -122,6 +134,10 @@ class BgjobOutcomeStatus(ConstantList):
     Pending = 'pending'
     Success = 'success'
     Fail = 'fail'
+
+
+class BaseArticlesUploadStatus(ConstantList):
+    Processed = 'processed'
 
 
 # Storage scopes

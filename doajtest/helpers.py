@@ -4,8 +4,11 @@ import hashlib
 import logging
 import os
 import shutil
+from contextlib import contextmanager
+import time
 from glob import glob
 from unittest import TestCase
+from copy import deepcopy
 
 import dictdiffer
 from flask_login import login_user
@@ -13,18 +16,12 @@ from flask_login import login_user
 from doajtest.fixtures import ArticleFixtureFactory, ApplicationFixtureFactory
 from portality import core, dao, models
 from portality.core import app
+from portality.dao import any_pending_tasks, query_data_tasks
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
-from portality.tasks.redis_huey import main_queue, long_running
-from portality.util import url_for
-
-
-def patch_config(inst, properties):
-    originals = {}
-    for k, v in properties.items():
-        originals[k] = inst.config.get(k)
-        inst.config[k] = v
-    return originals
+from portality.lib.thread_utils import wait_until
+from portality.tasks.redis_huey import events_queue, scheduled_short_queue, scheduled_long_queue
+from portality.util import url_for, patch_config
 
 
 def with_es(_func=None, *, indices=None, warm_mappings=None):
@@ -63,6 +60,8 @@ class WithES:
         for im in self.warm_mappings:
             if im == "article":
                 self.warmArticle()
+            if im == "article_tombstone":
+                self.warmArticleTombstone()
             # add more types if they are necessary
 
     def tearDown(self):
@@ -78,15 +77,36 @@ class WithES:
         article.delete()
         Article.blockdeleted(article.id)
 
+    def warmArticleTombstone(self):
+        # push an article to initialise the mappings
+        from doajtest.fixtures import ArticleFixtureFactory
+        from portality.models import ArticleTombstone
+        source = ArticleFixtureFactory.make_article_source()
+        article = ArticleTombstone(**source)
+        article.save(blocking=True)
+        article.delete()
+        ArticleTombstone.blockdeleted(article.id)
+
 
 CREATED_INDICES = []
 
 
+def initialise_index():
+    core.initialise_index(app, core.es_connection)
+
+
 def create_index(index_type):
-    if index_type in CREATED_INDICES:
-        return
-    core.initialise_index(app, core.es_connection, only_mappings=[index_type])
-    CREATED_INDICES.append(index_type)
+    if "," in index_type:
+        # this covers a DAO that has multiple index types for searching purposes
+        # expressed as a comma separated list
+        index_types = index_type.split(",")
+    else:
+        index_types = [index_type]
+    for it in index_types:
+        if it in CREATED_INDICES:
+            return
+        core.initialise_index(app, core.es_connection, only_mappings=[it])
+        CREATED_INDICES.append(it)
 
 
 def dao_proxy(dao_method, type="class"):
@@ -122,6 +142,7 @@ class DoajTestCase(TestCase):
     @classmethod
     def create_app_patch(cls):
         return {
+            'AUTOCHECK_INCOMING': False,  # old test cases design and depend on work flow of autocheck disabled
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
@@ -131,13 +152,19 @@ class DoajTestCase(TestCase):
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.5,
             "ES_READ_TIMEOUT": '5m',
+            'ES_SOCKET_TIMEOUT': 5 * 60,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
             'ELASTIC_SEARCH_DB_PREFIX': create_es_db_prefix(cls),
             "FEATURES": app.config['VALID_FEATURES'],
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
-            'CMS_BUILD_ASSETS_ON_STARTUP': False
+            'CMS_BUILD_ASSETS_ON_STARTUP': False,
+            "UR_CONCURRENCY_TIMEOUT": 0,
+            'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
+            'HUEY_IMMEDIATE': True,
+            'HUEY_ASYNC_DELAY': 0,
+            "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False
         }
 
     @classmethod
@@ -149,13 +176,10 @@ class DoajTestCase(TestCase):
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
 
-        # always_eager has been replaced by immediate
-        # for huey version > 2
-        # https://huey.readthedocs.io/en/latest/guide.html
-        main_queue.always_eager = True
-        long_running.always_eager = True
-        main_queue.immediate = True
-        long_running.immediate = True
+        # Run huey jobs straight away
+        events_queue.immediate = True
+        scheduled_short_queue.immediate = True
+        scheduled_long_queue.immediate = True
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
@@ -212,6 +236,13 @@ class DoajTestCase(TestCase):
 
         return ctx
 
+    @contextmanager
+    def _make_and_push_test_context_manager(self, path="/", acc=None):
+        ctx = self._make_and_push_test_context(path=path, acc=acc)
+        yield ctx
+
+        ctx.pop()
+
     @staticmethod
     def fix_es_mapping():
         """
@@ -220,8 +251,12 @@ class DoajTestCase(TestCase):
 
         :return:
         """
-        models.Article(**ArticleFixtureFactory.make_article_source()).save()
-        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
+        for m in [
+             models.Article(**ArticleFixtureFactory.make_article_source()),
+             models.Application(**ApplicationFixtureFactory.make_application_source()),
+        ]:
+            m.save(blocking=True)
+            m.delete()
         models.Notification().save()
 
 
@@ -266,6 +301,68 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
             d1=d1_label, d2=d2_label))
         print(differ.unchanged())
 
+def diff_dicts_recursive(d1, d2, d1_label, d2_label, context=None, sort_functions=None):
+
+    def _normalise(d, context=None):
+        if context is None:
+            context = "[root]"
+        if isinstance(d, dict):
+            for k in d.keys():
+                if isinstance(d[k], list):
+                    if context + "." + k in sort_functions:
+                        d[k] = sorted(d[k], key=sort_functions[context + "." + k])
+                    else:
+                        try:
+                            d[k] = sorted(d[k])
+                        except TypeError:
+                            pass
+                elif isinstance(d[k], dict):
+                    d[k] = _normalise(d[k], context + "." + k)
+        return d
+
+    # we're going to modify the dictionaries, so make sure we're not changing the originals
+    d1 = _normalise(deepcopy(d1))
+    d2 = _normalise(deepcopy(d2))
+
+    if context is None:
+        context = "[root]"
+
+    if not isinstance(d1, dict) or not isinstance(d2, dict):
+        if d1 != d2:
+            print("#"*(context.count(".") + 1) + " {}".format(context))
+            print("{d1} vs {d2}".format(d1=d1, d2=d2))
+            print()
+        return
+
+    differ = dictdiffer.DictDiffer(d1, d2)
+    print("#"*(context.count(".") + 1) + " {}".format(context))
+    if differ.added():
+        print('Added :: keys present in "{d1}" {ctx} which are not in "{d2}" {ctx}'.format(d1=d1_label, d2=d2_label, ctx=context))
+        print(differ.added())
+        print()
+
+    if differ.removed():
+        print('Removed :: keys present in "{d2}" {ctx} which are not in "{d1}" {ctx}'.format(d1=d1_label, d2=d2_label, ctx=context))
+        print(differ.removed())
+        print()
+
+    if differ.changed():
+        print('Changed :: keys present in "{d1}" {ctx} and "{d2}" {ctx} whose values are different'.format(d1=d1_label,
+                                                                                                      d2=d2_label, ctx=context))
+        print(differ.changed())
+        print()
+
+    if differ.changed():
+        for key in differ.changed():
+            ctx = context + "." + key if context else key
+            if isinstance(d1[key], list) and isinstance(d2[key], list):
+                for i in range(len(d1[key])):
+                    if len(d2[key]) < i + 1:
+                        print("{ctx} - index {i} does not exist in {d2}".format(ctx=ctx, i=i, d2=d2_label))
+                    else:
+                        diff_dicts_recursive(d1[key][i], d2[key][i], d1_label, d2_label, ctx + "[{}]".format(i), sort_functions=sort_functions)
+            else:
+                diff_dicts_recursive(d1[key], d2[key], d1_label, d2_label, ctx, sort_functions=sort_functions)
 
 def load_from_matrix(filename, test_ids):
     if test_ids is None:
@@ -320,7 +417,7 @@ def patch_history_dir(dir_key):
             # setup new path
             org_config_val = DoajTestCase.app_test.config[dir_key]
             org_hist_dir = hist_class.SAVE_BASE_DIRECTORY
-            _new_path = paths.create_tmp_dir(is_auto_mkdir=True)
+            _new_path = paths.create_tmp_path(is_auto_mkdir=True)
             hist_class.SAVE_BASE_DIRECTORY = _new_path.as_posix()
             DoajTestCase.app_test.config[dir_key] = _new_path.as_posix()
 
@@ -351,8 +448,8 @@ class StoreLocalPatcher:
         self.org_store_local_dir = cur_app.config["STORE_LOCAL_DIR"]
         self.org_store_tmp_dir = cur_app.config["STORE_TMP_DIR"]
 
-        self.new_store_local_dir = paths.create_tmp_dir(is_auto_mkdir=True)
-        self.new_store_tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+        self.new_store_local_dir = paths.create_tmp_path(is_auto_mkdir=True)
+        self.new_store_tmp_dir = paths.create_tmp_path(is_auto_mkdir=True)
 
         cur_app.config["STORE_IMPL"] = "portality.store.StoreLocal"
         cur_app.config["STORE_LOCAL_DIR"] = self.new_store_local_dir
@@ -395,11 +492,51 @@ def assert_expected_dict(test_case: TestCase, target, expected: dict):
     test_case.assertDictEqual(actual, expected)
 
 
-def login(app_client, username, password, follow_redirects=True):
+def login(app_client, email, password, follow_redirects=True):
     return app_client.post(url_for('account.login'),
-                           data=dict(user=username, password=password),
+                           data=dict(user=email, password=password),
                            follow_redirects=follow_redirects)
 
 
 def logout(app_client, follow_redirects=True):
     return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)
+
+
+def wait_until_no_es_incomplete_tasks():
+    """
+
+    wait until no ES pending tasks and no data tasks is running
+
+    created for make sure model.save() or model.delete() is completed
+
+    if your data still can not be query, try Model.refresh()
+
+    """
+
+    def _cond_fn():
+        return not any_pending_tasks() and len(query_data_tasks(timeout='3m')) == 0
+
+    return wait_until(_cond_fn, 10, 0.2)
+
+
+def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
+              timeout_msg="wait_unit but exit_cond timeout"):
+    start = time.time()
+    while (time.time() - start) < timeout:
+        if exit_cond_fn():
+            return
+        time.sleep(check_interval)
+    raise TimeoutError(timeout_msg)
+
+
+def save_all_block_last(model_list):
+    model_list = list(model_list)
+    if not model_list:
+        return model_list
+
+    *model_list, last = model_list
+    for model in model_list:
+        model.save()
+    last.save(blocking=True)
+
+    return model_list

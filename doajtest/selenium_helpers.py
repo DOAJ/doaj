@@ -1,18 +1,18 @@
 import datetime
 import logging
-import time
 import multiprocessing
+import time
 from multiprocessing import Process, freeze_support
 from typing import TYPE_CHECKING
 
 import selenium
 from selenium import webdriver
-from selenium.common import StaleElementReferenceException, ElementClickInterceptedException
-from selenium.webdriver import DesiredCapabilities
+from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from portality import app, models, core
 from portality.dao import ESMappingMissingError
 

@@ -119,6 +119,16 @@ class DOAJ(object):
         return background_task_status.BackgroundTaskStatusService()
 
     @classmethod
+    def concurrencyPreventionService(cls):
+        """
+        Obtain an instance of the concurrency_prevention service
+        ~~->Concurrency_Prevention:Service~~
+        :return:  UpdateRequestConcurrencyPreventionService
+        """
+        from portality.bll.services import concurrency_prevention
+        return concurrency_prevention.ConcurrencyPreventionService()
+
+    @classmethod
     def tourService(cls):
         """
         Obtain an instance of the tour service  ~~->Tour:Service~~
@@ -126,3 +136,17 @@ class DOAJ(object):
         """
         from portality.bll.services import tour
         return tour.TourService()
+
+    @classmethod
+    def autochecksService(cls, autocheck_plugins=None):
+        from portality.bll.services import autochecks
+        return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)
+
+    @classmethod
+    def hueyJobService(cls):
+        """
+        Obtain an instance of the huey_job service  ~~->HueyJob:Service~~
+        :return:  HueyJobService
+        """
+        from portality.bll.services import huey_job
+        return huey_job.HueyJobService()

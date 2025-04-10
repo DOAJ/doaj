@@ -14,7 +14,7 @@
   "base/general",
   "base/grid",
   "base/highlight",
-  
+
   "vendors/swagger",
 
   "layout/editorial-panel",
@@ -30,6 +30,7 @@
   "components/alert",
   "components/accordion",
   "components/back-to-top",
+  "components/badges",
   "components/buttons",
   "components/card",
   "components/cookie-consent",
@@ -38,11 +39,13 @@
   "components/filters",
   "components/form",
   "components/hero",
+  "components/honeypotfield",
   "components/input-group",
   "components/label",
   "components/loading",
   "components/logo",
   "components/modal",
+  "components/motivational-banner",
   "components/notifications",
   "components/numbered-table",
   "components/pager-buttons",
@@ -66,10 +69,13 @@
   "pages/error-page",
   "pages/homepage",
   "pages/journal-details",
+  "pages/journal-toc-articles",
   "pages/search",
   "pages/sponsors",
   "pages/uploadmetadata",
 
   "themes/dashboard",
-  "themes/timeline"
+  "themes/editorial-form",
+  "themes/timeline",
+  "themes/activity-section"
 ;

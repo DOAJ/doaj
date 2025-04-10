@@ -20,10 +20,7 @@ def remove_fields(query: dict, fields_to_remove: list):
 
 def public_query_validator(q):
     # no deep paging
-    if q.from_result() > 10000:
-        return False
-
-    if q.size() > 200:
+    if (q.from_result()+q.size()) > 10000:
         return False
 
     return True
@@ -91,7 +88,7 @@ def owner(q):
 
 def update_request(q):
     q.clear_match_all()
-    q.add_must_filter({"range" : {"created_date" : {"gte" : app.config.get("UPDATE_REQUESTS_SHOW_OLDEST")}}})
+    q.add_must_filter({"range" : {"admin.date_applied" : {"gte" : app.config.get("UPDATE_REQUESTS_SHOW_OLDEST")}}})
     q.add_must_filter({"term" : {"admin.application_type.exact" : constants.APPLICATION_TYPE_UPDATE_REQUEST}})
     return q
 
@@ -120,12 +117,12 @@ def editor(q):
 
 def private_source(q):
     q.add_include(["admin.application_status", "admin.ticked",
-        "admin.seal", "last_updated", "created_date", "id", "bibjson"])
+        "last_updated", "created_date", "id", "bibjson"])
     return q
 
 
 def public_source(q):
-    q.add_include(["admin.ticked", "admin.seal", "last_updated",
+    q.add_include(["admin.ticked", "last_updated",
         "created_date", "id", "bibjson"])
     return q
 
@@ -196,7 +193,7 @@ def public_result_filter(results, unpacked=False):
     if unpacked:
         if "admin" in results:
             for k in list(results["admin"]):
-                if k not in ["ticked", "seal"]:
+                if k not in ["ticked"]:
                     del results["admin"][k]
         return results
 
@@ -210,7 +207,7 @@ def public_result_filter(results, unpacked=False):
         if "_source" in hit:
             if "admin" in hit["_source"]:
                 for k in list(hit["_source"]["admin"]):
-                    if k not in ["ticked", "seal"]:
+                    if k not in ["ticked"]:
                         del hit["_source"]["admin"][k]
 
     return results
@@ -244,7 +241,7 @@ def prune_author_emails(results, unpacked=False):
 
 
 def publisher_result_filter(results, unpacked=False):
-    allowed_admin = ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]
+    allowed_admin = ["ticked", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]
     # Dealing with single unpacked ES result
     if unpacked:
         if "admin" in results:
@@ -318,13 +315,6 @@ def add_fqw_facets(results, unpacked=False):
             "terms": []
         },
         "index.publisher.exact": {
-            "_type": "terms",
-            "missing": 0,
-            "total": 0,
-            "other": 0,
-            "terms": []
-        },
-        "index.has_seal.exact": {
             "_type": "terms",
             "missing": 0,
             "total": 0,

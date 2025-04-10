@@ -7,9 +7,9 @@ class Messages(object):
 
     PUBLISHER_APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
         Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
-        for review. Click the 'Edit' button to make further changes, or 'Delete' to cancel the request.
+        for review. Click the 'Edit' button to make further changes or 'Delete' to cancel the request.
         """, 'success')
-    PUBLISHER_UPLOAD_ERROR = """An error has occurred and your upload may not have succeeded. {error_str} <br \> If the problem persists please report the issue with the ID: {id}"""
+    PUBLISHER_UPLOAD_ERROR = """An error has occurred and your upload did not succeed. {error_str} <br \> If the problem persists, please send the error details from the Notes column of the History of Uploads box below and a screenshot of the entire error message"""
     NO_FILE_UPLOAD_ID="""No file upload record has been specified"""
 
     ARTICLE_METADATA_SUBMITTED_FLASH = ("<a href='{url}' target='_blank'>Article created/updated</a>", "success")
@@ -17,6 +17,8 @@ class Messages(object):
     Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
     ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
         Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
+
+    CONCURRENT_UPDATE_REQUEST = """You have submitted an Update Request for the same journal in a short period of time.  If this is in error, you don't need to do anything, your first request is being processed.  If this was intentional, please try again in a moment."""
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent notification to '{user}' to tell them that their journal was accepted."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent notification to user '{user}' to tell them that their journal application was rejected."""
@@ -27,8 +29,6 @@ class Messages(object):
     SENT_JOURNAL_CONTACT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent email to journal contact '{email}' to tell that an update to their journal was accepted."""
     SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL = """An email has been sent to the Journal Contact alerting them that you are working on their application."""
     SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL = """An email has been sent to the Journal Contact alerting them that an editor has been assigned to their application."""
-    SENT_PUBLISHER_IN_PROGRESS_EMAIL = """An email has been sent to the Owner alerting them that you are working on their application."""
-    SENT_PUBLISHER_ASSIGNED_EMAIL = """A notification has been sent to the Owner alerting them that an editor has been assigned to their application."""
 
     NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send notification to '{user}' to tell them that their journal was accepted.  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_REJECTED_APPLICATION_EMAILS = """Did not send email to user '{user}' or application suggester to tell them that their journal was rejected  Email may be disabled, or there is a problem with the email address."""
@@ -38,8 +38,6 @@ class Messages(object):
     NOT_SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their application/update request was accepted. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL = """An email could not be sent to the Journal Contact alerting them that you are working on their application. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL = """An email could not be sent to the Journal Contact alerting them that an editor has been assigned to their application. Email may be disabled, or there is a problem with the email address"""
-    NOT_SENT_PUBLISHER_IN_PROGRESS_EMAIL = """An email could not be sent to the Owner alerting them that you are working on their application. Email may be disabled, or there is a problem with the email address. """
-    NOT_SENT_PUBLISHER_ASSIGNED_EMAIL = """An email could not be sent to the Owner alerting them that an editor has been assigned to their application. Email may be disabled, or there is a problem with the email address"""
 
     IN_PROGRESS_NOT_SENT_EMAIL_DISABLED = """Did not send email to Owner or Journal Contact about the status change, as publisher emails are disabled."""
 
@@ -50,7 +48,7 @@ class Messages(object):
     EXCEPTION_ARTICLE_BATCH_DUPLICATE = "One or more articles in this batch have duplicate identifiers"
     EXCEPTION_ARTICLE_BATCH_FAIL = "One or more articles failed to ingest; entire batch ingest halted"
     EXCEPTION_ARTICLE_BATCH_CONFLICT = "One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted"
-    EXCEPTION_DETECT_DUPLICATE_NO_ID = "The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
+    EXCEPTION_DETECT_DUPLICATE_NO_ID = "The article you provided has neither doi nor fulltext URL, and as a result cannot be deduplicated"
     EXCEPTION_ARTICLE_MERGE_CONFLICT = "The article matched multiple existing articles as duplicates, and we cannot tell which one to update"
     EXCEPTION_NO_DOI_NO_FULLTEXT = "The article must have a DOI and/or a Full-Text URL"
     EXCEPTION_ARTICLE_OVERRIDE = "Cannot update the article. An article with this URL and DOI already exists. If you are sure you want to replace it please delete it and then re-create it."
@@ -63,13 +61,13 @@ class Messages(object):
     EXCEPTION_TOO_MANY_ISSNS = "Too many ISSNs. Only 2 ISSNs are allowed: one Print ISSN and one Online ISSN."
     EXCEPTION_MISMATCHED_ISSNS = "ISSNs provided don't match any journal."
     EXCEPTION_ISSNS_OF_THE_SAME_TYPE = "Both ISSNs have the same type: {type}"
-    EXCEPTION_IDENTICAL_PISSN_AND_EISSN = "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
-    EXCEPTION_NO_ISSNS = "Neither Print ISSN nor Online ISSN has been supplied. DOAJ requires at least one ISSN."
+    EXCEPTION_IDENTICAL_PISSN_AND_EISSN = "The Print and Online ISSNs supplied are identical. If you supply two ISSNs, they must be different."
+    EXCEPTION_NO_ISSNS = "Neither the Print ISSN nor Online ISSN have been supplied. DOAJ requires at least one ISSN."
     EXCEPTION_INVALID_BIBJSON = "Invalid article bibjson: "  # + Dataobj exception message
 
     EXCEPTION_IDENTIFIER_CHANGE_CLASH = "DOI or Fulltext URL has been changed to match another article that already exists in DOAJ"
-    EXCEPTION_IDENTIFIER_CHANGE = "DOI or Fulltext URL have been changed.  This operation is not permitted, please contact an administrator for help."
-    EXCEPTION_DUPLICATE_NO_PERMISSION = "You do not have the permissions to carry out the requested change"
+    EXCEPTION_IDENTIFIER_CHANGE = "Either the DOI or Fulltext URL has been changed.  This operation is not permitted; please contact an administrator for help."
+    EXCEPTION_DUPLICATE_NO_PERMISSION = "You do not have permission to carry out the requested change"
 
     EXCEPTION_EDITING_ACCEPTED_JOURNAL = "You cannot edit applications which have been accepted into DOAJ."
     EXCEPTION_EDITING_WITHDRAWN_JOURNAL = "This journal has been withdrawn, update request cannot be accepted."
@@ -84,7 +82,7 @@ class Messages(object):
     If you would like to see more results, you can download all of our data from
     {data_dump_url}. You can also harvest from our OAI-PMH endpoints; articles: {oai_article_url}, journals: {oai_journal_url}"""
 
-    CONSENT_COOKIE_VALUE = """By using the DOAJ website you have agreed to our cookie policy."""
+    CONSENT_COOKIE_VALUE = """By using our website, you have agreed to our cookie policy."""
 
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR = "We were unable to send you an email confirmation - possible problem with the email address provided"
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR = 'Error sending application received email.'
@@ -110,13 +108,25 @@ class Messages(object):
     BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
 
     NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
+    NOTIFY__DEFAULT_ACTION_INTRO = "To take action based on this notification, follow this link: "
 
     DISCONTINUED_JOURNAL_FOUND_LOG = "Journal discontinuing soon found: {id}"
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_SENT_LOG = "Notification with journals discontinuing soon sent."
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
     NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
 
-    JOURNAL_CSV_VALIDATE__HEADER_CASE_MISMATCH = '"{h}" has mismatching case to expected header "{expected}".'
+    FORMS__APPLICATION_STATUS__PENDING = "Pending"
+    FORMS__APPLICATION_STATUS__IN_PROGRESS = 'In Progress'
+    FORMS__APPLICATION_STATUS__COMPLETED = 'Completed'
+    FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW = 'Post Submission Automation'
+    FORMS__APPLICATION_STATUS__UPDATE_REQUEST = 'Update Request'
+    FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED = 'Revisions Required'
+    FORMS__APPLICATION_STATUS__ON_HOLD = 'On Hold'
+    FORMS__APPLICATION_STATUS__READY = 'Ready'
+    FORMS__APPLICATION_STATUS__REJECTED = 'Rejected'
+    FORMS__APPLICATION_STATUS__ACCEPTED = 'Accepted'
+
+    JOURNAL_CSV_VALIDATE__HEADER_CASE_MISMATCH = '"{h}" has a mismatching case to the expected header "{expected}".'
     JOURNAL_CSV_VALIDATE__INVALID_HEADER = '"{h}" is not a valid column header. Please revert it to match what was sent to you in the original file.'
     JOURNAL_CSV_VALIDATE__REQUIRED_HEADER_MISSING = '"{h}" is a required column missing from this upload. Please refer to the original file and restore the column.'
     JOURNAL_CSV_VALIDATE__MISSING_JOURNAL = "There is no journal record in DOAJ for ISSN(s) {issns}.  The record may not exist, or it may be withdrawn."
@@ -125,6 +135,10 @@ class Messages(object):
     JOURNAL_CSV_VALIDATE__QUESTION_CANNOT_CHANGE = 'You may not change "{question}". Please revert it to match what was sent to you in the original file.'
     JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR = "We couldn't create an update for this journal because: {reason}"
     JOURNAL_CSV_VALIDATE__INVALID_DATA = "We couldn't understand the information in '{question}'"
+
+    PRESERVATION_NO_FILE = "No file provided for upload"
+
+    ARE_YOU_A_HUMAN = "Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>."
 
     @classmethod
     def flash(cls, tup):

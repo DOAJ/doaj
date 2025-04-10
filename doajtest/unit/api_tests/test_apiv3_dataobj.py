@@ -35,7 +35,6 @@ class TestAPIDataObj(DoajTestCase):
 
         assert do.data["admin"]["in_doaj"] is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
         assert do.data["admin"]["ticked"] is self.jm.is_ticked()  # it's not set in the journal fixture so we expect a None back
-        assert do.data["admin"]["seal"] is self.jm.has_seal()
 
         # assert isinstance(do.data["bibjson"], dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.data["bibjson"]["title"] == self.jm.bibjson().title
@@ -50,6 +49,7 @@ class TestAPIDataObj(DoajTestCase):
         assert do.data['bibjson']["publication_time_weeks"] == self.jm.bibjson().publication_time_weeks
         assert do.data["bibjson"]["preservation"]["url"] == self.jm.bibjson().preservation_url
         assert isinstance(do.data["bibjson"]["preservation"]["service"], list)
+        assert do.data["bibjson"]["labels"] == self.jm.bibjson().labels
 
     def test_03_merge_outside_construct(self):
         struct = {

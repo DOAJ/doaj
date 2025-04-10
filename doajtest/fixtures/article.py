@@ -1,9 +1,12 @@
-import os
+import datetime
+import random
+from copy import deepcopy
+from typing import Dict, Iterable
+
 import rstr
 
 from doajtest import test_constants
 from portality.regex import ISSN_COMPILED, DOI_COMPILED
-from copy import deepcopy
 
 ARTICLES = test_constants.PATH_RESOURCES / "article_uploads.xml"
 
@@ -85,7 +88,7 @@ class ArticleFixtureFactory(object):
 
             # now some very quick and very dirty date generation
             fakemonth = i % 12 + 1
-            template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
+            template['created_date'] = f"{random.randint(2013, 2024)}-{fakemonth:02}-01T00:00:00Z"
 
             # Remove template ISSNs and add new ones
             template['bibjson']['identifier'] = []
@@ -100,7 +103,7 @@ class ArticleFixtureFactory(object):
         return article_sources
 
     @staticmethod
-    def make_incoming_api_article(doi=None, fulltext=None):
+    def make_incoming_api_article(doi=None, fulltext=None) -> Dict:
         template = deepcopy(ARTICLE_SOURCE)
         template['bibjson']['journal']['start_page'] = template['bibjson']['start_page']
         template['bibjson']['journal']['end_page'] = template['bibjson']['end_page']
@@ -127,8 +130,31 @@ class ArticleFixtureFactory(object):
             if not set_fulltext:
                 template["bibjson"]["link"].append({"type": "fulltext", "url": fulltext})
 
-
         return deepcopy(template)
+
+    @staticmethod
+    def make_bulk_incoming_api_article(count=2, doi=None, fulltext=None) -> Iterable[Dict]:
+        def find_dict_in_list(lst, key, value):
+            for i, dic in enumerate(lst):
+                if dic[key] == value:
+                    return i
+            return -1
+
+        for i in range(1, count + 1):
+            data = ArticleFixtureFactory.make_incoming_api_article(doi=doi, fulltext=fulltext)
+            # change the DOI and fulltext URLs to escape duplicate detection
+            # and try with multiple articles
+            doi_ix = find_dict_in_list(data['bibjson']['identifier'], 'type', 'doi')
+            if doi_ix == -1:
+                data['bibjson']['identifier'].append({"type": "doi"})
+            data['bibjson']['identifier'][doi_ix]['id'] = '10.0000/SOME.IDENTIFIER.{0}'.format(i)
+
+            fulltext_url_ix = find_dict_in_list(data['bibjson']['link'], 'type', 'fulltext')
+            if fulltext_url_ix == -1:
+                data['bibjson']['link'].append({"type": "fulltext"})
+            data['bibjson']['link'][fulltext_url_ix]['url'] = 'http://www.example.com/article_{0}'.format(i)
+
+            yield deepcopy(data)
 
     @staticmethod
     def make_article_apido_struct():
@@ -139,7 +165,6 @@ ARTICLE_SOURCE = {
     "id": "abcdefghijk_article",
     "admin": {
         "in_doaj": True,
-        "seal": False,
         "publisher_record_id": "some_identifier",
         "upload_id": "zyxwvutsrqpo_upload_id"
     },
@@ -178,9 +203,9 @@ ARTICLE_SOURCE = {
                     " enough time to release its distinctive flavour, but without overpowering the delicate vanilla. ",
         "author": [
             {
-                "name" : "The Author",
-                "affiliation" : "University Cottage Labs",
-                "orcid_id" : "https://orcid.org/0000-0001-1234-1234"
+                "name": "The Author",
+                "affiliation": "University Cottage Labs",
+                "orcid_id": "https://orcid.org/0000-0001-1234-1234"
             },
         ],
         "keywords": ["word", "key"],
@@ -214,7 +239,6 @@ ARTICLE_STRUCT = {
         "admin": {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
-                "seal": {"coerce": "bool", "get__default": False},
                 "publisher_record_id": {"coerce": "unicode"},
                 "upload_id": {"coerce": "unicode"}
             }

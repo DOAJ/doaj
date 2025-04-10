@@ -1,15 +1,18 @@
-import time
+from __future__ import annotations
+
+import json
+import os
 import re
 import sys
-import uuid
-import json
-import elasticsearch
+import time
 import urllib.parse
-
+import uuid
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List
+from typing import List, Iterable, Tuple
+
+import elasticsearch
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -46,8 +49,13 @@ class BulkException(Exception):
 class DomainObject(UserDict, object):
     """
     ~~DomainObject:Model->Elasticsearch:Technology~~
+
+    base models class for Elasticsearch(ES) index,
+    which provide interaction with ES index such as (save, delete, query, etc.)
     """
-    __type__ = None                                                       # set the type on the model that inherits this
+
+    # set the type on the model that inherits this# which also is ES index name of the model
+    __type__ = None
 
     def __init__(self, **kwargs):
         # if self.data is already set, don't do anything here
@@ -78,7 +86,7 @@ class DomainObject(UserDict, object):
             return None
         else:
             return cls.__type__
-    
+
     @classmethod
     def makeid(cls):
         """Create a new id for data object overwrite this in specific model types if required"""
@@ -90,12 +98,12 @@ class DomainObject(UserDict, object):
         if rawid is not None:
             return str(rawid)
         return None
-    
+
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
         self.data["id"] = str(id)
-    
+
     @property
     def version(self):
         return self.meta.get('_version', None)
@@ -103,7 +111,7 @@ class DomainObject(UserDict, object):
     @property
     def json(self):
         return json.dumps(self.data)
-    
+
     def set_created(self, date=None):
         if date is None:
             self.data['created_date'] = dates.now_str()
@@ -117,7 +125,7 @@ class DomainObject(UserDict, object):
     @property
     def created_timestamp(self):
         return dates.parse(self.data.get("created_date"))
-    
+
     @property
     def last_updated(self):
         return self.data.get("last_updated")
@@ -139,7 +147,7 @@ class DomainObject(UserDict, object):
             app.logger.warning("System is in READ-ONLY mode, save command cannot run")
             return
 
-        if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
+        if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):  # an arbitrary large number
             retries = app.config.get("ES_RETRY_HARD_LIMIT", 1000)
 
         if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
@@ -169,9 +177,10 @@ class DomainObject(UserDict, object):
         r = None
         while attempt <= retries:
             try:
-                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"),
+                r = ES.index(self.index_name(), d, doc_type=self.doc_type(),
+                             id=self.data.get("id"),
                              headers=CONTENT_TYPE_JSON,
-                             timeout=app.config.get('ES_READ_TIMEOUT', '1m'), )
+                             timeout=app.config.get('ES_READ_TIMEOUT', None), )
                 break
 
             except (elasticsearch.ConnectionError, elasticsearch.ConnectionTimeout):
@@ -194,7 +203,7 @@ class DomainObject(UserDict, object):
                 raise ElasticSearchWriteException(e)
 
             # wait before retrying
-            time.sleep((2**attempt) * back_off_factor)
+            time.sleep((2 ** attempt) * back_off_factor)
 
         if attempt > retries:
             raise DAOSaveExceptionMaxRetriesReached(
@@ -220,7 +229,6 @@ class DomainObject(UserDict, object):
 
         return r
 
-
     def delete(self):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warning("System is in READ-ONLY mode, delete command cannot run")
@@ -230,7 +238,7 @@ class DomainObject(UserDict, object):
         try:
             ES.delete(self.index_name(), self.id, doc_type=self.doc_type())
         except elasticsearch.NotFoundError:
-            pass    # This is to preserve the old behaviour
+            pass  # This is to preserve the old behaviour
 
     @staticmethod
     def make_query(theq=None, should_terms=None, consistent_order=True, **kwargs):
@@ -396,7 +404,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def pull_by_key(cls, key, value):
-        res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
+        res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
@@ -419,12 +427,12 @@ class DomainObject(UserDict, object):
         return cls.send_query(query)
 
     @classmethod
-    def send_query(cls, qobj, retry=50, **kwargs):
+    def send_query(cls, qobj, retry=50, pit_query=False, **kwargs):
         """Actually send a query object to the backend.
         :param kwargs are passed directly to Elasticsearch search() function
         """
 
-        if retry > app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1:   # an arbitrary large number
+        if retry > app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1:  # an arbitrary large number
             retry = app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1
 
         r = None
@@ -436,16 +444,21 @@ class DomainObject(UserDict, object):
                 # ES 7.10 updated target to whole index, since specifying type for search is deprecated
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
                 if kwargs.get('timeout') is None:
-                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', '1m')
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
+                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', None)
+                index = cls.index_name() if pit_query is False else None
+                r = ES.search(body=json.dumps(qobj), index=index, doc_type=cls.doc_type(),
                               headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
-                exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
-                if isinstance(exception, ESMappingMissingError):
-                    raise exception
+                try:
+                    exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
+                    if isinstance(exception, ESMappingMissingError):
+                        raise exception
+                except TypeError:
+                    raise e
+
             time.sleep(0.5)
-                
+
         if r is not None:
             return r
         if exception is not None:
@@ -470,10 +483,9 @@ class DomainObject(UserDict, object):
             app.logger.warning("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
-        #r = requests.delete(cls.target() + "_query", data=json.dumps(query))
-        #return r
+        # r = requests.delete(cls.target() + "_query", data=json.dumps(query))
+        # return r
         return ES.delete_by_query(cls.index_name(), json.dumps(query), doc_type=cls.doc_type())
-
 
     @classmethod
     def destroy_index(cls, **es_kwargs):
@@ -519,7 +531,7 @@ class DomainObject(UserDict, object):
                     "\nES HTTP Response status: {es_status}"
                     "\nES Response:{es_resp}\n"
                     .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2))
-                    ) + extra_trace_info
+                ) + extra_trace_info
             )
         return True
 
@@ -560,13 +572,16 @@ class DomainObject(UserDict, object):
         return rs
 
     @classmethod
-    def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True, keepalive: str = '1m'):
+    def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
+                keepalive: str = '1m'):
         """ Provide an iterable of all items in a model, use
         :param q: The query to scroll results on
         :param page_size: limited by ElasticSearch, check settings to override
         :param limit: Limit the number of results returned (e.g. to take a slice)
         :param wrap: Whether to return the results in raw json or wrapped as an object
         :param keepalive: scroll timeout
+
+        TODO: this is the old method, we should evaluate and aim to make iterate_pit the default scroll method.
         """
         theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
         theq["size"] = page_size
@@ -591,9 +606,9 @@ class DomainObject(UserDict, object):
                 res,
                 wrap=wrap,
                 extra_trace_info=
-                    "\nScroll initialised:\n{q}\n"
-                    "\n\nPage #{counter} of the ES response with size {page_size}."
-                    .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+                "\nScroll initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
 
             # apply the limit
             if limit is not None and counter >= int(limit):
@@ -645,21 +660,240 @@ class DomainObject(UserDict, object):
                     yield cls(**r)
                 else:
                     yield r
-    
-    @classmethod
-    def iterall(cls, page_size=1000, limit=None):
-        return cls.iterate(MatchAllQuery().query(), page_size, limit)
 
-    # an alias for the iterate function
+    @classmethod
+    def iterate_pit(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
+                    keepalive: str = '1m'):
+        """ Provide an iterable of all items in a model, reimplemented using point-in-time queries
+        :param q: The query to scroll results on
+        :param page_size: limited by ElasticSearch, check settings to override
+        :param limit: Limit the number of results returned (e.g. to take a slice)
+        :param wrap: Whether to return the results in raw json or wrapped as an object
+        :param keepalive: scroll timeout
+        """
+        theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
+        theq["size"] = page_size
+        theq["from"] = 0
+        if "sort" not in theq:
+            # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
+            theq["sort"] = ["_doc"]
+
+        # Open a point in time query context
+        res = ES.open_point_in_time(index=cls.index_name(), keep_alive=keepalive)
+        pit_id = res.get("id")
+
+        theq["pit"] = {
+            "id": pit_id,
+            "keep_alive": keepalive
+        }
+        theq["track_total_hits"] = True
+
+        first_resp = cls.send_query(theq, pit_query=True)
+        if len(first_resp.get('hits', {}).get('hits', [])) == 0:
+            return
+
+        search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+        total_results = first_resp.get('hits', {}).get('total', {}).get('value')
+
+        # Supply the first set of results
+        counter = 0
+        for r in cls.handle_es_raw_response(
+                first_resp,
+                wrap=wrap,
+                extra_trace_info=
+                "\nPIT Initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+            counter += 1
+            if wrap:
+                yield cls(**r)
+            else:
+                yield r
+
+        del theq["track_total_hits"]
+
+        # Continue to scroll through the rest of the results
+        while True:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+
+            # if we consumed all the results we were expecting, we can just stop here
+            if counter >= total_results:
+                break
+
+            theq["search_after"] = search_after
+
+            # get the next page and check that we haven't timed out
+            try:
+                res = cls.send_query(theq, pit_query=True)
+                if len(res.get('hits', {}).get('hits', [])) == 0:
+                    break
+                search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+            except elasticsearch.exceptions.NotFoundError as e:
+                raise ScrollTimeoutException(
+                    "PIT timed out; {status} - {message}".format(status=e.status_code, message=e.info))
+            except Exception as e:
+                # if any other exception occurs, make sure it's at least logged.
+                app.logger.exception("Unhandled exception in iterate_pit method of DAO")
+                try:
+                    ES.close_point_in_time({"id": pit_id})
+                except:
+                    pass
+                raise ScrollException(e)
+
+            for r in cls.handle_es_raw_response(
+                    res,
+                    wrap=wrap,
+                    extra_trace_info=
+                    "\nPIT:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                            .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+                # apply the limit
+                if limit is not None and counter >= int(limit):
+                    break
+                counter += 1
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
+
+        ES.close_point_in_time({"id": pit_id})
+
+    @classmethod
+    def iterate_unstable(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True):
+        """ Provide an iterable of all items in a model, using search_after but with no scroll context or
+        PIT.  This means that if the index changes as the iterate is happening, there may be repeated or
+        missed elements.  This is useful for cases where the index is not changing during the iteration, or the
+        exact export is not important (e.g. for anon_export for testing purposes)
+
+        :param q: The query to scroll results on
+        :param page_size: limited by ElasticSearch, check settings to override
+        :param limit: Limit the number of results returned (e.g. to take a slice)
+        :param wrap: Whether to return the results in raw json or wrapped as an object
+        """
+        theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
+        theq["size"] = page_size
+        if "from" in theq:
+            del theq["from"]
+
+        if "sort" not in theq:
+            # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
+            theq["sort"] = [{"_doc": "desc"}]
+
+        theq["track_total_hits"] = True
+
+        first_resp = cls.send_query(theq)
+        if len(first_resp.get('hits', {}).get('hits', [])) == 0:
+            return
+
+        search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+        total_results = first_resp.get('hits', {}).get('total', {}).get('value')
+
+
+        # Supply the first set of results
+        counter = 0
+        for r in cls.handle_es_raw_response(
+                first_resp,
+                wrap=wrap,
+                extra_trace_info=
+                "\nUnstable Iterate Initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+            counter += 1
+            if wrap:
+                yield cls(**r)
+            else:
+                yield r
+
+        del theq["track_total_hits"]
+
+        # Continue to scroll through the rest of the results
+        while True:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+
+            # if we consumed all the results we were expecting, we can just stop here
+            if counter >= total_results:
+                break
+
+            theq["search_after"] = search_after
+            try:
+                res = cls.send_query(theq)
+                if len(res.get('hits', {}).get('hits', [])) == 0:
+                    break
+                search_after = res.get('hits', {}).get('hits', [])[-1].get('sort', [])
+            except Exception as e:
+                # if any exception occurs, make sure it's at least logged.
+                app.logger.exception("Unhandled exception in iterate_unstable method of DAO")
+                raise ScrollException(e)
+
+            for r in cls.handle_es_raw_response(
+                    res,
+                    wrap=wrap,
+                    extra_trace_info=
+                    "\nUnstable Iterate:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                            .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+                # apply the limit
+                if limit is not None and counter >= int(limit):
+                    break
+                counter += 1
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
+
+    @classmethod
+    def iterall(cls, page_size=1000, limit=None, **kwargs):
+        # TODO: Another candidate for swapping to iterate_pit (or rename iterate_pit to iterate when we're happy)
+        return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
+
+    @classmethod
+    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, limit=None, **kwargs):
+        def hex_prefixes(n=3):
+            """ Generate a list of hex prefixes of length n """
+            return [str(hex(i))[2:].zfill(3) for i in range(0, 16 ** 3)]
+
+        if striped:
+            count = 0
+            prefixes = prefix_generator() if prefix_generator is not None else hex_prefixes()
+            for prefix in prefixes:
+                q = {
+                    "query": {
+                        "prefix": {stripe_field: prefix}
+                    }
+                }
+                for record in cls.iterate_unstable(q, page_size, limit=limit, **kwargs):
+                    if limit is not None:
+                        count += 1
+                        if count > limit:
+                            return
+                    yield record
+        else:
+            for record in cls.iterate_unstable(q=None, page_size=page_size, limit=limit, **kwargs):
+                yield record
+
+    # Aliases for the iterate functions
     scroll = iterate
+    scroll_pit = iterate_pit
 
     @classmethod
     def dump(cls, q=None, page_size=1000, limit=None, out=None, out_template=None, out_batch_sizes=100000,
              out_rollover_callback=None, transform=None, es_bulk_format=True, idkey='id', es_bulk_fields=None,
-             scroll_keepalive='2m'):
+             stripe_field="id", striped=False, prefix_generator=None):
         """ Export to file, bulk format or just a json dump of the record """
-
-        q = q if q is not None else {"query": {"match_all": {}}}
 
         filenames = []
         n = 1
@@ -673,7 +907,14 @@ class DomainObject(UserDict, object):
             out = sys.stdout
 
         count = 0
-        for record in cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
+        if q is None:
+            iterator = cls.iterall_unstable(page_size=page_size, stripe_field=stripe_field,
+                                            striped=striped, prefix_generator=prefix_generator,
+                                            limit=limit, wrap=False)
+        else:
+            iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
+
+        for record in iterator:
             if transform is not None:
                 record = transform(record)
 
@@ -712,6 +953,107 @@ class DomainObject(UserDict, object):
             out_rollover_callback(current_file)
 
         return filenames
+
+    @classmethod
+    def bulk_load_from_file(cls, source_file, index=None, limit=None, max_content_length=100000000):
+        """ ported from esprit.tasks - bulk load to index from file """
+        index = index or cls.index_name()
+
+        source_size = os.path.getsize(source_file)
+        with open(source_file, "r") as f:
+            if limit is None and source_size < max_content_length:
+                # if we aren't selecting a portion of the file, and the file is below the max content length, then
+                # we can just serve it directly
+                ES.bulk(body=f.read(), index=index, doc_type=cls.doc_type(), request_timeout=120)
+                return -1
+            else:
+                count = 0
+                while True:
+                    chunk = DomainObject._make_next_chunk(f, max_content_length)
+                    if chunk == "":
+                        break
+
+                    finished = False
+                    if limit is not None:
+                        newlines = chunk.count("\n")
+                        records = newlines // 2
+                        if count + records > limit:
+                            max = (limit - count) * 2
+                            lines = chunk.split("\n")
+                            allowed = lines[:max]
+                            chunk = "\n".join(allowed) + "\n"
+                            count += max
+                            finished = True
+                        else:
+                            count += records
+
+                    ES.bulk(body=chunk, index=index, doc_type=cls.doc_type(), request_timeout=120)
+                    if finished:
+                        break
+                if limit is not None:
+                    return count
+                else:
+                    return -1
+
+    @staticmethod
+    def make_bulk_chunk_files(source_file, out_file_prefix, max_content_length=100000000):
+        """ ported from esprit.tasks - break out a bulk file into smaller chunks """
+
+        source_size = os.path.getsize(source_file)
+        with open(source_file, "r") as f:
+            if source_size < max_content_length:
+                return [source_file]
+            else:
+                filenames = []
+                count = 0
+                while True:
+                    count += 1
+                    chunk = DomainObject._make_next_chunk(f, max_content_length)
+                    if chunk == "":
+                        break
+
+                    filename = out_file_prefix + "." + str(count)
+                    with open(filename, "w") as g:
+                        g.write(chunk)
+                    filenames.append(filename)
+
+                return filenames
+
+    @staticmethod
+    def _make_next_chunk(f, max_content_length):
+        """ ported from esprit.tasks - create a bulk chunk, ensuring it's not a partial instruction """
+
+        def is_command(line):
+            try:
+                command = json.loads(line)
+            except (json.JSONDecodeError, TypeError):
+                return False
+            keys = list(command.keys())
+            if len(keys) > 1:
+                return False
+            if "index" not in keys:
+                return False
+            subkeys = list(command["index"].keys())
+            for sk in subkeys:
+                if sk not in ["_id"]:
+                    return False
+
+            return True
+
+        offset = f.tell()
+        chunk = f.read(max_content_length)
+        while True:
+            last_newline = chunk.rfind("\n")
+            tail = chunk[last_newline + 1:]
+            chunk = chunk[:last_newline]
+
+            if is_command(tail):
+                f.seek(offset + last_newline)
+                if chunk.startswith("\n"):
+                    chunk = chunk[1:]
+                return chunk
+            else:
+                continue
 
     @classmethod
     def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):
@@ -797,7 +1139,8 @@ class DomainObject(UserDict, object):
         substring = substring.lower()
 
         if " " in substring and not prefix_only:
-            res = cls.wildcard_autocomplete_query(filter_field, substring, before=True, after=True, facet_size=size, facet_field=facet_field)
+            res = cls.wildcard_autocomplete_query(filter_field, substring, before=True, after=True, facet_size=size,
+                                                  facet_field=facet_field)
         else:
             res = cls.prefix_query(filter_field, substring, size=size, facet_field=facet_field, analyzed_field=analyzed)
 
@@ -830,7 +1173,8 @@ class DomainObject(UserDict, object):
     def q2obj(cls, **kwargs):
         extra_trace_info = ''
         if 'q' in kwargs:
-            extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(json.dumps(kwargs['q'], indent=2))
+            extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(
+                json.dumps(kwargs['q'], indent=2))
 
         res = cls.query(**kwargs)
         rs = cls.handle_es_raw_response(res, wrap=True, extra_trace_info=extra_trace_info)
@@ -844,8 +1188,8 @@ class DomainObject(UserDict, object):
         return cls.q2obj(size=size, **kwargs)
 
     @classmethod
-    def count(cls):
-        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type())
+    def count(cls, query=None):
+        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type(), body=query)
         return res.get("count")
         # return requests.get(cls.target() + '_count').json()['count']
 
@@ -882,7 +1226,10 @@ class DomainObject(UserDict, object):
                     return
             else:
                 if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
-                    raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
+                    raise (BlockTimeOutException(
+                        "Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}"
+                        .format(
+                            id=id, limit=max_retry_seconds)))
 
             time.sleep(sleep)
 
@@ -924,8 +1271,57 @@ class DomainObject(UserDict, object):
             cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
 
 
+def any_pending_tasks():
+    """ Check if there are any pending tasks in the elasticsearch task queue """
+    results = ES.cluster.pending_tasks()
+    return len(results["tasks"]) > 0
 
 
+def query_data_tasks(timeout='30s'):
+    """ Check if there are any pending tasks in the elasticsearch task queue """
+    results = ES.tasks.list(params={
+        "actions": 'indices:data*',
+        "timeout": timeout,
+        "wait_for_completion": 'true',
+    })
+    tasks = []
+    for node in results['nodes'].values():
+        tasks.extend(node['tasks'].values())
+    return tasks
+
+
+def refresh():
+    """
+    refresh all indexes to make newly added or deleted documents immediately searchable
+    """
+    return ES.indices.refresh()
+
+
+def find_indexes_by_prefix(index_prefix) -> list[str]:
+    data = ES.indices.get(f'{index_prefix}*')
+    return list(data.keys())
+
+
+def find_index_aliases(alias_prefixes=None) -> Iterable[Tuple[str, str]]:
+    def _yield_index_alias():
+        data = ES.indices.get_alias()
+        for index, d in data.items():
+            for alias in d['aliases'].keys():
+                yield index, alias
+
+    index_aliases = _yield_index_alias()
+    if alias_prefixes:
+        index_aliases = ((index, alias) for index, alias in index_aliases
+                         if any(alias.startswith(p) for p in alias_prefixes))
+    return index_aliases
+
+
+def is_exist(query: dict, index):
+    query['size'] = 1
+    query['_source'] = False
+    res = ES.search(body=query, index=index, size=1, ignore=[404])
+
+    return res.get('hits', {}).get('total',{}).get('value', 0) > 0
 
 
 class BlockTimeOutException(Exception):
@@ -947,6 +1343,7 @@ class ESMappingMissingError(Exception):
 class ESError(Exception):
     pass
 
+
 ########################################################################
 # Some useful ES queries
 ########################################################################
@@ -955,7 +1352,7 @@ class ESError(Exception):
 class MatchAllQuery(object):
     def query(self):
         return {
-            "track_total_hits" : True,
+            "track_total_hits": True,
             "query": {
                 "match_all": {}
             }
@@ -975,7 +1372,7 @@ class BlockQuery(object):
                     ]
                 }
             },
-            "_source" : False,
+            "_source": False,
             "docvalue_fields": [
                 {"field": "last_updated", "format": "date_time_no_millis"}
             ]
@@ -999,6 +1396,7 @@ class PrefixAutocompleteQuery(object):
                 self._agg_name: {"terms": {"field": self._agg_field, "size": self._agg_size}}
             }
         }
+
 
 class WildcardAutocompleteQuery(object):
     def __init__(self, wildcard_field, wildcard_query, agg_name, agg_field, agg_size):
@@ -1042,7 +1440,8 @@ class Facetview2(object):
         return {"term": {term: value}}
 
     @staticmethod
-    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc", default_field=None):
+    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc",
+                   default_field=None):
         query_part = {"match_all": {}}
         if query_string is not None:
             query_part = {"query_string": {"query": query_string, "default_operator": default_operator}}
@@ -1067,3 +1466,9 @@ class Facetview2(object):
     @staticmethod
     def url_encode_query(query):
         return urllib.parse.quote(json.dumps(query).replace(' ', ''))
+
+
+def patch_model_for_bulk(obj: DomainObject):
+    obj.data['es_type'] = obj.__type__
+    obj.data['id'] = obj.makeid()
+    return obj

@@ -7,7 +7,9 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-Before you start the application process, you will be asked to log in or register. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
+Before you start the application process, you will be asked to log in or register. The registration process requires an email address. You must use an official email for the journal or an email address that is checked regularly by the journal’s management office.  
+
+Once registered you may begin the application process. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
 
 ## Basic criteria for inclusion
 
@@ -44,7 +46,7 @@ Open access journals published in any language may apply. Journals should adhere
   - one unique URL per article
   - HTML or PDF, as a minimum
 - Journals that include intrusive advertising will not be accepted. See best practice [recommendations](https://www.doaj.org/apply/transparency) for advertising. 
-- DOAJ does not approve of using Impact Factors or ranking metrics. However, journals may display the Journal Impact Factor calculated by Clarivate and metrics from Scopus. Journals must not display any reference (images, links, logos) to Impact Factors or ranking metrics from any other service.
+- As a signatory to the San Francisco Declaration on Research Assessment (DORA), DOAJ does not endorse using Impact Factors or other bibliometrics to assess the quality of journals or researchers. However, journals may display widely adopted metrics, including Clarivate’s (e.g., the Journal Impact Factor), Scopus’ (e.g., CiteScore, SCImagoJR), official national accreditation lists such as Qualis in Brazil or the Norwegian Register, the Eigenfactor, Google Scholar’s h5-index, or article-level metrics including Altmetric and Crossref Event Data.  Journals must not display any reference (images, links, logos) to Impact Factors or ranking metrics from any other service. Journals must avoid being listed in unreliable indexes.
 - The website does not need to be in English. If the site is available in multiple languages, the information provided must be the same in all languages.
 
 The following information must be available online and easily accessible from the journal homepage:
@@ -66,9 +68,10 @@ The following information must be available online and easily accessible from th
     - colour charges
   - Any fee waiver must be clearly specified with the conditions of waiver, e.g. amount, time period.
   - If there are charges for withdrawing the article after submission, they cannot exceed the author charges. 
-- Contact details
+- Publisher information
+  - The journal must provide the name and address of the publisher, with a link to the publisher website, if available.  
   - Include the name of a contact person and the journal's dedicated email address.
-  - The country in the application and on the journal website must be where the publisher is registered and carries out its business activities.
+  - The country given in the application and on the journal website must be where the publisher is registered and carries out its business activities.
 
 ---
 
@@ -93,7 +96,10 @@ The following information must be available online and easily accessible from th
 - Use of a plagiarism checking service is highly recommended but not required for inclusion in DOAJ.
 - Endogeny should be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
+  - Where content is not divided into issues, for example in a continuous publication model, endogeny must not exceed 25% in the last calendar year (minimum 5 articles per year).
+- It is strongly recommended that articles should display submitted/accepted/published dates.
 
+  
 ---
 
 ### Special issues
@@ -105,8 +111,6 @@ Journals that publish special issues or other content curated by guest editors m
 - Journals must ensure that guest editors’ credentials are checked and approved
 - The Editor-in-Chief or dedicated board members must oversee the guest editors
 - Papers submitted to a special issue by the guest editor(s) must be handled under an independent review process and make up no more than 25% of the issue's total
-
-DOAJ will not accept a journal if all content in the last year/volume is published as special issues.
 
 ---
 
@@ -178,27 +182,50 @@ We cannot provide a status update for applications which are less than three mon
 
 ## If your application is rejected
 
-You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until six months after the date of the notification of rejection.
+You will receive an email giving the reasons for rejection of the application. Do not submit another application for the same journal until six months after the notification of rejection.
 
-If your application was rejected due to an unconfirmed ISSN, we may be able to reopen the application if the ISSN is confirmed within three months of the DOAJ rejection. Email the [DOAJ Helpdesk](mailto:helpdesk@doaj.org).
+New applications may only be submitted within six months if these rejection reasons have been resolved:
+
+- Unconfirmed ISSN
+- Website unavailable
+- Insufficient content published
+
+Where a journal has been rejected for other reasons, a new application may be submitted after six months.
 
 You are responsible for providing accurate information when you submit an application. Applications that contain information that is inaccurate or wrong or that have answers missing are automatically rejected. 
 
 DOAJ only accepts journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, has provided information that is untrue or misleading, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
 
-Journals or publishers that have had multiple exclusions totalling six years or more will not be considered for inclusion in DOAJ and applications from them will be automatically rejected.
+Applications will be automatically rejected for:
 
-Journals already accepted into DOAJ may be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
+- Journals or publishers that have had multiple exclusions totalling six years or more.
+- Journals or publishers with three or more exclusions, regardless of whether the total duration reaches six years, will not be considered for inclusion in DOAJ if no adequate improvements are demonstrated in the most recent review.
 
 Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and that any necessary changes have been made to the journal website or policies.
 
 ---
 
+## If your application is accepted
+
+After your journal is accepted, you are responsible for updating the DOAJ record and ensuring the journal continues to comply with DOAJ criteria. See the [Publisher Information Page](/apply/publisher-responsibilities/) for details of how to submit an update request. 
+
+We undertake periodic re-evaluation of journals accepted into DOAJ, particularly when:
+
+- They have not been updated by the publisher for several years 
+- Reports are received of website unavailability or questionable practices
+
+Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
+
+---
+
 ## Appeals
 
-You may submit an appeal if your journal has been removed from DOAJ or your application has been rejected and no new application is allowed for at least a year. Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
+Appeals must be submitted within six months from the decision date. Your journal is eligible to submit an appeal if
 
-The appeal should contain the following information:
+- It has been removed from DOAJ.
+- The application has been rejected, and no new application is allowed for at least one year.
+
+Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal should contain the following information:
 
 - Journal title
 - Journal ISSN
@@ -206,9 +233,11 @@ The appeal should contain the following information:
 - Evidence for the DOAJ Appeals Committee to consider
 - The original notification of rejection/removal
 
-Appeals are considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
+Appeals related to the outcome of a [quality investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
+
+Appeals or complaints that include abuse of DOAJ editors will not be considered. See our [Zero tolerance policy](https://doaj.org/code-of-conduct/). DOAJ reserves the right to impose a penalty on publishers for such behaviour. 
 
 ---
 
@@ -216,7 +245,7 @@ No further communication will be entered into after the appeal is heard and the 
 
 We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
 
-Please note that these translations may not include the latest changes made to the Guide in November 2023.
+Please note that these translations may not include the latest changes made to the Guide.
 
 Our criteria are available in:
 
@@ -225,7 +254,7 @@ Our criteria are available in:
 - [Chinese](https://zenodo.org/record/4633341)
 - [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
 - [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
-- [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
+- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
 - [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
 - [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
@@ -236,13 +265,9 @@ Our criteria are available in:
 
 ---
 
-## Change log
+## Version history
 
-This is Version 2.1 of the Guide to applying.
+This is Version 2.4 of the DOAJ Guide to applying.
 
-*Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)*<br>
-<s>Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)</s><br>
-<s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
-<s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
-<s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
-<s>Version 1.0 (November 1.0)
+For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
+

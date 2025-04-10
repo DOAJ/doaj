@@ -1,17 +1,20 @@
 import json
+from collections import namedtuple
+from typing import Iterable, List
 
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
-from portality import dao
 import portality.models as models
 from portality import constants
+from portality import dao
 from portality import lock
 from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
+from portality.bll.services.query import Query
 from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
@@ -20,13 +23,13 @@ from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib.query_filters import remove_search_limits, update_request, not_update_request
+from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
+from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
-
-from portality.bll.services.query import Query
 from portality.view.view_helper import exparam_editing_user
 
 # ~~Admin:Blueprint~~
@@ -44,7 +47,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template('admin/index.html', admin_page=True)
+    return render_template(templates.ADMIN_JOURNALS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/journals", methods=["GET"])
@@ -78,7 +81,7 @@ def journals_list():
         issns = models.Journal.issns_by_query(query)
         atotal = models.Article.count_by_issns(issns)
 
-        resp = make_response(json.dumps({"journals" : jtotal, "articles" : atotal}))
+        resp = make_response(json.dumps({"journals": jtotal, "articles": atotal}))
         resp.mimetype = "application/json"
         return resp
 
@@ -93,9 +96,9 @@ def journals_list():
             abort(400)
 
         # get only the query part
-        query = {"query" : query.get("query")}
+        query = {"query": query.get("query")}
         models.Journal.delete_selected(query=query, articles=True, snapshot_journals=True, snapshot_articles=True)
-        resp = make_response(json.dumps({"status" : "success"}))
+        resp = make_response(json.dumps({"status": "success"}))
         resp.mimetype = "application/json"
         return resp
 
@@ -113,7 +116,7 @@ def articles_list():
             print(request.values.get("q"))
             abort(400)
         total = models.Article.hit_count(query, consistent_order=False)
-        resp = make_response(json.dumps({"total" : total}))
+        resp = make_response(json.dumps({"total": total}))
         resp.mimetype = "application/json"
         return resp
     elif request.method == "DELETE":
@@ -127,9 +130,9 @@ def articles_list():
             abort(400)
 
         # get only the query part
-        query = {"query" : query.get("query")}
+        query = {"query": query.get("query")}
         models.Article.delete_selected(query=query, snapshot=True)
-        resp = make_response(json.dumps({"status" : "success"}))
+        resp = make_response(json.dumps({"status": "success"}))
         resp.mimetype = "application/json"
         return resp
 
@@ -150,9 +153,10 @@ def article_endpoint(article_id):
     a.snapshot()
     a.delete()
     # return a json response
-    resp = make_response(json.dumps({"success" : True}))
+    resp = make_response(json.dumps({"success": True}))
     resp.mimetype = "application/json"
     return resp
+
 
 @blueprint.route("/article/<article_id>", methods=["GET", "POST"])
 @login_required
@@ -208,9 +212,11 @@ def journal_page(journal_id):
     try:
         lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
+        return render_template(templates.JOURNAL_LOCKED, journal=journal, lock=l.lock)
 
     fc = JournalFormFactory.context("admin", extra_param=exparam_editing_user())
+    autochecks = models.Autocheck.for_journal(journal_id)
+
     if request.method == "GET":
         job = None
         job_id = request.values.get("job")
@@ -218,10 +224,18 @@ def journal_page(journal_id):
             # ~~-> BackgroundJobs:Model~~
             job = models.BackgroundJob.pull(job_id)
             # ~~-> BackgroundJobs:Page~~
-            url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(dao.Facetview2.make_query(job_id))
+            url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(
+                dao.Facetview2.make_query(job_id))
             Messages.flash_with_url(Messages.ADMIN__WITHDRAW_REINSTATE.format(url=url), "success")
         fc.processor(source=journal)
-        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
+
+        bibjson = journal.bibjson()
+        past_cont_list = create_cont_list(journal.get_past_continuations(), bibjson.replaces)
+        future_cont_list = create_cont_list(journal.get_future_continuations(), bibjson.is_replaced_by)
+
+        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree,
+                                  past_cont_list=past_cont_list, future_cont_list=future_cont_list,
+                                  autochecks=autochecks)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=journal)
@@ -236,7 +250,38 @@ def journal_page(journal_id):
                 flash(str(e))
                 return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+
+
+@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
+@login_required
+@ssl_required
+def journal_readonly(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    fc = JournalFormFactory.context("admin_readonly")
+    fc.processor(source=j)
+    return fc.render_template(obj=j, lcc_tree=lcc_jstree, notabs=True)
+
+DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
+
+
+def create_cont_list(continuations: Iterable[Journal],
+                     continuation_issns: List[str]) -> List[DisplayContData]:
+    def _issn_id_tuple(j: Journal):
+        bibjson = j.bibjson()
+        return DisplayContData(bibjson.pissn or bibjson.eissn, j.id, bibjson.title)
+
+    cont_list = map(_issn_id_tuple, continuations)
+    cont_list = {data.issn: data for data in cont_list}
+    cont_list.update({
+        issn: DisplayContData(issn, None, None) for issn in continuation_issns
+        if issn not in cont_list
+    })
+    return cont_list.values()
+
 
 ######################################################
 # Endpoints for reinstating/withdrawing journals from the DOAJ
@@ -272,6 +317,7 @@ def journals_bulk_withdraw():
     summary = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
     return make_json_resp(summary.as_dict(), status_code=200)
 
+
 @blueprint.route("/journals/bulk/reinstate", methods=["POST"])
 @login_required
 @ssl_required
@@ -284,8 +330,34 @@ def journals_bulk_reinstate():
     summary = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
     return make_json_resp(summary.as_dict(), status_code=200)
 
+
 #
 #####################################################################
+
+@blueprint.route("/journal/<journal_id>/article-info/", methods=["GET"])
+@login_required
+def journal_article_info(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    return {'n_articles': models.Article.count_by_issns(j.bibjson().issns(), in_doaj=True)}
+
+
+@blueprint.route("/journal/<journal_id>/article-info/admin-site-search", methods=["GET"])
+@login_required
+def journal_article_info_admin_site_search(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    issns = j.bibjson().issns()
+    if not issns:
+        abort(404)
+
+    target_url = '/admin/admin_site_search?source={"query":{"bool":{"must":[{"term":{"admin.in_doaj":true}},{"term":{"es_type.exact":"article"}},{"query_string":{"query":"%s","default_operator":"AND","default_field":"index.issn.exact"}}]}},"track_total_hits":true}'
+    return redirect(target_url % issns[0].replace('-', r'\\-'))
+
 
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
@@ -300,12 +372,12 @@ def journal_continue(journal_id):
         type = request.values.get("type")
         form = MakeContinuation()
         form.type.data = type
-        return render_template("admin/continuation.html", form=form, current=j)
+        return render_template(templates.CONTINUATION, form=form, current=j)
 
     elif request.method == "POST":
         form = MakeContinuation(request.form)
         if not form.validate():
-            return render_template('admin/continuation.html', form=form, current=j)
+            return render_template(templates.CONTINUATION, form=form, current=j)
 
         if form.type.data is None:
             abort(400)
@@ -314,11 +386,15 @@ def journal_continue(journal_id):
             abort(400)
 
         try:
-            cont = j.make_continuation(form.type.data, eissn=form.eissn.data, pissn=form.pissn.data, title=form.title.data)
+            cont = j.make_continuation(form.type.data, eissn=form.eissn.data, pissn=form.pissn.data,
+                                       title=form.title.data)
         except:
             abort(400)
 
-        flash("The continuation has been created (see below).  You may now edit the other metadata associated with it.  The original journal has also been updated with this continuation's ISSN(s).  Once you are happy with this record, you can publish it to the DOAJ", "success")
+        flash("The continuation has been created (see below).  You may now edit the other metadata associated with it."
+              "  The original journal has also been updated with this continuation's ISSN(s).  "
+              "Once you are happy with this record, you can publish it to the DOAJ",
+              "success")
         return redirect(url_for('.journal_page', journal_id=cont.id))
 
 
@@ -327,7 +403,7 @@ def journal_continue(journal_id):
 @ssl_required
 def suggestions():
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
-    return render_template("admin/applications.html",
+    return render_template(templates.APPLICATIONS_SEARCH,
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
@@ -337,7 +413,7 @@ def suggestions():
 @ssl_required
 def update_requests():
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
-    return render_template("admin/update_requests.html",
+    return render_template(templates.UPDATE_REQUESTS_SEARCH,
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
@@ -363,15 +439,17 @@ def application(application_id):
     try:
         lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/application_locked.html", application=ap, lock=l.lock)
+        return render_template(templates.APPLICATION_LOCKED, application=ap, lock=l.lock)
 
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
+    autochecks = models.Autocheck.for_application(application_id)
+
     if request.method == "GET":
         fc.processor(source=ap)
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -392,7 +470,7 @@ def application(application_id):
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
-                                      lcc_tree=lcc_jstree)
+                                      lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
@@ -467,7 +545,7 @@ def admin_site_search():
     edit_formulaic_context = JournalFormFactory.context("bulk_edit", extra_param=exparam_editing_user())
     edit_form = edit_formulaic_context.render_template()
 
-    return render_template("admin/admin_site_search.html",
+    return render_template(templates.ADMIN_SITE_SEARCH,
                            admin_page=True,
                            edit_form=edit_form)
 
@@ -476,14 +554,14 @@ def admin_site_search():
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True)
+    return render_template(templates.EDITOR_GROUP_SEARCH, admin_page=True)
 
 
 @blueprint.route("/background_jobs")
 @login_required
 @ssl_required
 def background_jobs_search():
-    return render_template("admin/background_jobs_search.html", admin_page=True)
+    return render_template(templates.BACKGROUND_JOBS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/notifications")
@@ -491,7 +569,7 @@ def background_jobs_search():
 @ssl_required
 def global_notifications_search():
     """ ~~->AdminNotificationsSearch:Page~~ """
-    return render_template("admin/global_notifications_search.html", admin_page=True)
+    return render_template(templates.GLOBAL_NOTIFICATIONS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
@@ -510,10 +588,12 @@ def editor_group(group_id=None):
             eg = models.EditorGroup.pull(group_id)
             form.group_id.data = eg.id
             form.name.data = eg.name
+            # Do not allow the user to edit the name. issue #3859
+            form.name.render_kw = {'disabled': True}
             form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
-        return render_template("admin/editor_group.html", admin_page=True, form=form)
+        return render_template(templates.EDITOR_GROUP, admin_page=True, form=form)
 
     elif request.method == "POST":
 
@@ -529,7 +609,7 @@ def editor_group(group_id=None):
             eg.delete()
 
             # return a json response
-            resp = make_response(json.dumps({"success" : True}))
+            resp = make_response(json.dumps({"success": True}))
             resp.mimetype = "application/json"
             return resp
 
@@ -561,21 +641,24 @@ def editor_group(group_id=None):
             if associates is not None:
                 for a in associates:
                     ae = models.Account.pull(a)
-                    if ae is not None:                                     # If the account has been deleted, pull fails
+                    if ae is not None:  # If the account has been deleted, pull fails
                         ae.add_role("associate_editor")
                         ae.save()
 
-            eg.set_name(form.name.data)
+            if eg.name is None:
+                eg.set_name(form.name.data)
             eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
                 eg.set_associates(associates)
             eg.save()
 
-            flash("Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.", "success")
+            flash(
+                "Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.",
+                "success")
             return redirect(url_for('admin.editor_group_search'))
         else:
-            return render_template("admin/editor_group.html", admin_page=True, form=form)
+            return render_template(templates.EDITOR_GROUP, admin_page=True, form=form)
 
 
 @blueprint.route("/autocomplete/user")
@@ -633,7 +716,8 @@ def get_bulk_edit_background_task_manager(doaj_type):
     elif doaj_type in ['applications', 'update_requests']:
         return suggestion_bulk_edit.suggestion_manage
     else:
-        raise BulkAdminEndpointException('Unsupported DOAJ type - you can currently only bulk edit journals and applications/update_requests.')
+        raise BulkAdminEndpointException(
+            'Unsupported DOAJ type - you can currently only bulk edit journals and applications/update_requests.')
 
 
 def get_query_from_request(payload, doaj_type=None):
@@ -658,7 +742,8 @@ def bulk_assign_editor_group(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
+    validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'],
+                  error_to_raise=BulkAdminEndpointException)
 
     summary = task(
         selection_query=get_query_from_request(payload, doaj_type),
@@ -677,7 +762,8 @@ def bulk_add_note(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
+    validate_json(payload, fields_must_be_present=['selection_query', 'note'],
+                  error_to_raise=BulkAdminEndpointException)
 
     summary = task(
         selection_query=get_query_from_request(payload, doaj_type),
@@ -727,7 +813,8 @@ def applications_bulk_change_status(doaj_type):
     if doaj_type not in ["applications", "update_requests"]:
         abort(403)
     payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
+    validate_json(payload, fields_must_be_present=['selection_query', 'application_status'],
+                  error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload, doaj_type)
     summary = get_bulk_edit_background_task_manager('applications')(

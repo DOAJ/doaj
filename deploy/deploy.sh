@@ -5,17 +5,14 @@
 ENV=$1
 
 # apt dependencies for the DOAJ app
-sudo apt-get update
-sudo apt-get install -q -y libxml2-dev libxslt-dev python3-dev python3-pip lib32z1-dev
-
-# get awscli from pip so it's up to date (although installation will use the one from the virtualenv it's handy to have)
-sudo pip install awscli
+sudo apt update
+sudo apt install -q -y libxml2-dev libxslt-dev python3-dev python3-pip lib32z1-dev
 
 # Run from the doaj folder that's already checked out
 
-# activate the virtualenv that we expect to be at /home/cloo/doaj
-. /home/cloo/doaj/bin/activate
-cd /home/cloo/doaj/src/doaj || exit 1
+# activate the virtualenv that we expect to be at /home/cloo/doaj/venv
+. /home/cloo/doaj/venv/bin/activate
+cd /home/cloo/doaj/ || exit 1
 
 # Get the app configuration secrets from AWS  - NOTE: on a mac, base64 needs -D rather than -d
 if [ "$ENV" = 'production' ]
@@ -37,7 +34,7 @@ fi
 
 # Install DOAJ submodules and dependencies
 git submodule update --init --recursive
-pip install -e .
+pip install -e . --use-pep517
 
 # Compile the static pages
 python portality/cms/build_fragments.py
@@ -55,7 +52,7 @@ if test -f "cms/error_sass.txt"; then
   exit 1
 fi
 
-# Restart all supervisor tasks, will cover the app and kafka, plus huey on the background server. Then reload nginx.
+# Restart all supervisor tasks, will cover the app plus huey on the background server. Then reload nginx.
 sudo supervisorctl update
 sudo supervisorctl restart all || sudo supervisorctl start all
 

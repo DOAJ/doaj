@@ -38,49 +38,49 @@ class TestJournalDiscontinuingSoonNotify(DoajTestCase):
         models.Application.pull = self.pull_application
         models.EditorGroup.pull_by_key = self.pull_by_key
 
-    def test_consumes(self):
+    def test_should_consume(self):
 
         event = models.Event("test:event", context={"data" : {"1234"}})
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event("test:event", context={"data": {}})
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON)
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON, context = {"journal": {"1234"}, "discontinue_date": "2002-22-02"})
-        assert JournalDiscontinuingSoonNotify.consumes(event)
+        assert JournalDiscontinuingSoonNotify.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
+        with self._make_and_push_test_context_manager("/"):
 
-        source = BackgroundFixtureFactory.example()
-        bj = models.BackgroundJob(**source)
-        # bj.save(blocking=True)
+            source = BackgroundFixtureFactory.example()
+            bj = models.BackgroundJob(**source)
+            # bj.save(blocking=True)
 
-        acc = models.Account()
-        acc.set_id('testuser')
-        acc.set_email("test@example.com")
-        acc.add_role('admin')
-        acc.save(blocking=True)
+            acc = models.Account()
+            acc.set_id('testuser')
+            acc.set_email("test@example.com")
+            acc.add_role('admin')
+            acc.save(blocking=True)
 
-        source = JournalFixtureFactory.make_journal_source()
-        journal = models.Journal(**source)
-        journal.save(blocking=True)
+            source = JournalFixtureFactory.make_journal_source()
+            journal = models.Journal(**source)
+            journal.save(blocking=True)
 
-        event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : bj.data, "journal" : journal.id})
-        JournalDiscontinuingSoonNotify.consume(event)
+            event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : bj.data, "journal" : journal.id})
+            JournalDiscontinuingSoonNotify.consume(event)
 
-        time.sleep(2)
-        ns = models.Notification.all()
-        assert len(ns) == 1
+            time.sleep(2)
+            ns = models.Notification.all()
+            assert len(ns) == 1
 
-        n = ns[0]
-        assert n.who == acc.id
-        assert n.created_by == JournalDiscontinuingSoonNotify.ID
-        assert n.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS
-        assert n.long is not None
-        assert n.short is not None
-        assert n.action is not None
-        assert not n.is_seen()
+            n = ns[0]
+            assert n.who == acc.id
+            assert n.created_by == JournalDiscontinuingSoonNotify.ID
+            assert n.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS
+            assert n.long is not None
+            assert n.short is not None
+            assert n.action is not None
+            assert not n.is_seen()

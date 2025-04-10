@@ -126,3 +126,42 @@ tests:
     - step: Attempt to paste the value (use separate editor)
       results:
         - Correct value is pasted
+- title: Check button linking to the article's page
+  context:
+    role: Admin
+  steps:
+    - step: Click "See this journal in doaj" button under the journal's title on the left
+      results:
+        - The journal's public page is opened in a new tab
+        - On the journal's public page at the top the button "Edit this journal" is shown
+    - step: Click "Edit this journal" button
+      results:
+        - The journal's admin metadata form is opened in a new tab with correct data
+    - step: Confirm above buttons are shown only for admin user. Log out from admin account and log in as publisher
+    - step: Navigate to the article's public page as a publisher
+      results:
+        - The button "Edit this journal" is not displayed
+    - step: Log out
+    - step: Navigate to the article's public page as an anonymous user
+      results:
+        - The button "Edit this journal" is not displayed
+- title: Subscribe to Open journal labelling
+  context:
+    role: Admin
+  steps:
+    - step: Select a journal from the admin journal search page, and click "Edit this journal"
+      results:
+        - The journal's admin metadata form is opened in a new tab, and the journal labelling section
+          of the form is available to you, with a single option "Subscribe to Open".
+    - step: Click the "Subscribe to Open" checkbox and then click "Save" on the journal record
+      results:
+        - The journal record is saved, and the "Subscribe to Open" checkbox is checked.
+    - step: Go to the public journals search page
+      path: /search/journals
+    - step: Search for the journal you just edited
+      results:
+        - The journal is displayed in the search results with a "Subscribe to Open" label
+    - step: click on the journal title
+      results:
+        - You are taken to the journal ToC which displays the "Subscribe to Open" label
+

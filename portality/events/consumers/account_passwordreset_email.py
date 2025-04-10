@@ -6,13 +6,14 @@ from portality import app_email
 from portality import models
 from portality.core import app
 from portality.bll.exceptions import NoSuchPropertyException
+from portality.ui import templates
 
 
 class AccountPasswordResetEmail(EventConsumer):
     ID = "account:password_reset:email"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_ACCOUNT_PASSWORD_RESET and event.context.get("account") is not None
 
     @classmethod
@@ -35,7 +36,7 @@ class AccountPasswordResetEmail(EventConsumer):
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/account_password_reset.jinja2",
+                            template_name=templates.EMAIL_PASSWORD_RESET,
                             email=account.email,
                             reset_url=reset_url,
                             forgot_pw_url=app.config.get('BASE_URL', "https://doaj.org") + url_for('account.forgot')

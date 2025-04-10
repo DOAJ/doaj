@@ -11,6 +11,8 @@ new ones as required too.
 """
 
 import os, sys
+
+import elasticsearch.exceptions
 import tzlocal
 import pytz
 
@@ -24,6 +26,7 @@ from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
+from portality.ui import templates
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -37,12 +40,6 @@ from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
 from portality.view.jct import blueprint as jct
 from portality.view.apply import blueprint as apply
-if 'api1' in app.config['FEATURES']:
-    from portality.view.api_v1 import blueprint as api_v1
-if 'api2' in app.config['FEATURES']:
-    from portality.view.api_v2 import blueprint as api_v2
-if 'api3' in app.config['FEATURES']:
-    from portality.view.api_v3 import blueprint as api_v3
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
@@ -63,12 +60,22 @@ app.register_blueprint(query, name='dashboard_query', url_prefix="/dashboard_que
 app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
 app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
+    from portality.view.api_v1 import blueprint as api_v1
     app.register_blueprint(api_v1, url_prefix='/api/v1') # ~~-> APIv1:Blueprint~~
 if 'api2' in app.config['FEATURES']:
+    from portality.view.api_v2 import blueprint as api_v2
     app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
 if 'api3' in app.config['FEATURES']:
-    app.register_blueprint(api_v3, name='api', url_prefix='/api') # ~~-> APIv3:Blueprint~~
+    from portality.view.api_v3 import blueprint as api_v3
     app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
+    if app.config.get("CURRENT_API_MAJOR_VERSION") == "3":
+        app.register_blueprint(api_v3, name='api', url_prefix='/api')
+if 'api4' in app.config['FEATURES']:
+    from portality.view.api_v4 import blueprint as api_v4
+    app.register_blueprint(api_v4, name='api_v4', url_prefix='/api/v4') # ~~-> APIv4:Blueprint~~
+    if app.config.get("CURRENT_API_MAJOR_VERSION", "4") == "4":
+        app.register_blueprint(api_v4, name='api', url_prefix='/api')
+
 app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
@@ -147,7 +154,7 @@ def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
     return send_file(
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
-            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+            mimetype="application/xml", as_attachment=True, download_name=schema_fn
             )
 
 
@@ -206,7 +213,7 @@ def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
     :return: the string formatted datetime
     """
-    local = tzlocal.get_localzone()
+    local = pytz.timezone(str(tzlocal.get_localzone()))
     ld = local.localize(stamp)
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
@@ -406,32 +413,30 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
             )
         return jsonify({'api_versions': vers})
 
-
-# Make the reCAPTCHA key available to the js
-# ~~-> ReCAPTCHA:ExternalService~~
-@app.route('/get_recaptcha_site_key')
-def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY', '')
-
-
 @app.errorhandler(400)
 def page_not_found(e):
-    return render_template('400.html'), 400
+    return render_template(templates.ERROR_400), 400
 
 
 @app.errorhandler(401)
 def page_not_found(e):
-    return render_template('401.html'), 401
+    return render_template(templates.ERROR_401), 401
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template(templates.ERROR_404), 404
 
 
 @app.errorhandler(500)
 def page_not_found(e):
-    return render_template('500.html'), 500
+    return render_template(templates.ERROR_500), 500
+
+
+@app.errorhandler(elasticsearch.exceptions.RequestError)
+def handle_es_request_error(e):
+    app.logger.exception(e)
+    return render_template('400.html'), 400
 
 
 def run_server(host=None, port=None, fake_https=False):
