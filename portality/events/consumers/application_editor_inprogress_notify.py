@@ -23,7 +23,7 @@ class ApplicationEditorInProgressNotify(EventConsumer):
         context = event.context
         app = context.get("application")
         if app is None:
-            return
+            return None
         try:
             application = models.Application(**app)
         except SeamlessException:
@@ -33,7 +33,7 @@ class ApplicationEditorInProgressNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Unable to create application model from source")
 
         if not application.editor_group:
-            return
+            return None
 
         # Notification is to the editor in charge of this application's assigned editor group
         editor_group_name = application.editor_group
@@ -42,7 +42,7 @@ class ApplicationEditorInProgressNotify(EventConsumer):
         group_editor = eg.editor
 
         if not group_editor:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -60,3 +60,4 @@ class ApplicationEditorInProgressNotify(EventConsumer):
         notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)
+        return notification

@@ -62,3 +62,4 @@ class UpdateRequestPublisherSubmittedNotify(EventConsumer):
         notification.action = url_for("publisher.updates_in_progress")
 
         svc.notify(notification)
+        return notification

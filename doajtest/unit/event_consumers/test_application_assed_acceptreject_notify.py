@@ -40,6 +40,7 @@ class TestApplicationAssedAcceptRejectNotify(DoajTestCase):
             source = ApplicationFixtureFactory.make_application_source()
             app = models.Application(**source)
             app.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
+            app.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
             # app.save()
 
             acc = models.Account()

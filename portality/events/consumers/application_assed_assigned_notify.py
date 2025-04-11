@@ -41,3 +41,4 @@ class ApplicationAssedAssignedNotify(EventConsumer):
         notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)
+        return notification

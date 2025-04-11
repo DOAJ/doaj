@@ -40,7 +40,7 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
 
         application = consumer_utils.parse_application(app_source)
         if not application.owner:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -62,3 +62,4 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
         # there is no action url associated with this notification
 
         svc.notify(notification)
+        return notification

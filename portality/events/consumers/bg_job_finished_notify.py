@@ -26,11 +26,11 @@ class BGJobFinishedNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Unable to construct a BackgroundJob object from the data supplied {x}".format(x=e))
 
         if job.user is None:
-            return
+            return None
 
         acc = models.Account.pull(job.user)
         if acc is None or not acc.has_role("admin"):
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -52,3 +52,4 @@ class BGJobFinishedNotify(EventConsumer):
         notification.action = url
 
         svc.notify(notification)
+        return notification

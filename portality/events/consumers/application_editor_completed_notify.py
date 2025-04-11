@@ -22,7 +22,7 @@ class ApplicationEditorCompletedNotify(EventConsumer):
         context = event.context
         app = context.get("application")
         if app is None:
-            return
+            return None
         try:
             application = models.Application(**app)
         except SeamlessException:
@@ -32,7 +32,7 @@ class ApplicationEditorCompletedNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Unable to create application model from source")
 
         if not application.editor_group:
-            return
+            return None
 
         # The associate editor in question is who created this event
         associate_editor = "unknown associate editor"
@@ -46,7 +46,7 @@ class ApplicationEditorCompletedNotify(EventConsumer):
         group_editor = eg.editor
 
         if not group_editor:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -65,3 +65,4 @@ class ApplicationEditorCompletedNotify(EventConsumer):
         notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)
+        return notification

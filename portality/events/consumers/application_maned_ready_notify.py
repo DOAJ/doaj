@@ -23,13 +23,13 @@ class ApplicationManedReadyNotify(EventConsumer):
 
         application = consumer_utils.parse_application(app_source)
         if not application.editor_group:
-            return
+            return None
 
 
         eg = models.EditorGroup.pull_by_key("name", application.editor_group)
         managing_editor = eg.maned
         if not managing_editor:
-            return
+            return None
 
         editor = eg.editor
         if not editor:
@@ -53,3 +53,4 @@ class ApplicationManedReadyNotify(EventConsumer):
         notification.action = url_for("admin.application", application_id=application.id)
 
         svc.notify(notification)
+        return notification

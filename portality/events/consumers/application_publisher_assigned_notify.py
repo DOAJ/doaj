@@ -62,3 +62,4 @@ class ApplicationPublisherAssignedNotify(EventConsumer):
         # note that there is no action url
 
         svc.notify(notification)
+        return notification
