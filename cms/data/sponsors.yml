@@ -144,7 +144,11 @@
 - name: PLOS
   url: https://plos.org/
   logo: plos.svg
-  
+
+- name: Publishers Licensing Services
+  url: https://www.pls.org.uk/
+  logo: PLS-logo-RGB.png
+
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
