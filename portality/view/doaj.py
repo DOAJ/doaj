@@ -20,6 +20,7 @@ from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
 from portality.ui import templates
+from portality.bll import DOAJ
 
 # ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
@@ -193,22 +194,19 @@ def nth_sitemap(n):
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_PUBLICDATADUMP', 'PublicDataDump'),
                     action=app.config.get('ANALYTICS_ACTION_PUBLICDATADUMP', 'Download'))
 def public_data_dump_redirect(record_type):
-    if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP):
+    if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP) and not current_user.has_role(constants.ROLE_PREMIUM_PDD):
         abort(404)
 
-    # Make sure the PDD exists
-    pdd = models.Cache.get_public_data_dump()
-    if pdd is None:
+    svc = DOAJ.publicDataDumpService()
+    if current_user.has_role(constants.ROLE_PREMIUM_PDD):
+        dd = svc.get_premium_dump()
+    else:
+        dd = svc.get_free_dump()
+
+    if dd is None:
         abort(404)
 
-    target_data = pdd.get(record_type, {})
-    if not target_data:
-        abort(404)
-
-    main_store = store.StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
-    store_url = main_store.temporary_url(target_data.get("container"),
-                                         target_data.get("filename"),
-                                         timeout=app.config.get("PUBLIC_DATA_DUMP_URL_TIMEOUT", 3600))
+    store_url = svc.get_temporary_url(dd, record_type)
 
     if store_url.startswith("/"):
         store_url = "/store" + store_url

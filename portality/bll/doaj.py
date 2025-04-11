@@ -150,3 +150,8 @@ class DOAJ(object):
         """
         from portality.bll.services import huey_job
         return huey_job.HueyJobService()
+
+    @classmethod
+    def publicDataDumpService(cls, *args, **kwargs):
+        from portality.bll.services import public_data_dump
+        return public_data_dump.PublicDataDumpService(*args, **kwargs)

@@ -2,12 +2,13 @@ import json
 import time
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
-    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
+    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory, \
+    DataDumpFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
 from portality.constants import BgjobOutcomeStatus
-from portality.lib import dataobj
+from portality.lib import dataobj, dates
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
@@ -1432,10 +1433,7 @@ class TestModels(DoajTestCase):
         })
 
         models.Cache.cache_csv("/csv/filename.csv")
-
         models.Cache.cache_sitemap("sitemap.xml")
-
-        models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
 
         time.sleep(1)
 
@@ -1447,20 +1445,7 @@ class TestModels(DoajTestCase):
         assert stats["no_apc"] == 50
 
         assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
-
         assert models.Cache.get_latest_sitemap() == "sitemap.xml"
-
-        article_data = models.Cache.get_public_data_dump().get("article")
-        assert article_data.get("url") == "http://example.com/article"
-        assert article_data.get("size") == 100
-        assert article_data.get("container") == "ac"
-        assert article_data.get("filename") == "af"
-
-        journal_data = models.Cache.get_public_data_dump().get("journal")
-        assert journal_data.get("url") == "http://example.com/journal"
-        assert journal_data.get("size") == 200
-        assert journal_data.get("container") == "jc"
-        assert journal_data.get("filename") == "jf"
 
     def test_32_journal_like_object_discovery(self):
         """ Check that the JournalLikeObject can retrieve the correct results for Journals and Applications """
@@ -1779,6 +1764,35 @@ class TestModels(DoajTestCase):
         bj.has_apc = False
         assert bj.has_apc is False
         assert bj.apc == []
+
+    def test_44_data_dump(self):
+        dd = models.DataDump()
+        # get a date without milliseconds
+        now = dates.now()
+        stamp = dates.format(now)
+        now = dates.parse(stamp)
+
+        dd.dump_date = now
+        dd.set_article_dump("a1", "a2", 1, "a3")
+        dd.set_journal_dump("j1", "j2", 2, "j3")
+
+        assert dd.dump_date == now
+        assert dd.article_filename == "a2"
+        assert dd.article_container == "a1"
+        assert dd.joural_container == "j1"
+        assert dd.journal_filename == "j2"
+
+    def test_45_data_dump_queries(self):
+        dds = DataDumpFixtureFactory.make_n_data_dumps(3,
+                                                 dump_dates=lambda x: f"2023-0{str(x)}-01T00:00:00Z",
+                                                 journal_filenames=lambda x: f"journal_dump_{x}.json",
+                                                 article_filenames=lambda x: f"article_dump_{x}.json")
+
+        models.DataDump.find_latest()
+        models.DataDump.first_dump_after()
+        models.DataDump.find_by_filename()
+        models.DataDump.all_dumps_before()
+
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
