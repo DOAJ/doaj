@@ -134,6 +134,43 @@ Journals that publish special issues or other content curated by guest editors m
 
 ---
 
+## Best practices
+
+The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We recommend journals to adopt these best practices but they are not mandatory for DOAJ indexing.
+
+### Archiving policy
+
+- The journal content should be continuously deposited in a long-term digital archiving system. Deposits should be into one of these archives:
+  - any archiving agency included in Keepers Registry 
+  - Internet Archive
+  - PubMed Central
+
+---
+
+### Repository policy
+
+- This is also known as self-archiving. Does the journal have a policy allowing authors to deposit versions of their work in an institutional or other repository of their choice?
+- Authors should be permitted to deposit all versions of their paper in an institutional or subject repository:
+  - Preprint
+  - Author's Accepted Manuscript
+  - Published article (Version of Record)
+- An embargo should not be applied.
+
+---
+
+### Persistent article identifiers
+
+- Articles should use persistent article identifiers. DOI, ARK or Handle are the most commonly used.
+- All persistent links should resolve correctly.
+
+---
+
+### Metadata supply to DOAJ	
+
+- Article metadata should be uploaded to DOAJ regularly. [Uploading article metadata](https://doaj.org/docs/faq/#uploading-article-metadata) increases the visibility and impact of published research.
+
+---
+
 ## Additional criteria for some journal types
 
 {:.tabular-list}
@@ -250,6 +287,8 @@ Please note that these translations may not include the latest changes made to t
 Our criteria are available in:
 
 - [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
+- [Bahasa Indonesia](https://docs.google.com/document/d/1cONA_31Hq8_nvFKQ2_vu0LZ5c4ipdRtE/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
 - [Chinese (application form)](https://zenodo.org/record/4350096)
 - [Chinese](https://zenodo.org/record/4633341)
 - [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
@@ -261,7 +300,7 @@ Our criteria are available in:
 - [Portuguese](https://drive.google.com/file/d/15ThVsQCJkYnv2Vw-A6mkgMVGVoO9oBB7/view?usp=sharing)
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
 - [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
-- [Turkish](https://docs.google.com/document/d/1phq4wUlmt2nsg-XNuuYIP3DCxQqf62n6/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Turkish](https://docs.google.com/document/d/18JYSfpAMxUsdQctxdqY2WCggGWHYGIiC/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
 
 ---
 

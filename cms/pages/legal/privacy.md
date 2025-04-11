@@ -22,7 +22,7 @@ The DOAJ Deputy Director, Dominic Mitchell, has assumed responsibility for the D
 
 ### The policy
 
-This is the website for Directory of Open Access Journals, which is managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [News Service](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and its operations only.
+This is the website for Directory of Open Access Journals, which is managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [DOAJ Blog](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and the DOAJ blog only.
 
 ### 1) The information we collect and how we use it
 
