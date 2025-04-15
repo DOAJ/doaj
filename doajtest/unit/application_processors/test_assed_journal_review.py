@@ -29,6 +29,7 @@ JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
 del JOURNAL_FORM["owner"]
 del JOURNAL_FORM["editor_group"]
 del JOURNAL_FORM["editor"]
+del JOURNAL_FORM["s2o"]
 
 ######################################################
 # Main test class
@@ -61,7 +62,7 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         # we start by constructing it from source
         formulaic_context = JournalFormFactory.context("associate_editor")
         fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
-        # fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", source=models.Journal(**JOURNAL_SOURCE))
+
         assert isinstance(fc, AssEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
@@ -99,6 +100,7 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
+        assert fc.target.bibjson().labels == ["s2o"]
         assert fc.target.current_application == "qwertyuiop"
         related = fc.target.related_applications
         assert len(related) == 2

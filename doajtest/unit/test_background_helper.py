@@ -2,6 +2,7 @@ from unittest import TestCase
 
 import huey.api
 
+import portality.util
 from doajtest import helpers
 from portality import constants
 from portality.background import BackgroundTask
@@ -45,7 +46,7 @@ class TestRedisHueyTaskHelper(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls.org_config = helpers.patch_config(app, {
+        cls.org_config = portality.util.patch_config(app, {
             'HUEY_SCHEDULE': {
                 cls.task_name_a: constants.CRON_NEVER,
             },
@@ -57,7 +58,7 @@ class TestRedisHueyTaskHelper(TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         super().tearDownClass()
-        helpers.patch_config(app, cls.org_config)
+        portality.util.patch_config(app, cls.org_config)
 
     def test_01_register_schedule(self):
         helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue, fixture_bgtask_class(self.task_name_a))
@@ -75,7 +76,7 @@ class TestRedisHueyTaskHelper(TestCase):
         def _fn1():
             print('fake fn')
 
-        assert _fn1 is None # We've added a catch to check if we get ValueError from huey we should return None
+        assert _fn1 is None  # We've added a catch to check if we get ValueError from huey we should return None
 
     def test_03_register_schedule__schedule_not_found(self):
         helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue,
@@ -86,7 +87,7 @@ class TestRedisHueyTaskHelper(TestCase):
                 print('fake fn')
 
     def test_04_register_execute(self):
-        helper = background_helper.RedisHueyTaskHelper(scheduled_short_queue, fixture_bgtask_class(self.task_name_b))
+        helper = background_helper.RedisHueyTaskHelper(events_queue, fixture_bgtask_class(self.task_name_b))
 
         @helper.register_execute(is_load_config=True)
         def _fn3():

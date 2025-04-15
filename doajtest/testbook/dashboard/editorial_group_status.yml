@@ -28,6 +28,13 @@ tests:
       to this group.
     - The number of search results is the same as shown on the dashboard
   - step: Go back to the dashboard page
+  - step: Click on one of the statuses in the colour legend under "Open Applications" header (you may want to
+      right click to keep the dashboard tab open during this test)
+    results:
+      - You are taken to the application search which shows the open applications in
+        that status
+      - The number of search results is the same as shown on the dashboard
+  - step: Go back to the dashboard page
   - step: Click on an editor's name
     results:
     - A mail window opens in your mail client

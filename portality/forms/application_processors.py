@@ -534,6 +534,7 @@ class EditorApplication(ApplicationProcessor):
 
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:
@@ -636,7 +637,7 @@ class AssociateApplication(ApplicationProcessor):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
-        self.target.set_seal(self.source.has_seal())
+        self.target.bibjson().labels = self.source.bibjson().labels
         self._carry_continuations()
 
     def finalise(self):
@@ -688,13 +689,14 @@ class PublisherUpdateRequest(ApplicationProcessor):
             raise Exception("You cannot patch a target from a non-existent source")
 
         super().patch_target()
-        self._carry_subjects_and_seal()
+        self._carry_subjects()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
@@ -756,13 +758,10 @@ class PublisherUpdateRequest(ApplicationProcessor):
                 }
             ))
 
-    def _carry_subjects_and_seal(self):
+    def _carry_subjects(self):
         # carry over the subjects
         source_subjects = self.source.bibjson().subject
         self.target.bibjson().subject = source_subjects
-
-        # carry over the seal
-        self.target.set_seal(self.source.has_seal())
 
 
 class PublisherUpdateRequestReadOnly(ApplicationProcessor):
@@ -873,6 +872,7 @@ class EditorJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self._merge_notes_forward()
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def pre_validate(self):
         # call to super handles all the basic disabled field
@@ -932,6 +932,7 @@ class AssEdJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import json
-import re
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -427,7 +427,7 @@ class DomainObject(UserDict, object):
         return cls.send_query(query)
 
     @classmethod
-    def send_query(cls, qobj, retry=50, **kwargs):
+    def send_query(cls, qobj, retry=50, pit_query=False, **kwargs):
         """Actually send a query object to the backend.
         :param kwargs are passed directly to Elasticsearch search() function
         """
@@ -445,7 +445,8 @@ class DomainObject(UserDict, object):
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
                 if kwargs.get('timeout') is None:
                     kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', None)
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
+                index = cls.index_name() if pit_query is False else None
+                r = ES.search(body=json.dumps(qobj), index=index, doc_type=cls.doc_type(),
                               headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
@@ -579,6 +580,8 @@ class DomainObject(UserDict, object):
         :param limit: Limit the number of results returned (e.g. to take a slice)
         :param wrap: Whether to return the results in raw json or wrapped as an object
         :param keepalive: scroll timeout
+
+        TODO: this is the old method, we should evaluate and aim to make iterate_pit the default scroll method.
         """
         theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
         theq["size"] = page_size
@@ -659,19 +662,238 @@ class DomainObject(UserDict, object):
                     yield r
 
     @classmethod
+    def iterate_pit(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
+                    keepalive: str = '1m'):
+        """ Provide an iterable of all items in a model, reimplemented using point-in-time queries
+        :param q: The query to scroll results on
+        :param page_size: limited by ElasticSearch, check settings to override
+        :param limit: Limit the number of results returned (e.g. to take a slice)
+        :param wrap: Whether to return the results in raw json or wrapped as an object
+        :param keepalive: scroll timeout
+        """
+        theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
+        theq["size"] = page_size
+        theq["from"] = 0
+        if "sort" not in theq:
+            # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
+            theq["sort"] = ["_doc"]
+
+        # Open a point in time query context
+        res = ES.open_point_in_time(index=cls.index_name(), keep_alive=keepalive)
+        pit_id = res.get("id")
+
+        theq["pit"] = {
+            "id": pit_id,
+            "keep_alive": keepalive
+        }
+        theq["track_total_hits"] = True
+
+        first_resp = cls.send_query(theq, pit_query=True)
+        if len(first_resp.get('hits', {}).get('hits', [])) == 0:
+            return
+
+        search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+        total_results = first_resp.get('hits', {}).get('total', {}).get('value')
+
+        # Supply the first set of results
+        counter = 0
+        for r in cls.handle_es_raw_response(
+                first_resp,
+                wrap=wrap,
+                extra_trace_info=
+                "\nPIT Initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+            counter += 1
+            if wrap:
+                yield cls(**r)
+            else:
+                yield r
+
+        del theq["track_total_hits"]
+
+        # Continue to scroll through the rest of the results
+        while True:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+
+            # if we consumed all the results we were expecting, we can just stop here
+            if counter >= total_results:
+                break
+
+            theq["search_after"] = search_after
+
+            # get the next page and check that we haven't timed out
+            try:
+                res = cls.send_query(theq, pit_query=True)
+                if len(res.get('hits', {}).get('hits', [])) == 0:
+                    break
+                search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+            except elasticsearch.exceptions.NotFoundError as e:
+                raise ScrollTimeoutException(
+                    "PIT timed out; {status} - {message}".format(status=e.status_code, message=e.info))
+            except Exception as e:
+                # if any other exception occurs, make sure it's at least logged.
+                app.logger.exception("Unhandled exception in iterate_pit method of DAO")
+                try:
+                    ES.close_point_in_time({"id": pit_id})
+                except:
+                    pass
+                raise ScrollException(e)
+
+            for r in cls.handle_es_raw_response(
+                    res,
+                    wrap=wrap,
+                    extra_trace_info=
+                    "\nPIT:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                            .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+                # apply the limit
+                if limit is not None and counter >= int(limit):
+                    break
+                counter += 1
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
+
+        ES.close_point_in_time({"id": pit_id})
+
+    @classmethod
+    def iterate_unstable(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True):
+        """ Provide an iterable of all items in a model, using search_after but with no scroll context or
+        PIT.  This means that if the index changes as the iterate is happening, there may be repeated or
+        missed elements.  This is useful for cases where the index is not changing during the iteration, or the
+        exact export is not important (e.g. for anon_export for testing purposes)
+
+        :param q: The query to scroll results on
+        :param page_size: limited by ElasticSearch, check settings to override
+        :param limit: Limit the number of results returned (e.g. to take a slice)
+        :param wrap: Whether to return the results in raw json or wrapped as an object
+        """
+        theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
+        theq["size"] = page_size
+        if "from" in theq:
+            del theq["from"]
+
+        if "sort" not in theq:
+            # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
+            theq["sort"] = [{"_doc": "desc"}]
+
+        theq["track_total_hits"] = True
+
+        first_resp = cls.send_query(theq)
+        if len(first_resp.get('hits', {}).get('hits', [])) == 0:
+            return
+
+        search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
+        total_results = first_resp.get('hits', {}).get('total', {}).get('value')
+
+
+        # Supply the first set of results
+        counter = 0
+        for r in cls.handle_es_raw_response(
+                first_resp,
+                wrap=wrap,
+                extra_trace_info=
+                "\nUnstable Iterate Initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+            counter += 1
+            if wrap:
+                yield cls(**r)
+            else:
+                yield r
+
+        del theq["track_total_hits"]
+
+        # Continue to scroll through the rest of the results
+        while True:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+
+            # if we consumed all the results we were expecting, we can just stop here
+            if counter >= total_results:
+                break
+
+            theq["search_after"] = search_after
+            try:
+                res = cls.send_query(theq)
+                if len(res.get('hits', {}).get('hits', [])) == 0:
+                    break
+                search_after = res.get('hits', {}).get('hits', [])[-1].get('sort', [])
+            except Exception as e:
+                # if any exception occurs, make sure it's at least logged.
+                app.logger.exception("Unhandled exception in iterate_unstable method of DAO")
+                raise ScrollException(e)
+
+            for r in cls.handle_es_raw_response(
+                    res,
+                    wrap=wrap,
+                    extra_trace_info=
+                    "\nUnstable Iterate:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                            .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+                # apply the limit
+                if limit is not None and counter >= int(limit):
+                    break
+                counter += 1
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
+
+    @classmethod
     def iterall(cls, page_size=1000, limit=None, **kwargs):
+        # TODO: Another candidate for swapping to iterate_pit (or rename iterate_pit to iterate when we're happy)
         return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
-    # an alias for the iterate function
+    @classmethod
+    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, limit=None, **kwargs):
+        def hex_prefixes(n=3):
+            """ Generate a list of hex prefixes of length n """
+            return [str(hex(i))[2:].zfill(3) for i in range(0, 16 ** 3)]
+
+        if striped:
+            count = 0
+            prefixes = prefix_generator() if prefix_generator is not None else hex_prefixes()
+            for prefix in prefixes:
+                q = {
+                    "query": {
+                        "prefix": {stripe_field: prefix}
+                    }
+                }
+                for record in cls.iterate_unstable(q, page_size, limit=limit, **kwargs):
+                    if limit is not None:
+                        count += 1
+                        if count > limit:
+                            return
+                    yield record
+        else:
+            for record in cls.iterate_unstable(q=None, page_size=page_size, limit=limit, **kwargs):
+                yield record
+
+    # Aliases for the iterate functions
     scroll = iterate
+    scroll_pit = iterate_pit
 
     @classmethod
     def dump(cls, q=None, page_size=1000, limit=None, out=None, out_template=None, out_batch_sizes=100000,
              out_rollover_callback=None, transform=None, es_bulk_format=True, idkey='id', es_bulk_fields=None,
-             scroll_keepalive='2m'):
+             stripe_field="id", striped=False, prefix_generator=None):
         """ Export to file, bulk format or just a json dump of the record """
-
-        q = q if q is not None else {"query": {"match_all": {}}}
 
         filenames = []
         n = 1
@@ -685,7 +907,14 @@ class DomainObject(UserDict, object):
             out = sys.stdout
 
         count = 0
-        for record in cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
+        if q is None:
+            iterator = cls.iterall_unstable(page_size=page_size, stripe_field=stripe_field,
+                                            striped=striped, prefix_generator=prefix_generator,
+                                            limit=limit, wrap=False)
+        else:
+            iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
+
+        for record in iterator:
             if transform is not None:
                 record = transform(record)
 
@@ -959,8 +1188,8 @@ class DomainObject(UserDict, object):
         return cls.q2obj(size=size, **kwargs)
 
     @classmethod
-    def count(cls):
-        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type())
+    def count(cls, query=None):
+        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type(), body=query)
         return res.get("count")
         # return requests.get(cls.target() + '_count').json()['count']
 
@@ -1085,6 +1314,14 @@ def find_index_aliases(alias_prefixes=None) -> Iterable[Tuple[str, str]]:
         index_aliases = ((index, alias) for index, alias in index_aliases
                          if any(alias.startswith(p) for p in alias_prefixes))
     return index_aliases
+
+
+def is_exist(query: dict, index):
+    query['size'] = 1
+    query['_source'] = False
+    res = ES.search(body=query, index=index, size=1, ignore=[404])
+
+    return res.get('hits', {}).get('total',{}).get('value', 0) > 0
 
 
 class BlockTimeOutException(Exception):

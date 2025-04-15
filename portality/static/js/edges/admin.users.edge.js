@@ -53,9 +53,30 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: true,
-                        togglable: false,
+                        togglable: true,
                         countFormat: countFormat,
                         hideInactive: true
+                    })
+                }),
+
+                edges.newDateHistogramSelector({
+                    id: "created_date",
+                    category: "facet",
+                    field : "created_date",
+                    interval: "year",
+                    display: "Created Date",
+                    displayFormatter : function(val) {
+                        return (new Date(parseInt(val))).getUTCFullYear();
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: edges.bs3.newDateHistogramSelectorRenderer({
+                        countFormat: countFormat,
+                        hideInactive: true,
+                        open: true,
+                        togglable: true
                     })
                 }),
 
@@ -161,7 +182,11 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "role.exact": "Role"
+                        "role.exact": "Role",
+                        "created_date": "Created Date"
+                    },
+                    rangeFunctions : {
+                        "created_date" : doaj.valueMaps.displayYearPeriod
                     }
                 })
             ];

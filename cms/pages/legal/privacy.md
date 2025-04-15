@@ -22,7 +22,7 @@ The DOAJ Deputy Director, Dominic Mitchell, has assumed responsibility for the D
 
 ### The policy
 
-This is the website for Directory of Open Access Journals, which is managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [News Service](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and its operations only.
+This is the website for Directory of Open Access Journals, which is managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [DOAJ Blog](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and the DOAJ blog only.
 
 ### 1) The information we collect and how we use it
 
@@ -30,9 +30,9 @@ This is the website for Directory of Open Access Journals, which is managed by [
 
 Before you submit an application, you must register an account or sign into your account. Your account stores:
 
-Your name
-Your email address
-Your password
+- Your name
+- Your email address
+- Your password
 
 An account is created and stored in our User database. We need these details to process your application. You are the **Account holder**. We will use the email address you provided to contact you:
 
@@ -112,7 +112,6 @@ When you use DOAJ, cookies are set on your machine. The cookies we set are:
 *   doaj.org - a small number of required cookies for the application to function, for example, when you log in and click away the cookie consent banner.
 *   schema - if you upload article metadata to us via the Upload Article XML tab, we place a cookie on your machine which allows us to remember which XSD schema you used the last time you uploaded XML to us: doaj or Crossref
 *   hotjar - we sometimes use Hotjar to do unmoderated monitoring of user journeys through our site. We look at where they click on a page and where they stop in a process. This is only occasional. We always use a Hotjar widget to collect feedback on individual journal pages.
-*   twitter - on our homepage is an embedded X (Twitter) feed. This app comes with cookies to make X (Twitter) work, such as checking to see if you are logged in or whether you have specific advertising preferences.
 
 You can disable these cookies at any time by using the privacy settings in your browser. However, the performance and some functions of the site may be affected.
 

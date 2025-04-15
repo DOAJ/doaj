@@ -193,7 +193,6 @@ class TestQuery(DoajTestCase):
         j.set_created("2010-01-01T00:00:00Z")
         j.set_last_updated("2012-01-01T00:00:00Z")
         j.set_last_manual_update("2014-01-01T00:00:00Z")
-        j.set_seal(True)
         j.set_owner("rama")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
@@ -335,9 +334,9 @@ class TestQuery(DoajTestCase):
         res = {
           "hits": {
             "hits": [
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}}
+              { "_type": "article", "_source": { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}}
             ],
             "total": 3
           }
@@ -348,9 +347,9 @@ class TestQuery(DoajTestCase):
         assert res == {
           "hits": {
             "hits": [
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}}
+              { "_type": "article", "_source": { "admin": {}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {}, "bibjson": {}}}
             ],
             "total": 3
           }
@@ -363,18 +362,18 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
 
-        res1 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
-        res2 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
-        res3 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res1 = { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res2 = { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res3 = { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}
 
         res1 = qsvc._post_filter_search_results(cfg, res1, unpacked=True)
-        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res1 == { "admin": {}, "bibjson": {}}
 
         res2 = qsvc._post_filter_search_results(cfg, res2, unpacked=True)
-        assert res2 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res2 == { "admin": {}, "bibjson": {}}
 
         res3 = qsvc._post_filter_search_results(cfg, res3, unpacked=True)
-        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res1 == { "admin": {}, "bibjson": {}}
 
     def test_07_get_query(self):
         # q = Query()
@@ -404,7 +403,7 @@ class TestQuery(DoajTestCase):
                     ]
                 }
             },
-            '_source': {'includes': ['last_updated', 'admin.ticked', 'created_date', 'admin.seal', 'id', 'bibjson']},
+            '_source': {'includes': ['last_updated', 'admin.ticked', 'created_date', 'id', 'bibjson']},
             'from': 0, 'size': 100
         }
         q_but_source = without_keys(query.as_dict(), ['_source'])
