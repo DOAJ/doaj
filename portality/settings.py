@@ -192,7 +192,7 @@ STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 STORE_HARVESTER_CONTAINER = "doaj-harvester"
-STORE_EXPORT_CONTAINER = "doaj-export"
+STORE_EXPORT_CONTAINER = "doaj-export-placeholder"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -206,12 +206,17 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used by the api_export script to dump data from the api
-    constants.STORE__SCOPE__PUBLIC_DATA_DUMP : {
-        "aws_access_key_id" : "put this in your dev/test/production.cfg",
-        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    constants.STORE__SCOPE__PUBLIC_DATA_DUMP: {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used to store harvester run logs to S3
     "harvester": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
+    },
+    # Used to store the admin-generated CSV reports
+    "export": {
         "aws_access_key_id": "put this in your dev/test/production.cfg",
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     }
