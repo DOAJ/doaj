@@ -23,7 +23,7 @@ class ApplicationAssedInprogressNotify(EventConsumer):
 
         application = consumer_utils.parse_application(app_source)
         if not application.editor:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -41,3 +41,4 @@ class ApplicationAssedInprogressNotify(EventConsumer):
         notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)
+        return notification
