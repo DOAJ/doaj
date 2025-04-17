@@ -192,6 +192,7 @@ STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 STORE_HARVESTER_CONTAINER = "doaj-harvester"
+STORE_EXPORT_CONTAINER = "doaj-export"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -480,7 +481,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
-    "portality.models.autocheck.Autocheck" # ~~-> Autocheck:Model~~
+    "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
+    "portality.models.export.Export", # ~~-> Export:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -814,6 +816,11 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
             "required_parameters": None
+        },
+        "reports": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Export"
         }
     },
     "associate_query": {

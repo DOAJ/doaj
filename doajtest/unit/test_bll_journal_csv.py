@@ -115,6 +115,12 @@ class TestBLLJournalCSV(DoajTestCase):
                 comparisons[issns[0]]["article_count"] = 2
                 comparisons[issns[0]]["article_latest"] = "2019-0{i}-02T00:00:00Z".format(i=i + 1)
 
+        if journals_with_articles_count == 0:
+            # make an article to initialise the mapping
+            source = ArticleFixtureFactory.make_article_source(eissn="XXXX-XXXX", pissn="XXXX-XXXX", with_id=False, in_doaj=False)
+            article = models.Article(**source)
+            articles.append(article)
+
         if journals_no_issn_count > 0:
             noissns = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journals_no_issn_count, in_doaj=True)]
             for i in range(len(noissns)):
