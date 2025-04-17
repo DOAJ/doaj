@@ -23,10 +23,10 @@ class ApplicationEditorGroupAssignedNotify(EventConsumer):
         application = consumer_utils.parse_application(app_source)
 
         if application.application_type != constants.APPLICATION_TYPE_NEW_APPLICATION:
-            return
+            return None
 
         if not application.editor_group:
-            return
+            return None
 
         editor_group = models.EditorGroup.pull_by_key("name", application.editor_group)
 
@@ -51,3 +51,4 @@ class ApplicationEditorGroupAssignedNotify(EventConsumer):
         notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)
+        return notification

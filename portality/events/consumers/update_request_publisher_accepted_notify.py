@@ -36,13 +36,13 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
     @classmethod
     def consume(cls, event):
         if not Account.is_enable_publisher_email():
-            return
+            return None
 
         app_source = event.context.get("application")
 
         application = consumer_utils.parse_application(app_source)
         if not application.owner:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -64,3 +64,4 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         notification.action = url_for("publisher.journals")
 
         svc.notify(notification)
+        return notification
