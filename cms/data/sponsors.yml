@@ -144,14 +144,18 @@
 - name: PLOS
   url: https://plos.org/
   logo: plos.svg
-  
+
+- name: Publishers Licensing Services
+  url: https://www.pls.org.uk/
+  logo: PLS-logo-RGB.png
+
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
 
 - name: Scandinavian University Press
   url: https://www.universitetsforlaget.no/en/
-  logo: scup-logo.png
+  logo: SCUP-logo.png
   
 - name: SciFree
   url: https://scifree.se/

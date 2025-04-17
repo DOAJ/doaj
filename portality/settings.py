@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.1.2"
+DOAJ_VERSION = "8.2.0"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -1248,6 +1248,11 @@ ANALYTICS_CATEGORY_OPENURL = 'OpenURL'
 ANALYTICS_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
 ANALYTICS_ACTION_PUBLICDATADUMP = 'Download'
 
+# Plausible for RIS
+# ~~->PublicDataDump:Feature~~
+ANALYTICS_CATEGORY_RIS = 'RIS'
+ANALYTICS_ACTION_RISEXPORT = 'Export'
+
 # Plausible for API
 # ~~-> API:Feature~~
 ANALYTICS_CATEGORY_API = 'API Hit'
@@ -1644,3 +1649,8 @@ BGJOB_MANAGE_REDUNDANT_ACTIONS = [
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
 HONEYPOT_TIMER_THRESHOLD = 5000;
+
+##################################################
+# Object validation settings
+
+SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False

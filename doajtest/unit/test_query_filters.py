@@ -102,11 +102,11 @@ class TestQueryFilters(DoajTestCase):
         res = {
             "hits": {
                 "hits": [
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {}}}
                 ],
                 "total": 3
@@ -118,9 +118,9 @@ class TestQueryFilters(DoajTestCase):
         assert newres == {
             "hits": {
                 "hits": [
-                    {"_type": "article", "_source": {"admin": {"seal": False}, "bibjson": {}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False}, "bibjson": {}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False}, "bibjson": {}}}
+                    {"_type": "article", "_source": {"admin": {}, "bibjson": {}}},
+                    {"_type": "article", "_source": {"admin": {}, "bibjson": {}}},
+                    {"_type": "article", "_source": {"admin": {}, "bibjson": {}}}
                 ],
                 "total": 3
             }
@@ -128,11 +128,11 @@ class TestQueryFilters(DoajTestCase):
 
     def test_07_public_result_filter_unpacked(self):
         res = {
-            "admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
+            "admin": {"publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
             "bibjson": {}}
 
         newres = query_filters.public_result_filter(res, unpacked=True)
-        assert newres == {"admin": {"seal": False}, "bibjson": {}}, newres
+        assert newres == {"admin": {}, "bibjson": {}}, newres
 
     def test_08_publisher_result_filter(self):
         apsrc_admin = ApplicationFixtureFactory.make_update_request_source()['admin']
@@ -144,7 +144,7 @@ class TestQueryFilters(DoajTestCase):
         apsrc_admin['related_applications'] = [1, 2, 3]
         apsrc_admin['current_application'] = 'abcde'
 
-        allowed = ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal",
+        allowed = ["ticked", "in_doaj", "related_applications", "current_application", "current_journal",
                    "application_status"]
         forbidden = ['notes', 'contact', 'editor_group', 'editor', 'related_journal']
 
@@ -181,7 +181,7 @@ class TestQueryFilters(DoajTestCase):
         apsrc_admin['related_applications'] = [1, 2, 3]
         apsrc_admin['current_application'] = 'abcde'
 
-        allowed = ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal",
+        allowed = ["ticked", "in_doaj", "related_applications", "current_application", "current_journal",
                    "application_status"]
         forbidden = ['notes', 'contact', 'editor_group', 'editor', 'related_journal']
 
@@ -203,17 +203,17 @@ class TestQueryFilters(DoajTestCase):
         res = {
             "hits": {
                 "hits": [
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
                                                          {"author": [{'name': "Janet Author",
                                                                       'email': 'janet@example.com'}]}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
                                                          {"author": [{'name': "Janet Author",
                                                                       'email': 'janet@example.com'},
                                                                      {'name': "Jimmy Author",
                                                                       'email': 'jimmy@example.com'}]}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
                                                          {"author": [{'name': "Janet Author"},
                                                                      {'name': "Jimmy Author"}]}}},
@@ -227,14 +227,14 @@ class TestQueryFilters(DoajTestCase):
         assert newres == {
             "hits": {
                 "hits": [
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
                                                          {"author": [{'name': "Janet Author"}]}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
                                                          {"author": [{'name': "Janet Author"},
                                                                      {'name': "Jimmy Author"}]}}},
-                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                    {"_type": "article", "_source": {"admin": {"publisher_record_id": "some_identifier",
                                                                "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
                                                          {"author": [{'name': "Janet Author"},
                                                                      {'name': "Jimmy Author"}]}}},
@@ -246,43 +246,43 @@ class TestQueryFilters(DoajTestCase):
     def test_11_prune_author_emails_unpacked(self):
         """Check we don't let publisher emails through the query endpoint"""
         res1 = {
-            "admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
+            "admin": {"publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
             "bibjson": {"author": [{'name': "Janet Author", 'email': 'janet@example.com'}]}}
         res2 = {
-            "admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
+            "admin": {"publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
             "bibjson": {"author": [{'name': "Janet Author", 'email': 'janet@example.com'},
                                    {'name': "Jimmy Author", 'email': 'jimmy@example.com'}]}}
         res3 = {
-            "admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
+            "admin": {"publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
             "bibjson": {"author": [{'name': "Janet Author"}, {'name': "Jimmy Author"}]}}
 
         newres1 = query_filters.prune_author_emails(res1, unpacked=True)
         expres1 = {
-            "admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
+            "admin": {"publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
             "bibjson": {"author": [{'name': "Janet Author"}]}}
         assert newres1 == expres1, newres1
 
         newres2 = query_filters.prune_author_emails(res2, unpacked=True)
         expres2 = {
-            "admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
+            "admin": {"publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
             "bibjson": {"author": [{'name': "Janet Author"}, {'name': "Jimmy Author"}]}}
         assert newres2 == expres2, newres2
 
         newres3 = query_filters.prune_author_emails(res3, unpacked=True)
         expres3 = {
-            "admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
+            "admin": {"publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"},
             "bibjson": {"author": [{'name': "Janet Author"}, {'name': "Jimmy Author"}]}}
         assert newres3 == expres3, newres3
 
     def test_12_private_source(self):
         newq = query_filters.private_source(self.q)
-        fields = ["admin.application_status", "admin.ticked", "admin.seal", "last_updated", "created_date", "id",
+        fields = ["admin.application_status", "admin.ticked", "last_updated", "created_date", "id",
                   "bibjson"]
         assert len(newq.as_dict()["_source"]["includes"]) == len(fields), newq.as_dict()
         assert sorted(newq.as_dict()["_source"]["includes"]) == sorted(fields), newq.as_dict()
 
     def test_13_public_source(self):
         newq = query_filters.public_source(self.q)
-        fields = ["admin.ticked", "admin.seal", "last_updated", "created_date", "id", "bibjson"]
+        fields = ["admin.ticked", "last_updated", "created_date", "id", "bibjson"]
         assert len(newq.as_dict()["_source"]["includes"]) == len(fields), newq.as_dict()
         assert sorted(newq.as_dict()["_source"]["includes"]) == sorted(fields), newq.as_dict()

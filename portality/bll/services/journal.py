@@ -81,7 +81,6 @@ class JournalService(object):
             # check the origin of some journal notes by comparing ids to application notes.
             application.add_note_by_dict(n)
         application.set_owner(journal.owner)
-        application.set_seal(journal.has_seal())
         application.set_bibjson(bj)
         application.date_applied = dates.now_str()
 

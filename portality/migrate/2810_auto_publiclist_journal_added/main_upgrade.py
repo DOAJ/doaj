@@ -13,15 +13,13 @@ def has_any(val):
 
 
 def to_datalog_journal_added(row):
-    title, issn, date_added, has_seal, has_continuations, *_ = row
-    has_seal = has_any(has_seal)
+    title, issn, date_added, has_continuations, *_ = row
     has_continuations = has_any(has_continuations)
 
     obj = DatalogJournalAdded(
         title=title,
         issn=issn,
         date_added=date_added,
-        has_seal=has_seal,
         has_continuations=has_continuations,
     )
     dao.patch_model_for_bulk(obj)

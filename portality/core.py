@@ -180,7 +180,6 @@ def create_es_connection(app):
     conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'],
                                        verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True),
                                        timeout=app.config.get('ELASTICSEARCH_REQ_TIMEOUT', 15))
-
     return conn
 
 
@@ -192,14 +191,18 @@ def prepare_type(es_type):
         initialise_index(app, es_connection, only_mappings=es_type)
 
 
-def put_mappings(conn, mappings):
+def put_mappings(conn, mappings, force_mappings=False):
 
     for key, mapping in iter(mappings.items()):
         altered_key = app.config['ELASTIC_SEARCH_DB_PREFIX'] + key
 
-        # If the alias exists, we don't create any new indices (app already initialised)
+        # If the alias exists, we don't automatically create any new indices (app already initialised)
         if conn.indices.exists(altered_key):
-            print("Alias {0} already exists for type {1}".format(altered_key, key))
+            if force_mappings:
+                r = conn.indices.put_mapping(index=altered_key, body=mapping.get("mappings"), request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
+                print("Updating mapping via alias {0} for {1}; status: {2}".format(altered_key, key, r))
+            else:
+                print("Alias {0} already exists for type {1}".format(altered_key, key))
         else:
             print("Preparing new index / alias for " + key)
             # Set up a new index and corresponding alias
@@ -217,12 +220,13 @@ def put_mappings(conn, mappings):
             print("Created alias:     {:<25} -> {},  status {}".format(idx_name, altered_key, resp2))
 
 
-def initialise_index(app, conn, only_mappings=None):
+def initialise_index(app, conn, only_mappings=None, force_mappings=False):
     """
     ~~InitialiseIndex:Framework->Elasticsearch:Technology~~
     :param app:
     :param conn:
     :param only_mappings: Init a subset of the index types
+    :param force_mappings: Put the mapping to an index that already exists
     :return:
     """
     if not app.config['INITIALISE_INDEX']:
@@ -240,7 +244,7 @@ def initialise_index(app, conn, only_mappings=None):
         mappings = {key: value for (key, value) in mappings.items() if key in only_mappings}
 
     # Send the mappings to ES
-    put_mappings(conn, mappings)
+    put_mappings(conn, mappings, force_mappings)
 
 
 ##################################################

@@ -74,20 +74,6 @@ $.extend(true, doaj, {
                 // facets
                 doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
-                    id: "has_seal",
-                    category: "facet",
-                    field: "index.has_seal.exact",
-                    display: "DOAJ Seal",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
                     id: "owner",
                     category: "facet",
                     field: "admin.owner.exact",
@@ -561,7 +547,6 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         "admin.in_doaj" : "In DOAJ?",
-                        "index.has_seal.exact" : "Seal?",
                         "admin.owner.exact" : "Owner",
                         "index.has_editor_group.exact" : "Editor group?",
                         "index.has_editor.exact" : "Associate Editor?",

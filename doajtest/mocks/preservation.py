@@ -35,7 +35,6 @@ class PreservationMock:
             ],
             "unpunctitle": "Variation in TMEM106B in chronic traumatic encephalopathy",
             "asciiunpunctitle": "Variation in TMEM106B in chronic traumatic encephalopathy",
-            "has_seal": "Yes",
             "doi": "10.1186/s40478-018-0619-9",
             "fulltext": "//link.springer.com/article/10.1186/s40478-018-0619-9",
             "schema_codes_tree": [
@@ -47,8 +46,7 @@ class PreservationMock:
         },
         "last_updated": "2020-11-24T21:55:20Z",
         "admin": {
-            "in_doaj": "true",
-            "seal": "true"
+            "in_doaj": "true"
         },
         "created_date": "2018-11-04T12:37:46Z",
         "id": "00003741594643f4996e2555a01e03c7",
@@ -260,7 +258,6 @@ class PreservationMock:
             ],
             "unpunctitle": "Variation in TMEM106B in chronic traumatic encephalopathy",
             "asciiunpunctitle": "Variation in TMEM106B in chronic traumatic encephalopathy",
-            "has_seal": "Yes",
             "doi": "10.3389/fcosc.2022.1028295",
             "fulltext": "https://frontiersin.org/articles/10.3389/fcosc.2022.1028295",
             "schema_codes_tree": [
@@ -272,8 +269,7 @@ class PreservationMock:
         },
         "last_updated": "2020-11-24T21:55:20Z",
         "admin": {
-            "in_doaj": "true",
-            "seal": "true"
+            "in_doaj": "true"
         },
         "created_date": "2018-11-04T12:37:46Z",
         "id": "00005741594643f4996e2666a01e0310",
