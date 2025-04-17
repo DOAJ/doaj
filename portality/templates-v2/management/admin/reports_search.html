@@ -1,0 +1,27 @@
+{% extends "management/admin/base.html" %}
+
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block page_title %}Reports{% endblock %}
+
+{% block admin_content %}
+    <h1 class="sr-only">Reports</h1>
+    <div id="reports"></div>
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript">
+        $.extend(true, doaj, {
+            adminReportsSearchConfig : {
+                searchPath : '/admin_query/reports/_search'
+            }
+        });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.reports.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% endblock %}
