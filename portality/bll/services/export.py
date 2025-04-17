@@ -96,7 +96,6 @@ class ExportService(object):
             """
             kvs = [
                 ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
-                ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
                 ("Added on Date", journal.created_date if isinstance(journal, models.Journal) else journal.date_applied),
                 ("Last updated Date", journal.last_manual_update)
             ]
