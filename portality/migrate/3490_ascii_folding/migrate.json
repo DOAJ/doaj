@@ -1,21 +1,21 @@
 {
-	"new_version": "-20240307_ascii_folding",
+	"new_version": "-20250418_ascii_folding",
 	"old_version": "",
 	"types": [
 		{
 			"type" : "article",
 			"migrate": true,
-			"set_alias": false
+			"set_alias": true
 		},
 		{
 			"type": "journal",
 			"migrate": true,
-			"set_alias": false
+			"set_alias": true
 		},
 		{
 			"type": "application",
 			"migrate": true,
-			"set_alias": false
+			"set_alias": true
 		}
 	]
 }

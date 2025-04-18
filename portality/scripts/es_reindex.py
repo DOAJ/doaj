@@ -96,7 +96,19 @@ def do_import(config):
                                     success = True
                                     print(f"Reindex completed successfully: {import_type}", result)
                                     # add alias
-                                    if s.get("set_alias", False):
+                                    if s.get("set_alias", True):
+
+                                        try:
+                                            alias = es_connection.indices.get_alias(index=old_index)
+                                            print("alias for {0} is {1}".format(old_index, alias))
+                                            if alias:
+                                                index_name = list(alias.keys())[0]
+                                                alias_name = list(alias[index_name]['aliases'].keys())[0]
+                                                es_connection.indices.delete_alias(index=index_name, name=alias_name)
+                                                print("alias deleted for {0} as {1}".format(index_name, alias_name))
+                                        except NotFoundError:
+                                            pass
+
                                         es_connection.indices.put_alias(index=new_index, name=default_index_name)
                                         print("alias set for {0} as {1}".format(new_index, default_index_name))
                                     else:

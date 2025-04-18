@@ -475,6 +475,7 @@ FACET_FIELD = ".exact"
 # an array of DAO classes from which to retrieve the type-specific ES mappings
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
+    "portality.models.Article", # ~~->Article:Model~~
     "portality.models.Journal", # ~~->Journal:Model~~
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
@@ -691,7 +692,6 @@ MAPPINGS = {
     }
 }
 
-MAPPINGS['article'] = MAPPINGS["account"]  # ~~->Article:Model~~
 MAPPINGS['upload'] = MAPPINGS["account"]  # ~~->Upload:Model~~
 MAPPINGS['bulk_articles'] = MAPPINGS["account"]  # ~~->BulkArticles:Model~~
 MAPPINGS['cache'] = MAPPINGS["account"]  # ~~->Cache:Model~~
