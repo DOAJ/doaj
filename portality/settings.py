@@ -436,7 +436,7 @@ HUEY_SCHEDULE = {
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
-    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
@@ -1345,7 +1345,7 @@ PRESERVATION_COLLECTION = {}
 # Background tasks --- anon export
 TASKS_ANON_EXPORT_CLEAN = False
 TASKS_ANON_EXPORT_LIMIT = None
-TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+TASKS_ANON_EXPORT_BATCH_SIZE = 95000
 TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 
 #########################################################
