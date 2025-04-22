@@ -2,8 +2,9 @@ from portality.lib.seamless import SeamlessMixin
 from portality.dao import DomainObject
 from portality.lib.coerce import COERCE_MAP
 from datetime import datetime
-from portality.lib import dates
-from typing import Union
+from portality.lib import dates, es_data_mapping
+from typing import Union, List
+from portality.core import app
 
 
 DATA_DUMP_STRUCT = {
@@ -38,6 +39,10 @@ DATA_DUMP_STRUCT = {
     }
 }
 
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]
+}
 
 class DataDump(SeamlessMixin, DomainObject):
     __type__ = "data_dump"
@@ -45,13 +50,26 @@ class DataDump(SeamlessMixin, DomainObject):
     __SEAMLESS_STRUCT__ = DATA_DUMP_STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
 
+    def __init__(self, **kwargs):
+        # FIXME: hack, to deal with ES integration layer being improperly abstracted
+        if "_source" in kwargs:
+            kwargs = kwargs["_source"]
+        super(DataDump, self).__init__(raw=kwargs)
+
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
+
+    @property
+    def data(self):
+        return self.__seamless__.data
+
     @classmethod
     def all_dumps_before(cls, cutoff: datetime) -> list:
         q = CutoffQuery(cutoff)
         return cls.object_query(q.query())
 
     @classmethod
-    def find_by_filename(cls, filename: str) -> 'DataDump':
+    def find_by_filename(cls, filename: str) -> List['DataDump']:
         q = FilenameQuery(filename)
         return cls.object_query(q.query())
 
@@ -87,6 +105,9 @@ class DataDump(SeamlessMixin, DomainObject):
             "size": size
         })
 
+    def remove_article_dump(self):
+        self.__seamless__.delete("article")
+
     @property
     def article_container(self):
         return self.__seamless__.get_single("article.container")
@@ -94,6 +115,10 @@ class DataDump(SeamlessMixin, DomainObject):
     @property
     def article_filename(self):
         return self.__seamless__.get_single("article.filename")
+
+    @property
+    def article_url(self):
+        return self.__seamless__.get_single("article.url")
 
     def set_journal_dump(self, container, filename, size, url):
         self.__seamless__.set_with_struct("journal", {
@@ -103,13 +128,20 @@ class DataDump(SeamlessMixin, DomainObject):
             "size": size
         })
 
+    def remove_journal_dump(self):
+        self.__seamless__.delete("journal")
+
     @property
-    def joural_container(self):
+    def journal_container(self):
         return self.__seamless__.get_single("journal.container")
 
     @property
     def journal_filename(self):
         return self.__seamless__.get_single("journal.filename")
+
+    @property
+    def journal_url(self):
+        return self.__seamless__.get_single("journal.url")
 
 
 class CutoffQuery(object):
@@ -123,6 +155,11 @@ class CutoffQuery(object):
                     "dump_date": {
                         "lt": dates.format(self.cutoff)
                     }
+                }
+            },
+            "sort": {
+                "dump_date": {
+                    "order": "asc"  # oldest first
                 }
             }
         }
@@ -173,12 +210,12 @@ class FilenameQuery(object):
                     "should": [
                         {
                             "term": {
-                                "article.filename": self.filename
+                                "article.filename.exact": self.filename
                             }
                         },
                         {
                             "term": {
-                                "journal.filename": self.filename
+                                "journal.filename.exact": self.filename
                             }
                         }
                     ]

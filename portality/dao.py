@@ -785,7 +785,7 @@ class DomainObject(UserDict, object):
 
         if "sort" not in theq:
             # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
-            theq["sort"] = [{"_shard_doc": "desc"}]
+            theq["sort"] = [{"_doc": "desc"}]
 
         theq["track_total_hits"] = True
 

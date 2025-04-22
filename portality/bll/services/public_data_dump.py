@@ -1,3 +1,4 @@
+from models import DataDump
 from portality.core import app
 from portality.store import StoreFactory
 from portality import models, constants
@@ -115,6 +116,8 @@ class PublicDataDumpService:
         if prune:
             self.prune(store=store)
 
+        return dd
+
     def get_premium_dump(self):
         # Get the latest data dump
         return models.DataDump.find_latest()
@@ -183,9 +186,36 @@ class PublicDataDumpService:
         # if the filename doesn't match anything, remove the file
         for cf in container_files:
             dd = models.DataDump.find_by_filename(cf)
-            if dd is None:
+            if dd is None or len(dd) == 0:
                 self.logger("No related index record; Deleting file {x} from storage container {y}".format(x=cf, y=container))
                 store.delete_file(container, cf)
+
+        # Finally, we check all the records in the index and confirm their files exist, and if not
+        # remove the record
+        for dd in DataDump.iterate_unstable():
+            article_missing = False
+            journal_missing = False
+            if dd.article_container is not None and dd.article_filename is not None:
+                if dd.article_filename not in store.list(dd.article_container):
+                    self.logger("File {x} in container {y} does not exist".format(x=dd.article_filename, y=dd.article_container))
+                    article_missing = True
+
+            if dd.journal_container is not None and dd.journal_filename is not None:
+                if dd.journal_filename not in store.list(dd.journal_container):
+                    self.logger("File {x} in container {y} does not exist".format(x=dd.journal_filename, y=dd.journal_container))
+                    journal_missing = True
+
+            if article_missing and journal_missing:
+                self.logger("Both files missing for {x}".format(x=dd.id))
+                dd.delete()
+
+            elif article_missing:
+                dd.remove_article_dump()
+                dd.save()
+
+            elif journal_missing:
+                dd.remove_journal_dump()
+                dd.save()
 
     def _start_new_file(self, storage, container, typ, day_at_start, file_num):
         filename = self._filename(typ, day_at_start, file_num)

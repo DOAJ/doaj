@@ -8,3 +8,4 @@ from .provenance import ProvenanceFixtureFactory
 from .background import BackgroundFixtureFactory
 from doajtest.fixtures.issn_org import IssnOrgFixtureFactory
 from doajtest.fixtures.data_dump import DataDumpFixtureFactory
+from doajtest.fixtures.store import SludgePump

@@ -489,7 +489,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
-    "portality.models.autocheck.Autocheck" # ~~-> Autocheck:Model~~
+    "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
+    "portality.models.DataDump", # ~~-> DataDump:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings

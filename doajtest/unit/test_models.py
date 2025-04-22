@@ -1779,19 +1779,49 @@ class TestModels(DoajTestCase):
         assert dd.dump_date == now
         assert dd.article_filename == "a2"
         assert dd.article_container == "a1"
-        assert dd.joural_container == "j1"
+        assert dd.article_url == "a3"
+        assert dd.journal_container == "j1"
         assert dd.journal_filename == "j2"
+        assert dd.journal_url == "j3"
+
+        dd.remove_article_dump()
+        dd.remove_journal_dump()
+
+        assert dd.article_filename is None
+        assert dd.article_container is None
+        assert dd.journal_container is None
+        assert dd.journal_filename is None
 
     def test_45_data_dump_queries(self):
         dds = DataDumpFixtureFactory.make_n_data_dumps(3,
-                                                 dump_dates=lambda x: f"2023-0{str(x)}-01T00:00:00Z",
-                                                 journal_filenames=lambda x: f"journal_dump_{x}.json",
-                                                 article_filenames=lambda x: f"article_dump_{x}.json")
+                                                 dump_date=lambda x: f"2023-0{x + 1}-01T00:00:00Z",
+                                                 journal__filename=lambda x: f"journal_dump_{x + 1}.json",
+                                                 article__filename=lambda x: f"article_dump_{x + 1}.json")
+        DataDumpFixtureFactory.save_data_dumps(dds, block=True)
 
-        models.DataDump.find_latest()
-        models.DataDump.first_dump_after()
-        models.DataDump.find_by_filename()
-        models.DataDump.all_dumps_before()
+        # the latest will be the last one created, with the most recent date
+        latest = models.DataDump.find_latest()
+        assert latest.id == dds[2].id
+
+        # the first after mid January will be the second one created
+        first_after = models.DataDump.first_dump_after(dates.parse("2023-01-14T00:00:00Z"))
+        assert first_after.id == dds[1].id
+
+        # find the first one created (the oldest) by the journal filename
+        fn_journal = models.DataDump.find_by_filename("journal_dump_1.json")
+        assert len(fn_journal) == 1
+        assert fn_journal[0].id == dds[0].id
+
+        # and the last one created (the newest) by the article filename
+        fn_article = models.DataDump.find_by_filename("article_dump_3.json")
+        assert len(fn_article) == 1
+        assert fn_article[0].id == dds[2].id
+
+        # find two oldest records as being before mid February
+        before = models.DataDump.all_dumps_before(dates.parse("2023-02-14T00:00:00Z"))
+        assert len(before) == 2
+        assert before[0].id == dds[0].id
+        assert before[1].id == dds[1].id
 
 
 class TestAccount(DoajTestCase):
