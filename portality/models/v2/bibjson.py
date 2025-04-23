@@ -256,22 +256,6 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("article.license_display_example_url", url)
 
     @property
-    def article_orcid(self):
-        return self.__seamless__.get_single("article.orcid")
-
-    @article_orcid.setter
-    def article_orcid(self, val):
-        self.__seamless__.set_with_struct("article.orcid", val)
-
-    @property
-    def article_i4oc_open_citations(self):
-        return self.__seamless__.get_single("article.i4oc_open_citations")
-
-    @article_i4oc_open_citations.setter
-    def article_i4oc_open_citations(self, val):
-        self.__seamless__.set_with_struct("article.i4oc_open_citations", val)
-
-    @property
     def author_retains_copyright(self):
         return self.__seamless__.get_single("copyright.author_retains")
 
@@ -381,6 +365,8 @@ class JournalLikeBibJSON(SeamlessMixin):
     @has_other_charges.setter
     def has_other_charges(self, val):
         self.__seamless__.set_with_struct("other_charges.has_other_charges", val)
+        if val is False:
+            del self.other_charges_url
 
     @property
     def other_charges_url(self):
@@ -389,6 +375,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     @other_charges_url.setter
     def other_charges_url(self, url):
         self.__seamless__.set_with_struct("other_charges.url", url)
+
+    @other_charges_url.deleter
+    def other_charges_url(self):
+        self.__seamless__.delete("other_charges.url")
 
     @property
     def pid_scheme(self):
@@ -597,8 +587,10 @@ class JournalLikeBibJSON(SeamlessMixin):
         return self.__seamless__.get_single("waiver.has_waiver")
 
     @has_waiver.setter
-    def has_waiver(self, url):
-        self.__seamless__.set_with_struct("waiver.has_waiver", url)
+    def has_waiver(self, val):
+        self.__seamless__.set_with_struct("waiver.has_waiver", val)
+        if val is False:
+            del self.waiver_url
 
     @property
     def waiver_url(self):
@@ -607,6 +599,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     @waiver_url.setter
     def waiver_url(self, url):
         self.__seamless__.set_with_struct("waiver.url", url)
+
+    @waiver_url.deleter
+    def waiver_url(self):
+        self.__seamless__.delete("waiver.url")
 
     @property
     def labels(self):

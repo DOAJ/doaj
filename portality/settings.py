@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.1.5"
+DOAJ_VERSION = "8.2.1"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -192,6 +192,7 @@ STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 STORE_HARVESTER_CONTAINER = "doaj-harvester"
+STORE_EXPORT_CONTAINER = "doaj-export-placeholder"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -205,12 +206,17 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used by the api_export script to dump data from the api
-    constants.STORE__SCOPE__PUBLIC_DATA_DUMP : {
-        "aws_access_key_id" : "put this in your dev/test/production.cfg",
-        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    constants.STORE__SCOPE__PUBLIC_DATA_DUMP: {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used to store harvester run logs to S3
     "harvester": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
+    },
+    # Used to store the admin-generated CSV reports
+    "export": {
         "aws_access_key_id": "put this in your dev/test/production.cfg",
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     }
@@ -480,7 +486,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
-    "portality.models.autocheck.Autocheck" # ~~-> Autocheck:Model~~
+    "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
+    "portality.models.export.Export", # ~~-> Export:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -814,6 +821,11 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
             "required_parameters": None
+        },
+        "reports": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Export"
         }
     },
     "associate_query": {
@@ -1642,3 +1654,8 @@ BGJOB_MANAGE_REDUNDANT_ACTIONS = [
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
 HONEYPOT_TIMER_THRESHOLD = 5000;
+
+##################################################
+# Object validation settings
+
+SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False

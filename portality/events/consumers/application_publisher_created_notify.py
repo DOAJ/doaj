@@ -21,7 +21,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
         context = event.context
         app = context.get("application")
         if app is None:
-            return
+            return None
         try:
             application = models.Application(**app)
         except SeamlessException:
@@ -29,7 +29,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
         if application is None:
             raise exceptions.NoSuchObjectException("Could not create application object")
         if not application.owner:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -47,3 +47,4 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
         )
 
         svc.notify(notification)
+        return notification

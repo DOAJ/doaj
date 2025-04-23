@@ -48,3 +48,4 @@ class JournalAssedAssignedNotify(EventConsumer):
         # notification.action = url_for("editor.journal_page", journal_id=journal.id)
 
         svc.notify(notification)
+        return notification

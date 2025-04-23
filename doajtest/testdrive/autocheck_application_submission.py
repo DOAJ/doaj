@@ -1,6 +1,10 @@
+from doajtest.fixtures import ApplicationFixtureFactory
 from portality import constants
 from doajtest.testdrive.factory import TestDrive
 from portality import models
+from portality.lib import dates
+from portality.core import app
+from flask import url_for
 
 class AutocheckApplicationSubmission(TestDrive):
     """
@@ -33,6 +37,21 @@ class AutocheckApplicationSubmission(TestDrive):
             for j in js:
                 j.delete()
 
+        # create a draft application for submission
+        source = ApplicationFixtureFactory.make_application_source()
+        draft_application = models.DraftApplication(**source)
+        draft_application.set_id(draft_application.makeid())
+        draft_application.set_application_status("draft")
+        draft_application.set_owner(pub.id)
+        draft_application.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
+        draft_application.remove_related_journal()
+        draft_application.date_applied = dates.now_str()
+        bj = draft_application.bibjson()
+        bj.pissn = "1848-3380"
+        bj.eissn = "0005-1144"
+        bj.set_preservation(["CLOCKSS", "LOCKSS"], "https://example.com/preservation")
+        draft_application.save()
+
         return {
             "admin": {
                 "username": admin.id,
@@ -41,6 +60,10 @@ class AutocheckApplicationSubmission(TestDrive):
             "publisher": {
                 "username": pub.id,
                 "password": pw2
+            },
+            "draft_application": {
+                "id": draft_application.id,
+                "url": app.config.get("BASE_URL") + url_for("apply.public_application", draft_id=draft_application.id)
             }
         }
 

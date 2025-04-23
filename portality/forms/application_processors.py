@@ -637,7 +637,6 @@ class AssociateApplication(ApplicationProcessor):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
-        self.target.set_seal(self.source.has_seal())
         self.target.bibjson().labels = self.source.bibjson().labels
         self._carry_continuations()
 
@@ -690,7 +689,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
             raise Exception("You cannot patch a target from a non-existent source")
 
         super().patch_target()
-        self._carry_subjects_and_seal()
+        self._carry_subjects()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
@@ -759,13 +758,10 @@ class PublisherUpdateRequest(ApplicationProcessor):
                 }
             ))
 
-    def _carry_subjects_and_seal(self):
+    def _carry_subjects(self):
         # carry over the subjects
         source_subjects = self.source.bibjson().subject
         self.target.bibjson().subject = source_subjects
-
-        # carry over the seal
-        self.target.set_seal(self.source.has_seal())
 
 
 class PublisherUpdateRequestReadOnly(ApplicationProcessor):
