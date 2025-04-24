@@ -173,7 +173,7 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
 
         s = striped.get(type_, False)
         _ = model.dump(limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], striped=s)
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], striped=s, prefix_size=4)
 
         logger_fn((dates.now_str() + " done\n"))
 

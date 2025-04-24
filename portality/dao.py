@@ -861,14 +861,14 @@ class DomainObject(UserDict, object):
         return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
     @classmethod
-    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, limit=None, **kwargs):
-        def hex_prefixes(n=3):
+    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, prefix_size=4, limit=None, **kwargs):
+        def hex_prefixes(n=4):
             """ Generate a list of hex prefixes of length n """
-            return [str(hex(i))[2:].zfill(3) for i in range(0, 16 ** 3)]
+            return [str(hex(i))[2:].zfill(n) for i in range(0, 16 ** n)]
 
         if striped:
             count = 0
-            prefixes = prefix_generator() if prefix_generator is not None else hex_prefixes()
+            prefixes = prefix_generator(prefix_size) if prefix_generator is not None else hex_prefixes(prefix_size)
             for prefix in prefixes:
                 q = {
                     "query": {
@@ -892,7 +892,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def dump(cls, q=None, page_size=1000, limit=None, out=None, out_template=None, out_batch_sizes=100000,
              out_rollover_callback=None, transform=None, es_bulk_format=True, idkey='id', es_bulk_fields=None,
-             stripe_field="id", striped=False, prefix_generator=None):
+             stripe_field="id", striped=False, prefix_generator=None, prefix_size=3):
         """ Export to file, bulk format or just a json dump of the record """
 
         filenames = []
@@ -910,6 +910,7 @@ class DomainObject(UserDict, object):
         if q is None:
             iterator = cls.iterall_unstable(page_size=page_size, stripe_field=stripe_field,
                                             striped=striped, prefix_generator=prefix_generator,
+                                            prefix_size=prefix_size,
                                             limit=limit, wrap=False)
         else:
             iterator = cls.iterate_unstable(q, page_size=page_size, limit=limit, wrap=False)
