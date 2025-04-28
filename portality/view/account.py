@@ -188,6 +188,11 @@ class LoginForm(RedirectForm):
     password = PasswordField('Password', [validators.DataRequired()])
 
 
+class LoginCodeForm(RedirectForm):
+    code = StringField('Code', [validators.DataRequired()])
+    user = HiddenField('User')
+
+
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
 def login():
