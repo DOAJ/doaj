@@ -257,6 +257,7 @@ class DraftApplication(Application):
 
     __SEAMLESS_APPLY_STRUCT_ON_INIT__ = False
     __SEAMLESS_CHECK_REQUIRED_ON_INIT__ = False
+    __SEAMLESS_SILENT_PRUNE__ = True
 
 
 class AllPublisherApplications(DomainObject):
