@@ -38,9 +38,21 @@ class KeepersRegistry(ISSNChecker):
             id = ac.get("holdingArchive", {}).get("@id")
             tc = ac.get("temporalCoverage", "")
             bits = tc.split("/")
+
             if len(bits) != 2:
                 continue
-            end_year = int(bits[1].strip())
+
+            end_str = bits[1].strip()
+            if end_str == "":
+                end_str = bits[0].strip()
+            if end_str == "":
+                continue
+
+            try:
+                end_year = int(end_str)
+            except ValueError:
+                continue
+
             if id in ad:
                 if end_year > ad[id]:
                     ad[id] = end_year
