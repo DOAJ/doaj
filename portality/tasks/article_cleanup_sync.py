@@ -7,13 +7,11 @@ For each article in the DOAJ index:
 
 from datetime import datetime
 
-from doajtest.functional.bulk_async_articles import articles
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_long_queue as queue
-from portality import constants
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 

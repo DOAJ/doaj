@@ -928,7 +928,7 @@ class DomainObject(UserDict, object):
                             logger(f"Skipped empty prefixes: {empty_prefixes}")
                             empty_prefixes = []
                         logger(f"Exporting prefix: {prefix}")
-                        first = False
+                    first = False
                     if limit is not None:
                         if count > limit:
                             if logger: logger(f"Limit reached: {count} / {limit}")
@@ -940,9 +940,9 @@ class DomainObject(UserDict, object):
                 else:
                     if logger: logger(f"Finished prefix: {prefix}; {count} total records")
             if len(empty_prefixes) > 0:
-                logger(f"Skipped empty prefixes: {empty_prefixes}")
+                if logger: logger(f"Skipped empty prefixes: {empty_prefixes}")
         else:
-            logger("Exporting without prefix striping")
+            if logger: logger("Exporting without prefix striping")
             for record in cls.iterate_unstable(q=None, page_size=page_size, limit=limit, logger=logger, **kwargs):
                 yield record
 
