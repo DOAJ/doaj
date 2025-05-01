@@ -7,12 +7,13 @@ For each article in the DOAJ index:
 
 from datetime import datetime
 
+from doajtest.functional.bulk_async_articles import articles
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_long_queue as queue
-
+from portality import constants
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
@@ -39,13 +40,20 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         same_count = 0
         deleted_count = 0
 
-        # Scroll though all articles in the index
+        # Scroll though all articles in the index within the update range
         i = 0
-        for article_model in models.Article.iterate(q={"query": {"match_all": {}}, "sort": ["_doc"]}, page_size=100, wrap=True, keepalive='5m'):
+        page_size = 1000
+        for article_model in models.Article.iterall_unstable(
+                page_size=page_size,
+                striped=True,
+                prefix_size=3,
+                wrap=True,
+                logger=self.background_job.add_audit_message):
 
             # for debugging, just print out the progress
             i += 1
-            print(i, article_model.id, len(list(journal_cache.keys())), len(write_batch), len(delete_batch))
+            if i % page_size == 0:
+                job.add_audit_message("Progress: Write batch/total: {x}/{a}; delete batch/total: {y}/{b}".format(x=len(write_batch), y=len(delete_batch), a=updated_count, b=deleted_count))
 
             # Try to find journal in our cache
             bibjson = article_model.bibjson()
@@ -187,6 +195,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
         write = kwargs.get("write", True)
         prepall = kwargs.get("prepall", False)
+        all_time = kwargs.get("all_time", True)
 
         if not write and prepall:
             raise BackgroundException("'prepall' must be used with the 'write' parameter set to True (why prep but not save?)")
@@ -194,6 +203,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         params = {}
         cls.set_param(params, "write", write)
         cls.set_param(params, "prepall", prepall)
+        cls.set_param(params, "all_time", all_time)
 
         # first prepare a job record
         job = background_helper.create_job(username=username,
@@ -224,7 +234,6 @@ def scheduled_article_cleanup_sync():
     user = app.config.get("SYSTEM_USERNAME")
     job = ArticleCleanupSyncBackgroundTask.prepare(user)
     ArticleCleanupSyncBackgroundTask.submit(job)
-
 
 @huey_helper.register_execute(is_load_config=False)
 def article_cleanup_sync(job_id):
