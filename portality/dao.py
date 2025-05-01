@@ -831,7 +831,7 @@ class DomainObject(UserDict, object):
             if counter >= total_results:
                 break
 
-            # theq["search_after"] = search_after
+            theq["search_after"] = search_after
             # if logger: logger(json.dumps(theq))
             if logger: logger("search_after: " + str(search_after))
             try:
