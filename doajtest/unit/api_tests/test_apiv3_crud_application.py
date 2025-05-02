@@ -873,7 +873,6 @@ class TestCrudApplication(DoajTestCase):
 
         # An application already in the index can only be updated with a valid currency by API
         grandfathered_app = ApplicationFixtureFactory.make_application_source()
-        del grandfathered_app['admin']['current_journal']
         del grandfathered_app['admin']['related_journal']
         grandfathered_app['admin']['application_type'] = 'new_application'
         grandfathered_app['bibjson']['apc']['max'][0]['currency'] = 'old outdated currency'
@@ -954,7 +953,6 @@ class TestCrudApplication(DoajTestCase):
 
         # An application already in the index can only be updated with a valid currency by API
         grandfathered_app = ApplicationFixtureFactory.make_application_source()
-        del grandfathered_app['admin']['current_journal']
         del grandfathered_app['admin']['related_journal']
         grandfathered_app['admin']['application_type'] = 'new_application'
         grandfathered_app['bibjson']['language'][0] = 'an old language we dont recognise'

@@ -23,7 +23,8 @@ class TestKeepersRegistry(DoajTestCase):
         Resource.fetch = ResourceBundleResourceMockFactory.no_contact_resource_fetch(archive_components={
             "CLOCKSS": True,
             "LOCKSS": True,
-            "Internet Archive": False
+            "Internet Archive": False,
+            "ZBW": "broken"
         })
 
         kr = KeepersRegistry()

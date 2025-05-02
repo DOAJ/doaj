@@ -113,6 +113,11 @@ class BaseArticlesUpload(DomainObject):
 class FileUpload(BaseArticlesUpload):
     __type__ = "upload"
 
+    @classmethod
+    def by_properties(cls, status=None, schema=None, max=10000):
+        q = PropertiesQuery(status=status, schema=schema, size=max)
+        return cls.object_query(q=q.query())
+
     @property
     def schema(self):
         return self.data.get("schema")
@@ -212,3 +217,29 @@ class OwnerFileQuery(object):
 
     def query(self):
         return self._query
+
+class PropertiesQuery:
+    def __init__(self, status=None, schema=None, size=10000):
+        self._status = status
+        self._schema = schema
+        self._size = size
+
+    def query(self):
+        query = {
+            "query": {
+                "bool": {
+                    "must": []
+                }
+            }
+        }
+
+        if self._status:
+            query["query"]["bool"]["must"].append({"term": {"status.exact": self._status}})
+
+        if self._schema:
+            query["query"]["bool"]["must"].append({"term": {"schema.exact": self._schema}})
+
+        if self._size:
+            query["size"] = self._size
+
+        return query
