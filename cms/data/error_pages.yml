@@ -1,0 +1,29 @@
+404:
+  text:
+    - "The page you’re looking for could not be found. It may have been moved, deleted, or never existed."
+    - "Try searching for articles or browsing journals instead."
+  urls:
+    - "/search/journals"
+    - "/search/articles"
+410:
+  article:
+    withdrawn:
+      text:
+        - "This article has been withdrawn and is no longer available in DOAJ."
+        - "You can browse other articles from this journal instead."
+      urls: "/toc/{ISSN}/articles"
+
+    tombstone:
+      text:
+        - "This article was part of a journal that is no longer in DOAJ and cannot be accessed."
+        - "You can search for similar articles in other journals instead."
+      urls:
+        - "/search/articles"
+
+  journal:
+    withdrawn:
+      text:
+        - "This journal has been withdrawn from DOAJ and is no longer accessible."
+        - "You can search for other journals currently listed in DOAJ."
+      urls:
+        - "/search/journals"
