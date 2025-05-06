@@ -357,3 +357,24 @@ tests:
         - Related background job is found
         - status is "complete"
         - Outcome Status is "success"
+
+- title: Upload a file before OA start date of the Journal
+  context:
+    role: publisher
+  steps:
+  - step: Make sure the OA start date of the journal in in future
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select the test resource file "no_issn.xml"
+    resource: /xml_upload_test_package/DOAJ/successful.xml
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a entry in the "Notes" and reads as 'Article(s) cannot be uploaded before OA start date of the Journal'.  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
