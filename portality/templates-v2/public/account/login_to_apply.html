@@ -9,7 +9,7 @@
               <section class="page-content" id="apply">
                 <h1>Application form</h1>
 
-                    <p>Read our <a href="/apply/guide/">Guide to applying</a> first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please <a href="/contact/">contact us</a>.</p>
+                    <p>{{ _("application_apply_read_guide") }}</p>
 
                     <p>You can <a href="/static/doaj/docs/DOAJquestions-for-reference-only.pdf" target="_blank">print or download</a> a PDF list of the questions.</p>
 
@@ -25,6 +25,16 @@
                 </section>
             </div>
           <div class="col-md-4">
+              <div>
+                  <div class="language-selector">
+                      <form action="/apply/" method="GET">
+                        <select id="languageSelect" name="lang" onchange="this.form.submit()">
+                            <option value="en" {% if session.get('lang') == 'en' %}selected{% endif %}>English</option>
+                            <option value="fr" {% if session.get('lang') == 'fr' %}selected{% endif %}>Français</option>
+                        </select>
+                      </form>
+                  </div>
+              </div>
               <div>
                   <aside class="hero hero--aside">
                       <h2 class="label">Related help</h2>

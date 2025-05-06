@@ -16,7 +16,7 @@ import elasticsearch.exceptions
 import tzlocal
 import pytz
 
-from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
+from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory, g
 from flask_login import login_user, current_user
 
 from datetime import datetime
@@ -27,6 +27,7 @@ from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
 from portality.ui import templates
+from portality.internationalize import internationalize
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -97,6 +98,8 @@ if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False)
 # to the app being run directly by python portality/app.py
 # putting it here ensures it will run under any web server
 initialise_index(app, es_connection)
+
+internationalize(app)
 
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version

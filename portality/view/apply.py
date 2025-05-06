@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from flask import Blueprint, render_template, abort, redirect, url_for, request, make_response
+from flask import Blueprint, render_template, abort, redirect, url_for, request, make_response, session
 from flask_login import current_user
 
 from portality import models
@@ -28,6 +28,10 @@ def draft_saved():
 @blueprint.route("/<draft_id>", methods=["GET", "POST"])
 @write_required()
 def public_application(draft_id=None):
+    # update selected language
+    lang = request.args.get('lang')
+    if lang:
+        session['lang'] = lang
 
     if not current_user.is_authenticated:
         return redirect(url_for("account.login",  redirected="apply"))
