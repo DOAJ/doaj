@@ -3,8 +3,10 @@
     - "The page you’re looking for could not be found. It may have been moved, deleted, or never existed."
     - "Try searching for articles or browsing journals instead."
   urls:
-    - "/search/journals"
-    - "/search/articles"
+    - link: "/search/journals"
+      title: "Browse journals"
+    - link: "/search/articles"
+      title: "Search articles"
 410:
   article:
     withdrawn:
