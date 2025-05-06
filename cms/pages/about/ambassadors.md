@@ -26,6 +26,7 @@ manual_toc_tokens: |
         "name": "Ambassadors"
       }
   ]
+data: true
 ---
 
 DOAJ has 13 active Ambassadors who work with local communities around the world. Ambassadors work within Low- or Middle-Income Countries (LMICs) to raise DOAJ's profile through local outreach and engagement activities. They advocate for good practices in open access and publishing, assist with information about applying to DOAJ, and conduct training and events on behalf of DOAJ. 

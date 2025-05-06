@@ -168,6 +168,8 @@ Each static Markdown page includes YAML front matter at the top of the document 
   - if `false` you can omit this
 - `meta_description`:
   - A description for the page that will appear in the header metadata in the resulting HTML
+- `data`:
+  - set to true if `.yml` file with data exists to add the `db` icon to the page for admins
 
   
 ### Including other templates into the text
