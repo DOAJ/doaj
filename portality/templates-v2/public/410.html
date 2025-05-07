@@ -1,0 +1,23 @@
+{% extends "public/base.html" %}
+
+{% block body_class %}error-page{% endblock %}
+{% block page_title %}410: Gone{% endblock %}
+
+{% block public_content %}
+{% set error_text = data.error_pages.410.record.context.text %}
+{% set error_urls = data.error_pages.410.record.context.urls %}
+
+410
+{% for t in error_text %}
+<p>{{ t }}</p>
+{% endfor %}
+
+{% for u in error_urls %}
+<p><a href="{{ u.link }}">{{ u.title }}</a></p>
+{% endfor %}
+
+{% endblock %}
+
+{# withdrawn journal: 000b0582055346aaac5bc897061e4183 %}
+{# withdrawn article: 0000037a61c04ba08501f2537778ff19 %}
+{# article from withdrawn journal: 01ae322e1002421388d4f54f7f41c63b %}

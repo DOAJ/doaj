@@ -27,6 +27,9 @@ from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
 from portality.ui import templates
+from portality import constants
+
+from portality.bll import exceptions
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -426,6 +429,19 @@ def page_not_found(e):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template(templates.ERROR_404), 404
+
+@app.errorhandler(exceptions.ArticleWithdrawn)
+def article_withdrawn(e):
+    return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.WITHDRAWN), 410
+
+@app.errorhandler(exceptions.ArticleInTombstoneJournal)
+def article_in_tombstone(e):
+    return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.TOMBSTONE), 410
+
+@app.errorhandler(exceptions.JournalWithdrawn)
+def journal_withdrawn(e):
+    return render_template(templates.ERROR_410, record=constants.JOURNAL, context=constants.WITHDRAWN), 410
+
 
 
 @app.errorhandler(500)

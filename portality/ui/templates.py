@@ -29,6 +29,7 @@ STATIC_PAGE_LAYOUT = "public/layouts/_static-page_{layout}.html"
 ERROR_400 = "public/400.html"
 ERROR_401 = "public/401.html"
 ERROR_404 = "public/404.html"
+ERROR_410 = "public/410.html"
 ERROR_500 = "public/500.html"
 
 # API

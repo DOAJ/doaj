@@ -116,6 +116,8 @@ BG_STATUS_UNSTABLE = 'unstable'
 
 WITHDRAWN = "withdrawn"
 TOMBSTONE = "tombstone"
+ARTICLE = "article"
+JOURNAL = "journal"
 
 class ConstantList:
     @classmethod
