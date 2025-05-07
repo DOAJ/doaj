@@ -792,7 +792,7 @@ class DomainObject(UserDict, object):
 
         first_resp = cls.send_query(theq)
         if len(first_resp.get('hits', {}).get('hits', [])) == 0:
-            if logger: logger("No results found")
+            # if logger: logger("No results found")
             return
 
         search_after = first_resp.get('hits', {}).get('hits', [])[-1].get('sort', [])
@@ -817,7 +817,7 @@ class DomainObject(UserDict, object):
                 yield cls(**r)
             else:
                 yield r
-        if logger: logger(f"Iterated {counter} records")
+        # if logger: logger(f"Iterated {counter} records")
 
         del theq["track_total_hits"]
 
@@ -833,7 +833,7 @@ class DomainObject(UserDict, object):
 
             theq["search_after"] = search_after
             # if logger: logger(json.dumps(theq))
-            if logger: logger("search_after: " + str(search_after))
+            # if logger: logger("search_after: " + str(search_after))
             try:
                 res = cls.send_query(theq)
                 if len(res.get('hits', {}).get('hits', [])) == 0:
@@ -862,7 +862,7 @@ class DomainObject(UserDict, object):
                 else:
                     yield r
 
-            if logger: logger(f"Iterated {counter} records")
+            # if logger: logger(f"Iterated {counter} records")
 
     @classmethod
     def iterall(cls, page_size=1000, limit=None, **kwargs):
@@ -870,31 +870,79 @@ class DomainObject(UserDict, object):
         return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
     @classmethod
-    def iterall_unstable(cls, page_size=1000, stripe_field="id", striped=False, prefix_generator=None, prefix_size=4, limit=None, logger=None, **kwargs):
+    def iterall_unstable(cls, page_size=1000,
+                         stripe_field="id",
+                         striped=False,
+                         prefix_generator=None,
+                         prefix_size=4,
+                         limit=None,
+                         logger=None,
+                         must=None,
+                         **kwargs):
         def hex_prefixes(n=4):
             """ Generate a list of hex prefixes of length n """
             return [str(hex(i))[2:].zfill(n) for i in range(0, 16 ** n)]
 
         if striped:
-            count = 0
-            prefixes = prefix_generator(prefix_size) if prefix_generator is not None else hex_prefixes(prefix_size)
-            for prefix in prefixes:
+            q = None
+            if must is not None:
                 q = {
                     "query": {
-                        "prefix": {stripe_field: prefix}
+                        "bool": {
+                            "must": must
+                        }
                     }
                 }
-                if logger: logger(f"Exporting prefix: {prefix}")
+            total = cls.count(q)
+            if total == 0:
+                return
+
+            count = 0
+            prefixes = prefix_generator(prefix_size) if prefix_generator is not None else hex_prefixes(prefix_size)
+            empty_prefixes = []
+            for prefix in prefixes:
+                if must is None:
+                    q = {
+                        "query": {
+                            "prefix": {stripe_field: prefix}
+                        }
+                    }
+                else:
+                    q = {
+                        "query": {
+                            "bool": {
+                                "must": must + [
+                                    {
+                                        "prefix": {stripe_field: prefix}
+                                    }
+                                ]
+                            }
+                        }
+                    }
+
+                first = True
                 for record in cls.iterate_unstable(q, page_size, limit=limit, logger=logger, **kwargs):
                     count += 1
+                    if logger and first:
+                        if len(empty_prefixes) > 0:
+                            logger(f"Skipped empty prefixes: {empty_prefixes}")
+                            empty_prefixes = []
+                        logger(f"Exporting prefix: {prefix}")
+                    first = False
                     if limit is not None:
                         if count > limit:
                             if logger: logger(f"Limit reached: {count} / {limit}")
                             return
                     yield record
-                if logger: logger(f"Finished prefix: {prefix}; {count} total records")
+
+                if first:
+                    empty_prefixes.append(prefix)
+                else:
+                    if logger: logger(f"Finished prefix: {prefix}; {count} total records")
+            if len(empty_prefixes) > 0:
+                if logger: logger(f"Skipped empty prefixes: {empty_prefixes}")
         else:
-            logger("Exporting without prefix striping")
+            if logger: logger("Exporting without prefix striping")
             for record in cls.iterate_unstable(q=None, page_size=page_size, limit=limit, logger=logger, **kwargs):
                 yield record
 
@@ -970,7 +1018,12 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def bulk_load_from_file(cls, source_file, index=None, limit=None, max_content_length=100000000):
-        """ ported from esprit.tasks - bulk load to index from file """
+        """ ported from esprit.tasks - bulk load to index from file
+        :param source_file
+        :param index: index name for target
+        :param limit: number of records to load (integer)
+        :param max_content_length: Upload chunk size in bytes
+        """
         index = index or cls.index_name()
 
         source_size = os.path.getsize(source_file)
@@ -1215,6 +1268,24 @@ class DomainObject(UserDict, object):
 
         res = cls.query(q=countable_query, **kwargs)
         return res.get("hits", {}).get("total", {}).get("value", 0)
+
+    @classmethod
+    def count_updated_since(cls, last_update):
+        """
+        Count the number of records updated since a given date
+        :param last_update: The date to count from
+        :return: The number of records updated since the given date
+        """
+        q = {
+            "query": {
+                "range": {
+                    "last_updated": {
+                        "gte": last_update
+                    }
+                }
+            }
+        }
+        return cls.count(q)
 
     @classmethod
     def block(cls, id, last_updated=None, sleep=0.5, max_retry_seconds=30):

@@ -11,6 +11,8 @@ DOAJENV=dev python portality/scripts/anon_import.py data_import_settings/dev_bas
 
 or for a test server:
 DOAJENV=test python portality/scripts/anon_import.py data_import_settings/test_server.json
+
+Note: max_content_length is in bytes, the default limit in ES for a bulk upload is 972.7mb (megabits) or 121.6 megabytes
 """
 
 from __future__ import annotations
