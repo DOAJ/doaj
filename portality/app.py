@@ -431,7 +431,7 @@ def page_not_found(e):
 def page_not_found(e):
     return render_template(templates.ERROR_404), 404
 
-@app.errorhandler(exceptions.ArticleWithdrawn)
+@app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
 def article_withdrawn(e):
     return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.WITHDRAWN, journal_issn=e.journal_issn), 410
 

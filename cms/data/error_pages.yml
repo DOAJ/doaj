@@ -11,8 +11,8 @@
   article:
     withdrawn:
       text:
-        - "This article has been withdrawn and is no longer available in DOAJ."
-        - "You can browse other articles from this journal instead."
+        - "This article is associated with a journal that is no longer available in DOAJ."
+        - "You can browse other articles instead."
       urls: "/toc/{ISSN}/articles"
 
     tombstone:
