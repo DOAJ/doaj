@@ -30,6 +30,7 @@ from portality.ui import templates
 from portality import constants
 
 from portality.bll import exceptions
+from portality.ui.messages import Messages
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -439,8 +440,12 @@ def journal_withdrawn(e):
     return render_template(templates.ERROR_410, record=constants.JOURNAL, context=constants.WITHDRAWN), 410
 
 @app.errorhandler(500)
-def page_not_found(e):
-    return render_template(templates.ERROR_500), 500
+def handle_500(e):
+    if e.description == e.__class__.description:
+        description = Messages.DEFAULT_500_DESCRIPTION
+    else:
+        description = e.description
+    return render_template(templates.ERROR_500, description=description), 500
 
 
 @app.errorhandler(elasticsearch.exceptions.RequestError)

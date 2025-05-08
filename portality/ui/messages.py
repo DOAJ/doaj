@@ -144,6 +144,8 @@ class Messages(object):
     ARTICLE_ABANDONED_LOG = """An article was found that doesn't seem to match any journal articles\'s id: {article.id}"""
     ARTICLE_ABANDONED_PUBLIC = """This article doesn't seem to match any journal in our database. If you think this is wrong, contact us quoting 'Abandoned article: {article.id}'"""
 
+    DEFAULT_500_DESCRIPTION = "An error has occurred. It looks like something has gone wrong."
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
