@@ -6,7 +6,8 @@
 			"init_with_model": true,
 			"keepalive": "20m",
 			"functions" : [
-				"portality.migrate.4047_OpenPolicyFinder.functions.rename_policy"
+				"portality.migrate.4047_OpenPolicyFinder.functions.rename_policy",
+				"portality.migrate.4047_OpenPolicyFinder.functions.rewrite_sherpa_url"
 			],
 			"query": {
 				"query": {
@@ -21,7 +22,8 @@
 			"init_with_model": true,
 			"keepalive": "20m",
 			"functions" : [
-				"portality.migrate.4047_OpenPolicyFinder.functions.rename_policy"
+				"portality.migrate.4047_OpenPolicyFinder.functions.rename_policy",
+				"portality.migrate.4047_OpenPolicyFinder.functions.rewrite_sherpa_url"
 			],
 			"query": {
 				"query": {
