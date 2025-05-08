@@ -106,23 +106,24 @@ class ArticleWithdrawn(Exception):
         Raised when when an attempt is made to access an article that has been withdrawn.
     """
 
-    def __init__(self, message=None):
+    def __init__(self, journal_issn, message=None):
+        self.journal_issn = journal_issn
         super(ArticleWithdrawn, self).__init__(message)
 
-class ArticleInTombstoneJournal(Exception):
+class ArticleFromWithdrawnJournal(Exception):
     """
         Raised when when an attempt is made to access an article that appears in tombstone record.
     """
 
-    def __init__(self, message=None):
-        super(ArticleInTombstoneJournal, self).__init__(message)
+    def __init__(self, message=None, **kwargs):
+        super(ArticleFromWithdrawnJournal, self).__init__(message)
 
 class JournalWithdrawn(Exception):
     """
         Raised when when an attempt is made to access a withdrawn journal.
     """
 
-    def __init__(self, message=None):
+    def __init__(self, message=None, context=None):
         super(JournalWithdrawn, self).__init__(message)
 
 

@@ -140,6 +140,10 @@ class Messages(object):
 
     ARE_YOU_A_HUMAN = "Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>."
 
+    ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS = "Article found that belongs to more than 1 journal. Article's id: {article_id}"
+    ARTICLE_ABANDONED_LOG = """An article was found that doesn't seem to match any journal articles\'s id: {article.id}"""
+    ARTICLE_ABANDONED_PUBLIC = """This article doesn't seem to match any journal in our database. If you think this is wrong, contact us quoting 'Abandoned article: {article.id}'"""
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):

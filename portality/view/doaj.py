@@ -14,6 +14,7 @@ from portality import dao
 from portality import models
 from portality import store
 from portality.core import app
+from portality.bll import exceptions
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
@@ -370,7 +371,7 @@ def article_page(identifier=None):
     # identifier must be the article id
     article = models.Article.pull(identifier)
 
-    if article is None or not article.is_in_doaj():
+    if article is None:
         abort(404)
 
     # find the related journal record
@@ -379,8 +380,18 @@ def article_page(identifier=None):
     more_issns = article.bibjson().journal_issns
     for issn in issns + more_issns:
         journals = models.Journal.find_by_issn(issn)
+        if len(journals) == 0:
+            app.logger.exception(Messages.ARTICLE_ABANDONED_LOG.format(article_id=article.id))
+            abort(500, description=Messages.ARTICLE_ABANDONED_PUBLIC)
         if len(journals) > 0:
+            if len(journals) > 1:
+                app.logger.info(Messages.ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS.format(article.id))
             journal = journals[0]
+            if not journal.is_in_doaj():
+                raise exceptions.ArticleFromWithdrawnJournal
+            if not article.is_in_doaj():
+                issn = journal.bibjson().issns()[0]
+                raise exceptions.ArticleWithdrawn(journal_issn=issn)
 
     return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 
