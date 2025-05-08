@@ -390,8 +390,7 @@ def article_page(identifier=None):
             if not journal.is_in_doaj():
                 raise exceptions.ArticleFromWithdrawnJournal
             if not article.is_in_doaj():
-                issn = journal.bibjson().issns()[0]
-                raise exceptions.ArticleWithdrawn(journal_issn=issn)
+                raise exceptions.ArticleWithdrawn(journal_issn=more_issns[0])
 
     return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 
