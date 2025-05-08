@@ -372,7 +372,11 @@ def article_page(identifier=None):
     article = models.Article.pull(identifier)
 
     if article is None:
-        abort(404)
+        article = models.ArticleTombstone.pull(identifier)
+        if article:
+            raise exceptions.TombstoneArticle
+        else:
+            abort(404, description=Messages.ARTICLE_NOT_FOUND)
 
     # find the related journal record
     journal = None
@@ -389,8 +393,6 @@ def article_page(identifier=None):
             journal = journals[0]
             if not journal.is_in_doaj():
                 raise exceptions.ArticleFromWithdrawnJournal
-            if not article.is_in_doaj():
-                raise exceptions.ArticleWithdrawn(journal_issn=more_issns[0])
 
     return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 

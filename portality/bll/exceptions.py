@@ -101,22 +101,21 @@ class DuplicateUpdateRequest(Exception):
     def __init__(self, message=None):
         super(DuplicateUpdateRequest, self).__init__(message)
 
-class ArticleWithdrawn(Exception):
-    """
-        Raised when when an attempt is made to access an article that has been withdrawn.
-    """
-
-    def __init__(self, journal_issn, message=None):
-        self.journal_issn = journal_issn
-        super(ArticleWithdrawn, self).__init__(message)
-
 class ArticleFromWithdrawnJournal(Exception):
     """
-        Raised when when an attempt is made to access an article that appears in tombstone record.
+        Raised when when an attempt is made to access an article that appears in withdrawn journal
     """
 
     def __init__(self, message=None, **kwargs):
         super(ArticleFromWithdrawnJournal, self).__init__(message)
+
+class TombstoneArticle(Exception):
+    """
+        Raised when when an attempt is made to access an article that appears in withdrawn journal
+    """
+
+    def __init__(self, message=None, **kwargs):
+        super(TombstoneArticle, self).__init__(message)
 
 class JournalWithdrawn(Exception):
     """
