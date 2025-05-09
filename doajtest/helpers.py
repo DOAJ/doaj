@@ -8,6 +8,7 @@ from contextlib import contextmanager
 import time
 from glob import glob
 from unittest import TestCase
+from copy import deepcopy
 
 import dictdiffer
 from flask_login import login_user
@@ -163,6 +164,7 @@ class DoajTestCase(TestCase):
             'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
+            "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
             'PREMIUM_MODE': False
         }
 
@@ -300,6 +302,68 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
             d1=d1_label, d2=d2_label))
         print(differ.unchanged())
 
+def diff_dicts_recursive(d1, d2, d1_label, d2_label, context=None, sort_functions=None):
+
+    def _normalise(d, context=None):
+        if context is None:
+            context = "[root]"
+        if isinstance(d, dict):
+            for k in d.keys():
+                if isinstance(d[k], list):
+                    if context + "." + k in sort_functions:
+                        d[k] = sorted(d[k], key=sort_functions[context + "." + k])
+                    else:
+                        try:
+                            d[k] = sorted(d[k])
+                        except TypeError:
+                            pass
+                elif isinstance(d[k], dict):
+                    d[k] = _normalise(d[k], context + "." + k)
+        return d
+
+    # we're going to modify the dictionaries, so make sure we're not changing the originals
+    d1 = _normalise(deepcopy(d1))
+    d2 = _normalise(deepcopy(d2))
+
+    if context is None:
+        context = "[root]"
+
+    if not isinstance(d1, dict) or not isinstance(d2, dict):
+        if d1 != d2:
+            print("#"*(context.count(".") + 1) + " {}".format(context))
+            print("{d1} vs {d2}".format(d1=d1, d2=d2))
+            print()
+        return
+
+    differ = dictdiffer.DictDiffer(d1, d2)
+    print("#"*(context.count(".") + 1) + " {}".format(context))
+    if differ.added():
+        print('Added :: keys present in "{d1}" {ctx} which are not in "{d2}" {ctx}'.format(d1=d1_label, d2=d2_label, ctx=context))
+        print(differ.added())
+        print()
+
+    if differ.removed():
+        print('Removed :: keys present in "{d2}" {ctx} which are not in "{d1}" {ctx}'.format(d1=d1_label, d2=d2_label, ctx=context))
+        print(differ.removed())
+        print()
+
+    if differ.changed():
+        print('Changed :: keys present in "{d1}" {ctx} and "{d2}" {ctx} whose values are different'.format(d1=d1_label,
+                                                                                                      d2=d2_label, ctx=context))
+        print(differ.changed())
+        print()
+
+    if differ.changed():
+        for key in differ.changed():
+            ctx = context + "." + key if context else key
+            if isinstance(d1[key], list) and isinstance(d2[key], list):
+                for i in range(len(d1[key])):
+                    if len(d2[key]) < i + 1:
+                        print("{ctx} - index {i} does not exist in {d2}".format(ctx=ctx, i=i, d2=d2_label))
+                    else:
+                        diff_dicts_recursive(d1[key][i], d2[key][i], d1_label, d2_label, ctx + "[{}]".format(i), sort_functions=sort_functions)
+            else:
+                diff_dicts_recursive(d1[key], d2[key], d1_label, d2_label, ctx, sort_functions=sort_functions)
 
 def load_from_matrix(filename, test_ids):
     if test_ids is None:

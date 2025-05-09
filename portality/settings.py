@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.1.6"
+DOAJ_VERSION = "8.2.1"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -192,6 +192,7 @@ STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 STORE_HARVESTER_CONTAINER = "doaj-harvester"
+STORE_EXPORT_CONTAINER = "doaj-export-placeholder"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -205,12 +206,17 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used by the api_export script to dump data from the api
-    constants.STORE__SCOPE__PUBLIC_DATA_DUMP : {
-        "aws_access_key_id" : "put this in your dev/test/production.cfg",
-        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    constants.STORE__SCOPE__PUBLIC_DATA_DUMP: {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used to store harvester run logs to S3
     "harvester": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
+    },
+    # Used to store the admin-generated CSV reports
+    "export": {
         "aws_access_key_id": "put this in your dev/test/production.cfg",
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     }
@@ -445,7 +451,7 @@ HUEY_SCHEDULE = {
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
-    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
@@ -490,6 +496,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
     "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
+    "portality.models.export.Export", # ~~-> Export:Model~~
     "portality.models.DataDump", # ~~-> DataDump:Model~~
 ]
 
@@ -824,6 +831,11 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
             "required_parameters": None
+        },
+        "reports": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Export"
         }
     },
     "associate_query": {
@@ -1661,3 +1673,8 @@ PREMIUM_MODE = True
 
 # What is the delay non-premium users have to data access
 NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
+
+##################################################
+# Object validation settings
+
+SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False

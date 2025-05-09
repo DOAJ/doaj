@@ -31,7 +31,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
 
         application = consumer_utils.parse_application(app_source)
         if not application.owner:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -55,3 +55,4 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
         # there is no action url for this notification
 
         svc.notify(notification)
+        return notification

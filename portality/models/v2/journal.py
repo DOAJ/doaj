@@ -67,7 +67,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     # During migration from the old data model to the new data model for journal-like objects, this allows
     # the front-end to continue to work, even if the object sees data which is not in the struct.
     # This can be commented out after any migration which changes the data model
-    __SEAMLESS_SILENT_PRUNE__ = True
+    __SEAMLESS_SILENT_PRUNE__ = app.config.get("SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE", False)
 
     @classmethod
     def find_by_issn(cls, issns, in_doaj=None, max=10):

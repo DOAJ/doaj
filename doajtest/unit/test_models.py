@@ -1765,7 +1765,43 @@ class TestModels(DoajTestCase):
         assert bj.has_apc is False
         assert bj.apc == []
 
-    def test_44_data_dump(self):
+    def test_44_export(self):
+        e = models.Export()
+
+        e.id = "1234"
+        e.constraints = {"query": {"match_all": {}}}
+        e.generated_date = "2021-06-10T00:00:00Z"
+        e.name = "Random Name"
+        e.request_date = "2021-06-09T00:00:00Z"
+        e.requester = "maned"
+
+        assert e.id == "1234"
+        assert e.constraints == {"query": {"match_all": {}}}
+        assert e.generated_date == "2021-06-10T00:00:00Z"
+        assert e.name == "Random Name"
+        assert e.request_date == "2021-06-09T00:00:00Z"
+        assert e.requester == "maned"
+
+    def test_44_export_retrieves(self):
+        e = models.Export()
+
+        e.id = "1234"
+        e.constraints = {"query": {"match_all": {}}}
+        e.generated_date = "2021-06-10T00:00:00Z"
+        e.name = "Random Name"
+        e.request_date = "2021-06-09T00:00:00Z"
+        e.requester = "maned"
+        e.save(blocking=True)
+
+        e2 = models.Export.pull("1234")
+        assert e2.id == "1234"
+        assert e2.constraints == {"query": {"match_all": {}}}
+        assert e2.generated_date == "2021-06-10T00:00:00Z"
+        assert e2.name == "Random Name"
+        assert e2.request_date == "2021-06-09T00:00:00Z"
+        assert e2.requester == "maned"
+
+    def test_45_data_dump(self):
         dd = models.DataDump()
         # get a date without milliseconds
         now = dates.now()
@@ -1792,7 +1828,7 @@ class TestModels(DoajTestCase):
         assert dd.journal_container is None
         assert dd.journal_filename is None
 
-    def test_45_data_dump_queries(self):
+    def test_46_data_dump_queries(self):
         dds = DataDumpFixtureFactory.make_n_data_dumps(3,
                                                  dump_date=lambda x: f"2023-0{x + 1}-01T00:00:00Z",
                                                  journal__filename=lambda x: f"journal_dump_{x + 1}.json",
@@ -1822,7 +1858,6 @@ class TestModels(DoajTestCase):
         assert len(before) == 2
         assert before[0].id == dds[0].id
         assert before[1].id == dds[1].id
-
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

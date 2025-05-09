@@ -8,6 +8,7 @@ import rstr
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
     OWNER_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
 from portality.regex import ISSN_COMPILED
+from portality.lib import dicts
 
 
 class JournalFixtureFactory(object):
@@ -21,9 +22,11 @@ class JournalFixtureFactory(object):
             models.Journal.blockall(block_data)
 
     @staticmethod
-    def make_journal_source(in_doaj=False):
+    def make_journal_source(in_doaj=False, overlay=None):
         template = deepcopy(JOURNAL_SOURCE)
         template['admin']['in_doaj'] = in_doaj
+        if overlay is not None:
+            template = dicts.deep_merge(template, overlay, overlay=True)
         return template
 
     @staticmethod

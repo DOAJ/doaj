@@ -28,6 +28,7 @@ from portality.models.harvester import HarvestState
 from portality.models.event import Event
 from portality.models.notifications import Notification
 from portality.models.autocheck import Autocheck
+from portality.models.export import Export
 from portality.models.data_dump import DataDump
 
 import sys

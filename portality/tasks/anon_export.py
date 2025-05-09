@@ -20,6 +20,7 @@ email_subs = {}
 email_counter = 0
 password = None
 
+
 def _anonymise_email(record):
     if record.email not in email_subs:
         global email_counter
@@ -104,6 +105,14 @@ anonymisation_procedures = {
     'application': anonymise_application
 }
 
+# types that should use prefix queries to optimise performance for bulk exporting
+striped = {
+    # "application": True,
+    "article": True
+}
+
+skip = []
+
 
 def _copy_on_complete(path, logger_fn, tmpStore, mainStore, container):
     name = os.path.basename(path)
@@ -147,6 +156,9 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
     type_list = [a[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for a in true_names]
 
     for type_ in type_list:
+        if type_ in skip:
+            logger_fn("skipping " + type_)
+            continue
         model = models.lookup_models_by_type(type_, dao.DomainObject)
         if not model:
             logger_fn("unable to locate model for " + type_)
@@ -155,7 +167,7 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
         logger_fn((dates.now_str() + " " + type_ + " => " + output_file + ".*"))
-        iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
+        # iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
         transform = None
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
@@ -163,10 +175,10 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         # Use the model's dump method to write out this type to file
         out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore,
                                             mainStore=mainStore, container=container)
-        _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"],
-                       iterate_method="unstable")
-                #scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m')
+
+        s = striped.get(type_, False)
+        _ = model.dump(limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], striped=s, prefix_size=3, logger=logger_fn)
 
         logger_fn((dates.now_str() + " done\n"))
 

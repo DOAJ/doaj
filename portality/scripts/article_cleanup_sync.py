@@ -9,6 +9,7 @@ from portality.lib import dates
 
 from portality.tasks import article_cleanup_sync as asc
 from portality.background import BackgroundApi
+from portality.models.background import StdOutBackgroundJob
 
 
 if __name__ == "__main__":
@@ -31,6 +32,7 @@ if __name__ == "__main__":
         print("Prep all arg set. 'unchanged' articles will also have their indexes refreshed.")
 
     job = asc.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=args.prepall, write=args.write)
+    job = StdOutBackgroundJob(job)
     task = asc.ArticleCleanupSyncBackgroundTask(job)
     BackgroundApi.execute(task)
 

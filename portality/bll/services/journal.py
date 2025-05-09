@@ -5,6 +5,8 @@ import re
 import string
 from datetime import datetime
 from datetime import timedelta
+import os
+import shutil
 
 from portality import lock
 from portality import models, constants
@@ -139,30 +141,21 @@ class JournalService(object):
         if logger is None:
             logger = no_op
 
-        # ~~->FileStoreTemp:Feature~~
-        filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
-        container_id = app.config.get("STORE_CACHE_CONTAINER")
-        tmpStore = StoreFactory.tmp()
-        try:
-            out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
-            logger("Temporary CSV will be written to {x}".format(x=out))
-        except StoreException as e:
-            logger("Could not create temporary CSV file: {x}".format(x=e))
-            raise e
+        query = models.JournalQuery().all_in_doaj()
 
-        with open(out, 'w', encoding='utf-8') as csvfile:
-            self._make_journals_csv(csvfile, logger=logger)
-        logger("Wrote CSV to output file {x}".format(x=out))
+        export_svc = DOAJ.exportService()
+        tmp_filepath, tmp_filename = export_svc.csv(models.Journal, query, logger=logger, admin_fieldset=False)
 
         # ~~->FileStore:Feature~~
+        filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
+        container_id = app.config.get("STORE_CACHE_CONTAINER")
         mainStore = StoreFactory.get("cache")
         try:
-            mainStore.store(container_id, filename, source_path=out)
+            mainStore.store(container_id, filename, source_path=tmp_filepath)
             url = mainStore.url(container_id, filename)
             logger("Stored CSV in main cache store at {x}".format(x=url))
         finally:
-            # don't delete the container, just in case someone else is writing to it
-            tmpStore.delete_file(container_id, filename)
+            export_svc.delete_tmp_csv(tmp_filename)
             logger("Deleted file from tmp store")
 
         action_register = []
@@ -185,143 +178,19 @@ class JournalService(object):
         logger("Stored CSV URL in ES Cache")
         return url, action_register
 
-    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True, add_sensitive_account_info=False):
+    def admin_csv(self, file_path, obscure_accounts=True, add_sensitive_account_info=False):
         """
         ~~AdminJournalCSV:Feature->JournalCSV:Feature~~
 
         :param file_path: where to put the CSV
-        :param account_sub_length: the length in characters for the substituted string
         :param obscure_accounts: anonymise the account data with consistent random strings
         :param add_sensitive_account_info: augment the CSV with account information - account ID, account name, account email addr
         """
-        # create a closure for substituting owners for consistently used random strings
-        unmap = {}
+        query = models.JournalQuery().all_in_doaj()
 
-        if obscure_accounts and add_sensitive_account_info:
-            raise Exception("These arguments are mutually exclusive, no point to both add and obscure the account info")
-
-        def usernames(j):
-            o = j.owner
-            if obscure_accounts:
-                if o in unmap:
-                    sub = unmap[o]
-                else:
-                    sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(account_sub_length))
-                    unmap[o] = sub
-                return [("Owner", sub)]
-            else:
-                return [("Owner", o)]
-
-        def acc_name(j):
-            o = j.owner
-            a = models.Account.pull(o)
-            return [("Account Name", a.name)] if a is not None else ""
-
-        def acc_email(j):
-            o = j.owner
-            a = models.Account.pull(o)
-            return [("Account Email", a.email)] if a is not None else ""
-
-        extra_cols = [usernames]
-        if add_sensitive_account_info:
-            extra_cols += [acc_name, acc_email]
-
-        with open(file_path, "w", encoding="utf-8") as f:
-            self._make_journals_csv(f, extra_cols)
-
-    @staticmethod
-    def _make_journals_csv(file_object, additional_columns=None, logger=None):
-        """
-        Make a CSV file of information for all journals.
-        :param file_object: a utf8 encoded file object.
-        """
-        logger = logger if logger is not None else lambda x: x
-        YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
-
-        def _get_doaj_meta_kvs(journal):
-            """
-            Get key, value pairs for some meta information we want from the journal object
-            :param journal: a models.Journal
-            :return: a list of (key, value) tuples for our metadata
-            """
-            kvs = [
-                ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
-                # ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
-                ("Added on Date", journal.created_date),
-                ("Last updated Date", journal.last_manual_update)
-            ]
-            return kvs
-
-        def _get_doaj_toc_kv(journal):
-            return "URL in DOAJ", app.config.get('JOURNAL_TOC_URL_FRAG', 'https://doaj.org/toc/') + journal.id
-
-        def _get_article_kvs(journal):
-            stats = journal.article_stats()
-            kvs = [
-                ("Number of Article Records", str(stats.get("total"))),
-                ("Most Recent Article Added", stats.get("latest"))
-            ]
-            return kvs
-
-        # ~~!JournalCSV:Feature->Journal:Model~~
-        csvwriter = csv.writer(file_object)
-        first = True
-        for j in models.Journal.all_in_doaj(page_size=100):
-            export_start = datetime.utcnow()
-            logger("Exporting journal {x}".format(x=j.id))
-
-            time_log = []
-            bj = j.bibjson()
-            issn = bj.get_one_identifier(idtype=bj.P_ISSN)
-            if issn is None:
-                issn = bj.get_one_identifier(idtype=bj.E_ISSN)
-            time_log.append("{x} - got issn".format(x=datetime.utcnow()))
-
-            if issn is None:
-                continue
-
-            # ~~!JournalCSV:Feature->JournalQuestions:Crosswalk~~
-            kvs = Journal2QuestionXwalk.journal2question(j)
-            time_log.append("{x} - crosswalked questions".format(x=datetime.utcnow()))
-            meta_kvs = _get_doaj_meta_kvs(j)
-            time_log.append("{x} - got meta kvs".format(x=datetime.utcnow()))
-            article_kvs = _get_article_kvs(j)
-            time_log.append("{x} - got article kvs".format(x=datetime.utcnow()))
-            additionals = []
-            if additional_columns is not None:
-                for col in additional_columns:
-                    additionals += col(j)
-            time_log.append("{x} - got additionals".format(x=datetime.utcnow()))
-            row = kvs + meta_kvs + article_kvs + additionals
-
-            # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
-            # ~~-> ToC:WebRoute~~
-            toc_kv = _get_doaj_toc_kv(j)
-            row.insert(2, toc_kv)
-            time_log.append("{x} - got toc kvs".format(x=datetime.utcnow()))
-
-            if first is True:
-                qs = [q for q, _ in row]
-                csvwriter.writerow(qs)
-                first = False
-
-            vs = [v for _, v in row]
-            csvwriter.writerow(vs)
-            time_log.append("{x} - written row to csv".format(x=datetime.utcnow()))
-
-            export_end = datetime.utcnow()
-            if export_end - export_start > timedelta(seconds=10):
-                for l in time_log:
-                    logger(l)
-
-        logger("All journals exported and CSV written")
-        # issns = cols.keys()
-        # qs = None
-        # for i in sorted(issns):
-        #     if qs is None:
-        #         qs = [q for q, _ in cols[i]]
-        #         csvwriter.writerow(qs)
-        #     vs = [v for _, v in cols[i]]
-        #     csvwriter.writerow(vs)
-        # logger("CSV Written")
-
+        export_svc = DOAJ.exportService()
+        export_svc.csv(models.Journal, query, out_file=file_path,
+                            admin_fieldset=True,
+                            obscure_accounts=obscure_accounts,
+                            add_sensitive_account_info=add_sensitive_account_info
+                            )

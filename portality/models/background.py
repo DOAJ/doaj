@@ -293,6 +293,9 @@ class BackgroundJobQueryBuilder:
         self.append_must_not({"terms": {"status.exact": self._to_list(status)}})
         return self
 
+    def outcome_includes(self, status):
+        self.append_must({"terms": {"outcome_status.exact": self._to_list(status)}})
+
     def size(self, size: int):
         self.query_dict['size'] = size
         return self
