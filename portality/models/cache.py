@@ -84,30 +84,6 @@ class Cache(DomainObject):
             return None
         return rec.get("filename")
 
-    @classmethod
-    def cache_public_data_dump(cls, article_container, article_filename, article_url, article_size,
-                                    journal_container, journal_filename, journal_url, journal_size):
-        cobj = cls(**{
-            "article": {
-                "container": article_container,
-                "filename": article_filename,
-                "url" : article_url,
-                "size" : article_size
-            },
-            "journal": {
-                "container": journal_container,
-                "filename": journal_filename,
-                "url" : journal_url,
-                "size" : journal_size
-            }
-        })
-        cobj.set_id("public_data_dump")
-        cobj.save()
-
-    @classmethod
-    def get_public_data_dump(cls):
-        return cls.pull("public_data_dump")
-
     def is_stale(self):
         if not self.last_updated:
             lu = DEFAULT_TIMESTAMP_VAL

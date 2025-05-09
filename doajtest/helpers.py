@@ -164,7 +164,8 @@ class DoajTestCase(TestCase):
             'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
-            "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False
+            "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
+            'PREMIUM_MODE': False
         }
 
     @classmethod
@@ -210,7 +211,11 @@ class DoajTestCase(TestCase):
                 os.remove(f)
             except FileNotFoundError:
                 pass  # could be removed by other thread / process
-        shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
+
+        tmp = paths.rel2abs(__file__, "..", "tmp")
+        shutil.rmtree(tmp, ignore_errors=True)
+        while os.path.exists(tmp):
+            time.sleep(0.1)
 
         self.reset_db_record()
 

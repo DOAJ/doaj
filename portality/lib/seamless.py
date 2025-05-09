@@ -124,8 +124,7 @@ def to_bool(val):
 
 def to_datetime(val):
     try:
-        dates.parse(val)
-        return val
+        return dates.parse(val)
     except:
         raise ValueError("Could not convert string {val} to UTC Datetime".format(val=val))
 

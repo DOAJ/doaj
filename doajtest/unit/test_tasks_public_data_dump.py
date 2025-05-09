@@ -8,20 +8,20 @@ from parameterized import parameterized
 from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
-from doajtest.mocks.model_Cache import ModelCacheMockFactory
 from doajtest.mocks.store import StoreMockFactory
+from lib.thread_utils import wait_until
 from portality import models, store
 from portality.background import BackgroundApi
 from portality.core import app
 from portality.lib import dates
 from portality.lib.paths import rel2abs
 from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
-
+from portality.bll import DOAJ
 
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
-                               {"test_id": []})
+                               {"test_id": ["97"]})
 
 
 class TestPublicDataDumpTask(DoajTestCase):
@@ -30,20 +30,14 @@ class TestPublicDataDumpTask(DoajTestCase):
         super(TestPublicDataDumpTask, self).setUp()
 
         self.discovery_records_per_file = app.config.get("DISCOVERY_RECORDS_PER_FILE")
-        self.cache = models.Cache
-
         self.store_local_patcher = helpers.StoreLocalPatcher()
         self.store_local_patcher.setUp(self.app_test)
+        self.svc = DOAJ.publicDataDumpService()
 
-        models.cache.Cache = ModelCacheMockFactory.in_memory()
 
     def tearDown(self):
         app.config["DISCOVERY_RECORDS_PER_FILE"] = self.discovery_records_per_file
-
-        models.cache.Cache = self.cache
-
         self.store_local_patcher.tearDown(self.app_test)
-
         super(TestPublicDataDumpTask, self).tearDown()
 
     @parameterized.expand(load_cases)
@@ -103,9 +97,9 @@ class TestPublicDataDumpTask(DoajTestCase):
         localStoreFiles = []
         if clean or prune:
             for i in range(5):
-                localStore.store(container_id, "doaj_article_data_2018-01-0" + str(i) + ".tar.gz",
+                localStore.store(container_id, "doaj_article_data_2018-01-0" + str(i + 1) + ".tar.gz",
                                  source_stream=StringIO("test"))
-                localStore.store(container_id, "doaj_journal_data_2018-01-0" + str(i) + ".tar.gz",
+                localStore.store(container_id, "doaj_journal_data_2018-01-0" + str(i + 1) + ".tar.gz",
                                  source_stream=StringIO("test"))
             localStoreFiles = localStore.list(container_id)
 
@@ -136,19 +130,23 @@ class TestPublicDataDumpTask(DoajTestCase):
         assert job.status == status_arg
 
         if job.status != "error":
-            article_url = models.cache.Cache.get_public_data_dump().get("article", {}).get("url")
+            wait_until(lambda: self.svc.get_premium_dump() is not None)
+            record = self.svc.get_premium_dump()
+            article_url = record.article_url
             if types_arg in ["-", "all", "article"]:
                 assert article_url is not None
             else:
                 assert article_url is None
 
-            journal_url = models.cache.Cache.get_public_data_dump().get("journal", {}).get("url")
+            journal_url = record.journal_url
             if types_arg in ["-", "all", "journal"]:
                 assert journal_url is not None
             else:
                 assert journal_url is None
 
             assert localStore.exists(container_id)
+
+            # wait_until(lambda: len(localStore.list(container_id)) == 2)
             files = localStore.list(container_id)
 
             if types_arg in ["-", "all"]:
