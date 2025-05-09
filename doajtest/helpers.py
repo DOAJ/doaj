@@ -211,7 +211,11 @@ class DoajTestCase(TestCase):
                 os.remove(f)
             except FileNotFoundError:
                 pass  # could be removed by other thread / process
-        shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
+
+        tmp = paths.rel2abs(__file__, "..", "tmp")
+        shutil.rmtree(tmp, ignore_errors=True)
+        while os.path.exists(tmp):
+            time.sleep(0.1)
 
         self.reset_db_record()
 

@@ -161,14 +161,20 @@ def search_post():
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_JOURNALCSV', 'JournalCSV'),
                     action=app.config.get('ANALYTICS_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
-    csv_info = models.Cache.get_latest_csv()
-    if csv_info is None:
+    svc = DOAJ.journalService()
+    if current_user.has_role(constants.ROLE_PREMIUM_CSV):
+        jc = svc.get_premium_csv()
+    else:
+        jc = svc.get_free_csv()
+
+    if jc is None:
         abort(404)
-    store_url = csv_info.get("url")
-    if store_url is None:
-        abort(404)
+
+    store_url = svc.get_temporary_url(jc)
+
     if store_url.startswith("/"):
         store_url = "/store" + store_url
+
     return redirect(store_url, code=307)
 
 @blueprint.route("/sitemap_index.xml")

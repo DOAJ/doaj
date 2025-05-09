@@ -18,34 +18,34 @@ class TestPublicDataDump(DoajTestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super(TestPublicDataDump, cls).setUpClass()
-        cls.old_config = patch_config(app, {
-            "DISCOVERY_RECORDS_PER_FILE": 2
-        })
 
-        cls.articles = ArticleFixtureFactory.make_n_articles(5)
-        ArticleFixtureFactory.save_articles(cls.articles, block=True)
-
-        cls.journals = JournalFixtureFactory.make_n_journals(5)
-        JournalFixtureFactory.save_journals(cls.journals, block=True)
 
     @classmethod
     def tearDownClass(cls) -> None:
         super(TestPublicDataDump, cls).tearDownClass()
-        patch_config(app, cls.old_config)
-        cls.old_config = {}
 
     def logger(self, x):
         self._logs.append(x)
 
     def setUp(self):
         super(TestPublicDataDump, self).setUp()
+        self.old_config = patch_config(app, {
+            "DISCOVERY_RECORDS_PER_FILE": 2
+        })
+
+        self.articles = ArticleFixtureFactory.make_n_articles(5)
+        ArticleFixtureFactory.save_articles(self.articles, block=True)
+
+        self.journals = JournalFixtureFactory.make_n_journals(5)
+        JournalFixtureFactory.save_journals(self.journals, block=True)
         self.svc = DOAJ.publicDataDumpService(self.logger)
         self.store = StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
         self._logs = []
 
     def tearDown(self):
         super(TestPublicDataDump, self).tearDown()
-        self.store.delete_container(app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER"))
+        patch_config(app, self.old_config)
+        self.old_config = {}
 
     def test_01_article_dump(self):
         container, zipped_name, filesize, store_url = self.svc.dump_type(self.svc.ARTICLE)

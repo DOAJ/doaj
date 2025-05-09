@@ -166,8 +166,8 @@ class TestBLLJournalCSV(DoajTestCase):
                 tempFiles = self.tmpStore.list(self.container_id)
                 assert len(tempFiles) == 0
         else:
-            url, action_register = self.svc.csv(prune)
-            assert url is not None
+            jc = self.svc.csv(prune)
+            assert jc.url is not None
 
             csv_info = models.cache.Cache.get_latest_csv()
             assert csv_info.get("url") == url

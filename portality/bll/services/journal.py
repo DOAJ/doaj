@@ -7,6 +7,7 @@ from datetime import datetime
 from datetime import timedelta
 import os
 import shutil
+from collections import defaultdict
 
 from portality import lock
 from portality import models, constants
@@ -121,7 +122,7 @@ class JournalService(object):
 
         return journal, the_lock
 
-    def csv(self, prune=True, logger=None):
+    def csv(self, prune=True, logger=None, store=None):
         """
         Generate the Journal CSV
 
@@ -141,42 +142,41 @@ class JournalService(object):
         if logger is None:
             logger = no_op
 
+        export_start_time = dates.now()
+
         query = models.JournalQuery().all_in_doaj()
 
         export_svc = DOAJ.exportService()
         tmp_filepath, tmp_filename = export_svc.csv(models.Journal, query, logger=logger, admin_fieldset=False)
 
-        # ~~->FileStore:Feature~~
-        filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
-        container_id = app.config.get("STORE_CACHE_CONTAINER")
-        mainStore = StoreFactory.get("cache")
+        jc = models.JournalCSV()
+        jc.export_date = export_start_time
+
+        if store is None:
+            store = StoreFactory.get(constants.STORE__SCOPE__JOURNAL_CSV)
+
+        container = app.config.get("STORE_JOURNAL_CSV_CONTAINER")
+        filename = 'doaj_journalcsv_' + dates.format(export_start_time, FMT_DATETIME_SHORT) + '_utf8.csv'
         try:
-            mainStore.store(container_id, filename, source_path=tmp_filepath)
-            url = mainStore.url(container_id, filename)
-            logger("Stored CSV in main cache store at {x}".format(x=url))
+            store.store(container, filename, source_path=tmp_filepath)
         finally:
             export_svc.delete_tmp_csv(tmp_filename)
             logger("Deleted file from tmp store")
 
-        action_register = []
+        url = store.url(container, filename)
+        logger("Stored CSV in main cache store at {x}".format(x=url))
+        jc.set_csv(container, filename, os.path.getsize(tmp_filepath), url)
+
+        export_svc.delete_tmp_csv(tmp_filename)
+        jc.save()
+
         if prune:
             logger("Pruning old CSVs from store")
-
-            def sort(filelist):
-                rx = "journalcsv__doaj_(.+?)_utf8.csv"
-                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT), reverse=True)
-
-            def _filter(f_name):
-                return f_name.startswith("journalcsv__")
-
-            action_register = prune_container(mainStore, container_id, sort, filter=_filter, keep=2, logger=logger)
+            self.prune_csvs(store=store, logger=logger)
             logger("Pruned old CSVs from store")
 
         # update the ES record to point to the new file
-        # ~~-> Cache:Model~~
-        models.Cache.cache_csv(url)
-        logger("Stored CSV URL in ES Cache")
-        return url, action_register
+        return jc
 
     def admin_csv(self, file_path, obscure_accounts=True, add_sensitive_account_info=False):
         """
@@ -194,3 +194,110 @@ class JournalService(object):
                             obscure_accounts=obscure_accounts,
                             add_sensitive_account_info=add_sensitive_account_info
                             )
+
+    def prune_csvs(self, store=None, logger=None):
+        if store is None:
+            store = StoreFactory.get(constants.STORE__SCOPE__JOURNAL_CSV)
+
+        # None isn't executable, so convert logger to NO-OP
+        if logger is None:
+            logger = no_op
+
+        # First we're going to remove all the files for csv records which are too old to keep
+        total = models.JournalCSV.count()
+        old_csvs = models.JournalCSV.all_csvs_before(dates.before_now(app.config.get("NON_PREMIUM_DELAY_SECONDS") + 86400))
+
+        # if removing the old_dds would leave us without any data dump records, then don't do anything
+        if total <= len(old_csvs):
+            logger("Not removing any old journal csv records, as this would leave us with none")
+            return
+
+        for jc in old_csvs:
+            ac = jc.container
+            af = jc.filename
+            store.delete_file(ac, af)
+            jc.delete()
+
+        # Second, we're going to look at all records, and keep only the most recent one from each day
+        thin = models.JournalCSV.all_csvs_before(dates.before_now(86400))
+
+        def separate_by_newest_per_day(jcs):
+            # Group objects by their day
+            grouped_by_day = defaultdict(list)
+            for jc in jcs:
+                day = dates.parse(jc.export_day)  # Extract the day (ignoring time)
+                grouped_by_day[day].append(jc)
+
+            newest_per_day = []
+            everything_else = []
+
+            # Find the newest object for each day
+            for day, items in grouped_by_day.items():
+                items.sort(key=lambda x: dates.parse(x.export_date), reverse=True)  # Sort by date descending
+                newest_per_day.append(items[0])  # Add the newest object
+                everything_else.extend(items[1:])  # Add the rest to "everything else"
+
+            return newest_per_day, everything_else
+
+        # Separate the objects into newest_per_day and everything_else
+        newest_per_day, everything_else = separate_by_newest_per_day(thin)
+        for jc in everything_else:
+            ac = jc.container
+            af = jc.filename
+            store.delete_file(ac, af)
+            jc.delete()
+
+        # Third we're going to check the container for files which don't have index records, and
+        # clean them up
+
+        # get the files in storage
+        container = app.config.get("STORE_JOURNAL_CSV_CONTAINER")
+        container_files = store.list(container)
+
+        # if the filename doesn't match anything, remove the file
+        for cf in container_files:
+            jc = models.JournalCSV.find_by_filename(cf)
+            if jc is None or len(jc) == 0:
+                logger("No related index record; Deleting file {x} from storage container {y}".format(x=cf, y=container))
+                store.delete_file(container, cf)
+
+        # Finally, we check all the records in the index and confirm their files exist, and if not
+        # remove the record
+        for jc in models.JournalCSV.iterate_unstable():
+            missing = False
+            if jc.container is not None and jc.filename is not None:
+                if jc.filename not in store.list(jc.container):
+                    logger("File {x} in container {y} does not exist".format(x=jc.filename, y=jc.container))
+                    missing = True
+
+            if missing:
+                logger("File missing for {x}".format(x=jc.id))
+                jc.delete()
+
+    def get_premium_csv(self):
+        # Get the latest data dump
+        return models.JournalCSV.find_latest()
+
+    def get_free_csv(self, cutoff=None):
+        if cutoff is None:
+            cutoff = dates.before_now(app.config.get("NON_PREMIUM_DELAY_SECONDS") + 86400)
+
+        # get the first dump after the cutoff
+        option = models.JournalCSV.first_dump_after(cutoff=cutoff)
+        if option is not None:
+            return option
+
+        # if there was no such dump, just return the latest
+        return models.JournalCSV.find_latest()
+
+    def get_temporary_url(self, jc: models.JournalCSV):
+        container = jc.container
+        filename = jc.filename
+
+        if container is None or filename is None:
+            raise exceptions.NoSuchPropertyException("Cannot find container and filename for journal csv")
+
+        main_store = StoreFactory.get(constants.STORE__SCOPE__JOURNAL_CSV)
+        store_url = main_store.temporary_url(container, filename,
+                                             timeout=app.config.get("JOURNAL_CSV_URL_TIMEOUT", 3600))
+        return store_url

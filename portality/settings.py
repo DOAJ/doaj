@@ -174,7 +174,8 @@ REPORTS_BASE_DIR = "/home/cloo/reports/"
 STORE_IMPL = "portality.store.StoreLocal"
 STORE_SCOPE_IMPL = {
     # Enable this by scope in order to have different scopes store via different storage implementations
-    #     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3"
+    #     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3",
+    #     constants.STORE__SCOPE__JOURNAL_CSV: "portality.store.StoreS3"
 }
 
 STORE_TMP_IMPL = "portality.store.TempStore"
@@ -193,6 +194,7 @@ STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 STORE_HARVESTER_CONTAINER = "doaj-harvester"
 STORE_EXPORT_CONTAINER = "doaj-export-placeholder"
+STORE_JOURNAL_CSV_CONTAINER = "doaj-journal-csv-placeholder"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -217,6 +219,10 @@ STORE_S3_SCOPES = {
     },
     # Used to store the admin-generated CSV reports
     "export": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
+    },
+    constants.STORE__SCOPE__JOURNAL_CSV: {
         "aws_access_key_id": "put this in your dev/test/production.cfg",
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     }
@@ -434,9 +440,6 @@ HUEY_ASYNC_DELAY = 10
 
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
-
-# Additional Logging for scheduled JournalCSV
-EXTRA_JOURNALCSV_LOGGING = False
 
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
@@ -1559,6 +1562,12 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
 
 # how long should the temporary URL for public data dumps last
 PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
+
+##################################################
+# Journal CSV Setings
+
+# how long should the temporary URL for public data dumps last
+JOURNAL_CSV_URL_TIMEOUT = 3600
 
 ##################################################
 # Pages under maintenance

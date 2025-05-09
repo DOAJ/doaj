@@ -146,6 +146,7 @@ class BaseArticlesUploadStatus(ConstantList):
 
 # Storage scopes
 STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
+STORE__SCOPE__JOURNAL_CSV = "journal_csv"
 
 # OAI
 SUBJECTS_SCHEMA = "LCC:"
