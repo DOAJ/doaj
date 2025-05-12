@@ -380,6 +380,14 @@ ass_ed:
   language: English, Africaans
   photo: "ina-smith.png"
 
+- name: Irene Prähauser
+  area: Library Science
+  year_since:
+  city: Linz
+  country: Austria
+  language: German, English
+  photo: "irene_portrait_workshop.jpg"
+
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
   year_since:
