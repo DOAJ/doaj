@@ -105,6 +105,7 @@ from copy import deepcopy
 from typing import Optional, Dict, Iterable
 
 from flask import render_template
+from flask_babel import gettext
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField, Field
 from wtforms.validators import ValidationError
@@ -850,7 +851,7 @@ class FormulaicField(object):
             value = o.get("value")
             if value is None:
                 value = o.get("display")
-            choices.append((value, display))
+            choices.append((value, gettext(display)))
 
         return choices
 

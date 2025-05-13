@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-07 12:07+0530\n"
+"POT-Creation-Date: 2025-05-13 11:37+0530\n"
 "PO-Revision-Date: 2025-05-05 11:30+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,7 +18,158 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: login_to_apply.html
+#: forms/application_forms.py:88
+msgid "Does the journal adhere to DOAJ’s definition of open access?"
+msgstr "La revue adhère-t-elle à la définition de DOAJ du libre accès?"
+
+#: forms/application_forms.py:91
+msgid "Yes"
+msgstr "Oui"
+
+#: forms/application_forms.py:92
+msgid "No"
+msgstr "Non"
+
+#: forms/application_forms.py:95
+msgid ""
+"See <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-"
+"open-access/' target='_blank' rel='noopener'>DOAJ’s definition of open "
+"access explained in full</a>."
+msgstr ""
+
+#: forms/application_forms.py:124
+msgid ""
+"The journal website must display its open access statement. Where can we "
+"find this information?"
+msgstr "La revue doit afficher une déclaration en matière de libre accès. Où se trouve-t-elle? "
+
+#: forms/application_forms.py:127
+msgid ""
+"Here is an example of a suitable Open Access statement that meets our "
+"criteria: <blockquote>This is an open access journal, which means that "
+"all content is freely available without charge to the user or his/her "
+"institution. Users are allowed to read, download, copy, distribute, "
+"print, search, or link to the full texts of the articles, or use them for"
+" any other lawful purpose, without asking prior permission from the "
+"publisher or the author. This is in accordance with the BOAI definition "
+"of open access.</blockquote>"
+msgstr "Voici un exemple de déclaration en matière de libre accès répondant à nos critères : "
+"<blockquote>Cette revue est en libre accès, ce qui signifie que tout le contenu est librement accessible, sans frais pour toute personne ou institution. Toute personne est autorisée à lire, télécharger, copier, transmettre, imprimer, chercher ou faire un lien vers le texte intégral de ces articles, ou s’en servir à toute autre fin légale, sans avoir à demander l'autorisation préalable de l'éditeur ou de l'auteur·trice. Ceci est conforme à la définition du libre accès de la BOAI.</blockquote>"
+
+#: forms/application_forms.py:138
+msgid "Link to the journal’s open access statement"
+msgstr "Lien vers la déclaration de libre accès de la revue"
+
+#: forms/application_forms.py:142
+msgid "Enter the URL for the journal’s Open Access statement page"
+msgstr "Saisissez l'URL où se trouve la déclaration en matière de libre accès de la revue."
+
+#: forms/application_forms.py:959
+msgid "When did the journal start to publish all content using an open license?"
+msgstr "Quand la revue a-t-elle commencé à publier son contenu sous une licence ouverte?"
+
+#: forms/application_forms.py:964
+msgid ""
+"Please enter the year that the journal started to publish all content as "
+"true open access, according to DOAJ's <a "
+"href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-"
+"access/' target='_blank' rel='nofollow'>definition</a>."
+msgstr "Veuillez saisir l'année où la revue a commencé à publier tout son contenu en libre accès véritable, selon la <a "
+"href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-"
+"access/' target='_blank' rel='nofollow'>définition</a> du DOAJ"
+
+#: forms/application_forms.py:965
+msgid ""
+"For journals that have flipped to open access, enter the year that the "
+"journal flipped, not the original launch date of the journal."
+msgstr "Pour les revues qui sont devenues en libre accès (flip), entrez l'année où la revue est passée au libre accès et non la date de lancement initial de la revue."
+
+#: forms/application_forms.py:966
+msgid ""
+"For journals that have made digitised backfiles freely available, enter "
+"the year that the journal started publishing as a fully open access "
+"title, not the date of the earliest free content."
+msgstr "Pour les revues qui ont numérisé leurs anciens numéros pour les rendre disponibles gratuitement, entrez l’année où la revue a commencé à publier en libre accès complet et non la date du contenu gratuit le plus ancien."
+
+#: forms/application_forms.py:969
+msgid "Enter the Year (YYYY)."
+msgstr ""
+
+#: forms/application_forms.py:972
+#, python-brace-format
+msgid ""
+"OA Start Date must be a year in the 4-digit format (eg. 1987) and must be"
+" greater than {}"
+msgstr ""
+
+#: forms/validate.py:141
+msgid "Invalid URL."
+msgstr ""
+
+#: forms/validate.py:209
+msgid "Invalid input."
+msgstr ""
+
+#: forms/validate.py:588
+msgid "This field is required."
+msgstr ""
+
+# portality/templates-v2/_application-form/includes/_fieldset_oa_compliance.html
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:7
+msgid ""
+"You are now logged in. When you submit your application, it will be "
+"registered to this account. Please note:"
+msgstr ""
+"Vous êtes maintenant connecté à votre compte. Lorsque vous soumetterez "
+"votre candidature, elle sera enregistrée sur ce compte. Veuillez noter "
+"que :"
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:9
+msgid ""
+"The application form takes approximately <strong>30 minutes</strong> to "
+"complete."
+msgstr "Il faut environ 30 minutes pour compléter le formulaire de candidature."
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:10
+msgid "Your progress is automatically saved."
+msgstr "Votre progression sera automatiquement sauvegardée."
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:11
+msgid "return_to_application_text"
+msgstr ""
+"Vous pourrez revenir à ce formulaire à tout moment en cliquant sur <a "
+"href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
+"<em>Publisher dashboard</em></a> (Mon compte → Éditeur) en haut de la "
+"page"
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:12
+msgid "download_list_of_questions"
+msgstr ""
+"Vous pouvez <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
+"only.pdf\" target=\"_blank\">imprimer ou télécharger</a> une liste des "
+"questions au format PDF."
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:13
+msgid "You must apply online."
+msgstr "Vous devez soumettre votre candidature avec le formulaire en ligne."
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:18
+msgid "DOAJ only accepts fully open access journals"
+msgstr "DOAJ n'accepte que les revues pleinement en libre accès"
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:20
+msgid "application_form_oa_condition"
+msgstr ""
+"Le libre accès désigne la situation où les titulaires des droits d'auteur"
+" sur les articles accordent certains droits d’utilisation à des tiers au "
+"moyen d’une licence ouverte (telle que Creative Commons ou un "
+"équivalent). Une licence ouverte offre un accès gratuit et immédiat aux "
+"articles et permet à toute personne de lire, télécharger, copier, "
+"transmettre, imprimer, chercher ou faire un lien vers le texte intégral "
+"de ces articles, les disséquer pour les indexer, s’en servir de données "
+"pour un logiciel, ou s’en servir à toute autre fin légale."
+
+#: templates-v2/public/account/login_to_apply.html:12
 msgid "application_apply_read_guide"
 msgstr ""
 "Veuillez d'abord lire notre <a href=\"/apply/guide/\">Guide de "
@@ -27,40 +178,14 @@ msgstr ""
 "d'aide avec le formulaire de candidature, n'hésitez pas à <a "
 "href=\"/contact/\">nous contacter</a>."
 
-msgid "application_form_doaj_OA"
-msgstr "DOAJ n'accepte que les revues pleinement en libre accès "
-
+#: templates-v2/public/account/login_to_apply.html:14
 msgid "You_can_print_or_download_a_PDF_list_of_the_questions"
 msgstr "Vous pouvez imprimer ou télécharger une liste des questions au format PDF."
 
+#: templates-v2/public/account/login_to_apply.html:16
 msgid "Log in or register to submit your application."
 msgstr "Connectez-vous ou créez un compte pour soumettre votre candidature."
 
-msgid "return_to_application_text"
-msgstr "Vous pourrez revenir à ce formulaire à tout moment en cliquant sur <a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; <em>Publisher dashboard</em></a> (Mon compte → Éditeur) en haut de la page"
+#~ msgid "application_form_doaj_OA"
+#~ msgstr "DOAJ n'accepte que les revues pleinement en libre accès "
 
-# portality/templates-v2/_application-form/includes/_fieldset_oa_compliance.html
-
-msgid "You are now logged in. When you submit your application, it will be registered to this account. Please note:"
-msgstr "Vous êtes maintenant connecté à votre compte. Lorsque vous soumetterez votre candidature, elle sera enregistrée sur ce compte. Veuillez noter que :"
-
-msgid "The application form takes approximately <strong>30 minutes</strong> to complete."
-msgstr "Il faut environ 30 minutes pour compléter le formulaire de candidature."
-
-msgid "Your progress is automatically saved."
-msgstr "Votre progression sera automatiquement sauvegardée."
-
-msgid "return_to_application_text"
-msgstr "Vous pourrez revenir à ce formulaire à tout moment en cliquant sur <a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; <em>Publisher dashboard</em></a> (Mon compte → Éditeur) en haut de la page."
-
-msgid "download_list_of_questions"
-msgstr "Vous pouvez <a href=\"/static/doaj/docs/DOAJquestions-for-reference-only.pdf\" target=\"_blank\">imprimer ou télécharger</a> une liste des questions au format PDF."
-
-msgid "You must apply online."
-msgstr "Vous devez soumettre votre candidature avec le formulaire en ligne."
-
-msgid "DOAJ only accepts fully open access journals"
-msgstr "DOAJ n'accepte que les revues pleinement en libre accès"
-
-msgid "application_form_oa_condition"
-msgstr "Le libre accès désigne la situation où les titulaires des droits d'auteur sur les articles accordent certains droits d’utilisation à des tiers au moyen d’une licence ouverte (telle que Creative Commons ou un équivalent). Une licence ouverte offre un accès gratuit et immédiat aux articles et permet à toute personne de lire, télécharger, copier, transmettre, imprimer, chercher ou faire un lien vers le texte intégral de ces articles, les disséquer pour les indexer, s’en servir de données pour un logiciel, ou s’en servir à toute autre fin légale."
