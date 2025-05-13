@@ -9,6 +9,8 @@ from wtforms import StringField, TextAreaField, IntegerField, BooleanField, Sele
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
+from flask_babel import gettext
+
 from portality import constants
 from portality import regex
 from portality.core import app
@@ -83,18 +85,18 @@ class FieldDefinitions:
     # ~~->$ BOAI:FormField~~
     BOAI = {
         "name": "boai",
-        "label": "Does the journal adhere to DOAJ’s definition of open access?",
+        "label": gettext("Does the journal adhere to DOAJ’s definition of open access?"),
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
+            {"display": gettext("Yes"), "value": "y"},
+            {"display": gettext("No"), "value": "n"}
         ],
         "help": {
-            "long_help": ["See <a href='https://blog.doaj.org/2020/11/17/"
+            "long_help": [gettext("See <a href='https://blog.doaj.org/2020/11/17/"
                           "what-does-doaj-define-as-open-access/' "
                           "target='_blank' rel='noopener'>"
                           "DOAJ’s definition of open access explained "
-                          "in full</a>."],
+                          "in full</a>.")],
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
@@ -119,10 +121,10 @@ class FieldDefinitions:
     # ~~->$ OAStatementURL:FormField~~
     OA_STATEMENT_URL = {
         "name": "oa_statement_url",
-        "label": "The journal website must display its open access statement. Where can we find this information?",
+        "label": gettext("The journal website must display its open access statement. Where can we find this information?"),
         "input": "text",
         "help": {
-            "long_help": ["Here is an example of a suitable Open Access "
+            "long_help": [gettext("Here is an example of a suitable Open Access "
                           "statement that meets our criteria: <blockquote>This"
                           " is an open access journal, which means that all "
                           "content is freely available without charge to the "
@@ -132,12 +134,12 @@ class FieldDefinitions:
                           "them for any other lawful purpose, without asking "
                           "prior permission from the publisher or the author. "
                           "This is in accordance with the BOAI definition of "
-                          "open access.</blockquote>"],
-            "short_help": "Link to the journal’s open access statement",
+                          "open access.</blockquote>")],
+            "short_help": gettext("Link to the journal’s open access statement"),
             "placeholder": "https://www.my-journal.com/open-access"
         },
         "validate": [
-            {"required": {"message": "Enter the URL for the journal’s Open Access statement page"}},
+            {"required": {"message": gettext("Enter the URL for the journal’s Open Access statement page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
@@ -954,20 +956,20 @@ class FieldDefinitions:
     # ~~->$ OAStart:FormField~~
     OA_START = {
         "name": "oa_start",
-        "label": "When did the journal start to publish all content using an open license?",
+        "label": gettext("When did the journal start to publish all content using an open license?"),
         "input": "number",
         "datatype": "integer",
         "help": {
             "long_help": [
-                "Please enter the year that the journal started to publish all content as true open access, according to DOAJ's <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>definition</a>.",
-                "For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal.",
-                "For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content."]
+                gettext("Please enter the year that the journal started to publish all content as true open access, according to DOAJ's <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>definition</a>."),
+                gettext("For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal."),
+                gettext("For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content.")]
         },
         "validate": [
-            {"required": {"message": "Enter the Year (YYYY)."}},
+            {"required": {"message": gettext("Enter the Year (YYYY).")}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {
-                "message": "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}".format(
+                "message": gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}").format(
                     app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {

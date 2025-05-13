@@ -55,6 +55,14 @@
             </div>
 
             <div class="col-md-4">
+                <div class="language-selector">
+                  <form action="/apply/" method="GET">
+                    <select id="languageSelect" name="lang" onchange="this.form.submit()">
+                        <option value="en" {% if session.get('lang') == 'en' %}selected{% endif %}>English</option>
+                        <option value="fr" {% if session.get('lang') == 'fr' %}selected{% endif %}>Français</option>
+                    </select>
+                  </form>
+                </div>
                 <div >
                     {% include "public/_application-form/includes/_pagination_menu.html" %}
                 </div>
