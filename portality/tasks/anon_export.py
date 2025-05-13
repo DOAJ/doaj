@@ -107,9 +107,11 @@ anonymisation_procedures = {
 
 # types that should use prefix queries to optimise performance for bulk exporting
 striped = {
-    "application": True,
+    # "application": True,
     "article": True
 }
+
+skip = []
 
 
 def _copy_on_complete(path, logger_fn, tmpStore, mainStore, container):
@@ -154,6 +156,9 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
     type_list = [a[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for a in true_names]
 
     for type_ in type_list:
+        if type_ in skip:
+            logger_fn("skipping " + type_)
+            continue
         model = models.lookup_models_by_type(type_, dao.DomainObject)
         if not model:
             logger_fn("unable to locate model for " + type_)
@@ -173,7 +178,7 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
 
         s = striped.get(type_, False)
         _ = model.dump(limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], striped=s)
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], striped=s, prefix_size=3, logger=logger_fn)
 
         logger_fn((dates.now_str() + " done\n"))
 
