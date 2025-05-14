@@ -365,6 +365,14 @@ ass_ed:
   country: Italy
   language: Italian, English
 
+- name: Gerlinde Maxl
+  area: Library Science and Archives
+  year_since:
+  city: Graz
+  country: Austria
+  language: German, English
+  photo: 
+
 - name: Hanae Lrhoul
   area: Library Science
   year_since:
