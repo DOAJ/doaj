@@ -1,3 +1,4 @@
+import random
 import uuid, json
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
@@ -7,6 +8,7 @@ from wtforms import StringField, HiddenField, PasswordField, DecimalField, valid
 
 from portality import util
 from portality import constants
+from portality.app_email import send_mail
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
@@ -193,14 +195,55 @@ class LoginCodeForm(RedirectForm):
     user = HiddenField('User')
 
 
+@blueprint.route('/verify-code', methods=['POST'])
+def verify_code():
+    email = request.form.get('email')
+    code = request.form.get('code')
+    if not email or not code:
+        flash("Required parameters not available.")
+        return redirect(url_for('account.login'))
+
+    account = Account.pull_by_email(email)
+    if not account:
+        flash("Account not recognised.")
+        return redirect(url_for('account.login'))
+
+    if account.is_login_code_valid(code):
+        account.remove_login_code()
+        account.save()
+        login_user(account)
+        return redirect(url_for('dashboard.index'))
+    else:
+        flash("Invalid or expired verification code")
+        return redirect(url_for('account.login'))
+
+
+def send_login_code_email(email: str, code: str):
+    """Send login code email with both code and direct link"""
+    login_url = url_for('account.verify_code', code=code, email=email, _external=True)
+
+    send_mail(
+        to=[email],
+        fro=app.config.get('SYSTEM_EMAIL_FROM'),
+        subject="Your Login Code for DOAJ",
+        template_name="email/login_code.jinja2",
+        data={
+            "code": code,
+            "login_url": login_url,
+            "expiry_minutes": 10
+        }
+    )
+
+
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
 def login():
     current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
-        password = form.password.data
         username = form.user.data
+        action = request.form.get('action')
+
 
         # If our settings allow, try getting the user account by ID first, then by email address
         if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
@@ -211,12 +254,26 @@ def login():
         # If we have a verified user account, proceed to attempt login
         try:
             if user is not None:
-                if user.check_password(password):
-                    login_user(user, remember=True)
-                    flash('Welcome back.', 'success')
-                    return redirect(get_redirect_target(form=form, acc=user))
+                if action == 'get_link':
+                    code = ''.join(str(random.randint(0, 9)) for _ in range(6))
+                    user.set_login_code(code, timeout=600)  # 10 minutes
+                    user.save()
+
+                    # Send email
+                    send_login_code_email(user.email, code)
+
+                    flash('A login link along with login code has been sent to your email.')
+
+                    return render_template(templates.LOGIN_VERIFY_CODE, email=user.email)
+
                 else:
-                    form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
+                    password = form.password.data
+                    if user.check_password(password):
+                        login_user(user, remember=True)
+                        flash('Welcome back.', 'success')
+                        return redirect(get_redirect_target(form=form, acc=user))
+                    else:
+                        form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
             else:
                 form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
         except KeyError:
