@@ -433,12 +433,17 @@ def page_not_found(e):
 
 @app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
 def article_withdrawn(e):
-    return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.WITHDRAWN, journal_issn=e.journal_issn), 410
+    return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.WITHDRAWN), 410
+
+@app.errorhandler(exceptions.TombstoneArticle)
+def article_withdrawn(e):
+    return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.TOMBSTONE), 410
 
 @app.errorhandler(exceptions.JournalWithdrawn)
 def journal_withdrawn(e):
     return render_template(templates.ERROR_410, record=constants.JOURNAL, context=constants.WITHDRAWN), 410
 
+@app.errorhandler(ValueError)
 @app.errorhandler(500)
 def handle_500(e):
     if e.description == e.__class__.description:

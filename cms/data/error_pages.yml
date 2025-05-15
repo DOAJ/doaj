@@ -1,31 +1,19 @@
 404:
-  text:
-    - "Hmm, we couldn’t find that page – maybe the link’s broken or it never existed."
-    - "You can search for articles or look through our list of journals to keep exploring."
-  urls:
-    - link: "/search/journals"
-      title: "Browse journals"
-    - link: "/search/articles"
-      title: "Search articles"
+  - "Hmm, we couldn’t find that page – maybe the link’s broken or it never existed."
+  - "You can search for articles or look through our list of journals to keep exploring."
+
 410:
   article:
     withdrawn:
-      text:
-        - "This article came from a journal that’s no longer listed in DOAJ."
-        - "You might still find similar articles in other journals."
-      urls: "/toc/{ISSN}/articles"
+      - "This article came from a journal that’s no longer listed in DOAJ."
+      - "You might still find similar articles in other journals or browse all articles listed."
 
     tombstone:
-      text:
-        - "This article has been removed and isn’t available anymore."
-        - "But you can still check out other articles from the same journal."
-      urls:
-        - "/search/articles"
+      - "This article has been removed and isn’t available anymore."
+      - "But you can check out other articles or browser our listed journals."
+
 
   journal:
     withdrawn:
-      text:
-        - "This journal isn’t in DOAJ anymore."
-        - "But you can browse through our other listed journals."
-      urls:
-        - "/search/journals"
+      - "This journal isn’t in DOAJ anymore."
+      - "But you can browse through our other listed journals or articles."

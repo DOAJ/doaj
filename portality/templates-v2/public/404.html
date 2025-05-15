@@ -4,8 +4,7 @@
 {% block page_title %}404: Record not found{% endblock %}
 
 {% block public_content %}
-{% set error_text = data.error_pages.404.text %}
-{% set error_urls = data.error_pages.404.urls %}
+{% set error_text = data.error_pages.404 %}
 
 404
 {% for t in error_text %}

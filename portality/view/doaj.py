@@ -261,30 +261,43 @@ def autocomplete(doc_type, field_name):
 
 
 def find_toc_journal_by_identifier(identifier):
+    """
+    Find a journal based on its identifier. If:
+    no journals - return 404,
+    withdrawn journals - raise JournalWithdrawn exception
+    more than 1 journal in doaj - raise 500
+    exactly 1 journal in doaj - return found journal
+
+    :param identifier:
+    :return:
+    """
+
     if identifier is None:
         abort(404)
 
     if len(identifier) == 9:
-        js = models.Journal.find_by_issn(identifier, in_doaj=True)
+        # search both in doaj and withdrawn to know whether to return 404 (not found) or 410 (gone)
+        js = models.Journal.find_by_issn(identifier)
 
-        if len(js) > 1:
-            abort(400)  # really this is a 500 - we have more than one journal with this issn
         if len(js) == 0:
             abort(404)
-        journal = js[0]
 
-        if journal is None:
-            abort(400)
+        try:
+            journal = models.Journal.get_active_journal(js)
+        except exceptions.TooManyJournals:
+            app.logger.exception(Messages.TOO_MANY_JOURNALS_LOG.format(identifier=identifier))
+            abort(500, description=Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
 
         return journal
 
     elif len(identifier) == 32:
         js = models.Journal.pull(identifier)  # Returns None on fail
 
-        if js is None or not js.is_in_doaj():
+        if js is None:
             abort(404)
-        return js
 
+        if not js.is_in_doaj():
+            raise exceptions.JournalWithdrawn
     abort(400)
 
 
@@ -378,6 +391,9 @@ def article_page(identifier=None):
         else:
             abort(404, description=Messages.ARTICLE_NOT_FOUND)
 
+    if not article.is_in_doaj():
+        raise exceptions.ArticleFromWithdrawnJournal
+
     # find the related journal record
     journal = None
     issns = article.bibjson().issns()
@@ -387,12 +403,13 @@ def article_page(identifier=None):
         if len(journals) == 0:
             app.logger.exception(Messages.ARTICLE_ABANDONED_LOG.format(article_id=article.id))
             abort(500, description=Messages.ARTICLE_ABANDONED_PUBLIC)
-        if len(journals) > 0:
-            if len(journals) > 1:
-                app.logger.info(Messages.ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS.format(article.id))
-            journal = journals[0]
-            if not journal.is_in_doaj():
-                raise exceptions.ArticleFromWithdrawnJournal
+        try:
+            journal = models.Journal.get_active_journal(journals)
+        except exceptions.TooManyJournals:
+            app.logger.exception(Messages.TOO_MANY_JOURNALS_LOG.format(identifier=identifier))
+            abort(500, description=Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
+        except exceptions.JournalWithdrawn:
+            raise exceptions.ArticleFromWithdrawnJournal
 
     return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 
