@@ -1,7 +1,7 @@
 404:
   text:
-    - "The page you’re looking for could not be found. It may have been moved, deleted, or never existed."
-    - "Try searching for articles or browsing journals instead."
+    - "Hmm, we couldn’t find that page – maybe the link’s broken or it never existed."
+    - "You can search for articles or look through our list of journals to keep exploring."
   urls:
     - link: "/search/journals"
       title: "Browse journals"
@@ -11,21 +11,21 @@
   article:
     withdrawn:
       text:
-        - "This article is associated with a journal that is no longer available in DOAJ."
-        - "You can browse other articles instead."
+        - "This article came from a journal that’s no longer listed in DOAJ."
+        - "You might still find similar articles in other journals."
       urls: "/toc/{ISSN}/articles"
 
     tombstone:
       text:
-        - "This article was part of a journal that is no longer in DOAJ and cannot be accessed."
-        - "You can search for similar articles in other journals instead."
+        - "This article has been removed and isn’t available anymore."
+        - "But you can still check out other articles from the same journal."
       urls:
         - "/search/articles"
 
   journal:
     withdrawn:
       text:
-        - "This journal has been withdrawn from DOAJ and is no longer accessible."
-        - "You can search for other journals currently listed in DOAJ."
+        - "This journal isn’t in DOAJ anymore."
+        - "But you can browse through our other listed journals."
       urls:
         - "/search/journals"
