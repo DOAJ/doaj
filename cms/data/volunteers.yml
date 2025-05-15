@@ -365,6 +365,14 @@ ass_ed:
   country: Italy
   language: Italian, English
 
+- name: Gerlinde Maxl
+  area: Cultural anthropology, Library and Information Science
+  year_since:
+  city: Graz
+  country: Austria
+  language: German, English, Swedish, Finnish
+  photo: 
+
 - name: Hanae Lrhoul
   area: Library Science
   year_since:
@@ -379,6 +387,14 @@ ass_ed:
   country: South Africa
   language: English, Africaans
   photo: "ina-smith.png"
+
+- name: Irene Prähauser
+  area: Library Science
+  year_since:
+  city: Linz
+  country: Austria
+  language: German, English
+  photo: "irene_portrait_workshop.jpg"
 
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
