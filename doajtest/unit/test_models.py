@@ -642,7 +642,7 @@ class TestModels(DoajTestCase):
         assert bj.article_license_display_example_url == "http://licence.embedded"
         assert bj.author_retains_copyright is True
         assert bj.copyright_url == "http://copyright.com"
-        assert bj.deposit_policy == ["Sherpa/Romeo", "Store it"]
+        assert bj.deposit_policy == ["Open Policy Finder", "Store it"]
         assert bj.has_deposit_policy is True
         assert bj.deposit_policy_url == "http://deposit.policy"
         assert bj.editorial_review_process == ["Open peer review", "some bloke checks it out"]
