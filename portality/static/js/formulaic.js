@@ -796,6 +796,8 @@ var formulaic = {
                 this.resolveFlagBtns = $("[id^='resolve_flag--']");
                 this.unresolveFlagBtns = $("[id^='unresolve_flag--']");
                 this.cancelFlagBtns = $("[id^='cancelAddingFlag--']");
+                this.flagNote = $("[id$='-flag_note']")
+                this.textarea_max_height = 150;
 
                 this.flagExists = false;
                 this.existingFlagIdx = null;
@@ -833,6 +835,10 @@ var formulaic = {
                 this.resolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.resolveFlag(e)));
                 this.unresolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.unresolveFlag(e)));
                 this.cancelFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.cancelFlag(e)));
+                this.flagNote.each((_, textarea) => $(textarea).on("input", () => {
+                  textarea.style.height = 'auto'; // Reset first
+                  textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
+                }));
             }
 
             this.enableAddBtn = function() {
