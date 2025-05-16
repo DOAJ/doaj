@@ -140,7 +140,7 @@ class Messages(object):
 
     ARE_YOU_A_HUMAN = "Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>."
 
-    FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username}; Original note: {note}"
+    FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username};\n Original note: {note}"
 
     @classmethod
     def flash(cls, tup):
