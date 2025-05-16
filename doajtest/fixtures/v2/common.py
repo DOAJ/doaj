@@ -44,7 +44,7 @@ JOURNAL_LIKE_BIBJSON = {
     },
     "deposit_policy": {
         "has_policy" : True,
-        "service": ["Sherpa/Romeo", "Store it"],
+        "service": ["Open Policy Finder", "Store it"],
         "url": "http://deposit.policy"
     },
     "discontinued_date": "2001-01-01",
@@ -135,7 +135,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "copyright_url" : "http://copyright.com",
     "publisher_country" : "US",
     "publisher_name" : "The Publisher",
-    "deposit_policy" : ["Sherpa/Romeo", "other"],
+    "deposit_policy" : ["Open Policy Finder", "other"],
     "deposit_policy_other" : "Store it",
     "review_process" : ["Open peer review", "other"],
     "review_process_other" : "some bloke checks it out",
