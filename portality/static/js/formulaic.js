@@ -791,6 +791,7 @@ var formulaic = {
                 this.flagGroups = $("div[class*='" + fieldName + "__question--group--']");
                 this.flagInputsContainer = $("[class^='form__question_inputs_div--']");
                 this.assigneeInputs = this.container.find("input[name$='-flag_assignee']");
+                $("#flags-0-flag_deadline").flatpickr();
                 this.addFlagBtn = this.container.find("#add_flag");
                 this.resolveFlagBtns = $("[id^='resolve_flag--']");
                 this.unresolveFlagBtns = $("[id^='unresolve_flag--']");
