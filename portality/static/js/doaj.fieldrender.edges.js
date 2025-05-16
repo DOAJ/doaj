@@ -5162,7 +5162,7 @@ $.extend(true, doaj, {
                     s2o = s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank" style="padding: .25rem;"> ' +
                         '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
                         '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
-                        '</a>';;
+                        '</a>';
                 }
                 if (resultobj.index.is_flagged  || s2o) {
                     field += '<div class="badges badges--search-result badges--search-result--maned flex-start">'
@@ -5177,6 +5177,7 @@ $.extend(true, doaj, {
                         field += s2o;
                     }
                     field += '</div>';
+                }
                 return field + "</div>";
             }
             else {
