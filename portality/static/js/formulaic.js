@@ -794,20 +794,15 @@ var formulaic = {
                 this.addFlagBtn = this.container.find("#add_flag");
                 this.resolveFlagBtns = $("[id^='resolve_flag--']");
                 this.unresolveFlagBtns = $("[id^='unresolve_flag--']");
-                this.clearFlagClassBtns = $("[id^='clearFlag--']");
                 this.cancelFlagBtns = $("[id^='cancelAddingFlag--']");
 
                 this.flagExists = false;
                 this.existingFlagIdx = null;
                 this.newFlagIdx = null;
-                this.isEditable = true;
 
                 for (var j = 0; j < this.assigneeInputs.length; j++) {
                     if ($(this.assigneeInputs[j]).val()) {
                         this.flagExists = true;
-                        if ($(this.assigneeInputs[j]).is(":disabled")) {
-                            this.isEditable = false;
-                        }
                         break;
                     }
                 }
@@ -836,7 +831,6 @@ var formulaic = {
                 this.addFlagBtn.on("click", () => this.addFlag())
                 this.resolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.resolveFlag(e)));
                 this.unresolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.unresolveFlag(e)));
-                this.clearFlagClassBtns.each((_, btn) => $(btn).on("click", (e) => this.clearFlag(e)));
                 this.cancelFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.cancelFlag(e)));
             }
 
@@ -874,10 +868,6 @@ var formulaic = {
                 return $("input[id='" + this.fieldDef.name + "-" + idx + "-flag_resolved']")
             }
 
-            this.clearFlag = function(e) {
-                let flagId = e.target.id.split("--")[1];
-                $(this.flagGroups[flagId]).find('input,textarea').val('');
-            }
 
             this.removeResolveButtonsIfResolveDisabled = function () {
                 let $resolveInputs = $(this.container).find($("input[id$='flag_resolved']"));
@@ -1075,7 +1065,9 @@ var formulaic = {
                 }
             }
 
-            this.cancelFlag = function(idx) {
+            this.cancelFlag = function(e) {
+                let flagId = e.target.id.split("--")[1];
+                $(this.flagGroups[flagId]).find('input,textarea').val('')
                 this.hideNewFlag();
                 this.flagExists = false;
                 this.setAddBtnStatus();
