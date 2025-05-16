@@ -1,11 +1,17 @@
 {% set selected_nav = data.nav.entries|selectattr("id", "equalto", section_id)|first %}
 <li class="dropdown primary-nav__item_desktop" role="menuitem">
-    <a href="#" data-toggle="dropdown" class="dropdown__trigger nav-bar__link label" id="action-menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false" role="menuitem">
+    {% if selected_nav.route %}
+        <a href="{{ url_for(selected_nav.route) }}" class="dropdown__trigger nav-bar__link label" role="button" aria-haspopup="true" aria-expanded="false" role="menuitem">
+    {%  else %}
+        <a href="#" data-toggle="dropdown" class="dropdown__trigger nav-bar__link label" id="action-menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false" role="menuitem">
+    {% endif %}
         {{ selected_nav.label }}
         {% if selected_nav.feather %}
         <span data-feather="{{ selected_nav.feather }}" aria-hidden="true"></span>
         {% endif %}
-        <span data-feather="chevron-down" aria-hidden="true"></span>
+        {% if selected_nav.entries %}
+            <span data-feather="chevron-down" aria-hidden="true"></span>
+        {% endif %}
     </a>
 
     <ul class="dropdown__menu" aria-labelledby="action-menu-{{ selected_nav.id }}" role="menu" aria-label="{{ selected_nav.label }}">

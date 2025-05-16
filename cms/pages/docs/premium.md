@@ -1,6 +1,6 @@
 ---
 layout: sidenav
-title: Premium Subscription
+title: Premium Mode
 section: Docs
 toc: true
 sticky_sidenav: true
