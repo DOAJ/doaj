@@ -55,7 +55,10 @@ class AutocheckService(object):
 
             checker = klazz()
             logger("Running autocheck plugin {x}".format(x=checker.name()))
-            checker.check(application_form, application, new_autochecks, resource_bundle, logger)
+            try:
+                checker.check(application_form, application, new_autochecks, resource_bundle, logger)
+            except Exception as e:
+                logger("Plugin {x} failed with error: {y}".format(x=checker.name(), y=str(e)))
 
         new_autochecks.save()
         logger("Saved new autocheck document {id}".format(id=new_autochecks.id))

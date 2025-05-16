@@ -134,6 +134,7 @@ var doaj = {
                     <option value="issn">ISSN</option>
                     <option value="subject">Subject</option>
                     <option value="publisher">Publisher</option>
+                    <option value="country">Country of publisher</option>
                 `)
             } else {
                 fields.html(`
@@ -2095,12 +2096,14 @@ var edges = {
      * @param components {Array} List of all the components that are involved in this edge
      * @param renderPacks=[edges.bs3, edges.nvd3, edges.highcharts, edges.google, edges.d3] {Array} Render packs to use to source automatically assigned rendering objects.
      Defaults to [edges.bs3, edges.nvd3, edges.highcharts, edges.google, edges.d3] */
-    newEdge : function(params) {
-        if (!params) { params = {} }
+    newEdge: function (params) {
+        if (!params) {
+            params = {}
+        }
         return new edges.Edge(params);
     },
     /** @class */
-    Edge : function(params) {
+    Edge: function (params) {
 
         /////////////////////////////////////////////
         // parameters that can be set via params arg
@@ -2225,7 +2228,7 @@ var edges = {
         // startup functions
 
         // at the bottom of this constructor, we'll call this function
-        this.startup = function() {
+        this.startup = function () {
             // obtain the jquery context for all our operations
             this.context = $(this.selector);
 
@@ -2236,7 +2239,7 @@ var edges = {
             if (this.manageUrl) {
                 var urlParams = this.getUrlParams();
                 if (this.urlQuerySource in urlParams) {
-                    this.urlQuery = es.newQuery({raw : urlParams[this.urlQuerySource]});
+                    this.urlQuery = es.newQuery({raw: urlParams[this.urlQuerySource]});
                     delete urlParams[this.urlQuerySource];
                 }
                 this.urlParams = urlParams;
@@ -2262,13 +2265,13 @@ var edges = {
             this.loadStaticsAsync(onward);
         };
 
-        this.startupPart2 = function() {
+        this.startupPart2 = function () {
             // FIXME: at this point we should check whether the statics all loaded correctly
             var onward = edges.objClosure(this, "startupPart3");
             this.runPreflightQueries(onward);
         };
 
-        this.startupPart3 = function() {
+        this.startupPart3 = function () {
 
             // determine whether to initialise with either the openingQuery or the urlQuery
             var requestedQuery = this.openingQuery;
@@ -2297,12 +2300,12 @@ var edges = {
         /////////////////////////////////////////////////////////
         // Edges lifecycle functions
 
-        this.doQuery = function() {
+        this.doQuery = function () {
             // the original doQuery has become doPrimaryQuery, so this has been aliased for this.cycle
             this.cycle();
         };
 
-        this.cycle = function() {
+        this.cycle = function () {
             // if a search is currently executing, don't do anything, else turn it on
             // FIXME: should we queue them up? - see the d3 map for an example of how to do this
             if (this.searching) {
@@ -2330,12 +2333,12 @@ var edges = {
             }
         };
 
-        this.cyclePart2 = function() {
+        this.cyclePart2 = function () {
             var onward = edges.objClosure(this, "cyclePart3");
             this.runSecondaryQueries(onward);
         };
 
-        this.cyclePart3 = function() {
+        this.cyclePart3 = function () {
             this.synchronise();
 
             // pre-render trigger
@@ -2349,7 +2352,7 @@ var edges = {
             this.searching = false;
         };
 
-        this.synchronise = function() {
+        this.synchronise = function () {
             // ask the components to synchronise themselves with the latest state
             for (var i = 0; i < this.components.length; i++) {
                 var component = this.components[i];
@@ -2357,7 +2360,7 @@ var edges = {
             }
         };
 
-        this.draw = function() {
+        this.draw = function () {
             for (var i = 0; i < this.components.length; i++) {
                 var component = this.components[i];
                 component.draw(this);
@@ -2365,7 +2368,7 @@ var edges = {
         };
 
         // reset the query to the start and re-issue the query
-        this.reset = function() {
+        this.reset = function () {
             // tell the world we're about to reset
             this.trigger("edges:pre-reset");
 
@@ -2389,14 +2392,14 @@ var edges = {
             this.cycle();
         };
 
-        this.sleep = function() {
+        this.sleep = function () {
             for (var i = 0; i < this.components.length; i++) {
                 var component = this.components[i];
                 component.sleep();
             }
         };
 
-        this.wake = function() {
+        this.wake = function () {
             for (var i = 0; i < this.components.length; i++) {
                 var component = this.components[i];
                 component.wake();
@@ -2406,28 +2409,28 @@ var edges = {
         ////////////////////////////////////////////////////
         //  functions for working with the queries
 
-        this.cloneQuery = function() {
+        this.cloneQuery = function () {
             if (this.currentQuery) {
                 return $.extend(true, {}, this.currentQuery);
             }
             return false;
         };
 
-        this.pushQuery = function(query) {
+        this.pushQuery = function (query) {
             if (this.baseQuery) {
                 query.merge(this.baseQuery);
             }
             this.currentQuery = query;
         };
 
-        this.cloneBaseQuery = function() {
+        this.cloneBaseQuery = function () {
             if (this.baseQuery) {
                 return $.extend(true, {}, this.baseQuery);
             }
             return es.newQuery();
         };
 
-        this.cloneOpeningQuery = function() {
+        this.cloneOpeningQuery = function () {
             if (this.openingQuery) {
                 return $.extend(true, {}, this.openingQuery);
             }
@@ -2439,8 +2442,8 @@ var edges = {
 
         // execute the query and all the associated workflow
         // FIXME: could replace this with an async group for neatness
-        this.doPrimaryQuery = function(callback) {
-            var context = {"callback" : callback};
+        this.doPrimaryQuery = function (callback) {
+            var context = {"callback": callback};
 
             this.queryAdapter.doQuery({
                 edge: this,
@@ -2449,7 +2452,7 @@ var edges = {
             });
         };
 
-        this.queryFail = function(params) {
+        this.queryFail = function (params) {
             var callback = params.callback;
             var response = params.response;
             this.trigger("edges:query-fail");
@@ -2462,7 +2465,7 @@ var edges = {
             callback();
         };
 
-        this.querySuccess = function(params) {
+        this.querySuccess = function (params) {
             this.result = params.result;
             var callback = params.callback;
 
@@ -2471,7 +2474,7 @@ var edges = {
             callback();
         };
 
-        this.runPreflightQueries = function(callback) {
+        this.runPreflightQueries = function (callback) {
             if (!this.preflightQueries || Object.keys(this.preflightQueries).length == 0) {
                 callback();
                 return;
@@ -2489,7 +2492,7 @@ var edges = {
             var that = this;
             var pg = edges.newAsyncGroup({
                 list: entries,
-                action: function(params) {
+                action: function (params) {
                     var entry = params.entry;
                     var success = params.success_callback;
                     var error = params.error_callback;
@@ -2503,16 +2506,16 @@ var edges = {
                     });
                 },
                 successCallbackArgs: ["result"],
-                success: function(params) {
+                success: function (params) {
                     var result = params.result;
                     var entry = params.entry;
                     that.preflightResults[entry.id] = result;
                 },
-                errorCallbackArgs : ["result"],
-                error:  function(params) {
+                errorCallbackArgs: ["result"],
+                error: function (params) {
                     that.trigger("edges:error-preflight");
                 },
-                carryOn: function() {
+                carryOn: function () {
                     that.trigger("edges:post-preflight");
                     callback();
                 }
@@ -2521,7 +2524,7 @@ var edges = {
             pg.process();
         };
 
-        this.runSecondaryQueries = function(callback) {
+        this.runSecondaryQueries = function (callback) {
             this.realisedSecondaryQueries = {};
             if (!this.secondaryQueries || Object.keys(this.secondaryQueries).length == 0) {
                 callback();
@@ -2545,7 +2548,7 @@ var edges = {
             var that = this;
             var pg = edges.newAsyncGroup({
                 list: entries,
-                action: function(params) {
+                action: function (params) {
                     var entry = params.entry;
                     var success = params.success_callback;
                     var error = params.error_callback;
@@ -2559,16 +2562,16 @@ var edges = {
                     });
                 },
                 successCallbackArgs: ["result"],
-                success: function(params) {
+                success: function (params) {
                     var result = params.result;
                     var entry = params.entry;
                     that.secondaryResults[entry.id] = result;
                 },
-                errorCallbackArgs : ["result"],
-                error:  function(params) {
+                errorCallbackArgs: ["result"],
+                error: function (params) {
                     // FIXME: not really sure what to do about this
                 },
-                carryOn: function() {
+                carryOn: function () {
                     callback();
                 }
             });
@@ -2579,7 +2582,7 @@ var edges = {
         ////////////////////////////////////////////////
         // various utility functions
 
-        this.getComponent = function(params) {
+        this.getComponent = function (params) {
             var id = params.id;
             for (var i = 0; i < this.components.length; i++) {
                 var component = this.components[i];
@@ -2591,7 +2594,7 @@ var edges = {
         };
 
         // return components in the requested category
-        this.category = function(cat) {
+        this.category = function (cat) {
             var comps = [];
             for (var i = 0; i < this.components.length; i++) {
                 var component = this.components[i];
@@ -2602,7 +2605,7 @@ var edges = {
             return comps;
         };
 
-        this.getRenderPackObject = function(oname, params) {
+        this.getRenderPackObject = function (oname, params) {
             for (var i = 0; i < this.renderPacks.length; i++) {
                 var rp = this.renderPacks[i];
                 if (rp && rp.hasOwnProperty(oname)) {
@@ -2614,11 +2617,11 @@ var edges = {
 
         // get the jquery object for the desired element, in the correct context
         // you should ALWAYS use this, rather than the standard jquery $ object
-        this.jq = function(selector) {
+        this.jq = function (selector) {
             return $(selector, this.context);
         };
 
-        this.trigger = function(event_name) {
+        this.trigger = function (event_name) {
             if (event_name in this.callbacks) {
                 this.callbacks[event_name](this);
             }
@@ -2628,22 +2631,22 @@ var edges = {
         /////////////////////////////////////////////////////
         // URL management functions
 
-        this.getUrlParams = function() {
+        this.getUrlParams = function () {
             return edges.getUrlParams();
         };
 
-        this.urlQueryArg = function(objectify_options) {
+        this.urlQueryArg = function (objectify_options) {
             if (!objectify_options) {
                 if (this.urlQueryOptions) {
                     objectify_options = this.urlQueryOptions
                 } else {
                     objectify_options = {
-                        include_query_string : true,
-                        include_filters : true,
-                        include_paging : true,
-                        include_sort : true,
-                        include_fields : false,
-                        include_aggregations : false
+                        include_query_string: true,
+                        include_filters: true,
+                        include_paging: true,
+                        include_sort: true,
+                        include_fields: false,
+                        include_aggregations: false
                     }
                 }
             }
@@ -2653,17 +2656,17 @@ var edges = {
             return obj;
         };
 
-        this.fullQueryArgs = function() {
+        this.fullQueryArgs = function () {
             var args = $.extend(true, {}, this.urlParams);
             $.extend(args, this.urlQueryArg());
             return args;
         };
 
-        this.fullUrlQueryString = function() {
+        this.fullUrlQueryString = function () {
             return this._makeUrlQuery(this.fullQueryArgs())
         };
 
-        this._makeUrlQuery = function(args) {
+        this._makeUrlQuery = function (args) {
             var keys = Object.keys(args);
             var entries = [];
             for (var i = 0; i < keys.length; i++) {
@@ -2674,7 +2677,7 @@ var edges = {
             return entries.join("&");
         };
 
-        this.fullUrl = function() {
+        this.fullUrl = function () {
             var args = this.fullQueryArgs();
             var fragment = "";
             if (args["#"]) {
@@ -2687,7 +2690,7 @@ var edges = {
             return url;
         };
 
-        this.updateUrl = function() {
+        this.updateUrl = function () {
             var currentQs = window.location.search;
             var qs = "?" + this.fullUrlQueryString();
 
@@ -2708,7 +2711,7 @@ var edges = {
         /////////////////////////////////////////////
         // static file management
 
-        this.loadStaticsAsync = function(callback) {
+        this.loadStaticsAsync = function (callback) {
             if (!this.staticFiles || this.staticFiles.length == 0) {
                 this.trigger("edges:post-load-static");
                 callback();
@@ -2718,7 +2721,7 @@ var edges = {
             var that = this;
             var pg = edges.newAsyncGroup({
                 list: this.staticFiles,
-                action: function(params) {
+                action: function (params) {
                     var entry = params.entry;
                     var success = params.success_callback;
                     var error = params.error_callback;
@@ -2736,24 +2739,24 @@ var edges = {
                     })
                 },
                 successCallbackArgs: ["data"],
-                success: function(params) {
+                success: function (params) {
                     var data = params.data;
                     var entry = params.entry;
                     if (entry.processor) {
-                        var processed = entry.processor({data : data});
+                        var processed = entry.processor({data: data});
                         that.resources[entry.id] = processed;
                         if (entry.opening) {
-                            entry.opening({resource : processed, edge: that});
+                            entry.opening({resource: processed, edge: that});
                         }
                     }
                     that.static[entry.id] = data;
                 },
-                errorCallbackArgs : ["data"],
-                error:  function(params) {
+                errorCallbackArgs: ["data"],
+                error: function (params) {
                     that.errorLoadingStatic.push(params.entry.id);
                     that.trigger("edges:error-load-static");
                 },
-                carryOn: function() {
+                carryOn: function () {
                     that.trigger("edges:post-load-static");
                     callback();
                 }
@@ -2770,11 +2773,13 @@ var edges = {
     //////////////////////////////////////////////////
     // Asynchronous resource loading feature
 
-    newAsyncGroup : function(params) {
-        if (!params) { params = {} }
+    newAsyncGroup: function (params) {
+        if (!params) {
+            params = {}
+        }
         return new edges.AsyncGroup(params);
     },
-    AsyncGroup : function(params) {
+    AsyncGroup: function (params) {
         this.list = params.list;
         this.successCallbackArgs = params.successCallbackArgs;
         this.errorCallbackArgs = params.errorCallbackArgs;
@@ -2795,13 +2800,13 @@ var edges = {
 
         this.finished = false;
 
-        this.construct = function(params) {
+        this.construct = function (params) {
             for (var i = 0; i < this.list.length; i++) {
                 this.checkList.push(0);
             }
         };
 
-        this.process = function(params) {
+        this.process = function (params) {
             if (this.list.length == 0) {
                 this.functions.carryOn();
             }
@@ -2813,7 +2818,8 @@ var edges = {
                 var error_callback = edges.objClosure(this, "_actionError", this.successCallbackArgs, context);
                 var complete_callback = false;
 
-                this.functions.action({entry: this.list[i],
+                this.functions.action({
+                    entry: this.list[i],
                     success_callback: success_callback,
                     error_callback: error_callback,
                     complete_callback: complete_callback
@@ -2821,7 +2827,7 @@ var edges = {
             }
         };
 
-        this._actionSuccess = function(params) {
+        this._actionSuccess = function (params) {
             var index = params.index;
             delete params.index;
 
@@ -2834,7 +2840,7 @@ var edges = {
             }
         };
 
-        this._actionError = function(params) {
+        this._actionError = function (params) {
             var index = params.index;
             delete params.index;
 
@@ -2847,15 +2853,15 @@ var edges = {
             }
         };
 
-        this._actionComplete = function(params) {
+        this._actionComplete = function (params) {
 
         };
 
-        this._isComplete = function() {
+        this._isComplete = function () {
             return $.inArray(0, this.checkList) === -1;
         };
 
-        this._finalise = function() {
+        this._finalise = function () {
             if (this.finished) {
                 return;
             }
@@ -2870,20 +2876,25 @@ var edges = {
     /////////////////////////////////////////////
     // Query adapter base class and core ES implementation
 
-    newQueryAdapter : function(params) {
-        if (!params) { params = {} }
+    newQueryAdapter: function (params) {
+        if (!params) {
+            params = {}
+        }
         return edges.instantiate(edges.QueryAdapter, params);
     },
-    QueryAdapter : function(params) {
-        this.doQuery = function(params) {};
+    QueryAdapter: function (params) {
+        this.doQuery = function (params) {
+        };
     },
 
-    newESQueryAdapter : function(params) {
-        if (!params) { params = {} }
+    newESQueryAdapter: function (params) {
+        if (!params) {
+            params = {}
+        }
         return edges.instantiate(edges.ESQueryAdapter, params);
     },
-    ESQueryAdapter : function(params) {
-        this.doQuery = function(params) {
+    ESQueryAdapter: function (params) {
+        this.doQuery = function (params) {
             var edge = params.edge;
             var query = params.query;
             var success = params.success;
@@ -2906,31 +2917,38 @@ var edges = {
     /////////////////////////////////////////////
     // Base classes for the various kinds of components
 
-    newRenderer : function(params) {
-        if (!params) { params = {} }
+    newRenderer: function (params) {
+        if (!params) {
+            params = {}
+        }
         return new edges.Renderer(params);
     },
-    Renderer : function(params) {
+    Renderer: function (params) {
         this.component = params.component || false;
-        this.init = function(component) {
+        this.init = function (component) {
             this.component = component
         };
-        this.draw = function(component) {};
-        this.sleep = function() {};
-        this.wake = function() {}
+        this.draw = function (component) {
+        };
+        this.sleep = function () {
+        };
+        this.wake = function () {
+        }
     },
 
-    newComponent : function(params) {
-        if (!params) { params = {} }
+    newComponent: function (params) {
+        if (!params) {
+            params = {}
+        }
         return new edges.Component(params);
     },
-    Component : function(params) {
+    Component: function (params) {
         this.id = params.id;
         this.renderer = params.renderer;
         this.category = params.category || "none";
         this.defaultRenderer = params.defaultRenderer || "newRenderer";
 
-        this.init = function(edge) {
+        this.init = function (edge) {
             // record a reference to the parent object
             this.edge = edge;
             this.context = this.edge.jq("#" + this.id);
@@ -2944,39 +2962,43 @@ var edges = {
             }
         };
 
-        this.draw = function() {
+        this.draw = function () {
             if (this.renderer) {
                 this.renderer.draw();
             }
         };
 
-        this.contrib = function(query) {};
-        this.synchronise = function() {};
+        this.contrib = function (query) {
+        };
+        this.synchronise = function () {
+        };
 
-        this.sleep = function() {
+        this.sleep = function () {
             if (this.renderer) {
                 this.renderer.sleep();
             }
         };
 
-        this.wake = function() {
+        this.wake = function () {
             if (this.renderer) {
                 this.renderer.wake();
             }
         };
 
         // convenience method for any renderer rendering a component
-        this.jq = function(selector) {
+        this.jq = function (selector) {
             return this.edge.jq(selector);
         }
     },
 
-    newSelector : function(params) {
-        if (!params) { params = {} }
+    newSelector: function (params) {
+        if (!params) {
+            params = {}
+        }
         edges.Selector.prototype = edges.newComponent(params);
         return new edges.Selector(params);
     },
-    Selector : function(params) {
+    Selector: function (params) {
         // field upon which to build the selector
         this.field = params.field;
 
@@ -2992,56 +3014,62 @@ var edges = {
         this.category = params.category || "selector";
     },
 
-    newTemplate : function(params) {
-        if (!params) { params = {} }
+    newTemplate: function (params) {
+        if (!params) {
+            params = {}
+        }
         return new edges.Template(params);
     },
-    Template : function(params) {
-        this.draw = function(edge) {}
+    Template: function (params) {
+        this.draw = function (edge) {
+        }
     },
 
-    newNestedEdge : function(params) {
-        if (!params) { params = {}}
+    newNestedEdge: function (params) {
+        if (!params) {
+            params = {}
+        }
         params.category = params.category || "edge";
         params.renderer = false;
         params.defaultRenderer = false;
         return edges.instantiate(edges.NestedEdge, params, edges.newComponent)
     },
-    NestedEdge : function(params) {
+    NestedEdge: function (params) {
         this.constructOnInit = edges.getParam(params.constructOnInit, false);
 
         this.constructArgs = edges.getParam(params.constructArgs, {});
 
         this.inner = false;
 
-        this.init = function(edge) {
+        this.init = function (edge) {
             this.edge = edge;
             if (this.constructOnInit) {
                 this.construct_and_bind();
             }
         };
 
-        this.setConstructArg = function(key, value) {
+        this.setConstructArg = function (key, value) {
             this.constructArgs[key] = value;
         };
 
-        this.getConstructArg = function(key, def) {
+        this.getConstructArg = function (key, def) {
             if (this.constructArgs.hasOwnProperty(key)) {
                 return this.constructArgs[key];
             }
             return def;
         };
 
-        this.construct_and_bind = function() {
+        this.construct_and_bind = function () {
             this.construct();
             if (this.inner) {
                 this.inner.outer = this;
             }
         };
 
-        this.construct = function() {};
+        this.construct = function () {
+        };
 
-        this.destroy = function() {
+        this.destroy = function () {
             if (this.inner) {
                 this.inner.context.empty();
                 this.inner.context.hide();
@@ -3049,12 +3077,12 @@ var edges = {
             this.inner = false;
         };
 
-        this.sleep = function() {
+        this.sleep = function () {
             this.inner.sleep();
             this.inner.context.hide();
         };
 
-        this.wake = function() {
+        this.wake = function () {
             if (this.inner) {
                 this.inner.context.show();
                 this.inner.wake();
@@ -3069,8 +3097,10 @@ var edges = {
 
     // instantiate an object with the parameters and the (optional)
     // prototype
-    instantiate : function(clazz, params, protoConstructor) {
-        if (!params) { params = {} }
+    instantiate: function (clazz, params, protoConstructor) {
+        if (!params) {
+            params = {}
+        }
         if (protoConstructor) {
             clazz.prototype = protoConstructor(params);
         }
@@ -3082,7 +3112,7 @@ var edges = {
     },
 
     // call a method on the parent class
-    up : function(inst, fn, args) {
+    up: function (inst, fn, args) {
         var parent = new inst.__proto_constructor__();
         parent[fn].apply(inst, args);
     },
@@ -3110,8 +3140,8 @@ var edges = {
     // results in a call to
     // this.function({one: arg1, two: arg2})
     //
-    objClosure : function(obj, fn, args, context_params) {
-        return function() {
+    objClosure: function (obj, fn, args, context_params) {
+        return function () {
             if (args) {
                 var params = {};
                 for (var i = 0; i < args.length; i++) {
@@ -3153,11 +3183,11 @@ var edges = {
     // results in a call (only in the case that the event is a click), to
     // this.handler(element)
     //
-    eventClosure : function(obj, fn, conditional, preventDefault) {
+    eventClosure: function (obj, fn, conditional, preventDefault) {
         if (preventDefault === undefined) {
             preventDefault = true;
         }
-        return function(event) {
+        return function (event) {
             if (conditional) {
                 if (!conditional(event)) {
                     return;
@@ -3173,7 +3203,7 @@ var edges = {
     //////////////////////////////////////////////////////////////////
     // CSS normalising/canonicalisation tools
 
-    css_classes : function(namespace, field, renderer) {
+    css_classes: function (namespace, field, renderer) {
         var cl = namespace + "-" + field;
         if (renderer) {
             cl += " " + cl + "-" + renderer.component.id;
@@ -3181,7 +3211,7 @@ var edges = {
         return cl;
     },
 
-    css_class_selector : function(namespace, field, renderer) {
+    css_class_selector: function (namespace, field, renderer) {
         var sel = "." + namespace + "-" + field;
         if (renderer) {
             sel += sel + "-" + renderer.component.id;
@@ -3189,7 +3219,7 @@ var edges = {
         return sel;
     },
 
-    css_id : function(namespace, field, renderer) {
+    css_id: function (namespace, field, renderer) {
         var id = namespace + "-" + field;
         if (renderer) {
             id += "-" + renderer.component.id;
@@ -3197,14 +3227,14 @@ var edges = {
         return id;
     },
 
-    css_id_selector : function(namespace, field, renderer) {
+    css_id_selector: function (namespace, field, renderer) {
         return "#" + edges.css_id(namespace, field, renderer);
     },
 
     //////////////////////////////////////////////////////////////////
     // Event binding utilities
 
-    on : function(selector, event, caller, targetFunction, delay, conditional, preventDefault) {
+    on: function (selector, event, caller, targetFunction, delay, conditional, preventDefault) {
         if (preventDefault === undefined) {
             preventDefault = true;
         }
@@ -3247,7 +3277,7 @@ var edges = {
         }
     },
 
-    off : function(selector, event, caller) {
+    off: function (selector, event, caller) {
         // if the caller has an inner component (i.e. it is a Renderer), use the component's id
         // otherwise, if it has a namespace (which is true of Renderers or Templates) use that
         if (caller.component && caller.component.id) {
@@ -3271,7 +3301,7 @@ var edges = {
     //////////////////////////////////////////////////////////////////
     // Shared utilities
 
-    getUrlParams : function() {
+    getUrlParams: function () {
         var params = {};
         var url = window.location.href;
         var fragment = false;
@@ -3296,7 +3326,7 @@ var edges = {
                     // if it looks like a JSON object in string form...
                     // remove " (double quotes) at beginning and end of string to make it a valid
                     // representation of a JSON object, or the parser will complain
-                    val = val.replace(/^"/,"").replace(/"$/,"");
+                    val = val.replace(/^"/, "").replace(/"$/, "");
                     val = JSON.parse(val);
                 }
                 params[key] = val;
@@ -3311,7 +3341,7 @@ var edges = {
         return params;
     },
 
-    escapeHtml : function(unsafe, def) {
+    escapeHtml: function (unsafe, def) {
         if (def === undefined) {
             def = "";
         }
@@ -3328,7 +3358,7 @@ var edges = {
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
-        } catch(err) {
+        } catch (err) {
             return def;
         }
     },
@@ -3340,7 +3370,7 @@ var edges = {
      * @param path
      * @returns {boolean}
      */
-    hasProp : function(obj, path) {
+    hasProp: function (obj, path) {
         var bits = path.split(".");
         var ctx = obj;
         for (var i = 0; i < bits.length; i++) {
@@ -3360,7 +3390,7 @@ var edges = {
      * @param def
      * @returns {*}
      */
-    objVal : function(path, rec, def) {
+    objVal: function (path, rec, def) {
         if (def === undefined) {
             def = false;
         }
@@ -3387,8 +3417,10 @@ var edges = {
      * @param def
      * @returns {*}
      */
-    objVals : function(path, rec, def) {
-        if (def === undefined) { def = false; }
+    objVals: function (path, rec, def) {
+        if (def === undefined) {
+            def = false;
+        }
 
         var bits = path.split(".");
         var contexts = [rec];
@@ -3424,22 +3456,22 @@ var edges = {
         return contexts;
     },
 
-    getParam : function(value, def) {
+    getParam: function (value, def) {
         return value !== undefined ? value : def;
     },
 
-    safeId : function(unsafe) {
+    safeId: function (unsafe) {
         return unsafe.replace(/&/g, "_")
-                .replace(/</g, "_")
-                .replace(/>/g, "_")
-                .replace(/"/g, "_")
-                .replace(/'/g, "_")
-                .replace(/\./gi,'_')
-                .replace(/\:/gi,'_')
-                .replace(/\s/gi,"_");
+            .replace(/</g, "_")
+            .replace(/>/g, "_")
+            .replace(/"/g, "_")
+            .replace(/'/g, "_")
+            .replace(/\./gi, '_')
+            .replace(/\:/gi, '_')
+            .replace(/\s/gi, "_");
     },
 
-    numFormat : function(params) {
+    numFormat: function (params) {
         var reflectNonNumbers = edges.getParam(params.reflectNonNumbers, false);
         var prefix = edges.getParam(params.prefix, "");
         var zeroPadding = edges.getParam(params.zeroPadding, false);
@@ -3448,7 +3480,7 @@ var edges = {
         var decimalSeparator = edges.getParam(params.decimalSeparator, ".");
         var suffix = edges.getParam(params.suffix, "");
 
-        return function(number) {
+        return function (number) {
             // ensure this is really a number
             var num = parseFloat(number);
             if (isNaN(num)) {
@@ -3464,7 +3496,7 @@ var edges = {
             if (decimalPlaces !== false) {
                 num = num.toFixed(decimalPlaces);
             } else {
-                num  = num.toString();
+                num = num.toString();
             }
 
             // now "num" is a string containing the formatted number that we can work on
@@ -3492,10 +3524,10 @@ var edges = {
         }
     },
 
-    numParse : function(params) {
+    numParse: function (params) {
         var commaRx = new RegExp(",", "g");
 
-        return function(num) {
+        return function (num) {
             num = num.trim();
             num = num.replace(commaRx, "");
             if (num === "") {
@@ -3505,12 +3537,24 @@ var edges = {
         }
     },
 
-    isEmptyObject: function(obj) {
-        for(var key in obj) {
-            if(obj.hasOwnProperty(key))
+    isEmptyObject: function (obj) {
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key))
                 return false;
         }
         return true;
+    },
+
+    error: {
+        NotImplementedError: function (params) {
+            edges.error.NotImplementedErrorInst.prototype = Object.create(Error.prototype);
+            edges.error.NotImplementedErrorInst.prototype.constructor = edges.error.NotImplementedErrorInst;
+            return edges.error.NotImplementedErrorInst.call(params);
+        },
+        NotImplementedErrorInst: function (message) {
+            this.name = 'NotImplementedError';
+            this.message = message || 'This method should be implemented by the derived class';
+        },
     }
 };
 
@@ -4547,8 +4591,8 @@ $.extend(edges, {
 });
 
 $.extend(true, doaj, {
-    filters : {
-        noCharges : function() {
+    filters: {
+        noCharges: function () {
             return {
                 id: "no_charges",
                 display: "Without fees",
@@ -4565,26 +4609,26 @@ $.extend(true, doaj, {
             }
         }
     },
-    facets : {
-        inDOAJ : function() {
+    facets: {
+        inDOAJ: function () {
             return edges.newRefiningANDTermSelector({
                 id: "in_doaj",
                 category: "facet",
                 field: "admin.in_doaj",
                 display: "In DOAJ?",
                 deactivateThreshold: 1,
-                valueMap : {
-                    1 : "Yes",
-                    0 : "No",
+                valueMap: {
+                    1: "Yes",
+                    0: "No",
                     true: "Yes",
                     false: "No"
                 },
-                parseSelectedValueString: function(val) {
+                parseSelectedValueString: function (val) {
                     // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
                     // we convert the string value of the aggregation back to a boolean
                     return val === "1"
                 },
-                filterToAggValue : function(val) {
+                filterToAggValue: function (val) {
                     return val === true ? 1 : 0;
                 },
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -4597,15 +4641,15 @@ $.extend(true, doaj, {
             })
         },
 
-        openOrClosed: function() {
+        openOrClosed: function () {
             return edges.newRefiningANDTermSelector({
                 id: "application_type",
                 category: "facet",
                 field: "index.application_type.exact",
                 display: "Open or closed?",
-                deactivateThreshold : 1,
+                deactivateThreshold: 1,
                 orderDir: "asc",
-                valueMap : {
+                valueMap: {
                     "finished application/update": "Closed",
                     "update request": "Open",
                     "new application": "Open"
@@ -4620,7 +4664,7 @@ $.extend(true, doaj, {
             })
         },
 
-        applicationStatus : function() {
+        applicationStatus: function () {
             return edges.newRefiningANDTermSelector({
                 id: "application_status",
                 category: "facet",
@@ -4637,13 +4681,13 @@ $.extend(true, doaj, {
                 })
             })
         },
-        hasEditorGroup : function() {
+        hasEditorGroup: function () {
             return edges.newRefiningANDTermSelector({
                 id: "has_editor_group",
                 category: "facet",
                 field: "index.has_editor_group.exact",
                 display: "Has editor group?",
-                deactivateThreshold : 1,
+                deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: false,
@@ -4653,7 +4697,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        hasEditor : function() {
+        hasEditor: function () {
             return edges.newRefiningANDTermSelector({
                 id: "has_editor",
                 category: "facet",
@@ -4669,7 +4713,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        editorGroup : function() {
+        editorGroup: function () {
             return edges.newRefiningANDTermSelector({
                 id: "editor_group",
                 category: "facet",
@@ -4685,7 +4729,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        editor : function() {
+        editor: function () {
             return edges.newRefiningANDTermSelector({
                 id: "editor",
                 category: "facet",
@@ -4701,12 +4745,12 @@ $.extend(true, doaj, {
                 })
             })
         },
-        hasAPC : function() {
+        hasAPC: function () {
             return edges.newRefiningANDTermSelector({
                 id: "author_pays",
                 category: "facet",
                 field: "index.has_apc.exact",
-                display: "Publication charges?",
+                display: "Has APC?",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -4717,7 +4761,51 @@ $.extend(true, doaj, {
                 })
             })
         },
-        classification : function() {
+        adminHasAPC: function() {
+            return doaj.facets.booleanFacet({
+                id: "admin_has_apc",
+                field: "bibjson.apc.has_apc",
+                display: "Has APC?",
+            })
+        },
+        adminHasOtherCharges: function() {
+            return doaj.facets.booleanFacet({
+                id: "admin_has_other_charges",
+                field: "bibjson.other_charges.has_other_charges",
+                display: "Has Other Charges?",
+            })
+        },
+        booleanFacet : function(params) {
+            return edges.newRefiningANDTermSelector({
+                id: params.id,
+                category: "facet",
+                field: params.field,
+                display: params.display,
+                deactivateThreshold: 1,
+                valueMap: {
+                    0: "No",
+                    1: "Yes"
+                },
+                parseSelectedValueString: function(value) {
+                    return value === "1"
+                },
+                filterToAggValue: function(value) {
+                    if (value) {
+                        return 1
+                    } else {
+                        return 0
+                    }
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        classification: function () {
             return edges.newRefiningANDTermSelector({
                 id: "classification",
                 category: "facet",
@@ -4733,7 +4821,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        language : function() {
+        language: function () {
             return edges.newRefiningANDTermSelector({
                 id: "language",
                 category: "facet",
@@ -4749,7 +4837,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        countryPublisher : function() {
+        countryPublisher: function () {
             return edges.newRefiningANDTermSelector({
                 id: "country_publisher",
                 category: "facet",
@@ -4765,7 +4853,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        subject : function() {
+        subject: function () {
             return edges.newRefiningANDTermSelector({
                 id: "subject",
                 category: "facet",
@@ -4781,7 +4869,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        publisher : function() {
+        publisher: function () {
             return edges.newRefiningANDTermSelector({
                 id: "publisher",
                 category: "facet",
@@ -4797,7 +4885,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        journalLicence : function() {
+        journalLicence: function () {
             return edges.newRefiningANDTermSelector({
                 id: "journal_license",
                 category: "facet",
@@ -4815,28 +4903,29 @@ $.extend(true, doaj, {
         }
     },
 
-    valueMaps : {
+    valueMaps: {
         // This must be updated in line with the list in formcontext/choices.py
-        applicationStatus : {
-            'update_request' : 'Update Request',
-            'revisions_required' : 'Revisions Required',
-            'pending' : 'Pending',
-            'in progress' : 'In Progress',
-            'completed' : 'Completed',
-            'on hold' : 'On Hold',
-            'ready' : 'Ready',
-            'rejected' : 'Rejected',
-            'accepted' : 'Accepted'
+        applicationStatus: {
+            'update_request': 'Update Request',
+            'revisions_required': 'Revisions Required',
+            'pending': 'Pending',
+            'in progress': 'In Progress',
+            'completed': 'Completed',
+            'on hold': 'On Hold',
+            'ready': 'Ready',
+            'rejected': 'Rejected',
+            'accepted': 'Accepted',
+            'post_submission_review': "Autochecking",
         },
 
-        adminStatusMap: function(value) {
+        adminStatusMap: function (value) {
             if (doaj.valueMaps.applicationStatus.hasOwnProperty(value)) {
                 return doaj.valueMaps.applicationStatus[value];
             }
             return value;
         },
 
-        displayYearPeriod : function(params) {
+        displayYearPeriod: function (params) {
             var from = params.from;
             var to = params.to;
             var field = params.field;
@@ -4844,7 +4933,7 @@ $.extend(true, doaj, {
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
-        displayYearMonthPeriod : function(params) {
+        displayYearMonthPeriod: function (params) {
             var from = params.from;
             var to = params.to;
             var field = params.field;
@@ -4854,8 +4943,9 @@ $.extend(true, doaj, {
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
-        schemaCodeToNameClosure : function(tree) {
+        schemaCodeToNameClosure: function (tree) {
             var nameMap = {};
+
             function recurse(ctx) {
                 for (var i = 0; i < ctx.length; i++) {
                     var child = ctx[i];
@@ -4866,9 +4956,10 @@ $.extend(true, doaj, {
                     }
                 }
             }
+
             recurse(tree);
 
-            return function(code) {
+            return function (code) {
                 var name = nameMap[code];
                 if (name) {
                     return name;
@@ -4877,7 +4968,7 @@ $.extend(true, doaj, {
             }
         },
 
-        countFormat : edges.numFormat({
+        countFormat: edges.numFormat({
             thousandsSeparator: ","
         }),
 
@@ -4885,8 +4976,8 @@ $.extend(true, doaj, {
             zeroPadding: 2
         })
     },
-    components : {
-        pager : function(id, category) {
+    components: {
+        pager: function (id, category) {
             return edges.newPager({
                 id: id,
                 category: category,
@@ -4898,26 +4989,28 @@ $.extend(true, doaj, {
             })
         },
 
-        searchingNotification : function() {
+        searchingNotification: function () {
             return edges.newSearchingNotification({
                 id: "searching-notification",
                 category: "searching-notification",
                 finishedEvent: "edges:post-render",
-                renderer : doaj.renderers.newSearchingNotificationRenderer({
+                renderer: doaj.renderers.newSearchingNotificationRenderer({
                     scrollOnSearch: true
                 })
             })
         },
 
-        subjectBrowser : function(params) {
+        subjectBrowser: function (params) {
             var tree = params.tree;
             var hideEmpty = edges.getParam(params.hideEmpty, false);
+            var id = edges.getParam(params.id, "subject");
+            var category = edges.getParam(params.category, "facet");
 
             return edges.newTreeBrowser({
-                id: "subject",
-                category: "facet",
+                id: id,
+                category: category,
                 field: "index.schema_codes_tree.exact",
-                tree: function(tree) {
+                tree: function (tree) {
                     function recurse(ctx) {
                         var displayTree = [];
                         for (var i = 0; i < ctx.length; i++) {
@@ -4933,11 +5026,12 @@ $.extend(true, doaj, {
                         displayTree.sort((a, b) => a.display > b.display ? 1 : -1);
                         return displayTree;
                     }
+
                     return recurse(tree);
                 }(tree),
                 pruneTree: true,
                 size: 9999,
-                nodeMatch: function(node, match_list) {
+                nodeMatch: function (node, match_list) {
                     for (var i = 0; i < match_list.length; i++) {
                         var m = match_list[i];
                         if (node.value === m.key) {
@@ -4946,13 +5040,13 @@ $.extend(true, doaj, {
                     }
                     return -1;
                 },
-                filterMatch: function(node, selected) {
+                filterMatch: function (node, selected) {
                     return $.inArray(node.value, selected) > -1;
                 },
-                nodeIndex : function(node) {
+                nodeIndex: function (node) {
                     return node.display.toLowerCase();
                 },
-                renderer: doaj.renderers.newSubjectBrowser({
+                renderer: doaj.renderers.newSubjectBrowserRenderer({
                     title: "Subjects",
                     open: true,
                     hideEmpty: hideEmpty,
@@ -4962,7 +5056,7 @@ $.extend(true, doaj, {
         }
     },
 
-    templates : {
+    templates: {
         newPublicSearch: function (params) {
             return edges.instantiate(doaj.templates.PublicSearch, params, edges.newTemplate);
         },
@@ -5090,7 +5184,7 @@ $.extend(true, doaj, {
         }
     },
 
-    renderers : {
+    renderers: {
         newSearchingNotificationRenderer: function (params) {
             return edges.instantiate(doaj.renderers.SearchingNotificationRenderer, params, edges.newRenderer);
         },
@@ -5131,7 +5225,7 @@ $.extend(true, doaj, {
                         },
                         {
                             duration: 1000,
-                            always: function() {
+                            always: function () {
                                 $(idSelector).remove();
                             }
                         }
@@ -5139,11 +5233,10 @@ $.extend(true, doaj, {
                 }
             }
         },
-
-        newSubjectBrowser : function(params) {
-            return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
+        newSubjectBrowserRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SubjectBrowserRenderer, params, edges.newRenderer);
         },
-        SubjectBrowser : function(params) {
+        SubjectBrowserRenderer: function (params) {
             this.title = edges.getParam(params.title, "");
 
             this.selectMode = edges.getParam(params.selectMode, "multiple");
@@ -5158,9 +5251,17 @@ $.extend(true, doaj, {
 
             this.namespace = "doaj-subject-browser";
 
+            this.viewWindowScrollOffset = 0;
             this.lastScroll = 0;
+            this.lastSearch = edges.getParam(params.lastSearch, null);
+            this.lastClickedEl = edges.getParam(params.lastClickedEl, null);
 
-            this.draw = function() {
+            this.init = function(component) {
+                edges.newRenderer().init.call(this, component);
+                component.edge.context.on("edges:pre-reset", edges.eventClosure(this, "reset"));
+            }
+
+            this.draw = function () {
                 // for convenient short references ...
                 var st = this.component.syncTree;
                 var namespace = this.namespace;
@@ -5190,7 +5291,12 @@ $.extend(true, doaj, {
                 var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
                     <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
-                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
+                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '"';
+                if (this.lastSearch) {
+                    frag += 'value="' + this.lastSearch + '"';
+                }
+
+                frag += '>\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
                     </div></div>';
@@ -5202,23 +5308,40 @@ $.extend(true, doaj, {
                 this.component.context.html(frag);
                 feather.replace();
 
+                if (this.lastSearch) {
+                    var searchSelector = edges.css_id_selector(namespace, "search", this);
+                    this.filterSubjects($(searchSelector));
+                }
+
+
                 // trigger all the post-render set-up functions
                 this.setUIOpen();
 
                 var mainListSelector = edges.css_id_selector(namespace, "main", this);
-                this.component.jq(mainListSelector).scrollTop(this.lastScroll);
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                var selector = this.lastSearch ? filterSelector : mainListSelector;
+                this.component.jq(selector).scrollTop(this.lastScroll);
 
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
 
-                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
-                edges.on(toggleSelector, "click", this, "toggleOpen");
+                if (this.togglable) {
+                    var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                    edges.on(toggleSelector, "click", this, "toggleOpen");
+                }
 
                 var searchSelector = edges.css_id_selector(namespace, "search", this);
                 edges.on(searchSelector, "keyup", this, "filterSubjects");
             };
 
-            this._renderTree = function(params) {
+            this.reset = function(edge) {
+                this.lastSearch = null;
+                this.viewWindowScrollOffset = 0;
+                this.lastClickedEl = null;
+                this.lastScroll = 0;
+            }
+
+            this._renderTree = function (params) {
                 var st = edges.getParam(params.tree, []);
                 var selectedPathOnly = edges.getParam(params.selectedPathOnly, true);
                 var showOneLevel = edges.getParam(params.showOneLevel, true);
@@ -5306,7 +5429,7 @@ $.extend(true, doaj, {
                         rFrag += entryFrag;
                         rFrag += '</li>';
                     }
-                    return {frag : rFrag, anySelected: anySelected};
+                    return {frag: rFrag, anySelected: anySelected};
                 }
 
                 return recurse(st);
@@ -5324,17 +5447,20 @@ $.extend(true, doaj, {
                     results.addClass("in").attr("aria-expanded", "true").css({"height": ""});
                     toggle.removeClass("collapsed").attr("aria-expanded", "true");
                 } else {
-                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height": "0px"});
                     toggle.addClass("collapsed").attr("aria-expanded", "false");
                 }
             };
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
-                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                this.lastScroll = this.lastSearch ? this.component.jq(filterSelector).scrollTop() : this.component.jq(mainListSelector).scrollTop();
                 var el = this.component.jq(element);
-                // var filter_id = this.component.jq(element).attr("id");
                 var checked = el.is(":checked");
+                this.lastClickedEl = el[0].id;
+                let offset = this.lastSearch ? this.component.jq(filterSelector).offset().top : this.component.jq(mainListSelector).offset().top;
+                this.viewWindowScrollOffset = el.offset().top - offset;
                 var value = el.attr("data-value");
                 if (checked) {
                     this.component.addFilter({value: value});
@@ -5348,7 +5474,56 @@ $.extend(true, doaj, {
                 this.setUIOpen();
             };
 
-            this.filterSubjects = function(element) {
+            this._findParentObject = function(st, value) {
+                // Iterate through the array to find the object with children containing the lastClickedEl value
+                for (const obj of st) {
+                    if (obj.children && obj.children.some(child => child.value === value)) {
+                        return obj;
+                    }
+                }
+                return null; // If no parent object is found
+            }
+
+            this._findRenderedElement = function(st, value) {
+                let label = this.component.jq("label[for='" + value + "']");
+                if (label.length > 0) {
+                    return label[0];
+                }
+
+                // Step 1: Find HTML element with id=lastClickedEl
+                const element = document.getElementById(value);
+
+                // Step 2: If it exists, return the element
+                if (element) {
+                    return element;
+                }
+
+                // Step 3: If it doesn't exist, find the parent in the st array
+                const parentObject = this._findParentObject(st, value);
+
+                // Step 4: If no more parents (no elements found), return null
+                if (!parentObject) {
+                    return null;
+                }
+
+                // Step 5: Repeat this algorithm for the value of the found parent
+                return this._findRenderedElement(st, parentObject.value);
+            }
+
+            this.scrollView = function (view) {
+                var browser = view[0];
+                var st = this.component.syncTree;
+                var elemToScroll = this._findRenderedElement(st, this.lastClickedEl);
+                if (elemToScroll) {
+                    elemToScroll.scrollIntoView();
+                    if (browser.clientHeight > 0) {
+                        browser.scrollBy(0, -1 * browser.clientHeight / 2);
+                    }
+                    // browser.scrollTop = elemToScroll.offsetTop - browser.offsetTop - this.viewWindowScrollOffset;
+                }
+            }
+
+            this.filterSubjects = function (element) {
                 var st = this.component.syncTree;
                 var term = $(element).val();
                 var that = this;
@@ -5362,6 +5537,10 @@ $.extend(true, doaj, {
                     filterEl.html("");
                     filterEl.hide();
                     mainEl.show();
+                    this.lastSearch = null;
+                    if (this.lastClickedEl) {
+                        this.scrollView(mainEl);
+                    }
                     return;
                 }
                 if (term.length < 3) {
@@ -5370,6 +5549,7 @@ $.extend(true, doaj, {
                     mainEl.hide();
                     return;
                 }
+                this.lastSearch = term;
                 term = term.toLowerCase();
 
                 function entryMatch(entry) {
@@ -5378,7 +5558,7 @@ $.extend(true, doaj, {
                     }
 
                     var matchTerm = entry.index;
-                    var includes =  matchTerm.includes(term);
+                    var includes = matchTerm.includes(term);
                     if (includes) {
                         var idx = matchTerm.indexOf(term);
                         var display = entry.display;
@@ -5413,11 +5593,19 @@ $.extend(true, doaj, {
                 var filtered = recurse(st);
 
                 if (filtered.length > 0) {
-                    var displayReport = this._renderTree({tree: filtered, selectedPathOnly: false, showOneLevel: false});
+                    var displayReport = this._renderTree({
+                        tree: filtered,
+                        selectedPathOnly: false,
+                        showOneLevel: false
+                    });
 
                     filterEl.html(displayReport.frag);
                     mainEl.hide();
                     filterEl.show();
+
+                    if (this.lastClickedEl) {
+                        this.scrollView(filterEl);
+                    }
 
                     var checkboxSelector = edges.css_class_selector(this.namespace, "selector", this);
                     edges.on(checkboxSelector, "change", this, "filterToggle");
@@ -5899,7 +6087,7 @@ $.extend(true, doaj, {
             //////////////////////////////////////////////////////
             // functions for setting UI values
 
-            this.toggleShare = function(element) {
+            this.toggleShare = function (element) {
                 var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
                 var textarea = this.component.jq(shareUrlSelector);
 
@@ -5915,7 +6103,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.toggleShorten = function(element) {
+            this.toggleShorten = function (element) {
                 if (!this.component.shortUrl) {
                     var callback = edges.objClosure(this, "updateShortUrl");
                     this.component.generateShortUrl(callback);
@@ -5924,7 +6112,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.updateShortUrl = function() {
+            this.updateShortUrl = function () {
                 var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
                 var shortenSelector = edges.css_class_selector(this.namespace, "shorten-url", this);
                 var textarea = this.component.jq(shareUrlSelector);
@@ -6225,7 +6413,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var filter_id = this.component.jq(element).attr("id");
                 var checked = this.component.jq(element).is(":checked");
                 if (checked) {
@@ -6439,12 +6627,12 @@ $.extend(true, doaj, {
                     //}
                     //results.hide();
 
-                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height": "0px"});
                     toggle.addClass("collapsed").attr("aria-expanded", "false");
                 }
             };
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var term = this.component.jq(element).attr("data-key");
                 var checked = this.component.jq(element).is(":checked");
                 if (checked) {
@@ -6701,7 +6889,7 @@ $.extend(true, doaj, {
                     //}
                     //results.hide();
 
-                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height": "0px"});
                     toggle.addClass("collapsed").attr("aria-expanded", "false");
                 }
             };
@@ -6709,7 +6897,7 @@ $.extend(true, doaj, {
             /////////////////////////////////////////////////////
             // event handlers
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var gte = this.component.jq(element).attr("data-gte");
                 var lt = this.component.jq(element).attr("data-lt");
                 var checked = this.component.jq(element).is(":checked");
@@ -6922,7 +7110,7 @@ $.extend(true, doaj, {
                 this.component.removeFilter(bool, ft, field, value);
             };
 
-            this.clearFilters = function() {
+            this.clearFilters = function () {
                 this.component.clearSearch();
             }
         },
@@ -7002,16 +7190,15 @@ $.extend(true, doaj, {
             };
         },
 
-        newPublicSearchResultRenderer : function(params) {
+        newPublicSearchResultRenderer: function (params) {
             return edges.instantiate(doaj.renderers.PublicSearchResultRenderer, params, edges.newRenderer);
         },
-        PublicSearchResultRenderer : function(params) {
+        PublicSearchResultRenderer: function (params) {
 
             this.widget = params.widget;
             if (params.doaj_url) {
                 this.doaj_url = params.doaj_url;
-            }
-            else {
+            } else {
                 this.doaj_url = ""
             }
 
@@ -7020,11 +7207,11 @@ $.extend(true, doaj, {
             this.namespace = "doaj-public-search";
 
             this.selector = edges.getParam(params.selector, null)
-            this.currentQueryString  = "";
+            this.currentQueryString = "";
 
 
             this.draw = function () {
-                if (this.component.edge.currentQuery){
+                if (this.component.edge.currentQuery) {
                     let qs = this.component.edge.currentQuery.getQueryString();
                     if (qs) {
                         this.currentQueryString = qs.queryString || "";
@@ -7062,7 +7249,7 @@ $.extend(true, doaj, {
                 edges.on(abstractAction, "click", this, "toggleAbstract");
             };
 
-            this.toggleAbstract = function(element) {
+            this.toggleAbstract = function (element) {
                 var el = $(element);
                 var abstractText = edges.css_class_selector(this.namespace, "abstracttext", this);
                 var at = this.component.jq(abstractText).filter('[rel="' + el.attr("rel") + '"]');
@@ -7076,7 +7263,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this._renderResult = function(resultobj) {
+            this._renderResult = function (resultobj) {
                 if (resultobj.bibjson && resultobj.bibjson.journal) {
                     // it is an article
                     return this._renderPublicArticle(resultobj);
@@ -7086,25 +7273,8 @@ $.extend(true, doaj, {
                 }
             };
 
-            this._renderPublicJournal = function(resultobj) {
+            this._renderPublicJournal = function (resultobj) {
 
-                var seal = "";
-                if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="' + this.doaj_url + '/apply/seal" target="_blank">'
-                    if (this.widget){
-                        seal += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/check-circle.svg"> DOAJ Seal</a>'
-                    }
-                    else {
-                        seal += '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;">\
-                                  <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
-                                  <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
-                                  <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
-                                  <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
-                          </svg>\
-                          <p class="sr-only">DOAJ Seal</p>\
-                      </a>';
-                    }
-                }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
@@ -7141,37 +7311,39 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
                 // at search time
                 var articles = "";
 
-                var apcs = '<li>';
+                let apc_frag = "<strong>No</strong> APC";
+                let other_charges_frag = "<strong>No</strong> other charges";
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
-                    apcs += "APCs: ";
+                    apc_frag = "APCs: ";
                     let length = resultobj.bibjson.apc.max.length;
                     for (var i = 0; i < length; i++) {
-                        apcs += "<strong>";
+                        apc_frag += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
-                            apcs += edges.escapeHtml(apcRecord.price);
+                            apc_frag += edges.escapeHtml(apcRecord.price);
                         }
                         if (apcRecord.currency) {
-                            apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                            apc_frag += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
                         }
                         if (i < length - 1) {
-                            apcs += ', ';
+                            apc_frag += ', ';
                         }
-                        apcs += "</strong>";
+                        apc_frag += "</strong>";
                     }
-                } else {
-                    apcs += "<strong>No</strong> charges";
                 }
-                apcs += '</li>';
+                if (edges.hasProp(resultobj,"bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
+                    other_charges_frag = "Has other charges";
+                }
+                let charges = `<li>${apc_frag}; ${other_charges_frag}</li>`;
 
                 var rights = "";
                 if (resultobj.bibjson.copyright) {
@@ -7189,7 +7361,7 @@ $.extend(true, doaj, {
                         var lic = resultobj.bibjson.license[i];
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
-                        if (i !== (resultobj.bibjson.license.length-1)) {
+                        if (i !== (resultobj.bibjson.license.length - 1)) {
                             licenses += ', ';
                         }
                     }
@@ -7213,7 +7385,7 @@ $.extend(true, doaj, {
                             let data = "";
                             if (actSettings.data) {
                                 let dataAttrs = Object.keys(actSettings.data);
-                                for(let j = 0; j < dataAttrs.length; j++) {
+                                for (let j = 0; j < dataAttrs.length; j++) {
                                     data += " data-" + dataAttrs[j] + "=" + actSettings.data[dataAttrs[j]];
                                 }
                             }
@@ -7236,10 +7408,9 @@ $.extend(true, doaj, {
                             <a href="' + this.doaj_url + '/toc/' + issn + '" target="_blank">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
                               <sup>'
-                if (this.widget){
+                if (this.widget) {
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/link.svg" alt="link icon">'
-                }
-                else {
+                } else {
                     frag += '<i data-feather="link" aria-hidden="true"></i>'
                 }
 
@@ -7248,63 +7419,72 @@ $.extend(true, doaj, {
                 if (resultobj.bibjson.ref && resultobj.bibjson.ref.journal) {
                     externalLink = '<li><a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website ';
 
-                    if (this.widget){
+                    if (this.widget) {
                         externalLink += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                    }
-                    else {
+                    } else {
                         externalLink += '<i data-feather="external-link" aria-hidden="true"></i>'
                     }
 
                     externalLink += '</a></li>';
                 }
 
-                frag +='</sup>\
-                            </a>\
-                            ' + subtitle + '\
-                          </h3>\
-                        </header>\
-                        <div class="search-results__body">\
-                          <ul class="inlined-list">\
-                            <li>\
-                              ' + published + '\
-                            </li>\
-                            ' + language + '\
-                          </ul>\
-                          ' + subjects + '\
-                        </div>\
-                      </div>\
-                      <aside class="col-sm-4 search-results__aside">\
-                        ' + seal + '\
-                        <ul>\
-                          <li>\
-                            ' + update_or_added + '\
-                          </li>\
-                          ' + articles + '\
-                          ' + externalLink + '\
-                        <li>\
-                            ' + apcs + '\
-                          </li>\
-                          <li>\
-                            ' + rights + '\
-                          </li>\
-                          <li>\
-                            ' + licenses + '\
-                          </li>\
-                        </ul>\
-                        ' + actions + modals + '\
-                      </aside>\
-                    </article>\
-                  </li>';
+                let s2o = "";
+                if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
+                    s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank">' +
+                        '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
+                        '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
+                        '</a>';
+                }
+
+                frag +=`</sup>
+                            </a>
+                            ` + subtitle + `
+                          </h3>
+                        </header>
+                        <div class="search-results__body">
+                          <ul class="inlined-list">
+                            <li>
+                              ` + published + `
+                            </li>
+                            ` + language + `
+                          </ul>
+                          ` + subjects + `
+                        </div>
+                      </div>
+                      <aside class="col-sm-4 search-results__aside">
+                        <ul>
+                          <li>
+                            ` + update_or_added + `
+                          </li>
+                          ` + articles + `
+                          ` + externalLink + `
+                        <li>
+                            ` + charges + `
+                          </li>
+                          <li>
+                            ` + rights + `
+                          </li>
+                          <li>
+                            ` + licenses + `
+                          </li>
+                          <li class="badges badges--search-result badges--search-result--public">
+                          ${s2o}
+                          </li>
+                        </ul>
+                        ` + actions + modals + `
+                      </aside>
+                    </article>
+                  </li>`;
 
                 return frag;
             };
 
-            this._renderPublicArticle = function(resultobj) {
+            this._renderPublicArticle = function (resultobj) {
                 var journal = resultobj.bibjson.journal ? resultobj.bibjson.journal.title : "";
 
                 var date = "";
                 if (resultobj.index.date) {
-                    let humanised = doaj.dates.humanYearMonth(resultobj.index.date);
+                    let humanised = doaj.humanYearMonth(resultobj.index.date);
                     if (humanised) {
                         date = "(" + humanised + ")";
                     }
@@ -7336,7 +7516,7 @@ $.extend(true, doaj, {
                 var keywords = "";
                 if (edges.hasProp(resultobj, "bibjson.keywords") && resultobj.bibjson.keywords.length > 0) {
                     keywords = '<h4>Article keywords</h4><ul class="inlined-list">';
-                    keywords+= '<li>' + resultobj.bibjson.keywords.join(",&nbsp;</li><li>") + '</li>';
+                    keywords += '<li>' + resultobj.bibjson.keywords.join(",&nbsp;</li><li>") + '</li>';
                     keywords += '</ul>';
                 }
 
@@ -7356,10 +7536,9 @@ $.extend(true, doaj, {
 
                     abstract = '<h4 class="' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
                             Abstract'
-                    if (this.widget){
+                    if (this.widget) {
                         abstract += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/plus.svg" alt="external-link icon">'
-                    }
-                    else {
+                    } else {
                         abstract += '<i data-feather="plus" aria-hidden="true"></i>'
                     }
                     abstract += '</h4>\
@@ -7419,6 +7598,8 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
+                const export_url = this.doaj_url + '/service/export/article/' + resultobj.id + '/ris';
+
                 var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
@@ -7442,13 +7623,22 @@ $.extend(true, doaj, {
                         <ul>\
                           <li>\
                             <a href="' + ftl + '" target="_blank" rel="noopener"> Read online '
-                if (this.widget){
+                if (this.widget) {
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
+                } else {
                     frag += '<i data-feather="external-link" aria-hidden="true"></i>'
                 }
                 frag += '</a></li>\
+                         <li>\
+                            <a href="' + export_url + '" target="_blank">\
+                            Export citation (RIS) '
+                if (this.widget){
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/download.svg" alt="external-link icon">'
+                } else {
+                    frag += '<i data-feather="download" aria-hidden="true"></i>'
+                }
+                            frag += '</a>\
+                          </li>\
                           <li>\
                             <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
@@ -7468,26 +7658,26 @@ $.extend(true, doaj, {
             };
         },
 
-        newPublisherApplicationRenderer : function(params) {
+        newPublisherApplicationRenderer: function (params) {
             return edges.instantiate(doaj.renderers.PublisherApplicationRenderer, params, edges.newRenderer);
         },
-        PublisherApplicationRenderer : function(params) {
+        PublisherApplicationRenderer: function (params) {
 
             this.actions = edges.getParam(params.actions, []);
 
             this.namespace = "doaj-publisher-application";
 
             this.statusMap = {
-                "draft" : "Not yet submitted",
-                "accepted" : "Accepted to DOAJ",
-                "rejected" : "Application rejected",
-                "update_request" : "Pending",
-                "revisions_required" : "Revisions Required",
-                "pending" : "Pending",
-                "in progress" : "Under review by an editor",
-                "completed" : "Under review by an editor",
-                "on hold" : "Under review by an editor",
-                "ready" : "Under review by an editor"
+                "draft": "Not yet submitted",
+                "accepted": "Accepted to DOAJ",
+                "rejected": "Application rejected",
+                "update_request": "Pending",
+                "revisions_required": "Revisions Required",
+                "pending": "Pending",
+                "in progress": "Under review by an editor",
+                "completed": "Under review by an editor",
+                "on hold": "Under review by an editor",
+                "ready": "Under review by an editor"
             };
 
             this.draw = function () {
@@ -7527,7 +7717,7 @@ $.extend(true, doaj, {
                 edges.on(deleteSelector, "click", this, "deleteLinkClicked");
             };
 
-            this.deleteLinkClicked = function(element) {
+            this.deleteLinkClicked = function (element) {
                 var deleteTitleSelector = edges.css_class_selector(this.namespace, "delete-title", this);
                 var deleteLinkSelector = edges.css_class_selector(this.namespace, "delete-link", this);
 
@@ -7539,7 +7729,7 @@ $.extend(true, doaj, {
                 this.component.jq(deleteLinkSelector).attr("href", href);
             };
 
-            this._accessLink = function(resultobj) {
+            this._accessLink = function (resultobj) {
                 if (resultobj.es_type === "draft_application") {
                     // if it's a draft, just link to the draft edit page
                     return [doaj.publisherApplicationsSearchConfig.applyUrl + resultobj['id'], "Edit"];
@@ -7563,7 +7753,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this._renderResult = function(resultobj) {
+            this._renderResult = function (resultobj) {
 
                 var accessLink = this._accessLink(resultobj);
 
@@ -7597,7 +7787,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.dates.humanDate(resultobj.last_updated);
+                last_updated += doaj.humanDate(resultobj.last_updated);
 
                 var icon = "edit-3";
                 if (accessLink[1] === "View") {
@@ -7661,25 +7851,26 @@ $.extend(true, doaj, {
             };
         },
 
-        newPublisherUpdateRequestRenderer : function(params) {
+        newPublisherUpdateRequestRenderer: function (params) {
             return edges.instantiate(doaj.renderers.PublisherUpdateRequestRenderer, params, edges.newRenderer);
         },
-        PublisherUpdateRequestRenderer : function(params) {
+        PublisherUpdateRequestRenderer: function (params) {
 
             this.actions = edges.getParam(params.actions, []);
 
             this.namespace = "doaj-publisher-update-request";
 
             this.statusMap = {
-                "accepted" : "Accepted to DOAJ",
-                "rejected" : "Application rejected",
-                "update_request" : "Pending",
-                "revisions_required" : "Revisions Required",
-                "pending" : "Pending",
-                "in progress" : "Under review by an editor",
-                "completed" : "Under review by an editor",
-                "on hold" : "Under review by an editor",
-                "ready" : "Under review by an editor"
+                "accepted": "Accepted to DOAJ",
+                "rejected": "Application rejected",
+                "update_request": "Pending",
+                "revisions_required": "Revisions Required",
+                "pending": "Pending",
+                "in progress": "Under review by an editor",
+                "completed": "Under review by an editor",
+                "on hold": "Under review by an editor",
+                "ready": "Under review by an editor",
+                "post_submission_review": "Pending"
             };
 
             this.draw = function () {
@@ -7719,7 +7910,7 @@ $.extend(true, doaj, {
                 edges.on(deleteSelector, "click", this, "deleteLinkClicked");
             };
 
-            this._renderResult = function(resultobj) {
+            this._renderResult = function (resultobj) {
                 var accessLink = this._accessLink(resultobj);
 
                 var titleText = "Untitled";
@@ -7752,14 +7943,15 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.dates.humanDate(resultobj.last_manual_update);
+                last_updated += doaj.humanDate(resultobj.last_manual_update);
 
                 var deleteLink = "";
                 var deleteLinkTemplate = doaj.publisherUpdatesSearchConfig.deleteLinkTemplate;
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                    resultobj.admin.application_status === "update_request") {
+                    resultobj.admin.application_status === "update_request" ||
+                    resultobj.admin.application_status === "post_submission_review") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-update-request" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\
@@ -7784,7 +7976,6 @@ $.extend(true, doaj, {
                     actions += deleteLink;
                     actions += '</ul>';
                 }
-
 
 
                 var frag = '<li class="card search-results__record">\
@@ -7818,7 +8009,7 @@ $.extend(true, doaj, {
                 return frag;
             };
 
-            this.deleteLinkClicked = function(element) {
+            this.deleteLinkClicked = function (element) {
                 var deleteTitleSelector = edges.css_class_selector(this.namespace, "delete-title", this);
                 var deleteLinkSelector = edges.css_class_selector(this.namespace, "delete-link", this);
 
@@ -7830,7 +8021,7 @@ $.extend(true, doaj, {
                 this.component.jq(deleteLinkSelector).attr("href", href);
             };
 
-            this._accessLink = function(resultobj) {
+            this._accessLink = function (resultobj) {
                 var status = resultobj.admin.application_status;
 
                 // if it's an accepted application, link to the ToC
@@ -7850,13 +8041,6 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicJournal = function(resultobj) {
-                var seal = "";
-                if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" target="_blank">\
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;"><path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/> <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/> <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/> <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/></svg>\
-                              <span class="sr-only">DOAJ Seal</span>\
-                          </a>';
-                }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
@@ -7893,9 +8077,9 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
@@ -7981,7 +8165,6 @@ $.extend(true, doaj, {
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
-                        ' + seal + '\
                         <ul>\
                           <li>\
                             ' + update_or_added + '\
@@ -8051,7 +8234,9 @@ $.extend(true, doaj, {
                         if (dir === undefined) {
                             dir = "";
                         }
-                        dir = " " + dir;
+                        if (dir !== "") {
+                            dir = " " + dir;
+                        }
                         sortOptions += '<option value="' + field + '' + dir + '">' + edges.escapeHtml(display) + '</option>';
                     }
 
@@ -8150,37 +8335,39 @@ $.extend(true, doaj, {
     },
 
     fieldRender: {
-        titleField : function (val, resultobj, renderer) {
-            var field = '<div class="flex-space-between"><h3 class="type-01 font-serif">';
+        titleField: function (val, resultobj, renderer) {
+            var field = '<div class="flex-start flex-space-between flex-wrap"><h3 class="type-01 font-serif" >';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
                     var display = edges.escapeHtml(resultobj.bibjson.title);
                     if (resultobj.admin.in_doaj) {
-                        display =  "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
+                        display = "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
                     }
                     field += display;
                 } else {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 field += "</h3>";
-                if (resultobj.admin && resultobj.admin.seal) {
-                    field += '<div><a href="/apply/seal" target="_blank">\
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1rem; width: auto; margin-left: .5em;">\
-                              <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
-                              <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
-                              <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
-                              <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
-                              </svg>\
-                            <span class="sr-only">DOAJ Seal</span>\
-                          </a></div>';
+
+                var s2o = '';
+                if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
+                    s2o = s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank" style="padding: .25rem;"> ' +
+                        '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
+                        '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
+                        '</a>';;
+                }
+
+                if (s2o) {
+                    field += '<div class="badges badges--search-result badges--search-result--maned">' + s2o + '</div>';
                 }
                 return field + "</div>";
-            } else {
+            }
+            else {
                 return false;
             }
         },
 
-        authorPays : function(val, resultobj, renderer) {
+        authorPays: function (val, resultobj, renderer) {
             if (resultobj.es_type === "journal") {
                 var field = "";
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
@@ -8209,13 +8396,12 @@ $.extend(true, doaj, {
                 }
 
                 return field ? field : false;
-            }
-            else {
+            } else {
                 return false;
             }
         },
 
-        abstract : function (val, resultobj, renderer) {
+        abstract: function (val, resultobj, renderer) {
             if (resultobj['bibjson']['abstract']) {
                 var result = '<a class="abstract_action" href="#" rel="';
                 result += resultobj['id'];
@@ -8229,15 +8415,18 @@ $.extend(true, doaj, {
             return false;
         },
 
-        journalLicense : function (val, resultobj, renderer) {
+        journalLicense: function (val, resultobj, renderer) {
             var titles = [];
             if (resultobj.bibjson && resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
                 var lics = resultobj["bibjson"]["journal"]["license"];
-                var titles = lics.map(function(x) { return x.type });
-            }
-            else if (resultobj.bibjson && resultobj.bibjson.license) {
+                var titles = lics.map(function (x) {
+                    return x.type
+                });
+            } else if (resultobj.bibjson && resultobj.bibjson.license) {
                 var lics = resultobj["bibjson"]["license"];
-                titles = lics.map(function(x) { return x.type });
+                titles = lics.map(function (x) {
+                    return x.type
+                });
             }
 
             var links = [];
@@ -8258,7 +8447,7 @@ $.extend(true, doaj, {
             return false;
         },
 
-        doiLink : function (val, resultobj, renderer) {
+        doiLink: function (val, resultobj, renderer) {
             if (resultobj.bibjson && resultobj.bibjson.identifier) {
                 var ids = resultobj.bibjson.identifier;
                 for (var i = 0; i < ids.length; i++) {
@@ -8273,7 +8462,7 @@ $.extend(true, doaj, {
             return false
         },
 
-        links : function (val, resultobj, renderer) {
+        links: function (val, resultobj, renderer) {
             if (resultobj.bibjson && resultobj.bibjson.ref) {
                 var urls = [];
                 var ls = Object.keys(resultobj.bibjson.ref);
@@ -8301,7 +8490,7 @@ $.extend(true, doaj, {
             return false;
         },
 
-        issns : function (val, resultobj, renderer) {
+        issns: function (val, resultobj, renderer) {
             if (resultobj.bibjson && (resultobj.bibjson.pissn || resultobj.bibjson.eissn)) {
                 var issn = resultobj.bibjson.pissn;
                 var eissn = resultobj.bibjson.eissn;
@@ -8317,21 +8506,21 @@ $.extend(true, doaj, {
             return false
         },
 
-        countryName : function (val, resultobj, renderer) {
+        countryName: function (val, resultobj, renderer) {
             if (resultobj.index && resultobj.index.country) {
                 return edges.escapeHtml(resultobj.index.country);
             }
             return false
         },
 
-        inDoaj : function(val, resultobj, renderer) {
+        inDoaj: function (val, resultobj, renderer) {
             var mapping = {
                 "false": {"text": "No", "class": "red"},
                 "true": {"text": "Yes", "class": "green"}
             };
             var field = "";
             if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
-                if(mapping[resultobj['admin']['in_doaj']]) {
+                if (mapping[resultobj['admin']['in_doaj']]) {
                     var result = '<span class=' + mapping[resultobj['admin']['in_doaj']]['class'] + '>';
                     result += mapping[resultobj['admin']['in_doaj']]['text'];
                     result += '</span>';
@@ -8347,7 +8536,7 @@ $.extend(true, doaj, {
             return false;
         },
 
-        owner : function (val, resultobj, renderer) {
+        owner: function (val, resultobj, renderer) {
             if (resultobj.admin && resultobj.admin.owner !== undefined && resultobj.admin.owner !== "") {
                 var own = resultobj.admin.owner;
                 return '<a href="/account/' + own + '">' + edges.escapeHtml(own) + '</a>'
@@ -8355,33 +8544,32 @@ $.extend(true, doaj, {
             return false
         },
 
-        createdDateWithTime : function (val, resultobj, renderer) {
-            return doaj.dates.humanYearMonth(resultobj['created_date']);
+        createdDateWithTime: function (val, resultobj, renderer) {
+            return doaj.iso_datetime2date_and_time(resultobj['created_date']);
         },
 
-        lastManualUpdate : function (val, resultobj, renderer) {
+        lastManualUpdate: function (val, resultobj, renderer) {
             var man_update = resultobj['last_manual_update'];
-            if (man_update === '1970-01-01T00:00:00Z')
-            {
+            if (man_update === '1970-01-01T00:00:00Z') {
                 return 'Never'
             } else {
-                return doaj.dates.humanYearMonth(man_update);
+                return doaj.iso_datetime2date_and_time(man_update);
             }
         },
 
-        suggestedOn : function (val, resultobj, renderer) {
+        suggestedOn: function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
-                return doaj.dates.humanYearMonth(resultobj['admin']['date_applied']);
+                return doaj.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
             } else {
                 return false;
             }
         },
 
-        applicationStatus : function(val, resultobj, renderer) {
+        applicationStatus: function (val, resultobj, renderer) {
             return doaj.valueMaps.applicationStatus[resultobj['admin']['application_status']];
         },
 
-        editSuggestion : function(params) {
+        editSuggestion: function (params) {
             return function (val, resultobj, renderer) {
                 if (resultobj.es_type === "application") {
                     // determine the link name
@@ -8411,7 +8599,7 @@ $.extend(true, doaj, {
             }
         },
 
-        readOnlyJournal : function(params) {
+        readOnlyJournal: function (params) {
             return function (val, resultobj, renderer) {
                 if (resultobj.admin && resultobj.admin.current_journal) {
                     var result = '<br/><p><a class="readonly_journal_link button" href="';
@@ -8425,7 +8613,7 @@ $.extend(true, doaj, {
             }
         },
 
-        editJournal : function(params) {
+        editJournal: function (params) {
             return function (val, resultobj, renderer) {
                 if (!resultobj.suggestion && !resultobj.bibjson.journal) {
                     // if it's not a suggestion or an article .. (it's a
@@ -8443,32 +8631,32 @@ $.extend(true, doaj, {
         },
     },
 
-    bulk : {
-        applicationMultiFormBox : function(edge_instance, doaj_type) {
+    bulk: {
+        applicationMultiFormBox: function (edge_instance, doaj_type) {
             return doaj.multiFormBox.newMultiFormBox({
-                edge : edge_instance,
+                edge: edge_instance,
                 selector: "#admin-bulk-box",
-                bindings : {
-                    editor_group : function(context) {
+                bindings: {
+                    editor_group: function (context) {
                         autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
                     }
                 },
-                validators : {
-                    application_status : function(context) {
+                validators: {
+                    application_status: function (context) {
                         var val = context.find("#application_status").val();
                         if (val === "") {
                             return {valid: false};
                         }
                         return {valid: true};
                     },
-                    editor_group : function(context) {
+                    editor_group: function (context) {
                         var val = context.find("#editor_group").val();
                         if (val === "") {
                             return {valid: false};
                         }
                         return {valid: true};
                     },
-                    note : function(context) {
+                    note: function (context) {
                         var val = context.find("#note").val();
                         if (val === "") {
                             return {valid: false};
@@ -8476,33 +8664,33 @@ $.extend(true, doaj, {
                         return {valid: true};
                     }
                 },
-                submit : {
-                    note : {
-                        data: function(context) {
+                submit: {
+                    note: {
+                        data: function (context) {
                             return {
                                 note: $('#note', context).val()
                             };
                         }
                     },
-                    editor_group : {
-                        data : function(context) {
+                    editor_group: {
+                        data: function (context) {
                             return {
                                 editor_group: $('#editor_group', context).val()
                             };
                         }
                     },
-                    application_status : {
-                        data : function(context) {
+                    application_status: {
+                        data: function (context) {
                             return {
                                 application_status: $('#application_status', context).val()
                             };
                         }
                     }
                 },
-                urls : {
-                    note : "/admin/" + doaj_type + "/bulk/add_note",
-                    editor_group : "/admin/" + doaj_type + "/bulk/assign_editor_group",
-                    application_status : "/admin/" + doaj_type + "/bulk/change_status"
+                urls: {
+                    note: "/admin/" + doaj_type + "/bulk/add_note",
+                    editor_group: "/admin/" + doaj_type + "/bulk/assign_editor_group",
+                    application_status: "/admin/" + doaj_type + "/bulk/change_status"
                 }
             });
         }

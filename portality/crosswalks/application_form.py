@@ -54,8 +54,6 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         "apc" : "bibjson.apc.has_apc",
         "has_other_charges" : "bibjson.other_charges.has_other_charges",
         "has_waiver" : "bibjson.waiver.has_waiver",
-        "orcid_ids" : "bibjson.article.orcid",
-        "open_citations" : "bibjson.article.i4oc_open_citations",
         "deposit_policy_url" : "bibjson.deposit_policy.url"
     }
 

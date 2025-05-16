@@ -11,12 +11,6 @@
                 "Public Domain" : ["https://creativecommons.org/publicdomain/zero/1.0/", ["zero"]],
             } %}
 
-    {% set DEPOSIT_POLICY_MAP = {
-              "Sherpa/Romeo" : "https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto=",
-              "Diadorim" : "https://diadorim.ibict.br/simple-search?query=",
-              "Dulcinea" : "https://www.accesoabierto.net/dulcinea/lista/REVISTA/",
-            } %}
-
     <section id="about-journal" class="tabs__panel" role="tabpanel" aria-hidden="false">
         <h2 class="sr-only">About</h2>
         <div class="three-col">
@@ -120,8 +114,7 @@
 
                         {% if bibjson.plagiarism_detection %}
                             <p>
-                                &rarr; This journal <a href="{{ bibjson.plagiarism_url }}" target="_blank"
-                                                       rel="noopener noreferrer">checks for plagiarism</a>.
+                                &rarr; This journal checks for plagiarism
                             </p>
                         {% endif %}
                     </div>
@@ -206,8 +199,7 @@
                             </p>
                         {% endif %}
                         <p>
-                            &rarr; Look up their <a href="{{ bibjson.oa_statement_url }}" target="_blank"
-                                                    rel="noopener">open access statement</a> and their <a
+                            &rarr; Look up their <a
                                 href="{{ bibjson.license_terms_url }}" target="_blank" rel="noopener">license terms</a>.
                         </p>
                     </div>
@@ -265,15 +257,8 @@
                             </p>
                             <ul>
                                 {% for policy in bibjson.deposit_policy %}
-                                    {% set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                                     <li>
-                                        {# FIXME: not a big fan of this hard-coding, presumably this could come from config somewhere #}
-                                        {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Dulcinea" %}
-                                            <a href="{{ policy_data|safe }}{{ bibjson.get_preferred_issn() }}"
-                                               target="_blank" rel="noopener">
-                                                {{ policy }}
-                                            </a>
-                                        {% elif bibjson.deposit_policy_url %}
+                                        {% if bibjson.deposit_policy_url %}
                                             <a href="{{ bibjson.deposit_policy_url|safe }}"
                                                target="_blank" rel="noopener">
                                                 {{ policy }}

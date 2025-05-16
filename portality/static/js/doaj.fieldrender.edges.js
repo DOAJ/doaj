@@ -364,18 +364,40 @@ $.extend(true, doaj, {
             var from = params.from;
             var to = params.to;
             var field = params.field;
-            var display = (new Date(parseInt(from))).getUTCFullYear();
+            var frdisplay = (new Date(parseInt(from))).getUTCFullYear();
+            let todisplay = (new Date(parseInt(to - 1))).getUTCFullYear();
+
+            let display = frdisplay;
+            if (frdisplay !== todisplay) {
+                display = frdisplay + " to " + todisplay;
+            }
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
         displayYearMonthPeriod: function (params) {
             var from = params.from;
             var to = params.to;
-            var field = params.field;
 
-            let d = new Date(parseInt(from))
-            let display = d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
-            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+            let frdisplay = false;
+            if (from) {
+                frdisplay = new Date(parseInt(from)).toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+            }
+
+            let todisplay = false;
+            if (to) {
+                todisplay = new Date(parseInt(to - 1)).toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+            }
+
+            let range = frdisplay;
+            if (to) {
+                if (todisplay !== frdisplay) {
+                    range += ` to ${todisplay}`;
+                }
+            } else {
+                range += "+";
+            }
+
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: range}
         },
 
         schemaCodeToNameClosure: function (tree) {
@@ -409,7 +431,15 @@ $.extend(true, doaj, {
 
         monthPadding: edges.numFormat({
             zeroPadding: 2
-        })
+        }),
+
+        refiningANDTermSelectorExporter: function(component) {
+            return component.values;
+        },
+
+        dateHistogramSelectorExporter: function(component) {
+            return component.values;
+        }
     },
     components: {
         pager: function (id, category) {
@@ -488,6 +518,662 @@ $.extend(true, doaj, {
                     showCounts: false
                 })
             })
+        },
+
+        newDateHistogramSelector : function(params) {
+            if (!params) { params = {} }
+            doaj.components.DateHistogramSelector.prototype = edges.newSelector(params);
+            return new doaj.components.DateHistogramSelector(params);
+        },
+        DateHistogramSelector : function(params) {
+            // "year, quarter, month, week, day, hour, minute ,second"
+            // period to use for date histogram
+            this.interval = params.interval || "year";
+
+            this.sortFunction = edges.getParam(params.sortFunction, false);
+
+            this.displayFormatter = edges.getParam(params.displayFormatter, false);
+
+            this.active = edges.getParam(params.active, true);
+
+            //////////////////////////////////////////////
+            // values to be rendered
+
+            this.values = [];
+            this.filters = [];
+
+            this.contrib = function(query) {
+                query.addAggregation(
+                    es.newDateHistogramAggregation({
+                        name: this.id,
+                        field: this.field,
+                        interval: this.interval
+                    })
+                );
+            };
+
+            this.synchronise = function() {
+                // reset the state of the internal variables
+                this.values = [];
+                this.filters = [];
+
+                if (this.edge.result) {
+                    var buckets = this.edge.result.buckets(this.id);
+                    for (var i = 0; i < buckets.length; i++) {
+                        var bucket = buckets[i];
+                        var key = bucket.key;
+                        if (this.displayFormatter) {
+                            key = this.displayFormatter(key);
+                        }
+                        var obj = {"display" : key, "gte": bucket.key, "count" : bucket.doc_count};
+                        if (i < buckets.length - 1) {
+                            obj["lt"] = buckets[i+1].key;
+                        }
+                        this.values.push(obj);
+                    }
+                }
+
+                if (this.sortFunction) {
+                    this.values = this.sortFunction(this.values);
+                }
+
+                // now check to see if there are any range filters set on this field
+                // this works in a very specific way: if there is a filter on this field, and it
+                // starts from the date of a filter in the result list, then we make they assumption
+                // that they are a match.  This is because a date histogram either has all the results
+                // or only one date bin, if that date range has been selected.  And once a range is selected
+                // there will be no "lt" date field to compare the top of the range to.  So, this is the best
+                // we can do, and it means that if you have both a date histogram and another range selector
+                // for the same field, they may confuse eachother.
+                if (this.edge.currentQuery) {
+                    var filters = this.edge.currentQuery.listMust(es.newRangeFilter({field: this.field}));
+                    for (var i = 0; i < filters.length; i++) {
+                        var from = filters[i].gte;
+                        for (var j = 0; j < this.values.length; j++) {
+                            var val = this.values[j];
+                            if (val.gte.toString() === from) {
+                                this.filters.push(val);
+                            }
+                        }
+                    }
+                }
+            };
+
+            this.selectRange = function(params) {
+                var from = params.gte;
+                var to = params.lt;
+
+                var nq = this.edge.cloneQuery();
+
+
+                var params = {field: this.field};
+
+                // remove any existing range filters on this field
+                nq.removeMust(es.newRangeFilter(params));
+
+                // create the new range query
+                if (from) {
+                    params["gte"] = from;
+                }
+                if (to) {
+                    params["lt"] = to;
+                }
+                params["format"] = "epoch_millis"   // Required for ES7.x date ranges against dateOptionalTime formats
+                nq.addMust(es.newRangeFilter(params));
+
+                // reset the search page to the start and then trigger the next query
+                nq.from = 0;
+                this.edge.pushQuery(nq);
+                this.edge.doQuery();
+            };
+
+            this.removeFilter = function(params) {
+                var from = params.gte;
+                var to = params.lt;
+
+                var nq = this.edge.cloneQuery();
+
+                // just add a new range filter (the query builder will ensure there are no duplicates)
+                var params = {field: this.field};
+                if (from) {
+                    params["gte"] = from;
+                }
+                if (to) {
+                    params["lt"] = to;
+                }
+                nq.removeMust(es.newRangeFilter(params));
+
+                // reset the search page to the start and then trigger the next query
+                nq.from = 0;
+                this.edge.pushQuery(nq);
+                this.edge.doQuery();
+            };
+
+            this.clearFilters = function(params) {
+                var triggerQuery = edges.getParam(params.triggerQuery, true);
+
+                var nq = this.edge.cloneQuery();
+                var qargs = {field: this.field};
+                nq.removeMust(es.newRangeFilter(qargs));
+                this.edge.pushQuery(nq);
+
+                if (triggerQuery) {
+                    this.edge.doQuery();
+                }
+            };
+
+            this.setInterval = function(params) {
+                let interval = edges.getParam(params.interval, "year");
+                this.interval = interval;
+                let q = this.edge.cloneQuery();
+                q.removeAggregation(this.id);
+                this.contrib(q);
+                this.edge.pushQuery(q);
+                this.edge.cycle();
+            }
+        },
+
+        newReportExporter: function (params) {
+            return edges.instantiate(doaj.components.ReportExporter, params, edges.newComponent);
+        },
+        ReportExporter: function(params) {
+
+            this.model = edges.getParam(params.model, "journal");
+
+            this.reportUrl = edges.getParam(params.reportUrl, "/admin/report");
+
+            // list of dictionaries of the form
+            // [{component_id: "component_id", display: "display name", exporter: function(component)}]
+            // display is optional, if not provided, will attempt to use component.display
+            this.facetExports = edges.getParam(params.facetExports, []);
+
+            this.namespace = "doajreportexporter";
+            this.component = this;
+
+            this.draw = function(edge) {
+                this.edge = edge;
+
+                let toggleClass = edges.css_classes(this.namespace, "toggle", this);
+                let controlsClass = edges.css_classes(this.namespace, "controls", this);
+                let nameClass = edges.css_classes(this.namespace, "name", this);
+                let exportClass = edges.css_classes(this.namespace, "export", this);
+                let downloadClass = edges.css_classes(this.namespace, "download", this);
+                let facetId = edges.css_id(this.namespace, "facet", this);
+
+                let facetOptions = ``;
+                for (let facetExport of this.facetExports) {
+                    let display = this._exportDisplayName(facetExport);
+                    facetOptions += `<option value="${facetExport.component_id}">${display}</option>`;
+                }
+
+                let frag = `<div class="row">
+                    <div class="col-md-12">
+                        <a href="#" class="${toggleClass}">Export Data as CSV</a>
+                        <div class="${controlsClass}" style="display:none">
+                            Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
+                            <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
+                            <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
+                            Or download the current facets<br>
+                            <select name="${facetId}" id="${facetId}">
+                                <option value="all">All</option>
+                                ${facetOptions}
+                            </select><br>
+                            <button type="button" class="btn btn-primary ${downloadClass}">Download</button>
+                        </div>
+                    </div>
+                </div>`;
+
+                this.context.html(frag);
+
+                let toggleSelector = edges.css_class_selector(this.namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleControls");
+
+                let exportSelector = edges.css_class_selector(this.namespace, "export", this);
+                edges.on(exportSelector, "click", this, "export");
+
+                let downloadSelector = edges.css_class_selector(this.namespace, "download", this);
+                edges.on(downloadSelector, "click", this, "download");
+            };
+
+            this.toggleControls = function(element) {
+                let controlsSelector = edges.css_class_selector(this.namespace, "controls", this);
+                let controls = this.jq(controlsSelector);
+                controls.toggle();
+            }
+
+            this.export = function(element) {
+                let cq = this.edge.currentQuery;
+                let query = cq.objectify({
+                    include_paging: false,
+                    include_fields: false,
+                    include_aggregations: false,
+                    include_source_filters: false
+                });
+                let qa = JSON.stringify(query);
+
+                let nameSelector = edges.css_class_selector(this.namespace, "name", this);
+                let name = this.context.find(nameSelector).val();
+                $.post({
+                    url: this.reportUrl,
+                    data: {
+                        query: qa,
+                        name: name,
+                        model: this.model
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        alert(`Your export "${name}" is being generated! You will be notified when it is ready to download.`);
+                    }
+                });
+            }
+
+            this.download = function(element) {
+                let facetSelector = edges.css_id_selector(this.namespace, "facet", this);
+                let selection = this.context.find(facetSelector).val();
+                let selectedExports = [];
+                let filename = this.model + "_facets_" + selection + ".csv";
+
+                if (selection === "all") {
+                    selectedExports = this.facetExports;
+                } else {
+                    selectedExports = this.facetExports.filter(f => f.component_id === selection);
+                }
+
+                let data = [];
+                let columns = [];
+                for (let selectedExport of selectedExports) {
+                    let component = this.edge.getComponent({id: selectedExport.component_id});
+                    let exporter = selectedExport.exporter;
+                    let componentData = exporter(component);
+
+                    let prefix = this._exportDisplayName(selectedExport);
+                    let termKey = prefix + " Term";
+                    let countKey = prefix + " Count";
+                    for (let entry of componentData) {
+                        let obj = {}
+                        obj[termKey] = entry.display;
+                        obj[countKey] = entry.count;
+                        data.push(obj);
+                    }
+                    columns.push(termKey);
+                    columns.push(countKey);
+                }
+
+                let collapsedData = []
+                while(data.length > 0) {
+                    let rowAssembly = {}
+                    let removals = [];
+                    for (let i = 0; i < data.length; i++) {
+                        let entry = data[i];
+                        if (!(Object.keys(entry)[0] in rowAssembly)) {
+                            rowAssembly = {...rowAssembly, ...entry}
+                            removals.push(i);
+                        }
+                    }
+                    collapsedData.push(rowAssembly);
+                    data = data.filter((_, i) => !removals.includes(i));
+                }
+
+                this._deliverCSV(collapsedData, columns, filename);
+            }
+
+            this._exportDisplayName = function(facetExport) {
+                let display = facetExport.display;
+                if (!display) {
+                    let component = this.edge.getComponent({id: facetExport.component_id});
+                    display = component.display;
+                }
+                if (!display) {
+                    display = facetExport.component_id;
+                }
+                return display;
+            }
+
+            this._convertToCSV = function(data, columns) {
+                // Use the columns array as the header row
+                const array = [columns].concat(data);
+
+                return array.map((row, index) => {
+                    // If it's the header row, return it as is
+                    if (index === 0) {
+                        return row.join(',');
+                    }
+                    // Otherwise, map the row values according to the columns
+                    return columns.map(col => {
+                        const value = row[col] !== undefined ? row[col] : '';
+                        return typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value;
+                    }).join(',');
+                }).join('\n');
+            }
+
+            // Function to trigger CSV download
+            this._deliverCSV = function(data, columns, filename = 'facets.csv') {
+                let csv = this._convertToCSV(data, columns);
+
+                let dateGenerated = new Date();
+                let header = `"Date generated","${dateGenerated.toISOString()}"\n`;
+
+                let searchURL = this.component.edge.fullUrl();
+                header += `"Search URL","${searchURL}"\n"",""\n`;
+
+                csv = header + csv;
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                // document.body.removeChild(link);
+            }
+        },
+
+        newSimultaneousDateRangeEntry: function (params) {
+            if (!params) { params = {}}
+            doaj.components.SimultaneousDateRangeEntry.prototype = edges.newComponent(params);
+            return new doaj.components.SimultaneousDateRangeEntry(params);
+        },
+        SimultaneousDateRangeEntry: function (params) {
+            ///////////////////////////////////////////////
+            // fields that can be passed in, and their defaults
+
+            // free text to prefix entry boxes with
+            this.display = edges.getParam(params.display, false);
+
+            // list of field objects, which provide the field itself, and the display name.  e.g.
+            // [{field : "monitor.rioxxterms:publication_date", display: "Publication Date"}]
+            this.fields = edges.getParam(params.fields, []);
+
+            // map from field name (as in this.field[n].field) to a function which will provide
+            // the earliest allowed date for that field.  e.g.
+            // {"monitor.rioxxterms:publication_date" : earliestDate}
+            this.earliest = edges.getParam(params.earliest, {});
+
+            // map from field name (as in this.field[n].field) to a function which will provide
+            // the latest allowed date for that field.  e.g.
+            // {"monitor.rioxxterms:publication_date" : latestDate}
+            this.latest = edges.getParam(params.latest, {});
+
+            this.autoLookupRange = edges.getParam(params.autoLookupRange, false);
+
+            // category for this component, defaults to "selector"
+            this.category = edges.getParam(params.category, "selector");
+
+            // default earliest date to use in all cases (defaults to start of the unix epoch)
+            this.defaultEarliest = edges.getParam(params.defaultEarliest, new Date(0));
+
+            // default latest date to use in all cases (defaults to now)
+            this.defaultLatest = edges.getParam(params.defaultLatest, new Date());
+
+            // list of filters to apply to the autolookup secondary query
+            this.autoLookupFilters = edges.getParam(params.autoLookupFilters, false);
+
+            // default renderer from render pack to use
+            this.defaultRenderer = edges.getParam(params.defaultRenderer, "newMultiDateRangeRenderer");
+
+            ///////////////////////////////////////////////
+            // fields used to track internal state
+
+            this.lastField = false;
+            this.currentField = false;
+            this.fromDate = false;
+            this.toDate = false;
+
+            this.touched = false;
+            this.dateOptions = {};
+            this.existingFilters = {};
+
+            this.init = function(edge) {
+                Object.getPrototypeOf(this).init.call(this, edge);
+
+                // set the initial field
+                this.currentField = this.fields[0].field;
+
+                // if required, load the dates once at init
+                if (!this.autoLookupRange) {
+                    this.loadDates();
+                } else {
+                    if (edge.secondaryQueries === false) {
+                        edge.secondaryQueries = {};
+                    }
+                    edge.secondaryQueries["multidaterange_" + this.id] = this.getSecondaryQueryFunction();
+                }
+            };
+
+            this.synchronise = function() {
+                this.currentField = false;
+                this.fromDate = false;
+                this.toDate = false;
+                this.existingFilters = {};
+
+                if (this.autoLookupRange) {
+                    for (var i = 0; i < this.fields.length; i++) {
+                        var field = this.fields[i].field;
+                        var agg = this.edge.secondaryResults["multidaterange_" + this.id].aggregation(field);
+
+                        var min = this.defaultEarliest;
+                        var max = this.defaultLatest;
+                        if (agg.min !== null) {
+                            min = new Date(agg.min);
+                        }
+                        if (agg.max !== null) {
+                            max = new Date(agg.max);
+                        }
+
+                        this.dateOptions[field] = {
+                            earliest: min,
+                            latest: max
+                        }
+                    }
+                }
+
+                for (var i = 0; i < this.fields.length; i++) {
+                    var field = this.fields[i].field;
+                    var filters = this.edge.currentQuery.listMust(es.newRangeFilter({field: field}));
+                    if (filters.length > 0) {
+                        for (let filter of filters) {
+                            if (!this.currentField || (this.lastField && this.lastField === field)) {
+                                this.currentField = field;
+                                this.fromDate = parseInt(filter.gte);
+                                this.toDate = parseInt(filter.lt);
+                            }
+                            this.existingFilters[field] = {
+                                fromDate: filter.gte,
+                                toDate: filter.lt
+                            }
+                        }
+                    }
+                }
+
+                if (!this.currentField && this.lastField) {
+                    this.currentField = this.lastField;
+                }
+
+                if (!this.currentField && this.fields.length > 0) {
+                    this.currentField = this.fields[0].field;
+                }
+            };
+
+            //////////////////////////////////////////////
+            // functions that can be used to trigger state change
+
+            this.currentEarliest = function () {
+                if (!this.currentField) {
+                    return false;
+                }
+                if (this.dateOptions[this.currentField]) {
+                    return this.dateOptions[this.currentField].earliest;
+                }
+            };
+
+            this.currentLatest = function () {
+                if (!this.currentField) {
+                    return false;
+                }
+                if (this.dateOptions[this.currentField]) {
+                    return this.dateOptions[this.currentField].latest;
+                }
+            };
+
+            this.changeField = function (newField) {
+                this.lastField = this.currentField;
+                if (newField !== this.currentField) {
+                    this.touched = true;
+                    this.currentField = newField;
+                    if (this.currentField in this.existingFilters) {
+                        this.setFrom(this.existingFilters[this.currentField].fromDate);
+                        this.setTo(this.existingFilters[this.currentField].toDate);
+                    } else {
+                        this.setFrom(false);
+                        this.setTo(false);
+                    }
+                }
+            };
+
+            this.setFrom = function (from) {
+                if (from !== this.fromDate) {
+                    this.touched = true;
+                    this.fromDate = from;
+                }
+            };
+
+            this.setTo = function (to) {
+                if (to !== this.toDate) {
+                    this.touched = true;
+                    this.toDate = to;
+                }
+            };
+
+            this.triggerSearch = function () {
+                if (this.touched) {
+                    this.touched = false;
+                    var nq = this.edge.cloneQuery();
+
+                    // remove any old filters for this field
+                    var removeCount = nq.removeMust(es.newRangeFilter({field: this.currentField}));
+
+                    // in order to avoid unnecessary searching, check the state of the data and determine
+                    // if we need to.
+                    // - we need to add a new filter to the query if there is a current field and one/both of from and to dates
+                    // - we need to do a search if we removed filters before, or are about to add one
+                    var addFilter = this.currentField && (this.toDate || this.fromDate);
+                    var doSearch = removeCount > 0 || addFilter;
+
+                    // if we're not going to do a search, return
+                    if (!doSearch) {
+                        return false;
+                    }
+
+                    // if there's a filter to be added, do that here
+                    if (addFilter) {
+                        var range = {field: this.currentField};
+                        if (this.toDate) {
+                            range["lt"] = this.toDate;
+                        }
+                        if (this.fromDate) {
+                            range["gte"] = this.fromDate;
+                        }
+                        range["format"] = "epoch_millis"   // Required for ES7.x date ranges against dateOptionalTime formats
+                        nq.addMust(es.newRangeFilter(range));
+                    }
+
+                    // push the new query and trigger the search
+                    this.edge.pushQuery(nq);
+                    this.edge.doQuery();
+
+                    return true;
+                }
+                return false;
+            };
+
+            this.loadDates = function () {
+                for (var i = 0; i < this.fields.length; i++) {
+                    var field = this.fields[i].field;
+
+                    // start with the default earliest and latest
+                    var early = this.defaultEarliest;
+                    var late = this.defaultLatest;
+
+                    // if specific functions are provided for getting the dates, run them
+                    var earlyFn = this.earliest[field];
+                    var lateFn = this.latest[field];
+                    if (earlyFn) {
+                        early = earlyFn();
+                    }
+                    if (lateFn) {
+                        late = lateFn();
+                    }
+
+                    this.dateOptions[field] = {
+                        earliest: early,
+                        latest: late
+                    }
+                }
+            };
+
+            this.getSecondaryQueryFunction = function() {
+                var that = this;
+                return function(edge) {
+                    // clone the current query, which will be the basis for the averages query
+                    var query = edge.cloneQuery();
+
+                    // remove any range constraints
+                    for (var i = 0; i < that.fields.length; i++) {
+                        var field = that.fields[i];
+                        query.removeMust(es.newRangeFilter({field: field.field}));
+                    }
+
+                    // add the filters that are required for the secondary query
+                    if (that.autoLookupFilters) {
+                        for (let filter of that.autoLookupFilters) {
+                            query.addMust(filter);
+                        }
+                    }
+
+                    // remove any existing aggregations, we don't need them
+                    query.clearAggregations();
+
+                    // add the new aggregation(s) which will actually get the data
+                    for (var i = 0; i < that.fields.length; i++) {
+                        var field = that.fields[i].field;
+                        query.addAggregation(
+                            es.newStatsAggregation({
+                                name: field,
+                                field : field
+                            })
+                        );
+                    }
+
+                    // finally set the size and from parameters
+                    query.size = 0;
+                    query.from = 0;
+
+                    // return the secondary query
+                    return query;
+                }
+            }
+        },
+
+        newFacetDivider: function (params) {
+            return edges.instantiate(doaj.components.FacetDivider, params, edges.newComponent);
+        },
+        FacetDivider: function(params) {
+            this.display = edges.getParam(params.display, "");
+            this.namespace = "doajfacetdivider";
+
+            this.drawn = false;
+
+            this.draw = function() {
+                if (this.drawn) {
+                    return
+                }
+
+                let frag = `<hr><strong>${this.display}</strong><br>`;
+                this.context.html(frag);
+                this.drawn = true;
+            };
         }
     },
 
@@ -620,6 +1306,654 @@ $.extend(true, doaj, {
     },
 
     renderers: {
+        newBSMultiDateRangeFacet: function (params) {
+            if (!params) {params = {}}
+            doaj.renderers.BSMultiDateRangeFacet.prototype = edges.newRenderer(params);
+            return new doaj.renderers.BSMultiDateRangeFacet(params);
+        },
+        BSMultiDateRangeFacet: function (params) {
+            ///////////////////////////////////////////////////
+            // parameters that can be passed in
+
+            // whether the facet should be open or closed
+            // can be initialised and is then used to track internal state
+            this.open = edges.getParam(params.open, false);
+
+            this.togglable = edges.getParam(params.togglable, true);
+
+            this.openIcon = edges.getParam(params.openIcon, "glyphicon glyphicon-plus");
+
+            this.closeIcon = edges.getParam(params.closeIcon, "glyphicon glyphicon-minus");
+
+            this.layout = edges.getParam(params.layout, "left");
+
+            this.dateFormat = edges.getParam(params.dateFormat, "MMMM D, YYYY");
+
+            this.ranges = edges.getParam(params.ranges, false);
+
+            this.prefix = edges.getParam(params.prefix, "");
+
+            ///////////////////////////////////////////////////
+            // parameters for tracking internal state
+
+            this.dre = false;
+
+            this.selectId = false;
+            this.fromId = false;
+            this.toId = false;
+
+            this.selectJq = false;
+            this.fromJq = false;
+            this.toJq = false;
+
+            this.drp = false;
+            this.months = doaj.listMonthsInLocale();
+
+            this.namespace = "doaj-multidaterange";
+
+            this.draw = function () {
+                var dre = this.component;
+
+                var selectClass = edges.css_classes(this.namespace, "select", this);
+                var facetClass = edges.css_classes(this.namespace, "facet", this);
+                var headerClass = edges.css_classes(this.namespace, "header", this);
+                var bodyClass = edges.css_classes(this.namespace, "body", this);
+
+                var toggleId = edges.css_id(this.namespace, "toggle", this);
+                var formId = edges.css_id(this.namespace, "form", this);
+
+                this.selectId = edges.css_id(this.namespace, "date-type", this);
+                let fromMonthId = edges.css_id(this.namespace, "from-month", this);
+                let fromYearId = edges.css_id(this.namespace, "from-year", this);
+                let toMonthId = edges.css_id(this.namespace, "to-month", this);
+                let toYearId = edges.css_id(this.namespace, "to-year", this);
+                let applyClass = edges.css_classes(this.namespace, "apply", this);
+
+                let header = this.headerLayout({toggleId: toggleId});
+
+                var options = "";
+                for (var i = 0; i < dre.fields.length; i++) {
+                    var field = dre.fields[i];
+                    var selected = dre.currentField === field.field ? ' selected="selected" ' : "";
+                    options += '<option value="' + field.field + '"' + selected + '>' + field.display + '</option>';
+                }
+
+                // create the controls
+                let toFromFrags = this.dateOptionsFrags();
+
+                let frag = `<div class="form-inline">
+                                        <div class="form-group">
+                                            Type: <select class="${selectClass} form-control input-sm" name="${this.selectId}" id="${this.selectId}">
+                                                ${options}
+                                            </select><br>
+                                            From:
+                                            <select class="form-control input-sm" id="${fromMonthId}">
+                                                ${toFromFrags.fromMonths}
+                                            </select>
+                                            <select class="form-control input-sm" id="${fromYearId}">
+                                                ${toFromFrags.fromYears}
+                                            </select><br>
+                                            To: 
+                                            <select class="form-control input-sm" id="${toMonthId}">
+                                                ${toFromFrags.toMonths}
+                                            </select>
+                                            <select class="form-control input-sm" id="${toYearId}">
+                                                ${toFromFrags.toYears}
+                                            </select><br>
+                                            <button type="button" class="btn btn-primary ${applyClass}" id="">Apply</button>
+                                        </div>
+                                    </div>`;
+
+                let filterRemoveClass = edges.css_classes(this.namespace, "filter-remove", this);
+                let existing = ``;
+                for (let field in dre.existingFilters) {
+                    for (let fd of dre.fields) {
+                        if (fd.field === field) {
+                            let map = doaj.valueMaps.displayYearMonthPeriod({
+                                from: dre.existingFilters[field].fromDate,
+                                to: dre.existingFilters[field].toDate
+                            });
+                            let range = map.display;
+
+                            existing += `<strong>${fd.display}</strong>: 
+                                            ${range}<a href="#" class="${filterRemoveClass}" data-field="${field}"><i class="glyphicon glyphicon-black glyphicon-remove"></i></a><br>`;
+                        }
+                    }
+                }
+
+                let facet = `<div class="${facetClass}">
+                    <div class="${headerClass}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                ${header}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="${bodyClass}">
+                        <div class="row" style="display:none" id="${formId}">
+                            <div class="col-md-12">
+                                ${frag}
+                            </div>
+                            <div class="col-md-12">
+                                ${existing}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                dre.context.html(facet);
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                // sort out the selectors we're going to be needing
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+
+                let selectIdSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                edges.on(selectIdSelector, "change", this, "typeChanged");
+
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                edges.on(fromMonthSelector, "change", this, "checkDateRange");
+                edges.on(fromYearSelector, "change", this, "checkDateRange");
+                edges.on(toMonthSelector, "change", this, "checkDateRange");
+                edges.on(toYearSelector, "change", this, "checkDateRange");
+
+                let applySelector = edges.css_class_selector(this.namespace, "apply", this);
+                edges.on(applySelector, "click", this, "updateDateRange");
+
+                let filterRemoveSelector = edges.css_class_selector(this.namespace, "filter-remove", this);
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
+            };
+
+            this.dateOptionsFrags = function (params) {
+                let dre = this.component;
+
+                let fromMonths = "";
+                let toMonths = "";
+                let fromYears = "";
+                let toYears = "";
+
+                let earliest = dre.currentEarliest();
+                let latest = dre.currentLatest();
+                if (earliest && latest) {
+
+                    let startYear = earliest.getUTCFullYear();
+                    let endYear = latest.getUTCFullYear();
+                    let years = [];
+                    for (let year = startYear; year <= endYear; year++) {
+                        years.push(year);
+                    }
+
+                    let selectedFromYear = 0;
+                    let selectedToYear = 0;
+
+                    let fromDate = dre.fromDate ? new Date(parseInt(dre.fromDate)): false;
+                    let toDate = dre.toDate ? new Date(parseInt(dre.toDate - 1)) : false;
+
+                    for (let i = 0; i < years.length; i++) {
+                        let year = years[i];
+                        let fromSelected = "";
+                        if ((!fromDate && i === 0) || (fromDate && year === fromDate.getUTCFullYear())) {
+                            fromSelected = "selected"
+                            selectedFromYear = year;
+                        }
+                        let toSelected = "";
+                        if ((!toDate && i === years.length - 1) || (toDate && year === toDate.getUTCFullYear())) {
+                            toSelected = "selected"
+                            selectedToYear = year;
+                        }
+                        fromYears += `<option value="${year}" ${fromSelected}>${year}</option>`;
+                        toYears += `<option value="${year}" ${toSelected}>${year}</option>`;
+                    }
+
+                    for (let i = 0; i < this.months.length; i++) {
+                        let month = this.months[i];
+
+                        let fromSelected = "";
+                        if (fromDate) {
+                            if (i === fromDate.getUTCMonth() && selectedFromYear === fromDate.getUTCFullYear()) {
+                                fromSelected = "selected"
+                            }
+                        } else {
+                            if (i === earliest.getUTCMonth()) {
+                                fromSelected = "selected"
+                            }
+                        }
+
+                        let toSelected = "";
+                        if (toDate) {
+                            if (i === toDate.getUTCMonth() && selectedToYear === toDate.getUTCFullYear()) {
+                                toSelected = "selected"
+                            }
+                        } else {
+                            if (i === latest.getUTCMonth()) {
+                                toSelected = "selected"
+                            }
+                        }
+
+                        fromMonths += `<option value="${i}" ${fromSelected}>${month}</option>`;
+                        toMonths += `<option value="${i}" ${toSelected}>${month}</option>`;
+                    }
+                }
+
+                return {fromMonths: fromMonths, toMonths: toMonths, fromYears: fromYears, toYears: toYears};
+            };
+
+            this.headerLayout = function (params) {
+                var toggleId = params.toggleId;
+                var iconClass = edges.css_classes(this.namespace, "icon", this);
+
+                if (this.layout === "left") {
+                    var tog = this.component.display;
+                    if (this.togglable) {
+                        tog = '<a href="#" id="' + toggleId + '"><i class="' + this.openIcon + '"></i>&nbsp;' + tog + "</a>";
+                    }
+                    return tog;
+                } else if (this.layout === "right") {
+                    var tog = "";
+                    if (this.togglable) {
+                        tog = '<a href="#" id="' + toggleId + '">' + this.component.display + '&nbsp;<i class="' + this.openIcon + ' ' + iconClass + '"></i></a>';
+                    } else {
+                        tog = this.component.display;
+                    }
+
+                    return tog;
+                }
+            };
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var formSelector = edges.css_id_selector(this.namespace, "form", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var form = this.component.jq(formSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                var openBits = this.openIcon.split(" ");
+                var closeBits = this.closeIcon.split(" ");
+
+                if (this.open) {
+                    var i = toggle.find("i");
+                    for (var j = 0; j < openBits.length; j++) {
+                        i.removeClass(openBits[j]);
+                    }
+                    for (var j = 0; j < closeBits.length; j++) {
+                        i.addClass(closeBits[j]);
+                    }
+                    form.show();
+                } else {
+                    var i = toggle.find("i");
+                    for (var j = 0; j < closeBits.length; j++) {
+                        i.removeClass(closeBits[j]);
+                    }
+                    for (var j = 0; j < openBits.length; j++) {
+                        i.addClass(openBits[j]);
+                    }
+                    form.hide();
+                }
+            };
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
+            };
+
+            this.dateRangeDisplay = function() {
+                let frags = this.dateOptionsFrags();
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                this.component.jq(fromMonthSelector).html(frags.fromMonths);
+                this.component.jq(fromYearSelector).html(frags.fromYears);
+                this.component.jq(toMonthSelector).html(frags.toMonths);
+                this.component.jq(toYearSelector).html(frags.toYears);
+            };
+
+            this.updateDateRange = function () {
+                // ensure that the correct field is set (it may initially be not set)
+                let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                let date_type = this.component.jq(typeSelector).val();
+
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                let fromMonth = this.component.jq(fromMonthSelector).val()
+                let fromYear = this.component.jq(fromYearSelector).val()
+                let toMonth = this.component.jq(toMonthSelector).val()
+                let toYear = this.component.jq(toYearSelector).val()
+
+                let start = new Date(Date.UTC(fromYear, fromMonth, 1, 0, 0, 0));
+
+                toMonth = parseInt(toMonth);
+                toMonth += 1;
+                if (toMonth > 11) {
+                    toMonth = 0;
+                    toYear = parseInt(toYear) + 1;
+                }
+                let end = new Date(Date.UTC(toYear, toMonth, 1, 0, 0, 0));
+
+                if (end < start) {
+                    alert("You must choose a 'to' date that is after the 'from' date");
+                    return;
+                }
+
+                this.component.changeField(date_type);
+                this.component.setFrom(start.getTime());
+                this.component.setTo(end.getTime());
+
+                // this action should trigger a search (the parent object will
+                // decide if that's required)
+                this.component.triggerSearch();
+            };
+
+            this.checkDateRange = function(element) {
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                let fromMonth = this.component.jq(fromMonthSelector).val()
+                let fromYear = this.component.jq(fromYearSelector).val()
+                let toMonth = this.component.jq(toMonthSelector).val()
+                let toYear = this.component.jq(toYearSelector).val()
+
+                let start = new Date(Date.UTC(fromYear, fromMonth, 1, 0, 0, 0));
+
+                toMonth = parseInt(toMonth);
+                toMonth += 1;
+                if (toMonth > 11) {
+                    toMonth = 0;
+                    toYear = parseInt(toYear) + 1;
+                }
+                let end = new Date(Date.UTC(toYear, toMonth, 1, 0, 0, 0));
+
+                let applySelector = edges.css_class_selector(this.namespace, "apply", this);
+                if (end <= start) {
+                    this.component.jq(applySelector).prop("disabled", true);
+                } else {
+                    this.component.jq(applySelector).prop("disabled", false);
+                }
+            }
+
+            this.typeChanged = function(element) {
+                // ensure that the correct field is set (it may initially be not set)
+                let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                let date_type = this.component.jq(typeSelector).val();
+                this.component.changeField(date_type);
+                this.dateRangeDisplay();
+                this.checkDateRange();
+            };
+
+            this.removeFilter = function(element) {
+                let field = $(element).attr("data-field");
+                this.component.changeField(field);
+                this.component.setFrom(false);
+                this.component.setTo(false);
+                this.component.triggerSearch();
+            }
+        },
+
+        newFlexibleDateHistogramSelectorRenderer: function (params) {
+            if (!params) { params = {} }
+            doaj.renderers.FlexibleDateHistogramSelectorRenderer.prototype = edges.newRenderer(params);
+            return new doaj.renderers.FlexibleDateHistogramSelectorRenderer(params);
+        },
+        FlexibleDateHistogramSelectorRenderer: function (params) {
+
+            ///////////////////////////////////////
+            // parameters that can be passed in
+
+            // whether to hide or just disable the facet if not active
+            this.hideInactive = edges.getParam(params.hideInactive, false);
+
+            // whether the facet should be open or closed
+            // can be initialised and is then used to track internal state
+            this.open = edges.getParam(params.open, false);
+
+            this.togglable = edges.getParam(params.togglable, true);
+
+            // whether to display selected filters
+            this.showSelected = edges.getParam(params.showSelected, true);
+
+            // formatter for count display
+            this.countFormat = edges.getParam(params.countFormat, false);
+
+            // a short tooltip and a fuller explanation
+            this.tooltipText = edges.getParam(params.tooltipText, false);
+            this.tooltip = edges.getParam(params.tooltip, false);
+            this.tooltipState = "closed";
+
+            // whether to suppress display of date range with no values
+            this.hideEmptyDateBin = params.hideEmptyDateBin || true;
+
+            // how many of the values to display initially, with a "show all" option for the rest
+            this.shortDisplay = edges.getParam(params.shortDisplay, false);
+
+            // namespace to use in the page
+            this.namespace = "edges-bs3-datehistogram-selector";
+
+            this.draw = function () {
+                // for convenient short references ...
+                var ts = this.component;
+                var namespace = this.namespace;
+
+                if (!ts.active && this.hideInactive) {
+                    ts.context.html("");
+                    return;
+                }
+
+                // sort out all the classes that we're going to be using
+                var resultsListClass = edges.css_classes(namespace, "results-list", this);
+                var resultClass = edges.css_classes(namespace, "result", this);
+                var valClass = edges.css_classes(namespace, "value", this);
+                var filterRemoveClass = edges.css_classes(namespace, "filter-remove", this);
+                var facetClass = edges.css_classes(namespace, "facet", this);
+                var headerClass = edges.css_classes(namespace, "header", this);
+                var selectedClass = edges.css_classes(namespace, "selected", this);
+
+                var toggleId = edges.css_id(namespace, "toggle", this);
+                var resultsId = edges.css_id(namespace, "results", this);
+
+                // this is what's displayed in the body if there are no results
+                var results = "Loading...";
+                if (ts.values !== false) {
+                    results = "No data available";
+                }
+
+                // render a list of the values
+                if (ts.values && ts.values.length > 0) {
+                    results = "";
+
+                    // get the terms of the filters that have already been set
+                    var filterTerms = [];
+                    for (var i = 0; i < ts.filters.length; i++) {
+                        filterTerms.push(ts.filters[i].display);
+                    }
+
+                    // render each value, if it is not also a filter that has been set
+                    var longClass = edges.css_classes(namespace, "long", this);
+                    var short = true;
+                    for (var i = 0; i < ts.values.length; i++) {
+                        var val = ts.values[i];
+                        if (val.count === 0 && this.hideEmptyDateBin) {
+                            continue;
+                        }
+                        //if ($.inArray(val.display, filterTerms) === -1) {
+                            var myLongClass = "";
+                            var styles = "";
+                            if (this.shortDisplay && this.shortDisplay <= i) {
+                                myLongClass = longClass;
+                                styles = 'style="display:none"';
+                                short = false;
+                            }
+
+                            var count = val.count;
+                            if (this.countFormat) {
+                                count = this.countFormat(count)
+                            }
+                            var ltData = "";
+                            if (val.lt) {
+                                ltData = ' data-lt="' + edges.escapeHtml(val.lt) + '" ';
+                            }
+                            results += '<div class="' + resultClass + ' ' + myLongClass + '" '  + styles +  '><a href="#" class="' + valClass + '" data-gte="' + edges.escapeHtml(val.gte) + '"' + ltData + '>' +
+                                edges.escapeHtml(val.display) + "</a> (" + count + ")</div>";
+
+                        //}
+                    }
+                    if (!short) {
+                        var showClass = edges.css_classes(namespace, "show-link", this);
+                        var showId = edges.css_id(namespace, "show-link", this);
+                        var slToggleId = edges.css_id(namespace, "sl-toggle", this);
+                        results += '<div class="' + showClass + '" id="' + showId + '">\
+                            <a href="#" id="' + slToggleId + '"><span class="all">show all</span><span class="less" style="display:none">show less</span></a> \
+                        </div>';
+                    }
+
+                }
+
+                // if we want the active filters, render them
+                var filterFrag = "";
+                if (ts.filters.length > 0 && this.showSelected) {
+                    for (var i = 0; i < ts.filters.length; i++) {
+                        var filt = ts.filters[i];
+                        var ltData = "";
+                        if (filt.lt) {
+                            ltData = ' data-lt="' + edges.escapeHtml(filt.lt) + '" ';
+                        }
+                        filterFrag += '<div class="' + resultClass + '"><strong>' + edges.escapeHtml(filt.display) + "&nbsp;";
+                        filterFrag += '<a href="#" class="' + filterRemoveClass + '" data-gte="' + edges.escapeHtml(filt.gte) + '"' + ltData + '>';
+                        filterFrag += '<i class="glyphicon glyphicon-black glyphicon-remove"></i></a>';
+                        filterFrag += "</strong></a></div>";
+                    }
+                }
+
+                // render the toggle capability
+                var tog = ts.display;
+                if (this.togglable) {
+                    tog = '<a href="#" id="' + toggleId + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + tog + "</a>";
+                }
+
+                // create the controls
+                let intervalClass = edges.css_classes(namespace, "interval", this);
+                let yearSelected = this.component.interval === "year" ? "selected" : "";
+                let monthSelected = this.component.interval === "month" ? "selected" : "";
+
+                let controls = `Granularity <select name="interval" class="${intervalClass}">
+                                            <option value="year" ${yearSelected}>Year</option>
+                                            <option value="month" ${monthSelected}>Month</option>
+                                        </select>`;
+
+                // render the overall facet
+                var frag = `<div class=${facetClass}>
+                        <div class=${headerClass}"><div class="row">
+                            <div class="col-md-12">${tog}</div>
+                        </div></div>
+                        <div class="row" style="display:none" id="${resultsId}">
+                            <div class="col-md-12">
+                                <div class="">${controls}</div>
+                                <div class="${selectedClass}">{{SELECTED}}</div>
+                                <div class="${resultsListClass}">{{RESULTS}}</div>
+                            </div>
+                        </div></div>`;
+
+                // substitute in the component parts
+                frag = frag.replace(/{{RESULTS}}/g, results)
+                    .replace(/{{SELECTED}}/g, filterFrag);
+
+                // now render it into the page
+                ts.context.html(frag);
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                // sort out the selectors we're going to be needing
+                var valueSelector = edges.css_class_selector(namespace, "value", this);
+                var filterRemoveSelector = edges.css_class_selector(namespace, "filter-remove", this);
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                var tooltipSelector = edges.css_id_selector(namespace, "tooltip-toggle", this);
+                var shortLongToggleSelector = edges.css_id_selector(namespace, "sl-toggle", this);
+                let fromSelector = edges.css_class_selector(namespace, "from", this);
+                let toSelector = edges.css_class_selector(namespace, "to", this);
+                let intervalSelector = edges.css_class_selector(namespace, "interval", this);
+                let resetSelector = edges.css_class_selector(namespace, "reset", this);
+
+                // for when a value in the facet is selected
+                edges.on(valueSelector, "click", this, "termSelected");
+                // for when the open button is clicked
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+                // for when a filter remove button is clicked
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
+
+                edges.on(intervalSelector, "change", this, "intervalChanged");
+                edges.on(fromSelector, "change", this, "rangeChanged");
+                edges.on(toSelector, "change", this, "rangeChanged");
+                edges.on(resetSelector, "click", this, "removeFilter");
+            };
+
+            /////////////////////////////////////////////////////
+            // UI behaviour functions
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var resultsSelector = edges.css_id_selector(this.namespace, "results", this);
+                var tooltipSelector = edges.css_id_selector(this.namespace, "tooltip", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var results = this.component.jq(resultsSelector);
+                var tooltip = this.component.jq(tooltipSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                if (this.open) {
+                    toggle.find("i").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+                    results.show();
+                    tooltip.show();
+                } else {
+                    toggle.find("i").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+                    results.hide();
+                    tooltip.hide();
+                }
+            };
+
+            /////////////////////////////////////////////////////
+            // event handlers
+
+            this.termSelected = function (element) {
+                var gte = this.component.jq(element).attr("data-gte");
+                var lt = this.component.jq(element).attr("data-lt");
+                this.component.selectRange({gte: gte, lt: lt});
+            };
+
+            this.removeFilter = function (element) {
+                var gte = this.component.jq(element).attr("data-gte");
+                var lt = this.component.jq(element).attr("data-lt");
+                this.component.removeFilter({gte: gte, lt: lt});
+            };
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
+            };
+
+            this.intervalChanged = function(element) {
+                let interval = $(element).val();
+                this.component.setInterval({interval: interval});
+            }
+
+            this.rangeChanged = function(element) {
+                let fromSelector = edges.css_class_selector(this.namespace, "from", this);
+                let toSelector = edges.css_class_selector(this.namespace, "to", this);
+
+                let from = this.component.jq(fromSelector).val();
+                let to = this.component.jq(toSelector).val();
+
+                this.component.selectRange({gte: from, lt: to});
+            }
+        },
         newSearchingNotificationRenderer: function (params) {
             return edges.instantiate(doaj.renderers.SearchingNotificationRenderer, params, edges.newRenderer);
         },
@@ -2880,22 +4214,6 @@ $.extend(true, doaj, {
                         '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
                         '</a>';
                 }
-                var seal = "";
-                if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="' + this.doaj_url + '/apply/seal" target="_blank" style="height: 1.25rem;">'
-                    if (this.widget) {
-                        seal += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/check-circle.svg"> DOAJ Seal</a>'
-                    } else {
-                        seal += '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 100%; width: auto;">\
-                                  <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
-                                  <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
-                                  <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
-                                  <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
-                          </svg>\
-                          <p class="sr-only">DOAJ Seal</p>\
-                      </a>';
-                    }
-                }
 
                 frag +=`</sup>
                             </a>
@@ -2929,7 +4247,7 @@ $.extend(true, doaj, {
                             ` + licenses + `
                           </li>
                           <li class="badges badges--search-result badges--search-result--public">
-                          ${s2o} ` + seal + `
+                          ${s2o}
                           </li>
                         </ul>
                         ` + actions + modals + `
@@ -3501,14 +4819,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this._renderPublicJournal = function (resultobj) {
-                var seal = "";
-                if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" target="_blank">\
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;"><path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/> <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/> <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/> <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/></svg>\
-                              <span class="sr-only">DOAJ Seal</span>\
-                          </a>';
-                }
+            this._renderPublicJournal = function(resultobj) {
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
@@ -3633,7 +4944,6 @@ $.extend(true, doaj, {
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
-                        ' + seal + '\
                         <ul>\
                           <li>\
                             ' + update_or_added + '\
@@ -3854,20 +5164,7 @@ $.extend(true, doaj, {
                         '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
                         '</a>';;
                 }
-                var seal = '';
-                if (resultobj.admin && resultobj.admin.seal) {
-                    seal =
-                        '<a href="' + this.doaj_url + '/apply/seal" target="_blank" style="height: 1.25rem">\
-                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 100%; width: auto;">\
-                                <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
-                                <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
-                                <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
-                                <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
-                            </svg>\
-                            <p class="sr-only">DOAJ Seal</p>\
-                        </a>';
-                }
-                if (resultobj.index.is_flagged || seal || s2o) {
+                if (resultobj.index.is_flagged  || s2o) {
                     field += '<div class="badges badges--search-result badges--search-result--maned flex-start">'
                     if (resultobj.index.is_flagged) {
                         if (resultobj.index.flag_assignees.includes(doaj.session.currentUserId)) {
@@ -3876,8 +5173,10 @@ $.extend(true, doaj, {
                             field += doaj.fieldRender.fragment.emptyFlagHTML;
                         }
                     }
-                    field += seal + s2o + '</div>';
-                }
+                    if (s2o) {
+                        field += s2o;
+                    }
+                    field += '</div>';
                 return field + "</div>";
             }
             else {

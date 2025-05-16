@@ -5,15 +5,18 @@ from typing import Iterable
 import rstr
 
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
-    OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
+    OWNER_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
 from portality.regex import ISSN_COMPILED
+from portality.lib import dicts
 
 
 class JournalFixtureFactory(object):
     @staticmethod
-    def make_journal_source(in_doaj=False):
+    def make_journal_source(in_doaj=False, overlay=None):
         template = deepcopy(JOURNAL_SOURCE)
         template['admin']['in_doaj'] = in_doaj
+        if overlay is not None:
+            template = dicts.deep_merge(template, overlay, overlay=True)
         return template
 
     @staticmethod
@@ -78,7 +81,6 @@ JOURNAL_SOURCE = {
             {"application_id": "asdfghjkl", "date_accepted": "2018-01-01T00:00:00Z"},
             {"application_id": "zxcvbnm"}
         ],
-        "seal": False,
         "ticked": True
     },
     "bibjson": JOURNAL_LIKE_BIBJSON
@@ -87,7 +89,6 @@ JOURNAL_SOURCE = {
 JOURNAL_FORM_EXPANDED = {}
 JOURNAL_FORM_EXPANDED.update(JOURNAL_LIKE_BIBJSON_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(EDITORIAL_FORM_EXPANDED)
-JOURNAL_FORM_EXPANDED.update(SEAL_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(SUBJECT_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(NOTES_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(OWNER_FORM_EXPANDED)
@@ -98,7 +99,6 @@ JOURNAL_FORM = JournalFormXWalk.forminfo2multidict(JOURNAL_FORM_EXPANDED)
 
 JOURNAL_BULK_EDIT = {
     "publisher": "Test Publisher",
-    "doaj_seal": True,
     "country": "DZ",
     "platform": "HighWire",
     "contact_email": "richard@example.com",
@@ -124,13 +124,11 @@ CSV_HEADERS = [
     "License attributes",
     "URL for license terms",
     "Machine-readable CC licensing information embedded or displayed in articles",
-    "URL to an example page with embedded licensing information",
     "Author holds copyright without restrictions",
     "Copyright information URL",
     "Review process",
     "Review process information URL",
     "Journal plagiarism screening policy",
-    "Plagiarism information URL",
     "URL for journal's aims & scope",
     "URL for the Editorial Board page",
     "URL for journal's instructions for authors",
@@ -148,15 +146,12 @@ CSV_HEADERS = [
     "Deposit policy directory",
     "URL for deposit policy",
     "Persistent article identifiers",
-    "Article metadata includes ORCIDs",
-    "Journal complies with I4OC standards for open citations",
     "Does the journal comply to DOAJ's definition of open access?",
-    "URL for journal's Open Access statement",
     "Continues",
     "Continued By",
     "LCC Codes",
+    "Subscribe to Open",
     'Subjects',  # (added outside journal2questions)
-    'DOAJ Seal',  # (added outside journal2questions)
     'Added on Date',  # (added outside journal2questions)
     'Last updated Date',  # (added outside journal2questions)
     # 'Tick: Accepted after March 2014', Removed 2020-12-11
@@ -181,13 +176,11 @@ JOURNAL_QUESTION_ANSWERS = [
     'Attribution, No Commercial Usage',
     'http://licence.url',
     'Yes',
-    'http://licence.embedded',
     'Yes',
     'http://copyright.com',
     'Open peer review, some bloke checks it out',
     'http://review.process',
     'Yes',
-    'http://plagiarism.screening',
     'http://aims.scope',
     'http://editorial.board',
     'http://author.instructions.com',
@@ -202,13 +195,10 @@ JOURNAL_QUESTION_ANSWERS = [
     'LOCKSS, CLOCKSS, A safe place',
     'Trinity; Imperial',
     'http://digital.archiving.policy',
-    'Sherpa/Romeo, Store it',
+    'Open Policy Finder, Store it',
     "http://deposit.policy",
     'DOI, ARK, PURL, PIDMachine',
     'Yes',
-    'No',
-    'Yes',
-    'http://oa.statement',
     "1111-1111",
     "2222-2222",
     "HB1-3840|H|SF600-1100",

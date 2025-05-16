@@ -93,7 +93,7 @@ OLD_JOURNAL_FORMAT = {
             "statistics": True,
             "url": "http://download.stats"
         },
-        "deposit_policy": ["Sherpa/Romeo", "Store it"],
+        "deposit_policy": ["Open Policy Finder", "Store it"],
         "author_copyright": {
             "copyright": "True",
             "url": "http://copyright.com"
@@ -134,8 +134,7 @@ OLD_JOURNAL_FORMAT = {
         ],
         "owner": "Owner",
         "editor_group": "editorgroup",
-        "editor": "associate",
-        "seal": True
+        "editor": "associate"
     }
 }
 

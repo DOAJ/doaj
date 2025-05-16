@@ -2291,10 +2291,6 @@ var formulaic = {
                     }
                     $sealEle.html($sealEle.text() + ` ${articleText}`)
                 })
-        },
-
-
-
-
+        }
     }
 };

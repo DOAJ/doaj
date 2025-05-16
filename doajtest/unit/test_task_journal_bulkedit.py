@@ -175,7 +175,6 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
-                                 change_doaj_seal=True,
                                  publisher_country="AF",
                                  owner="test1",
                                  dry_run=True)
@@ -183,7 +182,6 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
-                                 change_doaj_seal=True,
                                  publisher_country="AF",
                                  owner="test1",
                                  dry_run=False)
@@ -201,7 +199,6 @@ class TestTaskJournalBulkEdit(DoajTestCase):
                 "\nHere is the BackgroundJob audit log:\n{}"\
                     .format(ix, j.bibjson().publisher, json.dumps(job.audit, indent=2))
 
-            assert j.has_seal()
             assert j.bibjson().country == "AF"
             assert j.owner == "test1"
 
@@ -244,7 +241,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [journal.id]}}},
-                                 change_doaj_seal=True,
+                                 editor_group="editorgroup",
                                  dry_run=False)
 
         sleep(2)

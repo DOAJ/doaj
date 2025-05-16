@@ -24,10 +24,6 @@ EDITORIAL_FORM_EXPANDED = {
     "editor": "associate"
 }
 
-SEAL_FORM_EXPANDED = {
-    "doaj_seal": [],
-}
-
 JOURNAL_LIKE_BIBJSON = {
     "alternative_title": "Alternative Title",
     "apc": {
@@ -39,9 +35,7 @@ JOURNAL_LIKE_BIBJSON = {
     },
     "article": {
         "license_display": ["Embed"],
-        "license_display_example_url": "http://licence.embedded",
-        "orcid": True,
-        "i4oc_open_citations": False
+        "license_display_example_url": "http://licence.embedded"
     },
     "boai": True,
     "copyright": {
@@ -50,7 +44,7 @@ JOURNAL_LIKE_BIBJSON = {
     },
     "deposit_policy": {
         "has_policy" : True,
-        "service": ["Sherpa/Romeo", "Store it"],
+        "service": ["Open Policy Finder", "Store it"],
         "url": "http://deposit.policy"
     },
     "discontinued_date": "2001-01-01",
@@ -141,7 +135,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "copyright_url" : "http://copyright.com",
     "publisher_country" : "US",
     "publisher_name" : "The Publisher",
-    "deposit_policy" : ["Sherpa/Romeo", "other"],
+    "deposit_policy" : ["Open Policy Finder", "other"],
     "deposit_policy_other" : "Store it",
     "review_process" : ["Open peer review", "other"],
     "review_process_other" : "some bloke checks it out",
@@ -175,8 +169,6 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "title": "The Title",
     "has_other_charges" : "y",
     "has_waiver" : "y",
-    "orcid_ids" : "y",
-    "open_citations" : "n",
     "deposit_policy_url" : "http://deposit.policy",
     "continues": ["1111-1111"],
     "continued_by": ["2222-2222"],

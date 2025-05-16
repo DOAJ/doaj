@@ -115,6 +115,9 @@ class Account(DomainObject, UserMixin):
     def set_password(self, password):
         self.data['password'] = generate_password_hash(password)
 
+    def set_password_hash(self, hash):
+        self.data['password'] = hash
+
     def clear_password(self):
         if self.data.get('password'):
             del self.data['password']

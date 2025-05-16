@@ -728,8 +728,7 @@ class FieldDefinitions:
                           "ic_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' "
                           "rel='noopener'>What is the difference between CC0 "
                           "and the Public Domain Mark (\"PDM\")?</a>"],
-            "doaj_criteria": "Content must be licensed",
-            "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
+            "doaj_criteria": "Content must be licensed"
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> type of license"}}
@@ -790,8 +789,7 @@ class FieldDefinitions:
             "long_help": ["It is recommended that licensing information is included in full-text articles "
                           "but it is not required for inclusion. "
                           "Answer <strong>Yes</strong> if licensing is displayed or "
-                          "embedded in all versions of each article."],
-            "seal_criteria": "If the answer is Embed"
+                          "embedded in all versions of each article."]
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
@@ -844,8 +842,7 @@ class FieldDefinitions:
                           " (including commercial rights). <br/><br/> Answer "
                           "<strong>Yes</strong> only if authors publishing "
                           "under any license allowed by the journal "
-                          "retain all rights."],
-            "seal_criteria": "The author must retain the copyright"
+                          "retain all rights."]
         }
     }
 
@@ -1478,7 +1475,7 @@ class FieldDefinitions:
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Mir@bel", "value": "Mir@bel", "subfields": ["deposit_policy_url"]},
-            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
+            {"display": "Open Policy Finder", "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
             {"display": HTMLString("<em>The journal has no repository policy</em>"), "value": "none", "exclusive": True}
@@ -1529,7 +1526,7 @@ class FieldDefinitions:
         "conditional": [{"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
                         {"field": "deposit_policy", "value": "Mir@bel"},
-                        {"field": "deposit_policy", "value": "Sherpa/Romeo"},
+                        {"field": "deposit_policy", "value": "Open Policy Finder"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -1553,7 +1550,7 @@ class FieldDefinitions:
                                 "Diadorim",
                                 "Dulcinea",
                                 "Mir@bel",
-                                "Sherpa/Romeo",
+                                "Open Policy Finder",
                                 "other"
                             ]
                         }
@@ -1570,7 +1567,7 @@ class FieldDefinitions:
                                 "Diadorim",
                                 "Dulcinea",
                                 "Mir@bel",
-                                "Sherpa/Romeo",
+                                "Open Policy Finder",
                                 "other"
                             ]
                         }
@@ -1629,102 +1626,8 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~->$ Orcids:FormField~~
-    ORCID_IDS = {
-        "name": "orcid_ids",
-        "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "An <a href='https://orcid.org/' target='_blank' rel='noopener'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
-                "authors."],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
-    # ~~->$ OpenCitations:FormField~~
-    OPEN_CITATIONS = {
-        "name": "open_citations",
-        "label": "Does the journal comply with I4OC standards for open citations?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "The <a href='https://i4oc.org/#goals' target='_blank' rel='noopener'>I4OC standards</a> ask that citations are structured, separable, and open. "],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
     #######################################
     ## Editorial fields
-
-    # ~~->$ DOAJSeal:FormField~~
-    DOAJ_SEAL = {
-        "name": "doaj_seal",
-        "label": "The journal may have fulfilled all the criteria for the Seal.",
-        "multiple": True,
-        "input": "checkbox",
-        "options": [
-            {"display": "Award the Seal?", "value": 'y'},
-        ],
-
-        "validate": [
-            {
-                "only_if": {
-                    "fields": [
-                        {"field": "license_display", "value": "y"},
-                        {"field": "copyright_author_retains", "value": "y"},
-                        {"field": "preservation_service", "not": "none"},
-                        {"field": "preservation_service_url", "not": ""},
-                        {"field": "deposit_policy", "not": "none"},
-                        {"field": "persistent_identifiers", "not": "none"},
-                        {"field": "license", "or": ["CC BY", "CC BY-SA", "CC BY-NC", "CC BY-NC-SA"]}
-                    ],
-                    "message": "In order to award the query: the license must be CC BY, CC BY-SA, CC BY-NC, or CC BY-NC-SA; "
-                               "the license must be displayed or embedded; "
-                               "the author must retain their copyright; "
-                               "the journal must make use of a preservation service; "
-                               "a url for the preservation service must be provided; "
-                               "the journal must have a deposit policy; "
-                               "the journal must use a persistent identifier"
-                }
-            }
-        ],
-        "widgets": [
-            "article_info",
-        ],
-    }
 
     S2O = {
         "name": "s2o",
@@ -2158,20 +2061,6 @@ class FieldDefinitions:
         }
     }
 
-    # Bulk Edit fields (that couldn't be overriden in the normal way)
-    # ~~->$ BulkDOAJSeal:FormField~~
-    BULK_DOAJ_SEAL = {
-        "name": "change_doaj_seal",
-        "label": 'Award the Seal',
-        "input": "select",
-        "default": "",
-        "options": [
-            {"value": "", "display": "Leave unchanged"},
-            {"value": "True", "display": "Yes"},
-            {"value": "False", "display": "No"}
-        ],
-    }
-
 
 ##########################################################
 # Define our fieldsets
@@ -2350,20 +2239,10 @@ class FieldSetDefinitions:
         "label": "Unique identifiers & structured data",
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
-            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
-            FieldDefinitions.ORCID_IDS["name"],
-            FieldDefinitions.OPEN_CITATIONS["name"]
+            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]
         ]
     }
 
-    # ~~->$ Seal:FieldSet~~
-    SEAL = {
-        "name": "seal",
-        "label": "Award the seal",
-        "fields": [
-            FieldDefinitions.DOAJ_SEAL["name"]
-        ]
-    }
 
     LABELS = {
         "name": "labels",
@@ -2478,7 +2357,6 @@ class FieldSetDefinitions:
         "label": "Bulk edit",
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
-            FieldDefinitions.BULK_DOAJ_SEAL["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
             FieldDefinitions.OWNER["name"]
         ]
@@ -2573,7 +2451,6 @@ class ApplicationContextDefinitions:
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
-        FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
@@ -2660,7 +2537,6 @@ class JournalContextDefinitions:
     MANED["fieldsets"] += [
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
-        FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.FLAGS["name"]

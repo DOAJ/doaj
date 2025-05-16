@@ -1,13 +1,13 @@
-import json
+import json, re
 from collections import namedtuple
 from typing import Iterable, List
 
 from flask import Blueprint, request, flash, abort, make_response
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, send_file
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
-import portality.models as models
+from portality import models
 from portality import constants
 from portality import dao
 from portality import lock
@@ -25,7 +25,7 @@ from portality.lcc import lcc_jstree
 from portality.lib.query_filters import remove_search_limits, update_request, not_update_request
 from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
-    article_bulk_delete
+    article_bulk_delete, admin_reports
 from portality.ui.messages import Messages
 from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
@@ -860,3 +860,49 @@ def bulk_articles_delete():
     return make_json_resp(summary.as_dict(), status_code=200)
 
 #################################################
+
+################################################
+## Reporting endpoint
+
+@blueprint.route("/report", methods=["POST"])
+@write_required()
+@login_required
+def request_report():
+    model = request.values.get("model")
+    query_raw = request.values.get("query")
+    name = request.values.get("name")
+
+    query = json.loads(query_raw)
+    sane_query = {"query": query.get("query")}
+    if "sort" in query:
+        sane_query["sort"] = query["sort"]
+
+    model_endpoint_map = {
+        "journal": "journal",
+        "application": "suggestion"
+    }
+
+    query_svc = DOAJ.queryService()
+    real_query = query_svc.make_actionable_query("admin_query", model_endpoint_map.get(model), current_user, sane_query)
+
+    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, true_query=real_query.as_dict(), ui_query=sane_query, name=name)
+    admin_reports.AdminReportsBackgroundTask.submit(job)
+
+    return make_json_resp({"job_id": job.id}, status_code=200)
+
+
+@blueprint.route("/report/<report_id>", methods=["GET"])
+@login_required
+def get_report(report_id):
+    def safe(filename):
+        return re.sub(r'[^a-zA-Z0-9-_]', '_', filename)
+
+    exporter = DOAJ.exportService()
+    record, fh = exporter.retrieve(report_id)
+    safe_filename = safe(record.name) + "_" + safe(record.generated_date) + ".csv"
+    return send_file(fh, as_attachment=True, download_name=safe_filename)
+
+@blueprint.route("/reports", methods=["GET"])
+@login_required
+def reports_search():
+    return render_template(templates.ADMIN_REPORTS_SEARCH)

@@ -47,8 +47,7 @@ EXAMPLE = {
                 "placeholder" : "[input field placeholder text]",
                 "description" : "[description]",
                 "tooltip" : "[tooltip/long description]",
-                "doaj_criteria" : "[doaj compliance criteria]",
-                "seal_criteria" : "[doaj compliance criteria]"
+                "doaj_criteria" : "[doaj compliance criteria]"
             },
             "validate" : {
                 "[validate function]",
