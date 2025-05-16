@@ -429,19 +429,19 @@ def page_not_found(e):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template(templates.ERROR_404), 404
+    return render_template(templates.ERROR_PAGE, error_code=404), 404
 
 @app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
 def article_withdrawn(e):
-    return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.WITHDRAWN), 410
+    return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.WITHDRAWN, error_code=410), 410
 
 @app.errorhandler(exceptions.TombstoneArticle)
 def article_withdrawn(e):
-    return render_template(templates.ERROR_410, record=constants.ARTICLE, context=constants.TOMBSTONE), 410
+    return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.TOMBSTONE, error_code=410), 410
 
 @app.errorhandler(exceptions.JournalWithdrawn)
 def journal_withdrawn(e):
-    return render_template(templates.ERROR_410, record=constants.JOURNAL, context=constants.WITHDRAWN), 410
+    return render_template(templates.ERROR_PAGE, record=constants.JOURNAL, context=constants.WITHDRAWN, error_code=410), 410
 
 @app.errorhandler(ValueError)
 @app.errorhandler(500)

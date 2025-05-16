@@ -26,6 +26,7 @@ STATIC_PAGE = "public/layouts/static-page.html"
 STATIC_PAGE_LAYOUT = "public/layouts/_static-page_{layout}.html"
 
 # Error pages
+ERROR_PAGE = "public/error_page.html"
 ERROR_400 = "public/400.html"
 ERROR_401 = "public/401.html"
 ERROR_404 = "public/404.html"

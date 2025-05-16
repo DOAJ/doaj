@@ -1,10 +1,10 @@
 {% extends "public/base.html" %}
 
 {% block body_class %}error-page{% endblock %}
-{% block page_title %}410: Gone{% endblock %}
+{% block page_title %}410 - Gone{% endblock %}
 
 {% block public_content %}
-{% set error_text = data.error_pages.410[record][context] %}
+{% set error_text = data.error_pages.410[record][context]  %}
 
 410
 {% for t in error_text %}

@@ -6,13 +6,9 @@
 {% block public_content %}
 {% set error_text = data.error_pages.404 %}
 
-404
-{% for t in error_text %}
-<p>{{ t }}</p>
-{% endfor %}
+<h1>404 - {{ error_text.header }}</h1>
+<p>{{ error_text.text }}</p>
 
-{% for u in error_urls %}
-<p><a href="{{ u.link }}">{{ u.title }}</a></p>
-{% endfor %}
+{% include "/includes/_search_buttons.html" %}
 
 {% endblock %}
