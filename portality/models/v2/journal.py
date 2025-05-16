@@ -588,7 +588,15 @@ class Journal(JournalLikeObject):
         return default_mappings_copy
 
     @classmethod
-    def get_active_journal(cls, journals):
+    def get_active_journal(cls, journals) -> Journal:
+        """
+        From the list of journals with the same ISSNs finds the one that is In Doaj
+        If > 1: raise TooManyJournals (500)
+        If == 0: raise JournalWithdrawn (410)
+        If journals on the list have different ISSNs: raise ValueError
+        :param journals:
+        :return: Journal
+        """
         if not journals:
             raise(400)
 
