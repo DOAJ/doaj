@@ -120,6 +120,17 @@ class DataDump(SeamlessMixin, DomainObject):
     def article_url(self):
         return self.__seamless__.get_single("article.url")
 
+    @property
+    def article_size(self):
+        return self.__seamless__.get_single("article.size")
+
+    @property
+    def article_size_human(self):
+        value = self.article_size
+        if value is not None:
+            return self._int_to_filesize(value)
+        return None
+
     def set_journal_dump(self, container, filename, size, url):
         self.__seamless__.set_with_struct("journal", {
             "container": container,
@@ -140,9 +151,28 @@ class DataDump(SeamlessMixin, DomainObject):
         return self.__seamless__.get_single("journal.filename")
 
     @property
+    def journal_size(self):
+        return self.__seamless__.get_single("journal.size")
+
+    @property
+    def journal_size_human(self):
+        value = self.article_size
+        if value is not None:
+            return self._int_to_filesize(value)
+        return None
+
+    @property
     def journal_url(self):
         return self.__seamless__.get_single("journal.url")
 
+    def _int_to_filesize(self, value):
+        if value is not None:
+            for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+                if value < 1024.0:
+                    return f"{value:.2f} {unit}"
+                value /= 1024.0
+            return f"{value:.2f} PB"
+        return None
 
 class CutoffQuery(object):
     def __init__(self, cutoff: datetime):

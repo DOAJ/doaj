@@ -1,0 +1,314 @@
+suite: Premium Subscription
+testset: Premium Access
+tests:
+- title: Unauthenticated access
+  context:
+    role: Anonymous
+    testdrive: premium
+  setup:
+    - Use the publisher_csv_upload testdrive to setup for this test at /testdrive/premium
+    - At the end of the test please use the 'teardown' link provided by the testdrive to remove test assets from the system, unless you are going
+      to continue with the other tests in this suite
+  steps:
+  - step: Access the system as an unauthenticated user (i.e. don't log in)
+  - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
+    path: docs/journal-csv
+    results:
+    - There is a page that offers you documentation and information about the Journal CSV
+  - step: Click the "Journal CSV" link to download the CSV
+    path: /csv
+    results:
+      - You are prompted to download a CSV file
+      - The file is called "free.csv"
+  - step: Download the file
+    results:
+      - The file is successfully downloaded
+  - step: Go to the "Public Data Dump" page via the Data menu at the top of the home page
+    path: /docs/public-data-dump
+    results:
+      - There is a page that offers you documentation and information about the Public Data Dump
+      - There is no way to access the Public Data Dump file from the page
+  - step: Go to the journal OAI feed, using the provided link
+    path: /oai?verb=ListRecords&metadataPrefix=oai_dc
+    results:
+      - Your are shown an XML document with a list of journal records
+      - The most recent journal (the top one) has a `datestamp` field which is at least 30 days before today
+  - step: Go to the article OAI feed, using the provided link
+    path: /oai.article?verb=ListRecords&metadataPrefix=oai_dc
+    results:
+      - Your are shown an XML document with a list of article records
+      - The most recent article (the top one) has a `datestamp` field which is at least 30 days before today
+
+- title: Authenticated, no premium or data dump access
+  context:
+    role: Publisher
+    testdrive: premium
+  setup:
+    - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
+  steps:
+    - step: Log in as the publisher account "basic" as specified by the testdrive result
+    - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
+      path: docs/journal-csv
+      results:
+        - There is a page that offers you documentation and information about the Journal CSV
+    - step: Click the "Journal CSV" link to download the CSV
+      path: /csv
+      results:
+        - You are prompted to download a CSV file
+        - The file is called "free.csv"
+    - step: Download the file
+      results:
+        - The file is successfully downloaded
+    - step: Go to the "Public Data Dump" page via the Data menu at the top of the home page
+      path: /docs/public-data-dump
+      results:
+        - There is a page that offers you documentation and information about the Public Data Dump
+        - There is no way to access the Public Data Dump file from the page
+    - step: Go to the journal OAI feed, using the provided link
+      path: /oai?verb=ListRecords&metadataPrefix=oai_dc
+      results:
+        - Your are shown an XML document with a list of journal records
+        - The most recent journal (the top one) has a `datestamp` field which is at least 30 days before today
+    - step: Go to the article OAI feed, using the provided link
+      path: /oai.article?verb=ListRecords&metadataPrefix=oai_dc
+      results:
+        - Your are shown an XML document with a list of article records
+        - The most recent article (the top one) has a `datestamp` field which is at least 30 days before today
+
+- title: Authenticated, free PDD access
+  context:
+    role: Publisher
+    testdrive: premium
+  setup:
+    - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
+  steps:
+    - step: Log in as the publisher account "free_pdd" as specified by the testdrive result
+    - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
+      path: docs/journal-csv
+      results:
+        - There is a page that offers you documentation and information about the Journal CSV
+    - step: Click the "Journal CSV" link to download the CSV
+      path: /csv
+      results:
+        - You are prompted to download a CSV file
+        - The file is called "free.csv"
+    - step: Download the file
+      results:
+        - The file is successfully downloaded
+    - step: Go to the "Public Data Dump" page via the Data menu at the top of the home page
+      path: /docs/public-data-dump
+      results:
+        - There is a page that offers you documentation and information about the Public Data Dump
+        - There is are links to download the Public Data Dump files
+        - The "last updated" dates state they are around (slightly less than) 30 days old
+    - step: Click the link to download the Article Public Data Dump file
+      path: /public-data-dump/article
+      results:
+        - You are prompted to download a file
+        - The file is called "article_free.tar.gz"
+    - step: Download the file
+      results:
+        - The file is successfully downloaded
+    - step: Return to the "Public Data Dump" page
+      path: /docs/public-data-dump
+    - step: Click the link to download the Journal Public Data Dump file
+      results:
+        - You are prompted to download a file
+        - The file is called "journal_free.tar.gz"
+    - step: Download the file
+      results:
+        - The file is successfully downloaded
+    - step: Go to the journal OAI feed, using the provided link
+      path: /oai?verb=ListRecords&metadataPrefix=oai_dc
+      results:
+        - Your are shown an XML document with a list of journal records
+        - The most recent journal (the top one) has a `datestamp` field which is at least 30 days before today
+    - step: Go to the article OAI feed, using the provided link
+      path: /oai.article?verb=ListRecords&metadataPrefix=oai_dc
+      results:
+        - Your are shown an XML document with a list of article records
+        - The most recent article (the top one) has a `datestamp` field which is at least 30 days before today
+
+- title: Authenticated, full Premium access
+  context:
+    role: Publisher
+    testdrive: premium
+    setup:
+      - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
+    steps:
+      - step: Log in as the publisher account "premium" as specified by the testdrive result
+      - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
+        path: docs/journal-csv
+        results:
+          - There is a page that offers you documentation and information about the Journal CSV
+      - step: Click the "Journal CSV" link to download the CSV
+        path: /csv
+        results:
+          - You are prompted to download a CSV file
+          - The file is called "premium.csv"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Go to the "Public Data Dump" page via the Data menu at the top of the home page
+        path: /docs/public-data-dump
+        results:
+          - There is a page that offers you documentation and information about the Public Data Dump
+          - There is are links to download the Public Data Dump files
+          - The "last updated" dates state they new (with the date on which the testdrive was run)
+      - step: Click the link to download the Article Public Data Dump file
+        path: /public-data-dump/article
+        results:
+          - You are prompted to download a file
+          - The file is called "article_premium.tar.gz"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Return to the "Public Data Dump" page
+        path: /docs/public-data-dump
+      - step: Click the link to download the Journal Public Data Dump file
+        results:
+          - You are prompted to download a file
+          - The file is called "journal_premium.tar.gz"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Go to the journal OAI feed, using the provided link
+        path: /oai?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of journal records
+          - The most recent journal (the top one) has a `datestamp` field well within the last 30 days (there will be 
+            a journal created on the date that the testdrive ran)
+      - step: Go to the article OAI feed, using the provided link
+        path: /oai.article?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of article records
+          - The most recent article (the top one) has a `datestamp` field field well within the last 30 days (there will be
+            an article created on the date that the testdrive ran)
+
+- title: Authenticated, PDD Premium only
+  context:
+    role: Publisher
+    testdrive: premium
+    setup:
+      - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
+    steps:
+      - step: Log in as the publisher account "pdd_premium" as specified by the testdrive result
+      - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
+        path: docs/journal-csv
+        results:
+          - There is a page that offers you documentation and information about the Journal CSV
+      - step: Click the "Journal CSV" link to download the CSV
+        path: /csv
+        results:
+          - You are prompted to download a CSV file
+          - The file is called "free.csv"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Go to the "Public Data Dump" page via the Data menu at the top of the home page
+        path: /docs/public-data-dump
+        results:
+          - There is a page that offers you documentation and information about the Public Data Dump
+          - There is are links to download the Public Data Dump files
+          - The "last updated" dates state they new (with the date on which the testdrive was run)
+      - step: Click the link to download the Article Public Data Dump file
+        path: /public-data-dump/article
+        results:
+          - You are prompted to download a file
+          - The file is called "article_premium.tar.gz"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Return to the "Public Data Dump" page
+        path: /docs/public-data-dump
+      - step: Click the link to download the Journal Public Data Dump file
+        results:
+          - You are prompted to download a file
+          - The file is called "journal_premium.tar.gz"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Go to the journal OAI feed, using the provided link
+        path: /oai?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of journal records
+          - The most recent journal (the top one) has a `datestamp` field which is at least 30 days before today
+      - step: Go to the article OAI feed, using the provided link
+        path: /oai.article?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of article records
+          - The most recent article (the top one) has a `datestamp` field which is at least 30 days before today
+
+- title: Authenticated, OAI Premium only
+  context:
+    role: Publisher
+    testdrive: premium
+    setup:
+      - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
+    steps:
+      - step: Log in as the publisher account "pdd_premium" as specified by the testdrive result
+      - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
+        path: docs/journal-csv
+        results:
+          - There is a page that offers you documentation and information about the Journal CSV
+      - step: Click the "Journal CSV" link to download the CSV
+        path: /csv
+        results:
+          - You are prompted to download a CSV file
+          - The file is called "free.csv"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Go to the "Public Data Dump" page via the Data menu at the top of the home page
+        path: /docs/public-data-dump
+        results:
+          - There is a page that offers you documentation and information about the Public Data Dump
+          - There is no way to access the Public Data Dump file from the page
+      - step: Go to the journal OAI feed, using the provided link
+        path: /oai?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of journal records
+          - The most recent journal (the top one) has a `datestamp` field well within the last 30 days (there will be
+            a journal created on the date that the testdrive ran)
+      - step: Go to the article OAI feed, using the provided link
+        path: /oai.article?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of article records
+          - The most recent article (the top one) has a `datestamp` field field well within the last 30 days (there will be
+            an article created on the date that the testdrive ran)
+
+- title: Authenticated, CSV Premium only
+  context:
+    role: Publisher
+    testdrive: premium
+    setup:
+      - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
+    steps:
+      - step: Log in as the publisher account "csv_premium" as specified by the testdrive result
+      - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
+        path: docs/journal-csv
+        results:
+          - There is a page that offers you documentation and information about the Journal CSV
+      - step: Click the "Journal CSV" link to download the CSV
+        path: /csv
+        results:
+          - You are prompted to download a CSV file
+          - The file is called "premium.csv"
+      - step: Download the file
+        results:
+          - The file is successfully downloaded
+      - step: Go to the "Public Data Dump" page via the Data menu at the top of the home page
+        path: /docs/public-data-dump
+        results:
+          - There is a page that offers you documentation and information about the Public Data Dump
+          - There is no way to access the Public Data Dump file from the page
+      - step: Go to the journal OAI feed, using the provided link
+        path: /oai?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of journal records
+          - The most recent journal (the top one) has a `datestamp` field which is at least 30 days before today
+      - step: Go to the article OAI feed, using the provided link
+        path: /oai.article?verb=ListRecords&metadataPrefix=oai_dc
+        results:
+          - Your are shown an XML document with a list of article records
+          - The most recent article (the top one) has a `datestamp` field which is at least 30 days before today

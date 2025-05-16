@@ -1,0 +1,23 @@
+<table>
+    <thead>
+        <tr>
+            <th>Record Type</th>
+            <th>Last Updated</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tr>
+        <td>Article</td>
+        <td>{{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}</td>
+        <td>
+            <a href="{{ url_for('doaj.public_data_dump_redirect', record_type="article") }}" class="btn btn-primary">Download ({{ pdd.article_size_human }})</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Journal</td>
+        <td>{{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}</td>
+        <td>
+            <a href="{{ url_for('doaj.public_data_dump_redirect', record_type="journal") }}" class="btn btn-primary">Download ({{ pdd.journal_size_human }})</a>
+        </td>
+    </tr>
+</table>

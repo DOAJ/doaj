@@ -3,7 +3,7 @@ import time
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
     BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory, \
-    DataDumpFixtureFactory
+    DataDumpFixtureFactory, JournalCSVFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
@@ -1858,6 +1858,46 @@ class TestModels(DoajTestCase):
         assert len(before) == 2
         assert before[0].id == dds[0].id
         assert before[1].id == dds[1].id
+
+    def test_47_journal_csv(self):
+        jc = models.JournalCSV()
+        # get a date without milliseconds
+        now = dates.now()
+        stamp = dates.format(now)
+        now = dates.parse(stamp)
+
+        jc.export_date = now
+        jc.set_csv("a1", "a2", 1, "a3")
+
+        assert jc.export_date == now
+        assert jc.filename == "a2"
+        assert jc.container == "a1"
+        assert jc.url == "a3"
+
+    def test_48_journal_csv_queries(self):
+        jcs = JournalCSVFixtureFactory.make_n_csvs(3,
+                                                 export_date=lambda x: f"2023-0{x + 1}-01T00:00:00Z",
+                                                 filename=lambda x: f"journal_csv_{x + 1}.json")
+        JournalCSVFixtureFactory.save_journal_csvs(jcs, block=True)
+
+        # the latest will be the last one created, with the most recent date
+        latest = models.JournalCSV.find_latest()
+        assert latest.id == jcs[2].id
+
+        # the first after mid January will be the second one created
+        first_after = models.JournalCSV.first_csv_after(dates.parse("2023-01-14T00:00:00Z"))
+        assert first_after.id == jcs[1].id
+
+        # find the first one created (the oldest) by the journal filename
+        fn_journal = models.JournalCSV.find_by_filename("journal_csv_1.json")
+        assert len(fn_journal) == 1
+        assert fn_journal[0].id == jcs[0].id
+
+        # find two oldest records as being before mid February
+        before = models.JournalCSV.all_csvs_before(dates.parse("2023-02-14T00:00:00Z"))
+        assert len(before) == 2
+        assert before[0].id == jcs[0].id
+        assert before[1].id == jcs[1].id
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

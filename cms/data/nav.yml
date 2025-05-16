@@ -11,12 +11,14 @@ entries:
       - label: Articles
         route: doaj.articles_search   # ~~->ArticlesSearch:WebRoute~~
   - id: documentation
-    label: Documentation
+    label: Data
     footer: true
     secondary: true
     entries:
       - label: API
         route: doaj.docs              # ~~->Documentation:WebRoute~~
+      - label: Journal CSV
+        route: doaj.journal_csv       # ~~->JournalCSV:WebRoute~~
       - label: OAI-PMH
         route: doaj.oai_pmh           # ~~->OAIPMHDocumentation:WebRoute~~
       - label: Widgets

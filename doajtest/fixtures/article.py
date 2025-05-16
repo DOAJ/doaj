@@ -8,6 +8,7 @@ import rstr
 from portality import models
 from doajtest import test_constants
 from portality.regex import ISSN_COMPILED, DOI_COMPILED
+from portality.lib import dicts
 
 ARTICLES = test_constants.PATH_RESOURCES / "article_uploads.xml"
 
@@ -25,7 +26,7 @@ class ArticleFixtureFactory(object):
 
     @staticmethod
     def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None,
-                            fulltext=None):
+                            fulltext=None, overlay=None):
         source = deepcopy(ARTICLE_SOURCE)
         if not with_id:
             del source["id"]
@@ -84,6 +85,9 @@ class ArticleFixtureFactory(object):
                         set_fulltext = True
                 if not set_fulltext:
                     source["bibjson"]["link"].append({"type": "fulltext", "url": fulltext})
+
+        if overlay is not None:
+            template = dicts.deep_merge(source, overlay, overlay=True)
 
         return source
 

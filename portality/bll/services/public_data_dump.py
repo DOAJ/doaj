@@ -114,7 +114,7 @@ class PublicDataDumpService:
         dd.save()
 
         if prune:
-            self.prune(store=store)
+            self.prune(store=store, ignore=[dd.article_filename, dd.journal_filename])
 
         return dd
 
@@ -152,9 +152,12 @@ class PublicDataDumpService:
                                              timeout=app.config.get("PUBLIC_DATA_DUMP_URL_TIMEOUT", 3600))
         return store_url
 
-    def prune(self, store=None):
+    def prune(self, store=None, ignore=None):
         if store is None:
             store = StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
+
+        if ignore is None:
+            ignore = []
 
         # First we're going to remove all the files for data dump records which are too old to keep
         total = models.DataDump.count()
@@ -163,18 +166,17 @@ class PublicDataDumpService:
         # if removing the old_dds would leave us without any data dump records, then don't do anything
         if total <= len(old_dds):
             self.logger("Not removing any old data dump records, as this would leave us with none")
-            return
+        else:
+            for dd in old_dds:
+                ac = dd.article_container
+                af = dd.article_filename
+                store.delete_file(ac, af)
 
-        for dd in old_dds:
-            ac = dd.article_container
-            af = dd.article_filename
-            store.delete_file(ac, af)
+                jc = dd.journal_container
+                jf = dd.journal_filename
+                store.delete_file(jc, jf)
 
-            jc = dd.journal_container
-            jf = dd.journal_filename
-            store.delete_file(jc, jf)
-
-            dd.delete()
+                dd.delete()
 
         # Second we're going to check the container for files which don't have index records, and
         # clean them up
@@ -185,6 +187,8 @@ class PublicDataDumpService:
 
         # if the filename doesn't match anything, remove the file
         for cf in container_files:
+            if cf in ignore:
+                continue
             dd = models.DataDump.find_by_filename(cf)
             if dd is None or len(dd) == 0:
                 self.logger("No related index record; Deleting file {x} from storage container {y}".format(x=cf, y=container))

@@ -27,7 +27,7 @@ MAPPING_OPTS = {
 }
 
 class JournalCSV(SeamlessMixin, DomainObject):
-    __type__ = "data_dump"
+    __type__ = "journal_csv"
 
     __SEAMLESS_STRUCT__ = JOURNAL_CSV_STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
@@ -84,12 +84,10 @@ class JournalCSV(SeamlessMixin, DomainObject):
         self.__seamless__.set_with_struct("export_date", dump_date)
 
     def set_csv(self, container, filename, size, url):
-        self.__seamless__.set_with_struct("article", {
-            "container": container,
-            "filename": filename,
-            "url": url,
-            "size": size
-        })
+        self.__seamless__.set_with_struct("container", container)
+        self.__seamless__.set_with_struct("filename", filename)
+        self.__seamless__.set_with_struct("url", url)
+        self.__seamless__.set_with_struct("size", size)
 
     @property
     def container(self):

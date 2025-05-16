@@ -501,6 +501,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
     "portality.models.export.Export", # ~~-> Export:Model~~
     "portality.models.DataDump", # ~~-> DataDump:Model~~
+    "portality.models.JournalCSV", # ~~-> JournalCSV:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings

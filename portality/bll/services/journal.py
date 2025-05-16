@@ -19,7 +19,7 @@ from portality.lib import dates
 from portality.lib.argvalidate import argvalidate
 from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreException
-from portality.store import StoreFactory, prune_container
+from portality.store import StoreFactory, StoreException, prune_container
 from portality.util import no_op
 
 
@@ -159,15 +159,16 @@ class JournalService(object):
         filename = 'doaj_journalcsv_' + dates.format(export_start_time, FMT_DATETIME_SHORT) + '_utf8.csv'
         try:
             store.store(container, filename, source_path=tmp_filepath)
-        finally:
-            export_svc.delete_tmp_csv(tmp_filename)
-            logger("Deleted file from tmp store")
-
-        url = store.url(container, filename)
-        logger("Stored CSV in main cache store at {x}".format(x=url))
-        jc.set_csv(container, filename, os.path.getsize(tmp_filepath), url)
+            url = store.url(container, filename)
+            logger("Stored CSV in main cache store at {x}".format(x=url))
+            jc.set_csv(container, filename, os.path.getsize(tmp_filepath), url)
+        except:
+            logger("Could not store CSV in main cache store: {x}".format(x=tmp_filename))
+            raise StoreException("Could not store CSV in main cache store: {x}".format(x=tmp_filename))
 
         export_svc.delete_tmp_csv(tmp_filename)
+        logger("Deleted file from tmp store")
+
         jc.save()
 
         if prune:
@@ -210,13 +211,12 @@ class JournalService(object):
         # if removing the old_dds would leave us without any data dump records, then don't do anything
         if total <= len(old_csvs):
             logger("Not removing any old journal csv records, as this would leave us with none")
-            return
-
-        for jc in old_csvs:
-            ac = jc.container
-            af = jc.filename
-            store.delete_file(ac, af)
-            jc.delete()
+        else:
+            for jc in old_csvs:
+                ac = jc.container
+                af = jc.filename
+                store.delete_file(ac, af)
+                jc.delete()
 
         # Second, we're going to look at all records, and keep only the most recent one from each day
         thin = models.JournalCSV.all_csvs_before(dates.before_now(86400))
@@ -233,7 +233,7 @@ class JournalService(object):
 
             # Find the newest object for each day
             for day, items in grouped_by_day.items():
-                items.sort(key=lambda x: dates.parse(x.export_date), reverse=True)  # Sort by date descending
+                items.sort(key=lambda x: x.export_date, reverse=True)  # Sort by date descending
                 newest_per_day.append(items[0])  # Add the newest object
                 everything_else.extend(items[1:])  # Add the rest to "everything else"
 
@@ -283,7 +283,7 @@ class JournalService(object):
             cutoff = dates.before_now(app.config.get("NON_PREMIUM_DELAY_SECONDS") + 86400)
 
         # get the first dump after the cutoff
-        option = models.JournalCSV.first_dump_after(cutoff=cutoff)
+        option = models.JournalCSV.first_csv_after(cutoff=cutoff)
         if option is not None:
             return option
 

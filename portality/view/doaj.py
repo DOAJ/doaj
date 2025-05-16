@@ -162,7 +162,7 @@ def search_post():
                     action=app.config.get('ANALYTICS_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
     svc = DOAJ.journalService()
-    if current_user.has_role(constants.ROLE_PREMIUM_CSV):
+    if current_user and not current_user.is_anonymous and current_user.has_role(constants.ROLE_PREMIUM_CSV):
         jc = svc.get_premium_csv()
     else:
         jc = svc.get_free_csv()
@@ -196,7 +196,7 @@ def nth_sitemap(n):
 
 
 @blueprint.route("/public-data-dump/<record_type>")
-@api_key_required
+@login_required
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_PUBLICDATADUMP', 'PublicDataDump'),
                     action=app.config.get('ANALYTICS_ACTION_PUBLICDATADUMP', 'Download'))
 def public_data_dump_redirect(record_type):
@@ -512,7 +512,15 @@ def widgets():
 
 @blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template(templates.STATIC_PAGE, page_frag="/docs/public-data-dump.html")
+    if current_user and not current_user.is_anonymous and (
+            current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP) or current_user.has_role(constants.ROLE_PREMIUM_PDD)):
+        dds = DOAJ.publicDataDumpService()
+        if current_user.has_role(constants.ROLE_PREMIUM_PDD):
+            dd = dds.get_premium_dump()
+        else:
+            dd = dds.get_free_dump()
+        return render_template(templates.STATIC_PAGE, page_frag="/docs/pdd-access.html", pdd=dd)
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/pdd-contact.html")
 
 
 @blueprint.route("/docs/openurl/")
@@ -524,6 +532,13 @@ def openurl():
 def faq():
     return render_template(templates.STATIC_PAGE, page_frag="/docs/faq.html")
 
+@blueprint.route("/docs/journal-csv")
+def journal_csv():
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/journal-csv.html")
+
+@blueprint.route("/docs/premium")
+def premium():
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/premium.html")
 
 @blueprint.route("/about/")
 def about():

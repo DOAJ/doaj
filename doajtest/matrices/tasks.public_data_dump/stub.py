@@ -19,11 +19,6 @@ from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 from portality.bll import DOAJ
 
 
-def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
-                               {"test_id": []})
-
-
 class TestPublicDataDumpTask(DoajTestCase):
 
     def setUp(self):
@@ -40,8 +35,7 @@ class TestPublicDataDumpTask(DoajTestCase):
         self.store_local_patcher.tearDown(self.app_test)
         super(TestPublicDataDumpTask, self).tearDown()
 
-    @parameterized.expand(load_cases)
-    def test_public_data_dump(self, name, kwargs):
+    def run_test(self, kwargs):
 
         clean_arg = kwargs.get("clean")
         prune_arg = kwargs.get("prune")
