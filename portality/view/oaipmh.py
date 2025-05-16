@@ -3,11 +3,13 @@ import json, base64
 from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
+from flask_login import current_user
 from portality.core import app
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
 from portality.models import OAIPMHJournal, OAIPMHArticle
 from portality.lib import plausible, dates
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
+from portality import constants
 
 blueprint = Blueprint('oaipmh', __name__)
 
@@ -184,7 +186,7 @@ class SetSpecException(Exception):
     pass
 
 
-def decode_resumption_token(resumption_token):
+def decode_resumption_token(resumption_token, account=None):
     # attempt to parse the resumption token out of base64 encoding and as a json object
     try:
         j = base64.urlsafe_b64decode(str(resumption_token))
@@ -200,6 +202,14 @@ def decode_resumption_token(resumption_token):
     if "s" in d: params["oai_set"] = d.get("s")
     if "n" in d: params["start_number"] = d.get("n")
     if "a" in d: params["start_after"] = tuple(d.get("a"))
+
+    if "until_date" in params:
+        params["until_date"] = _premium_until_date(params["until_date"], account)
+    else:
+        ud = _premium_until_date(None, account)
+        if ud is not None:
+            params["until_date"] = ud
+
     return params
 
 
@@ -242,6 +252,10 @@ def list_records_params(req):
     oai_set = req.values.get("set")
     resumption_token = req.values.get("resumptionToken")
     metadata_prefix = req.values.get("metadataPrefix")
+
+    # now fix the until_date according to the premium user requirement
+    until_date = _premium_until_date(until_date)
+
     return {
         "from_date": from_date,
         "until_date": until_date,
@@ -250,6 +264,37 @@ def list_records_params(req):
         "metadata_prefix": metadata_prefix
     }
 
+def _premium_until_date(until_date, account=None):
+    # If a user is not authenticated:
+    #
+    #     If the requested until_date is empty/None, set this to a timestamp 1 month ago
+    #     If the requested until_date is a date that is less than a month ago, set this to a timestamp 1 month ago
+    #     If the requested until_date is a date more than 1 month ago, leave unchanged
+
+    if not app.config.get("PREMIUM_MODE", True):
+        return until_date
+
+    if account is None:
+        if current_user and not current_user.is_anonymous:
+            account = current_user._get_current_object()
+
+    if account is not None and account.has_role(constants.ROLE_PREMIUM_OAI):
+        return until_date
+
+    non_premium_delay = dates.before_now(app.config.get("NON_PREMIUM_DELAY_SECONDS", 2592000))
+    if until_date is None:
+        return dates.format(non_premium_delay)
+    else:
+        d = None
+        try:
+            d = dates.parse(until_date)
+        except ValueError:
+            return dates.format(non_premium_delay)
+
+        if d and dates.is_after(d, non_premium_delay):
+            return dates.format(non_premium_delay)
+
+    return until_date
 
 def list_identifiers_params(req):
     from_date = req.values.get("from")
@@ -257,6 +302,10 @@ def list_identifiers_params(req):
     oai_set = req.values.get("set")
     resumption_token = req.values.get("resumptionToken")
     metadata_prefix = req.values.get("metadataPrefix")
+
+    # now fix the until_date according to the premium user requirement
+    until_date = _premium_until_date(until_date)
+
     return {
         "from_date": from_date,
         "until_date": until_date,
