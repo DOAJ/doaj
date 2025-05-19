@@ -1,0 +1,21 @@
+{# templates/email/login_code.jinja2 #}
+
+<p>Hello,</p>
+
+<p>Here is your login code for DOAJ:</p>
+
+<p style="font-size: 24px; font-weight: bold; text-align: center; margin: 20px 0;">
+    {{ code }}
+</p>
+
+<p>You can either:</p>
+<ol>
+    <li>Copy and paste this code on the verification page</li>
+    <li>Or <a href="{{ login_url }}">click here to login directly</a></li>
+</ol>
+
+<p>This code will expire in {{ expiry_minutes }} minutes.</p>
+
+<p>If you didn't request this login code, please ignore this email.</p>
+
+<p>Best regards,<br>DOAJ Team</p>

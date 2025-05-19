@@ -195,10 +195,10 @@ class LoginCodeForm(RedirectForm):
     user = HiddenField('User')
 
 
-@blueprint.route('/verify-code', methods=['POST'])
+@blueprint.route('/verify-code', methods=['GET', 'POST'])
 def verify_code():
-    email = request.form.get('email')
-    code = request.form.get('code')
+    email = request.args.get('email')
+    code = request.args.get('code')
     if not email or not code:
         flash("Required parameters not available.")
         return redirect(url_for('account.login'))
@@ -212,7 +212,7 @@ def verify_code():
         account.remove_login_code()
         account.save()
         login_user(account)
-        return redirect(url_for('dashboard.index'))
+        return redirect(url_for(app.config.get("DEFAULT_LOGIN_DESTINATION")))
     else:
         flash("Invalid or expired verification code")
         return redirect(url_for('account.login'))
@@ -226,12 +226,10 @@ def send_login_code_email(email: str, code: str):
         to=[email],
         fro=app.config.get('SYSTEM_EMAIL_FROM'),
         subject="Your Login Code for DOAJ",
-        template_name="email/login_code.jinja2",
-        data={
-            "code": code,
-            "login_url": login_url,
-            "expiry_minutes": 10
-        }
+        template_name=templates.EMAIL_LOGIN_LINK,
+        code=code,
+        login_url=login_url,
+        expiry_minutes=10
     )
 
 
