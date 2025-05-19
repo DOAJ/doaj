@@ -187,8 +187,8 @@ class RedirectForm(Form):
 
 class LoginForm(RedirectForm):
     user = StringField('Email address or username', [validators.DataRequired()])
-    password = PasswordField('Password', [validators.DataRequired()])
-
+    password = PasswordField('Password', [validators.Optional()])
+    action = StringField('Action', [validators.DataRequired()])
 
 class LoginCodeForm(RedirectForm):
     code = StringField('Code', [validators.DataRequired()])
@@ -240,10 +240,9 @@ def send_login_code_email(email: str, code: str):
 def login():
     current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST':
         username = form.user.data
         action = request.form.get('action')
-
 
         # If our settings allow, try getting the user account by ID first, then by email address
         if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
@@ -266,7 +265,7 @@ def login():
 
                     return render_template(templates.LOGIN_VERIFY_CODE, email=user.email)
 
-                else:
+                elif action == 'password_login' and form.validate():
                     password = form.password.data
                     if user.check_password(password):
                         login_user(user, remember=True)
