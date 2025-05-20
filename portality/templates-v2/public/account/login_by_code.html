@@ -1,0 +1,20 @@
+{% extends "public/base.html" %}
+
+{% block page_title %}Login to your account{% endblock %}
+
+{% block public_content %}
+<div class="page-content">
+    <section class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Check your email</h2>
+                <p>We've sent a login code to {{ email }}. The code will expire in 10 minutes.</p>
+            </div>
+            <div class="col-md-6">
+                {% include "_account/includes/_login_by_code_form.html" %}
+                <p>If you cannot log in, <a href="{{ url_for('account.forgot') }}">reset your password</a>. If you still cannot login, <a href="/contact">contact us</a>.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

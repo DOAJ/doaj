@@ -261,7 +261,7 @@ def login():
 
                     flash('A login link along with login code has been sent to your email.')
 
-                    return render_template(templates.LOGIN_VERIFY_CODE, email=user.email)
+                    return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
 
                 elif action == 'password_login' and form.validate():
                     password = form.password.data
