@@ -1,7 +1,7 @@
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, DataDumpFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.lib.thread_utils import wait_until
-from portality.models import DataDump
+from portality.models import DataDump, Journal
 from portality import constants
 from portality.bll import DOAJ
 from portality.core import app
@@ -14,15 +14,6 @@ import tarfile
 
 
 class TestPublicDataDump(DoajTestCase):
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        super(TestPublicDataDump, cls).setUpClass()
-
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        super(TestPublicDataDump, cls).tearDownClass()
 
     def logger(self, x):
         self._logs.append(x)
@@ -186,3 +177,42 @@ class TestPublicDataDump(DoajTestCase):
         record_ids = [record.id for record in records]
         assert current_with_files.id in record_ids
         assert in_date_with_files.id in record_ids
+
+    def test_07_phase_in(self):
+        # 4 data dumps:
+        # one from today
+        # one from 10 days ago
+        # one from 29 days ago
+        # one from more than 30 days ago
+        dds = DataDumpFixtureFactory.make_n_data_dumps(4,
+                                                       dump_date=lambda x: dates.format(dates.before_now(
+                                                           0 if x == 0 else 864000 if x == 1 else 2505600 if x == 2 else 3456000)),
+                                                       journal__filename=lambda x: f"journal_dump_{x + 1}.json",
+                                                       article__filename=lambda x: f"article_dump_{x + 1}.json")
+        DataDumpFixtureFactory.save_data_dumps(dds, block=True)
+
+        # normal operation: oldest data dump newer than 30 days
+        cfg = patch_config(app, {
+            "PREMIUM_PHASE_IN": False,
+            "PREMIUM_PHASE_IN_START": dates.before_now(50 * 24 * 60 * 60),
+        })
+        free = self.svc.get_free_dump()
+        assert free.id == dds[2].id
+
+        # 15 days into phase in, oldest dump newer than 15 days
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.before_now(15 * 24 * 60 * 60),
+        })
+        free = self.svc.get_free_dump()
+        assert free.id == dds[1].id
+
+        # phase in just started, newest dump
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.now()
+        })
+        free = self.svc.get_free_dump()
+        assert free.id == dds[0].id
+
+        patch_config(app, cfg)

@@ -13,10 +13,12 @@ from portality.lib import dicts
 
 class JournalFixtureFactory(object):
     @classmethod
-    def save_journals(cls, journals, block=False):
+    def save_journals(cls, journals, block=False, save_kwargs=None):
+        if save_kwargs is None:
+            save_kwargs = {}
         block_data = []
         for a in journals:
-            a.save()
+            a.save(**save_kwargs)
             block_data.append((a.id, a.last_updated))
         if block:
             models.Journal.blockall(block_data)

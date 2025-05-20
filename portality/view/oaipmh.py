@@ -1,5 +1,7 @@
 import binascii
 import json, base64
+from cmath import phase
+
 from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
@@ -281,7 +283,18 @@ def _premium_until_date(until_date, account=None):
     if account is not None and account.has_role(constants.ROLE_PREMIUM_OAI):
         return until_date
 
-    non_premium_delay = dates.before_now(app.config.get("NON_PREMIUM_DELAY_SECONDS", 2592000))
+    non_premium_delay_seconds = app.config.get("NON_PREMIUM_DELAY_SECONDS", 2592000)
+
+    # if we are in the phase-in period, cap the delay to the phase in date
+    if app.config.get("PREMIUM_PHASE_IN", False):
+        phase_in_start = app.config.get("PREMIUM_PHASE_IN_START")
+        if phase_in_start is not None:
+            max_delay = dates.now() - phase_in_start
+            if max_delay.total_seconds() < non_premium_delay_seconds:
+                non_premium_delay_seconds = max_delay.total_seconds()
+
+    non_premium_delay = dates.before_now(non_premium_delay_seconds)
+
     if until_date is None:
         return dates.format(non_premium_delay)
     else:

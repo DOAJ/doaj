@@ -4,6 +4,7 @@
 import os
 from portality import constants
 from portality.lib import paths
+from datetime import datetime
 
 ###########################################
 # Application Version information
@@ -1680,6 +1681,11 @@ HONEYPOT_TIMER_THRESHOLD = 5000
 
 # Should the system enforce premium membership mode
 PREMIUM_MODE = True
+
+# should the system respect phase-in mode, accommodating the phase-in start as the
+# oldest date for non-premium content
+PREMIUM_PHASE_IN = False
+PREMIUM_PHASE_IN_START = datetime(2025, 5, 16)
 
 # What is the delay non-premium users have to data access
 NON_PREMIUM_DELAY_SECONDS = 30 * _DAY

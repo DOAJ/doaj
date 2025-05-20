@@ -1,6 +1,6 @@
 import base64
 import time
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 import pytest
 from flask import url_for
@@ -581,3 +581,67 @@ class TestOaiPmhPremium(DoajTestCase):
                 # Check we only have two journals returned
                 records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
                 assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 2
+
+    def test_02_phase_in(self):
+        journals = []
+        journal_sources = JournalFixtureFactory.make_many_journal_sources(3, in_doaj=True)
+        for i, s in enumerate(journal_sources):
+            j = models.Journal(**s)
+            j.set_id(j.makeid())
+
+            if i == 0:
+                j.set_last_updated(dates.format(dates.before_now(40 * 24 * 60 * 60)))  # more than a month ago
+            elif i == 1:
+                j.set_last_updated(dates.format(dates.before_now(15 * 24 * 60 * 60)))
+            else:
+                j.set_last_updated(dates.format(dates.now()))
+
+            # j.save(update_last_updated=False)
+            journals.append(j)
+
+        JournalFixtureFactory.save_journals(journals, block=True, save_kwargs={"update_last_updated": False})
+
+        # check that when phase in is off we get the regular behaviour
+        cfg = patch_config(app, {
+            "PREMIUM_PHASE_IN": False,
+            "PREMIUM_PHASE_IN_START": dates.before_now(50 * 24 * 60 * 60),
+        })
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                t = etree.fromstring(resp.data)
+
+                # Check we only have the oldest journal record returned
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
+
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.before_now(10 * 24 * 60 * 60),
+        })
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                t = etree.fromstring(resp.data)
+
+                # Check we only have two journal records, the oldest and the one 15 days old
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 2
+
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.now()
+        })
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                t = etree.fromstring(resp.data)
+
+                # Check we have all 3 journals, as phase in is just starting
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 3
+
+        patch_config(app, cfg)

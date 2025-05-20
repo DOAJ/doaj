@@ -145,3 +145,41 @@ class TestJournalCSVPrune(DoajTestCase):
         assert tp is not None
         assert tf is not None
         assert tp != tf
+
+    def test_03_phase_in(self):
+        # 4 csvs
+        # one from today
+        # one from 10 days ago
+        # one from 29 days ago
+        # one from more than 30 days ago
+        dds = JournalCSVFixtureFactory.make_n_csvs(4,
+                                                   export_date=lambda x: dates.format(dates.before_now(
+                                                       0 if x == 0 else 864000 if x == 1 else 2505600 if x == 2 else 3456000)),
+                                                   filename=lambda x: f"journal_csv_{x + 1}.json")
+        JournalCSVFixtureFactory.save_journal_csvs(dds, block=True)
+
+        # normal operation: oldest data dump newer than 30 days
+        cfg = patch_config(app, {
+            "PREMIUM_PHASE_IN": False,
+            "PREMIUM_PHASE_IN_START": dates.before_now(50 * 24 * 60 * 60),
+        })
+        free = self.svc.get_free_csv()
+        assert free.id == dds[2].id
+
+        # 15 days into phase in, oldest dump newer than 15 days
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.before_now(15 * 24 * 60 * 60),
+        })
+        free = self.svc.get_free_csv()
+        assert free.id == dds[1].id
+
+        # phase in just started, newest dump
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.now()
+        })
+        free = self.svc.get_free_csv()
+        assert free.id == dds[0].id
+
+        patch_config(app, cfg)

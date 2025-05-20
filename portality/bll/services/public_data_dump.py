@@ -124,7 +124,17 @@ class PublicDataDumpService:
 
     def get_free_dump(self, cutoff=None):
         if cutoff is None:
-            cutoff = dates.before_now(app.config.get("NON_PREMIUM_DELAY_SECONDS") + 86400)
+            cutoff_seconds = app.config.get("NON_PREMIUM_DELAY_SECONDS", 2592000) + 86400
+
+            # if we are in the phase-in period, cap the delay to the phase in date
+            if app.config.get("PREMIUM_PHASE_IN", False):
+                phase_in_start = app.config.get("PREMIUM_PHASE_IN_START")
+                if phase_in_start is not None:
+                    max_delay = dates.now() - phase_in_start
+                    if max_delay.total_seconds() < cutoff_seconds:
+                        cutoff_seconds = max_delay.total_seconds()
+
+            cutoff = dates.before_now(cutoff_seconds)
 
         # get the first dump after the cutoff
         option = models.DataDump.first_dump_after(cutoff=cutoff)
