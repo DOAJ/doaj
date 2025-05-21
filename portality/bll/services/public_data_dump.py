@@ -1,4 +1,4 @@
-from models import DataDump
+from portality.models import DataDump
 from portality.core import app
 from portality.store import StoreFactory
 from portality import models, constants

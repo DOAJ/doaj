@@ -1,8 +1,7 @@
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, JournalCSVFixtureFactory
 from doajtest.helpers import DoajTestCase
-from models import JournalCSV
 from portality.lib.thread_utils import wait_until
-from portality.models import DataDump
+from portality.models import DataDump, JournalCSV
 from portality import constants
 from portality.bll import DOAJ
 from portality.core import app

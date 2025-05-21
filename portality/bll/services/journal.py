@@ -173,7 +173,7 @@ class JournalService(object):
 
         if prune:
             logger("Pruning old CSVs from store")
-            self.prune_csvs(store=store, logger=logger)
+            self.prune_csvs(store=store, logger=logger, ignore=[filename])
             logger("Pruned old CSVs from store")
 
         # update the ES record to point to the new file
@@ -196,9 +196,12 @@ class JournalService(object):
                             add_sensitive_account_info=add_sensitive_account_info
                             )
 
-    def prune_csvs(self, store=None, logger=None):
+    def prune_csvs(self, store=None, logger=None, ignore=None):
         if store is None:
             store = StoreFactory.get(constants.STORE__SCOPE__JOURNAL_CSV)
+
+        if ignore is None:
+            ignore = []
 
         # None isn't executable, so convert logger to NO-OP
         if logger is None:
@@ -256,6 +259,8 @@ class JournalService(object):
 
         # if the filename doesn't match anything, remove the file
         for cf in container_files:
+            if cf in ignore:
+                continue
             jc = models.JournalCSV.find_by_filename(cf)
             if jc is None or len(jc) == 0:
                 logger("No related index record; Deleting file {x} from storage container {y}".format(x=cf, y=container))
