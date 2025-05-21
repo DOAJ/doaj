@@ -1,0 +1,35 @@
+{
+    "batch" : 500,
+	"types": [
+		{
+			"type" : "application",
+			"init_with_model" : false,
+			"keepalive" : "2m",
+			"functions" : [
+                "portality.migrate.20250521_cleanup_ingested_urs.cleanup_urs.amend_status"
+			],
+            "query": {
+                "query": {
+                    "bool": {
+                        "filter": [
+                            {
+                                "term": {
+                                    "admin.notes.note.exact": "Journal updated by publisher CSV, May 2025"
+                                }
+                            },
+                            {
+                                "term": {
+                                    "admin.application_status": "update_request"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "track_total_hits": true
+            }
+		}
+	]
+}
+
+
+
