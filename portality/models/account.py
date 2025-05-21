@@ -3,13 +3,12 @@ from flask_login import UserMixin
 from datetime import timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
-import constants
+from portality import constants
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
-
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'

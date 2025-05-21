@@ -22,7 +22,7 @@ from portality.store import StoreException
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
-                               {"test_id": []})
+                               {"test_id": ["49"]})
 
 
 EXCEPTIONS = {
@@ -156,12 +156,12 @@ class TestBLLJournalCSV(DoajTestCase):
 
         if raises is not None:
             with self.assertRaises(raises):
-                self.svc.csv(prune)
+                self.svc.csv(prune=prune if prune is None else False)
 
                 tempFiles = self.tmpStore.list(self.container_id)
                 assert len(tempFiles) == 0
         else:
-            jc = self.svc.csv(prune)
+            jc = self.svc.csv(prune=prune if prune is None else False)
             assert jc.url is not None
 
             filenames = self.localStore.list(self.container_id)

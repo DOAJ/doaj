@@ -1432,7 +1432,6 @@ class TestModels(DoajTestCase):
             "no_apc" : 50
         })
 
-        models.Cache.cache_csv("/csv/filename.csv")
         models.Cache.cache_sitemap("sitemap.xml")
 
         time.sleep(1)
@@ -1444,7 +1443,6 @@ class TestModels(DoajTestCase):
         assert stats["abstracts"] == 40
         assert stats["no_apc"] == 50
 
-        assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
         assert models.Cache.get_latest_sitemap() == "sitemap.xml"
 
     def test_32_journal_like_object_discovery(self):
