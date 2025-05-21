@@ -163,7 +163,7 @@ class Premium(TestDrive):
         csvstore.delete_file(container, premium_csv.filename)
         premium_csv.delete()
 
-        free_csv = models.DataDump.pull(params["pdd"]["free"])
+        free_csv = models.JournalCSV.pull(params["csv"]["free"])
         csvstore.delete_file(container, free_csv.filename)
         free_csv.delete()
 

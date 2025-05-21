@@ -11,11 +11,17 @@ tests:
       to continue with the other tests in this suite
   steps:
   - step: Access the system as an unauthenticated user (i.e. don't log in)
+    results:
+      - The navigation bar indicates that you do not have premium access
+  - step: Click the "premium" navigation bar item
+    results:
+      - You are taken to the "premium" page
+      - The page indicates that you do not have premium access
   - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
-    path: docs/journal-csv
+    path: /docs/journal-csv
     results:
     - There is a page that offers you documentation and information about the Journal CSV
-  - step: Click the "Journal CSV" link to download the CSV
+  - step: Click the "Download" link to download the CSV
     path: /csv
     results:
       - You are prompted to download a CSV file
@@ -47,11 +53,21 @@ tests:
     - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
   steps:
     - step: Log in as the publisher account "basic" as specified by the testdrive result
+      results:
+        - The navigation bar indicates that you do not have premium access
+    - step: Click the "premium" navigation bar item
+      results:
+        - You are taken to the "premium" page
+        - The page indicates that you do not have premium access
+    - step: Go to your account page (Dashboard -> Settings)
+      result:
+        - You are taken to the "Settings" page
+        - The page indicates that you do not have premium access
     - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
       path: docs/journal-csv
       results:
         - There is a page that offers you documentation and information about the Journal CSV
-    - step: Click the "Journal CSV" link to download the CSV
+    - step: Click the Download link to download the CSV
       path: /csv
       results:
         - You are prompted to download a CSV file
@@ -83,11 +99,21 @@ tests:
     - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
   steps:
     - step: Log in as the publisher account "free_pdd" as specified by the testdrive result
+      results:
+        - The navigation bar indicates that you do not have premium access
+    - step: Click the "premium" navigation bar item
+      results:
+        - You are taken to the "premium" page
+        - The page indicates that you do not have premium access
+    - step: Go to your account page (Dashboard -> Settings)
+      result:
+        - You are taken to the "Settings" page
+        - The page indicates that you do not have premium access
     - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
       path: docs/journal-csv
       results:
         - There is a page that offers you documentation and information about the Journal CSV
-    - step: Click the "Journal CSV" link to download the CSV
+    - step: Click the Download link to download the CSV
       path: /csv
       results:
         - You are prompted to download a CSV file
@@ -137,11 +163,23 @@ tests:
       - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
     steps:
       - step: Log in as the publisher account "premium" as specified by the testdrive result
+        results:
+          - The navigation bar indicates that you have premium access
+      - step: Click the "premium" navigation bar item
+        results:
+          - You are taken to the "premium" page
+          - The page indicates that you have premium access
+      - step: Go to your account page (Dashboard -> Settings)
+        result:
+          - You are taken to the "Settings" page
+          - The page indicates that you have premium access
       - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
         path: docs/journal-csv
         results:
           - There is a page that offers you documentation and information about the Journal CSV
-      - step: Click the "Journal CSV" link to download the CSV
+          - There is a link to download the Journal CSV
+          - The CSV record indicates clearly that you have premium access
+      - step: Click the Download link to download the CSV
         path: /csv
         results:
           - You are prompted to download a CSV file
@@ -154,7 +192,7 @@ tests:
         results:
           - There is a page that offers you documentation and information about the Public Data Dump
           - There is are links to download the Public Data Dump files
-          - The "last updated" dates state they new (with the date on which the testdrive was run)
+          - The "last updated" dates state they are new, and that you have premium access
       - step: Click the link to download the Article Public Data Dump file
         path: /public-data-dump/article
         results:
@@ -193,11 +231,21 @@ tests:
       - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
     steps:
       - step: Log in as the publisher account "pdd_premium" as specified by the testdrive result
+        result:
+          - The navigation bar indicates that you have premium access
+      - step: Click the "premium" navigation bar item
+        result:
+          - You are taken to the "premium" page
+          - The page indicates that you have limited premium access
+      - step: Go to your account page (Dashboard -> Settings)
+        result:
+          - You are taken to the "Settings" page
+          - The page indicates that you have limited premium access
       - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
         path: docs/journal-csv
         results:
           - There is a page that offers you documentation and information about the Journal CSV
-      - step: Click the "Journal CSV" link to download the CSV
+      - step: Click the Download link to download the CSV
         path: /csv
         results:
           - You are prompted to download a CSV file
@@ -210,7 +258,7 @@ tests:
         results:
           - There is a page that offers you documentation and information about the Public Data Dump
           - There is are links to download the Public Data Dump files
-          - The "last updated" dates state they new (with the date on which the testdrive was run)
+          - The "last updated" dates state they are new, and that you have premium access
       - step: Click the link to download the Article Public Data Dump file
         path: /public-data-dump/article
         results:
@@ -247,11 +295,21 @@ tests:
       - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
     steps:
       - step: Log in as the publisher account "pdd_premium" as specified by the testdrive result
+        result:
+          - The navigation bar indicates that you have premium access
+      - step: Click the "premium" navigation bar item
+        result:
+          - You are taken to the "premium" page
+          - The page indicates that you have limited premium access
+      - step: Go to your account page (Dashboard -> Settings)
+        result:
+          - You are taken to the "Settings" page
+          - The page indicates that you have limited premium access
       - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
         path: docs/journal-csv
         results:
           - There is a page that offers you documentation and information about the Journal CSV
-      - step: Click the "Journal CSV" link to download the CSV
+      - step: Click the Download link to download the CSV
         path: /csv
         results:
           - You are prompted to download a CSV file
@@ -285,11 +343,23 @@ tests:
       - If you have not done so already, use the premium testdrive to setup for this test at /testdrive/premium
     steps:
       - step: Log in as the publisher account "csv_premium" as specified by the testdrive result
+        result:
+          - The navigation bar indicates that you have premium access
+      - step: Click the "premium" navigation bar item
+        result:
+          - You are taken to the "premium" page
+          - The page indicates that you have limited premium access
+      - step: Go to your account page (Dashboard -> Settings)
+        result:
+          - You are taken to the "Settings" page
+          - The page indicates that you have limited premium access
       - step: Go to the 'Journal CSV' page via the Data menu at the top of the home page
         path: docs/journal-csv
         results:
           - There is a page that offers you documentation and information about the Journal CSV
-      - step: Click the "Journal CSV" link to download the CSV
+          - There is a link to download the Journal CSV
+          - The CSV record indicates clearly that you have premium access
+      - step: Click the Download link to download the CSV
         path: /csv
         results:
           - You are prompted to download a CSV file

@@ -2,8 +2,8 @@
 layout: sidenav
 title: Public data dump
 section: Data
-toc: true
-sticky_sidenav: true
+toc: false
+sticky_sidenav: false
 preface: /public/includes/_pdd-access.html
 featuremap: 
   - ~~PublicDataDump:Fragment->JournalDataDump:WebRoute~~

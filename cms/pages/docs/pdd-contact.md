@@ -2,8 +2,8 @@
 layout: sidenav
 title: Public data dump
 section: Docs
-toc: true
-sticky_sidenav: true
+toc: false
+sticky_sidenav: false
 featuremap: 
   - ~~PublicDataDump:Fragment->JournalDataDump:WebRoute~~
   - ~~->ArticleDataDump:WebRoute~~

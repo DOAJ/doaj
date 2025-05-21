@@ -2,8 +2,8 @@
 layout: sidenav
 title: Premium Mode
 section: Docs
-toc: true
-sticky_sidenav: true
+toc: false
+sticky_sidenav: false
 preface: /public/includes/_premium-type.html
 featuremap: 
   - ~~Premium:Fragment->Premium:WebRoute~~
