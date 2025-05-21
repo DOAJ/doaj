@@ -4,12 +4,13 @@ title: Premium Mode
 section: Docs
 toc: true
 sticky_sidenav: true
+preface: /public/includes/_premium-type.html
 featuremap: 
   - ~~Premium:Fragment->Premium:WebRoute~~
 
 ---
 
-Premium users will have access to the following services:
+Premium users have access to the following services:
 
 * Current OAI-PMH feed.  Data received over OAI-PMH will be up-to-the-minute with the current data in DOAJ
 * Current Public Data Dump.  Data recieved from the Public Data Dump will be up-to-date to within 1 day of the current data in DOAJ

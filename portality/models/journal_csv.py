@@ -101,6 +101,26 @@ class JournalCSV(SeamlessMixin, DomainObject):
     def url(self):
         return self.__seamless__.get_single("url")
 
+    @property
+    def size(self):
+        return self.__seamless__.get_single("size")
+
+    @property
+    def size_human(self):
+        value = self.size
+        if value is not None:
+            return self._int_to_filesize(value)
+        return None
+
+    def _int_to_filesize(self, value):
+        if value is not None:
+            for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+                if value < 1024.0:
+                    return f"{value:.2f} {unit}"
+                value /= 1024.0
+            return f"{value:.2f} PB"
+        return None
+
 
 class CutoffQuery(object):
     def __init__(self, cutoff: datetime):

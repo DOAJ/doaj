@@ -54,20 +54,12 @@ entries:
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: News
         url: https://blog.doaj.org    # ~~->News:ExternalService~~
-  - id: premium
-    label: Premium Mode
-    feather: star
-    footer: false
-    primary: true
-    secondary_mobile: true
-    route: doaj.premium            # ~~->Premium:WebRoute~~
   - id: support
     label: Support
     feather: heart
     footer: true
     primary: true
     secondary_mobile: true
-    route: doaj.support               # ~~->Support:WebRoute~~
     entries:
       - label: Institutions and libraries
         route: doaj.support           # ~~->Support:WebRoute~~
@@ -77,6 +69,8 @@ entries:
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
       - label: Funders
         route: doaj.funders           # ~~->Funders:WebRoute~~
+      - label: Premium Mode
+        route: doaj.premium           # ~~->Premium:WebRoute~~
   - id: apply
     label: Apply
     footer: true

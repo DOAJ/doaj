@@ -4,12 +4,13 @@ title: Journal CSV
 section: Docs
 toc: true
 sticky_sidenav: true
+preface: /public/includes/_csv-access.html
 featuremap: 
   - ~~JournalCSV:Fragment->JournalCSV:WebRoute~~
 
 ---
 
-The [Journal CSV](/csv) provides a full list of all public journals in the DOAJ database.
+The Journal CSV provides a full list of all public journals in the DOAJ database.
 
 ## Premium users
 

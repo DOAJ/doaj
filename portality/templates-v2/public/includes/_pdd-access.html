@@ -8,14 +8,20 @@
     </thead>
     <tr>
         <td>Article</td>
-        <td>{{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}</td>
+        <td>
+            {{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}
+            {% if current_user.has_role(constants.ROLE_PREMIUM_PDD) %}[PREMIUM]{% endif %}
+        </td>
         <td>
             <a href="{{ url_for('doaj.public_data_dump_redirect', record_type="article") }}" class="btn btn-primary">Download ({{ pdd.article_size_human }})</a>
         </td>
     </tr>
     <tr>
         <td>Journal</td>
-        <td>{{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}</td>
+        <td>
+            {{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}
+            {% if current_user.has_role(constants.ROLE_PREMIUM_PDD) %}[PREMIUM]{% endif %}
+        </td>
         <td>
             <a href="{{ url_for('doaj.public_data_dump_redirect', record_type="journal") }}" class="btn btn-primary">Download ({{ pdd.journal_size_human }})</a>
         </td>

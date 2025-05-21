@@ -1,0 +1,11 @@
+<p>
+{% if current_user.has_role(constants.ROLE_PREMIUM) %}
+    [PREMIUM]  You have a premium account, giving you access to a range of premium DOAJ services.
+{% elif current_user.has_role(constants.ROLE_PREMIUM_CSV) or
+        current_user.has_role(constants.ROLE_PREMIUM_PDD) or
+        current_user.has_role(constants.ROLE_PREMIUM_OAI) %}
+    [LIMITED PREMIUM]  You have a premium account with access to a limited number of our premium services.
+{% else %}
+    [FREE] You have a free account, consider upgrading to a premium account to access a range of premium DOAJ services.
+{% endif %}
+</p>

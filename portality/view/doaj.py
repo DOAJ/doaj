@@ -534,7 +534,12 @@ def faq():
 
 @blueprint.route("/docs/journal-csv")
 def journal_csv():
-    return render_template(templates.STATIC_PAGE, page_frag="/docs/journal-csv.html")
+    svc = DOAJ.journalService()
+    if not current_user.is_anonymous and current_user.has_role(constants.ROLE_PREMIUM_CSV):
+        jc = svc.get_premium_csv()
+    else:
+        jc = svc.get_free_csv()
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/journal-csv.html", jc=jc)
 
 @blueprint.route("/docs/premium")
 def premium():
