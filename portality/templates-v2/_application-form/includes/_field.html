@@ -4,7 +4,7 @@
     <a id="question-{{ f.name }}"></a>
     {% set label %}
     <label for="{{ f.name }}">
-        {% autoescape off %}{{ _(f.label) | safe }}{% endautoescape %}
+        {% autoescape off %}{{ f.label | safe }}{% endautoescape %}
         {% if f.help("long_help") %}
             <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
         {% endif %}
@@ -17,14 +17,14 @@
     {% endset %}
 
     {% if f.wtfield.__class__.__name__ != "BooleanField"  %}
-        {{ _(label) }}
+        {{ label }}
     {% endif %}
 
     {% if f.help("short_help") %}
-       <p class="form__short-help"><small>{{ _(f.help("short_help")) | safe }}</small></p>
+       <p class="form__short-help"><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
 
-    {% if f.get("hint") %}<p><small>{{ _(f.hint) | safe }}</small></p>{% endif %}
+    {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
     {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
         <div class="removable-fields" id="removable_field__{{ f.name }}">
           {{ f.render_form_control() }}
@@ -37,7 +37,7 @@
     {% endif %}
 
     {% if f.wtfield.__class__.__name__ == "BooleanField"  %}
-        {{ _(label) }}
+        {{ label }}
     {% endif %}
 
     {% if f.help("render_error_box") != False %} {# some fields have custom error boxes #}
