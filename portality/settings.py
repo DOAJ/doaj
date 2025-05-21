@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.2.1"
+DOAJ_VERSION = "8.3.0"
 API_VERSION = "4.0.0"
 
 ######################################
