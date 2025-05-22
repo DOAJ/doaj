@@ -1568,7 +1568,7 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 ##################################################
 # Journal CSV Setings
 
-# how long should the temporary URL for public data dumps last
+# how long should the temporary URL for journal csvs last
 JOURNAL_CSV_URL_TIMEOUT = 3600
 
 ##################################################
