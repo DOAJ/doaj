@@ -1,0 +1,44 @@
+{# feather icons, originally sourced from https://unpkg.com/feather-icons@4.28.0/dist/feather.min.js #}
+<script type="text/javascript" src="/static/vendor/feather-4.28.0/feather.min.js"></script>
+
+{# get jquery js #}
+<script type="text/javascript" src="/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="/static/js/vendors/jquery.hoverIntent.min.js"></script>
+{# get bootstrap js #}
+{# TODO: this is probably not the right place to keep this file #}
+{# I’m using a much smaller & reduced version of Boostrap’s JS, with some modified classes and only the components we need #}
+<script type="text/javascript" src="/static/js/bootstrap.doaj.js"></script>
+
+
+{%- if not config.get("DEBUG", True)  -%}
+    <!-- Plausible Analytics -->
+    <script defer data-domain="{{ config.get('PLAUSIBLE_SITE_NAME')}}"
+            src="{{ config.get('PLAUSIBLE_JS_URL') }}"></script>
+{%- endif -%}
+
+{# FIXME: do we need these any more? #}
+<!-- get tablesorter -->
+<script type="text/javascript" src="/static/vendor/tablesorter-2.3.10/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<!-- get our autocomplete function for select2 -->
+<script type="text/javascript" src="/static/js/autocomplete.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<!-- get our functions for handling form fields fixme: should there be a form_page flag?-->
+<script type="text/javascript" src="/static/js/formutils.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<!-- get select2 -->
+<script type="text/javascript" src="/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<script type="text/javascript">var current_domain = document.location.host;</script>
+<script type="text/javascript">var current_scheme = window.location.protocol;</script>
+<script type="text/javascript">var es_domain = current_domain;</script>
+<script type="text/javascript">var es_scheme = current_scheme;</script>
+
+<!-- get the app's js -->
+<script type="text/javascript" src="/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<script>
+jQuery (document).ready (function($) {
+    doaj.init();
+});
+</script>

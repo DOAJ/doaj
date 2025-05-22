@@ -27,15 +27,15 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
 
         journal = models.Journal.pull(journal_id)
         if journal is None:
-            return
+            return None
 
         if not journal.editor_group:
-            return
+            return None
 
         eg = models.EditorGroup.pull_by_key("name", journal.editor_group)
         managing_editor = eg.maned
         if not managing_editor:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -53,3 +53,4 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         notification.action = url_for("admin.journal_page", journal_id=journal.id)
 
         svc.notify(notification)
+        return notification

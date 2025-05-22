@@ -4,7 +4,7 @@
 	"confirm" : false,
 	"max_content_length" : 40000000,
 	"types" : {
-		"account" : {"import" : true, "limit" : -1},
+		"account" : {"import" : true, "limit" : -1, "download_test_users": true},
 		"application" : {"import" : true, "limit" : -1},
 		"background_job" : {"import" : true, "limit" : 10000},
 		"cache" : {"import" : true, "limit" : -1},

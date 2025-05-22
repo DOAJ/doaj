@@ -1,3 +1,4 @@
+""" Deprecated - we no longer use esprit """
 from portality.core import app, es_connection
 import esprit
 

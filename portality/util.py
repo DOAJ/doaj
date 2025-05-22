@@ -137,17 +137,6 @@ def ipt_prefix(type):
         return type
 
 
-def verify_recaptcha(g_recaptcha_response):
-    """
-    ~~ReCAPTCHA:ExternalService~~
-    :param g_recaptcha_response:
-    :return:
-    """
-    with urllib.request.urlopen('https://www.recaptcha.net/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
-        data = json.loads(url.read().decode())
-        return data
-
-
 def url_for(*args, **kwargs):
     """
     This function is a hack to allow us to use url_for where we may nor may not have the
@@ -190,3 +179,11 @@ def get_full_url_safe(endpoint):
 def no_op(*args, **kwargs):
     """ noop (no operation) function """
     pass
+
+
+def patch_config(inst, properties):
+    originals = {}
+    for k, v in properties.items():
+        originals[k] = inst.config.get(k)
+        inst.config[k] = v
+    return originals

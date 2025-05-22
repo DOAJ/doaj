@@ -28,7 +28,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
 
         if application.owner is None:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -45,10 +45,11 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
         notification.long = svc.long_notification(cls.ID).format(
             title=title,
             date_applied=date_applied,
-            volunteers=volunteers
+            volunteers_url=volunteers
         )
         notification.short = svc.short_notification(cls.ID).format(
             issns=application.bibjson().issns_as_text()
         )
 
         svc.notify(notification)
+        return notification

@@ -50,8 +50,7 @@ INTERNAL_APPLICATION_STRUCT = {
                 "related_journal" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
-                "owner" : {"coerce" : "unicode"},
-                "seal" : {"coerce" : "unicode"}
+                "owner" : {"coerce" : "unicode"}
             },
             "lists": {
                 "notes" : {"contains" : "object"},
@@ -178,7 +177,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         # check they are not the same
         if pissn is not None and eissn is not None:
             if pissn == eissn:
-                raise seamless.SeamlessException("P-ISSN and E-ISSN should be different")
+                raise seamless.SeamlessException("Print ISSN and Online ISSN should be different")
 
         # A link to the journal homepage is required
         #
@@ -280,12 +279,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if lmut is None:
             return False
         return lmut > datetime.utcfromtimestamp(0)
-
-    def has_seal(self):
-        return self.__seamless__.get_single("admin.seal", default=False)
-
-    def set_seal(self, value):
-        self.__seamless__.set_with_struct("admin.seal", value)
 
     @property
     def owner(self):

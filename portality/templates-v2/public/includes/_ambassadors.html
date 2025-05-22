@@ -1,0 +1,19 @@
+<!-- About section: senior-ambassadors -->
+{% if data.ambassadors.senior %}
+    <h2 id="senior-ambassadors">Senior Ambassadors</h2>
+    <ul class="row title-list">
+        {% for i in data.ambassadors.senior %}
+            {% include 'public/includes/_ambassador-profile.html' with context %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if data.ambassadors.general %}
+    <h2 id="ambassadors">Ambassadors</h2>
+    <ul class="row title-list">
+        {% for i in data.ambassadors.general %}
+            {% include 'public/includes/_ambassador-profile.html' with context %}
+        {% endfor %}
+    </ul>
+{% endif %}
+

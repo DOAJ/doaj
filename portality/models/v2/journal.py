@@ -1,18 +1,22 @@
-from portality.dao import DomainObject
-from portality.core import app
-from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
-from portality.models.v2.bibjson import JournalLikeBibJSON
-from portality.models.v2 import shared_structs
-from portality.models.account import Account
-from portality.lib import es_data_mapping, dates, coerce
-from portality.lib.seamless import SeamlessMixin
-from portality.lib.coerce import COERCE_MAP
+from __future__ import annotations
 
+import string
+import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
+from typing import Callable, Iterable
 
-import string, uuid
 from unidecode import unidecode
+
+from portality.core import app
+from portality.dao import DomainObject
+from portality.lib import es_data_mapping, dates, coerce
+from portality.lib.coerce import COERCE_MAP
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
+from portality.lib.seamless import SeamlessMixin
+from portality.models.account import Account
+from portality.models.v2 import shared_structs
+from portality.models.v2.bibjson import JournalLikeBibJSON
 
 JOURNAL_STRUCT = {
     "objects": [
@@ -53,11 +57,17 @@ JOURNAL_STRUCT = {
 }
 
 
+
 class ContinuationException(Exception):
     pass
 
 
 class JournalLikeObject(SeamlessMixin, DomainObject):
+
+    # During migration from the old data model to the new data model for journal-like objects, this allows
+    # the front-end to continue to work, even if the object sees data which is not in the struct.
+    # This can be commented out after any migration which changes the data model
+    __SEAMLESS_SILENT_PRUNE__ = app.config.get("SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE", False)
 
     @classmethod
     def find_by_issn(cls, issns, in_doaj=None, max=10):
@@ -87,8 +97,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return records
 
     @classmethod
-    def issns_by_owner(cls, owner, in_doaj=None):
-        q = IssnQuery(owner, in_doaj=in_doaj)
+    def issns_by_owner(cls, owner, in_doaj=None, issn_field=None):
+        q = IssnQuery(owner, in_doaj=in_doaj, issn_field=issn_field)
         res = cls.query(q=q.query())
         issns = [term.get("key") for term in res.get("aggregations", {}).get("issns", {}).get("buckets", [])]
         return issns
@@ -195,12 +205,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             return False
         return lmut > datetime.utcfromtimestamp(0)
 
-    def has_seal(self):
-        return self.__seamless__.get_single("admin.seal", default=False)
-
-    def set_seal(self, value):
-        self.__seamless__.set_with_struct("admin.seal", value)
-
     def has_oa_start_date(self):
         return self.__seamless__.get_single("bibjson.oa_start", default=False)
 
@@ -280,7 +284,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.add_note(note=note.get("note"), date=note.get("date"),
                              id=note.get("id"), author_id=note.get("author_id"))
 
-
     def remove_note(self, note):
         self.__seamless__.delete_from_list("admin.notes", matchsub=note)
 
@@ -301,7 +304,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         clusters = {}
         for note in notes:
             if "date" not in note:
-                note["date"] = DEFAULT_TIMESTAMP_VAL   # this really means something is broken with note date setting, which needs to be fixed
+                note["date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
             if note["date"] not in clusters:
                 clusters[note["date"]] = [note]
             else:
@@ -368,7 +371,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         country = None
         license = []
         publisher = []
-        has_seal = None
         classification_paths = []
         unpunctitle = None
         asciiunpunctitle = None
@@ -425,9 +427,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         license = list(set(license))
         schema_codes = list(set(schema_codes))
 
-        # determine if the seal is applied
-        has_seal = "Yes" if self.has_seal() else "No"
-
         # get the full classification paths for the subjects
         classification_paths = cbib.lcc_paths()
         schema_codes_tree = cbib.lcc_codes_full_list()
@@ -456,8 +455,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
         if country is not None:
             index["country"] = country
-        if has_seal:
-            index["has_seal"] = has_seal
         if unpunctitle is not None:
             index["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
@@ -505,7 +502,7 @@ class Journal(JournalLikeObject):
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
         # FIXME: I have taken this out for the moment, as I'm not sure it's what we should be doing
-        #if kwargs:
+        # if kwargs:
         #    self.add_autogenerated_fields(**kwargs)
         super(Journal, self).__init__(raw=kwargs)
 
@@ -535,7 +532,7 @@ class Journal(JournalLikeObject):
             bib["pid_scheme"] = {"has_pid_scheme": False}
         if "preservation" in bib and bib["preservation"] != '':
             bib["preservation"]["has_preservation"] = (len(bib["preservation"]) != 0 or
-                                                    bib["national_library"] is not None)
+                                                       bib["national_library"] is not None)
         else:
             bib["preservation"] = {"has_preservation": True}
 
@@ -764,7 +761,8 @@ class Journal(JournalLikeObject):
         self.__seamless__.delete("admin.related_applications")
 
     def remove_related_application(self, application_id):
-        self.set_related_applications([r for r in self.related_applications if r.get("application_id") != application_id])
+        self.set_related_applications([r for r in self.related_applications
+                                       if r.get("application_id") != application_id])
 
     def related_application_record(self, application_id):
         for record in self.related_applications:
@@ -784,29 +782,41 @@ class Journal(JournalLikeObject):
     ########################################################################
     ## Functions for handling continuations
 
-    def get_future_continuations(self):
-        irb = self.bibjson().is_replaced_by
-        q = ContinuationQuery(irb)
 
-        journals = self.q2obj(q=q.query())
+    def _get_continuations(self, issns,
+                           get_sub_journals: Callable,
+                           journal_caches: set[str] = None) -> Iterable['Journal']:
+        """
+
+        Parameters
+        ----------
+        issns
+        get_sub_journals
+        journal_caches
+            contain completed journals ids, avoid infinite recursion by passing a
+            set of journal objects that have already been processed
+        """
+        journal_caches = journal_caches or set()
+        journal_caches.add(self.id)
+        journals = self.q2obj(q=ContinuationQuery(issns).query())
+        journals = [j for j in journals if j.id not in journal_caches]
+        journal_caches.update({j.id for j in journals})
+
         subjournals = []
         for j in journals:
-            subjournals += j.get_future_continuations()
+            subjournals += get_sub_journals(j, journal_caches)
 
-        future = journals + subjournals
-        return future
+        return journals + subjournals
 
-    def get_past_continuations(self):
-        replaces = self.bibjson().replaces
-        q = ContinuationQuery(replaces)
+    def get_future_continuations(self, journal_caches: set[str]=None) -> Iterable['Journal']:
+        return self._get_continuations(self.bibjson().is_replaced_by,
+                                       lambda j, jc: j.get_future_continuations(jc),
+                                       journal_caches=journal_caches)
 
-        journals = self.q2obj(q=q.query())
-        subjournals = []
-        for j in journals:
-            subjournals += j.get_past_continuations()
-
-        past = journals + subjournals
-        return past
+    def get_past_continuations(self, journal_caches: set[str]=None) -> Iterable['Journal']:
+        return self._get_continuations(self.bibjson().replaces,
+                                       lambda j, jc: j.get_past_continuations(jc),
+                                       journal_caches=journal_caches)
 
     #######################################################################
 
@@ -852,7 +862,6 @@ class Journal(JournalLikeObject):
         for article in self.all_articles():
             article.set_in_doaj(self.is_in_doaj())
             article.save()
-
 
     def prep(self, is_update=True):
         self._ensure_in_doaj()
@@ -1010,7 +1019,7 @@ class JournalURLQuery(object):
                     ]
                 }
             },
-            "size" : self.max
+            "size": self.max
         }
         if self.in_doaj is not None:
             q["query"]["bool"]["must"].append({"term": {"admin.in_doaj": self.in_doaj}})
@@ -1018,14 +1027,15 @@ class JournalURLQuery(object):
 
 
 class IssnQuery(object):
-    def __init__(self, owner, in_doaj=None):
+    def __init__(self, owner, in_doaj=None, issn_field=None):
         self._owner = owner
         self._in_doaj = in_doaj
+        self._issn_field = issn_field or 'index.issn.exact'
 
     def query(self):
-        musts = [{"term": { "admin.owner.exact": self._owner}}]
+        musts = [{"term": {"admin.owner.exact": self._owner}}]
         if self._in_doaj is not None:
-            musts.append({"term": { "admin.in_doaj": self._in_doaj}})
+            musts.append({"term": {"admin.in_doaj": self._in_doaj}})
         return {
             "track_total_hits": True,
             "query": {
@@ -1037,9 +1047,9 @@ class IssnQuery(object):
             "aggs": {
                 "issns": {
                     "terms": {
-                        "field": "index.issn.exact",
+                        "field": self._issn_field,
                         "size": 10000,
-                        "order": { "_key": "asc" }
+                        "order": {"_key": "asc"}
                     }
                 }
             }
@@ -1162,9 +1172,9 @@ class RecentJournalsQuery(object):
     def query(self):
         return {
             "track_total_hits": True,
-            "query" : {"match_all" : {}},
-            "size" : self.max,
-            "sort" : [
-                {"created_date" : {"order" : "desc"}}
+            "query": {"match_all": {}},
+            "size": self.max,
+            "sort": [
+                {"created_date": {"order": "desc"}}
             ]
         }

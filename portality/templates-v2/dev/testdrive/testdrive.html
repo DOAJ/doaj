@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ name }} - DOAJ Testdrive</title>
+  <meta name="description" content="Testdrive setup results for {{ name }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+</head>
+<body>
+
+<h1>{{ name }} - Testdrive setup results</h1>
+
+{% for k, v in params.items() %}
+    {% if k != "teardown" and k != "non_renderable" %}
+    <h2>{{ k }}</h2>
+    <dl>
+    {% if v is mapping %}
+        {% for k1, v1 in v.items() %}
+            <dt>{{ k1 }}</dt>
+            <dd>
+                {% if v1 is iterable and (v1 is not string and v1 is not mapping) %}
+                    {{ v1 }}
+                {% else %}
+                    {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>
+                {% endif %}
+
+        {% endfor %}
+    {% elif v is iterable %}
+        <dt>list of values:</dt>
+        {% for v1 in v %}
+            <dd>
+                {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>
+        {% endfor %}
+    {% endif %}
+    </dl>
+    {% endif %}
+{% endfor %}
+
+<h1>Teardown</h1>
+
+<p>When you have finished your test, you can cleanup the test resources from the test system by clicking this link</p>
+
+<a href="{{ params.teardown }}">{{ params.teardown }}</a>
+
+</body>
+</html>

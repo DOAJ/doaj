@@ -11,7 +11,7 @@ from portality.dao import ESMappingMissingError, ScrollInitialiseException
 from portality.lib import dates
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD, FMT_DATE_YM, FMT_YEAR, FMT_DATETIME_STD
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 def provenance_reports(fr, to, outdir):
@@ -408,10 +408,10 @@ class ReportingBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        run_reports.schedule(args=(background_job.id,), delay=10)
+        run_reports.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = ReportingBackgroundTask.create_huey_helper(main_queue)
+huey_helper = ReportingBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

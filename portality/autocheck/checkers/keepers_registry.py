@@ -16,10 +16,13 @@ class KeepersRegistry(ISSNChecker):
         "Portico": "http://issn.org/organization/keepers#portico"
     }
 
+    REVERSE_ID_MAP = {v: k for k, v in ID_MAP.items()}
+
     MISSING = "missing"
     PRESENT = "present"
     OUTDATED = "outdated"
     NOT_RECORDED = "not_recorded"
+    SHOULD_SELECT = "should_select"
 
     def _get_archive_components(self, eissn_data, pissn_data):
         acs = []
@@ -35,9 +38,21 @@ class KeepersRegistry(ISSNChecker):
             id = ac.get("holdingArchive", {}).get("@id")
             tc = ac.get("temporalCoverage", "")
             bits = tc.split("/")
+
             if len(bits) != 2:
                 continue
-            end_year = int(bits[1].strip())
+
+            end_str = bits[1].strip()
+            if end_str == "":
+                end_str = bits[0].strip()
+            if end_str == "":
+                continue
+
+            try:
+                end_year = int(end_str)
+            except ValueError:
+                continue
+
             if id in ad:
                 if end_year > ad[id]:
                     ad[id] = end_year
@@ -59,9 +74,52 @@ class KeepersRegistry(ISSNChecker):
         acs = self._get_archive_components(eissn_data, pissn_data)
         ad = self._extract_archive_data(acs)
         services = form.get("preservation_service", [])
+        service_ids = [self.ID_MAP.get(s) for s in services if s in self.ID_MAP]
+
         logger("There are {x} preservation services on the record: {y}".format(x=len(services), y=",".join(services)))
+
+        for archive_id, end_date in ad.items():
+            if archive_id not in service_ids and end_date >= datetime.utcnow().year - 1:
+                service_name = self.REVERSE_ID_MAP.get(archive_id)
+                logger("Service '{x}' has not been selected, but is registered and current in Keepers".format(x=service_name))
+                autochecks.add_check(
+                    field="preservation_service",
+                    advice=self.SHOULD_SELECT,
+                    reference_url=url,
+                    context={"service": service_name},
+                    checked_by=self.__identity__
+                )
+                continue
+
+            if archive_id in service_ids:
+                service_name = self.REVERSE_ID_MAP.get(archive_id)
+                if end_date >= datetime.utcnow().year - 1:
+                    logger("Service '{x}' is registered and current in Keepers".format(x=service_name))
+                    autochecks.add_check(
+                        field="preservation_service",
+                        advice=self.PRESENT,
+                        reference_url=url,
+                        context={"service": service_name},
+                        checked_by=self.__identity__
+                    )
+                else:
+                    # the temporal coverage is too old
+                    logger(
+                        "Service {x} is registerd as issn.org for this record, but the archive is not recent enough".format(x=service_name))
+                    autochecks.add_check(
+                        field="preservation_service",
+                        advice=self.OUTDATED,
+                        reference_url=url,
+                        context={"service": service_name},
+                        checked_by=self.__identity__
+                    )
+
         for service in services:
+            if service in ["none", "national_library"]:
+                continue
+
             id = self.ID_MAP.get(service)
+
             if not id:
                 logger("Service {x} is not recorded by Keepers Registry".format(x=service))
                 autochecks.add_check(
@@ -73,35 +131,12 @@ class KeepersRegistry(ISSNChecker):
                 )
                 continue
 
-            coverage = ad.get(id)
-            if coverage is None:
+            if id not in ad:
                 # the archive is not mentioned in issn.org
                 logger("Service {x} is not registered at issn.org for this record".format(x=service))
                 autochecks.add_check(
                     field="preservation_service",
                     advice=self.MISSING,
-                    reference_url=url,
-                    context={"service": service},
-                    checked_by=self.__identity__
-                )
-                continue
-
-            if coverage < datetime.utcnow().year - 1:
-                # the temporal coverage is too old
-                logger("Service {x} is registerd as issn.org for this record, but the archive is not recent enough".format(x=service))
-                autochecks.add_check(
-                    field="preservation_service",
-                    advice=self.OUTDATED,
-                    reference_url=url,
-                    context={"service": service},
-                    checked_by=self.__identity__
-                )
-            else:
-                # the coverage is within a reasonable period
-                logger("Service {x} is registerd as issn.org for this record".format(x=service))
-                autochecks.add_check(
-                    field="preservation_service",
-                    advice=self.PRESENT,
                     reference_url=url,
                     context={"service": service},
                     checked_by=self.__identity__

@@ -12,6 +12,7 @@ from portality.decorators import api_key_required, api_key_optional, swag, write
 from portality.lib import plausible
 from portality.view import api_v4
 from flask_swagger import swagger
+from portality.ui import templates
 
 blueprint = Blueprint('api_v3', __name__)
 
@@ -21,6 +22,7 @@ API_VERSION_NUMBER = '3.0.1'  # OA start added 2022-03-21
 ANALYTICS_CATEGORY = app.config.get('ANALYTICS_CATEGORY_API', 'API Hit')
 ANALYTICS_ACTIONS = app.config.get('ANALYTICS_ACTIONS_API', {})
 
+API_UNSUPPORTED_ERROR = "Version 3 is no longer supported."
 
 @blueprint.route('/')
 def api_root():
@@ -45,7 +47,7 @@ def docs():
         this_major_version = API_VERSION_NUMBER.split(".")[0]
         base_url = base_url + "v" + this_major_version + "/"
 
-    return render_template('api/v3/api_docs.html',
+    return render_template(templates.API_V3_DOCS,
                            api_version=API_VERSION_NUMBER,
                            base_url=base_url,
                            contact_us_url=url_for('doaj.contact'),
@@ -248,22 +250,9 @@ def _load_income_articles_json(request):
 @blueprint.route("/bulk/articles", methods=["POST"])
 @api_key_required
 @write_required(api=True)
-@swag(swag_summary='Bulk article creation <span class="red">[Authenticated, not public]</span>',
-      swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_article_create', 'Bulk article create'))
 def bulk_article_create():
-    data = _load_income_articles_json(request)
-
-    # delegate to the API implementation
-    ids = ArticlesBulkApi.create(data, current_user._get_current_object())
-
-    # get all the locations for the ids
-    inl = []
-    for id in ids:
-        inl.append((id, url_for("api_v3.retrieve_article", article_id=id)))
-
-    # respond with a suitable Created response
-    return bulk_created(inl)
+    raise Api400Error(API_UNSUPPORTED_ERROR)
 
 
 @blueprint.route("/bulk/articles", methods=["DELETE"])

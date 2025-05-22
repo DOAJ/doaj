@@ -17,7 +17,7 @@ tests:
     - A "SAVE" button is available
     - Status, Re-assign publisher account, Continuation Information and Subject Classification
       sections are available
-    - Award the Seal is available
+    - The Journal Labels section is available, offering one option for "Subscribe to Open"
     - The main application form questions are available
     - The Notes section is available
   - step: Assign an editor group
@@ -56,7 +56,6 @@ tests:
     - The form saves
     - The changes you applied, both to the form, and in the functionality box, have
       been saved
-    - The form saved without requiring answers to the ORCiD and I4OA questions.
   - step: Click "Unlock and Close"
     results:
     - The page closes, and you are able to return to the search interface

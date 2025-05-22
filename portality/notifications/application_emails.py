@@ -7,6 +7,7 @@ from portality.core import app
 from portality.dao import Facetview2
 from portality.ui.messages import Messages
 from portality.lib import dates
+from portality.ui import templates
 
 
 def send_editor_completed_email(application):
@@ -34,7 +35,7 @@ def send_editor_completed_email(application):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/editor_application_completed.jinja2",
+                        template_name=templates.EMAIL_EDITOR_APPLICATION_COMPLETED,
                         editor=editor_id,
                         associate_editor=assoc_id,
                         application_title=journal_name,
@@ -56,7 +57,7 @@ def send_account_created_email(account):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/account_created.jinja2",
+                        template_name=templates.EMAIL_ACCOUNT_CREATED,
                         reset_url=reset_url,
                         email=account.email,
                         timeout_days=password_create_timeout_days,
@@ -74,7 +75,7 @@ def send_account_password_reset_email(account):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/account_password_reset.jinja2",
+                        template_name=templates.EMAIL_PASSWORD_RESET,
                         email=account.email,
                         reset_url=reset_url,
                         forgot_pw_url=url_for('account.forgot', _external=True)

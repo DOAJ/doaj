@@ -28,6 +28,7 @@ htmlcov/*
 # Don't push our dev configs or the secret app configs.
 dev.cfg
 app.cfg
+instance.cfg
 
 # directories of transient stuff that gets created locally
 media/*
@@ -117,7 +118,7 @@ cms/components
 cms/error_fragments.txt
 cms/error_sass.txt
 cms/error_fqw_sass.txt
-portality/static/doaj/css/*.css*
+portality/static/doaj/css/main.css*
 cms/sass/*.css*
 cms/fragments*
 

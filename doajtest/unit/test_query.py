@@ -1,3 +1,6 @@
+import pytest
+from elasticsearch import RequestError
+
 from portality import models
 
 from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory, EditorGroupFixtureFactory, \
@@ -8,68 +11,68 @@ from portality.bll.services.query import QueryService, Query
 from portality.bll import exceptions
 
 QUERY_ROUTE = {
-    "query" : {
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article"
+    "query": {
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article"
         }
     },
-    "publisher_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "publisher",
-            "query_filters" : ["owner", "only_in_doaj"],
-            "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Journal"
+    "publisher_query": {
+        "journal": {
+            "auth": True,
+            "role": "publisher",
+            "query_filters": ["owner", "only_in_doaj"],
+            "result_filters": ["publisher_result_filter"],
+            "dao": "portality.models.Journal"
         }
     },
-    "admin_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Journal"
+    "admin_query": {
+        "journal": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Application"
         },
     },
-    "api_query" : {
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article",
-            "page_size" : 1
+    "api_query": {
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj", "public_source"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article",
+            "page_size": 1
         },
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Journal"
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj", "public_source"],
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : None,
-            "query_filters" : ["owner", "private_source"],
-            "dao" : "portality.models.Suggestion"
+        "suggestion": {
+            "auth": True,
+            "role": None,
+            "query_filters": ["owner", "private_source"],
+            "dao": "portality.models.Suggestion"
         }
     },
-    "editor_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "editor",
-            "dao" : "portality.models.Journal"
+    "editor_query": {
+        "journal": {
+            "auth": True,
+            "role": "editor",
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "editor",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "editor",
+            "dao": "portality.models.Application"
         }
     },
     "associate_query": {
@@ -78,49 +81,49 @@ QUERY_ROUTE = {
             "role": "associate_editor",
             "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "associate_editor",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "associate_editor",
+            "dao": "portality.models.Application"
         }
     }
 }
 
 SEARCH_ALL_QUERY_ROUTE = {
-    "query" : {
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Journal"
+    "query": {
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Journal"
         }
     },
-    "editor_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Journal"
+    "editor_query": {
+        "journal": {
+            "auth": True,
+            "role": "editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : False,
-            "role" : "editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": False,
+            "role": "editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Application"
         }
     },
     "associate_query": {
         "journal": {
             "auth": False,
             "role": "associate_editor",
-            "query_filters" : ["search_all_meta"],
+            "query_filters": ["search_all_meta"],
             "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : False,
-            "role" : "associate_editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": False,
+            "role": "associate_editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Application"
         }
     }
 }
@@ -143,6 +146,7 @@ QUERY_FILTERS = {
     # search on all meta field
     "search_all_meta" : "portality.lib.query_filters.search_all_meta",
 }
+
 
 def without_keys(d, keys):
     return {x: d[x] for x in d if x not in keys}
@@ -176,7 +180,6 @@ class TestQuery(DoajTestCase):
         j.set_created("2010-01-01T00:00:00Z")
         j.set_last_updated("2012-01-01T00:00:00Z")
         j.set_last_manual_update("2014-01-01T00:00:00Z")
-        j.set_seal(True)
         j.set_owner("rama")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
@@ -244,7 +247,6 @@ class TestQuery(DoajTestCase):
         q = Query()
         q.add_include(["last_updated", "id"])
         assert sorted(q.as_dict()) == sorted({'track_total_hits' : True, "query": {"match_all": {}},"_source": {"includes": ["last_updated", "id"]}}) or sorted(q.as_dict()) == sorted({"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}), sorted(q.as_dict())
-
 
     def test_03_query_svc_get_config(self):
         qsvc = QueryService()
@@ -315,9 +317,9 @@ class TestQuery(DoajTestCase):
         res = {
           "hits": {
             "hits": [
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}}
+              { "_type": "article", "_source": { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}}
             ],
             "total": 3
           }
@@ -328,9 +330,9 @@ class TestQuery(DoajTestCase):
         assert res == {
           "hits": {
             "hits": [
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}}
+              { "_type": "article", "_source": { "admin": {}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {}, "bibjson": {}}},
+              { "_type": "article", "_source": { "admin": {}, "bibjson": {}}}
             ],
             "total": 3
           }
@@ -343,18 +345,18 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
 
-        res1 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
-        res2 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
-        res3 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res1 = { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res2 = { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res3 = { "admin": {"publisher_record_id" : "some_identifier"}, "bibjson": {}}
 
         res1 = qsvc._post_filter_search_results(cfg, res1, unpacked=True)
-        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res1 == { "admin": {}, "bibjson": {}}
 
         res2 = qsvc._post_filter_search_results(cfg, res2, unpacked=True)
-        assert res2 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res2 == { "admin": {}, "bibjson": {}}
 
         res3 = qsvc._post_filter_search_results(cfg, res3, unpacked=True)
-        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res1 == { "admin": {}, "bibjson": {}}
 
     def test_07_get_query(self):
         # q = Query()
@@ -384,7 +386,7 @@ class TestQuery(DoajTestCase):
                     ]
                 }
             },
-            '_source': {'includes': ['last_updated', 'admin.ticked', 'created_date', 'admin.seal', 'id', 'bibjson']},
+            '_source': {'includes': ['last_updated', 'admin.ticked', 'created_date', 'id', 'bibjson']},
             'from': 0, 'size': 100
         }
         q_but_source = without_keys(query.as_dict(), ['_source'])
@@ -591,3 +593,14 @@ class TestQuery(DoajTestCase):
                             {'query': 'application test','default_operator': 'AND'}},
                             'size': 0, 'track_total_hits': True}, account=None, additional_parameters={"ref":"fqw"})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_search__invalid_from(self):
+        acc = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        acc.save(blocking=True)
+        query = {'query': {'bool': {'must': [{'term': {'es_type.exact': 'journal'}}],
+                                    'filter': [{'term': {'admin.in_doaj': True}}]}},
+                 'size': '10', 'from': '@@PQF0l',
+                 'sort': [{'_score': {'order': 'desc'}}],
+                 'track_total_hits': 'true'}
+        with pytest.raises(RequestError):
+            QueryService().search('admin_query', 'journal', query, account=acc, additional_parameters={})

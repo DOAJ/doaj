@@ -43,6 +43,9 @@ class JournalAssedAssignedNotify(EventConsumer):
         notification.short = svc.short_notification(cls.ID).format(
             issns=journal.bibjson().issns_as_text()
         )
-        notification.action = url_for("editor.journal_page", journal_id=journal.id)
+
+        # No action possible due to page removed (see portality.view.editor.journal_page(journal_id))
+        # notification.action = url_for("editor.journal_page", journal_id=journal.id)
 
         svc.notify(notification)
+        return notification

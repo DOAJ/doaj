@@ -25,23 +25,23 @@ class TestJournalAssedAssignedNotify(DoajTestCase):
         assert not JournalAssedAssignedNotify.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
+        with self._make_and_push_test_context_manager("/"):
 
-        source = JournalFixtureFactory.make_journal_source(in_doaj=True)
-        app = models.Journal(**source)
-        # app.save()
+            source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+            app = models.Journal(**source)
+            # app.save()
 
-        acc = models.Account()
-        acc.set_id(app.editor)
-        acc.set_email("test@example.com")
-        acc.save(blocking=True)
+            acc = models.Account()
+            acc.set_id(app.editor)
+            acc.set_email("test@example.com")
+            acc.save(blocking=True)
 
-        event = models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, context={"journal" : app.data})
-        JournalAssedAssignedNotify.consume(event)
+            event = models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, context={"journal" : app.data})
+            JournalAssedAssignedNotify.consume(event)
 
-        time.sleep(1)
-        ns = models.Notification.all()
-        assert len(ns) == 1
+            time.sleep(1)
+            ns = models.Notification.all()
+            assert len(ns) == 1
 
         n = ns[0]
         assert n.who == app.editor
@@ -49,7 +49,7 @@ class TestJournalAssedAssignedNotify(DoajTestCase):
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
         assert n.long is not None
         assert n.short is not None
-        assert n.action is not None
+        assert n.action is None   # view.editor.journal_page has been removed
         assert not n.is_seen()
 
     def test_consume_fail(self):
