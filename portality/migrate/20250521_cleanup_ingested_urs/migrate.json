@@ -3,6 +3,7 @@
 	"types": [
 		{
 			"type" : "application",
+            "action": "index",
 			"init_with_model" : false,
 			"keepalive" : "2m",
 			"functions" : [
@@ -25,7 +26,8 @@
                         ]
                     }
                 },
-                "track_total_hits": true
+                "track_total_hits": true,
+                "size": 0
             }
 		}
 	]
