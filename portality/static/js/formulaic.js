@@ -791,13 +791,14 @@ var formulaic = {
                 this.flagGroups = $("div[class*='" + fieldName + "__question--group--']");
                 this.flagInputsContainer = $("[class^='form__question_inputs_div--']");
                 this.assigneeInputs = this.container.find("input[name$='-flag_assignee']");
-                $("#flags-0-flag_deadline").flatpickr();
                 this.addFlagBtn = this.container.find("#add_flag");
                 this.resolveFlagBtns = $("[id^='resolve_flag--']");
                 this.unresolveFlagBtns = $("[id^='unresolve_flag--']");
                 this.cancelFlagBtns = $("[id^='cancelAddingFlag--']");
                 this.flagNote = $("[id$='-flag_note']")
                 this.textarea_max_height = 150;
+                this.flagDeadline = $("[id$='-flag_deadline']");
+                $(this.flagDeadline).flatpickr();
 
                 this.flagExists = false;
                 this.existingFlagIdx = null;
@@ -838,6 +839,10 @@ var formulaic = {
                 this.flagNote.each((_, textarea) => $(textarea).on("input", () => {
                   textarea.style.height = 'auto'; // Reset first
                   textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
+                }));
+                this.flagDeadline.each((_, input) => $(input).on("change", () => {
+                  //   add check
+                  $(this).siblings('.warning').hide();
                 }));
             }
 

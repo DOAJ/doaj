@@ -69,6 +69,10 @@ $.extend(true, doaj, {
             return isodate_str.replace('T',' ').replace('Z','')
         },
 
+        is_in_the_past: function(date, format=doaj.dates.format.FMT_DATE_STD) {
+            return new Date(date) < new Date()
+        },
+
         parseDate: function(dateStr, format) {
             const formatMap = {
                 'YYYY': '(\\d{4})',
