@@ -840,10 +840,22 @@ var formulaic = {
                   textarea.style.height = 'auto'; // Reset first
                   textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
                 }));
-                this.flagDeadline.each((_, input) => $(input).on("change", () => {
-                  //   add check
-                  $(this).siblings('.warning').hide();
+                this.flagDeadline.each((_, input) => $(input).on("change", (e) => {
+                const $that = $(e.target)
+                if (doaj.dates.is_in_the_past($that.val())){
+                    $that.siblings('.warning').show();
+                }
+                else {
+                    $that.siblings('.warning').hide();
+                }
                 }));
+            }
+
+            this.displayWarning = {
+
+            }
+            this.hideWarning = {
+
             }
 
             this.enableAddBtn = function() {

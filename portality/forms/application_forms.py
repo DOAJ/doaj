@@ -1972,7 +1972,7 @@ class FieldDefinitions:
             "multiple_field",
             "flag_manager"
         ],
-        "merge_disabled": "merge_disabled_notes",
+        "merge_disabled": "merge_disabled_notes"
     }
 
     FLAG_RESOLVED = {
@@ -2010,7 +2010,8 @@ class FieldDefinitions:
         ],
         "help": {
             "placeholder": "deadline (YYYY-MM-DD)",
-            "render_error_box": True
+            "render_error_box": True,
+            "warning_message": Messages.FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING
         },
         "group": "flags",
         "input": "text",

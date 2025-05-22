@@ -8,9 +8,11 @@
                 <p class="form__short-help"><small>{{ subfield.help("short_help") | safe }}</small></p>
             {% endif %}
             {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
-            {% if f.help("render_error_box") != False %} {# some fields have custom error boxes #}
-                <div id="{{ f.name }}_checkbox-errors"></div>
+            <div id="{{ f.name }}-errors"></div>
+            {% if subfield.help("warning_message") %}
+                <div id="{{ f.name }}-warning" class="warning alert alert--danger" style="display:none">{{ subfield.help("warning_message") }}</div>
             {% endif %}
+
         </div>
         {% endfor %}
     </div>

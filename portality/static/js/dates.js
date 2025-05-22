@@ -70,7 +70,14 @@ $.extend(true, doaj, {
         },
 
         is_in_the_past: function(date, format=doaj.dates.format.FMT_DATE_STD) {
-            return new Date(date) < new Date()
+            const input = new Date(date);
+            const today = new Date();
+
+            // Force both to local date only
+            input.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            return input < today;
         },
 
         parseDate: function(dateStr, format) {
