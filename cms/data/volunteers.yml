@@ -158,15 +158,7 @@ ass_ed:
   city: Padang
   country: Indonesia
   language: Bahasa Indonesia, English
-  photo: "Alifia.jpg"
-  
-- name: Ana Melisa Fernandes
-  area: Bird behavior and ecology
-  year_since:
-  city: Bogotá 
-  country: Colombia
-  language: Spanish, English, Portuguese
-  photo: "Ana Melisa Fernandes.jpg" 
+  photo: "Alifia.jpg" 
   
 - name: Amber Osman 
   area: Open Science, Publication Ethics, Scholarly communication
@@ -184,12 +176,21 @@ ass_ed:
   language: Persian (Farsi), English
   photo: "Amir Reza Asnafi.jpg"
 
+- name: Ana Melisa Fernandes
+  area: Bird behavior, Ecology
+  year_since:
+  city: Bogotá 
+  country: Colombia
+  language: Spanish, English, Portuguese
+  photo: "Ana Melisa Fernandes.jpg"
+
 - name: Andrea Imre
   area: Library Science, Music
   year_since:
   city: Carbondale, IL
   country: USA
   language: Hungarian, English
+  photo: "imre.jpg"
 
 - name: Andrea Marchitelli
   area: Library Science
