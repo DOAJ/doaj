@@ -647,6 +647,14 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "MuhamadTaufik.jpg"
+
+- name: Musa Mohammed Ali 
+  area: Microbiology, Immunology
+  year_since:
+  city: Hawassa
+  country: Ethiopia
+  language: English, Arabic, Amharic
+  photo: "Musa_Ali.jpg"
   
 - name: Natalia Popova
   area: Sociology
