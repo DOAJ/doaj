@@ -29,6 +29,7 @@ from portality.models.event import Event
 from portality.models.notifications import Notification
 from portality.models.autocheck import Autocheck
 from portality.models.export import Export
+from portality.models.ur_review_route import URReviewRoute
 
 import sys
 

@@ -19,8 +19,6 @@ from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
 
-from portality.store import StoreFactory
-
 
 class ApplicationService(object):
     """
@@ -33,36 +31,20 @@ class ApplicationService(object):
         :param ur:
         :return:
         """
-        tmpstore = StoreFactory.tmp()
-        container = app.config.get("AUTO_ASSIGN_STORE_CONTAINER")
-        by_publisher = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER")
-        by_country = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY")
-        by_publisher_path = tmpstore.path(container, by_publisher)
-
-        reason = ""
 
         target = None
-        owner = ur.owner
-        with open(by_publisher_path, "r") as f:
-            reader = csv.reader(f)
-            reader.__next__()
-            for row in reader:
-                if row[1] == owner:
-                    target = row[2]
-                    reason = f"Owner `{owner}` is mapped to editor group `{target}`"
-                    break
+        reason = ""
+
+        by_owner = models.URReviewRoute.by_account(ur.owner)
+        if by_owner is not None:
+            reason = f"owner '{ur.owner}' is mapped to editor group '{by_owner.target}'"
+            target = by_owner.target
 
         if target is None:
-            by_country_path = tmpstore.path(container, by_country)
-            country = ur.bibjson().country_name()
-            with open(by_country_path, "r") as f:
-                reader = csv.reader(f)
-                reader.__next__()
-                for row in reader:
-                    if row[0] == country:
-                        target = row[1]
-                        reason = f"Country `{country}` is mapped to editor group `{target}`"
-                        break
+            by_country = models.URReviewRoute.by_country_name(ur.bibjson().country_name())
+            if by_country is not None:
+                reason = f"Country '{ur.bibjson().country_name()}' is mapped to editor group '{by_country.target}'"
+                target = by_country.target
 
         if target is None:
             return
@@ -70,15 +52,11 @@ class ApplicationService(object):
         id = models.EditorGroup.group_exists_by_name(target)
         ur.set_editor_group(id)
         ur.remove_editor()
-        ur.add_note(f"Editor group auto assigned to {target} because: {reason}")
+        ur.add_note(f"Editor group auto assigned to '{target}' because {reason}")
+        return ur
 
     @classmethod
-    def retrieve_ur_editor_group_sheets(cls):
-        tmpstore = StoreFactory.tmp()
-        container = app.config.get("AUTO_ASSIGN_STORE_CONTAINER")
-        by_publisher = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER")
-        by_country = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY")
-
+    def retrieve_ur_editor_group_sheets(cls, prune=True):
         publisher_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET")
         country_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET")
 
@@ -99,6 +77,8 @@ class ApplicationService(object):
         preader.__next__()
         creader.__next__()
 
+        routers = []
+
         for row in preader:
             account = row[1]
             group = row[2]
@@ -114,6 +94,11 @@ class ApplicationService(object):
             if models.EditorGroup.group_exists_by_name(group) is None:
                 raise ValueError("Group not found")
 
+            router = models.URReviewRoute()
+            router.account_id = acc.id
+            router.target = group
+            routers.append(router)
+
         for row in creader:
             country = row[0]
             group = row[1]
@@ -126,9 +111,44 @@ class ApplicationService(object):
             if models.EditorGroup.group_exists_by_name(group) is None:
                 raise ValueError("Group not found")
 
-        # if we get to here we have two valid sheets
-        tmpstore.store(container, by_publisher, StringIO(pdata))
-        tmpstore.store(container, by_country, StringIO(cdata))
+            router = models.URReviewRoute()
+            router.country = country
+            router.target = group
+            routers.append(router)
+
+        # if we get to here we have two valid sheets, so we can update
+        # the local copy
+        models.URReviewRoute.save_all(routers)
+
+        if prune:
+            cls.prune_ur_review_routes()
+
+    @classmethod
+    def prune_ur_review_routes(cls, cutoff=None):
+        """
+        Prune the URReviewRoute records older than cutoff
+        :param cutoff:
+        :return:
+        """
+        if cutoff is None:
+            cutoff = dates.now() - dates.timedelta(days=30)
+
+        q = {
+            "query": {
+                "range": {
+                    "created_date": {
+                        "lt": dates.format(cutoff)
+                    }
+                }
+            }
+        }
+
+        total = models.URReviewRoute.count()
+        candidates = models.URReviewRoute.count(q)
+        if candidates == 0 or total <= candidates:
+            return
+
+        models.URReviewRoute.delete_by_query(q)
 
 
     @staticmethod
