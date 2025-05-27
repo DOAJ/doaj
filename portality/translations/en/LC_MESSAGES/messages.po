@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-13 11:37+0530\n"
+"POT-Creation-Date: 2025-05-26 11:27+0530\n"
 "PO-Revision-Date: 2025-05-05 11:30+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -22,11 +22,15 @@ msgstr ""
 msgid "Does the journal adhere to DOAJ’s definition of open access?"
 msgstr ""
 
-#: forms/application_forms.py:91
+#: forms/application_forms.py:91 forms/application_forms.py:993
+#: forms/application_forms.py:1109 forms/application_forms.py:1237
+#: forms/application_forms.py:1288
 msgid "Yes"
 msgstr ""
 
-#: forms/application_forms.py:92
+#: forms/application_forms.py:92 forms/application_forms.py:994
+#: forms/application_forms.py:1110 forms/application_forms.py:1238
+#: forms/application_forms.py:1289
 msgid "No"
 msgstr ""
 
@@ -35,6 +39,14 @@ msgid ""
 "See <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-"
 "open-access/' target='_blank' rel='noopener'>DOAJ’s definition of open "
 "access explained in full</a>."
+msgstr ""
+
+#: forms/application_forms.py:100
+msgid "You must answer 'Yes'"
+msgstr ""
+
+#: forms/application_forms.py:103
+msgid "You must answer <strong>Yes</strong> to continue"
 msgstr ""
 
 #: forms/application_forms.py:124
@@ -99,6 +111,591 @@ msgid ""
 " greater than {}"
 msgstr ""
 
+#: forms/application_forms.py:984
+msgid "Does the journal routinely screen article submissions for plagiarism?"
+msgstr ""
+
+#: forms/application_forms.py:987
+msgid ""
+"Screening for plagiarism is recommended, but is not a requirement for "
+"inclusion in DOAJ. If the journal does screen for plagiarism, state the "
+"services(s) used on your website."
+msgstr ""
+
+#: forms/application_forms.py:997 forms/application_forms.py:1120
+#: forms/application_forms.py:1249 forms/application_forms.py:1298
+msgid "Select Yes or No"
+msgstr ""
+
+#: forms/application_forms.py:1004 forms/application_forms.py:1209
+#: forms/application_forms.py:1256 forms/application_forms.py:1305
+#: forms/application_forms.py:1425 forms/application_forms.py:1525
+msgid "Where can we find this information?"
+msgstr ""
+
+#: forms/application_forms.py:1005
+msgid "Plagiarism screening"
+msgstr ""
+
+#: forms/application_forms.py:1009 forms/application_forms.py:1036
+#: forms/application_forms.py:1055 forms/application_forms.py:1074
+#: forms/application_forms.py:1216 forms/application_forms.py:1264
+#: forms/application_forms.py:1313 forms/application_forms.py:1430
+#: forms/application_forms.py:1534
+msgid "You must provide a URL"
+msgstr ""
+
+#: forms/application_forms.py:1011
+msgid "Link to the journal’s plagiarism policy"
+msgstr ""
+
+#: forms/application_forms.py:1012
+msgid ""
+"The page should state that the journal actively checks for plagiarism and"
+" explain how this is done (including the name of any software or service "
+"used)."
+msgstr ""
+
+#: forms/application_forms.py:1019
+msgid "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
+msgstr ""
+
+#: forms/application_forms.py:1033
+msgid "Link to the journal’s <b>Aims & Scope</b>"
+msgstr ""
+
+#: forms/application_forms.py:1040
+msgid "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"
+msgstr ""
+
+#: forms/application_forms.py:1052
+msgid "Link to the journal’s <b>Editorial Board</b>"
+msgstr ""
+
+#: forms/application_forms.py:1059
+msgid "Enter the URL for the journal’s <strong>Editorial Board</strong> page"
+msgstr ""
+
+#: forms/application_forms.py:1071
+msgid "Link to the journal’s <b>Instructions for Authors</b>"
+msgstr ""
+
+#: forms/application_forms.py:1078
+msgid ""
+"Enter the URL for the journal’s <strong>Instructions for Authors</strong>"
+" page"
+msgstr ""
+
+#: forms/application_forms.py:1090
+msgid ""
+"Average number of <strong>weeks</strong> between article submission & "
+"publication"
+msgstr ""
+
+#: forms/application_forms.py:1094
+msgid "Enter an average number of weeks"
+msgstr ""
+
+#: forms/application_forms.py:1106
+msgid "Does the journal charge fees for publishing an article (APCs)?"
+msgstr ""
+
+#: forms/application_forms.py:1113
+msgid ""
+"Publication fees are sometimes called article processing charges (APCs). "
+"You should answer Yes if any fee is required from the author for "
+"publishing their paper."
+msgstr ""
+
+#: forms/application_forms.py:1117
+msgid "You must tell us about any APCs"
+msgstr ""
+
+#: forms/application_forms.py:1128 forms/application_forms.py:1190
+msgid "Highest fee charged"
+msgstr ""
+
+#: forms/application_forms.py:1137
+msgid ""
+"If the journal charges a range of fees for the publication of an article,"
+" enter the highest fee. If the fee can be paid in more than one currency,"
+" you may list them here."
+msgstr ""
+
+#: forms/application_forms.py:1175
+msgid "Enter the currency or currencies for the journal’s publishing fees"
+msgstr ""
+
+#: forms/application_forms.py:1197
+msgid "Enter the value of the highest publishing fee the journal has charged"
+msgstr ""
+
+#: forms/application_forms.py:1210 forms/application_forms.py:2082
+msgid "Publication fees"
+msgstr ""
+
+#: forms/application_forms.py:1213
+msgid ""
+"Link to the page where this is stated. The page must declare <b>whether "
+"or not</b> there is a fee to publish an article in the journal."
+msgstr ""
+
+#: forms/application_forms.py:1221
+msgid ""
+"Enter the URL for the journal’s <strong>publication fees</strong> "
+"information page"
+msgstr ""
+
+#: forms/application_forms.py:1233
+msgid ""
+"Does the journal provide a waiver or discount on publication fees for "
+"authors?"
+msgstr ""
+
+#: forms/application_forms.py:1241
+msgid ""
+"Answer <strong>Yes</strong> if the journal provides publication fee "
+"waivers for authors from low-income economies, discounts for authors from"
+" lower middle-income economies, and/or waivers and discounts for other "
+"authors with demonstrable needs."
+msgstr ""
+
+#: forms/application_forms.py:1258
+msgid "Publication fee waiver"
+msgstr ""
+
+#: forms/application_forms.py:1263
+msgid "Link to the journal’s waiver information."
+msgstr ""
+
+#: forms/application_forms.py:1271
+msgid "Enter the URL for the journal’s <strong>waiver information</strong> page"
+msgstr ""
+
+#: forms/application_forms.py:1285
+msgid "Does the journal charge any other fees to authors?"
+msgstr ""
+
+#: forms/application_forms.py:1292
+msgid ""
+"Declare all other charges: editorial processing charges, language editing"
+" fees, colour charges, submission fees, page charges, membership fees, "
+"print subscription costs, other supplementary charges"
+msgstr ""
+
+#: forms/application_forms.py:1295
+msgid "You must declare any other charges if they exist"
+msgstr ""
+
+#: forms/application_forms.py:1307 forms/application_forms.py:2105
+msgid "Other fees"
+msgstr ""
+
+#: forms/application_forms.py:1312
+msgid "Link to the journal’s fees information"
+msgstr ""
+
+#: forms/application_forms.py:1319
+msgid "Enter the URL for the journal’s <strong>fees<strong> information page"
+msgstr ""
+
+#: forms/application_forms.py:1333
+msgid "Long-term preservation service(s) where the journal is currently archived"
+msgstr ""
+
+#: forms/application_forms.py:1337
+msgid "CINES"
+msgstr ""
+
+#: forms/application_forms.py:1338
+msgid "CLOCKSS"
+msgstr ""
+
+#: forms/application_forms.py:1339
+msgid "LOCKSS"
+msgstr ""
+
+#: forms/application_forms.py:1340
+msgid "Internet Archive"
+msgstr ""
+
+#: forms/application_forms.py:1341
+msgid "PKP PN"
+msgstr ""
+
+#: forms/application_forms.py:1342
+msgid "PubMed Central (PMC)"
+msgstr ""
+
+#: forms/application_forms.py:1343
+msgid "Portico"
+msgstr ""
+
+#: forms/application_forms.py:1344 forms/application_forms.py:1373
+msgid "A national library"
+msgstr ""
+
+#: forms/application_forms.py:1346 forms/application_forms.py:1595
+msgid "Other"
+msgstr ""
+
+#: forms/application_forms.py:1348
+msgid ""
+"<em>The journal content isn’t archived with a long-term preservation "
+"service</em>"
+msgstr ""
+
+#: forms/application_forms.py:1353
+msgid ""
+"Content must be actively deposited in each of the options you choose. If "
+"the journal is registered with a service but archiving is not yet active,"
+" choose <em>The journal content isn’t archived with a long-term "
+"preservation service</em>."
+msgstr ""
+
+#: forms/application_forms.py:1356
+msgid "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."
+msgstr ""
+
+#: forms/application_forms.py:1359 forms/application_forms.py:1496
+#: forms/application_forms.py:1605
+msgid "Select <strong>at least one</strong> option"
+msgstr ""
+
+#: forms/application_forms.py:1380
+msgid "Name of national library"
+msgstr ""
+
+#: forms/application_forms.py:1387
+msgid ""
+"Enter the name(s) of the national library or libraries where the journal "
+"is archived"
+msgstr ""
+
+#: forms/application_forms.py:1403
+msgid "Other archiving policy:"
+msgstr ""
+
+#: forms/application_forms.py:1410
+msgid "Enter the name of another archiving policy"
+msgstr ""
+
+#: forms/application_forms.py:1429
+msgid "Link to the preservation and archiving information"
+msgstr ""
+
+#: forms/application_forms.py:1472
+msgid ""
+"Does the journal have a policy allowing authors to deposit versions of "
+"their work in an institutional or other repository of their choice? Where"
+" is this policy recorded?"
+msgstr ""
+
+#: forms/application_forms.py:1477
+msgid "Diadorim"
+msgstr ""
+
+#: forms/application_forms.py:1478
+msgid "Dulcinea"
+msgstr ""
+
+#: forms/application_forms.py:1479
+msgid "Mir@bel"
+msgstr ""
+
+#: forms/application_forms.py:1480
+msgid "Sherpa/Romeo"
+msgstr ""
+
+#: forms/application_forms.py:1481
+msgid "Other (including publisher’s own site)"
+msgstr ""
+
+#: forms/application_forms.py:1483
+msgid "<em>The journal has no repository policy</em>"
+msgstr ""
+
+#: forms/application_forms.py:1486
+msgid ""
+"Many authors wish to deposit a copy of their paper in an institutional or"
+" other repository of their choice. What is the journal’s policy for this?"
+msgstr ""
+
+#: forms/application_forms.py:1488
+msgid ""
+"You should state your policy about the different versions of the "
+"paper:<ul style='list-style-type: none;'><li>Submitted "
+"version</li><li>Accepted version (Author Accepted "
+"Manuscript)</li><li>Published version (Version of Record)</li></ul>"
+msgstr ""
+
+#: forms/application_forms.py:1503
+msgid "Name of other website where policy is registered"
+msgstr ""
+
+#: forms/application_forms.py:1510
+msgid "Enter the name of another repository policy"
+msgstr ""
+
+#: forms/application_forms.py:1535
+msgid ""
+"Provide the link to the policy in the selected directory. Or select "
+"'Other' and provide a link to the information on your website."
+msgstr ""
+
+#: forms/application_forms.py:1591
+msgid "DOIs"
+msgstr ""
+
+#: forms/application_forms.py:1592
+msgid "ARKs"
+msgstr ""
+
+#: forms/application_forms.py:1593
+msgid "Handles"
+msgstr ""
+
+#: forms/application_forms.py:1594
+msgid "PURLs"
+msgstr ""
+
+#: forms/application_forms.py:1596
+msgid "<em>The journal does not use persistent article identifiers</em>"
+msgstr ""
+
+#: forms/application_forms.py:1600
+msgid ""
+"A persistent article identifier (PID) is used to find the article no "
+"matter where it is located. The most common type of PID is the digital "
+"object identifier (DOI). "
+msgstr ""
+
+#: forms/application_forms.py:1602
+msgid ""
+"<a href='https://en.wikipedia.org/wiki/Persistent_identifier' "
+"target='_blank' rel='noopener'>Read more about PIDs.</a>"
+msgstr ""
+
+#: forms/application_forms.py:1612
+msgid "Other identifier"
+msgstr ""
+
+#: forms/application_forms.py:1619
+msgid "Enter the name of another type of identifier"
+msgstr ""
+
+#: forms/application_forms.py:1640
+msgid ""
+"Is the journal part of the <a "
+"href='https://subscribetoopencommunity.org/' target='_blank' "
+"rel='noopener'>Subscribe to Open</a> initiative?"
+msgstr ""
+
+#: forms/application_forms.py:1649
+msgid "Reason for rejection"
+msgstr ""
+
+#: forms/application_forms.py:1657
+msgid "Additional info"
+msgstr ""
+
+#: forms/application_forms.py:1660
+msgid ""
+"The selected reason for rejection, and any additional information you "
+"include, are sent to the journal contact with the rejection email."
+msgstr ""
+
+#: forms/application_forms.py:1671
+msgid "DOAJ Account"
+msgstr ""
+
+#: forms/application_forms.py:1684
+msgid "You must confirm the account id"
+msgstr ""
+
+#: forms/application_forms.py:1695
+msgid "Change status"
+msgstr ""
+
+#: forms/application_forms.py:1710
+msgid ""
+"Set the status to 'In Progress' to signal to the applicant that you have "
+"started your review.Set the status to 'Completed' to alert the Editor "
+"that you have completed your review."
+msgstr ""
+
+#: forms/application_forms.py:1718
+msgid ""
+"Revert the status to 'In Progress' to signal to the Associate Editor that"
+" further work is needed.Set the status to 'Ready' to alert the Managing "
+"Editor that you have completed your review."
+msgstr ""
+
+#: forms/application_forms.py:1733
+msgid "Group"
+msgstr ""
+
+#: forms/application_forms.py:1756
+msgid "Individual"
+msgstr ""
+
+#: forms/application_forms.py:1774
+msgid "Date must be a big-end formatted date (e.g. 2020-11-23)"
+msgstr ""
+
+#: forms/application_forms.py:1781
+msgid "You cannot enter both a discontinued date and continuation information."
+msgstr ""
+
+#: forms/application_forms.py:1786
+msgid ""
+"Please enter the discontinued date in the form YYYY-MM-DD (e.g. "
+"2020-11-23).  If the day of the month is not known, please use '01' (e.g."
+" 2020-11-01)"
+msgstr ""
+
+#: forms/application_forms.py:1795
+msgid "Continues an <strong>older</strong> journal with the ISSN(s)"
+msgstr ""
+
+#: forms/application_forms.py:1800 forms/application_forms.py:1828
+msgid ""
+"The ISSN provided in both fields must be different. Please make sure to "
+"enter the ISSN of an older journal for the first field and the ISSN of a "
+"newer journal for the second field. They cannot be the same."
+msgstr ""
+
+#: forms/application_forms.py:1805 forms/application_forms.py:1833
+msgid "You cannot enter both continuation information and a discontinued date"
+msgstr ""
+
+#: forms/application_forms.py:1815
+msgid "Enter the ISSN(s) of the previous title(s) of this journal."
+msgstr ""
+
+#: forms/application_forms.py:1823
+msgid "Continued by a <strong>newer</strong> journal with the ISSN(s)"
+msgstr ""
+
+#: forms/application_forms.py:1826
+msgid "This is not a valid ISSN"
+msgstr ""
+
+#: forms/application_forms.py:1838
+msgid "Enter the ISSN(s) of the later title(s) that continue this publication."
+msgstr ""
+
+#: forms/application_forms.py:1851
+msgid "Assign one or a maximum of two subject classifications"
+msgstr ""
+
+#: forms/application_forms.py:1854
+msgid "Selecting a subject will not automatically select its sub-categories"
+msgstr ""
+
+#: forms/application_forms.py:1865
+#, python-format
+msgid ""
+"This field is required when setting the Application Status to %(y)s, "
+"%(z)s or %(a)s"
+msgstr ""
+
+#: forms/application_forms.py:1889 forms/application_forms.py:2217
+msgid "Notes"
+msgstr ""
+
+#: forms/application_forms.py:1956 forms/application_forms.py:2231
+msgid "Allow save without validation"
+msgstr ""
+
+#: forms/application_forms.py:1972
+msgid "Open access compliance"
+msgstr ""
+
+#: forms/application_forms.py:1983
+msgid "About the journal"
+msgstr ""
+
+#: forms/application_forms.py:1998
+msgid "Publisher"
+msgstr ""
+
+#: forms/application_forms.py:2008
+msgid "Other organisation, if applicable"
+msgstr ""
+
+#: forms/application_forms.py:2018
+msgid "Licensing"
+msgstr ""
+
+#: forms/application_forms.py:2029
+msgid "Embedded licenses"
+msgstr ""
+
+#: forms/application_forms.py:2039
+msgid "Copyright"
+msgstr ""
+
+#: forms/application_forms.py:2049
+msgid "Peer review"
+msgstr ""
+
+#: forms/application_forms.py:2060
+msgid "Plagiarism"
+msgstr ""
+
+#: forms/application_forms.py:2070
+msgid "Editorial"
+msgstr ""
+
+#: forms/application_forms.py:2095
+msgid "Publication fee waivers"
+msgstr ""
+
+#: forms/application_forms.py:2115
+msgid "Archiving policy"
+msgstr ""
+
+#: forms/application_forms.py:2127
+msgid "Repository policy"
+msgstr ""
+
+#: forms/application_forms.py:2138
+msgid "Unique identifiers & structured data"
+msgstr ""
+
+#: forms/application_forms.py:2148
+msgid "Specify labels for this journal"
+msgstr ""
+
+#: forms/application_forms.py:2158
+msgid "Quick reject"
+msgstr ""
+
+#: forms/application_forms.py:2168
+msgid "Re-assign publisher account"
+msgstr ""
+
+#: forms/application_forms.py:2177
+msgid "Status"
+msgstr ""
+
+#: forms/application_forms.py:2186
+msgid "Assign for review"
+msgstr ""
+
+#: forms/application_forms.py:2197
+msgid "Continuations"
+msgstr ""
+
+#: forms/application_forms.py:2208
+msgid "Subject classification"
+msgstr ""
+
+#: forms/application_forms.py:2241
+msgid "Bulk edit"
+msgstr ""
+
 #: forms/validate.py:141
 msgid "Invalid URL."
 msgstr ""
@@ -130,18 +727,20 @@ msgid "Your progress is automatically saved."
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:11
-msgid "return_to_application_text"
+msgid ""
+"You can return to this application at any time by clicking <a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> "
+"&rarr; <em>Publisher dashboard</em></a> at the top."
 msgstr ""
 "You can return to this application at any time by clicking <a "
 "href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
 "<em>Publisher dashboard</em></a> at the top."
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:12
-msgid "download_list_of_questions"
-msgstr ""
+msgid ""
 "You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
 "only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
 "questions."
+msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:13
 msgid "You must apply online."
@@ -152,29 +751,30 @@ msgid "DOAJ only accepts fully open access journals"
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:20
-msgid "application_form_oa_condition"
-msgstr ""
+msgid ""
 "Open Access is the condition where the copyright holder of a scholarly "
 "work grants usage rights to others using an open license (Creative "
 "Commons or equivalent) allowing for immediate free access to the work and"
 " permitting any user to read, download, copy, distribute, print, search, "
 "or link to the full texts of articles, crawl them for indexing, pass them"
 " as data to software, or use them for any other lawful purpose."
+msgstr ""
 
 #: templates-v2/public/account/login_to_apply.html:12
-msgid "application_apply_read_guide"
-msgstr ""
+msgid ""
 "Read our <a href=\"/apply/guide/\">Guide to applying</a> first. It will "
 "help you understand the basic criteria that your journal should meet. If "
 "you need help with the application form, please <a "
 "href=\"/contact/\">contact us</a>."
+msgstr ""
+
 
 #: templates-v2/public/account/login_to_apply.html:14
-msgid "You_can_print_or_download_a_PDF_list_of_the_questions"
-msgstr ""
+msgid ""
 "You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
 "only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
 "questions."
+msgstr ""
 
 #: templates-v2/public/account/login_to_apply.html:16
 msgid "Log in or register to submit your application."

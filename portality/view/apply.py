@@ -12,6 +12,7 @@ from portality.view.view_helper import exparam_editing_user
 from portality.ui import templates
 
 blueprint = Blueprint('apply', __name__)
+blueprint_locale = Blueprint('apply_locale', __name__)
 
 
 @blueprint.route("/thank-you", methods=["GET"])
@@ -28,10 +29,6 @@ def draft_saved():
 @blueprint.route("/<draft_id>", methods=["GET", "POST"])
 @write_required()
 def public_application(draft_id=None):
-    # update selected language
-    lang = request.args.get('lang')
-    if lang:
-        session['lang'] = lang
 
     if not current_user.is_authenticated:
         return redirect(url_for("account.login",  redirected="apply"))
@@ -98,3 +95,7 @@ def public_application(draft_id=None):
                 return redirect(url_for('apply.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
+
+@blueprint_locale.route("/", methods=["GET", "POST"])
+def public_application_locale(lang):
+    return public_application()

@@ -8,8 +8,8 @@
     <ol>
       <li>{{ _("The application form takes approximately <strong>30 minutes</strong> to complete.") }}</li>
       <li>{{ _("Your progress is automatically saved.") }}</li>
-      <li>{{ _("return_to_application_text", url=url_for("publisher.index")) | safe }}</li>
-      <li>{{ _("download_list_of_questions") }}</li>
+      <li>{{ _("You can return to this application at any time by clicking <a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; <em>Publisher dashboard</em></a> at the top.", url=url_for("publisher.index")) | safe }}</li>
+      <li>{{ _("You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-only.pdf\" target=\"_blank\">print or download</a> a PDF list of the questions.") }}</li>
       <li>{{ _("You must apply online.") }}</li>
     </ol>
 </div>
@@ -17,7 +17,10 @@
 
 <p><strong>{{ _("DOAJ only accepts fully open access journals") }}</strong></p>
 
-<p>{{ _("application_form_oa_condition") }} </p>
+<p>{{ _("Open Access is the condition where the copyright holder of a scholarly work grants usage rights to others using an
+    open license (Creative Commons or equivalent) allowing for immediate free access to the work and permitting any user
+    to read, download, copy, distribute, print, search, or link to the full texts of articles, crawl them for indexing,
+    pass them as data to software, or use them for any other lawful purpose.") }}</p>
 
 {% set fs = formulaic_context.fieldset("basic_compliance") %}
     {% for f in fs.fields() %}

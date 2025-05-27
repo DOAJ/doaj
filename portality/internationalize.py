@@ -1,10 +1,14 @@
-from functools import wraps
+from urllib.parse import urlencode
+
 from flask import g, request, redirect, url_for, session
 from flask_babel import Babel
 
 DEFAULT_LOCALE = "en"
 DEFAULT_TIMEZONE = "UTC"
 LANGUAGES = ['en', 'fr']
+INCLUDE_ROUTES = {
+        'apply'
+    }
 
 def locale_middleware_with_query_params():
     # Get locale from query parameter instead of URL path
@@ -14,58 +18,62 @@ def locale_middleware_with_query_params():
     g.lang = lang  # Store in flask.g for easy access
     return None  # Continue with request
 
+def redirect_url(lang: str = DEFAULT_LOCALE):
+    query_params = request.args.to_dict()
+    query_params.pop('lang', None)  # remove lang from query params which is not required
+    url_to_redirect = f"/{lang}{request.path}"
+    if query_params:
+        url_to_redirect = f"{url_to_redirect}?{urlencode(query_params)}"
+    return redirect(url_to_redirect)
 
 def locale_middleware():
-    # List of routes that should not be prefixed with locale
-    EXEMPT_ROUTES = {
-        'static',
-        'api',
-        '_status',
-        'status',
-        'our_static'
-    }
+    try:
+        # Redirect for included routes
+        if request.path and any(request.path.startswith(f'/{route}') for route in INCLUDE_ROUTES):
+            # update selected language
+            lang = request.args.get('lang')
+            if lang:
+                if lang in LANGUAGES:
+                    session['lang'] = lang
+                return redirect_url(lang)
 
-    # Don't redirect for exempt routes
-    if request.path.startswith('/static') or any(request.path.startswith(f'/{route}') for route in EXEMPT_ROUTES):
-        return
+            if get_url_locale() is None:
+                return redirect_url(get_session_locale())
 
+    except RuntimeError:
+        pass
+    return None
+
+def get_url_locale():
     # Get locale from URL
     path_parts = request.path.split('/')
     if len(path_parts) > 1:
         url_locale = path_parts[1]
         if url_locale in LANGUAGES:
-            return  # Valid locale in URL, continue normally
-
-    # No valid locale in URL, redirect to default locale
-    return redirect(f"/{DEFAULT_LOCALE}{request.path}")
-
-def get_locale():
-    # if a user is logged in, use the locale from the user settings
-    user = getattr(g, 'user', None)
-    if user is not None:
-        return user.locale
-    # otherwise try to guess the language from the user accept
-    # header the browser transmits.  We support de/fr/en in this
-    # example.  The best match wins.
-    # return request.accept_languages.best_match(['de', 'fr', 'en'])
-    # Extract the language code from the URL path
-    lang = request.path.split('/')[1]
-    if lang in LANGUAGES:
-        return lang
-    return DEFAULT_LOCALE
+            return url_locale
+    return None
 
 def get_session_locale():
-    lang = DEFAULT_LOCALE
     if 'lang' in session:
         lang = session.get('lang')
-    if lang in LANGUAGES:
-        return lang
+        if lang in LANGUAGES:
+            return lang
+
     return DEFAULT_LOCALE
+
+def get_locale():
+    lang = get_url_locale()
+    if lang is None:
+        return get_session_locale()
+
+    return lang
 
 def get_timezone():
     user = getattr(g, 'user', None)
     if user is not None:
         return user.timezone
+
+    return DEFAULT_TIMEZONE
 
 
 def url_for_other_page(endpoint, **kwargs):
@@ -80,10 +88,10 @@ def internationalize(app):
     app.config['LANGUAGES'] = LANGUAGES
     app.config['BABEL_TRANSLATION_DIRECTORIES'] = "translations"
 
-    babel = Babel(app, locale_selector=get_session_locale, timezone_selector=get_timezone)
+    babel = Babel(app, locale_selector=get_locale, timezone_selector=get_timezone)
 
     # Add locale middleware
-    app.before_request(locale_middleware_with_query_params)
+    app.before_request(locale_middleware)
 
     # Add to template context
     app.jinja_env.globals['url_for_other_page'] = url_for_other_page

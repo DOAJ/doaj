@@ -9,9 +9,9 @@
               <section class="page-content" id="apply">
                 <h1>Application form</h1>
 
-                    <p>{{ _("application_apply_read_guide") }}</p>
+                    <p>{{ _("Read our <a href=\"/apply/guide/\">Guide to applying</a> first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please <a href=\"/contact/\">contact us</a>.") }}</p>
 
-                    <p>{{ _("You_can_print_or_download_a_PDF_list_of_the_questions") }}</p>
+                    <p>{{ _("You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-only.pdf\" target=\"_blank\">print or download</a> a PDF list of the questions.") }}</p>
 
                     <p>{{ _("Log in or register to submit your application.") }}</p>
 
@@ -19,15 +19,15 @@
 
                     <h2 id="log-in-to-your-account">Log in to your account</h2>
 
-                    <p>→ Don’t have an account? <a href="{{ url_for("account.register") }}">Register here</a>.</p>
+                    <p>→ {{ _("Don’t have an account? <a href=\"%(url)s\">Register here</a>.", url=url_for("account.register")) }}</p>
                         {% include "_account/includes/_login_form.html" %}
-                    <p>If you cannot log in, <a href={{ url_for("account.forgot") }}>reset your password</a>. If you still cannot login, <a href="/contact">contact us</a>.</p>
+                    <p>{{ _("If you cannot log in, <a href=\"%(forgot_account)s\">reset your password</a>. If you still cannot login, <a href=\"/contact\">contact us</a>.", forgot_account=url_for("account.forgot")) }}</p>
                 </section>
             </div>
           <div class="col-md-4">
               <div>
                   <div class="language-selector">
-                      <form action="/apply/" method="GET">
+                      <form id="languageForm" action="/apply/" method="GET">
                         <select id="languageSelect" name="lang" onchange="this.form.submit()">
                             <option value="en" {% if session.get('lang') == 'en' %}selected{% endif %}>English</option>
                             <option value="fr" {% if session.get('lang') == 'fr' %}selected{% endif %}>Français</option>
@@ -37,19 +37,19 @@
               </div>
               <div>
                   <aside class="hero hero--aside">
-                      <h2 class="label">Related help</h2>
+                      <h2 class="label">{{ _("Related help") }}</h2>
                       <ul class="stretch-list">
                           <li class="stretch-list__item">
-                              <a href="{{ url_for('doaj.guide') }}" target="_blank">Guide to applying</a>
+                              <a href="{{ url_for('doaj.guide') }}" target="_blank">{{ _("Guide to applying") }}</a>
                           </li>
                           <li class="stretch-list__item">
-                              <a href="/apply/publisher-responsibilities/" target="_blank">Information for publishers</a>
+                              <a href="/apply/publisher-responsibilities/" target="_blank">{{ _("Information for publishers") }}</a>
                           </li>
                           <li class="stretch-list__item">
-                              <a href="{{ url_for('doaj.transparency') }}" target="_blank">Transparency & best practice</a>
+                              <a href="{{ url_for('doaj.transparency') }}" target="_blank">{{ _("Transparency & best practice") }}</a>
                           </li>
                           <li class="stretch-list__item">
-                              <a href="{{ url_for('doaj.why_index') }}" target="_blank">Why index your journal in DOAJ?</a>
+                              <a href="{{ url_for('doaj.why_index') }}" target="_blank">{{ _("Why index your journal in DOAJ?") }}</a>
                           </li>
                       </ul>
                   </aside>

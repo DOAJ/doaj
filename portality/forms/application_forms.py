@@ -1352,8 +1352,8 @@ class FieldDefinitions:
             "long_help": [
                 lazy_gettext("Content must be actively deposited in each of the options you choose. "
                 "If the journal is registered with a service but archiving is not yet active,"
-                " choose <em>The journal content isn’t archived with a long-term preservation service</em>.",
-                "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust).")]
+                " choose <em>The journal content isn’t archived with a long-term preservation service</em>."),
+                lazy_gettext("PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust).")]
         },
         "validate": [
             {"required": {"message": lazy_gettext("Select <strong>at least one</strong> option")}}
@@ -1730,7 +1730,7 @@ class FieldDefinitions:
     # ~~->$ EditorGroup:FormField~~
     EDITOR_GROUP = {
         "name": "editor_group",
-        "label": "Group",
+        "label": lazy_gettext("Group"),
         "input": "text",
         "widgets": [
             {"autocomplete": {"type": "editor_group", "field": "name", "include": False}}
@@ -1753,7 +1753,7 @@ class FieldDefinitions:
     # ~~->$ Editor:FormField~~
     EDITOR = {
         "name": "editor",
-        "label": "Individual",
+        "label": lazy_gettext("Individual"),
         "input": "select",
         "options_fn": "editor_choices",
         "default": "",
@@ -1862,11 +1862,11 @@ class FieldDefinitions:
                     constants.APPLICATION_STATUS_COMPLETED,
                     constants.APPLICATION_STATUS_ACCEPTED
                 ],
-                "message": "This field is required when setting the Application Status to {y}, {z} or {a}".format(
-                    y=constants.APPLICATION_STATUS_READY,
-                    z=constants.APPLICATION_STATUS_COMPLETED,
-                    a=constants.APPLICATION_STATUS_ACCEPTED
-                )
+                "message": lazy_gettext("This field is required when setting the Application Status to %(y)s, %(z)s or %(a)s",
+                                y=constants.APPLICATION_STATUS_READY,
+                                z=constants.APPLICATION_STATUS_COMPLETED,
+                                a=constants.APPLICATION_STATUS_ACCEPTED
+                            )
             }
             }
         ],
@@ -1886,7 +1886,7 @@ class FieldDefinitions:
     NOTES = {
         "name": "notes",
         "input": "group",
-        "label": "Notes",
+        "label": lazy_gettext("Notes"),
         "repeatable": {
             "initial": 1,
             "add_button_placement": "top"
@@ -1953,7 +1953,7 @@ class FieldDefinitions:
     # ~~->$ OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name": "make_all_fields_optional",
-        "label": "Allow save without validation",
+        "label": lazy_gettext("Allow save without validation"),
         "input": "checkbox",
         "widget": {
             "optional_validation"
@@ -1969,7 +1969,7 @@ class FieldSetDefinitions:
     # ~~->$ BasicCompliance:FieldSet~~
     BASIC_COMPLIANCE = {
         "name": "basic_compliance",
-        "label": "Open access compliance",
+        "label": lazy_gettext("Open access compliance"),
         "fields": [
             FieldDefinitions.BOAI["name"],
             FieldDefinitions.OA_STATEMENT_URL["name"],
@@ -1980,7 +1980,7 @@ class FieldSetDefinitions:
     # ~~->$ AboutJournal:FieldSet~~
     ABOUT_THE_JOURNAL = {
         "name": "about_the_journal",
-        "label": "About the journal",
+        "label": lazy_gettext("About the journal"),
         "fields": [
             FieldDefinitions.TITLE["name"],
             FieldDefinitions.ALTERNATIVE_TITLE["name"],
@@ -1995,7 +1995,7 @@ class FieldSetDefinitions:
     # ~~->$ Publisher:FieldSet~~
     PUBLISHER = {
         "name": "publisher",
-        "label": "Publisher",
+        "label": lazy_gettext("Publisher"),
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
@@ -2005,7 +2005,7 @@ class FieldSetDefinitions:
     # ~~->$ Institution:FieldSet~~
     SOCIETY_OR_INSTITUTION = {
         "name": "society_or_institution",
-        "label": "Other organisation, if applicable",
+        "label": lazy_gettext("Other organisation, if applicable"),
         "fields": [
             FieldDefinitions.INSTITUTION_NAME["name"],
             FieldDefinitions.INSTITUTION_COUNTRY["name"]
@@ -2015,7 +2015,7 @@ class FieldSetDefinitions:
     # ~~->$ Licensing:FieldSet~~
     LICENSING = {
         "name": "licensing",
-        "label": "Licensing",
+        "label": lazy_gettext("Licensing"),
         "fields": [
             FieldDefinitions.LICENSE["name"],
             FieldDefinitions.LICENSE_ATTRIBUTES["name"],
@@ -2026,7 +2026,7 @@ class FieldSetDefinitions:
     # ~~->$ EmbeddedLicense:FieldSet~~
     EMBEDDED_LICENSING = {
         "name": "embedded_licensing",
-        "label": "Embedded licenses",
+        "label": lazy_gettext("Embedded licenses"),
         "fields": [
             FieldDefinitions.LICENSE_DISPLAY["name"],
             FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]
@@ -2036,7 +2036,7 @@ class FieldSetDefinitions:
     # ~~->$ Copyright:FieldSet~~
     COPYRIGHT = {
         "name": "copyright",
-        "label": "Copyright",
+        "label": lazy_gettext("Copyright"),
         "fields": [
             FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"],
             FieldDefinitions.COPYRIGHT_URL["name"]
@@ -2046,7 +2046,7 @@ class FieldSetDefinitions:
     # ~~->$ PeerReview:FieldSet~~
     PEER_REVIEW = {
         "name": "peer_review",
-        "label": "Peer review",
+        "label": lazy_gettext("Peer review"),
         "fields": [
             FieldDefinitions.REVIEW_PROCESS["name"],
             FieldDefinitions.REVIEW_PROCESS_OTHER["name"],
@@ -2057,7 +2057,7 @@ class FieldSetDefinitions:
     # ~~->$ Plagiarism:FieldSet~~
     PLAGIARISM = {
         "name": "plagiarism",
-        "label": "Plagiarism",
+        "label": lazy_gettext("Plagiarism"),
         "fields": [
             FieldDefinitions.PLAGIARISM_DETECTION["name"],
             FieldDefinitions.PLAGIARISM_URL["name"]
@@ -2067,7 +2067,7 @@ class FieldSetDefinitions:
     # ~~->$ Editorial:FieldSet~~
     EDITORIAL = {
         "name": "editorial",
-        "label": "Editorial",
+        "label": lazy_gettext("Editorial"),
         "fields": [
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
@@ -2079,7 +2079,7 @@ class FieldSetDefinitions:
     # ~~->$ APC:FieldSet~~
     APC = {
         "name": "apc",
-        "label": "Publication fees",
+        "label": lazy_gettext("Publication fees"),
         "fields": [
             FieldDefinitions.APC["name"],
             FieldDefinitions.APC_CHARGES["name"],
@@ -2092,7 +2092,7 @@ class FieldSetDefinitions:
     # ~~->$ Waivers:FieldSet~~
     APC_WAIVERS = {
         "name": "apc_waivers",
-        "label": "Publication fee waivers",
+        "label": lazy_gettext("Publication fee waivers"),
         "fields": [
             FieldDefinitions.HAS_WAIVER["name"],
             FieldDefinitions.WAIVER_URL["name"]
@@ -2102,7 +2102,7 @@ class FieldSetDefinitions:
     # ~~->$ OtherFees:FieldSet~~
     OTHER_FEES = {
         "name": "other_fees",
-        "label": "Other fees",
+        "label": lazy_gettext("Other fees"),
         "fields": [
             FieldDefinitions.HAS_OTHER_CHARGES["name"],
             FieldDefinitions.OTHER_CHARGES_URL["name"]
@@ -2112,7 +2112,7 @@ class FieldSetDefinitions:
     # ~~->$ ArchivingPolicy:FieldSet~~
     ARCHIVING_POLICY = {
         "name": "archiving_policy",
-        "label": "Archiving policy",
+        "label": lazy_gettext("Archiving policy"),
         "fields": [
             FieldDefinitions.PRESERVATION_SERVICE["name"],
             FieldDefinitions.PRESERVATION_SERVICE_LIBRARY["name"],
@@ -2124,7 +2124,7 @@ class FieldSetDefinitions:
     # ~~->$ RepositoryPolicy:FieldSet~~
     REPOSITORY_POLICY = {
         "name": "deposit_policy",
-        "label": "Repository policy",
+        "label": lazy_gettext("Repository policy"),
         "fields": [
             FieldDefinitions.DEPOSIT_POLICY["name"],
             FieldDefinitions.DEPOSIT_POLICY_OTHER["name"],
@@ -2135,7 +2135,7 @@ class FieldSetDefinitions:
     # ~~->$ UniqueIdentifiers:FieldSet~~
     UNIQUE_IDENTIFIERS = {
         "name": "unique_identifiers",
-        "label": "Unique identifiers & structured data",
+        "label": lazy_gettext("Unique identifiers & structured data"),
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
             FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]
@@ -2145,7 +2145,7 @@ class FieldSetDefinitions:
 
     LABELS = {
         "name": "labels",
-        "label": "Specify labels for this journal",
+        "label": lazy_gettext("Specify labels for this journal"),
         "fields": [
             FieldDefinitions.S2O["name"]
         ]
@@ -2155,7 +2155,7 @@ class FieldSetDefinitions:
     # ~~^-> QuickReject:Feature~~
     QUICK_REJECT = {
         "name": "quick_reject",
-        "label": "Quick reject",
+        "label": lazy_gettext("Quick reject"),
         "fields": [
             FieldDefinitions.QUICK_REJECT["name"],
             FieldDefinitions.QUICK_REJECT_DETAILS["name"]
@@ -2165,7 +2165,7 @@ class FieldSetDefinitions:
     # ~~->$ Reassign:FieldSet~~
     REASSIGN = {
         "name": "reassign",
-        "label": "Re-assign publisher account",
+        "label": lazy_gettext("Re-assign publisher account"),
         "fields": [
             FieldDefinitions.OWNER["name"]
         ]
@@ -2174,7 +2174,7 @@ class FieldSetDefinitions:
     # ~~->$ Status:FieldSet~~
     STATUS = {
         "name": "status",
-        "label": "Status",
+        "label": lazy_gettext("Status"),
         "fields": [
             FieldDefinitions.APPLICATION_STATUS["name"]
         ]
@@ -2183,7 +2183,7 @@ class FieldSetDefinitions:
     # ~~->$ Reviewers:FieldSet~~
     REVIEWERS = {
         "name": "reviewers",
-        "label": "Assign for review",
+        "label": lazy_gettext("Assign for review"),
         "fields": [
             FieldDefinitions.EDITOR_GROUP["name"],
             FieldDefinitions.EDITOR["name"]
@@ -2194,7 +2194,7 @@ class FieldSetDefinitions:
     # ~~^-> Continuations:Feature~~
     CONTINUATIONS = {
         "name": "continuations",
-        "label": "Continuations",
+        "label": lazy_gettext("Continuations"),
         "fields": [
             FieldDefinitions.CONTINUES["name"],
             FieldDefinitions.CONTINUED_BY["name"],
@@ -2205,7 +2205,7 @@ class FieldSetDefinitions:
     # ~~->$ Subject:FieldSet~~
     SUBJECT = {
         "name": "subject",
-        "label": "Subject classification",
+        "label": lazy_gettext("Subject classification"),
         "fields": [
             FieldDefinitions.SUBJECT["name"]
         ]
@@ -2214,7 +2214,7 @@ class FieldSetDefinitions:
     # ~~->$ Notes:FieldSet~~
     NOTES = {
         "name": "notes",
-        "label": "Notes",
+        "label": lazy_gettext("Notes"),
         "fields": [
             FieldDefinitions.NOTES["name"],
             FieldDefinitions.NOTE["name"],
@@ -2228,7 +2228,7 @@ class FieldSetDefinitions:
     # ~~->$ OptionalValidation:FieldSet~~
     OPTIONAL_VALIDATION = {
         "name": "optional_validation",
-        "label": "Allow save without validation",
+        "label": lazy_gettext("Allow save without validation"),
         "fields": [
             FieldDefinitions.OPTIONAL_VALIDATION["name"]
         ]
@@ -2238,7 +2238,7 @@ class FieldSetDefinitions:
     # ~~^-> BulkEdit:Feature~~
     BULK_EDIT = {
         "name": "bulk_edit",
-        "label": "Bulk edit",
+        "label": lazy_gettext("Bulk edit"),
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],

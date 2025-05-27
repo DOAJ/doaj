@@ -41,6 +41,7 @@ from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
 from portality.view.jct import blueprint as jct
 from portality.view.apply import blueprint as apply
+from portality.view.apply import blueprint_locale as apply_locale
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
@@ -80,6 +81,7 @@ if 'api4' in app.config['FEATURES']:
 app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
+app.register_blueprint(apply_locale, url_prefix='/<lang>/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
 app.register_blueprint(tours, url_prefix="/tours")  # ~~-> Tours:Blueprint~~
