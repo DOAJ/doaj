@@ -47,6 +47,22 @@ class ResponseMockFactory(object):
             raise RuntimeError("oops")
         return GET(url, **kwargs)
 
+    @classmethod
+    def get_file(cls, url_file_map:dict, *args, **kwargs):
+        def get_closure(url, **kwargs):
+            if url in url_file_map.keys():
+                return Response(200, url_file_map[url].read())
+            return GET(url, **kwargs)
+        return get_closure
+
+    @classmethod
+    def get_failure(cls, url_fail_map:dict, *args, **kwargs):
+        def get_closure(url, **kwargs):
+            if url in url_fail_map.keys():
+                return Response(url_fail_map[url][0], url_fail_map[url][1])
+            return GET(url, **kwargs)
+        return get_closure
+
 
 class Response(object):
     def __init__(self, code, content=None):
@@ -63,3 +79,9 @@ class Response(object):
                 yield str(i) * chunk_size
         else:
             yield self.content
+
+    @property
+    def text(self):
+        if self.content is None:
+            return ""
+        return self.content.decode('utf-8') if isinstance(self.content, bytes) else self.content

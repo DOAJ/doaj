@@ -739,8 +739,8 @@ class PublisherUpdateRequest(ApplicationProcessor):
             else:
                 self.target.remove_current_journal()
 
-        # automatically assign the Editorial group
-        DOAJ.applicationService().auto_assign_editor_group(self.target)
+        # automatically assign the Editorial group (turn this off in configuration if needed)
+        DOAJ.applicationService().auto_assign_ur_editor_group(self.target)
 
         # Kick off the post-submission review
         if app.config.get("AUTOCHECK_INCOMING", False):

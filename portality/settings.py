@@ -489,6 +489,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
     "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
     "portality.models.export.Export", # ~~-> Export:Model~~
+    "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
+    "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -818,7 +820,7 @@ QUERY_ROUTE = {
         },
         # ~~->APINotificationQuery:Endpoint~~
         "notifications": {
-            "auth": False,
+            "auth": True,
             "role": "admin",
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
             "required_parameters": None
@@ -827,6 +829,12 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "admin",
             "dao": "portality.models.Export"
+        },
+        "alerts": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.AdminAlert",  # ~~->AdminAlert:Model~~
+            "required_parameters": None
         }
     },
     "associate_query": {
@@ -897,7 +905,7 @@ QUERY_ROUTE = {
     "dashboard_query": {
         # ~~->APINotificationQuery:Endpoint~~
         "notifications": {
-            "auth": False,
+            "auth": True,
             "role": "read_notifications",
             "query_filters": ["who_current_user"],  # ~~-> WhoCurrentUser:Query
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
@@ -1644,9 +1652,10 @@ AUTOCHECK_INCOMING = False
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1  # seconds between requests
 
-AUTO_ASSIGN_STORE_CONTAINER = "autoassign"
-AUTO_ASSIGN_EDITOR_BY_PUBLISHER_FILE = "by_pubisher.csv"
-AUTO_ASSIGN_EDITOR_BY_COUNTRY = "by_country.csv"
+###################################################
+# Automatic Update Request editor group assignment
+
+AUTO_ASSIGN_UR_EDITOR_GROUP = True
 AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=0&single=true&output=csv"
 AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=1948254841&single=true&output=csv"
 

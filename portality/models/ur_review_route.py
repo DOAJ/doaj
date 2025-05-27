@@ -2,12 +2,14 @@ from portality.lib.seamless import SeamlessMixin
 from portality.dao import DomainObject
 from portality.lib.coerce import COERCE_MAP
 from portality.lib import es_data_mapping
+from portality.core import app
 
 STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},
         "created_date": {"coerce": "utcdatetime"},
         "last_updated": {"coerce": "utcdatetime"},
+        "es_type": {"coerce": "unicode"},
         "account_id": {"coerce": "unicode"},
         "country": {"coerce": "unicode"},
         "target": {"coerce": "unicode"}
@@ -15,7 +17,8 @@ STRUCT = {
 }
 
 MAPPING_OPTS = {
-    "dynamic": None
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]
 }
 
 class URReviewRoute(SeamlessMixin, DomainObject):
@@ -23,6 +26,12 @@ class URReviewRoute(SeamlessMixin, DomainObject):
 
     __SEAMLESS_STRUCT__ = STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
+
+    def __init__(self, **kwargs):
+        # FIXME: hack, to deal with ES integration layer being improperly abstracted
+        if "_source" in kwargs:
+            kwargs = kwargs["_source"]
+        super(URReviewRoute, self).__init__(raw=kwargs)
 
     def mappings(self):
         return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
@@ -47,7 +56,11 @@ class URReviewRoute(SeamlessMixin, DomainObject):
             },
             "size": 1
         }
-        return cls.object_query(q)
+        res = cls.object_query(q)
+        if res and len(res) > 0:
+            return res[0]
+        else:
+            return None
 
     @classmethod
     def by_country_name(cls, country_name):
@@ -63,12 +76,20 @@ class URReviewRoute(SeamlessMixin, DomainObject):
             },
             "sort": {
                 "created_date": {
-                    "order": "asc"
+                    "order": "desc"
                 }
             },
             "size": 1
         }
-        return cls.object_query(q)
+        res = cls.object_query(q)
+        if res and len(res) > 0:
+            return res[0]
+        else:
+            return None
+
+    @property
+    def data(self):
+        return self.__seamless__.data
 
     @property
     def account_id(self):

@@ -1,10 +1,9 @@
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi
-from portality.bll.doaj import DOAJ
+from portality.bll import DOAJ, exceptions
 from portality.core import app
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue
-from portality.bll import exceptions
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 class AutoAssignEditorGroupDataTask(BackgroundTask):
 
@@ -16,21 +15,22 @@ class AutoAssignEditorGroupDataTask(BackgroundTask):
         :return:
         """
 
-        def logger(msg):
-            self.background_job.add_audit_message(msg)
-
         try:
-            DOAJ.applicationService().retrieve_ur_editor_group_sheets()
+            routers = DOAJ.applicationService().retrieve_ur_editor_group_sheets()
         except exceptions.RemoteServiceException as e:
-            self.background_job.add_audit_message("Failed to retrieve data from google sheets")
+            msg = "Failed to retrieve data from google sheets: " + str(e)
+            self.background_job.add_audit_message(msg)
             self.background_job.fail()
+            DOAJ.adminAlertsService().alert("bg." + self.__action__, msg)
             return
         except ValueError as e:
-            self.background_job.add_audit_message("At least some of the data was invalid: " + str(e))
+            msg = "At least some of the data was invalid: " + str(e)
+            self.background_job.add_audit_message(msg)
             self.background_job.fail()
+            DOAJ.adminAlertsService().alert("bg." + self.__action__, msg)
             return
 
-        self.background_job.add_audit_message("Latest mapping sheets retrieved")
+        self.background_job.add_audit_message("Latest mapping sheets retrieved and loaded; {x} rules loaded".format(x=len(routers)))
 
     def cleanup(self):
         """
@@ -64,7 +64,7 @@ class AutoAssignEditorGroupDataTask(BackgroundTask):
         auto_assign_editor_group_data.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = AutoAssignEditorGroupDataTask.create_huey_helper(main_queue)
+huey_helper = AutoAssignEditorGroupDataTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

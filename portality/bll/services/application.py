@@ -31,28 +31,34 @@ class ApplicationService(object):
         :param ur:
         :return:
         """
+        if not app.config.get("AUTO_ASSIGN_UR_EDITOR_GROUP", False):
+            return ur
 
         target = None
         reason = ""
 
         by_owner = models.URReviewRoute.by_account(ur.owner)
         if by_owner is not None:
-            reason = f"owner '{ur.owner}' is mapped to editor group '{by_owner.target}'"
+            reason = Messages.AUTOASSIGN__OWNER_MAPPED.format(owner=ur.owner, target=by_owner.target)
             target = by_owner.target
 
         if target is None:
             by_country = models.URReviewRoute.by_country_name(ur.bibjson().country_name())
             if by_country is not None:
-                reason = f"Country '{ur.bibjson().country_name()}' is mapped to editor group '{by_country.target}'"
+                reason = Messages.AUTOASSIGN__COUNTRY_MAPPED.format(country=ur.bibjson().country_name(), target=by_country.target)
                 target = by_country.target
 
         if target is None:
-            return
+            return ur
 
         id = models.EditorGroup.group_exists_by_name(target)
-        ur.set_editor_group(id)
+        if id is None:
+            ur.add_note(Messages.AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING.format(target=target))
+            return ur
+
+        ur.set_editor_group(target)
         ur.remove_editor()
-        ur.add_note(f"Editor group auto assigned to '{target}' because {reason}")
+        ur.add_note(Messages.AUTOASSIGN__NOTE__ASSIGN.format(target=target, reason=reason))
         return ur
 
     @classmethod
@@ -69,7 +75,12 @@ class ApplicationService(object):
             raise exceptions.RemoteServiceException("Failed to retrieve country sheet")
 
         pdata = presp.text
+        if pdata is None or pdata == "":
+            raise ValueError("Publisher sheet is empty")
+
         cdata = cresp.text
+        if cdata is None or cdata == "":
+            raise ValueError("Country sheet is empty")
 
         preader = csv.reader(StringIO(pdata))
         creader = csv.reader(StringIO(cdata))
@@ -123,6 +134,8 @@ class ApplicationService(object):
         if prune:
             cls.prune_ur_review_routes()
 
+        return routers
+
     @classmethod
     def prune_ur_review_routes(cls, cutoff=None):
         """
@@ -146,9 +159,10 @@ class ApplicationService(object):
         total = models.URReviewRoute.count()
         candidates = models.URReviewRoute.count(q)
         if candidates == 0 or total <= candidates:
-            return
+            return 0
 
         models.URReviewRoute.delete_by_query(q)
+        return candidates
 
 
     @staticmethod
