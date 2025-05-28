@@ -17,20 +17,24 @@ tests:
       - step: Click on the Edit button for the update request
       - step: Make a minor change to the form data (e.g. change a URL or a title), then go to the final page
               of the form, select the confirmation checkbox, and click Submit.
+        results:
+          - Your update request is saved and you return to the Publisher's list of Update Requests
       - step: Log out of the Publisher account
       - step: Using the details under `map_by_account` in the testdrive setup, log in using the `maned_username` and 
               `maned_password`
         results:
           - You are taken to the Managing Editor's dashboard
           - There is a card on the dashboard for an Update Request, with the title of the journal you just edited
-          - The editor group for the card is identified as "Account Mapping"
+          - The editor group for the card is identified as "Account Mapping" (along with some random characters)
       - step: Click on the Update Request card
         results:
           - You are taken to the Update Request form for the journal you just edited
-          - The Group field is set to "Account Mapping"
+          - The Group field is set to "Account Mapping" (along with some random characters)
           - There is no Individual editor set
           - There is a note with a recent timestamp indicating that this update request was autoassigned, and the
             reason for the assignment
+      - step: Click "Unlock & Close" then close the tab
+      - step: Log out of the Managing Editor account
 
   - title: Autoassign by Country
     setup:
@@ -38,7 +42,7 @@ tests:
     context:
       role: publisher, admin
     steps:
-      - step: Using the details under `map_by_account` in the testdrive setup, log in using the `publisher_username` 
+      - step: Using the details under `map_by_country` in the testdrive setup, log in using the `publisher_username` 
               and `publisher_password`
         path: /account/login
       - step: Go to the Publisher's list of Update Requests
@@ -46,20 +50,66 @@ tests:
           - There is one update request in the list, and you have an Edit button available
       - step: Click on the Edit button for the update request
       - step: Make a minor change to the form data (e.g. change a URL or a title), then go to the final page
-              of the form, select the confirmation checkbox, and click Submit.
+              of the form, select the confirmation checkbox, and click Submit.  Note that this update request
+              identifies the publisher's country as "Western Sahara", for which no real mapping exists at time of writing.
+              If you are testing this in the future, you may need to change the country to one which does not have a 
+              mapping.
+        results:
+          - Your update request is saved and you return to the Publisher's list of Update Requests
       - step: Log out of the Publisher account
-      - step: Using the details under `map_by_account` in the testdrive setup, log in using the `maned_username` and 
+      - step: Using the details under `map_by_country` in the testdrive setup, log in using the `maned_username` and 
               `maned_password`
         results:
           - You are taken to the Managing Editor's dashboard
           - There is a card on the dashboard for an Update Request, with the title of the journal you just edited
-          - The editor group for the card is identified as "Account Mapping"
+          - The editor group for the card is identified as "Country Mapping" (along with some random characters)
       - step: Click on the Update Request card
         results:
           - You are taken to the Update Request form for the journal you just edited
-          - The Group field is set to "Account Mapping"
+          - The Group field is set to "Country Mapping" (along with some random characters)
           - There is no Individual editor set
           - There is a note with a recent timestamp indicating that this update request was autoassigned, and the
             reason for the assignment
+      - step: Click "Unlock & Close" then close the tab
+      - step: Log out of the Managing Editor account
+
+  - title: No Autoassignment
+    setup:
+      - Run the autoassign testdrive at /testdrive/autoassign if you have not already done so
+    context:
+      role: publisher, admin
+    steps:
+      - step: Using the details under `unmapped` in the testdrive setup, log in using the `publisher_username` 
+              and `publisher_password`
+        path: /account/login
+      - step: Go to the Publisher's list of Update Requests
+        results:
+          - There is one update request in the list, and you have an Edit button available
+      - step: Click on the Edit button for the update request
+      - step: Make a minor change to the form data (e.g. change a URL or a title), then go to the final page
+          of the form, select the confirmation checkbox, and click Submit.  Note that this update request
+          identifies the publisher's country as "Western Sahara", for which no real mapping exists at time of writing.
+          If you are testing this in the future, you may need to change the country to one which does not have a
+          mapping.
+        results:
+          - Your update request is saved and you return to the Publisher's list of Update Requests
+      - step: Log out of the Publisher account
+      - step: Using the details under `unmapped` in the testdrive setup, log in using the `maned_username` and 
+              `maned_password`
+        results:
+          - You are taken to the Managing Editor's dashboard
+          - There is no card on the dashboard for the Update Request you just edited
+      - step: Go to the Update Requests search page
+        path: /admin/update_requests
+      - step: Order the update requests by "Last updated", with most recent first
+        results:
+          - The update request you just edited is at the top of the list
+      - step: Click on the "Review Update" button for the update request
+        results:
+          - There is no Group set
+          - There is no Individual editor set
+          - There is no note indicating that this update request was autoassigned
+      - step: Click "Unlock & Close" then close the tab
+      - step: Log out of the Managing Editor account
 
 
