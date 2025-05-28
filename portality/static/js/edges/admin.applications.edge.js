@@ -345,7 +345,7 @@ $.extend(true, doaj, {
                         "index.has_apc.exact" : "Charges?",
                         'index.license.exact' : 'License',
                         'index.is_flagged': "Only Flagged Records",
-                        'index.flag_assignees.exact': "Flagged to me"
+                        'index.flag_assignees.exact': "Flagged to me",
                         "admin.date_applied": "Date Applied",
                         "last_manual_update": "Last Updated"
                     },
