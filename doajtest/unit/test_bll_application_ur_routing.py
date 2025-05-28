@@ -1,18 +1,15 @@
 import os, csv, io
 
 from doajtest.fixtures import AccountFixtureFactory, EditorGroupFixtureFactory, ApplicationFixtureFactory
-from doajtest.fixtures.application_validate_csv import ApplicationValidateCSVFixtureFactory
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.response import ResponseMockFactory
-from models import URReviewRoute
 from portality.lib.thread_utils import wait_until
 from portality.bll import DOAJ
 from portality import models
 from portality.lib import paths
-from portality.ui.messages import Messages
-from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk
 import requests
 from portality.bll import exceptions
+from portality.models import URReviewRoute
 
 from portality.util import patch_config
 from portality.core import app
@@ -112,16 +109,12 @@ class TestURRouting(DoajTestCase):
 
         for acc, target in ebp_map:
             route = models.URReviewRoute.by_account(acc)
-            assert len(route) == 1
-            route = route[0]
             assert route.target == target
             assert route.account_id == acc
             assert route.country is None
 
         for country, target in ebc_map:
             route = models.URReviewRoute.by_country_name(country)
-            assert len(route) == 1
-            route = route[0]
             assert route.target == target
             assert route.account_id is None
             assert route.country == country

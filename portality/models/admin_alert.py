@@ -22,7 +22,7 @@ MAPPING_OPTS = {
 }
 
 class AdminAlert(SeamlessMixin, DomainObject):
-    __type__ = "ur_review_route"
+    __type__ = "admin_alert"
 
     __SEAMLESS_STRUCT__ = STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
