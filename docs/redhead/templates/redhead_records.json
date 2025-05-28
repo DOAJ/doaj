@@ -1352,7 +1352,6 @@
       "toc_content"
     ],
     "includes": [
-      "includes/svg/seal.svg",
       "includes/_hotjar.html"
     ]
   },
