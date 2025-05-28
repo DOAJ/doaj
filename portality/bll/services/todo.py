@@ -7,7 +7,6 @@ from portality.lib import dates
 from portality.lib.argvalidate import argvalidate
 
 
-
 class TodoService(object):
     """
     ~~Todo:Service->DOAJ:Service~~

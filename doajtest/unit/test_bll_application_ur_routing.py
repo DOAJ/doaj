@@ -1,19 +1,20 @@
-import os, csv, io
+import csv
+import io
+import os
+import requests
 
 from doajtest.fixtures import AccountFixtureFactory, EditorGroupFixtureFactory, ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.response import ResponseMockFactory
-from portality.lib.thread_utils import wait_until
-from portality.bll import DOAJ
 from portality import models
-from portality.lib import paths
-import requests
+from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import URReviewRoute
-
-from portality.util import patch_config
 from portality.core import app
 from portality.lib import dates
+from portality.lib import paths
+from portality.lib.thread_utils import wait_until
+from portality.models import URReviewRoute
+from portality.util import patch_config
 
 EXAMPLE_FILES_DIR = paths.rel2abs(__file__, "..", "example_files")
 

@@ -1,18 +1,15 @@
-import uuid
+from flask import url_for, has_request_context
+from flask_login import current_user
+from wtforms import FormField, FieldList
 
-from portality.core import app
 from portality import models, constants, app_email
+from portality.bll import DOAJ, exceptions
+from portality.core import app
+from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.lib import dates
 from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
-from portality.crosswalks.application_form import ApplicationFormXWalk
-from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.bll import DOAJ, exceptions
-
-from flask import url_for, has_request_context
-from flask_login import current_user
-
-from wtforms import FormField, FieldList
 
 
 class ApplicationProcessor(FormProcessor):

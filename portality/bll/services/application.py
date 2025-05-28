@@ -1,23 +1,18 @@
-import logging
 import csv
 import json
+import logging
 import re
 from io import StringIO
 
-from portality.lib import httputil
-from portality.lib.argvalidate import argvalidate
-from portality.lib import dates
-from portality import models
-from portality.bll import exceptions
+from portality import constants, lock, models
+from portality.bll import DOAJ, exceptions
 from portality.core import app
-from portality import constants
-from portality import lock
-from portality.bll.doaj import DOAJ
-from portality.ui.messages import Messages
-from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.bll.exceptions import AuthoriseException
+from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.lib import dates, httputil
+from portality.lib.argvalidate import argvalidate
+from portality.ui.messages import Messages
 
 
 class ApplicationService(object):
@@ -841,7 +836,7 @@ class ApplicationService(object):
                 try:
                     # ~~ ^->UpdateRequest:Feature ~~
                     update_req, jlock, alock = self.update_request_for_journal(j.id, account=account, lock_records=False)
-                except AuthoriseException as e:
+                except exceptions.AuthoriseException as e:
                     validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR.format(reason=e.reason))
                     continue
 

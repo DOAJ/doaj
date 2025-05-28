@@ -1,8 +1,8 @@
-from portality.lib.seamless import SeamlessMixin
-from portality.dao import DomainObject
-from portality.lib.coerce import COERCE_MAP
-from portality.lib import es_data_mapping
 from portality.core import app
+from portality.dao import DomainObject
+from portality.lib import es_data_mapping
+from portality.lib.coerce import COERCE_MAP
+from portality.lib.seamless import SeamlessMixin
 
 STRUCT = {
     "fields": {

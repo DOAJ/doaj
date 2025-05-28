@@ -1,10 +1,11 @@
 from doajtest.fixtures import EditorGroupFixtureFactory
-from portality import constants
-from doajtest.testdrive.factory import TestDrive
 from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
+from doajtest.testdrive.factory import TestDrive
+from portality import constants
 from portality import models
 from portality.lib import dates
+
 
 class Autoassign(TestDrive):
 

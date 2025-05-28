@@ -52,7 +52,7 @@ class ResponseMockFactory(object):
         def get_closure(url, **kwargs):
             if url in url_file_map.keys():
                 return Response(200, url_file_map[url].read())
-            return GET(url, **kwargs)
+            return GET(url, *args, **kwargs)
         return get_closure
 
     @classmethod
@@ -60,7 +60,7 @@ class ResponseMockFactory(object):
         def get_closure(url, **kwargs):
             if url in url_fail_map.keys():
                 return Response(url_fail_map[url][0], url_fail_map[url][1])
-            return GET(url, **kwargs)
+            return GET(url, *args, **kwargs)
         return get_closure
 
 

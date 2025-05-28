@@ -1,8 +1,9 @@
 # ~~AdminAlerts:Service~~
+from portality import app_email
 from portality import models
 from portality.core import app
-from portality import app_email
 from portality.ui import templates
+
 
 class AdminAlertsService(object):
     def alert(self, source, message):

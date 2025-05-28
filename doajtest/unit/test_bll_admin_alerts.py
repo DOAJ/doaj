@@ -1,10 +1,8 @@
-import time
-
 from doajtest.helpers import DoajTestCase
-from portality.lib.thread_utils import wait_until
 from portality import models
 from portality.bll import DOAJ
-from portality.bll.exceptions import NoSuchObjectException
+from portality.lib.thread_utils import wait_until
+
 
 class TestBLLAdminAlerts(DoajTestCase):
 

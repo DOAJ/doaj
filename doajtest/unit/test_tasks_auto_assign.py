@@ -1,11 +1,10 @@
-import time
-
 from doajtest.helpers import DoajTestCase
 from portality.background import BackgroundApi
+from portality.bll import exceptions
+from portality.bll.services import application
 from portality.core import app
 from portality.tasks import auto_assign_editor_group_data
-from portality.bll.services import application
-from portality.bll import exceptions
+
 
 class MockApplicationService:
     RETURN = [1,2,3]
