@@ -798,7 +798,7 @@ var formulaic = {
                 this.flagNote = $("[id$='-flag_note']")
                 this.textarea_max_height = 150;
                 this.flagDeadline = $("[id$='-flag_deadline']");
-                $(this.flagDeadline).flatpickr();
+                $(this.flagDeadline).flatpickr({"allowInput": true});
 
                 this.flagExists = false;
                 this.existingFlagIdx = null;
@@ -810,6 +810,7 @@ var formulaic = {
                         break;
                     }
                 }
+
 
                 this.setUpEventListeners();
                 this.setUI();
@@ -841,21 +842,18 @@ var formulaic = {
                   textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
                 }));
                 this.flagDeadline.each((_, input) => $(input).on("change", (e) => {
-                const $that = $(e.target)
-                if (doaj.dates.is_in_the_past($that.val())){
-                    $that.siblings('.warning').show();
-                }
-                else {
-                    $that.siblings('.warning').hide();
-                }
+                    const $that = $(e.target);
+                    this.togglePastDeadlineWarning($that);
                 }));
             }
 
-            this.displayWarning = {
-
-            }
-            this.hideWarning = {
-
+            this.togglePastDeadlineWarning = function($deadline_input) {
+                if (doaj.dates.is_in_the_past($deadline_input.val())){
+                    $deadline_input.siblings('.warning').show();
+                }
+                else {
+                    $deadline_input.siblings('.warning').hide();
+                }
             }
 
             this.enableAddBtn = function() {
@@ -918,6 +916,9 @@ var formulaic = {
 
             this.initializeExistingFlag = function () {
                 this.setUpFlagDetails();
+                if ($(this.flagDeadline[this.existingFlagIdx]).val()) {
+                    this.togglePastDeadlineWarning($(this.flagDeadline[this.existingFlagIdx]))
+                }
                 this.setUpNoteDetails();
                 $(this.assigneeInputs[this.existingFlagIdx]).on("change", () => this.setUpFlagDetails());
 
