@@ -48,7 +48,7 @@
                     </li>
                 {% endif %}
                 {% if current_user.has_role("admin") %}
-                    <li class="flex-center">
+                    <li class="flex-center" id="admin_dashboard_nav">
                         <a href="{{ url_for('dashboard.top_todo') }}" class="label">
                             <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
                         </a>
