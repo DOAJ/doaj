@@ -18,6 +18,8 @@ from portality.models.account import Account
 from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
 
+from portality.lib.dates import FMT_DATE_STD
+
 JOURNAL_STRUCT = {
     "objects": [
         "admin", "index"
@@ -60,6 +62,25 @@ JOURNAL_STRUCT = {
 
 class ContinuationException(Exception):
     pass
+
+
+def _order_notes(notes):
+    clusters = {}
+    for note in notes:
+        if "date" not in note:
+            note[
+                "date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
+        if note["date"] not in clusters:
+            clusters[note["date"]] = [note]
+        else:
+            clusters[note["date"]].append(note)
+
+    ordered_keys = sorted(list(clusters.keys()), reverse=True)
+    ordered = []
+    for key in ordered_keys:
+        clusters[key].reverse()
+        ordered += clusters[key]
+    return ordered
 
 
 class JournalLikeObject(SeamlessMixin, DomainObject):
@@ -199,6 +220,12 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def last_manual_update_timestamp(self):
         return self.__seamless__.get_single("last_manual_update", coerce=coerce.to_datestamp())
 
+    @property
+    def most_urgent_flag_deadline_timestamp(self):
+        fn = coerce.to_datestamp()
+        return fn(self.most_urgent_flag_deadline)
+        # return self.__seamless__.get_single("most_urgent_flag_deadline", coerce=coerce.to_datestamp())
+
     def has_been_manually_updated(self):
         lmut = self.last_manual_update_timestamp
         if lmut is None:
@@ -271,10 +298,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    def add_note(self, note, date=None, id=None, author_id=None):
+    def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None, resolved=None):
         if not date:
             date = dates.now_str()
-        obj = {"date": date, "note": note, "id": id, "author_id": author_id}
+        obj = {"date": date, "note": note, "id": id, "author_id": author_id, "flag":  {"assigned_to": assigned_to, "deadline": deadline, "resolved": resolved}}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
         if not id:
             obj["id"] = uuid.uuid4()
@@ -293,29 +320,52 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_notes(self):
         self.__seamless__.delete("admin.notes")
 
+    def is_assigned_to(self, user_id):
+        return any(user_id in flag['flag']['assigned_to'] for flag in self.flags)
+
     @property
     def notes(self):
         return self.__seamless__.get_list("admin.notes")
 
     @property
+    def notes_except_flags(self):
+        return [note for note in self.notes if not note.get("flag") or not note["flag"].get("assigned_to")]
+
+    @property
+    def flags(self):
+        return [note for note in self.notes if note.get("flag") and note["flag"].get("assigned_to")]
+
+    @property
+    def is_flagged(self):
+        return len(self.flags) > 0
+
+    @property
+    def most_urgent_flag_deadline(self):
+        # We allow only 1 flag per record now, but this code allows more
+        # Filter notes to only include those with a 'flag' and a 'deadline'
+        deadlines = [
+            flag["flag"].get("deadline") for flag in self.flags
+            if flag["flag"].get("deadline")
+        ]
+
+        # Find the flag with the earliest deadline
+        if not len(deadlines):
+            return dates.far_in_the_future()  # Dummy date for least urgent date
+
+        earliest_flag_deadline = coerce.find_earliest_date(deadlines, dates_format=FMT_DATE_STD)
+
+        return earliest_flag_deadline
+
+    @property
     def ordered_notes(self):
         """Orders notes by newest first"""
         notes = self.notes
-        clusters = {}
-        for note in notes:
-            if "date" not in note:
-                note["date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
-            if note["date"] not in clusters:
-                clusters[note["date"]] = [note]
-            else:
-                clusters[note["date"]].append(note)
+        return _order_notes(notes)
 
-        ordered_keys = sorted(list(clusters.keys()), reverse=True)
-        ordered = []
-        for key in ordered_keys:
-            clusters[key].reverse()
-            ordered += clusters[key]
-        return ordered
+    @property
+    def ordered_notes_except_flags(self):
+        notes = self.notes_except_flags
+        return _order_notes(notes)
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
@@ -377,6 +427,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         continued = "No"
         has_editor_group = "No"
         has_editor = "No"
+        is_flagged = False
+        flag_assignees = []
+        most_urgent_flag_deadline = dates.far_in_the_future()
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -419,6 +472,16 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         for l in cbib.licences:
             license.append(l.get("type"))
 
+        # check for any flags
+        is_flagged = self.is_flagged
+
+        flag_assignees = [
+            note["flag"]["assigned_to"]
+            for note in self.notes
+            if "assigned_to" in note.get("flag", {}) and note["flag"]["assigned_to"]
+        ]
+        most_urgent_flag_deadline = self.most_urgent_flag_deadline
+
         # deduplicate the lists
         titles = list(set(titles))
         subjects = list(set(subjects))
@@ -459,6 +522,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
             index["asciiunpunctitle"] = asciiunpunctitle
+        if is_flagged:
+            index["is_flagged"] = is_flagged
+            index["flag_assignees"] = flag_assignees
+            if most_urgent_flag_deadline:
+                index["most_urgent_flag_deadline"] = most_urgent_flag_deadline
         index["continued"] = continued
         index["has_editor_group"] = has_editor_group
         index["has_editor"] = has_editor
