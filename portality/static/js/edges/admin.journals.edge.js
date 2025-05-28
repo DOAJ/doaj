@@ -585,7 +585,7 @@ $.extend(true, doaj, {
                         "bibjson.apc.has_apc": "Has APC?",
                         "bibjson.other_charges.has_other_charges": "Has other charges?",
                         'index.is_flagged': "Only Flagged Records",
-                        'index.flag_assignees.exact': "Flagged to me"
+                        'index.flag_assignees.exact': "Flagged to me",
                         "created_date": "Created Date",
                         "last_manual_update": "Last Updated"
                     },
