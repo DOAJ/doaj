@@ -85,6 +85,9 @@ if __name__ == "__main__":
     # Turn off debug so we don't get extra messages in the output
     app.config['DEBUG'] = False
 
+    # Turn off autoassignment so we don't unnecessarily assign URs to the maneds
+    app.config["AUTO_ASSIGN_UR_EDITOR_GROUP"] = False
+
     if args.sys:
         acc = sys_acc
     else:

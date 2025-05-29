@@ -1,27 +1,171 @@
-import logging
 import csv
 import json
+import logging
 import re
+from io import StringIO
 
-from portality.lib.argvalidate import argvalidate
-from portality.lib import dates
-from portality import models
-from portality.bll import exceptions
+from portality import constants, lock, models
+from portality.bll import DOAJ, exceptions
 from portality.core import app
-from portality import constants
-from portality import lock
-from portality.bll.doaj import DOAJ
-from portality.ui.messages import Messages
-from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.bll.exceptions import AuthoriseException
+from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.lib import dates, httputil
+from portality.lib.argvalidate import argvalidate
+from portality.ui.messages import Messages
 
 
 class ApplicationService(object):
     """
     ~~Application:Service->DOAJ:Service~~
     """
+
+    def auto_assign_ur_editor_group(self, ur: models.Application):
+        """
+        Auto assign editor group to the update request
+        :param ur:
+        :return:
+        """
+        if not app.config.get("AUTO_ASSIGN_UR_EDITOR_GROUP", False):
+            return ur
+
+        target = None
+        reason = ""
+
+        by_owner = models.URReviewRoute.by_account(ur.owner)
+        if by_owner is not None:
+            reason = Messages.AUTOASSIGN__OWNER_MAPPED.format(owner=ur.owner, target=by_owner.target)
+            target = by_owner.target
+
+        if target is None:
+            by_country = models.URReviewRoute.by_country_name(ur.bibjson().country_name())
+            if by_country is not None:
+                reason = Messages.AUTOASSIGN__COUNTRY_MAPPED.format(country=ur.bibjson().country_name(), target=by_country.target)
+                target = by_country.target
+
+        if target is None:
+            return ur
+
+        id = models.EditorGroup.group_exists_by_name(target)
+        if id is None:
+            ur.add_note(Messages.AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING.format(target=target))
+            return ur
+
+        ur.set_editor_group(target)
+        ur.remove_editor()
+        ur.add_note(Messages.AUTOASSIGN__NOTE__ASSIGN.format(target=target, reason=reason))
+        return ur
+
+    @classmethod
+    def retrieve_ur_editor_group_sheets(cls, prune=True):
+        start = dates.now()
+
+        publisher_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET")
+        country_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET")
+
+        presp = httputil.get(publisher_sheet)
+        if presp.status_code != 200:
+            raise exceptions.RemoteServiceException("Failed to retrieve publisher sheet from {x}".format(x=publisher_sheet))
+
+        cresp = httputil.get(country_sheet)
+        if cresp.status_code != 200:
+            raise exceptions.RemoteServiceException("Failed to retrieve country sheet from {x}".format(x=country_sheet))
+
+        presp.encoding = "utf-8"
+        pdata = presp.text
+        if pdata is None or pdata == "":
+            raise ValueError("Publisher sheet is empty at {x}".format(x=publisher_sheet))
+
+        cresp.encoding = "utf-8"
+        cdata = cresp.text
+        if cdata is None or cdata == "":
+            raise ValueError("Country sheet is empty at {x}".format(x=country_sheet))
+
+        preader = csv.reader(StringIO(pdata))
+        creader = csv.reader(StringIO(cdata))
+
+        preader.__next__()
+        creader.__next__()
+
+        routers = []
+
+        for i, row in enumerate(preader):
+            account = row[1]
+            group = row[2]
+
+            if account is None or account == "":
+                raise ValueError(f"Publisher Sheet: Account is empty on row {i+2}")
+            if group is None or group == "":
+                raise ValueError(f"Publisher Sheet: Group is empty on row {i+2}")
+
+            acc = models.Account.pull(account)
+            if acc is None:
+                raise ValueError(f"Publisher Sheet: Account {account} not found in DOAJ; row {i+2}")
+            if models.EditorGroup.group_exists_by_name(group) is None:
+                raise ValueError(f"Publisher Sheet: Group {group} not found in DOAJ; row {i+2}")
+
+            router = models.URReviewRoute()
+            router.account_id = acc.id
+            router.target = group
+            routers.append(router)
+
+        for i, row in enumerate(creader):
+            country = row[0]
+            group = row[1]
+
+            if country is None or country == "":
+                raise ValueError(f"Country Sheet: Country is empty on row {i+2}")
+            if group is None or group == "":
+                raise ValueError(f"Country Sheet: Group is empty on row {i+2}")
+
+            if models.EditorGroup.group_exists_by_name(group) is None:
+                raise ValueError(f"Country Sheet: Group {group} not found in DOAJ; row {i+2}")
+
+            router = models.URReviewRoute()
+            router.country = country
+            router.target = group
+            routers.append(router)
+
+        # if we get to here we have two valid sheets, so we can update
+        # the local copy
+        # Note that we HAVE to block this save, as if the records are not
+        # guaranteed saved before the prune starts all the old records will remain, and
+        # they can mess with the auto-assignment logic
+        models.URReviewRoute.save_all(routers, blocking=True)
+
+        if prune:
+            cls.prune_ur_review_routes(cutoff=start)
+
+        return routers
+
+    @classmethod
+    def prune_ur_review_routes(cls, cutoff=None):
+        """
+        Prune the URReviewRoute records older than cutoff
+        :param cutoff:
+        :return:
+        """
+        if cutoff is None:
+            cutoff = dates.now() - dates.timedelta(days=1)
+
+        q = {
+            "query": {
+                "range": {
+                    "created_date": {
+                        "lt": dates.format(cutoff)
+                    }
+                }
+            }
+        }
+
+        total = models.URReviewRoute.count()
+        candidates = models.URReviewRoute.count(q)
+        if candidates == 0 or total <= candidates:
+            return 0
+
+        models.URReviewRoute.delete_by_query(q)
+        return candidates
+
 
     @staticmethod
     def prevent_concurrent_ur_submission(ur: models.Application, record_if_not_concurrent=True):
@@ -635,7 +779,7 @@ class ApplicationService(object):
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("pissn")),
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("eissn"))
                 ]
-                issns = [issn for issn in issns if issn is not None and issn is not ""]
+                issns = [issn for issn in issns if issn is not None and issn != ""]
 
                 try:
                     j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)
@@ -699,7 +843,7 @@ class ApplicationService(object):
                 try:
                     # ~~ ^->UpdateRequest:Feature ~~
                     update_req, jlock, alock = self.update_request_for_journal(j.id, account=account, lock_records=False)
-                except AuthoriseException as e:
+                except exceptions.AuthoriseException as e:
                     validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR.format(reason=e.reason))
                     continue
 
