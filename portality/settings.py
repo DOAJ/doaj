@@ -835,6 +835,12 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.AdminAlert",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        "autoassign": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.URReviewRoute",  # ~~->AdminAlert:Model~~
+            "required_parameters": None
         }
     },
     "associate_query": {
@@ -1374,6 +1380,7 @@ TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 TASK_DATA_RETENTION_DAYS = {
     "notification": 180,  # ~~-> Notifications:Feature ~~
     "background_job": 180,  # ~~-> BackgroundJobs:Feature ~~
+    "admin_alert": 180,  # ~~-> AdminAlerts:Feature ~~
 }
 
 ########################################
@@ -1658,6 +1665,7 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1  # seconds between requests
 AUTO_ASSIGN_UR_EDITOR_GROUP = True
 AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=0&single=true&output=csv"
 AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=1948254841&single=true&output=csv"
+AUTO_ASSIGN_EDITOR_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1EDvesL3si4zRj97RCUjTcqglin_XJ5OLGAR8xifoTr0/edit"
 
 ##################################################
 # Background jobs Management settings

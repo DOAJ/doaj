@@ -910,3 +910,8 @@ def reports_search():
 @login_required
 def admin_alerts():
     return render_template(templates.ADMIN_ALERTS_SEARCH)
+
+@blueprint.route("/autoassign", methods=["GET"])
+@login_required
+def autoassign_search():
+    return render_template(templates.ADMIN_AUTOASSIGN_SEARCH)

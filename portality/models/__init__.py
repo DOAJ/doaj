@@ -1,40 +1,38 @@
-import sys
 from typing import Any
-
-# non versioned imports for convenience and consistency
-from portality.models.account import Account
-from portality.models.admin_alert import AdminAlert
-from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, \
-    NoJournalException, ArticleTombstone
-from portality.models.atom import AtomRecord
-from portality.models.autocheck import Autocheck
-from portality.models.background import BackgroundJob
-from portality.models.cache import Cache
-from portality.models.editors import EditorGroup, EditorGroupMemberQuery, EditorGroupQuery
-from portality.models.event import Event
-from portality.models.export import Export
-from portality.models.harvester import HarvestState
-from portality.models.history import ArticleHistory, JournalHistory
-from portality.models.lcc import LCC
-from portality.models.lock import Lock
-from portality.models.news import News
-from portality.models.notifications import Notification
-from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
-from portality.models.openurl import OpenURLRequest
-from portality.models.preservation import PreservationState
-from portality.models.provenance import Provenance
-from portality.models.search import JournalArticle, JournalStatsQuery, ArticleStatsQuery
-from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery, BulkArticles
-from portality.models.ur_review_route import URReviewRoute
-
 # import the versioned objects, so that the current version is the default one
 from portality.models.v2 import shared_structs
-from portality.models.v2.application import Application, SuggestionQuery, OwnerStatusQuery, DraftApplication, \
-    AllPublisherApplications
-from portality.models.v2.application import Application as Suggestion
 from portality.models.v2.bibjson import JournalLikeBibJSON
-from portality.models.v2.journal import JournalLikeObject, Journal, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, \
-    ContinuationException
+from portality.models.v2.journal import JournalLikeObject, Journal, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
+from portality.models.v2.application import Application, SuggestionQuery, OwnerStatusQuery, DraftApplication, AllPublisherApplications
+
+from portality.models.v2.application import Application as Suggestion
+
+# non versioned imports for convenience and consistency
+from portality.models.lcc import LCC
+from portality.models.account import Account
+from portality.models.editors import EditorGroup, EditorGroupMemberQuery, EditorGroupQuery
+from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery, BulkArticles
+from portality.models.lock import Lock
+from portality.models.history import ArticleHistory, JournalHistory
+from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException, ArticleTombstone
+from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
+from portality.models.atom import AtomRecord
+from portality.models.search import JournalArticle, JournalStatsQuery, ArticleStatsQuery
+from portality.models.cache import Cache
+from portality.models.openurl import OpenURLRequest
+from portality.models.provenance import Provenance
+from portality.models.background import BackgroundJob
+from portality.models.preservation import PreservationState
+from portality.models.news import News
+from portality.models.harvester import HarvestState
+from portality.models.event import Event
+from portality.models.notifications import Notification
+from portality.models.autocheck import Autocheck
+from portality.models.export import Export
+from portality.models.ur_review_route import URReviewRoute
+from portality.models.admin_alert import AdminAlert
+
+import sys
 
 
 def lookup_model(name='', capitalize=True, split_on="_"):

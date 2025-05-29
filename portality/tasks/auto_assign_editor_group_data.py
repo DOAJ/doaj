@@ -15,8 +15,11 @@ class AutoAssignEditorGroupDataTask(BackgroundTask):
         :return:
         """
 
+        params = self.background_job.params
+        prune = self.get_param(params, "prune", True)
+
         try:
-            routers = DOAJ.applicationService().retrieve_ur_editor_group_sheets()
+            routers = DOAJ.applicationService().retrieve_ur_editor_group_sheets(prune=prune)
         except exceptions.RemoteServiceException as e:
             msg = "Failed to retrieve data from google sheets: " + str(e)
             self.background_job.add_audit_message(msg)
@@ -48,8 +51,12 @@ class AutoAssignEditorGroupDataTask(BackgroundTask):
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
+        prune = kwargs.get("prune", True)
+        params = {}
+        cls.set_param(params, "prune", prune)
+
         # prepare a job record
-        job = background_helper.create_job(username, cls.__action__, queue_id=huey_helper.queue_id)
+        job = background_helper.create_job(username, cls.__action__, queue_id=huey_helper.queue_id, params=params)
         return job
 
     @classmethod

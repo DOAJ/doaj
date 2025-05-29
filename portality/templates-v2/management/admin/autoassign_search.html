@@ -8,21 +8,21 @@
 {% endblock %}
 
 {% block admin_content %}
-    <div id="admin_alerts"></div>
+    <p>Data For Autoassignments can be modified using the <a href="{{ app.config.get("AUTO_ASSIGN_EDITOR_GOOGLE_SHEET") }}" target="_blank">input sheets</a>.</p>
+    <div id="autoassign"></div>
 {% endblock %}
 
 {% block admin_js %}
-
     <script type="text/javascript">
         $.extend(true, doaj, {
-            adminAlertsSearchConfig : {
-                searchPath : '/admin_query/alerts/_search',
-                managePath: '/service/alerts/'
+            adminAutoassignSearchConfig : {
+                searchPath : '/admin_query/autoassign/_search'
             }
         });
     </script>
 
     {% include "includes/_edges_common_js.html" %}
-    <script type="text/javascript" src="/static/js/edges/admin.alerts.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.TabularResultsRenderer.js"></script>
+    <script type="text/javascript" src="/static/js/edges/admin.autoassign.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}

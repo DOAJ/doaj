@@ -184,7 +184,7 @@ def manage_alert(alert_id, action):
     if not current_user.has_role("admin"):
         abort(403)
 
-    if action not in ['in_progress', 'resolved']:
+    if action not in ['in_progress', 'closed']:
         abort(400)
 
     svc = DOAJ.adminAlertsService()

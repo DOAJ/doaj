@@ -112,4 +112,38 @@ tests:
       - step: Click "Unlock & Close" then close the tab
       - step: Log out of the Managing Editor account
 
-
+  - title: Autoassign import failure alert
+    setup:
+      - Run the autoassign testdrive at /testdrive/autoassign if you have not already done so
+    context:
+      role: admin
+    steps:
+      - step: Using the details under `map_by_account` in the testdrive setup, log in using the `admin_username` 
+              and `admin_password`
+      - step: Go to the Admin Dashboard
+        path: /dashboard
+        results:
+          - On the left navigation, there is a menu item with an alert triangle icon
+      - step: Click on the menu item with the alert triangle icon
+        path: /admin/alerts
+        results:
+          - You are taken to the Admin Alerts page
+          - The "new" alert filter is already selected
+          - There is an alert from "Autoassign test" with a recent date
+      - step: Click "Set In Progress"
+        results:
+          - A pop-up tells you the operation was successful and to reload the page
+      - step: Reload the page
+        results:
+          - The alert has disappeared
+      - step: Clear the "new" filter using the X next to the filter name
+        results:
+          - All alerts are now visible, including the one you just set to "In Progress" (there may only be this one alert in the test system)
+          - The alert has only one option "Mark Closed"
+      - step: Click "Mark Closed"
+        results:
+          - A pop-up tells you the operation was successful and to reload the page
+      - step: Reload the page
+        results:
+          - The alert is still visible, but now has a status of "Closed"
+          - There are no buttons available on the alert.

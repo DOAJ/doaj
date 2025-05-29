@@ -92,6 +92,12 @@ class Autoassign(TestDrive):
         ur2.target = eg2.name
         ur2.save()
 
+        alert = models.AdminAlert()
+        alert.state = alert.STATE_NEW
+        alert.message = "Test alert for autoassign"
+        alert.source = "Autoassign test"
+        alert.save()
+
         return {
             "map_by_account": {
                 "publisher_username": pub1.id,
@@ -121,6 +127,7 @@ class Autoassign(TestDrive):
                 "maned_password": pw6
             },
             "mappings": [ur1.id, ur2.id],
+            "alert": alert.id
         }
 
 
@@ -149,5 +156,7 @@ class Autoassign(TestDrive):
         eg.delete()
         eg = models.EditorGroup.pull_by_key("name", params["unmapped"]["editor_group"])
         eg.delete()
+
+        models.AdminAlert.remove_by_id(params["alert"])
 
         return {"status": "success"}

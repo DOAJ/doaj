@@ -58,24 +58,28 @@ class ApplicationService(object):
 
     @classmethod
     def retrieve_ur_editor_group_sheets(cls, prune=True):
+        start = dates.now()
+
         publisher_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET")
         country_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET")
 
         presp = httputil.get(publisher_sheet)
         if presp.status_code != 200:
-            raise exceptions.RemoteServiceException("Failed to retrieve publisher sheet")
+            raise exceptions.RemoteServiceException("Failed to retrieve publisher sheet from {x}".format(x=publisher_sheet))
 
         cresp = httputil.get(country_sheet)
         if cresp.status_code != 200:
-            raise exceptions.RemoteServiceException("Failed to retrieve country sheet")
+            raise exceptions.RemoteServiceException("Failed to retrieve country sheet from {x}".format(x=country_sheet))
 
+        presp.encoding = "utf-8"
         pdata = presp.text
         if pdata is None or pdata == "":
-            raise ValueError("Publisher sheet is empty")
+            raise ValueError("Publisher sheet is empty at {x}".format(x=publisher_sheet))
 
+        cresp.encoding = "utf-8"
         cdata = cresp.text
         if cdata is None or cdata == "":
-            raise ValueError("Country sheet is empty")
+            raise ValueError("Country sheet is empty at {x}".format(x=country_sheet))
 
         preader = csv.reader(StringIO(pdata))
         creader = csv.reader(StringIO(cdata))
@@ -85,37 +89,37 @@ class ApplicationService(object):
 
         routers = []
 
-        for row in preader:
+        for i, row in enumerate(preader):
             account = row[1]
             group = row[2]
 
             if account is None or account == "":
-                raise ValueError("Account is empty")
+                raise ValueError(f"Publisher Sheet: Account is empty on row {i+2}")
             if group is None or group == "":
-                raise ValueError("Group is empty")
+                raise ValueError(f"Publisher Sheet: Group is empty on row {i+2}")
 
             acc = models.Account.pull(account)
             if acc is None:
-                raise ValueError("Account not found")
+                raise ValueError(f"Publisher Sheet: Account {account} not found in DOAJ; row {i+2}")
             if models.EditorGroup.group_exists_by_name(group) is None:
-                raise ValueError("Group not found")
+                raise ValueError(f"Publisher Sheet: Group {group} not found in DOAJ; row {i+2}")
 
             router = models.URReviewRoute()
             router.account_id = acc.id
             router.target = group
             routers.append(router)
 
-        for row in creader:
+        for i, row in enumerate(creader):
             country = row[0]
             group = row[1]
 
             if country is None or country == "":
-                raise ValueError("Country is empty")
+                raise ValueError(f"Country Sheet: Country is empty on row {i+2}")
             if group is None or group == "":
-                raise ValueError("Group is empty")
+                raise ValueError(f"Country Sheet: Group is empty on row {i+2}")
 
             if models.EditorGroup.group_exists_by_name(group) is None:
-                raise ValueError("Group not found")
+                raise ValueError(f"Country Sheet: Group {group} not found in DOAJ; row {i+2}")
 
             router = models.URReviewRoute()
             router.country = country
@@ -124,10 +128,13 @@ class ApplicationService(object):
 
         # if we get to here we have two valid sheets, so we can update
         # the local copy
-        models.URReviewRoute.save_all(routers)
+        # Note that we HAVE to block this save, as if the records are not
+        # guaranteed saved before the prune starts all the old records will remain, and
+        # they can mess with the auto-assignment logic
+        models.URReviewRoute.save_all(routers, blocking=True)
 
         if prune:
-            cls.prune_ur_review_routes()
+            cls.prune_ur_review_routes(cutoff=start)
 
         return routers
 
@@ -139,7 +146,7 @@ class ApplicationService(object):
         :return:
         """
         if cutoff is None:
-            cutoff = dates.now() - dates.timedelta(days=30)
+            cutoff = dates.now() - dates.timedelta(days=1)
 
         q = {
             "query": {
@@ -772,7 +779,7 @@ class ApplicationService(object):
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("pissn")),
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("eissn"))
                 ]
-                issns = [issn for issn in issns if issn is not None and issn is not ""]
+                issns = [issn for issn in issns if issn is not None and issn != ""]
 
                 try:
                     j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)

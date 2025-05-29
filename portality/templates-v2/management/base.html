@@ -48,6 +48,14 @@
                     </li>
                 {% endif %}
                 {% if current_user.has_role("admin") %}
+                    <li class="dropdown dropdown--notifications flex-center" id="system_nav">
+                        <a href="#" class="dropdown__trigger label" id="dropdown__trigger--system" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span><span data-feather="aperture" aria-hidden="true"></span> System objects</span>
+                        </a>
+                        <ul class="dropdown__menu notifications" id="system_views">
+                            <li><a href="{{ url_for("admin.autoassign_search") }}" class="dropdown__link">Autoassign</a></li>
+                        </ul>
+                    </li>
                     <li class="flex-center">
                         <a href="{{ url_for('dashboard.top_todo') }}" class="label">
                             <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>

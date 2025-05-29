@@ -28,7 +28,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "source.exact",
                     display: "Source",
-                    deactivateThreshold: 1,
+                    deactivateThreshold: 0,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -44,7 +44,7 @@ $.extend(true, doaj, {
                     display: "State",
                     orderBy: "term",
                     orderDir: "asc",
-                    deactivateThreshold: 1,
+                    deactivateThreshold: 0,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -117,8 +117,14 @@ $.extend(true, doaj, {
                     id: "results",
                     category: "results",
                     renderer: edges.bs3.newResultsFieldsByRowRenderer({
+                        noResultsText: "Great news, there are no alerts!",
                         rowDisplay : [
                             [
+                                {
+                                    pre : "<strong>[",
+                                    field: "state",
+                                    post: "]</strong> "
+                                },
                                 {
                                     pre : "From <strong>",
                                     field: "source",
@@ -140,8 +146,16 @@ $.extend(true, doaj, {
                             [
                                 {
                                     valueFunction: function(val, res, component) {
-                                        let frag = `<a href="${doaj.adminAlertsSearchConfig.managePath}/${res.id}/in_progress" class="btn btn-primary">Set In Progress</a>
-                                                            <a href="${doaj.adminAlertsSearchConfig.managePath}/${res.id}/closed" class="btn btn-success">Resolved</a>`;
+                                        let controlClass = edges.css_classes(component.namespace, "control");
+                                        let in_progress = `<a class="button ${controlClass}" href="${doaj.adminAlertsSearchConfig.managePath}${res.id}/in_progress">Set In Progress</a>`;
+                                        let resolved = `<a class="button ${controlClass}" href="${doaj.adminAlertsSearchConfig.managePath}${res.id}/closed">Mark Closed</a>`;
+                                        let frag = "";
+                                        if (res.state === "new") {
+                                            frag = in_progress + " " + resolved;
+                                        } else if (res.state === "in_progress") {
+                                            frag = resolved;
+                                        }
+                                        return frag;
                                     }
                                 }
                             ]
@@ -178,6 +192,27 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error. Please reload the page and try again. If the issue persists please contact an administrator.");
+                    },
+                    "edges:post-render" : function() {
+                        let resultsComponent = doaj.adminAlertsSearch.activeEdges[selector].getComponent({id: "results"});
+                        let controllSelector = edges.css_class_selector(resultsComponent.renderer.namespace, "control");
+                        $(controllSelector).on("click", function(e) {
+                            e.preventDefault();
+                            let a = e.currentTarget;
+                            let link = a.getAttribute("href");
+                            $.ajax({
+                                method: "POST",
+                                url: link,
+                                success: function(data) {
+                                    // reload the page to see the changes
+                                    // window.location.reload();
+                                    alert("Updated successfully, reload the page to see the changes");
+                                },
+                                error: function(xhr, status, error) {
+                                    alert("There was an unexpected error processing your request.");
+                                }
+                            })
+                        })
                     }
                 }
             });
