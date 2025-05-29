@@ -1677,7 +1677,7 @@ BGJOB_MANAGE_REDUNDANT_ACTIONS = [
 
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
-HONEYPOT_TIMER_THRESHOLD = 5000;
+HONEYPOT_TIMER_THRESHOLD = 5000
 
 ##################################################
 # Object validation settings
