@@ -2767,6 +2767,12 @@ $.extend(true, doaj, {
 
             this.namespace = "doaj-share-embed";
 
+            this.generateButton = function(id, cssClass, text) {
+                return '<div class="button-wrapper" style="display: flex; justify-content: flex-end"><button type="button" class="' + cssClass + '" id="' + id + '">' +
+                    '<span data-feather="copy" aria-hidden="true"></span>  ' + text + '</button>' +
+                    '<span id="' + id +'--copy-status" class="sr-only" aria-live="polite"></span></div>'
+            }
+
             this.draw = function () {
                 // reset these on each draw
                 // this.shareBoxOpen = false;
@@ -2784,11 +2790,16 @@ $.extend(true, doaj, {
                     var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this)
                     shorten = '<p><button class="' + shortenButtonClass + '">shorten url</button></p>';
                 }
+                var clickToCopyBtnClass = edges.css_classes(this.namespace, "btn--click-to-copy", this)
+                var copyLinkBtnId = edges.css_id(this.namespace, "copy-link", this);
+                var copyScriptBtnId = edges.css_id(this.namespace, "copy-script", this);
                 var embed = "";
+
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
-                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>' +
+                            this.generateButton(copyScriptBtnId, clickToCopyBtnClass, "Copy this script");
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -2796,9 +2807,10 @@ $.extend(true, doaj, {
                 var shareFrag = '<div class="' + shareBoxClass + '">\
                     <p>Share a link to this search</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
+                    '+ this.generateButton(copyLinkBtnId, clickToCopyBtnClass, "Copy this link") + '\
                     ' + shorten + '\
                     ' + embed + '\
-                </div>';
+                    </div>'
 
                 var modal = '<section class="modal" id="' + modalId + '" tabindex="-1" role="dialog">\
                     <div class="modal__dialog" role="document">\
