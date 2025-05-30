@@ -13,11 +13,23 @@
     {% for i in data.advisory_board_council.board %}
         <li class="col-xs-6 col-md-4 col-lg-3">
             <div class="title-list__text">
+                <figure class="portrait" aria-hidden="true">
+                    {% if i.photo %}
+                        <div class="portrait__bg-img" style="background-image: url('/assets/img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                    {% else %}
+                        <div class="portrait__img--empty"></div>
+                    {% endif %}
+                </figure>
                 <p class="label">{{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
                 <p class="title-list__para">
                     {{ i.institution }}<br/>
                 </p>
+                {% if i.bio %}
+                    <p class="title-list__para">
+                        {% autoescape off %}{{ i.bio }}{% endautoescape %}
+                    </p>
+                {% endif %}
                 {% if i.coi %}
                     <div class="title-list__para">
                         <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
