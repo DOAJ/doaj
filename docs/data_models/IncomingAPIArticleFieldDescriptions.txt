@@ -1,6 +1,5 @@
 admin.in_doaj: Whether the article is in DOAJ, or withdrawn from public view.  You can retrieve this value from DOAJ, but if you provide it back it will be **ignored**.
 admin.publisher_record_id: **Deprecated** Your own ID for the record.
-admin.seal: Whether the article is in a journal with the DOAJ Seal.  You can retrieve this value from DOAJ, but if you provide it back it will be **ignored**.
 admin.upload_id: An ID for a batch upload.  You can retrieve this value from DOAJ, but if you provide it back it will be **ignored**.
 bibjson.abstract: Article abstract
 bibjson.author.affiliation: An author's affiliation
