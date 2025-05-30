@@ -2,42 +2,53 @@
 # ~~AdvisoryBoardCouncil:Data~~
 
 board:
+
 - name: Ana Maria Cetto
   institution: LatIndex
   country: Mexico
+  photo:
+  bio: 
   coi:
     2024: https://docs.google.com/document/d/1SjH4jFductQClV0MYi9nJeO_gm4q9F1H6iqknsnuWlI/edit?usp=drive_link
 
 - name: David Prosser
   institution: Research Libraries UK
   country: United Kingdom
+  photo:
+  bio:
   coi:
     2024: https://docs.google.com/document/d/14goBp4Q2AY7I9C4QG8MTQJl6z9XpkDpPb_fBA85mP5c/edit?usp=drive_link
 
 - name: Ioannis Tsakonas
   institution: University of Patras
   country: Greece
+  photo:
+  bio:
   coi:
     2024: https://drive.google.com/file/d/1a1CJ_ioTDUF0tZrgWf3ax8aF_JNfxMFV/view?usp=drive_link
- 
+
 - name: Hans de Jonge
   institution: Dutch Research Council NWO
   country: The Netherlands
+  photo:
+  bio:
   coi:
     2024: https://docs.google.com/document/d/1EH5xRa3Zxee8k8LGwSMDK3UPbKSHjVHdqgVAy8KCyWs/edit?usp=drive_link
 
 - name: Lars Bjørnshauge
   institution: DOAJ Founder
   country: Denmark
+  photo:
+  bio:
   coi:
     2024: https://docs.google.com/document/d/1U1hoHCXRrstCj4_wJgm54RSChxkHVPLVcqn38oMlheY/edit?usp=drive_link
 
 - name: Susan Veldsman
   institution: Academy of Sciences in South Africa
   country: South Africa
+  photo:
+  bio:
   coi:
     2024: https://docs.google.com/document/d/1Uqcx-AwTuPYHdJOy5gfsBH8ykKuelg7U6Pf511pvVcY/edit?usp=drive_link
 
 # List of council members
-
-
