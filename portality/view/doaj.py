@@ -183,6 +183,8 @@ def sitemap():
 @blueprint.route("/sitemap<n>.xml")
 def nth_sitemap(n):
     sitemap_url = models.Cache.get_sitemap(n)
+    if sitemap_url is None:
+        abort(404)
     if sitemap_url.startswith("/"):
         sitemap_url = "/store" + sitemap_url
     return redirect(sitemap_url, code=307)
