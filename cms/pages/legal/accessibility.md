@@ -38,14 +38,18 @@ We have recently fixed:
 - Search facets are configured for screenreaders to indicate their state
 - All pages have a "Skip Links" button so the user can jump to the main content
 - In search results, the facets are operable with a keyboard
-- Removed ReCAPTCHA from our log in process
+- Removed ReCAPTCHA from our login process
 
 Fixes that are in progress now after a review of the changes laid out in WCAG 2.2:
 
-- on our forms, start using aria-describedby for hint/help text
+- on our forms, start using 'aria-describedby' for hint/help text
 - making radio buttons on search focusable
 
 We are continuing to update this document as we find accessibility issues or as we fix them.
+
+## VPAT Accessibility Conformance Report
+
+A [VPAT statement for this website](https://docs.google.com/document/d/1oJOBP7cGNMzq7x2SXyVuAtgwoL2at9t5zlNBUY73mzA/edit?usp=sharing) is available.
 
 ## Feedback and contact information
 
