@@ -20,7 +20,7 @@
                             },
                             {
                                 "term": {
-                                    "admin.application_status": "update_request"
+                                    "admin.application_status.exact": "update_request"
                                 }
                             }
                         ]
