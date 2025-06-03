@@ -329,7 +329,7 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["pid_scheme"]["scheme"] = ["doi", "HandleS", "something"]
         data["bibjson"]["license"][0]["type"] = "cc"
         data["bibjson"]["license"][0]["BY"] = True
-        data["bibjson"]["deposit_policy"]["service"] = ["sherpa/romeo", "other"]
+        data["bibjson"]["deposit_policy"]["service"] = ["Open Policy Finder", "other"]
 
         ia = IncomingApplication(data)
 
@@ -346,7 +346,7 @@ class TestCrudApplication(DoajTestCase):
         assert ba.pid_scheme[2] == "something"
         assert ba.licenses[0]["type"] == "cc"
         assert ba.licenses[0]["BY"]
-        assert ba.deposit_policy[0] == "sherpa/romeo"
+        assert ba.deposit_policy[0] == "Open Policy Finder"
         assert ba.deposit_policy[1] == "other"
 
         # Removed, as we now allow coerce failure

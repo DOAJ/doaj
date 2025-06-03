@@ -158,15 +158,7 @@ ass_ed:
   city: Padang
   country: Indonesia
   language: Bahasa Indonesia, English
-  photo: "Alifia.jpg"
-  
-- name: Ana Melisa Fernandes
-  area: Bird behavior and ecology
-  year_since:
-  city: Bogotá 
-  country: Colombia
-  language: Spanish, English, Portuguese
-  photo: "Ana Melisa Fernandes.jpg" 
+  photo: "Alifia.jpg" 
   
 - name: Amber Osman 
   area: Open Science, Publication Ethics, Scholarly communication
@@ -184,12 +176,21 @@ ass_ed:
   language: Persian (Farsi), English
   photo: "Amir Reza Asnafi.jpg"
 
+- name: Ana Melisa Fernandes
+  area: Bird behavior, Ecology
+  year_since:
+  city: Bogotá 
+  country: Colombia
+  language: Spanish, English, Portuguese
+  photo: "Ana Melisa Fernandes.jpg"
+
 - name: Andrea Imre
   area: Library Science, Music
   year_since:
   city: Carbondale, IL
   country: USA
   language: Hungarian, English
+  photo: "imre.jpg"
 
 - name: Andrea Marchitelli
   area: Library Science
@@ -365,6 +366,14 @@ ass_ed:
   country: Italy
   language: Italian, English
 
+- name: Gerlinde Maxl
+  area: Cultural anthropology, Library and Information Science
+  year_since:
+  city: Graz
+  country: Austria
+  language: German, English, Swedish, Finnish
+  photo: 
+
 - name: Hanae Lrhoul
   area: Library Science
   year_since:
@@ -379,6 +388,14 @@ ass_ed:
   country: South Africa
   language: English, Africaans
   photo: "ina-smith.png"
+
+- name: Irene Prähauser
+  area: Library Science
+  year_since:
+  city: Linz
+  country: Austria
+  language: German, English
+  photo: "irene_portrait_workshop.jpg"
 
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
@@ -631,6 +648,14 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "MuhamadTaufik.jpg"
+
+- name: Musa Mohammed Ali 
+  area: Microbiology, Immunology
+  year_since:
+  city: Hawassa
+  country: Ethiopia
+  language: English, Arabic, Amharic
+  photo: "Musa_Ali.jpg"
   
 - name: Natalia Popova
   area: Sociology

@@ -1,0 +1,29 @@
+suite: Application Deposit Policy Update
+testset: Application Deposit Policy Update
+tests:
+  - title: Change Deposit Policy and Validate via API
+    context:
+      role: Admin
+    steps:
+      - step: Open any application (ensure the deposit policy is different than "Open Policy Finder") and note its application id
+        results:
+          - The current deposit policy is displayed and its value is noted
+      - step: Note the current value of the deposit policy
+      - step: Change the deposit policy to "Open Policy Finder"
+      - step: Save the application
+      - step: Go to /api/v4/docs#operations-tag-CRUD_Applications and open the "GET" section
+      - step: Click "Try it out" button
+      - step: Provide your API key (instructions on your account page)
+      - step: Provide the application's id
+      - step: Click "Execute"
+
+      - step: Go back to the application form
+      - step: Change the deposit policy value to something other than "Open Policy Finder"
+      - step: Save the application
+      - step: Go to /api/v4/docs#operations-tag-CRUD_Applications and open the "GET" section
+      - step: Click "Try it out" button
+      - step: Provide your API key (instructions on your account page)
+      - step: Provide the application's id
+      - step: Click "Execute"
+        results:
+          - The new deposit policy value is confirmed in the API response
