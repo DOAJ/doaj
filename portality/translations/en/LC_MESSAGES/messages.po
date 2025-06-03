@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-26 11:27+0530\n"
+"POT-Creation-Date: 2025-06-03 12:11+0530\n"
 "PO-Revision-Date: 2025-05-05 11:30+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -404,7 +404,7 @@ msgid "Mir@bel"
 msgstr ""
 
 #: forms/application_forms.py:1480
-msgid "Sherpa/Romeo"
+msgid "Open Policy Finder"
 msgstr ""
 
 #: forms/application_forms.py:1481
@@ -609,6 +609,7 @@ msgid "Allow save without validation"
 msgstr ""
 
 #: forms/application_forms.py:1972
+#: templates-v2/public/public_application.html:15
 msgid "Open access compliance"
 msgstr ""
 
@@ -645,6 +646,7 @@ msgid "Plagiarism"
 msgstr ""
 
 #: forms/application_forms.py:2070
+#: templates-v2/public/public_application.html:18
 msgid "Editorial"
 msgstr ""
 
@@ -727,15 +729,18 @@ msgid "Your progress is automatically saved."
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:11
+#, python-format
 msgid ""
-"You can return to this application at any time by clicking <a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> "
-"&rarr; <em>Publisher dashboard</em></a> at the top."
+"You can return to this application at any time by clicking <a "
+"href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
+"<em>Publisher dashboard</em></a> at the top."
 msgstr ""
 "You can return to this application at any time by clicking <a "
 "href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
 "<em>Publisher dashboard</em></a> at the top."
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:12
+#: templates-v2/public/account/login_to_apply.html:14
 msgid ""
 "You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
 "only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
@@ -753,11 +758,29 @@ msgstr ""
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:20
 msgid ""
 "Open Access is the condition where the copyright holder of a scholarly "
-"work grants usage rights to others using an open license (Creative "
-"Commons or equivalent) allowing for immediate free access to the work and"
-" permitting any user to read, download, copy, distribute, print, search, "
-"or link to the full texts of articles, crawl them for indexing, pass them"
-" as data to software, or use them for any other lawful purpose."
+"work grants usage rights to others using an\n"
+"    open license (Creative Commons or equivalent) allowing for immediate "
+"free access to the work and permitting any user\n"
+"    to read, download, copy, distribute, print, search, or link to the "
+"full texts of articles, crawl them for indexing,\n"
+"    pass them as data to software, or use them for any other lawful "
+"purpose."
+msgstr ""
+
+#: templates-v2/public/public_application.html:16
+msgid "About the Journal"
+msgstr ""
+
+#: templates-v2/public/public_application.html:17
+msgid "Copyright & licensing"
+msgstr ""
+
+#: templates-v2/public/public_application.html:19
+msgid "Business model"
+msgstr ""
+
+#: templates-v2/public/public_application.html:20
+msgid "Best practice"
 msgstr ""
 
 #: templates-v2/public/account/login_to_apply.html:12
@@ -768,16 +791,41 @@ msgid ""
 "href=\"/contact/\">contact us</a>."
 msgstr ""
 
-
-#: templates-v2/public/account/login_to_apply.html:14
-msgid ""
-"You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
-"only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
-"questions."
-msgstr ""
-
 #: templates-v2/public/account/login_to_apply.html:16
 msgid "Log in or register to submit your application."
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:22
+#, python-format
+msgid "Don’t have an account? <a href=\"%(url)s\">Register here</a>."
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:24
+#, python-format
+msgid ""
+"If you cannot log in, <a href=\"%(forgot_account)s\">reset your "
+"password</a>. If you still cannot login, <a href=\"/contact\">contact "
+"us</a>."
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:40
+msgid "Related help"
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:43
+msgid "Guide to applying"
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:46
+msgid "Information for publishers"
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:49
+msgid "Transparency & best practice"
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:52
+msgid "Why index your journal in DOAJ?"
 msgstr ""
 
 #~ msgid "application_form_doaj_OA"
@@ -790,4 +838,23 @@ msgstr ""
 #~ " submit your application, it will be"
 #~ " registered to this account. Please "
 #~ "note:"
+
+#~ msgid "Sherpa/Romeo"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Open Access is the condition where "
+#~ "the copyright holder of a scholarly "
+#~ "work grants usage rights to others "
+#~ "using an open license (Creative Commons"
+#~ " or equivalent) allowing for immediate "
+#~ "free access to the work and "
+#~ "permitting any user to read, download,"
+#~ " copy, distribute, print, search, or "
+#~ "link to the full texts of "
+#~ "articles, crawl them for indexing, pass"
+#~ " them as data to software, or "
+#~ "use them for any other lawful "
+#~ "purpose."
+#~ msgstr ""
 

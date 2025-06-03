@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-27 17:06+0530\n"
+"POT-Creation-Date: 2025-06-03 12:24+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -403,7 +403,7 @@ msgid "Mir@bel"
 msgstr ""
 
 #: forms/application_forms.py:1480
-msgid "Sherpa/Romeo"
+msgid "Open Policy Finder"
 msgstr ""
 
 #: forms/application_forms.py:1481
@@ -608,6 +608,7 @@ msgid "Allow save without validation"
 msgstr ""
 
 #: forms/application_forms.py:1972
+#: templates-v2/public/public_application.html:15
 msgid "Open access compliance"
 msgstr ""
 
@@ -644,6 +645,7 @@ msgid "Plagiarism"
 msgstr ""
 
 #: forms/application_forms.py:2070
+#: templates-v2/public/public_application.html:18
 msgid "Editorial"
 msgstr ""
 
@@ -707,19 +709,80 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:7
+msgid ""
+"You are now logged in. When you submit your application, it will be "
+"registered to this account. Please note:"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:9
+msgid ""
+"The application form takes approximately <strong>30 minutes</strong> to "
+"complete."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:10
+msgid "Your progress is automatically saved."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:11
+#, python-format
+msgid ""
+"You can return to this application at any time by clicking <a "
+"href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
+"<em>Publisher dashboard</em></a> at the top."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:12
+#: templates-v2/public/account/login_to_apply.html:14
+msgid ""
+"You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
+"only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
+"questions."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:13
+msgid "You must apply online."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:18
+msgid "DOAJ only accepts fully open access journals"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:20
+msgid ""
+"Open Access is the condition where the copyright holder of a scholarly "
+"work grants usage rights to others using an\n"
+"    open license (Creative Commons or equivalent) allowing for immediate "
+"free access to the work and permitting any user\n"
+"    to read, download, copy, distribute, print, search, or link to the "
+"full texts of articles, crawl them for indexing,\n"
+"    pass them as data to software, or use them for any other lawful "
+"purpose."
+msgstr ""
+
+#: templates-v2/public/public_application.html:16
+msgid "About the Journal"
+msgstr ""
+
+#: templates-v2/public/public_application.html:17
+msgid "Copyright & licensing"
+msgstr ""
+
+#: templates-v2/public/public_application.html:19
+msgid "Business model"
+msgstr ""
+
+#: templates-v2/public/public_application.html:20
+msgid "Best practice"
+msgstr ""
+
 #: templates-v2/public/account/login_to_apply.html:12
 msgid ""
 "Read our <a href=\"/apply/guide/\">Guide to applying</a> first. It will "
 "help you understand the basic criteria that your journal should meet. If "
 "you need help with the application form, please <a "
 "href=\"/contact/\">contact us</a>."
-msgstr ""
-
-#: templates-v2/public/account/login_to_apply.html:14
-msgid ""
-"You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
-"only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
-"questions."
 msgstr ""
 
 #: templates-v2/public/account/login_to_apply.html:16
