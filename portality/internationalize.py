@@ -50,6 +50,7 @@ def get_url_locale():
     if len(path_parts) > 1:
         url_locale = path_parts[1]
         if url_locale in LANGUAGES:
+            session['lang'] = url_locale
             return url_locale
     return None
 
@@ -58,7 +59,7 @@ def get_session_locale():
         lang = session.get('lang')
         if lang in LANGUAGES:
             return lang
-
+    session['lang'] = DEFAULT_LOCALE
     return DEFAULT_LOCALE
 
 def get_locale():
@@ -88,7 +89,7 @@ def internationalize(app):
     app.config['LANGUAGES'] = LANGUAGES
     app.config['BABEL_TRANSLATION_DIRECTORIES'] = "translations"
 
-    babel = Babel(app, locale_selector=get_locale, timezone_selector=get_timezone)
+    app.babel = Babel(app, locale_selector=get_locale, timezone_selector=get_timezone)
 
     # Add locale middleware
     app.before_request(locale_middleware)

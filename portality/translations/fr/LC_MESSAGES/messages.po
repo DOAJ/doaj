@@ -137,12 +137,11 @@ msgstr "Indiquez l'année (AAAA)"
 msgid ""
 "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be"
 " greater than {}"
-msgstr ""
+msgstr "La date de début de l'OA doit être une année au format à 4 chiffres (par exemple, 1987) et doit être supérieure à {}"
 
 #: forms/application_forms.py:984
 msgid "Does the journal routinely screen article submissions for plagiarism?"
-msgstr ""
-"La revue vérifie-t-elle systématiquement les articles soumis pour "
+msgstr "La revue vérifie-t-elle systématiquement les articles soumis pour "
 "détecter le plagiat?"
 
 #: forms/application_forms.py:987
@@ -150,8 +149,7 @@ msgid ""
 "Screening for plagiarism is recommended, but is not a requirement for "
 "inclusion in DOAJ. If the journal does screen for plagiarism, state the "
 "services(s) used on your website."
-msgstr ""
-"La vérification du plagiat est recommandée, mais n'est pas obligatoire "
+msgstr "La vérification du plagiat est recommandée, mais n'est pas obligatoire "
 "pour l'inclusion au DOAJ.Si la revue effectue une vérification du "
 "plagiat, indiquez le(s) service(s) utilisé(s) sur votre site web."
 
@@ -168,7 +166,7 @@ msgstr "Où se trouve cette information?"
 
 #: forms/application_forms.py:1005
 msgid "Plagiarism screening"
-msgstr ""
+msgstr "Détection du plagiat"
 
 #: forms/application_forms.py:1009 forms/application_forms.py:1036
 #: forms/application_forms.py:1055 forms/application_forms.py:1074
@@ -176,7 +174,7 @@ msgstr ""
 #: forms/application_forms.py:1313 forms/application_forms.py:1430
 #: forms/application_forms.py:1534
 msgid "You must provide a URL"
-msgstr ""
+msgstr "Vous devez fournir une URL"
 
 #: forms/application_forms.py:1011
 msgid "Link to the journal’s plagiarism policy"
@@ -187,8 +185,7 @@ msgid ""
 "The page should state that the journal actively checks for plagiarism and"
 " explain how this is done (including the name of any software or service "
 "used)."
-msgstr ""
-"Cette page doit indiquer que la revue vérifie activement le plagiat et "
+msgstr "Cette page doit indiquer que la revue vérifie activement le plagiat et "
 "expliquer comment cela est effectué (y compris le nom de tout logiciel ou"
 " service utilisé)."
 
@@ -202,8 +199,7 @@ msgstr "Lien vers les informations sur les objectifs et la couverture de la revu
 
 #: forms/application_forms.py:1040
 msgid "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"
-msgstr ""
-"Saisissez l'URL où se trouvent les <strong>objectifs et la "
+msgstr "Saisissez l'URL où se trouvent les <strong>objectifs et la "
 "couverture</strong> de la revue"
 
 #: forms/application_forms.py:1052
@@ -222,16 +218,14 @@ msgstr "Lien vers les <b>instructions aux auteur·trices</b>"
 msgid ""
 "Enter the URL for the journal’s <strong>Instructions for Authors</strong>"
 " page"
-msgstr ""
-"Saisissez l'URL où se trouvent les <strong>instructions aux "
+msgstr "Saisissez l'URL où se trouvent les <strong>instructions aux "
 "auteur·trices</strong>"
 
 #: forms/application_forms.py:1090
 msgid ""
 "Average number of <strong>weeks</strong> between article submission & "
 "publication"
-msgstr ""
-"Nombre moyen de <strong>semaines</strong> entre la soumission d’un "
+msgstr "Nombre moyen de <strong>semaines</strong> entre la soumission d’un "
 "article et sa publication"
 
 #: forms/application_forms.py:1094
@@ -247,14 +241,13 @@ msgid ""
 "Publication fees are sometimes called article processing charges (APCs). "
 "You should answer Yes if any fee is required from the author for "
 "publishing their paper."
-msgstr ""
-"Les frais de publication sont parfois appelés frais de traitement des "
+msgstr "Les frais de publication sont parfois appelés frais de traitement des "
 "articles (APC en anglais). Vous devez répondre Oui si des frais sont "
 "exigés à l'auteur·trice pour la publication de son article."
 
 #: forms/application_forms.py:1117
 msgid "You must tell us about any APCs"
-msgstr ""
+msgstr "Vous devez nous informer de tout APC"
 
 #: forms/application_forms.py:1128 forms/application_forms.py:1190
 msgid "Highest fee charged"
@@ -265,18 +258,17 @@ msgid ""
 "If the journal charges a range of fees for the publication of an article,"
 " enter the highest fee. If the fee can be paid in more than one currency,"
 " you may list them here."
-msgstr ""
-"Si la revue applique une gamme de frais pour la publication d'un article,"
+msgstr "Si la revue applique une gamme de frais pour la publication d'un article,"
 " indiquez le montant le plus élevé. Si les frais peuvent être payés dans "
 "plusieurs devises, vous pouvez les indiquer ici."
 
 #: forms/application_forms.py:1175
 msgid "Enter the currency or currencies for the journal’s publishing fees"
-msgstr ""
+msgstr "Saisissez la ou les devises pour les frais de publication de la revue"
 
 #: forms/application_forms.py:1197
 msgid "Enter the value of the highest publishing fee the journal has charged"
-msgstr ""
+msgstr "Saisissez la valeur des frais de publication les plus élevés facturés par la revue"
 
 #: forms/application_forms.py:1210 forms/application_forms.py:2082
 msgid "Publication fees"
@@ -286,24 +278,21 @@ msgstr "Frais de publication"
 msgid ""
 "Link to the page where this is stated. The page must declare <b>whether "
 "or not</b> there is a fee to publish an article in the journal."
-msgstr ""
-"Lien vers la page où cette information se trouve. Celle-ci doit préciser "
+msgstr "Lien vers la page où cette information se trouve. Celle-ci doit préciser "
 "s'il y a des frais pour publier un article dans la <b>revue ou non</b>."
 
 #: forms/application_forms.py:1221
 msgid ""
 "Enter the URL for the journal’s <strong>publication fees</strong> "
 "information page"
-msgstr ""
-"Saisissez l'URL où se trouvent les informations sur les <strong>frais de "
+msgstr "Saisissez l'URL où se trouvent les informations sur les <strong>frais de "
 "publication</strong>"
 
 #: forms/application_forms.py:1233
 msgid ""
 "Does the journal provide a waiver or discount on publication fees for "
 "authors?"
-msgstr ""
-"La revue offre-t-elle une exonération ou une réduction des frais de "
+msgstr "La revue offre-t-elle une exonération ou une réduction des frais de "
 "publication aux auteur·trices?"
 
 #: forms/application_forms.py:1241
@@ -312,8 +301,7 @@ msgid ""
 "waivers for authors from low-income economies, discounts for authors from"
 " lower middle-income economies, and/or waivers and discounts for other "
 "authors with demonstrable needs."
-msgstr ""
-"Répondez Oui si la revue offre des exonérations de frais de publication "
+msgstr "Répondez Oui si la revue offre des exonérations de frais de publication "
 "pour les auteur·trices venant de pays à faible revenu, des réductions "
 "pour les auteur·trices venant de pays au revenu moyen inférieur ou des "
 "exonérations et réductions pour d'autres auteur·trices ayant des besoins "
@@ -329,28 +317,28 @@ msgstr "Lien vers les informations sur l'exonération de frais"
 
 #: forms/application_forms.py:1271
 msgid "Enter the URL for the journal’s <strong>waiver information</strong> page"
-msgstr ""
-"Saisissez l'URL où se <strong>trouve l'information</strong> sur les "
+msgstr "Saisissez l'URL où se <strong>trouve l'information</strong> sur les "
 "exonérations"
 
 #: forms/application_forms.py:1285
 msgid "Does the journal charge any other fees to authors?"
-msgstr ""
+msgstr "La revue facture-t-elle d’autres frais aux auteurs ?"
 
 #: forms/application_forms.py:1292
 msgid ""
 "Declare all other charges: editorial processing charges, language editing"
 " fees, colour charges, submission fees, page charges, membership fees, "
 "print subscription costs, other supplementary charges"
-msgstr ""
+msgstr "Déclarez tous les autres frais : frais de traitement éditorial, frais de révision linguistique, frais de "
+"publication en couleur, frais de soumission, frais par page, frais d'adhésion, coûts d'abonnement à l’imprimé, autres frais supplémentaires."
 
 #: forms/application_forms.py:1295
 msgid "You must declare any other charges if they exist"
-msgstr ""
+msgstr "Vous devez déclarer tous les autres frais s'ils existent"
 
 #: forms/application_forms.py:1307 forms/application_forms.py:2105
 msgid "Other fees"
-msgstr ""
+msgstr "Autres frais"
 
 #: forms/application_forms.py:1312
 msgid "Link to the journal’s fees information"
@@ -442,7 +430,7 @@ msgstr "Nom de la bibliothèque nationale"
 msgid ""
 "Enter the name(s) of the national library or libraries where the journal "
 "is archived"
-msgstr ""
+msgstr "Saisissez le(s) nom(s) de la ou des bibliothèques nationales où la revue est archivée"
 
 #: forms/application_forms.py:1403
 msgid "Other archiving policy:"
@@ -480,7 +468,7 @@ msgstr "Mir@bel"
 
 #: forms/application_forms.py:1480
 msgid "Open Policy Finder"
-msgstr ""
+msgstr "Ouvrir l'outil de recherche de politiques"
 
 #: forms/application_forms.py:1481
 msgid "Other (including publisher’s own site)"
@@ -579,21 +567,22 @@ msgid ""
 "Is the journal part of the <a "
 "href='https://subscribetoopencommunity.org/' target='_blank' "
 "rel='noopener'>Subscribe to Open</a> initiative?"
-msgstr ""
+msgstr "La revue fait-elle partie de l'initiative <a href='https://subscribetoopencommunity.org/' target='_blank' "
+"rel='noopener'>Subscribe to Open</a>?"
 
 #: forms/application_forms.py:1649
 msgid "Reason for rejection"
-msgstr ""
+msgstr "Motif du refus"
 
 #: forms/application_forms.py:1657
 msgid "Additional info"
-msgstr ""
+msgstr "Informations complémentaires"
 
 #: forms/application_forms.py:1660
 msgid ""
 "The selected reason for rejection, and any additional information you "
 "include, are sent to the journal contact with the rejection email."
-msgstr ""
+msgstr "Le motif de rejet sélectionné et toute information supplémentaire que vous"
 
 #: forms/application_forms.py:1671
 msgid "DOAJ Account"
@@ -601,71 +590,75 @@ msgstr ""
 
 #: forms/application_forms.py:1684
 msgid "You must confirm the account id"
-msgstr ""
+msgstr "Vous devez confirmer l'identifiant du compte"
 
 #: forms/application_forms.py:1695
 msgid "Change status"
-msgstr ""
+msgstr "Changer de statut"
 
 #: forms/application_forms.py:1710
 msgid ""
 "Set the status to 'In Progress' to signal to the applicant that you have "
 "started your review.Set the status to 'Completed' to alert the Editor "
 "that you have completed your review."
-msgstr ""
+msgstr "Définissez le statut sur « En cours » pour signaler au candidat que vous avez commencé votre évaluation. "
+"Définissez le statut sur « Terminé » pour alerter l'éditeur que vous avez terminé votre évaluation."
 
 #: forms/application_forms.py:1718
 msgid ""
 "Revert the status to 'In Progress' to signal to the Associate Editor that"
 " further work is needed.Set the status to 'Ready' to alert the Managing "
 "Editor that you have completed your review."
-msgstr ""
+msgstr "Remettez le statut sur « En cours » pour signaler au rédacteur en chef adjoint que des travaux supplémentaires "
+"sont nécessaires. Définissez le statut sur « Prêt » pour alerter le rédacteur en chef que vous avez terminé votre révision."
 
 #: forms/application_forms.py:1733
 msgid "Group"
-msgstr ""
+msgstr "Groupe"
 
 #: forms/application_forms.py:1756
 msgid "Individual"
-msgstr ""
+msgstr "Individuel"
 
 #: forms/application_forms.py:1774
 msgid "Date must be a big-end formatted date (e.g. 2020-11-23)"
-msgstr ""
+msgstr "La date doit être une date au format big-end (par exemple 2020-11-23)"
 
 #: forms/application_forms.py:1781
 msgid "You cannot enter both a discontinued date and continuation information."
-msgstr ""
+msgstr "Vous ne pouvez pas saisir à la fois une date d'arrêt et des informations de continuation."
 
 #: forms/application_forms.py:1786
 msgid ""
 "Please enter the discontinued date in the form YYYY-MM-DD (e.g. "
 "2020-11-23).  If the day of the month is not known, please use '01' (e.g."
 " 2020-11-01)"
-msgstr ""
+msgstr "Veuillez saisir la date d'arrêt au format AAAA-MM-JJ (par exemple, 23/11/2020). Si le jour du mois est inconnu,"
+" veuillez utiliser '01' (par exemple, 01/11/2020)."
 
 #: forms/application_forms.py:1795
 msgid "Continues an <strong>older</strong> journal with the ISSN(s)"
-msgstr ""
+msgstr "Continue une revue <strong>plus ancienne</strong> avec les ISSN"
 
 #: forms/application_forms.py:1800 forms/application_forms.py:1828
 msgid ""
 "The ISSN provided in both fields must be different. Please make sure to "
 "enter the ISSN of an older journal for the first field and the ISSN of a "
 "newer journal for the second field. They cannot be the same."
-msgstr ""
+msgstr "L'ISSN indiqué dans les deux champs doit être différent. Veuillez saisir l'ISSN d'une revue plus ancienne dans "
+"le premier champ et celui d'une revue plus récente dans le second. Ces deux champs ne peuvent pas être identiques."
 
 #: forms/application_forms.py:1805 forms/application_forms.py:1833
 msgid "You cannot enter both continuation information and a discontinued date"
-msgstr ""
+msgstr "Vous ne pouvez pas saisir à la fois des informations de continuation et une date d'arrêt"
 
 #: forms/application_forms.py:1815
 msgid "Enter the ISSN(s) of the previous title(s) of this journal."
-msgstr ""
+msgstr "Saisissez le(s) ISSN du(des) titre(s) précédent(s) de cette revue."
 
 #: forms/application_forms.py:1823
 msgid "Continued by a <strong>newer</strong> journal with the ISSN(s)"
-msgstr ""
+msgstr "Continué par une revue plus récente avec l'ISSN(s)"
 
 #: forms/application_forms.py:1826
 msgid "This is not a valid ISSN"
@@ -673,30 +666,31 @@ msgstr "Ceci n'est pas un ISSN valide"
 
 #: forms/application_forms.py:1838
 msgid "Enter the ISSN(s) of the later title(s) that continue this publication."
-msgstr ""
+msgstr "Indiquez le(s) ISSN du(des) titre(s) ultérieur(s) qui continue(nt) cette publication."
 
 #: forms/application_forms.py:1851
 msgid "Assign one or a maximum of two subject classifications"
-msgstr ""
+msgstr "Attribuer une ou un maximum de deux classifications de sujets"
 
 #: forms/application_forms.py:1854
 msgid "Selecting a subject will not automatically select its sub-categories"
-msgstr ""
+msgstr "La sélection d'un sujet ne sélectionnera pas automatiquement ses sous-catégories"
 
 #: forms/application_forms.py:1865
 #, python-format
 msgid ""
 "This field is required when setting the Application Status to %(y)s, "
 "%(z)s or %(a)s"
-msgstr ""
+msgstr "Ce champ est obligatoire lorsque l'état de l'application est défini sur %(y)s, "
+"%(z)s ou %(a)s"
 
 #: forms/application_forms.py:1889 forms/application_forms.py:2217
 msgid "Notes"
-msgstr ""
+msgstr "Remarques"
 
 #: forms/application_forms.py:1956 forms/application_forms.py:2231
 msgid "Allow save without validation"
-msgstr ""
+msgstr "Autoriser la sauvegarde sans validation"
 
 #: forms/application_forms.py:1972
 #: templates-v2/public/public_application.html:15
