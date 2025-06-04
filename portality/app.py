@@ -30,6 +30,7 @@ from portality.ui import templates
 from portality.internationalize import internationalize
 
 from portality.view.account import blueprint as account
+from portality.view.account import locale_blueprint as locale_blueprint
 from portality.view.admin import blueprint as admin
 from portality.view.publisher import blueprint as publisher
 from portality.view.query import blueprint as query
@@ -51,6 +52,7 @@ if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False)
     from portality.view.testdrive import blueprint as testdrive
 
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
+app.register_blueprint(locale_blueprint, url_prefix='/<lang>/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
 app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
 app.register_blueprint(query, name='query', url_prefix='/query') # ~~-> Query:Blueprint~~

@@ -7,7 +7,8 @@ DEFAULT_LOCALE = "en"
 DEFAULT_TIMEZONE = "UTC"
 LANGUAGES = ['en', 'fr']
 INCLUDE_ROUTES = {
-        'apply'
+        'apply',
+        'account'
     }
 
 def locale_middleware_with_query_params():
@@ -65,7 +66,7 @@ def get_session_locale():
 def get_locale():
     lang = get_url_locale()
     if lang is None:
-        return get_session_locale()
+        lang = DEFAULT_LOCALE
 
     return lang
 

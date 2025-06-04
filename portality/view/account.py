@@ -17,6 +17,7 @@ from portality.ui.messages import Messages
 from portality.ui import templates
 
 blueprint = Blueprint('account', __name__)
+locale_blueprint = Blueprint('account_locale', __name__)
 
 
 @blueprint.route('/')
@@ -226,6 +227,9 @@ def login():
         return render_template(templates.LOGIN_TO_APPLY, form=form)
     return render_template(templates.GLOBAL_LOGIN, form=form)
 
+@locale_blueprint.route('/login', methods=['GET', 'POST'])
+def locale_login(lang):
+    return login()
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required

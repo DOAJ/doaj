@@ -1,6 +1,6 @@
 {% extends "public/base.html" %}
 
-{% block page_title %}Login to apply{% endblock %}
+{% block page_title %}{{ _("Login to apply") }}{% endblock %}
 
 {% block public_content %}
     <div class="container">
@@ -17,7 +17,7 @@
 
                     <hr />
 
-                    <h2 id="log-in-to-your-account">Log in to your account</h2>
+                    <h2 id="log-in-to-your-account">{{ _("Log in to your account") }}</h2>
 
                     <p>→ {{ _("Don’t have an account? <a href=\"%(url)s\">Register here</a>.", url=url_for("account.register")) }}</p>
                         {% include "_account/includes/_login_form.html" %}

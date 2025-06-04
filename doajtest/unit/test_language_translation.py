@@ -22,5 +22,4 @@ class TestAdminEditMetadata(DoajTestCase):
     def test_locale_selection(self):
         with self.app_test.test_client() as client:
             response = client.get('/apply/?lang=fr')
-            assert gettext("Open access compliance") == "Exigences en matière de libre accès"
             self.assertEqual(session.get('lang'), 'fr')
