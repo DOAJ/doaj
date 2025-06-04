@@ -37,6 +37,12 @@
 <!-- get the app's js -->
 <script type="text/javascript" src="/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
+<!-- get our dates libs -->
+<script type="text/javascript" src="/static/js/dates.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
 jQuery (document).ready (function($) {
     doaj.init();
