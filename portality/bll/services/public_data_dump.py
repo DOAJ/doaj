@@ -180,11 +180,17 @@ class PublicDataDumpService:
             for dd in old_dds:
                 ac = dd.article_container
                 af = dd.article_filename
-                store.delete_file(ac, af)
+                try:
+                    store.delete_file(ac, af)
+                except:
+                    pass
 
                 jc = dd.journal_container
                 jf = dd.journal_filename
-                store.delete_file(jc, jf)
+                try:
+                    store.delete_file(jc, jf)
+                except:
+                    pass
 
                 dd.delete()
 
@@ -193,7 +199,11 @@ class PublicDataDumpService:
 
         # get the files in storage
         container = app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER")
-        container_files = store.list(container)
+
+        try:
+            container_files = store.list(container)
+        except:
+            container_files = []
 
         # if the filename doesn't match anything, remove the file
         for cf in container_files:
@@ -202,7 +212,10 @@ class PublicDataDumpService:
             dd = models.DataDump.find_by_filename(cf)
             if dd is None or len(dd) == 0:
                 self.logger("No related index record; Deleting file {x} from storage container {y}".format(x=cf, y=container))
-                store.delete_file(container, cf)
+                try:
+                    store.delete_file(container, cf)
+                except:
+                    pass
 
         # Finally, we check all the records in the index and confirm their files exist, and if not
         # remove the record
@@ -210,14 +223,23 @@ class PublicDataDumpService:
             article_missing = False
             journal_missing = False
             if dd.article_container is not None and dd.article_filename is not None:
-                if dd.article_filename not in store.list(dd.article_container):
-                    self.logger("File {x} in container {y} does not exist".format(x=dd.article_filename, y=dd.article_container))
-                    article_missing = True
+                try:
+                    container_files = store.list(dd.article_container)
+                    if dd.article_filename not in container_files:
+                        self.logger("File {x} in container {y} does not exist".format(x=dd.article_filename,
+                                                                                      y=dd.article_container))
+                        article_missing = True
+                except:
+                    pass
 
             if dd.journal_container is not None and dd.journal_filename is not None:
-                if dd.journal_filename not in store.list(dd.journal_container):
-                    self.logger("File {x} in container {y} does not exist".format(x=dd.journal_filename, y=dd.journal_container))
-                    journal_missing = True
+                try:
+                    container_files = store.list(dd.journal_container)
+                    if dd.journal_filename not in container_files:
+                        self.logger("File {x} in container {y} does not exist".format(x=dd.journal_filename, y=dd.journal_container))
+                        journal_missing = True
+                except:
+                    pass
 
             if article_missing and journal_missing:
                 self.logger("Both files missing for {x}".format(x=dd.id))

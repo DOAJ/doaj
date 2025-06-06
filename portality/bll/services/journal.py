@@ -247,7 +247,10 @@ class JournalService(object):
         for jc in everything_else:
             ac = jc.container
             af = jc.filename
-            store.delete_file(ac, af)
+            try:
+                store.delete_file(ac, af)
+            except:
+                pass
             jc.delete()
 
         # Third we're going to check the container for files which don't have index records, and

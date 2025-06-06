@@ -15,7 +15,7 @@ from portality.core import app
 from portality.lib import dates
 
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, JournalCSVFixtureFactory, SludgePump, DataDumpFixtureFactory
-from store import StoreFactory
+from portality.store import StoreFactory
 
 
 class Premium(TestDrive):
