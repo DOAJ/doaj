@@ -9,7 +9,7 @@ from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.store import StoreMockFactory
-from portality.lib.thread_utils import wait_until
+from lib.thread_utils import wait_until
 from portality import models, store
 from portality.background import BackgroundApi
 from portality.core import app
@@ -17,11 +17,6 @@ from portality.lib import dates
 from portality.lib.paths import rel2abs
 from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 from portality.bll import DOAJ
-
-
-def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
-                               {"test_id": []})
 
 
 class TestPublicDataDumpTask(DoajTestCase):
@@ -40,8 +35,7 @@ class TestPublicDataDumpTask(DoajTestCase):
         self.store_local_patcher.tearDown(self.app_test)
         super(TestPublicDataDumpTask, self).tearDown()
 
-    @parameterized.expand(load_cases)
-    def test_public_data_dump(self, name, kwargs):
+    def run_test(self, kwargs):
 
         clean_arg = kwargs.get("clean")
         prune_arg = kwargs.get("prune")
