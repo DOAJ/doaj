@@ -8068,10 +8068,6 @@
                     "blocks": [],
                     "includes": [],
                     "extensions": []
-                  },
-                  {
-                    "name": "includes/svg/seal.svg",
-                    "unresolved": true
                   }
                 ],
                 "content": true,
