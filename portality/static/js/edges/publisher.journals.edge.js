@@ -17,7 +17,7 @@ $.extend(true, doaj, {
                 result.label = 'View Update';
             } else {
                 result.link = doaj.publisherJournalsSearchConfig.journalUpdateUrl + resultobj['id'];
-                result.label = 'Update';s
+                result.label = 'Update';
             }
             return result;
         },
