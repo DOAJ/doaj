@@ -302,6 +302,7 @@ Our criteria are available in:
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
 - [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
 - [Turkish](https://docs.google.com/document/d/18JYSfpAMxUsdQctxdqY2WCggGWHYGIiC/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Ukrainian](https://docs.google.com/document/d/10lGTROkEoTu8PwdVO440DsXuldGb_sUjxrFR1GmjD-w/edit?usp=sharing)
 
 ---
 
