@@ -35,7 +35,7 @@
             "has_policy": true,
             "url": "http://deposit.policy",
             "service": [
-                "Sherpa/Romeo",
+                "Open Policy Finder",
                 "Store it"
             ]
         },

@@ -329,7 +329,7 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["pid_scheme"]["scheme"] = ["doi", "HandleS", "something"]
         data["bibjson"]["license"][0]["type"] = "cc"
         data["bibjson"]["license"][0]["BY"] = True
-        data["bibjson"]["deposit_policy"]["service"] = ["sherpa/romeo", "other"]
+        data["bibjson"]["deposit_policy"]["service"] = ["Open Policy Finder", "other"]
 
         ia = IncomingApplication(data)
 
@@ -346,7 +346,7 @@ class TestCrudApplication(DoajTestCase):
         assert ba.pid_scheme[2] == "something"
         assert ba.licenses[0]["type"] == "cc"
         assert ba.licenses[0]["BY"]
-        assert ba.deposit_policy[0] == "sherpa/romeo"
+        assert ba.deposit_policy[0] == "Open Policy Finder"
         assert ba.deposit_policy[1] == "other"
 
         # Removed, as we now allow coerce failure
@@ -873,7 +873,6 @@ class TestCrudApplication(DoajTestCase):
 
         # An application already in the index can only be updated with a valid currency by API
         grandfathered_app = ApplicationFixtureFactory.make_application_source()
-        del grandfathered_app['admin']['current_journal']
         del grandfathered_app['admin']['related_journal']
         grandfathered_app['admin']['application_type'] = 'new_application'
         grandfathered_app['bibjson']['apc']['max'][0]['currency'] = 'old outdated currency'
@@ -954,7 +953,6 @@ class TestCrudApplication(DoajTestCase):
 
         # An application already in the index can only be updated with a valid currency by API
         grandfathered_app = ApplicationFixtureFactory.make_application_source()
-        del grandfathered_app['admin']['current_journal']
         del grandfathered_app['admin']['related_journal']
         grandfathered_app['admin']['application_type'] = 'new_application'
         grandfathered_app['bibjson']['language'][0] = 'an old language we dont recognise'

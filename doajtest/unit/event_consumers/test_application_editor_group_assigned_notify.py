@@ -72,7 +72,3 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
         eg = models.EditorGroup()
         eg.set_name(app.editor_group)
         eg.save(blocking=True)
-
-        event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application": app.data})
-        with self.assertRaises(exceptions.NoSuchPropertyException):
-            ApplicationEditorGroupAssignedNotify.consume(event)

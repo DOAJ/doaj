@@ -642,7 +642,7 @@ class TestModels(DoajTestCase):
         assert bj.article_license_display_example_url == "http://licence.embedded"
         assert bj.author_retains_copyright is True
         assert bj.copyright_url == "http://copyright.com"
-        assert bj.deposit_policy == ["Sherpa/Romeo", "Store it"]
+        assert bj.deposit_policy == ["Open Policy Finder", "Store it"]
         assert bj.has_deposit_policy is True
         assert bj.deposit_policy_url == "http://deposit.policy"
         assert bj.editorial_review_process == ["Open peer review", "some bloke checks it out"]
@@ -1779,6 +1779,42 @@ class TestModels(DoajTestCase):
         bj.has_apc = False
         assert bj.has_apc is False
         assert bj.apc == []
+
+    def test_43_export(self):
+        e = models.Export()
+
+        e.id = "1234"
+        e.constraints = {"query": {"match_all": {}}}
+        e.generated_date = "2021-06-10T00:00:00Z"
+        e.name = "Random Name"
+        e.request_date = "2021-06-09T00:00:00Z"
+        e.requester = "maned"
+
+        assert e.id == "1234"
+        assert e.constraints == {"query": {"match_all": {}}}
+        assert e.generated_date == "2021-06-10T00:00:00Z"
+        assert e.name == "Random Name"
+        assert e.request_date == "2021-06-09T00:00:00Z"
+        assert e.requester == "maned"
+
+    def test_44_export_retrieves(self):
+        e = models.Export()
+
+        e.id = "1234"
+        e.constraints = {"query": {"match_all": {}}}
+        e.generated_date = "2021-06-10T00:00:00Z"
+        e.name = "Random Name"
+        e.request_date = "2021-06-09T00:00:00Z"
+        e.requester = "maned"
+        e.save(blocking=True)
+
+        e2 = models.Export.pull("1234")
+        assert e2.id == "1234"
+        assert e2.constraints == {"query": {"match_all": {}}}
+        assert e2.generated_date == "2021-06-10T00:00:00Z"
+        assert e2.name == "Random Name"
+        assert e2.request_date == "2021-06-09T00:00:00Z"
+        assert e2.requester == "maned"
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

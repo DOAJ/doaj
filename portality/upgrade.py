@@ -20,6 +20,7 @@ from portality.models.datalog_journal_added import DatalogJournalAdded
 MODELS = {
     "journal": models.Journal,  # ~~->Journal:Model~~
     "article": models.Article,  # ~~->Article:Model~~
+    "draft_application": models.DraftApplication, # ~~->DraftApplication:Model~~
     "suggestion": models.Suggestion,  # ~~->Application:Model~~
     "application": models.Application,
     "account": models.Account,  # ~~->Account:Model~~

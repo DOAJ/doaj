@@ -210,3 +210,5 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 - [Korean](https://drive.google.com/file/d/1Uyh5uZR1vbkPwcIvN1h7PPlHVwu0fMHA/view?usp=sharing) - PDF
 - [Portuguese](https://docs.google.com/document/d/155dAHllL2KhPhzTsR3UhbMEASYjkxP157fAtiZ1jw2w/edit?usp=sharing) - Google document
 - [Serbian](https://www.ceon.rs/index.php?option=com_content&view=article&id=654:transparentnost-i-najbolja-praksa&catid=94&lang=sr&Itemid=578) (hosted at ceon.rs)
+- [Ukrainian](https://docs.google.com/document/d/174xyPzsAy4xFWPTObH4JuTQOPgd7Lm0eA4D6HYK3Rew/edit?usp=sharing)
+  
