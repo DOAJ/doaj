@@ -27,7 +27,18 @@ class ApplicationFixtureFactory(object):
         if overlay is not None:
             result = dicts.deep_merge(result, overlay, overlay=True)
         return result
-    
+
+    @staticmethod
+    def make_application_with_data(title=None, publisher_name=None, country=None):
+        application = deepcopy(APPLICATION_SOURCE)
+        if title:
+            application["bibjson"]["title"] = title
+        if publisher_name:
+            application["bibjson"]["publisher"]["name"] = publisher_name
+        if country:
+            application["bibjson"]["publisher"]["country"] = country
+        return application
+
     @staticmethod
     def make_many_application_sources(count=2, in_doaj=False):
         application_sources = []

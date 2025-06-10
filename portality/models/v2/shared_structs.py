@@ -235,3 +235,46 @@ SHARED_JOURNAL_LIKE = {
         }
     }
 }
+
+ARTICLE_STRUCT = {
+    "fields" : {
+        "created_date": {"coerce": "utcdatetime"},
+        "es_type": {"coerce": "unicode"},
+        "id": {"coerce": "unicode"},
+        "last_updated": {"coerce": "utcdatetime"},
+    },
+    "objects": [
+        "admin", "index"
+    ],
+    "structs": {
+        "admin": {
+            "fields": {
+                "in_doaj": {"coerce": "bool"},
+                "publisher_record_id": {"coerce": "unicode"},
+                "seal": {"coerce": "bool"},
+                "upload_id": {"coerce": "unicode"}
+            }
+        },
+        "index": {
+            "fields": {
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "classification" : {"coerce" : "unicode"},
+                "classification_paths": {"coerce" : "unicode"},
+                "country" : {"coerce" : "unicode"},
+                "date" : {"coerce" : "utcdatetime"},
+                "date_toc_fv_month": {"coerce" : "utcdatetime"},
+                "doi": {"coerce" : "unicode"},
+                "fulltext": {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "issn": {"coerce" : "unicode"},
+                "language": {"coerce" : "unicode"},
+                "publisher": {"coerce" : "unicode"},
+                "schema_code": {"coerce" : "unicode"},
+                "schema_codes_tree": {"coerce" : "unicode"},
+                "schema_subject": {"coerce" : "unicode"},
+                "subject": {"coerce" : "unicode"},
+                "unpunctitle": {"coerce" : "unicode"}
+            }
+        }
+    }
+}
