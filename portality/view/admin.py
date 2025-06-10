@@ -870,6 +870,7 @@ def request_report():
     model = request.values.get("model")
     query_raw = request.values.get("query")
     name = request.values.get("name")
+    notes = request.values.get("notes", False, bool)
 
     query = json.loads(query_raw)
     sane_query = {"query": query.get("query")}
@@ -884,7 +885,7 @@ def request_report():
     query_svc = DOAJ.queryService()
     real_query = query_svc.make_actionable_query("admin_query", model_endpoint_map.get(model), current_user, sane_query)
 
-    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, true_query=real_query.as_dict(), ui_query=sane_query, name=name)
+    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, true_query=real_query.as_dict(), ui_query=sane_query, name=name, notes=notes)
     admin_reports.AdminReportsBackgroundTask.submit(job)
 
     return make_json_resp({"job_id": job.id}, status_code=200)

@@ -35,9 +35,31 @@ class AdminReportsBackgroundTask(BackgroundTask):
         query_raw = self.get_param(params, "query", None)
         ui_query_raw = self.get_param(params, "ui_query", None)
         name = self.get_param(params, "name", None)
+        notes = self.get_param(params, "notes", False)
 
         model = self.MODELS.get(model_type, models.Journal)
         query = json.loads(query_raw) if query_raw is not None else None
+
+        def serialise_notes(obj):
+            """
+            Serialise the notes for a journal or application object
+            :param obj: a models.Journal or models.Application
+            :return: a list of notes in the order they were added
+            """
+            out = ""
+            if hasattr(obj, "ordered_notes"):
+                notes = obj.ordered_notes
+                for n in notes:
+                    d = n.get("date", "unknown date")
+                    a = n.get("author_id", "unknown author")
+                    note = n.get("note", "")
+                    out += f"[{d}] {a}: {note}\n\n"
+            return ("Notes", out.strip())
+
+        custom_columns = []
+        if notes:
+            job.add_audit_message("Export requested with notes")
+            custom_columns.append(serialise_notes)
 
         # generate the admin csv in the temp store
         export_svc = DOAJ.exportService()
@@ -45,7 +67,8 @@ class AdminReportsBackgroundTask(BackgroundTask):
                                               admin_fieldset=True,
                                               obscure_accounts=False,
                                               add_sensitive_account_info=True,
-                                              exclude_no_issn=False
+                                              exclude_no_issn=False,
+                                              custom_columns=custom_columns,
                                               )
         self.filename = filename
 
@@ -94,12 +117,14 @@ class AdminReportsBackgroundTask(BackgroundTask):
         query = kwargs.get("true_query", None)
         ui_query = kwargs.get("ui_query", None)
         name = kwargs.get("name", None)
+        notes = kwargs.get("notes", False)
 
         params = {}
         cls.set_param(params, "model", model)
         cls.set_param(params, "query", json.dumps(query))
         cls.set_param(params, "ui_query", json.dumps(ui_query))
         cls.set_param(params, "name", name)
+        cls.set_param(params, "notes", notes)
 
         # first prepare a job record
         job = background_helper.create_job(username=username,

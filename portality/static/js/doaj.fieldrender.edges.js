@@ -669,6 +669,7 @@ $.extend(true, doaj, {
                 let toggleClass = edges.css_classes(this.namespace, "toggle", this);
                 let controlsClass = edges.css_classes(this.namespace, "controls", this);
                 let nameClass = edges.css_classes(this.namespace, "name", this);
+                let notesClass = edges.css_classes(this.namespace, "notes", this);
                 let exportClass = edges.css_classes(this.namespace, "export", this);
                 let downloadClass = edges.css_classes(this.namespace, "download", this);
                 let facetId = edges.css_id(this.namespace, "facet", this);
@@ -685,6 +686,11 @@ $.extend(true, doaj, {
                         <div class="${controlsClass}" style="display:none">
                             Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
                             <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
+                            <div class="checkbox">
+                              <input type="checkbox" id="include_notes" class="${notesClass}">
+                              <label for="include_notes">Include notes</label>
+                            </div>
+                            <br>
                             <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
                             Or download the current facets<br>
                             <select name="${facetId}" id="${facetId}">
@@ -726,12 +732,16 @@ $.extend(true, doaj, {
 
                 let nameSelector = edges.css_class_selector(this.namespace, "name", this);
                 let name = this.context.find(nameSelector).val();
+
+                let includeNotesSelector = edges.css_class_selector(this.namespace, "notes", this);
+                let notes = this.context.find(includeNotesSelector).is(":checked");
                 $.post({
                     url: this.reportUrl,
                     data: {
                         query: qa,
                         name: name,
-                        model: this.model
+                        model: this.model,
+                        notes: notes
                     },
                     dataType: "json",
                     success: function(data) {
