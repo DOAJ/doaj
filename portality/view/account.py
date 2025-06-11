@@ -197,8 +197,10 @@ class LoginCodeForm(RedirectForm):
 
 @blueprint.route('/verify-code', methods=['GET', 'POST'])
 def verify_code():
-    email = request.args.get('email')
-    code = request.args.get('code')
+    current_info = {'next': request.args.get('next', '')}
+    form = LoginForm(request.form, csrf_enabled=False, **current_info)
+    email = request.args.get('email') or request.form.get('email')
+    code = request.args.get('code') or request.form.get('code')
     if not email or not code:
         flash("Required parameters not available.")
         return redirect(url_for('account.login'))
@@ -212,7 +214,7 @@ def verify_code():
         account.remove_login_code()
         account.save()
         login_user(account)
-        return redirect(url_for(app.config.get("DEFAULT_LOGIN_DESTINATION")))
+        return redirect(get_redirect_target(form=form, acc=account))
     else:
         flash("Invalid or expired verification code")
         return redirect(url_for('account.login'))
@@ -238,7 +240,7 @@ def send_login_code_email(email: str, code: str):
 def login():
     current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate():
         username = form.user.data
         action = request.form.get('action')
 
@@ -263,7 +265,7 @@ def login():
 
                     return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
 
-                elif action == 'password_login' and form.validate():
+                elif action == 'password_login':
                     password = form.password.data
                     if user.check_password(password):
                         login_user(user, remember=True)
