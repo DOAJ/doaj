@@ -80,11 +80,11 @@ On [your dashboard](/publisher/), you can
 - [Upload](/publisher/uploadfile) or [enter](/publisher/metadata) article metadata for your journals
 - Upload your full-text content (only for journals preserved via JASPER).
 
-### Settings
+### My Account
 
-The Settings button allows you to:
+My Account allows you to:
 
-- Update your account details
+- Update your name and email address
 - Change your password
 - Find your account ID
 - Find your API key

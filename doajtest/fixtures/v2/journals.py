@@ -195,7 +195,7 @@ JOURNAL_QUESTION_ANSWERS = [
     'LOCKSS, CLOCKSS, A safe place',
     'Trinity; Imperial',
     'http://digital.archiving.policy',
-    'Sherpa/Romeo, Store it',
+    'Open Policy Finder, Store it',
     "http://deposit.policy",
     'DOI, ARK, PURL, PIDMachine',
     'Yes',

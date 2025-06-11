@@ -5,5 +5,6 @@ title: Foundation Board & Advisory Board
 section: About
 toc: true
 featuremap: ~~AdvisoryBoardCouncil:Fragment->AdvisoryBoardCouncilData:Template~~
+data: true
 
 ---

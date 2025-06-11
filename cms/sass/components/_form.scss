@@ -46,6 +46,10 @@
     margin-bottom: $spacing-03;
   }
 
+  label {
+      display: inline-block;
+  }
+
   input, select, textarea, .select2-container {
     margin-bottom: $spacing-03;
     width: 75%;
@@ -56,10 +60,6 @@
     &[type="radio"], &[type="checkbox"] {
       width: 0.8rem;
     }
-  }
-
-  input[type="checkbox"] + label {
-    display: unset;
   }
 
   input[type="checkbox"] + label,

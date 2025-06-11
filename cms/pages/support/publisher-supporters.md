@@ -8,6 +8,7 @@ toc: true
 featuremap:
  - ~~PublisherSupporters:Fragment->PublisherSupporterSidenav:Template~~
  - ~~->PublisherSupportersData:Template~~
+data: true
 ---
 
 We rely on the support of publishers and [libraries](/support/) so we can uphold our commitment to ensuring that our journal reviewing and metadata services remain free for all. The publishers on this page have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them, as our work would not be possible without them.
