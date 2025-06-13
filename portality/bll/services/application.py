@@ -38,9 +38,9 @@ class ApplicationService(object):
             target = by_owner.target
 
         if target is None:
-            by_country = models.URReviewRoute.by_country_name(ur.bibjson().country_name())
+            by_country = models.URReviewRoute.by_country_name(ur.bibjson().publisher_country)
             if by_country is not None:
-                reason = Messages.AUTOASSIGN__COUNTRY_MAPPED.format(country=ur.bibjson().country_name(), target=by_country.target)
+                reason = Messages.AUTOASSIGN__COUNTRY_MAPPED.format(country=ur.bibjson().publisher_country, target=by_country.target)
                 target = by_country.target
 
         if target is None:
@@ -90,8 +90,8 @@ class ApplicationService(object):
         routers = []
 
         for i, row in enumerate(preader):
-            account = row[1]
-            group = row[2]
+            account = row[1].strip()
+            group = row[2].strip()
 
             if account is None or account == "":
                 raise ValueError(f"Publisher Sheet: Account is empty on row {i+2}")
@@ -100,9 +100,9 @@ class ApplicationService(object):
 
             acc = models.Account.pull(account)
             if acc is None:
-                raise ValueError(f"Publisher Sheet: Account {account} not found in DOAJ; row {i+2}")
+                raise ValueError(f"Publisher Sheet: Account `{account}` not found in DOAJ; row {i+2}")
             if models.EditorGroup.group_exists_by_name(group) is None:
-                raise ValueError(f"Publisher Sheet: Group {group} not found in DOAJ; row {i+2}")
+                raise ValueError(f"Publisher Sheet: Group `{group}` not found in DOAJ; row {i+2}")
 
             router = models.URReviewRoute()
             router.account_id = acc.id
@@ -110,8 +110,8 @@ class ApplicationService(object):
             routers.append(router)
 
         for i, row in enumerate(creader):
-            country = row[0]
-            group = row[1]
+            country = row[0].strip()
+            group = row[1].strip()
 
             if country is None or country == "":
                 raise ValueError(f"Country Sheet: Country is empty on row {i+2}")
@@ -119,10 +119,14 @@ class ApplicationService(object):
                 raise ValueError(f"Country Sheet: Group is empty on row {i+2}")
 
             if models.EditorGroup.group_exists_by_name(group) is None:
-                raise ValueError(f"Country Sheet: Group {group} not found in DOAJ; row {i+2}")
+                raise ValueError(f"Country Sheet: Group `{group}` not found in DOAJ; row {i+2}")
+
+            cc = datasets.get_country_code(country, fail_if_not_found=True)
+            if cc is None:
+                raise ValueError(f"Country Sheet: Country `{country}` does not match an existing ISO country name; row {i+2}")
 
             router = models.URReviewRoute()
-            router.country = country
+            router.country = cc
             router.target = group
             routers.append(router)
 
