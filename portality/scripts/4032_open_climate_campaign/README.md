@@ -1,5 +1,5 @@
 # 📄 Script Overview
-This project consists of two Python scripts designed to process articles related to the IPCC, following instructions provided in [this GitHub comment](https://github.com/DOAJ/doajPM/issues/4032#issuecomment-2961733603).
+This project consists of two Python scripts designed to process articles related to the IPCC, following instructions provided in [this GitHub comment (step 1 and 2)](https://github.com/DOAJ/doajPM/issues/4032#issuecomment-2961733603).
 
 ## 🔍 Step 1: Find Articles by DOI
 Run:
