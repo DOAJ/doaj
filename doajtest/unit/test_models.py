@@ -1816,6 +1816,42 @@ class TestModels(DoajTestCase):
         assert e2.request_date == "2021-06-09T00:00:00Z"
         assert e2.requester == "maned"
 
+    def test_45_ur_routing(self):
+        rr = models.URReviewRoute()
+        rr.account_id = "1234"
+        rr.country = "GB"
+        rr.target = "4321"
+
+        assert rr.account_id == "1234"
+        assert rr.country == "GB"
+        assert rr.target == "4321"
+
+        rr.save(blocking=True)
+        rr2 = models.URReviewRoute.pull(rr.id)
+        assert rr2.account_id == "1234"
+        assert rr2.country == "GB"
+        assert rr2.target == "4321"
+
+    def test_46_admin_alerts(self):
+        a = models.AdminAlert()
+        a.source = "test_source"
+        a.message = "This is a test message"
+        a.state = a.STATE_NEW
+
+        assert a.source == "test_source"
+        assert a.message == "This is a test message"
+        assert a.state == a.STATE_NEW
+
+        with self.assertRaises(seamless.SeamlessException):
+            a.state = "random_state"  # should raise an error for invalid state
+
+        a.save(blocking=True)
+        a2 = models.AdminAlert.pull(a.id)
+        assert a2.source == "test_source"
+        assert a2.message == "This is a test message"
+        assert a2.state == a.STATE_NEW
+
+
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
 
