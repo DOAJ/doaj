@@ -2780,7 +2780,6 @@ $.extend(true, doaj, {
 
                 let shorten = "";
                 if (this.component.urlShortener) {
-                    var shortenClass = edges.css_classes(this.namespace, "shorten", this);
                     var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this)
                     shorten = '<p><button class="' + shortenButtonClass + '">shorten url</button></p>';
                 }

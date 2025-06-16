@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='8.3.0',
+    version='8.3.1',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
@@ -72,6 +72,7 @@ setup(
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@c96e6035244e29d4709fff23103405c17cd04a13#egg=combinatrix",
                  "bs4==0.0.2",   # beautifulsoup for HTML parsing
                  'openapi-spec-validator~=0.5',
+                 "cryptography~=42.0", # for ad-hoc https
                  ],
 
         # additional test dependencies for the test-extras target
