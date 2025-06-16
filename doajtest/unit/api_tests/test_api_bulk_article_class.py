@@ -7,12 +7,12 @@ from pathlib import Path
 from unittest.mock import patch
 
 from flask import url_for
-from portality.lib.thread_utils import wait_until
 
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from doajtest.helpers import DoajTestCase, with_es, wait_unit
+from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
+from portality.lib.thread_utils import wait_until
 
 
 class TestBulkArticle(DoajTestCase):
@@ -479,7 +479,7 @@ class TestBulkArticle(DoajTestCase):
             mock_submit.assert_called_once()
 
         assert _count_files() == n_org_files + offset_files
-        wait_unit(lambda: models.BulkArticles.count() == n_org_articles + offset_articles, 5, 0.5)
+        wait_until(lambda: models.BulkArticles.count() == n_org_articles + offset_articles, 5, 0.5)
 
 
 def patch_bgtask_submit():

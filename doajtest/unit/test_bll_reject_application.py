@@ -85,7 +85,7 @@ class TestBLRejectApplication(DoajTestCase):
                 svc.reject_application(ap, acc, provenance, note=thenote)
         else:
             svc.reject_application(ap, acc, provenance, note=thenote)
-            helpers.wait_until_no_es_incomplete_tasks()
+            helpers.wait_until_no_es_incomplete_tasks(fallthrough=True)
             dao.refresh()
 
             #######################################

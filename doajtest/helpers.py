@@ -503,7 +503,7 @@ def logout(app_client, follow_redirects=True):
     return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)
 
 
-def wait_until_no_es_incomplete_tasks():
+def wait_until_no_es_incomplete_tasks(fallthrough: bool = False):
     """
 
     wait until no ES pending tasks and no data tasks is running
@@ -517,17 +517,7 @@ def wait_until_no_es_incomplete_tasks():
     def _cond_fn():
         return not any_pending_tasks() and len(query_data_tasks(timeout='3m')) == 0
 
-    return wait_until(_cond_fn, 10, 0.2)
-
-
-def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
-              timeout_msg="wait_unit but exit_cond timeout"):
-    start = time.time()
-    while (time.time() - start) < timeout:
-        if exit_cond_fn():
-            return
-        time.sleep(check_interval)
-    raise TimeoutError(timeout_msg)
+    return wait_until(_cond_fn, 10, 0.2, fallthrough)
 
 
 def save_all_block_last(model_list):
