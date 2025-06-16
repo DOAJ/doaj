@@ -13,6 +13,7 @@ from portality import constants
 from portality import dao
 from portality import models
 from portality import store
+from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
@@ -526,9 +527,11 @@ def about():
     return render_template(templates.STATIC_PAGE, page_frag="/about/index.html")
 
 
+
 @blueprint.route("/at-20/")
 def at_20():
     return render_template(templates.STATIC_PAGE, page_frag="/about/at-20.html")
+
 
 
 
@@ -633,3 +636,15 @@ def publishers():
 @blueprint.route("/password-reset/")
 def new_password_reset():
     return redirect(url_for('account.forgot'), code=301)
+
+
+@blueprint.route("/u/<alias>")
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
+                    action=app.config.get('ANALYTICS_ACTION_URLSHORT_REDIRECT', 'Redirect'))
+def shortened_url(alias):
+    short = DOAJ.shortUrlService().find_url_by_alias(alias)
+    if short:
+        return redirect(short.url)
+
+    app.logger.debug(f"Shortened URL not found: [{alias}]")
+    abort(404)
