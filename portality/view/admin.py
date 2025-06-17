@@ -870,7 +870,8 @@ def request_report():
     model = request.values.get("model")
     query_raw = request.values.get("query")
     name = request.values.get("name")
-    notes = request.values.get("notes", False, bool)
+    # TODO: it's probably a bit cheeky to use the type param (used for casting) to run our lambda function, but it works
+    notes = request.values.get("notes", False, lambda x: json.loads(x))
 
     query = json.loads(query_raw)
     sane_query = {"query": query.get("query")}
