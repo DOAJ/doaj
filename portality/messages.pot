@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-04 17:00+0530\n"
+"POT-Creation-Date: 2025-06-18 16:16+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,25 +21,25 @@ msgstr ""
 msgid "Does the journal adhere to DOAJ’s definition of open access?"
 msgstr ""
 
-#: forms/application_forms.py:91 forms/application_forms.py:787
-#: forms/application_forms.py:835 forms/application_forms.py:993
-#: forms/application_forms.py:1109 forms/application_forms.py:1237
-#: forms/application_forms.py:1288
+#: forms/application_forms.py:91 forms/application_forms.py:817
+#: forms/application_forms.py:867 forms/application_forms.py:1031
+#: forms/application_forms.py:1155 forms/application_forms.py:1285
+#: forms/application_forms.py:1338
 msgid "Yes"
 msgstr ""
 
-#: forms/application_forms.py:92 forms/application_forms.py:788
-#: forms/application_forms.py:836 forms/application_forms.py:994
-#: forms/application_forms.py:1110 forms/application_forms.py:1238
-#: forms/application_forms.py:1289
+#: forms/application_forms.py:92 forms/application_forms.py:818
+#: forms/application_forms.py:868 forms/application_forms.py:1032
+#: forms/application_forms.py:1156 forms/application_forms.py:1286
+#: forms/application_forms.py:1339
 msgid "No"
 msgstr ""
 
 #: forms/application_forms.py:95
+#, python-format
 msgid ""
-"See <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-"
-"open-access/' target='_blank' rel='noopener'>DOAJ’s definition of open "
-"access explained in full</a>."
+"See %(link_start)sDOAJ’s definition of open access explained in "
+"full%(link_end)s."
 msgstr ""
 
 #: forms/application_forms.py:100
@@ -47,1125 +47,1170 @@ msgid "You must answer 'Yes'"
 msgstr ""
 
 #: forms/application_forms.py:103
-msgid "You must answer <strong>Yes</strong> to continue"
+#, python-format
+msgid "You must answer%(tag_start)s Yes%(tag_end)s to continue"
 msgstr ""
 
-#: forms/application_forms.py:124
+#: forms/application_forms.py:125
 msgid ""
 "The journal website must display its open access statement. Where can we "
 "find this information?"
 msgstr ""
 
-#: forms/application_forms.py:127
+#: forms/application_forms.py:128
+#, python-format
 msgid ""
 "Here is an example of a suitable Open Access statement that meets our "
-"criteria: <blockquote>This is an open access journal, which means that "
+"criteria:%(tag_start)s This is an open access journal, which means that "
 "all content is freely available without charge to the user or his/her "
 "institution. Users are allowed to read, download, copy, distribute, "
 "print, search, or link to the full texts of the articles, or use them for"
 " any other lawful purpose, without asking prior permission from the "
 "publisher or the author. This is in accordance with the BOAI definition "
-"of open access.</blockquote>"
+"of open access.%(tag_end)s"
 msgstr ""
 
-#: forms/application_forms.py:138
+#: forms/application_forms.py:140
 msgid "Link to the journal’s open access statement"
 msgstr ""
 
-#: forms/application_forms.py:142
+#: forms/application_forms.py:144
 msgid "Enter the URL for the journal’s Open Access statement page"
 msgstr ""
 
-#: forms/application_forms.py:157 forms/application_forms.py:164
+#: forms/application_forms.py:159 forms/application_forms.py:168
 msgid "Journal title"
 msgstr ""
 
-#: forms/application_forms.py:160
+#: forms/application_forms.py:162
+#, python-format
 msgid ""
 "The journal title must match what is displayed on the website and what is"
-" registered at the <a href='https://portal.issn.org/' target='_blank' "
-"rel='noopener'> ISSN Portal</a>."
+" registered at the %(link_start)s ISSN Portal%(link_end)s."
 msgstr ""
 
-#: forms/application_forms.py:162
+#: forms/application_forms.py:166
 msgid ""
 "For translated titles, you may add the translation as an alternative "
 "title."
 msgstr ""
 
-#: forms/application_forms.py:165
+#: forms/application_forms.py:169
 msgid "Title in application form, title at ISSN and website must all match"
 msgstr ""
 
-#: forms/application_forms.py:168
+#: forms/application_forms.py:172
 msgid "Enter the journal’s name"
 msgstr ""
 
-#: forms/application_forms.py:205
+#: forms/application_forms.py:209
 msgid "Alternative title (including translation of the title)"
 msgstr ""
 
-#: forms/application_forms.py:247
+#: forms/application_forms.py:251
 msgid "Link to the journal’s homepage"
 msgstr ""
 
-#: forms/application_forms.py:263
-msgid "Enter the URL for the journal’s <strong>homepage</strong>"
+#: forms/application_forms.py:267
+#, python-format
+msgid "Enter the URL for the journal’s%(tag_start)s homepage%(tag_end)s"
 msgstr ""
 
-#: forms/application_forms.py:274
+#: forms/application_forms.py:279
 msgid "ISSN (print)"
 msgstr ""
 
-#: forms/application_forms.py:277 forms/application_forms.py:310
-#: forms/application_forms.py:325 forms/application_forms.py:335
-#: forms/application_forms.py:354 forms/application_forms.py:388
-#: forms/application_forms.py:403 forms/application_forms.py:413
+#: forms/application_forms.py:282 forms/application_forms.py:319
+#: forms/application_forms.py:336 forms/application_forms.py:348
+#: forms/application_forms.py:369 forms/application_forms.py:407
+#: forms/application_forms.py:424 forms/application_forms.py:436
+#, python-format
 msgid ""
-"Must be a valid ISSN, fully registered and confirmed at the <a "
-"href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN "
-"Portal</a>."
+"Must be a valid ISSN, fully registered and confirmed at the "
+"%(link_start)s ISSN Portal%(link_end)s."
 msgstr ""
 
-#: forms/application_forms.py:279 forms/application_forms.py:356
+#: forms/application_forms.py:286 forms/application_forms.py:373
 msgid "Use the link under the ISSN you provided to check it."
 msgstr ""
 
-#: forms/application_forms.py:280 forms/application_forms.py:312
-#: forms/application_forms.py:327 forms/application_forms.py:337
-#: forms/application_forms.py:357 forms/application_forms.py:390
-#: forms/application_forms.py:405 forms/application_forms.py:415
+#: forms/application_forms.py:287 forms/application_forms.py:323
+#: forms/application_forms.py:340 forms/application_forms.py:352
+#: forms/application_forms.py:374 forms/application_forms.py:411
+#: forms/application_forms.py:428 forms/application_forms.py:440
 msgid "The ISSN must match what is given on the journal website."
 msgstr ""
 
-#: forms/application_forms.py:281
+#: forms/application_forms.py:288
 msgid "For example, 2049-3630"
 msgstr ""
 
-#: forms/application_forms.py:282 forms/application_forms.py:314
-#: forms/application_forms.py:329 forms/application_forms.py:339
-#: forms/application_forms.py:359 forms/application_forms.py:392
-#: forms/application_forms.py:407 forms/application_forms.py:417
+#: forms/application_forms.py:289 forms/application_forms.py:325
+#: forms/application_forms.py:342 forms/application_forms.py:354
+#: forms/application_forms.py:376 forms/application_forms.py:413
+#: forms/application_forms.py:430 forms/application_forms.py:442
 msgid "ISSN must be provided"
 msgstr ""
 
-#: forms/application_forms.py:286 forms/application_forms.py:300
-#: forms/application_forms.py:363 forms/application_forms.py:378
-#: forms/application_forms.py:424
+#: forms/application_forms.py:293 forms/application_forms.py:308
+#: forms/application_forms.py:380 forms/application_forms.py:396
+#: forms/application_forms.py:449
+#, python-format
 msgid ""
-"You must provide <strong>one or both</strong> an online ISSN or a print "
-"ISSN"
+"You must provide%(tag_start)s one or both%(tag_end)s an online ISSN or a "
+"print ISSN"
 msgstr ""
 
-#: forms/application_forms.py:287 forms/application_forms.py:301
-#: forms/application_forms.py:364 forms/application_forms.py:379
-#: forms/application_forms.py:425 forms/application_forms.py:1798
-#: forms/application_forms.py:1826
+#: forms/application_forms.py:295 forms/application_forms.py:310
+#: forms/application_forms.py:382 forms/application_forms.py:398
+#: forms/application_forms.py:451 forms/application_forms.py:1860
+#: forms/application_forms.py:1889
 msgid "This is not a valid ISSN"
 msgstr ""
 
-#: forms/application_forms.py:288 forms/application_forms.py:303
+#: forms/application_forms.py:296 forms/application_forms.py:312
 msgid "This field must contain a different value to 'ISSN (online)'"
 msgstr ""
 
-#: forms/application_forms.py:351
+#: forms/application_forms.py:366
 msgid "ISSN (online)"
 msgstr ""
 
-#: forms/application_forms.py:358
+#: forms/application_forms.py:375
 msgid "For example, 0378-5955"
 msgstr ""
 
-#: forms/application_forms.py:366 forms/application_forms.py:381
-#: forms/application_forms.py:427
+#: forms/application_forms.py:384 forms/application_forms.py:400
+#: forms/application_forms.py:453
 msgid "This field must contain a different value to 'ISSN (print)'"
 msgstr ""
 
-#: forms/application_forms.py:436
+#: forms/application_forms.py:462
 msgid "Up to 6 subject keywords in English"
 msgstr ""
 
-#: forms/application_forms.py:439
+#: forms/application_forms.py:465
 msgid ""
 "Choose up to 6 keywords that describe the journal's subject matter. "
 "Keywords must be in English."
 msgstr ""
 
-#: forms/application_forms.py:440
+#: forms/application_forms.py:466
 msgid ""
 "Use single words or short phrases (2 to 3 words) that describe the "
 "journal's main topic."
 msgstr ""
 
-#: forms/application_forms.py:442
+#: forms/application_forms.py:468
 msgid "Do not add acronyms, abbreviations or descriptive sentences."
 msgstr ""
 
-#: forms/application_forms.py:443
+#: forms/application_forms.py:469
 msgid "Note that the keywords may be edited by DOAJ editorial staff."
 msgstr ""
 
-#: forms/application_forms.py:446
-msgid "Enter at least <strong>one subject keyword</strong> in English"
-msgstr ""
-
-#: forms/application_forms.py:467
-msgid "Languages in which the journal accepts manuscripts"
-msgstr ""
-
-#: forms/application_forms.py:476
-msgid "Enter <strong>at least one</strong> language"
-msgstr ""
-
-#: forms/application_forms.py:484
-msgid "Type or select the language"
+#: forms/application_forms.py:472
+#, python-format
+msgid "Enter at least%(tag_start)s one subject keyword%(tag_end)s in English"
 msgstr ""
 
 #: forms/application_forms.py:494
+msgid "Languages in which the journal accepts manuscripts"
+msgstr ""
+
+#: forms/application_forms.py:503
+#, python-format
+msgid "Enter%(tag_start)s at least one%(tag_end)s language"
+msgstr ""
+
+#: forms/application_forms.py:512
+msgid "Type or select the language"
+msgstr ""
+
+#: forms/application_forms.py:522
 msgid "Publisher's name"
 msgstr ""
 
-#: forms/application_forms.py:497 forms/application_forms.py:522
-#: forms/application_forms.py:531
+#: forms/application_forms.py:525 forms/application_forms.py:550
+#: forms/application_forms.py:559
 msgid "Enter the name of the journal's publisher"
 msgstr ""
 
-#: forms/application_forms.py:506
+#: forms/application_forms.py:534
 msgid "Type or select the publisher's name"
 msgstr ""
 
-#: forms/application_forms.py:524 forms/application_forms.py:533
-#: forms/application_forms.py:612 forms/application_forms.py:618
+#: forms/application_forms.py:552 forms/application_forms.py:561
+#: forms/application_forms.py:641 forms/application_forms.py:647
 msgid "The Publisher's name and Other organisation's name cannot be the same."
 msgstr ""
 
-#: forms/application_forms.py:560
+#: forms/application_forms.py:588
 msgid "Publisher's country"
 msgstr ""
 
-#: forms/application_forms.py:565
+#: forms/application_forms.py:593
 msgid ""
 "The country where the publisher carries out its business operations and "
 "is registered."
 msgstr ""
 
-#: forms/application_forms.py:566
+#: forms/application_forms.py:594
 msgid "You must provide a publisher country"
 msgstr ""
 
-#: forms/application_forms.py:567 forms/application_forms.py:659
+#: forms/application_forms.py:595 forms/application_forms.py:688
 msgid "Type or select the country"
 msgstr ""
 
-#: forms/application_forms.py:571
+#: forms/application_forms.py:599
+#, python-format
 msgid ""
-"Enter the <strong>country</strong> where the publisher carries out its "
-"business operations and is registered"
+"Enter the%(tag_start)s country%(tag_end)s where the publisher carries out"
+" its business operations and is registered"
 msgstr ""
 
-#: forms/application_forms.py:592
+#: forms/application_forms.py:621
 msgid "Other organisation's name"
 msgstr ""
 
-#: forms/application_forms.py:596
+#: forms/application_forms.py:625
 msgid "Any other organisation associated with the journal"
 msgstr ""
 
-#: forms/application_forms.py:598
+#: forms/application_forms.py:627
 msgid ""
 "The journal may be owned, funded, sponsored, or supported by another "
 "organisation that is not the publisher. If your journal is linked to a "
 "second organisation, enter its name here."
 msgstr ""
 
-#: forms/application_forms.py:601
+#: forms/application_forms.py:630
 msgid "Type or select the other organisation's name"
 msgstr ""
 
-#: forms/application_forms.py:652
+#: forms/application_forms.py:681
 msgid "Other organisation's country"
 msgstr ""
 
-#: forms/application_forms.py:658
+#: forms/application_forms.py:687
 msgid "The country in which the other organisation is based"
 msgstr ""
 
-#: forms/application_forms.py:671 forms/application_forms.py:682
+#: forms/application_forms.py:700 forms/application_forms.py:711
 msgid ""
 "'You must provide the other organization's name. You cannot provide just "
 "the country."
 msgstr ""
 
-#: forms/application_forms.py:696
+#: forms/application_forms.py:725
 msgid "License(s) permitted by the journal"
 msgstr ""
 
-#: forms/application_forms.py:700
+#: forms/application_forms.py:729 forms/application_forms.py:747
 msgid "CC BY"
 msgstr ""
 
-#: forms/application_forms.py:701
+#: forms/application_forms.py:730 forms/application_forms.py:749
 msgid "CC BY-SA"
 msgstr ""
 
-#: forms/application_forms.py:702
+#: forms/application_forms.py:731 forms/application_forms.py:751
 msgid "CC BY-ND"
 msgstr ""
 
-#: forms/application_forms.py:703
+#: forms/application_forms.py:732 forms/application_forms.py:753
 msgid "CC BY-NC"
 msgstr ""
 
-#: forms/application_forms.py:704
+#: forms/application_forms.py:733 forms/application_forms.py:755
 msgid "CC BY-NC-SA"
 msgstr ""
 
-#: forms/application_forms.py:705
+#: forms/application_forms.py:734 forms/application_forms.py:757
 msgid "CC BY-NC-ND"
 msgstr ""
 
-#: forms/application_forms.py:706
+#: forms/application_forms.py:735
 msgid "CC0"
 msgstr ""
 
-#: forms/application_forms.py:707
+#: forms/application_forms.py:736
 msgid "Public domain"
 msgstr ""
 
-#: forms/application_forms.py:708 forms/application_forms.py:747
+#: forms/application_forms.py:737 forms/application_forms.py:776
 msgid "Publisher's own license"
 msgstr ""
 
-#: forms/application_forms.py:712
+#: forms/application_forms.py:741
 msgid ""
 "The journal must use some form of licensing to be considered for indexing"
 " in DOAJ. "
 msgstr ""
 
-#: forms/application_forms.py:713
+#: forms/application_forms.py:742
+#, python-format
 msgid ""
-"If Creative Commons licensing is not used, then select <em>Publisher's "
-"own license</em> and enter more details below."
+"If Creative Commons licensing is not used, then select%(tag_start)s "
+"Publisher's own license%(tag_end)s and enter more details below."
 msgstr ""
 
-#: forms/application_forms.py:715
-msgid ""
-"More information on CC licenses: <br/><a "
-"href='https://creativecommons.org/licenses/by/4.0/' target='_blank' "
-"'rel='noopener'>CC BY</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-sa/4.0/' target='_blank' "
-"'rel='noopener'>CC BY-SA</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nd/4.0/' target='_blank' "
-"'rel='noopener'>CC BY-ND</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nc/4.0/' target='_blank' "
-"'rel='noopener'>CC BY-NC</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nc-sa/4.0/' target='_blank'"
-" 'rel='noopener'>CC BY-NC-SA</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nc-nd/4.0/' target='_blank'"
-" 'rel='noopener'>CC BY-NC-ND</a>"
+#: forms/application_forms.py:745
+msgid "More information on CC licenses: "
 msgstr ""
 
-#: forms/application_forms.py:728
+#: forms/application_forms.py:758
+#, python-format
 msgid ""
-"<a "
-"href='https://wiki.creativecommons.org/wiki/CC0_FAQ#What_is_the_difference_between_CC0_and_the_Public_Domain_Mark_.28.22PDM.22.29.3F'"
-" target='_blank' rel='noopener'>What is the difference between CC0 and "
-"the Public Domain Mark (\"PDM\")?</a>"
+"%(link_start)s What is the difference between CC0 and the Public Domain "
+"Mark (\"PDM\")? %(link_end)s"
 msgstr ""
 
-#: forms/application_forms.py:733 forms/application_forms.py:756
+#: forms/application_forms.py:761 forms/application_forms.py:785
 msgid "Content must be licensed"
 msgstr ""
 
-#: forms/application_forms.py:736
-msgid "Select <strong>at least one</strong> type of license"
-msgstr ""
-
-#: forms/application_forms.py:743
-msgid "Select all the attributes that your license has"
-msgstr ""
-
-#: forms/application_forms.py:750
-msgid "Attribution"
-msgstr ""
-
-#: forms/application_forms.py:751
-msgid "Share Alike"
-msgstr ""
-
-#: forms/application_forms.py:752
-msgid "No Derivatives"
-msgstr ""
-
-#: forms/application_forms.py:753
-msgid "No Commercial Usage"
-msgstr ""
-
-#: forms/application_forms.py:763 forms/application_forms.py:854
-#: forms/application_forms.py:939 forms/application_forms.py:1004
-#: forms/application_forms.py:1209 forms/application_forms.py:1256
-#: forms/application_forms.py:1305 forms/application_forms.py:1425
-#: forms/application_forms.py:1525
-msgid "Where can we find this information?"
-msgstr ""
-
-#: forms/application_forms.py:767
-msgid "Enter the URL for the journal’s <strong>license terms</strong> page"
-msgstr ""
-
-#: forms/application_forms.py:771
-msgid "Link to the page where the license terms are stated on your site."
+#: forms/application_forms.py:764
+#, python-format
+msgid "Select%(tag_start)s at least one%(tag_end)s type of license"
 msgstr ""
 
 #: forms/application_forms.py:772
+msgid "Select all the attributes that your license has"
+msgstr ""
+
+#: forms/application_forms.py:779
+msgid "Attribution"
+msgstr ""
+
+#: forms/application_forms.py:780
+msgid "Share Alike"
+msgstr ""
+
+#: forms/application_forms.py:781
+msgid "No Derivatives"
+msgstr ""
+
+#: forms/application_forms.py:782
+msgid "No Commercial Usage"
+msgstr ""
+
+#: forms/application_forms.py:792 forms/application_forms.py:887
+#: forms/application_forms.py:974 forms/application_forms.py:1042
+#: forms/application_forms.py:1255 forms/application_forms.py:1305
+#: forms/application_forms.py:1355 forms/application_forms.py:1479
+#: forms/application_forms.py:1581
+msgid "Where can we find this information?"
+msgstr ""
+
+#: forms/application_forms.py:796
+#, python-format
+msgid "Enter the URL for the journal’s%(tag_start)s license terms%(tag_end)s page"
+msgstr ""
+
+#: forms/application_forms.py:801
+msgid "Link to the page where the license terms are stated on your site."
+msgstr ""
+
+#: forms/application_forms.py:802
 msgid "You must provide a link to your license terms"
 msgstr ""
 
-#: forms/application_forms.py:773
+#: forms/application_forms.py:803
 msgid "https://www.my-journal.com/about#licensing"
 msgstr ""
 
-#: forms/application_forms.py:784
+#: forms/application_forms.py:814
 msgid ""
 "Does the journal embed and/or display licensing information in its "
 "articles?"
 msgstr ""
 
-#: forms/application_forms.py:791
+#: forms/application_forms.py:821
+#, python-format
 msgid ""
 "It is recommended that licensing information is included in full-text "
-"articles but it is not required for inclusion. Answer "
-"<strong>Yes</strong> if licensing is displayed or embedded in all "
-"versions of each article."
+"articles but it is not required for inclusion. Answer%(tag_start)s "
+"Yes%(tag_end)s if licensing is displayed or embedded in all versions of "
+"each article."
 msgstr ""
 
-#: forms/application_forms.py:797 forms/application_forms.py:839
-#: forms/application_forms.py:997 forms/application_forms.py:1120
-#: forms/application_forms.py:1249 forms/application_forms.py:1298
+#: forms/application_forms.py:828 forms/application_forms.py:871
+#: forms/application_forms.py:1035 forms/application_forms.py:1166
+#: forms/application_forms.py:1298 forms/application_forms.py:1348
 msgid "Select Yes or No"
 msgstr ""
 
-#: forms/application_forms.py:804
+#: forms/application_forms.py:835
 msgid "Recent article displaying or embedding a license in the full text"
 msgstr ""
 
-#: forms/application_forms.py:817
+#: forms/application_forms.py:848
 msgid "Enter the URL for any recent article that displays or embeds a license"
 msgstr ""
 
-#: forms/application_forms.py:831
+#: forms/application_forms.py:862
+#, python-format
 msgid ""
 "For all the licenses you have indicated above, do authors retain the "
-"copyright <b>and</b> full publishing rights without restrictions?"
+"copyright %(tag_start)s and %(tag_end)s full publishing rights without "
+"restrictions?"
 msgstr ""
 
-#: forms/application_forms.py:842
+#: forms/application_forms.py:874
+#, python-format
 msgid ""
-"Answer <strong>No</strong> if authors transfer copyright or assign "
-"exclusive rights to the publisher (including commercial rights). "
-"<br/><br/> Answer <strong>Yes</strong> only if authors publishing under "
-"any license allowed by the journal retain all rights."
+"Answer%(tag_start)s No%(tag_end)s if authors transfer copyright or assign"
+" exclusive rights to the publisher (including commercial rights). "
+"%(tag_br)s%(tag_br)s Answer%(tag_start)s Yes%(tag_end)s only if authors "
+"publishing under any license allowed by the journal retain all rights."
 msgstr ""
 
-#: forms/application_forms.py:856
+#: forms/application_forms.py:889
 msgid "Copyright terms"
 msgstr ""
 
-#: forms/application_forms.py:858
+#: forms/application_forms.py:891
 msgid "Link to the journal’s copyright terms"
 msgstr ""
 
-#: forms/application_forms.py:871
-msgid "Enter the URL for the journal’s <strong>copyright terms</strong> page"
+#: forms/application_forms.py:904
+#, python-format
+msgid ""
+"Enter the URL for the journal’s%(tag_start)s copyright terms%(tag_end)s "
+"page"
 msgstr ""
 
-#: forms/application_forms.py:887
+#: forms/application_forms.py:921
 msgid ""
 "DOAJ only accepts peer-reviewed journals. Which type(s) of peer review "
 "does this journal use?"
 msgstr ""
 
-#: forms/application_forms.py:892
+#: forms/application_forms.py:926
 msgid "Editorial review"
 msgstr ""
 
-#: forms/application_forms.py:893 forms/application_forms.py:2049
+#: forms/application_forms.py:927 forms/application_forms.py:2112
 msgid "Peer review"
 msgstr ""
 
-#: forms/application_forms.py:894
+#: forms/application_forms.py:928
 msgid "Anonymous peer review"
 msgstr ""
 
-#: forms/application_forms.py:895
+#: forms/application_forms.py:929
 msgid "Double anonymous peer review"
 msgstr ""
 
-#: forms/application_forms.py:896
+#: forms/application_forms.py:930
 msgid "Post-publication peer review"
 msgstr ""
 
-#: forms/application_forms.py:897
+#: forms/application_forms.py:931
 msgid "Open peer review"
 msgstr ""
 
-#: forms/application_forms.py:898 forms/application_forms.py:1346
-#: forms/application_forms.py:1595 forms/application_forms.py:2516
+#: forms/application_forms.py:932 forms/application_forms.py:1397
+#: forms/application_forms.py:1651 forms/application_forms.py:2579
 msgid "Other"
 msgstr ""
 
-#: forms/application_forms.py:901
+#: forms/application_forms.py:935
 msgid ""
 "Enter all types of review used by the journal for research articles. Note"
 " that editorial review is only accepted for arts and humanities journals."
 msgstr ""
 
-#: forms/application_forms.py:904
+#: forms/application_forms.py:938
 msgid "Peer review must be carried out"
 msgstr ""
 
-#: forms/application_forms.py:907
-msgid "Select <strong>at least one</strong> type of review process"
+#: forms/application_forms.py:941
+#, python-format
+msgid "Select%(tag_start)s at least one%(tag_end)s type of review process"
 msgstr ""
 
-#: forms/application_forms.py:914 forms/application_forms.py:917
+#: forms/application_forms.py:949 forms/application_forms.py:952
 msgid "Other peer review"
 msgstr ""
 
-#: forms/application_forms.py:924
+#: forms/application_forms.py:959
 msgid "Enter the name of another type of peer review"
 msgstr ""
 
-#: forms/application_forms.py:941
+#: forms/application_forms.py:976
 msgid "Peer review policy"
 msgstr ""
 
-#: forms/application_forms.py:943 forms/application_forms.py:1009
-#: forms/application_forms.py:1036 forms/application_forms.py:1055
-#: forms/application_forms.py:1074 forms/application_forms.py:1216
-#: forms/application_forms.py:1264 forms/application_forms.py:1313
-#: forms/application_forms.py:1430 forms/application_forms.py:1534
+#: forms/application_forms.py:978 forms/application_forms.py:1047
+#: forms/application_forms.py:1076 forms/application_forms.py:1097
+#: forms/application_forms.py:1118 forms/application_forms.py:1263
+#: forms/application_forms.py:1313 forms/application_forms.py:1363
+#: forms/application_forms.py:1484 forms/application_forms.py:1590
 msgid "You must provide a URL"
 msgstr ""
 
-#: forms/application_forms.py:944
+#: forms/application_forms.py:979
 msgid "Link to the journal’s peer review policy"
 msgstr ""
 
-#: forms/application_forms.py:947
-msgid "Enter the URL for the journal’s <strong>peer review policy</strong> page"
+#: forms/application_forms.py:982
+#, python-format
+msgid ""
+"Enter the URL for the journal’s%(tag_start)s peer review "
+"policy%(tag_end)s page"
 msgstr ""
 
-#: forms/application_forms.py:959
+#: forms/application_forms.py:995
 msgid "When did the journal start to publish all content using an open license?"
 msgstr ""
 
-#: forms/application_forms.py:964
+#: forms/application_forms.py:1000
+#, python-format
 msgid ""
 "Please enter the year that the journal started to publish all content as "
-"true open access, according to DOAJ's <a "
-"href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-"
-"access/' target='_blank' rel='nofollow'>definition</a>."
+"true open access, according to DOAJ's %(link_start)s "
+"definition%(link_end)s."
 msgstr ""
 
-#: forms/application_forms.py:965
+#: forms/application_forms.py:1003
 msgid ""
 "For journals that have flipped to open access, enter the year that the "
 "journal flipped, not the original launch date of the journal."
 msgstr ""
 
-#: forms/application_forms.py:966
+#: forms/application_forms.py:1004
 msgid ""
 "For journals that have made digitised backfiles freely available, enter "
 "the year that the journal started publishing as a fully open access "
 "title, not the date of the earliest free content."
 msgstr ""
 
-#: forms/application_forms.py:969
+#: forms/application_forms.py:1007
 msgid "Enter the Year (YYYY)."
 msgstr ""
 
-#: forms/application_forms.py:972
+#: forms/application_forms.py:1010
 #, python-brace-format
 msgid ""
 "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be"
 " greater than {}"
 msgstr ""
 
-#: forms/application_forms.py:984
+#: forms/application_forms.py:1022
 msgid "Does the journal routinely screen article submissions for plagiarism?"
 msgstr ""
 
-#: forms/application_forms.py:987
+#: forms/application_forms.py:1025
 msgid ""
 "Screening for plagiarism is recommended, but is not a requirement for "
 "inclusion in DOAJ. If the journal does screen for plagiarism, state the "
 "services(s) used on your website."
 msgstr ""
 
-#: forms/application_forms.py:1005
+#: forms/application_forms.py:1043
 msgid "Plagiarism screening"
 msgstr ""
 
-#: forms/application_forms.py:1011
+#: forms/application_forms.py:1049
 msgid "Link to the journal’s plagiarism policy"
 msgstr ""
 
-#: forms/application_forms.py:1012
+#: forms/application_forms.py:1050
 msgid ""
 "The page should state that the journal actively checks for plagiarism and"
 " explain how this is done (including the name of any software or service "
 "used)."
 msgstr ""
 
-#: forms/application_forms.py:1019
-msgid "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
-msgstr ""
-
-#: forms/application_forms.py:1033
-msgid "Link to the journal’s <b>Aims & Scope</b>"
-msgstr ""
-
-#: forms/application_forms.py:1040
-msgid "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"
-msgstr ""
-
-#: forms/application_forms.py:1052
-msgid "Link to the journal’s <b>Editorial Board</b>"
-msgstr ""
-
-#: forms/application_forms.py:1059
-msgid "Enter the URL for the journal’s <strong>Editorial Board</strong> page"
-msgstr ""
-
-#: forms/application_forms.py:1071
-msgid "Link to the journal’s <b>Instructions for Authors</b>"
-msgstr ""
-
-#: forms/application_forms.py:1078
+#: forms/application_forms.py:1057
+#, python-format
 msgid ""
-"Enter the URL for the journal’s <strong>Instructions for Authors</strong>"
+"Enter the URL for the journal’s%(tag_start)s plagiarism policy%(tag_end)s"
 " page"
 msgstr ""
 
-#: forms/application_forms.py:1090
-msgid ""
-"Average number of <strong>weeks</strong> between article submission & "
-"publication"
+#: forms/application_forms.py:1072
+#, python-format
+msgid "Link to the journal’s%(tag_start)s Aims & Scope%(tag_end)s"
 msgstr ""
 
-#: forms/application_forms.py:1094
+#: forms/application_forms.py:1080
+#, python-format
+msgid "Enter the URL for the journal’s%(tag_start)s Aims & Scope%(tag_end)s page"
+msgstr ""
+
+#: forms/application_forms.py:1093
+#, python-format
+msgid "Link to the journal’s%(tag_start)s Editorial Board%(tag_end)s"
+msgstr ""
+
+#: forms/application_forms.py:1101
+#, python-format
+msgid ""
+"Enter the URL for the journal’s%(tag_start)s Editorial Board%(tag_end)s "
+"page"
+msgstr ""
+
+#: forms/application_forms.py:1114
+#, python-format
+msgid "Link to the journal’s%(tag_start)s Instructions for Authors%(tag_end)s"
+msgstr ""
+
+#: forms/application_forms.py:1122
+#, python-format
+msgid ""
+"Enter the URL for the journal’s%(tag_start)s Instructions for "
+"Authors%(tag_end)s page"
+msgstr ""
+
+#: forms/application_forms.py:1135
+#, python-format
+msgid ""
+"Average number of %(tag_start)s weeks %(tag_end)s between article "
+"submission & publication"
+msgstr ""
+
+#: forms/application_forms.py:1140
 msgid "Enter an average number of weeks"
 msgstr ""
 
-#: forms/application_forms.py:1106
+#: forms/application_forms.py:1152
 msgid "Does the journal charge fees for publishing an article (APCs)?"
 msgstr ""
 
-#: forms/application_forms.py:1113
+#: forms/application_forms.py:1159
 msgid ""
 "Publication fees are sometimes called article processing charges (APCs). "
 "You should answer Yes if any fee is required from the author for "
 "publishing their paper."
 msgstr ""
 
-#: forms/application_forms.py:1117
+#: forms/application_forms.py:1163
 msgid "You must tell us about any APCs"
 msgstr ""
 
-#: forms/application_forms.py:1128 forms/application_forms.py:1190
+#: forms/application_forms.py:1174 forms/application_forms.py:1236
 msgid "Highest fee charged"
 msgstr ""
 
-#: forms/application_forms.py:1137
+#: forms/application_forms.py:1183
 msgid ""
 "If the journal charges a range of fees for the publication of an article,"
 " enter the highest fee. If the fee can be paid in more than one currency,"
 " you may list them here."
 msgstr ""
 
-#: forms/application_forms.py:1175
+#: forms/application_forms.py:1221
 msgid "Enter the currency or currencies for the journal’s publishing fees"
 msgstr ""
 
-#: forms/application_forms.py:1197
+#: forms/application_forms.py:1243
 msgid "Enter the value of the highest publishing fee the journal has charged"
 msgstr ""
 
-#: forms/application_forms.py:1210 forms/application_forms.py:2082
+#: forms/application_forms.py:1256 forms/application_forms.py:2145
 msgid "Publication fees"
 msgstr ""
 
-#: forms/application_forms.py:1213
+#: forms/application_forms.py:1259
+#, python-format
 msgid ""
-"Link to the page where this is stated. The page must declare <b>whether "
-"or not</b> there is a fee to publish an article in the journal."
+"Link to the page where this is stated. The page must declare%(tag_start)s"
+" whether or not%(tag_end)s there is a fee to publish an article in the "
+"journal."
 msgstr ""
 
-#: forms/application_forms.py:1221
+#: forms/application_forms.py:1268
+#, python-format
 msgid ""
-"Enter the URL for the journal’s <strong>publication fees</strong> "
+"Enter the URL for the journal’s%(tag_start)s publication fees%(tag_end)s "
 "information page"
 msgstr ""
 
-#: forms/application_forms.py:1233
+#: forms/application_forms.py:1281
 msgid ""
 "Does the journal provide a waiver or discount on publication fees for "
 "authors?"
 msgstr ""
 
-#: forms/application_forms.py:1241
+#: forms/application_forms.py:1289
+#, python-format
 msgid ""
-"Answer <strong>Yes</strong> if the journal provides publication fee "
-"waivers for authors from low-income economies, discounts for authors from"
-" lower middle-income economies, and/or waivers and discounts for other "
-"authors with demonstrable needs."
+"Answer%(tag_start)s Yes%(tag_end)s if the journal provides publication "
+"fee waivers for authors from low-income economies, discounts for authors "
+"from lower middle-income economies, and/or waivers and discounts for "
+"other authors with demonstrable needs."
 msgstr ""
 
-#: forms/application_forms.py:1258
+#: forms/application_forms.py:1307
 msgid "Publication fee waiver"
 msgstr ""
 
-#: forms/application_forms.py:1263
+#: forms/application_forms.py:1312
 msgid "Link to the journal’s waiver information."
 msgstr ""
 
-#: forms/application_forms.py:1271
-msgid "Enter the URL for the journal’s <strong>waiver information</strong> page"
+#: forms/application_forms.py:1320
+#, python-format
+msgid ""
+"Enter the URL for the journal’s%(tag_start)s waiver "
+"information%(tag_end)s page"
 msgstr ""
 
-#: forms/application_forms.py:1285
+#: forms/application_forms.py:1335
 msgid "Does the journal charge any other fees to authors?"
 msgstr ""
 
-#: forms/application_forms.py:1292
+#: forms/application_forms.py:1342
 msgid ""
 "Declare all other charges: editorial processing charges, language editing"
 " fees, colour charges, submission fees, page charges, membership fees, "
 "print subscription costs, other supplementary charges"
 msgstr ""
 
-#: forms/application_forms.py:1295
+#: forms/application_forms.py:1345
 msgid "You must declare any other charges if they exist"
 msgstr ""
 
-#: forms/application_forms.py:1307 forms/application_forms.py:2105
+#: forms/application_forms.py:1357 forms/application_forms.py:2168
 msgid "Other fees"
 msgstr ""
 
-#: forms/application_forms.py:1312
+#: forms/application_forms.py:1362
 msgid "Link to the journal’s fees information"
 msgstr ""
 
-#: forms/application_forms.py:1319
-msgid "Enter the URL for the journal’s <strong>fees<strong> information page"
+#: forms/application_forms.py:1369
+#, python-format
+msgid ""
+"Enter the URL for the journal's%(tag_start)s fees%(tag_end)s information "
+"page"
 msgstr ""
 
-#: forms/application_forms.py:1333
+#: forms/application_forms.py:1384
 msgid "Long-term preservation service(s) where the journal is currently archived"
 msgstr ""
 
-#: forms/application_forms.py:1337
+#: forms/application_forms.py:1388
 msgid "CINES"
 msgstr ""
 
-#: forms/application_forms.py:1338
+#: forms/application_forms.py:1389
 msgid "CLOCKSS"
 msgstr ""
 
-#: forms/application_forms.py:1339
+#: forms/application_forms.py:1390
 msgid "LOCKSS"
 msgstr ""
 
-#: forms/application_forms.py:1340
+#: forms/application_forms.py:1391
 msgid "Internet Archive"
 msgstr ""
 
-#: forms/application_forms.py:1341
+#: forms/application_forms.py:1392
 msgid "PKP PN"
 msgstr ""
 
-#: forms/application_forms.py:1342
+#: forms/application_forms.py:1393
 msgid "PubMed Central (PMC)"
 msgstr ""
 
-#: forms/application_forms.py:1343
+#: forms/application_forms.py:1394
 msgid "Portico"
 msgstr ""
 
-#: forms/application_forms.py:1344 forms/application_forms.py:1373
+#: forms/application_forms.py:1395 forms/application_forms.py:1427
 msgid "A national library"
 msgstr ""
 
-#: forms/application_forms.py:1348
+#: forms/application_forms.py:1399
+#, python-format
 msgid ""
-"<em>The journal content isn’t archived with a long-term preservation "
-"service</em>"
+"%(tag_start)sThe journal content isn’t archived with a long-term "
+"preservation service%(tag_end)s"
 msgstr ""
 
-#: forms/application_forms.py:1353
+#: forms/application_forms.py:1405
+#, python-format
 msgid ""
 "Content must be actively deposited in each of the options you choose. If "
 "the journal is registered with a service but archiving is not yet active,"
-" choose <em>The journal content isn’t archived with a long-term "
-"preservation service</em>."
+" choose%(tag_start)s The journal content isn’t archived with a long-term "
+"preservation service%(tag_end)s."
 msgstr ""
 
-#: forms/application_forms.py:1356
+#: forms/application_forms.py:1409
 msgid "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."
 msgstr ""
 
-#: forms/application_forms.py:1359 forms/application_forms.py:1496
-#: forms/application_forms.py:1605
-msgid "Select <strong>at least one</strong> option"
+#: forms/application_forms.py:1412 forms/application_forms.py:1551
+#: forms/application_forms.py:1664
+#, python-format
+msgid "Select%(tag_start)s at least one%(tag_end)s option"
 msgstr ""
 
-#: forms/application_forms.py:1380
+#: forms/application_forms.py:1434
 msgid "Name of national library"
 msgstr ""
 
-#: forms/application_forms.py:1387
+#: forms/application_forms.py:1441
 msgid ""
 "Enter the name(s) of the national library or libraries where the journal "
 "is archived"
 msgstr ""
 
-#: forms/application_forms.py:1403
+#: forms/application_forms.py:1457
 msgid "Other archiving policy:"
 msgstr ""
 
-#: forms/application_forms.py:1410
+#: forms/application_forms.py:1464
 msgid "Enter the name of another archiving policy"
 msgstr ""
 
-#: forms/application_forms.py:1429
+#: forms/application_forms.py:1483
 msgid "Link to the preservation and archiving information"
 msgstr ""
 
-#: forms/application_forms.py:1472
+#: forms/application_forms.py:1526
 msgid ""
 "Does the journal have a policy allowing authors to deposit versions of "
 "their work in an institutional or other repository of their choice? Where"
 " is this policy recorded?"
 msgstr ""
 
-#: forms/application_forms.py:1477
+#: forms/application_forms.py:1531
 msgid "Diadorim"
 msgstr ""
 
-#: forms/application_forms.py:1478
+#: forms/application_forms.py:1532
 msgid "Dulcinea"
 msgstr ""
 
-#: forms/application_forms.py:1479
+#: forms/application_forms.py:1533
 msgid "Mir@bel"
 msgstr ""
 
-#: forms/application_forms.py:1480
+#: forms/application_forms.py:1534
 msgid "Open Policy Finder"
 msgstr ""
 
-#: forms/application_forms.py:1481
+#: forms/application_forms.py:1535
 msgid "Other (including publisher’s own site)"
 msgstr ""
 
-#: forms/application_forms.py:1483
-msgid "<em>The journal has no repository policy</em>"
+#: forms/application_forms.py:1537
+#, python-format
+msgid "%(tag_start)sThe journal has no repository policy%(tag_end)s"
 msgstr ""
 
-#: forms/application_forms.py:1486
+#: forms/application_forms.py:1541
 msgid ""
 "Many authors wish to deposit a copy of their paper in an institutional or"
 " other repository of their choice. What is the journal’s policy for this?"
 msgstr ""
 
-#: forms/application_forms.py:1488
-msgid ""
-"You should state your policy about the different versions of the "
-"paper:<ul style='list-style-type: none;'><li>Submitted "
-"version</li><li>Accepted version (Author Accepted "
-"Manuscript)</li><li>Published version (Version of Record)</li></ul>"
+#: forms/application_forms.py:1543
+msgid "You should state your policy about the different versions of the paper:"
 msgstr ""
 
-#: forms/application_forms.py:1503
+#: forms/application_forms.py:1545
+msgid "Submitted version"
+msgstr ""
+
+#: forms/application_forms.py:1546
+msgid "Accepted version (Author Accepted Manuscript)"
+msgstr ""
+
+#: forms/application_forms.py:1547
+msgid "Published version (Version of Record)"
+msgstr ""
+
+#: forms/application_forms.py:1559
 msgid "Name of other website where policy is registered"
 msgstr ""
 
-#: forms/application_forms.py:1510
+#: forms/application_forms.py:1566
 msgid "Enter the name of another repository policy"
 msgstr ""
 
-#: forms/application_forms.py:1535
+#: forms/application_forms.py:1591
 msgid ""
 "Provide the link to the policy in the selected directory. Or select "
 "'Other' and provide a link to the information on your website."
 msgstr ""
 
-#: forms/application_forms.py:1586
+#: forms/application_forms.py:1642
 msgid "Persistent article identifiers used by the journal"
 msgstr ""
 
-#: forms/application_forms.py:1591
+#: forms/application_forms.py:1647
 msgid "DOIs"
 msgstr ""
 
-#: forms/application_forms.py:1592
+#: forms/application_forms.py:1648
 msgid "ARKs"
 msgstr ""
 
-#: forms/application_forms.py:1593
+#: forms/application_forms.py:1649
 msgid "Handles"
 msgstr ""
 
-#: forms/application_forms.py:1594
+#: forms/application_forms.py:1650
 msgid "PURLs"
 msgstr ""
 
-#: forms/application_forms.py:1596
-msgid "<em>The journal does not use persistent article identifiers</em>"
+#: forms/application_forms.py:1652
+#, python-format
+msgid ""
+"%(tag_start)sThe journal does not use persistent article "
+"identifiers%(tag_end)s"
 msgstr ""
 
-#: forms/application_forms.py:1600
+#: forms/application_forms.py:1657
 msgid ""
 "A persistent article identifier (PID) is used to find the article no "
 "matter where it is located. The most common type of PID is the digital "
 "object identifier (DOI). "
 msgstr ""
 
-#: forms/application_forms.py:1602
-msgid ""
-"<a href='https://en.wikipedia.org/wiki/Persistent_identifier' "
-"target='_blank' rel='noopener'>Read more about PIDs.</a>"
+#: forms/application_forms.py:1659
+#, python-format
+msgid "%(link_start)s Read more about PIDs. %(link_end)s"
 msgstr ""
 
-#: forms/application_forms.py:1612
+#: forms/application_forms.py:1672
 msgid "Other identifier"
 msgstr ""
 
-#: forms/application_forms.py:1619
+#: forms/application_forms.py:1679
 msgid "Enter the name of another type of identifier"
 msgstr ""
 
-#: forms/application_forms.py:1636
+#: forms/application_forms.py:1696
 msgid "Subscribe to Open"
 msgstr ""
 
-#: forms/application_forms.py:1640
+#: forms/application_forms.py:1700
+#, python-format
 msgid ""
-"Is the journal part of the <a "
-"href='https://subscribetoopencommunity.org/' target='_blank' "
-"rel='noopener'>Subscribe to Open</a> initiative?"
+"Is the journal part of the %(link_start)s Subscribe to Open %(link_end)s "
+"initiative?"
 msgstr ""
 
-#: forms/application_forms.py:1649
+#: forms/application_forms.py:1710
 msgid "Reason for rejection"
 msgstr ""
 
-#: forms/application_forms.py:1657
+#: forms/application_forms.py:1718
 msgid "Additional info"
 msgstr ""
 
-#: forms/application_forms.py:1660
+#: forms/application_forms.py:1721
 msgid ""
 "The selected reason for rejection, and any additional information you "
 "include, are sent to the journal contact with the rejection email."
 msgstr ""
 
-#: forms/application_forms.py:1671
+#: forms/application_forms.py:1732
 msgid "DOAJ Account"
 msgstr ""
 
-#: forms/application_forms.py:1684
+#: forms/application_forms.py:1745
 msgid "You must confirm the account id"
 msgstr ""
 
-#: forms/application_forms.py:1695
+#: forms/application_forms.py:1756
 msgid "Change status"
 msgstr ""
 
-#: forms/application_forms.py:1710
+#: forms/application_forms.py:1771
 msgid ""
 "Set the status to 'In Progress' to signal to the applicant that you have "
 "started your review.Set the status to 'Completed' to alert the Editor "
 "that you have completed your review."
 msgstr ""
 
-#: forms/application_forms.py:1718
+#: forms/application_forms.py:1779
 msgid ""
 "Revert the status to 'In Progress' to signal to the Associate Editor that"
 " further work is needed.Set the status to 'Ready' to alert the Managing "
 "Editor that you have completed your review."
 msgstr ""
 
-#: forms/application_forms.py:1733
+#: forms/application_forms.py:1794
 msgid "Group"
 msgstr ""
 
-#: forms/application_forms.py:1756
+#: forms/application_forms.py:1817
 msgid "Individual"
 msgstr ""
 
-#: forms/application_forms.py:1771
+#: forms/application_forms.py:1832
 msgid "Discontinued on"
 msgstr ""
 
-#: forms/application_forms.py:1774
+#: forms/application_forms.py:1835
 msgid "Date must be a big-end formatted date (e.g. 2020-11-23)"
 msgstr ""
 
-#: forms/application_forms.py:1781
+#: forms/application_forms.py:1842
 msgid "You cannot enter both a discontinued date and continuation information."
 msgstr ""
 
-#: forms/application_forms.py:1786
+#: forms/application_forms.py:1847
 msgid ""
 "Please enter the discontinued date in the form YYYY-MM-DD (e.g. "
 "2020-11-23).  If the day of the month is not known, please use '01' (e.g."
 " 2020-11-01)"
 msgstr ""
 
-#: forms/application_forms.py:1795
-msgid "Continues an <strong>older</strong> journal with the ISSN(s)"
+#: forms/application_forms.py:1856
+#, python-format
+msgid "Continues an%(tag_start)s older%(tag_end)s journal with the ISSN(s)"
 msgstr ""
 
-#: forms/application_forms.py:1800 forms/application_forms.py:1828
+#: forms/application_forms.py:1862 forms/application_forms.py:1891
 msgid ""
 "The ISSN provided in both fields must be different. Please make sure to "
 "enter the ISSN of an older journal for the first field and the ISSN of a "
 "newer journal for the second field. They cannot be the same."
 msgstr ""
 
-#: forms/application_forms.py:1805 forms/application_forms.py:1833
+#: forms/application_forms.py:1867 forms/application_forms.py:1896
 msgid "You cannot enter both continuation information and a discontinued date"
 msgstr ""
 
-#: forms/application_forms.py:1815
+#: forms/application_forms.py:1877
 msgid "Enter the ISSN(s) of the previous title(s) of this journal."
 msgstr ""
 
-#: forms/application_forms.py:1823
-msgid "Continued by a <strong>newer</strong> journal with the ISSN(s)"
+#: forms/application_forms.py:1885
+#, python-format
+msgid "Continued by a%(tag_start)s newer%(tag_end)s journal with the ISSN(s)"
 msgstr ""
 
-#: forms/application_forms.py:1838
+#: forms/application_forms.py:1901
 msgid "Enter the ISSN(s) of the later title(s) that continue this publication."
 msgstr ""
 
-#: forms/application_forms.py:1851
+#: forms/application_forms.py:1914
 msgid "Assign one or a maximum of two subject classifications"
 msgstr ""
 
-#: forms/application_forms.py:1854
+#: forms/application_forms.py:1917
 msgid "Selecting a subject will not automatically select its sub-categories"
 msgstr ""
 
-#: forms/application_forms.py:1865
+#: forms/application_forms.py:1928
 #, python-format
 msgid ""
 "This field is required when setting the Application Status to %(y)s, "
 "%(z)s or %(a)s"
 msgstr ""
 
-#: forms/application_forms.py:1889 forms/application_forms.py:2217
+#: forms/application_forms.py:1952 forms/application_forms.py:2280
 msgid "Notes"
 msgstr ""
 
-#: forms/application_forms.py:1956 forms/application_forms.py:2231
+#: forms/application_forms.py:2019 forms/application_forms.py:2294
 msgid "Allow save without validation"
 msgstr ""
 
-#: forms/application_forms.py:1972
+#: forms/application_forms.py:2035
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:3
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:5
 #: templates-v2/public/public_application.html:15
 msgid "Open access compliance"
 msgstr ""
 
-#: forms/application_forms.py:1983
+#: forms/application_forms.py:2046
 #: templates-v2/_application-form/includes/_fieldset_about.html:6
 msgid "About the journal"
 msgstr ""
 
-#: forms/application_forms.py:1998
+#: forms/application_forms.py:2061
 msgid "Publisher"
 msgstr ""
 
-#: forms/application_forms.py:2008
+#: forms/application_forms.py:2071
 msgid "Other organisation, if applicable"
 msgstr ""
 
-#: forms/application_forms.py:2018
+#: forms/application_forms.py:2081
 msgid "Licensing"
 msgstr ""
 
-#: forms/application_forms.py:2029
+#: forms/application_forms.py:2092
 msgid "Embedded licenses"
 msgstr ""
 
-#: forms/application_forms.py:2039
+#: forms/application_forms.py:2102
 msgid "Copyright"
 msgstr ""
 
-#: forms/application_forms.py:2060
+#: forms/application_forms.py:2123
 msgid "Plagiarism"
 msgstr ""
 
-#: forms/application_forms.py:2070
+#: forms/application_forms.py:2133
 #: templates-v2/_application-form/includes/_fieldset_editorial.html:6
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:14
 #: templates-v2/public/public_application.html:18
 msgid "Editorial"
 msgstr ""
 
-#: forms/application_forms.py:2095
+#: forms/application_forms.py:2158
 msgid "Publication fee waivers"
 msgstr ""
 
-#: forms/application_forms.py:2115
+#: forms/application_forms.py:2178
 msgid "Archiving policy"
 msgstr ""
 
-#: forms/application_forms.py:2127
+#: forms/application_forms.py:2190
 msgid "Repository policy"
 msgstr ""
 
-#: forms/application_forms.py:2138
+#: forms/application_forms.py:2201
 msgid "Unique identifiers & structured data"
 msgstr ""
 
-#: forms/application_forms.py:2148
+#: forms/application_forms.py:2211
 msgid "Specify labels for this journal"
 msgstr ""
 
-#: forms/application_forms.py:2158
+#: forms/application_forms.py:2221
 msgid "Quick reject"
 msgstr ""
 
-#: forms/application_forms.py:2168
+#: forms/application_forms.py:2231
 msgid "Re-assign publisher account"
 msgstr ""
 
-#: forms/application_forms.py:2177
+#: forms/application_forms.py:2240
 msgid "Status"
 msgstr ""
 
-#: forms/application_forms.py:2186
+#: forms/application_forms.py:2249
 msgid "Assign for review"
 msgstr ""
 
-#: forms/application_forms.py:2197
+#: forms/application_forms.py:2260
 msgid "Continuations"
 msgstr ""
 
-#: forms/application_forms.py:2208
+#: forms/application_forms.py:2271
 msgid "Subject classification"
 msgstr ""
 
-#: forms/application_forms.py:2241
+#: forms/application_forms.py:2304
 msgid "Bulk edit"
 msgstr ""
 
-#: forms/application_forms.py:2584
+#: forms/application_forms.py:2647
 msgid "No editor assigned"
 msgstr ""
 
@@ -1204,40 +1249,40 @@ msgid ""
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:9
+#, python-format
 msgid ""
-"The application form takes approximately <strong>30 minutes</strong> to "
-"complete."
-msgstr ""
-
-#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:10
-msgid "Your progress is automatically saved."
+"The application form takes approximately%(tag_start)s 30 "
+"minutes%(tag_end)s to complete."
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:11
-#, python-format
-msgid ""
-"You can return to this application at any time by clicking <a "
-"href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
-"<em>Publisher dashboard</em></a> at the top."
+msgid "Your progress is automatically saved."
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:12
-#: templates-v2/public/account/login_to_apply.html:14
+#, python-format
 msgid ""
-"You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
-"only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
+"You can return to this application at any time by clicking%(link_start)s "
+"Publisher dashboard%(link_end)s at the top."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:15
+#: templates-v2/public/account/login_to_apply.html:15
+#, python-format
+msgid ""
+"You can %(start_url)s print or download %(end_url)s a PDF list of the "
 "questions."
 msgstr ""
 
-#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:13
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:18
 msgid "You must apply online."
 msgstr ""
 
-#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:18
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:23
 msgid "DOAJ only accepts fully open access journals"
 msgstr ""
 
-#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:20
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:25
 msgid ""
 "Open Access is the condition where the copyright holder of a scholarly "
 "work grants usage rights to others using an\n"
@@ -1259,27 +1304,27 @@ msgid "Business model"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:2
-#: templates-v2/public/account/login_to_apply.html:40
+#: templates-v2/public/account/login_to_apply.html:45
 msgid "Related help"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:5
-#: templates-v2/public/account/login_to_apply.html:43
+#: templates-v2/public/account/login_to_apply.html:48
 msgid "Guide to applying"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:8
-#: templates-v2/public/account/login_to_apply.html:46
+#: templates-v2/public/account/login_to_apply.html:51
 msgid "Information for publishers"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:11
-#: templates-v2/public/account/login_to_apply.html:49
+#: templates-v2/public/account/login_to_apply.html:54
 msgid "Transparency & best practice"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:14
-#: templates-v2/public/account/login_to_apply.html:52
+#: templates-v2/public/account/login_to_apply.html:57
 msgid "Why index your journal in DOAJ?"
 msgstr ""
 
@@ -1302,32 +1347,37 @@ msgid ""
 "information provided is accurate and true."
 msgstr ""
 
-#: templates-v2/public/account/login_to_apply.html:12
-msgid ""
-"Read our <a href=\"/apply/guide/\">Guide to applying</a> first. It will "
-"help you understand the basic criteria that your journal should meet. If "
-"you need help with the application form, please <a "
-"href=\"/contact/\">contact us</a>."
+#: templates-v2/public/account/login_to_apply.html:3
+msgid "Login to apply"
 msgstr ""
 
-#: templates-v2/public/account/login_to_apply.html:16
+#: templates-v2/public/account/login_to_apply.html:12
+#, python-format
+msgid ""
+"Read our%(link_start)s Guide to applying%(link_end)s first. It will help "
+"you understand the basic criteria that your journal should meet. If you "
+"need help with the application form, please%(contact_link)s contact "
+"us%(contact_link_end)s."
+msgstr ""
+
+#: templates-v2/public/account/login_to_apply.html:19
 msgid "Log in or register to submit your application."
 msgstr ""
 
-#: templates-v2/public/account/login_to_apply.html:20
+#: templates-v2/public/account/login_to_apply.html:23
 msgid "Log in to your account"
 msgstr ""
 
-#: templates-v2/public/account/login_to_apply.html:22
+#: templates-v2/public/account/login_to_apply.html:25
 #, python-format
-msgid "Don’t have an account? <a href=\"%(url)s\">Register here</a>."
+msgid "Don’t have an account? %(url)sRegister here%(url_end)s."
 msgstr ""
 
-#: templates-v2/public/account/login_to_apply.html:24
+#: templates-v2/public/account/login_to_apply.html:27
 #, python-format
 msgid ""
-"If you cannot log in, <a href=\"%(forgot_account)s\">reset your "
-"password</a>. If you still cannot login, <a href=\"/contact\">contact "
-"us</a>."
+"If you cannot log in, %(forgot_account)sreset your password%(link_end)s. "
+"If you still cannot login,%(contact_link)s contact "
+"us%(contact_link_end)s."
 msgstr ""
 

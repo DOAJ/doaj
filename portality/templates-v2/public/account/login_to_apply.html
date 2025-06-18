@@ -9,9 +9,12 @@
               <section class="page-content" id="apply">
                 <h1>Application form</h1>
 
-                    <p>{{ _("Read our <a href=\"/apply/guide/\">Guide to applying</a> first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please <a href=\"/contact/\">contact us</a>.") }}</p>
+                    <p>{{ _("Read our%(link_start)s Guide to applying%(link_end)s first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please%(contact_link)s contact us%(contact_link_end)s.",
+                        link_start="<a href=\"/apply/guide/\">" | safe, link_end="</a>" | safe, contact_link="<a href=\"/contact/\">" | safe, contact_link_end="</a>" | safe) }}</p>
 
-                    <p>{{ _("You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-only.pdf\" target=\"_blank\">print or download</a> a PDF list of the questions.") }}</p>
+                    <p>{{ _("You can %(start_url)s print or download %(end_url)s a PDF list of the questions.",
+                        start_url='<a href="/static/doaj/docs/DOAJquestions-for-reference-only.pdf" target="_blank">'|safe,
+                        end_url='</a>'|safe) }}</p>
 
                     <p>{{ _("Log in or register to submit your application.") }}</p>
 
@@ -19,9 +22,11 @@
 
                     <h2 id="log-in-to-your-account">{{ _("Log in to your account") }}</h2>
 
-                    <p>→ {{ _("Don’t have an account? <a href=\"%(url)s\">Register here</a>.", url=url_for("account.register")) }}</p>
+                    <p>→ {{ _("Don’t have an account? %(url)sRegister here%(url_end)s.", url='<a href=url_for("account.register")>' | safe, url_end="</a>" | safe) }}</p>
                         {% include "_account/includes/_login_form.html" %}
-                    <p>{{ _("If you cannot log in, <a href=\"%(forgot_account)s\">reset your password</a>. If you still cannot login, <a href=\"/contact\">contact us</a>.", forgot_account=url_for("account.forgot")) }}</p>
+                    <p>{{ _("If you cannot log in, %(forgot_account)sreset your password%(link_end)s. If you still cannot login,%(contact_link)s contact us%(contact_link_end)s.",
+                        forgot_account='<a href=url_for("account.forgot")>' | safe, link_end="</a>" | safe,
+                        contact_link="<a href=\"/contact\">", contact_link_end="</a>") }}</p>
                 </section>
             </div>
           <div class="col-md-4">
