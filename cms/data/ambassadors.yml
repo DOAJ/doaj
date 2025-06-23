@@ -34,12 +34,14 @@ general:
     photo: "del-rio-riande-gimena.jpg"
     coi:
       2022: https://drive.google.com/file/d/1wwxuAH15I4k-mQ3NW03x3W12ExUKJ7f9/view?usp=sharing
+      2025: https://drive.google.com/file/d/1AXVyxuys5vgA9DOMXaE0PjDQIHGgVhFS/view?usp=sharing
 
   - name: Carolina Dias
     region: Brazil
     bio: "Carolina GS Dias is an accomplished professional with a background in Language/Literature and Business Administration, specializing in Management and Communication. Currently pursuing a Ph.D. in Information Science, she brings extensive expertise in research project management, academic publishing, and scholarly journal administration. A former university professor, she has been managing projects and publications at the Institute of Economics at UFRJ in Rio de Janeiro since 2008. Her research focuses on the economic dimensions of scientific communication, open access, and open science policies."
     photo: "CarolinaGSDias.jpg"
     coi:
+      2025: https://drive.google.com/file/d/1MxmfLpbC_UQYU0YPRRDngwzpu6rt09T5/view?usp=sharing
       
   - name: Ramazan Turgut
     region: Türkiye
@@ -112,6 +114,7 @@ general:
     photo: "subhani-1.jpeg"
     coi:
       2022: https://drive.google.com/file/d/1nYQZ8h766UsNY_gWwCbRyVQ_yxdCyQN5/view?usp=sharing
+      2025: https://drive.google.com/file/d/1T2xpJoydfP4EDXuzBfps2U1qGDXjSYKt/view?usp=sharing
 
   - name: Shuai Yan
     region: China
