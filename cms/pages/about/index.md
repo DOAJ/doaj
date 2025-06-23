@@ -41,6 +41,8 @@ DOAJ also has a global network of Ambassadors who promote open access and best p
 DOAJ partners with many organisations. The nature of the partnerships varies and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
 
 {:.stretch-list}
++ [ALPSP](https://www.alpsp.org/)
+  {:.stretch-list__item}
 + [Creative Commons Global Network](https://network.creativecommons.org/)
   {:.stretch-list__item}
 + [Crossref](https://crossref.org/)
