@@ -308,7 +308,7 @@ class TestSendLoginCodeEmail(TestCase):
 
             # Call the function
             from portality.view.account import send_login_code_email
-            send_login_code_email(email, code)
+            send_login_code_email(email, code, redirect_url="")
 
             # Check email was sent with correct parameters
             mock_send_mail.assert_called_once()
