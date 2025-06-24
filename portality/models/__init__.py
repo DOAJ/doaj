@@ -31,6 +31,7 @@ from portality.models.autocheck import Autocheck
 from portality.models.export import Export
 from portality.models.ur_review_route import URReviewRoute
 from portality.models.admin_alert import AdminAlert
+from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
 
 import sys
 
