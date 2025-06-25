@@ -16,7 +16,7 @@
 
     .application-nav__heading {
       margin: 0;
-      font-size: 1em;
+      font-size: $typescale-05;
       text-transform: uppercase;
       @include font-sans;
     }
@@ -36,8 +36,8 @@
         border-left: 1px solid $dark-grey;
         position: absolute;
         height: $spacing-05;
-        margin-left: 1.0625rem;
-        margin-top: 1.25rem;
+        margin-left: $spacing-03;
+        margin-top: $spacing-03a;
         z-index: -10;
       }
 
@@ -67,7 +67,7 @@
           text-align: center;
           color: rgba($dark-grey, 0.75);
           font-weight: bold;
-          font-size: smaller;
+          font-size: $typescale-07;
         }
       }
     }

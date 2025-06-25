@@ -17,7 +17,7 @@
 
   .page-nav__heading {
     margin: 0 0 $spacing-03 0;
-    font-size: 1em;
+    font-size: $typescale-05;
     text-transform: uppercase;
     @include font-sans;
   }

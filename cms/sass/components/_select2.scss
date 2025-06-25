@@ -1,8 +1,8 @@
 // Select2 overrides
 
 // Variables specific to this sheet
-$s2-space: 0.5em;
-$s2-size:  1.25rem;
+$s2-space: $spacing-02;
+$s2-size:  $spacing-01;
 
 .select2 {
   height: 100% !important;

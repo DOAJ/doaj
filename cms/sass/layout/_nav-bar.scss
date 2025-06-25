@@ -8,7 +8,7 @@
   align-items: center;
   list-style: none;
   height: 4.6875rem;
-  font-size: smaller;
+  font-size: $typescale-07;
   transition: height 0.3s ease-out;
 
   > li {

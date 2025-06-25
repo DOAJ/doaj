@@ -41,15 +41,18 @@ h2 {
 }
 
 h3 {
-  font-size: $typescale-03;
+  font-size: $typescale-05;
+  .tag {
+    font-size: $typescale-06 !important;
+  }
 }
 
 h4 {
-  font-size: $typescale-04;
+  font-size: $typescale-06;
 }
 
 h5 {
-  font-size: $typescale-05;
+  font-size: $typescale-06;
 }
 
 h6 {
@@ -126,7 +129,7 @@ section {
 }
 
 blockquote {
-  padding-left: 1.5em;
+  padding-left: $spacing-04;
   border-left: 1px solid $sanguine;
   font-style: italic;
 
@@ -238,10 +241,10 @@ input, select, button, textarea {
   border-radius: 0;
 
   display: inline-block;
-  padding: 0.5em;
+  padding: $spacing-02;
   background-color: $white;
   border: 1px solid $warm-black;
-  font-size: smaller;
+  font-size: $typescale-07;
   @include font-sans;
 }
 
@@ -269,8 +272,8 @@ input[type="radio"] {
   display: none;
 
   opacity: 0;
-  width: 0.8em;
-  height: 0.8em;
+  width: $spacing-03;
+  height: $spacing-03;
 
   &:focus  + label {
     outline: dashed 2px lightgrey;
@@ -293,9 +296,9 @@ input[type="radio"] {
     content: '\a0';
     display: inline-block;
     margin: 0 $spacing-02 0 0;
-    width: 0.8em;
-    height: 0.8em;
-    line-height: 0.75em;
+    width: $spacing-03;
+    height: $spacing-03;
+    line-height: 0.75;
     transition: all 0.35s;
     border: 1px solid $warm-black;
   }
