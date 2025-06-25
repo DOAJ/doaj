@@ -20,7 +20,7 @@ h2, h3, h4, h5, h6 {
   margin: $spacing-04 0 $spacing-03 0;
   line-height: 1.05;
   font-weight: 400;
-  scroll-margin-top: $spacing-05; // adjust_values.py
+  scroll-margin-top: $spacing-05;
 
   &:first-child {
     margin-top: 0;
@@ -31,7 +31,7 @@ h1 {
   margin: $spacing-04 0;
   font-weight: 700;
   line-height: 1.05;
-  scroll-margin-top: 37.5rem; // adjust_values.py
+  scroll-margin-top: 37.5rem;
   @include typescale-01;
   @include font-serif;
 }
@@ -250,7 +250,7 @@ textarea {
 }
 
 select {
-  padding-right: $spacing-04; // adjust_values.py
+  padding-right: $spacing-04;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -286,7 +286,7 @@ input[type="radio"] {
     margin: 0 0 $spacing-03 0;
     line-height: 1;
     color: $dark-grey;
-    font-size: 1.25rem; // adjust_values.py
+    font-size: 1.25rem;
   }
 
   + label::before {

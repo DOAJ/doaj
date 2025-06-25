@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: center;
   list-style: none;
-  height: 4.6875rem; // adjust_values.py
+  height: 4.6875rem;
   font-size: smaller;
   transition: height 0.3s ease-out;
 
@@ -25,11 +25,11 @@
 
   .feather {
     margin: 0 $spacing-01;
-    height: $spacing-03; // adjust_values.py
+    height: $spacing-03;
   }
 }
 
 .nav-bar__link {
   display: block;
-  line-height: 4.6875rem; // adjust_values.py
+  line-height: 4.6875rem;
 }

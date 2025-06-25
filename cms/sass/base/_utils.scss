@@ -23,7 +23,7 @@
 }
 
 @mixin box-shadow {
-  box-shadow: rgba(0, 0, 0, 0.25) 0 0.1875rem 0.5rem; // adjust_values.py
+  box-shadow: rgba(0, 0, 0, 0.25) 0 0.1875rem 0.5rem;
 }
 
 /// Make element visible or focussable to screen readers only
@@ -50,7 +50,7 @@
 
 // Default style for all Creative Commons icons
 .cc-icon {
-  height: 1.25rem; // adjust_values.py
+  height: 1.25rem;
   width: auto;
 
   circle {
@@ -233,21 +233,21 @@
   position: fixed;
   z-index: 2000;
   align-items: center;
-  width: 3.125rem; // adjust_values.py
-  height: 3.125rem; // adjust_values.py
-  top: 6.25rem; // adjust_values.py
+  width: 3.125rem;
+  height: 3.125rem;
+  top: 6.25rem;
   right: 0;
   background-color: $warm-black;
 
   svg {
     display: block;
-    margin: 0.625rem auto; // adjust_values.py
-    height: $spacing-04; // adjust_values.py
+    margin: 0.625rem auto;
+    height: $spacing-04;
     stroke: $white;
   }
 
   + .admin-edit {
-    top: 9.375rem; // adjust_values.py
+    top: 9.375rem;
   }
 
   &:hover {

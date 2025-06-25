@@ -5,7 +5,7 @@
   top: 0;
   width: 100vw;
   z-index: 3000;
-  height: 5.625rem; // adjust_values.py
+  height: 5.625rem;
   background-color: $warm-black;
   transition: height 0.3s ease-out;
   text-transform: uppercase;
@@ -37,7 +37,7 @@
   }
 
   .dropdown__trigger {
-    line-height: 5.625rem; // adjust_values.py
+    line-height: 5.625rem;
   }
 
   .dropdown__menu {
@@ -46,11 +46,11 @@
   }
 
   &--scrolled {
-    height: 2.5rem; // adjust_values.py
+    height: 2.5rem;
 
     .logo, .logo svg {
       padding: 0;
-      height: 1.25rem; // adjust_values.py
+      height: 1.25rem;
       line-height: 1;
     }
 
@@ -59,11 +59,11 @@
     }
 
     .nav-bar {
-      height: 2.5rem // adjust_values.py
+      height: 2.5rem
     }
 
     .dropdown__trigger {
-      line-height: 2.5rem; // adjust_values.py
+      line-height: 2.5rem;
     }
   }
 
