@@ -39,7 +39,7 @@
 
   p, label {
     margin-bottom: $spacing-03;
-    font-size: $typescale-05;
+    font-size: $typescale-06;
   }
 
   button {
@@ -64,7 +64,7 @@
 
   input[type="checkbox"] + label,
   input[type="radio"] + label {
-    font-size: $typescale-05;
+    font-size: $typescale-06;
   }
 
   textarea:disabled {
@@ -116,7 +116,7 @@
   }
 
   small {
-    font-size: $typescale-05;
+    font-size: $typescale-07;
   }
 
   button {
@@ -125,7 +125,7 @@
 
   .form__header {
     margin: $spacing-03 0;
-    font-size: $typescale-05;
+    font-size: $typescale-06;
     font-weight: 600;
   }
 
@@ -134,7 +134,7 @@
 
     input, select, textarea, .select2-container {
       margin-bottom: $spacing-02;
-      font-size: $typescale-05;
+      font-size: $typescale-06;
 
       + button {
         margin: 0 0 $spacing-02 $spacing-02;
@@ -143,7 +143,7 @@
 
     input[type="checkbox"]+label,
     input[type="radio"]+label {
-      font-size: typescale-05;
+      font-size: $typescale-06;
     }
   }
 }
@@ -158,6 +158,7 @@
   }
 
   small {
+    font-size: $typescale-07;
     color: $sanguine;
 
     &:before {

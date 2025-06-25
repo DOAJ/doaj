@@ -230,6 +230,7 @@ form {
     margin: 0 0 $spacing-03 0;
 
     small, a {
+      font-size: $typescale-07;
       color: $dark-grey;
     }
   }
@@ -244,7 +245,7 @@ input, select, button, textarea {
   padding: $spacing-02;
   background-color: $white;
   border: 1px solid $warm-black;
-  font-size: $typescale-07;
+  font-size: $typescale-06;
   @include font-sans;
 }
 
@@ -289,7 +290,7 @@ input[type="radio"] {
     margin: 0 0 $spacing-03 0;
     line-height: 1;
     color: $dark-grey;
-    font-size: $typescale-05;;
+    font-size: $typescale-06;;
   }
 
   + label::before {
