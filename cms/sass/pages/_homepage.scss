@@ -13,8 +13,8 @@
 
   .primary-nav--scrolled {
     background-color: rgba($light-grey, 0.5);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(0.5rem); // adjust_values.py
+    backdrop-filter: blur(0.5rem); // adjust_values.py
     color: $warm-black;
 
     .dropdown__link {
@@ -27,7 +27,7 @@
   }
 
   .secondary-nav {
-    margin-bottom: 25px;
+    margin-bottom: 1.5625rem; // adjust_values.py
   }
 
   a {

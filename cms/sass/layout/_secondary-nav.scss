@@ -1,10 +1,10 @@
 /* Bottom / secondary nav */
 
 .secondary-nav {
-  padding-top: 90px;
+  padding-top: 5.625rem; // adjust_values.py
   text-transform: uppercase;
   font-weight: 600;
-  height: 150px;
+  height: 9.375rem; // adjust_values.py
 }
 
 .secondary-nav--precedes-highlight {
@@ -14,7 +14,7 @@
 
 @media (max-width: 768px) {
   .secondary-nav {
-    height: 75px;
+    height: 4.75rem;
   }
 
   .secondary-nav > .container {

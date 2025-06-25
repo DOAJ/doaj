@@ -3,7 +3,7 @@
 .sponsor {
   margin-top: $spacing-04;
   margin-bottom: $spacing-04;
-  min-height: 100px;
+  min-height: 6.25rem; // adjust_values.py
 }
 
 .sponsor__link {
@@ -11,7 +11,7 @@
 }
 
 .sponsor__logo {
-  max-height: 75px;
+  max-height: 4.6875rem; // adjust_values.py
   width: auto;
 }
 

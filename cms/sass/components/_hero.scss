@@ -28,7 +28,7 @@
   }
 
   select {
-    padding: $spacing-02 30px $spacing-02 $spacing-02;
+    padding: $spacing-02 $spacing-04 $spacing-02 $spacing-02; // adjust_values.py
   }
 
   input, select, textarea, button {

@@ -1,15 +1,15 @@
 .badges {
   &--toc {
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem; // adjust_values.py
     align-items: center;
     justify-content: flex-end;
     max-height: 100%;
 
     #s2o {
       width: 50%;
-      min-width: 3rem;
-      max-width: 6rem;
+      min-width: $spacing-05; // adjust_values.py
+      max-width: $spacing-06; // adjust_values.py
       #s2o {
         max-height: 100%;
       }
@@ -18,8 +18,8 @@
     @media (max-width: 768px) {
       width: 100%;
       justify-content: flex-start;
-      max-height: 3rem;
-      margin-bottom: .5rem;
+      max-height: $spacing-05; // adjust_values.py
+      margin-bottom: .625rem; // adjust_values.py
 
       #s2o {
         max-height: 100%;
@@ -36,10 +36,10 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: .5rem;
+    gap: .625rem; // adjust_values.py
 
     &--public {
-      margin-top: .5rem;
+      margin-top: .625rem; // adjust_values.py
     }
 
     &--maned {

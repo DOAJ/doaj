@@ -2,10 +2,13 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 20px;
+  font-size: 100%;
+}
 
+body {
+  font-size: 1.25rem;
   @media (max-width: 768px) {
-    font-size: 18px;
+    font-size: 1rem;
   }
 }
 
@@ -17,7 +20,7 @@ h2, h3, h4, h5, h6 {
   margin: $spacing-04 0 $spacing-03 0;
   line-height: 1.05;
   font-weight: 400;
-  scroll-margin-top: 60px;
+  scroll-margin-top: $spacing-05; // adjust_values.py
 
   &:first-child {
     margin-top: 0;
@@ -28,7 +31,7 @@ h1 {
   margin: $spacing-04 0;
   font-weight: 700;
   line-height: 1.05;
-  scroll-margin-top: 600px;
+  scroll-margin-top: 37.5rem; // adjust_values.py
   @include typescale-01;
   @include font-serif;
 }
@@ -247,7 +250,7 @@ textarea {
 }
 
 select {
-  padding-right: 30px;
+  padding-right: $spacing-04; // adjust_values.py
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -268,7 +271,6 @@ input[type="radio"] {
   opacity: 0;
   width: 0.8em;
   height: 0.8em;
-  //margin-left: -0.8rem;
 
   &:focus  + label {
     outline: dashed 2px lightgrey;
@@ -284,7 +286,7 @@ input[type="radio"] {
     margin: 0 0 $spacing-03 0;
     line-height: 1;
     color: $dark-grey;
-    font-size: 1rem;
+    font-size: 1.25rem; // adjust_values.py
   }
 
   + label::before {

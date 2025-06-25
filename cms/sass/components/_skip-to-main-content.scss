@@ -7,20 +7,20 @@
   flex-direction: row;
   align-items: center;
   min-width: min-content;
-  padding: 5px;
-  top: 10px;
-  left: 10px;
+  padding: 0.3125rem; // adjust_values.py
+  top: 0.625rem; // adjust_values.py
+  left: 0.625rem; // adjust_values.py
   background-color: $grapefruit;
 
   svg {
     display: block;
     margin: 0 auto;
     stroke: $warm-black;
-    margin-rigth: 10px;
+    margin-rigth: 0.625rem; // adjust_values.py
   }
   &:hover, &:focus {
     svg {
-      margin-right: 10px;
+      margin-right: 0.625rem; // adjust_values.py
     }
   }
   &:hover:after, &:focus:after {

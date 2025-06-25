@@ -2,20 +2,20 @@
 
 .logo {
   display: flex;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: $spacing-03; // adjust_values.py
+  padding-bottom: $spacing-03; // adjust_values.py
   height: 100%;
-  max-height: 90px;
+  max-height: 5.625rem; // adjust_values.py
   transition: height 0.3s ease-out;
 
   svg {
-    height: 60px;
+    height: $spacing-05; // adjust_values.py
   }
 }
 
 .logo__tagline {
   margin-left: $spacing-03;
-  font-size: 17px;
+  font-size: 1.0625rem; // adjust_values.py
   font-weight: 600;
   line-height: 1.15;
   text-transform: uppercase;

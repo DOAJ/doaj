@@ -1,7 +1,7 @@
 .notifications {
   overflow-y: scroll;
   height: fit-content;
-  width: 300px;
+  width: 18.75rem; // adjust_values.py
   @include typescale-06;
 }
 

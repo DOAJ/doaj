@@ -41,7 +41,7 @@
   }
 
   .color-legend {
-    font-size: 18px;
+    font-size: 1.125rem; // adjust_values.py
 
     li:not(:first-child) {
       margin-left: $spacing-01;

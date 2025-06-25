@@ -1,7 +1,7 @@
 /* Page header */
 
 .page-header {
-  min-height: 150px;
+  min-height: 9.375rem; // adjust_values.py
 
   @media screen and (max-width: 768px) {
     min-height: 100px;

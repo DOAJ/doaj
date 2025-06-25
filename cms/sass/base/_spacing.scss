@@ -1,11 +1,13 @@
 /* Variables for spacing units
    Use with margins & padding
-   Base unit: 16px */
+   Base unit: 1rem */ // adjust_values.py
 
-$spacing-01: 0.1875rem;
-$spacing-02: 0.375rem;
-$spacing-03: 0.75rem;
-$spacing-04: 1.5rem;
-$spacing-05: 3rem;
-$spacing-06: 6rem;
-$spacing-07: 12rem;
+$spacing-01: 0.25rem; // adjust_values.py
+$spacing-02: 0.5rem; // adjust_values.py
+$spacing-03: 1rem; // adjust_values.py
+$spacing-03a: 1.25rem;
+$spacing-04: 1.75rem; // adjust_values.py
+$spacing-04a: 2.5rem; // adjust_values.py
+$spacing-05: 3.75rem; // adjust_values.py
+$spacing-06: 7.5rem; // adjust_values.py
+$spacing-07: 15rem; // adjust_values.py
