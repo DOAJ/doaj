@@ -4,7 +4,7 @@
   padding-left: 0;
   margin-left: 0;
   list-style: none;
-  font-size: 1.25rem;
+  font-size: $typescale-05;;
 
   @media (max-width: 768px) {
     font-size: 18px;
@@ -53,7 +53,7 @@
 }
 
 .search-results__body {
-  @include typescale-06;
+  font-size: $typescale-06;
 
   h4 {
     margin: $spacing-03 0 $spacing-02 0;
@@ -77,7 +77,7 @@
 .search-results__aside {
   border: 0;
   color: $dark-grey;
-  @include typescale-06;
+  font-size: $typescale-06;
 
   ul {
     @include unstyled-list;

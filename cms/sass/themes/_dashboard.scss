@@ -36,7 +36,7 @@
   }
 
   .main-header {
-    @include typescale-06;
+    font-size: $typescale-06;
 
     dt, dd {
       margin-top: 0;

@@ -3,7 +3,7 @@
 .filters {
   margin-bottom: $spacing-04;
   border: 0;
-  @include typescale-06;
+  font-size: $typescale-06;
 
   input[type="checkbox"],
   input[type="radio"] {
@@ -111,7 +111,7 @@
     background-color: $light-grey;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    @include typescale-06;
+    font-size: $typescale-06;
   }
 }
 

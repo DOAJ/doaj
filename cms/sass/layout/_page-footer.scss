@@ -8,7 +8,7 @@
   width: 100%;
   background-color: $warm-black;
   color: $white;
-  @include typescale-06;
+  font-size: $typescale-06;
 
   h2 {
     text-transform: uppercase;
@@ -58,7 +58,7 @@
 .legal {
   padding: $spacing-04 0;
   border-top: 1px solid $white;
-  @include typescale-06;
+  font-size: $typescale-06;
 
   li {
     display: inline-block;

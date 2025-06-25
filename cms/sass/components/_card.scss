@@ -5,7 +5,7 @@
   margin-bottom: $spacing-04;
   background-color: $white;
   border-radius: $spacing-02;
-  @include typescale-06;
+  font-size: $typescale-06;
   @include box-shadow;
 
   @media screen and (min-width: 768px) {

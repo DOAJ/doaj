@@ -6,9 +6,9 @@ html {
 }
 
 body {
-  font-size: 1.25rem;
+  font-size: $typescale-05;
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: $typescale-06;
   }
 }
 
@@ -32,28 +32,28 @@ h1 {
   font-weight: 700;
   line-height: 1.05;
   scroll-margin-top: 37.5rem;
-  @include typescale-01;
+  font-size: $typescale-01;
   @include font-serif;
 }
 
 h2 {
-  @include typescale-02;
+  font-size: $typescale-02;
 }
 
 h3 {
-  @include typescale-03;
+  font-size: $typescale-03;
 }
 
 h4 {
-  @include typescale-04;
+  font-size: $typescale-04;
 }
 
 h5 {
-  @include typescale-05;
+  font-size: $typescale-05;
 }
 
 h6 {
-  @include typescale-06;
+  font-size: $typescale-06;
 }
 
 ul, ol {
@@ -73,7 +73,7 @@ dl {
 
   dt {
     color: $dark-grey;
-    @include typescale-06;
+    font-size: $typescale-06;
 
     &:not(:first-child) {
       margin-top: $spacing-03;
@@ -95,7 +95,7 @@ p, blockquote, ul, ol {
 
 pre, code {
   @include font-monospace;
-  @include typescale-06;
+  font-size: $typescale-06;
   background: $light-grey;
 }
 
@@ -162,7 +162,7 @@ table {
   thead {
     text-align: left;
     color: $dark-grey;
-    @include typescale-06;
+    font-size: $typescale-06;
   }
 
   tr {
@@ -205,11 +205,11 @@ table {
 
 aside {
   h2 {
-    @include typescale-03;
+    font-size: $typescale-03;
   }
 
   h2 {
-    @include typescale-04;
+    font-size: $typescale-04;
   }
 
   form {
@@ -286,7 +286,7 @@ input[type="radio"] {
     margin: 0 0 $spacing-03 0;
     line-height: 1;
     color: $dark-grey;
-    font-size: 1.25rem;
+    font-size: $typescale-05;;
   }
 
   + label::before {

@@ -121,7 +121,7 @@
 
   &__blog {
     h3 {
-      @include typescale-05;
+      font-size: $typescale-05;
       line-height: 1.25;
     }
 

@@ -19,5 +19,5 @@
   margin-bottom: $spacing-03;
   font-weight: 400;
   @include font-sans;
-  @include typescale-06;
+  font-size: $typescale-06;
 }
