@@ -11,7 +11,7 @@ def add_occ_keyword(record):
     bib = record.bibjson()
     keywords = bib.keywords
     if OCC_KEYWORD not in keywords:
-        bib.add_keyword('occ_keyword')
+        bib.add_keyword(OCC_KEYWORD)
 
     return record
 
