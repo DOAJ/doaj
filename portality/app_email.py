@@ -23,10 +23,10 @@ def send_markdown_mail(to, fro, subject, template_name=None, bcc=None, files=Non
         md = markdown.Markdown()
         html_body = md.convert(markdown_body)
 
-    send_mail(to, fro, subject, template_name=template_name, bcc=bcc, files=files, msg_body=msg_body, html_body=html_body, **template_params)
+    send_mail(to, fro, subject, template_name=template_name, bcc=bcc, files=files, msg_body=msg_body, html_body=html_body, html_body_flag=True, **template_params)
 
 # Flask-Mail version of email service from util.py
-def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, html_body_flag=False, **template_params):
+def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, html_body=None, html_body_flag=False, **template_params):
     """
     ~~-> Email:ExternalService~~
     ~~-> FlaskMail:Library~~
@@ -37,7 +37,8 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     :param bcc:
     :param files:
     :param msg_body:
-    :param html_body_flag: bool
+    :param html_body_flag:
+    :param html_body:
     :param template_params:
     :return:
     """
@@ -89,17 +90,15 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
 
         return plaintext_body
 
-    if html_body_flag:
+    if html_body_flag and not html_body:
         try:
             html_body = render_template(template_name, **template_params)
         except:
-            html_body = None
             msg_body = _msg_to_plaintext()
     else:
-        html_body = None
         msg_body = _msg_to_plaintext()
 
-        # create a message
+    # create a message
     msg = Message(subject=subject,
                   recipients=to,
                   body=msg_body,
