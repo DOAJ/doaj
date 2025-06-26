@@ -1,21 +1,45 @@
 {# templates/email/login_code.jinja2 #}
 
+<div style="font-family: sans-serif; font-size: 16px;">
+
 <p>Hello,</p>
 
-<p>Here is your login code for DOAJ:</p>
+<p>Click the button below to log in securely.
+This link will expire in {{ expiry_minutes }} minutes.</p>
 
-<p style="font-size: 24px; font-weight: bold; text-align: center; margin: 20px 0;">
+<div align="center">
+    <a href="{{ login_url }}"
+       style="
+        display: inline-block;
+        padding: 12px 20px;
+        border: 1px solid #982E0A;
+        background-color: #fff;
+        color: #982E0A;
+        font-size: 16px;
+        line-height: 1.4;
+        text-align: center;
+        text-decoration: none;
+       ">
+       Log in to your account
+    </a>
+</div>
+
+    <div>
+        <p>If the button doesn't work, copy and paste this link into your browser:</p>
+    <a href="{{ login_url }}" style="color: #982E0A;">{{ login_url }}</a>
+</div>
+<div>
+    <p>Alternatively you can enter this code on the website:</p>
+
+<p style="font-weight: bold;">
     {{ code }}
 </p>
-
-<p>You can either:</p>
-<ol>
-    <li>Copy and paste this code on the verification page</li>
-    <li>Or <a href="{{ login_url }}">click here to login directly</a></li>
-</ol>
-
-<p>This code will expire in {{ expiry_minutes }} minutes.</p>
+</div>
 
 <p>If you didn't request this login code, please ignore this email.</p>
 
-<p>Best regards,<br>DOAJ Team</p>
+<p>Best regards,
+<br>DOAJ Team
+</p>
+
+</div>
