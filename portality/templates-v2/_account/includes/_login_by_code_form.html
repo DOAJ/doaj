@@ -1,16 +1,15 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
-<form method="POST" action="{{ url_for('account.verify_code') }}" class="verify-form">
+<form method="POST" action="{{ url_for('account.verify_code') }}" class="verify-form form-login">
     <input type="hidden" name="email" value="{{ email }}">
 
-    <div class="form-group">
+    <div class="form-group form__question form-login__question">
         <label for="code">Enter verification code</label>
         <input type="text" class="form-control" id="code" name="code" required>
     </div>
     {{ render_field(form.next) }}
 
-    <br/>
-    <input type="submit" class="button button--primary" value="Log in" />
+    <button type="submit" class="button button--primary"> Submit the code </button>
 
     <div class="links">
         <a href="{{ url_for('account.login') }}">Back to login</a>
