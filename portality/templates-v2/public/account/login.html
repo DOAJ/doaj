@@ -19,3 +19,26 @@
     </section>
 </div>
 {% endblock %}
+
+{% block public_js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        console.log("it's me")
+        $('#show-password').on('click', function (e) {
+            e.preventDefault();
+            console.log("click")
+            $('#password-section').slideDown();
+            $('#login-link-btn').hide();
+            $('#toggle-to-password').hide();
+        });
+
+        $('#show-login-link').on('click', function (e) {
+            e.preventDefault();
+            $('#password-section').slideUp();
+            $('#login-link-btn').show();
+            $('#toggle-to-password').show();
+            $('#password-section input[type="password"]').val('');
+        });
+    });
+</script>
+{% endblock %}
