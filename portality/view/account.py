@@ -236,6 +236,7 @@ def send_login_code_email(email: str, code: str, redirect_url: str):
     send_mail(
         to=[email],
         fro=app.config.get('SYSTEM_EMAIL_FROM'),
+        html_body_flag = True,
         subject="Your Login Code for DOAJ",
         template_name=templates.EMAIL_LOGIN_LINK,
         code=code,
