@@ -41,8 +41,8 @@ setup(
         "openpyxl~=3.1.5",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized~=0.9.0",
         "psutil==5.9.8",
-        "pycountry==24.6.1",  # TODO: pycountry can get behind debian lists, so we may flip back to our fork later
-        #"pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
+        # "pycountry==24.6.1",  # NOTE: we're using our fork of pycountry again to include Kosovo under code XK
+        "pycountry @ git+https://github.com/DOAJ/pycountry.git@8ee4c03c2728b589eb4748c7b87a3d869354de7f#egg=pycountry",
         "python-dateutil",  # something else already installs this; note we need it without an explicit version freeze
         "pytz==2024.2",
         "redis==3.3.11",
