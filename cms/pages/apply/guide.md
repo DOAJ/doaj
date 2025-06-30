@@ -177,11 +177,11 @@ The best practices in this section are about publishing standards based on finda
 - ### Arts and humanities journals
    - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 - ### Clinical case reports journals
-    - For DOAJ to include case reports journals they must have 
-        - A policy on [consent to publication](https://publicationethics.org/guidance/guideline/ensuring-consent-publishing-medical-case-reports) of case details and participant images, and articles must state whether or not this consent was given;
-        - A policy on potentially identifiable participant  information and anonymisation;
-        - Reviewer guidelines specific for case reports.
-    - We recommend that all case reports and case series are identified as such in the title, and that case reports journals encourage or mandate using the [CARE](https://www.care-statement.org/) reporting guidelines.
+   - For DOAJ to include case reports journals they must have
+       - A policy on consent to publication of case details and participant images, and articles must state whether or not this consent was given
+       - A policy on potentially identifiable participant information and anonymisation
+       - Reviewer guidelines specific for case reports
+    - We recommend that all case reports and case series are identified as such in the title, and that case reports journals encourage or mandate using the CARE reporting guidelines.
 - ### Conference proceedings journals
    - For DOAJ to include journals dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer-reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
 - ### Data journals
