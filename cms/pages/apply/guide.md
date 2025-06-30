@@ -199,14 +199,14 @@ The best practices in this section are about publishing standards based on finda
    - DOAJ will consider flipped journals for inclusion after they have published at least ten research articles as a fully Open Access journal.
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
-- ### Subscribe to Open journals
-  - For journals that have transitioned from closed access to open access under the Subscribe to Open (S2O) model, all DOAJ basic criteria, including open license and copyright terms must be clearly stated. Before applying to DOAJ, an S2O journal must demonstrate that the current year's S2O target has been met and that it has published a new issue or at least five OA research article under the S2O model. Additionally the following must be indicated on the journal's website:
-      - The year of transition to open access under the S2O model 
-      - A clear indication that all content published during the current S2O year is open access
-      - The availability status of previously published content (open access, free to read, or paywalled)
-      - The reuse rights for previously published content (“all rights reserved” or under an open license)
-      - The copyright status of the previously published content
-  - When an S2O offer reaches its subscription target, the journal must make all content from that publication year fully open access within the same calendar year.
+- ### Subscribe to Open journals (S2O)
+   - For journals that have transitioned from closed access to open access under the S2O model, all DOAj basic criteria, including open license and copyright terms must be clearly stated. Before applying to DOAJ, an S2O journal must demonstrate that the current year's S2O target has been met and that it has publishhed a new issue or at least five OA research articles under the S2O model. Additionally the following must be indicated on the journal's website: 
+    - The year of transition to open access under the S2O model 
+    - A clear indication that all content published during the current S2O year is open access
+    - The availability status of previously published content (open access, free to read, or paywalled)
+    - The reuse rights for previously published content ( "all rights reserved" or under an open license)
+    - The copyright status of the previously published content 
+   - When ran S2O offer reaches its subscription target, the journal must make all content from that publication year fully open access within the same calendar year. 
 - ### Book review journals
    - Journals consisting only of book reviews will not be accepted. 
 
