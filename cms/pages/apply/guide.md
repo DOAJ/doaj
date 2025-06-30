@@ -117,7 +117,7 @@ Journals that publish special issues or other content curated by guest editors m
 ### Licensing
 
 - The licensing terms for use and re-use of the published content must be clearly stated on the website.
-- DOAJ recommends using [Creative Commons](https://creativecommons.org/) licenses for this purpose.
+- DOAJ recommends using [Creative Commons](https://creativecommons.org/share-your-work/cclicenses/) licenses for this purpose.
 - If Creative Commons licensing is not used, similar terms and conditions should be applied.
   - Extra care must be taken to state these terms clearly.
 - It is recommended that licensing information is displayed or embedded in full-text articles, but this is not required for inclusion in DOAJ.
@@ -308,7 +308,7 @@ Our criteria are available in:
 
 ## Version history
 
-This is Version 2.4 of the DOAJ Guide to applying.
+This is Version 2.5 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 
