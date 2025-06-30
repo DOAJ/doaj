@@ -178,9 +178,9 @@ The best practices in this section are about publishing standards based on finda
    - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 - ### Clinical case reports journals
    - For DOAJ to include case reports journals they must have
-       - A policy on consent to publication of case details and participant images, and articles must state whether or not this consent was given
-       - A policy on potentially identifiable participant information and anonymisation
-       - Reviewer guidelines specific for case reports
+         - A policy on consent to publication of case details and participant images, and articles must state whether or not this consent was given
+         - A policy on potentially identifiable participant information and anonymisation
+         - Reviewer guidelines specific for case reports
     - We recommend that all case reports and case series are identified as such in the title, and that case reports journals encourage or mandate using the CARE reporting guidelines.
 - ### Conference proceedings journals
    - For DOAJ to include journals dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer-reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
@@ -200,7 +200,7 @@ The best practices in this section are about publishing standards based on finda
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 - ### Subscribe to Open journals
-   - For journals that have transitioned from closed access to open access under the [Subscribe to Open (S2O) model](https://subscribetoopencommunity.org/), all DOAJ basic criteria, including open license and copyright terms, must be clearly stated. Before applying to DOAJ, an S2O journal must demonstrate that the current year’s S2O target has been met and that it has published a new issue or at least five open-access research articles under the current S2O model. Additionally, the following must be indicated on the journal’s website:
+  - For journals that have transitioned from closed access to open access under the Subscribe to Open (S2O) model, all DOAJ basic criteria, including open license and copyright terms must be clearly stated. Before applying to DOAJ, an S2O journal must demonstrate that the current year's S2O target has been met and that it has published a new issue or at least five OA research article under the S2O model. Additionally the following must be indicated on the journal's website:
       - The year of transition to open access under the S2O model 
       - A clear indication that all content published during the current S2O year is open access
       - The availability status of previously published content (open access, free to read, or paywalled)
