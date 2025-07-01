@@ -188,7 +188,7 @@ COPE provides advice to editors and publishers on all aspects of publication eth
 
 The mission of the DOAJ is: to curate, maintain and develop a source of reliable information about open access scholarly journals on the web; to verify that entries on the list comply with reasonable standards; to increase the visibility, dissemination, discoverability and attraction of open access journals; to enable scholars, libraries, universities, research funders and other stakeholders to benefit from the information and services provided; to facilitate the integration of open access journals into library and aggregator services; to assist, where possible, publishers and their journals to meet reasonable digital publishing standards; and to thereby support the transition of the system of scholarly communication and publishing into a model that serves science, higher education, industry, innovation, societies and the people. Through this work, DOAJ will cooperate and collaborate with all interested parties working toward these objectives.
 
-### [Open Access Scholarly Publishing Association](https://publicationethics.org/) (OASPA)
+### [Open Access Scholarly Publishing Association](https://www.oaspa.org/) (OASPA)
 
 OASPA is a trade association that was established in 2008 in order to represent the interests of Open Access (OA) publishers globally across all disciplines. By encouraging collaboration in developing appropriate business models, tools and standards to support OA publishing, OASPA aims to help ensure a prosperous and sustainable future for the benefit of its members and the scholarly communities they serve. This mission is carried out through exchanging information, setting standards, advancing models, advocacy, education, and the promotion of innovation.
 
@@ -210,3 +210,5 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 - [Korean](https://drive.google.com/file/d/1Uyh5uZR1vbkPwcIvN1h7PPlHVwu0fMHA/view?usp=sharing) - PDF
 - [Portuguese](https://docs.google.com/document/d/155dAHllL2KhPhzTsR3UhbMEASYjkxP157fAtiZ1jw2w/edit?usp=sharing) - Google document
 - [Serbian](https://www.ceon.rs/index.php?option=com_content&view=article&id=654:transparentnost-i-najbolja-praksa&catid=94&lang=sr&Itemid=578) (hosted at ceon.rs)
+- [Ukrainian](https://docs.google.com/document/d/174xyPzsAy4xFWPTObH4JuTQOPgd7Lm0eA4D6HYK3Rew/edit?usp=sharing)
+  

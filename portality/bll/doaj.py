@@ -25,6 +25,16 @@ class DOAJ(object):
         return application.ApplicationService()
 
     @classmethod
+    def exportService(cls):
+        """
+        Obtain an instance of the export service ~~->Export:Service~~
+
+        :return: ExportService
+        """
+        from portality.bll.services import export
+        return export.ExportService()
+
+    @classmethod
     def journalService(cls):
         """
         Obtain an instance of the journal service ~~->Journal:Service~~
@@ -141,6 +151,11 @@ class DOAJ(object):
     def autochecksService(cls, autocheck_plugins=None):
         from portality.bll.services import autochecks
         return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)
+
+    @classmethod
+    def shortUrlService(cls):
+        from portality.bll.services import shorturl
+        return shorturl.ShortUrlService()
 
     @classmethod
     def hueyJobService(cls):

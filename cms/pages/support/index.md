@@ -22,7 +22,7 @@ For 2024, we have revised and simplified our supporter model to align with the l
 | Small organisations | 2,000    | 2,200   | 1,720   |
 | Organisations from [low- and middle-income countries](https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html) | 500 | 550 | 430 |
 
-In 2024, a 30% discount will be applied to institutions supporting us via a billing consortium. The discount will be reduced to 25% for 2025 and 2026. Please [contact us](/contact/) for further information.
+In 2025 and 2026, a 25% discount will be applied to institutions supporting us via a billing consortium. Please [contact us](/contact/) for further information.
 
 We always have a wishlist of development projects for which we require additional funding. Please contact us if you would like to support us over and above our standard rates.
 

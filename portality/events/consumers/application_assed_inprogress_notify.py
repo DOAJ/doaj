@@ -23,7 +23,7 @@ class ApplicationAssedInprogressNotify(EventConsumer):
 
         application = consumer_utils.parse_application(app_source)
         if not application.editor:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -32,10 +32,13 @@ class ApplicationAssedInprogressNotify(EventConsumer):
         notification.who = application.editor
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        notification.long = svc.long_notification(cls.ID).format(application_title=application.bibjson().title)
+        notification.long = svc.long_notification(cls.ID).format(
+            application_title=application.bibjson().title)
+
         notification.short = svc.short_notification(cls.ID).format(
             issns=application.bibjson().issns_as_text()
         )
         notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)
+        return notification

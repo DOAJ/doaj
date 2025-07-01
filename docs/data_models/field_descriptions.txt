@@ -1,1 +1,2 @@
 admin.editor: the currently assigned DOAJ editor for this journal
+bibjson.labels: A list of labels that have been applied to the journal by the DOAJ team

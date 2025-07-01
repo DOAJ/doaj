@@ -29,8 +29,6 @@ class Messages(object):
     SENT_JOURNAL_CONTACT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent email to journal contact '{email}' to tell that an update to their journal was accepted."""
     SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL = """An email has been sent to the Journal Contact alerting them that you are working on their application."""
     SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL = """An email has been sent to the Journal Contact alerting them that an editor has been assigned to their application."""
-    SENT_PUBLISHER_IN_PROGRESS_EMAIL = """An email has been sent to the Owner alerting them that you are working on their application."""
-    SENT_PUBLISHER_ASSIGNED_EMAIL = """A notification has been sent to the Owner alerting them that an editor has been assigned to their application."""
 
     NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send notification to '{user}' to tell them that their journal was accepted.  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_REJECTED_APPLICATION_EMAILS = """Did not send email to user '{user}' or application suggester to tell them that their journal was rejected  Email may be disabled, or there is a problem with the email address."""
@@ -40,8 +38,6 @@ class Messages(object):
     NOT_SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their application/update request was accepted. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL = """An email could not be sent to the Journal Contact alerting them that you are working on their application. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL = """An email could not be sent to the Journal Contact alerting them that an editor has been assigned to their application. Email may be disabled, or there is a problem with the email address"""
-    NOT_SENT_PUBLISHER_IN_PROGRESS_EMAIL = """An email could not be sent to the Owner alerting them that you are working on their application. Email may be disabled, or there is a problem with the email address. """
-    NOT_SENT_PUBLISHER_ASSIGNED_EMAIL = """An email could not be sent to the Owner alerting them that an editor has been assigned to their application. Email may be disabled, or there is a problem with the email address"""
 
     IN_PROGRESS_NOT_SENT_EMAIL_DISABLED = """Did not send email to Owner or Journal Contact about the status change, as publisher emails are disabled."""
 
@@ -113,6 +109,7 @@ class Messages(object):
     BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
 
     NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
+    NOTIFY__DEFAULT_ACTION_INTRO = "To take action based on this notification, follow this link: "
 
     DISCONTINUED_JOURNAL_FOUND_LOG = "Journal discontinuing soon found: {id}"
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_SENT_LOG = "Notification with journals discontinuing soon sent."
@@ -141,6 +138,8 @@ class Messages(object):
     JOURNAL_CSV_VALIDATE__INVALID_DATA = "We couldn't understand the information in '{question}'"
 
     PRESERVATION_NO_FILE = "No file provided for upload"
+
+    ARE_YOU_A_HUMAN = "Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>."
 
     @classmethod
     def flash(cls, tup):

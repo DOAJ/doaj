@@ -41,7 +41,7 @@
                 <section class="row row--scrollable">
                     <h2 class="sr-only">DOAJ in numbers</h2>
                     <p class="col-md-2 stat">
-                        <span class="stat__number">80</span>
+                        <span class="stat__number">89</span>
                         <span class="stat__description">languages</span>
                     </p>
                     <p class="col-md-2 stat">
@@ -52,7 +52,7 @@
                         {% set source = search_query_source(term=[{"bibjson.apc.has_apc":False},{"bibjson.other_charges.has_other_charges":False}]) %}
                         <a href='{{ url_for('doaj.journals_search') }}?source={{ source }}'>
                             <span class="stat__number">{{ statistics.no_apc }}</span>
-                            <span class="stat__description">journals without APCs</span>
+                            <span class="stat__description">journals without fees</span>
                         </a>
                     </p>
                     <p class="col-md-2 stat">
@@ -89,10 +89,6 @@
                         <p>
                             <a href="{{ url_for('apply.public_application') }}" class="button">Apply now</a>
                         </p>
-                        <p>DOAJ is twenty years old in 2023.</p>
-                        <p>
-                            <a href="{{ url_for('doaj.at_20') }}" class="button">Fund our 20th anniversary campaign</a>
-                        </p>
                     </article>
 
                     <article class="col-sm-6">
@@ -102,15 +98,15 @@
                         </p>
                         <div class="row">
                             <p class="col-xs-6 stat">
-                                <span class="stat__number">82%</span>
+                                <span class="stat__number">73%</span>
                                 <span class="stat__description">
                           <a href="{{ url_for('doaj.supporters') }}">from academic organisations</a>
                         </span>
                             </p>
                             <p class="col-xs-6 stat">
-                                <span class="stat__number">18%</span>
+                                <span class="stat__number">27%</span>
                                 <span class="stat__description">
-                          <a href="{{ url_for('doaj.publisher_supporters') }}">from contributors</a>
+                          <a href="{{ url_for('doaj.publisher_supporters') }}">from other contributors</a>
                         </span>
                             </p>
                         </div>

@@ -1,17 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from esprit.raw import Connection
-from esprit.snapshot import ESSnapshotsClient
+from portality.lib.es_snapshot import ESSnapshotsClient
 
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi
-from portality.core import app
+from portality.core import app, es_connection
 from portality.lib import dates
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
-
-
-# FIXME: update for index-per-type
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 class PruneESBackupsBackgroundTask(BackgroundTask):
@@ -25,14 +21,11 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         """
         job = self.background_job
 
-        # Connection to the ES index
-        conn = Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='_snapshot')
-
         snap_ttl = app.config.get('ELASTIC_SEARCH_SNAPSHOT_TTL', 366)
         snap_thresh = dates.now() - timedelta(days=snap_ttl)
         job.add_audit_message('Deleting backups older than {}'.format(dates.format(snap_thresh)))
 
-        client = ESSnapshotsClient(conn, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
+        client = ESSnapshotsClient(es_connection, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
         client.prune_snapshots(snap_ttl, self.report_deleted_closure(job))
 
     def cleanup(self):
@@ -46,7 +39,8 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
     def report_deleted_closure(job):
         """ Report the deletion to the background task audit log """
         def _report_deleted_callback(snapshot, status_code, result):
-            job.add_audit_message('Deleted snapshot {0}, Status code: {1}, Successful: {2}'.format(snapshot.name, status_code, result))
+            job.add_audit_message('Deleted snapshot {0}, Status code: {1}, Successful: {2}'.format(snapshot.name,
+                                                                                                   status_code, result))
 
         return _report_deleted_callback
 
@@ -75,10 +69,10 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        prune_es_backups.schedule(args=(background_job.id,), delay=10)
+        prune_es_backups.schedule(args=(background_job.id,), delay=app.config.get('HUEY_ASYNC_DELAY', 10))
 
 
-huey_helper = PruneESBackupsBackgroundTask.create_huey_helper(long_running)
+huey_helper = PruneESBackupsBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

@@ -1,7 +1,6 @@
 import datetime
 import logging
 import multiprocessing
-import time
 from multiprocessing import Process, freeze_support
 from typing import TYPE_CHECKING
 
@@ -11,9 +10,11 @@ from selenium.common.exceptions import StaleElementReferenceException, ElementCl
 from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from portality import app, models, core
 from portality.dao import ESMappingMissingError
+from portality.lib.thread_utils import wait_until
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
@@ -118,7 +119,7 @@ class SeleniumTestCase(DoajTestCase):
         self.selenium.set_window_size(1400, 1000)  # avoid something is not clickable
 
         # wait for server to start
-        wait_unit(self._is_doaj_server_running, 10, 1.5, timeout_msg='doaj server not started')
+        wait_until(self._is_doaj_server_running, 10, 1.5, timeout_msg='doaj server not started')
 
         fix_index_not_found_exception(self.app_test)
         self.fix_es_mapping()
@@ -143,7 +144,8 @@ class SeleniumTestCase(DoajTestCase):
             self.selenium.find_element(By.CSS_SELECTOR, 'div.container')
             log.info('doaj server is running')
             return True
-        except selenium.common.exceptions.NoSuchElementException:
+        except (selenium.common.exceptions.NoSuchElementException,
+                selenium.common.exceptions.WebDriverException):
             log.info('doaj server is not running')
             return False
 
@@ -159,12 +161,12 @@ class SeleniumTestCase(DoajTestCase):
         print(f'{datetime.datetime.now().isoformat()} --- doaj process terminating...')
         self.doaj_process.terminate()
         self.doaj_process.join()
-        wait_unit(lambda: not self._is_doaj_server_running(), 10, 1,
-                  timeout_msg='doaj server is still running')
+        wait_until(lambda: not self._is_doaj_server_running(), 10, 1,
+                   timeout_msg='doaj server is still running')
 
         self.selenium.quit()
 
-        wait_unit(self._is_selenium_quit, 10, 1, timeout_msg='selenium is still running')
+        wait_until(self._is_selenium_quit, 10, 1, timeout_msg='selenium is still running')
         print('selenium terminated')
 
         super().tearDown()
@@ -219,17 +221,7 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
     assert "/login" not in driver.current_url
 
 
-def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
-              timeout_msg="wait_unit but exit_cond timeout"):
-    start = time.time()
-    while (time.time() - start) < timeout:
-        if exit_cond_fn():
-            return
-        time.sleep(check_interval)
-    raise TimeoutError(timeout_msg)
-
-
-def wait_unit_elements(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
+def wait_until_elements(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
     elements = []
 
     def exit_cond_fn():
@@ -240,11 +232,11 @@ def wait_unit_elements(driver: 'WebDriver', css_selector: str, timeout=10, check
         except:
             return False
 
-    wait_unit(exit_cond_fn, timeout, check_interval)
+    wait_until(exit_cond_fn, timeout=timeout, sleep_time=check_interval)
     return elements
 
 
-def wait_unit_click(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
+def wait_until_click(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
     def _click():
         try:
             ele = find_ele_by_css(driver, css_selector)
@@ -255,11 +247,11 @@ def wait_unit_click(driver: 'WebDriver', css_selector: str, timeout=10, check_in
         except (StaleElementReferenceException, ElementClickInterceptedException):
             return False
 
-    wait_unit(_click, timeout=10, check_interval=0.1)
+    wait_until(_click, timeout=timeout, sleep_time=check_interval)
 
 
 def click_edges_item(driver: 'WebDriver', ele_name, item_name):
-    wait_unit_click(driver, f'#edges-bs3-refiningand-term-selector-toggle-{ele_name}')
+    wait_until_click(driver, f'#edges-bs3-refiningand-term-selector-toggle-{ele_name}')
     for ele in find_eles_by_css(driver, f'.edges-bs3-refiningand-term-selector-result-{ele_name} a'):
         if item_name in ele.text.strip():
             ele.click()

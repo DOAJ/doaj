@@ -1,0 +1,185 @@
+suite: Report Export
+testset: Report Export Application
+tests:
+  - title: Facet Export
+    context:
+      role: Admin
+    steps:
+      - step: Go to the application search page in the admin area
+        path: /admin/applications
+        results:
+          - At the bottom of the list of facets is a "Reporting Tools" section
+      - step: Click on "Export Data as CSV"
+        results:
+          - An export section expands which includes a section to "download the current facets"
+      - step: Open the pull-down menu of facets to download
+        results:
+          - At the top there is an "All" option
+          - Listed beneath the "All" option are all the facets that appear on the search page
+      - step: Select an individual facet (e.g. "Date Applied Histogram") and click "Download"
+        results:
+          - Your are offered a download box for a csv
+          - The filename reflects the facet you selected
+      - step: Save the CSV to your computer
+      - step: Open the CSV in a spreadsheet program
+        results:
+          - The CSV contains meta information on the date of the export and the search URL used
+          - The CSV contains the data that was displayed in the facet on the search page
+      - step: Go back to the application search page in the admin area, and go to the facet export section
+      - step: Select "All" from the pull-down list of facets and click "Download"
+        results:
+          - Your are offered a download box for a csv
+          - The filename reflects that all facets have been selected
+      - step: Save the CSV to your computer
+      - step: Open the CSV in a spreadsheet program
+        results:
+          - The CSV contains meta information on the date of the export and the search URL used
+          - The CSV contains the data that was displayed in all the facets on the search page
+
+  - title: Date range histograms
+    context:
+      role: Admin
+    steps:
+      - step: Go to the application search page in the admin area
+        path: /admin/applications
+        results:
+          - At the bottom of the list of facets is a "Reporting Tools" section, including 3 options for working with dates
+            "limit by date range", "date applied histogram" and "last update histogram"
+      - step: Click on "Date Applied Histogram"
+        results:
+          - A histogram of the number of applications created per day since the reapplication (2014) is displayed
+      - step: Click on one of the years
+        results:
+          - The search updates, and only records created in that year are displayed
+          - The search filter list at the top of the results indicates the created date range (it may indicate the start
+            and end months of the year)
+      - step: Go back to the Date Applied Histogram facet, and change the "Granularity" from "Year" to "Month"
+        results:
+          - The histogram updates to show the number of journals created per month for the selected year
+      - step: Click on one of the months
+        results:
+          - The search updates, and only records created in that month are displayed
+          - The search filter list at the top of the results indicates the selected month
+      - step: Go back to the Date Applied Histogram facet.  Above it is the "Limit by Date Range" facet, open this by clicking on it
+        results:
+          - The "Limit by Date Range" facet opens, showing a date range picker
+          - Beneath the date range picker the "Date Applied" month you selected is also shown
+      - step: Remove the Date Applied limit by clicking the "X" either in the "Limit by Date Range" section or at the top
+                of the search results
+        results:
+          - The search results update to show all records
+      - step: Repeat the above steps for the "Last Update Histogram"
+
+  - title: Date range limiting
+    context:
+      role: Admin
+    steps:
+      - step: Go to the application search page in the admin area
+        path: /admin/applications
+        results:
+          - At the bottom of the list of facets is a "Reporting Tools" section, including 3 options for working with dates
+            "limit by date range", "date applied histogram" and "last update histogram"
+      - step: Click on "Limit by Date Range"
+        results:
+          - A date range picker is displayed
+      - step: Open the "Type" pull-down menu
+        results:
+          - The options are "Date Applied" and "Last Updated"
+      - step: If not already selected, select "Date Applied"
+        results:
+          - The From and To dates show the month and year of the earliest and latest created dates in the search results, respectively
+      - step: Change the "Type" to "Last Updated"
+        results:
+          - The From and To dates show the month and year of the earliest and latest last updated dates in the search results, respectively
+          - Note that January 1970 is the date used for records with no last updated date
+      - step: Select a new Year value for the Last Updated date range and click "Apply"
+        results:
+          - The search results update to show only records that have been updated in the selected range
+          - The search filter list at the top of the results indicates the last updated date range, including the month and year
+          - The "Limit by Date Range" facet also shows the search filter for the Last Updated date range
+      - step: Try changing the month and year in both From and To fields for Last Updated in the same way
+        results:
+          - The search results and displayed filters reflect the new date ranges
+      - step: Choose a "To" date that is earlier than the "From" date
+        results:
+          - The "Apply" button is disabled
+      - step: Change the "Type" back to "Date Applied"
+      - step: Select a new range for the Date Applied range and click "Apply"
+        results:
+          - The "Last Updated" date filter is still active
+          - The search results update to show only records that have been created in the selected range (and were updated in the selected range)
+          - The search filter list at the top of the results indicates the created date range and the last updated range, including the month and year
+          - The "Limit by Date Range" facet also shows the search filter for the Created date range and the last updated range
+      - step: Remove both the Created Date and Last Updated date ranges by clicking the "X" in the "Limit by Date Range" section
+        results:
+          - The search results update to show all records
+
+  - title: Export Search as CSV
+    context:
+      role: Admin
+    steps:
+      - step: Go to the applications search page in the admin area
+        path: /admin/applications
+        results:
+          - At the bottom of the list of facets is a "Reporting Tools" section, including 3 options for working with dates
+            "limit by date range", "date applied histogram" and "last update histogram"
+      - step: Open the "Limit by Date Range" facet and set a date range which gives you a subset of the data
+      - step: Apply any other filters from the facets to further refine the search results
+      - step: Click on "Export Data as CSV"
+        results:
+          - An export section expands which includes a section to export the search results
+      - step: Enter a name for the export in the input box and click "Generate"
+        results:
+          - a pop-up appears with a message that the export is being generated
+      - step: Close the popup
+      - step: Go to the background jobs page in the admin area
+        path: /admin/background_jobs
+        results:
+          - The export job is listed with the name "admin_reports by [your username]" (it may have a status of queued or processing, or even complete)
+      - step: Wait for the job to complete (this can take up to 10 minutes).  You will need to refresh the page until it is in the "complete" status.
+        result:
+          - The job is listed as "complete".  If it ends up with the status "error" this stage of the test has failed
+      - step: Open your "Notifications" menu at the top of the page
+        results:
+          - A notification appears that the report is ready for download
+          - A second notification saying a background job is finished will also be present
+      - step: Click on the notification that the report is ready for download
+        results:
+          - A download box appears for the CSV file
+          - The filename reflects the name you gave the export and the date requested
+      - step: Save the CSV to your computer
+      - step: Open the CSV in a spreadsheet program
+        results:
+          - The CSV contains the data that was displayed in the search results
+          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 3 columns include account information
+
+  - title: Manage existing reports
+    context:
+      role: Admin
+    depends:
+      - suite: Report Export
+        testset: Report Export Application
+        test: Export Search as CSV
+    steps:
+      - step: Ensure you have exported at least one CSV from the search results as per the "Export Search as CSV" test
+      - step: Go to the report search page.  This can be found at the bottom of the admin left navigation.
+        path: /admin/reports
+        results:
+          - The page lists all the reports that have been generated by any user
+      - step: Select an "application" report, and click on "Search again"
+        results:
+          - The application search page opens with the same filters as the report you selected (but not necessarily the same results)
+      - step: Go back to the report search page
+      - step: Select a report, and click on "Download report"
+        results:
+          - A download box appears for the CSV file
+          - The filename reflects the name you gave the export and the date requested
+      - step: Save the CSV to your computer
+      - step: Open the CSV in a spreadsheet program
+        results:
+          - The CSV contains the data that was displayed in the search results
+          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 3 columsn include account information
+      - step: Go back to the report search page
+      - step: Try out the facets and the sorting and searching options on this page
+        results:
+          - The page works as expected, and you can find the report you are looking for

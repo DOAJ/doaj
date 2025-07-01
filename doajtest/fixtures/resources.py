@@ -29,16 +29,21 @@ class ResourcesFixtureFactory(object):
                 service_url = ID_MAP.get(service)
                 ac_base["holdingArchive"]["@id"] = service_url
                 ac_base["holdingArchive"]["name"] = service
-                if in_time:
+                if in_time is True:
                     now = datetime.utcnow()
                     last = now.year - 1
                     first = now.year - 3
                     ac_base["temporalCoverage"] = "{x}/{y}".format(x=first, y=last)
-                else:
+                elif in_time is False:
                     now = datetime.utcnow()
                     last = now.year - 4
                     first = now.year - 6
                     ac_base["temporalCoverage"] = "{x}/{y}".format(x=first, y=last)
+                else:
+                    # time coverage missing the closing component
+                    now = datetime.utcnow()
+                    first = now.year - 3
+                    ac_base["temporalCoverage"] = "{x}/".format(x=first)
 
                 record["subjectOf"].append(ac_base)
 

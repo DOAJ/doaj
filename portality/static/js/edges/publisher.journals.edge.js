@@ -22,43 +22,6 @@ $.extend(true, doaj, {
             return result;
         },
 
-        shareSealLogo: function(resultobj) {
-            // Add Display Seal as an action
-            if (!edges.objVal("admin.seal", resultobj, false)) {
-                return false;
-            }
-            let result = {
-                label: "Download the Seal",
-                link: "#",
-                data: {
-                    toggle: "modal",
-                    target: "#modal-embed-seal-" + resultobj.id
-                }
-            }
-
-            var issn = resultobj.bibjson.pissn;
-            if (!issn) {
-                issn = resultobj.bibjson.eissn;
-            }
-            if (issn) {
-                issn = edges.escapeHtml(issn);
-            }
-
-            result.modal = '<section class="modal in" id="modal-embed-seal-' + resultobj.id + '" tabindex="-1" role="dialog" style="display: none;"> \
-                    <div class="modal__dialog" role="document">\
-                        <header class="flex-space-between modal__heading"> \
-                          <h2 class="modal__title">Download the Seal</h2>\
-                          <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
-                        </header>\
-                        <p>Copy and paste this HTML to display the DOAJ Seal on your website:</p> \
-                        <p><code>&lt;a href="https://doaj.org/toc/' + issn + '" target="_blank" style="display: block; width: 150px; height: auto;"&gt;&lt;img src="https://doaj.org/static/doaj/images/logo/seal.png"/&gt;&lt;/a&gt;</code></p>\
-                        <button class="button" data-dismiss="modal" class="modal__close no-margins">Close</button>\
-                    </div>\
-                </section>';
-
-            return result;
-        },
-
         init : function(params) {
             if (!params) { params = {} }
 
@@ -173,7 +136,6 @@ $.extend(true, doaj, {
                         }
                     ],
                     fieldDisplays : {
-                        "index.has_seal.exact" : "With a DOAJ Seal",
                         "index.schema_codes_tree.exact" : "Subject",
                         "index.license.exact" : "Licenses",
                         "bibjson.publisher.name.exact" : "Publishers",
@@ -190,7 +152,6 @@ $.extend(true, doaj, {
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
-                            "index.has_seal.exact"
                         ],
                         omit : [
                             "bibjson.apc.has_apc",
@@ -214,7 +175,6 @@ $.extend(true, doaj, {
                     renderer : doaj.renderers.newPublicSearchResultRenderer({
                         actions: [
                             doaj.publisherJournalsSearch.makeUpdateRequest,
-                            doaj.publisherJournalsSearch.shareSealLogo
                         ]
                     })
                 }),

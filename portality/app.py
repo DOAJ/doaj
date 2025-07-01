@@ -9,7 +9,7 @@ new ones as required too.
 
 ~~DOAJ:WebApp~~
 """
-
+import logging
 import os, sys
 
 import elasticsearch.exceptions
@@ -154,7 +154,7 @@ def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
     return send_file(
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
-            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+            mimetype="application/xml", as_attachment=True, download_name=schema_fn
             )
 
 
@@ -213,7 +213,7 @@ def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
     :return: the string formatted datetime
     """
-    local = tzlocal.get_localzone()
+    local = pytz.timezone(str(tzlocal.get_localzone()))
     ld = local.localize(stamp)
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
@@ -413,14 +413,6 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
             )
         return jsonify({'api_versions': vers})
 
-
-# Make the reCAPTCHA key available to the js
-# ~~-> ReCAPTCHA:ExternalService~~
-@app.route('/get_recaptcha_site_key')
-def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY', '')
-
-
 @app.errorhandler(400)
 def page_not_found(e):
     return render_template(templates.ERROR_400), 400
@@ -447,6 +439,23 @@ def handle_es_request_error(e):
     return render_template('400.html'), 400
 
 
+is_dev_log_setup_completed = False
+
+
+def setup_dev_log():
+    global is_dev_log_setup_completed
+    if not is_dev_log_setup_completed:
+        is_dev_log_setup_completed = True
+        app.logger.handlers = []
+        log = logging.getLogger()
+        log.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        ch.setFormatter(logging.Formatter('%(asctime)s %(levelname).4s %(processName)s%(threadName)s - '
+                                          '%(message)s --- [%(name)s][%(funcName)s:%(lineno)d]'))
+        log.addHandler(ch)
+
+
 def run_server(host=None, port=None, fake_https=False):
     """
     :param host:
@@ -456,6 +465,10 @@ def run_server(host=None, port=None, fake_https=False):
         that can help for debugging Plausible
     :return:
     """
+
+    if app.config.get('DEBUG_DEV_LOG', False):
+        setup_dev_log()
+
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
     if len(sys.argv) > 1:
         if sys.argv[1] == '-d':

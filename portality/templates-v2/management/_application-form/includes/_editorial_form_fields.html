@@ -56,7 +56,15 @@
     {% set fs = formulaic_context.fieldset("seal") %}
     {% if fs %}
         <h2 class="form__header">{{ fs.label }}</h2>
-        <p>The journal may have fulfilled all the criteria for the Seal. </p>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% endif %}
+
+    {% set fs = formulaic_context.fieldset("labels") %}
+    {% if fs %}
+        <h2 class="form__header">{{ fs.label }}</h2>
         {% for f in fs.fields() %}
             {% set field_template = f.template %}
             {%  include field_template %}

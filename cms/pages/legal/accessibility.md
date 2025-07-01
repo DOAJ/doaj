@@ -38,13 +38,18 @@ We have recently fixed:
 - Search facets are configured for screenreaders to indicate their state
 - All pages have a "Skip Links" button so the user can jump to the main content
 - In search results, the facets are operable with a keyboard
+- Removed ReCAPTCHA from our login process
 
 Fixes that are in progress now after a review of the changes laid out in WCAG 2.2:
 
-- we're changing the ReCAPTCHA method to a honeypot method
-- on our forms, start using aria-describedby for hint/help text
+- on our forms, start using 'aria-describedby' for hint/help text
+- making radio buttons on search focusable
 
 We are continuing to update this document as we find accessibility issues or as we fix them.
+
+## VPAT Accessibility Conformance Report
+
+A [VPAT statement for this website](https://docs.google.com/document/d/1oJOBP7cGNMzq7x2SXyVuAtgwoL2at9t5zlNBUY73mzA/edit?usp=sharing) is available.
 
 ## Feedback and contact information
 
@@ -96,5 +101,6 @@ This website was last tested on **24 November 2020**. The DOAJ team carried out 
 
 ## Changes to this document 
 
+- 28 September 2024: moved the ReCAPTCHA work to completed and added a problem with radio buttons in search to the in progress list
 - 06 September 2024: added details on things we have fixed; removed references to the PDFs and the blog, which are not covered by this statement; added the last point to the Non-compliance section; updated compliance status
-- 20 December 2021: updated target date to meet accessibility standards to Jan 2021. 
+- 20 December 2021: updated target date to meet accessibility standards to January 2021. 

@@ -51,9 +51,10 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             AccountFixtureFactory.make_assed3_source()['id']
         ]
 
-        self._make_and_push_test_context(acc=models.Account(**AccountFixtureFactory.make_managing_editor_source()))
+        self.ctx = self._make_and_push_test_context(acc=models.Account(**AccountFixtureFactory.make_managing_editor_source()))
 
     def tearDown(self):
+        self.ctx.pop()
         super(TestTaskJournalBulkEdit, self).tearDown()
 
     def test_01_editor_group_successful_assign(self):
@@ -106,14 +107,15 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         for acc_id in self.forbidden_accounts:
             logout_user()
-            self._make_and_push_test_context(acc=models.Account.pull(acc_id))
+            with self._make_and_push_test_context_manager(acc=models.Account.pull(acc_id)):
+                # self._make_and_push_test_context(acc=models.Account.pull(acc_id))
 
-            with self.assertRaises(BackgroundException):
-                # test dry run
-                r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=True)
+                with self.assertRaises(BackgroundException):
+                    # test dry run
+                    r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=True)
 
-            with self.assertRaises(BackgroundException):
-                r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=False)
+                with self.assertRaises(BackgroundException):
+                    r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=False)
 
     def test_04_parameter_checks(self):
         # no params set at all
@@ -173,7 +175,6 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
-                                 change_doaj_seal=True,
                                  publisher_country="AF",
                                  owner="test1",
                                  dry_run=True)
@@ -181,7 +182,6 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
-                                 change_doaj_seal=True,
                                  publisher_country="AF",
                                  owner="test1",
                                  dry_run=False)
@@ -199,7 +199,6 @@ class TestTaskJournalBulkEdit(DoajTestCase):
                 "\nHere is the BackgroundJob audit log:\n{}"\
                     .format(ix, j.bibjson().publisher, json.dumps(job.audit, indent=2))
 
-            assert j.has_seal()
             assert j.bibjson().country == "AF"
             assert j.owner == "test1"
 
@@ -242,7 +241,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [journal.id]}}},
-                                 change_doaj_seal=True,
+                                 editor_group="editorgroup",
                                  dry_run=False)
 
         sleep(2)

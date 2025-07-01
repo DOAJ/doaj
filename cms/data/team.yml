@@ -12,7 +12,7 @@
     2024: https://drive.google.com/file/d/1BTZPW2JOpKuBIWyWZmUPnL2mpw4JU-p8/view?usp=drive_link
 
 - name: Cenyu Shen
-  role: Deputy Head of Editorial (Quality)
+  role: Deputy Head of Editorial (Quality), Ambassador
   photo: cenyu.jpg
   bio: "Before joining DOAJ, Cenyu was a researcher at the Hanken School of Economics in Finland. She holds a PhD in Information Systems Science. She has worked on open access research for over seven years, focusing on gold open access publishing models and the problems of questionable publishing. She authored and co-authored more than ten research articles, book chapters and conference papers. In 2016, Cenyu joined DOAJ as the DOAJ Ambassador for China and later became a managing editor. She currently works as Deputy Head of Editorial (Quality), leading the quality team to prevent questionable publishers from being indexed in DOAJ. Cenyu is originally from China and now lives in Helsinki, Finland. She loves movies and painting. She also enjoys snowboarding during winter. "
   coi:
@@ -21,7 +21,7 @@
     2024: https://drive.google.com/file/d/18qzajh_3i3c7g4HsV7MHSmJ6wROS6hib/view?usp=drive_link
 
 - name: Clara Armengou
-  role: Programme Manager
+  role: Program Manager
   photo: clara.jpg
   bio: "Clara has ten years of experience in the scholarly publishing industry. She worked at Cambridge University Press as an Open Access Project Manager until 2015. She works in science communication as a freelancer at the University of Pompeu Fabra, Barcelona. Clara speaks Spanish, Catalan, English and some German and French. She loves cetaceans, freediving, cycling, and is an enthusiastic cook."
   coi:
@@ -47,6 +47,20 @@
   coi:
     2023: https://drive.google.com/file/d/1R7XquFauefdmtjPIsfGfAWQoAw7NLIci/view?usp=sharing
 
+- name: Glaucia Cruz
+  role: Managing Editor
+  photo: glaucia.jpg
+  bio: "Glaucia Cruz holds a degree in Publishing and has over 25 years of experience in the book publishing industry. Driven by a passion for science, she transitioned from fiction to STM publications, which led her to scholarly communication. For over a decade, she has been a managing editor for Brazilian journals at institutions like the Oswaldo Cruz Foundation and the Federal Senate. She has expertise in project management and publishing workflows. Glaucia is fluent in Portuguese and English and enjoys music, hiking and travelling with her husband and son."
+  coi:
+    2025: https://drive.google.com/file/d/1xAc5ZDw7DPFZRI6KrWIcl14pCjih1lpQ/view?usp=sharing
+
+- name: Handoko Handoko
+  role: Managing Editor
+  photo: handoko.png
+  bio: "Handoko is a faculty member of the English Department at Andalas University, Indonesia, and a Ph.D. candidate at Universiti Malaya. His research focuses on corpus linguistics, neurolinguistics, ecolinguistics, language teaching, and technology-enhanced learning. He has authored books on teaching and educational technology and has edited various academic publications. A tech enthusiast, Handoko is passionate about integrating technology into education to enhance learning outcomes. Since 2013, he has served as Managing and Chief Editor for several academic journals and is an active member of the International Ecolinguistics Association (IEA). He enjoys films, theatre and physical exercise."
+  coi:
+    2025: 
+
 - name: Iemima Ploscariu
   role: Managing Editor
   photo: iemima.jpeg
@@ -57,7 +71,7 @@
     2024: https://drive.google.com/file/d/1tewYowSu2FOaXPaKBEhtXU0EOMQKcko2/view?usp=drive_link
 
 - name: Ikhwan Arief
-  role: Managing Editor
+  role: Managing Editor, Ambassador
   photo: ikhwan.jpg
   bio: "Ikhwan is a faculty member in the Industrial Engineering Department at Universitas Andalas, Indonesia. He is an enthusiastic photography hobbyist. He used to manage the university's library information system, including establishing the online public access catalogue (OPAC) and the repository servers. He is keenly interested in data science, primarily industrial and manufacturing systems research. He has been assisting Indonesian journal managers in their application to DOAJ. He joined DOAJ in 2018 as an ambassador, then became a volunteer editor and joined the DOAJ Team as Managing Editor in 2024."
   coi:
@@ -65,7 +79,7 @@
     2024: https://drive.google.com/file/d/1grtW4MM0drzwG4hG66_Ib3RioYTvkk2p/view?usp=sharing
 
 - name: Ivonne Lujano
-  role: Community Manager
+  role: Community Manager, Ambassador
   photo: ivonne.png
   bio: "Ivonne Lujano holds a Ph.D. in Education Policy and Evaluation at Arizona State University (ASU). She writes about higher education systems, research evaluation, science policy, scholarly communication, open access, and open science. Ivonne is a Community Manager at the Directory of Open Access Journals (DOAJ) and a DOAJ Ambassador in Latin America. She is also an Editorial Board member of the Open Access (OA) Journals Toolkit led by OASPA and DOAJ and an Advisory Council member of the Library Partnership Rating (LP). Ivonne has taught at public and private universities in Mexico. She has been a guest lecturer at universities in Latin America and the U.S. She earned a Master's degree with an emphasis in Education from Facultad Latinoamericana de Ciencias Sociales (FLACSO), campus Argentina. Ivonne also has a background in dance; she is currently an amateur tango dancer."
   coi:
@@ -86,18 +100,10 @@
   bio: "John has had a career in executive management and is now an independent consultant and open access advocate who works with organisations seeking to accelerate their transition to open access.  He advises both for-profits and non-profits and has a particular interest in identifying the steps necessary to flip an entire discipline’s scholarly record to open access. His ambassador activities focus on increasing the support for DOAJ from the community. He served for six years on NISO’s <a href='https://www.niso.org/topic-committees/information-discovery-interchange' target='_blank'>Information Discovery and Interchange Topic Committee</a>, and has written for <a href='https://onlinelibrary.wiley.com/doi/10.1002/leap.1086' target='_blank'>Learned Publishing</a>, <a href='https://against-the-grain.com/2011/12/v23-5-atg-interviews-john-g-dove-president-credo-reference/' target='_blank'>Against the Grain</a>, and <a href='https://scholarlykitchen.sspnet.org/2019/11/07/guest-post-transparency-what-can-one-learn-from-a-trove-of-invoices/' target='_blank'>Scholarly Kitchen</a>. John serves on the Board of Trustees of his local public library in Revere, Massachusetts. He has a B.A. in Mathematics from Oberlin College."
   coi:
     2022: https://drive.google.com/file/d/1cWijl2xdmVjshsvaGTABOvC_chIIfuVA/view?usp=sharing
-
-- name: Judith Barnsby
-  role: Head of Editorial
-  photo: judith.jpg
-  bio: "Judith has 25 years of experience in the scholarly publishing industry, working for a range of non-profit society publishers and service providers before joining DOAJ. She has a keen interest in publishing standards and protocols and has served on the board of CLOCKSS and as chair of the UK's PALS (publisher and library solutions) working group. Judith loves books, especially detective fiction, and volunteers in her local library."
-  coi:
-    2018: https://drive.google.com/file/d/0ByRf6PVViI-mV2lfMjByQjYxUkpMcXhuc2l5Q3ZDWlpiYUtZ/view?usp=sharing&resourcekey=0-6eiGIRal00eXvgJUTeN_lw
-    2020: https://drive.google.com/file/d/18MWTsze4cDQQRPHJl2XrYgHQvlxhsPZa/view?usp=sharing
-    2023: https://drive.google.com/file/d/1hUsVIY09N6WceSx1edTM-h516CJGkHcu/view?usp=share_link
+    2025: https://drive.google.com/file/d/1PKN1fXafy7PDE9XrtoFvsoHB_8Cjy0u2/view?usp=sharing
 
 - name: Kamel Belhamel
-  role: Managing Editor and Ambassador
+  role: Managing Editor, Ambassador
   photo: Kamel.jpg
   bio: "Kamel BELHAMEL is a Full Professor of Chemistry at the University of Bejaia, Algeria (<a href='https://orcid.org/0000-0002-9099-8040/' target='_blank'>ORCID</a>). He is the DOAJ Ambassador and Managing Editor for North Africa and the Middle East. His scientific activity is focused on scholarly communications, new developments in academic publishing and the chemistry of Natural Products. Kamel has strongly advocated for open access and open science. He is the Creative Commons Representative to the Global Network Council and editor-in-chief of the Algerian Journal of Natural Products. He is father to three daughters and likes travelling, healthy local foods and home-made snacks."
   coi:
@@ -123,7 +129,7 @@
     2022: https://drive.google.com/file/d/1fRJtvci2_j4vad0C5N1pfqm2sHZQkFz3/view?usp=sharing
 
 - name: Leena Shah
-  role: Deputy Head of Editorial (Workflow)
+  role: Deputy Head of Editorial (Workflow & Metadata)
   photo: leena.jpg
   bio: "Leena has a Master's degree in Information Studies and worked as an academic librarian, where she developed a keen interest in scholarly communication and open science.  She joined DOAJ as an Ambassador for India in 2016. She continued her journey with DOAJ as a Managing Editor overseeing the indexing of journals from India, Indonesia and other countries. She is currently the Deputy Head of Editorial (Workflow), assisting in leading and developing the DOAJ editorial workforce. Leena is a yoga enthusiast who loves visiting museums and watching sci-fi shows in her spare time. She is originally from India and has lived and worked in Singapore for a long time. Leena now resides in London, UK, with her family."
   coi:
@@ -140,12 +146,19 @@
     2024: https://drive.google.com/file/d/1GK8gX_8_yoDWiidDweF9CHVlG0N7a-ot/view?usp=sharing
 
 - name: Mahmoud Khalifa
-  role: Managing Editor and Ambassador
+  role: Managing Editor, Ambassador
   photo: mahmoud-new.jpg
   bio: "Mahmoud is a PhD candidate at Humboldt University of Berlin, Germany. He is writing his dissertation about national information policies. Mahmoud was an associate at the IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. Professionally, he worked in the Library of Congress Cairo Office from 2006-2018. As a researcher, he published more than 20 articles, book chapters, and conference papers."
   coi:
     2022: https://drive.google.com/file/d/10s7B0WeTPqpaafhThv-i8q03uIFaAAue/view?usp=sharing
     2024: https://drive.google.com/file/d/1C7wjA0EoH8JqrntnsWYMxK9nYG6BuSox/view?usp=drive_link
+
+- name: Matt Hodgkinson
+  role: Head of Editorial (incoming)
+  photo: matt.png
+  bio: "Matt has over 20 years of experience in scientific journals and research integrity. After his Master's in Genetics, he worked as an editor at BMC and PLOS, then focussed on publication ethics as Head of Research Integrity at Hindawi and with UKRIO. He is now a publishing and ethics consultant in Cambridge, UK. He volunteers as the co-chair of the membership subcommittee of the council of the [Committee on Publication Ethics](https://publicationethics.org/) (COPE) and Treasurer of the [European Association of Science Editors](https://ease.org.uk/) (EASE), and was on the Editorial Policy Advisory Group of DOAJ. Outside work, he enjoys reading, running, and indie music and films."
+  coi:
+    2025: https://drive.google.com/file/d/1838hHrIM0ed4gBTmtSNLQOkfDaJTF9xf/view?usp=sharing
 
 - name: Paula Marjamäki
   role: Managing Editor
@@ -157,7 +170,7 @@
     2024: https://drive.google.com/file/d/1D2LBT54VOuJxI7s4Wobynnf6pMN1bQrF/view?usp=drive_link
 
 - name: Popi Florou
-  role: Database Assistant
+  role: Managing Editor (Triage)
   photo: popi.jpg
   bio: "For the past 20 years, Popi has been working as a support Librarian for the Greek National Consortium for Academic and Research Institutions. During this time, she has been mainly responsible for the management of the Consortium's electronic resources database and portal, and she is also involved in almost all the Consortium's projects, including the support and promotion of Open Access as a means of recording, promoting and outreaching its members' qualitative research."
   coi:
@@ -166,8 +179,8 @@
     2024: https://drive.google.com/file/d/1pEf0RkyZpcMMp-g3lQTe53ZjHs4G8RhY/view?usp=drive_link
 
 - name: Ramazan Turgut
-  role: Managing Editor
-  photo: ramazan.jpeg
+  role: Managing Editor, Ambassador
+  photo: ramazan24.png
   bio: "Ramazan Turgut is a teacher at Mardin Artuklu University in Türkiye. He has a Ph.D. in History of Religion and has done research at Radboud University and the University of Chicago. He speaks Kurdish, Turkish, English, and Dutch, which helps him to work with scholars from different countries. Ramazan is a proud father of three children and enjoys reading, cooking, and travelling to learn about new cultures. If he could be a character in Middle Earth, he would have chosen Boromir."
   coi:
     2023: https://drive.google.com/file/d/1Mipqt2uTdv968VajWjEkIo5S9rTHSKCT/view?usp=sharing
@@ -182,6 +195,20 @@
     2022: https://drive.google.com/file/d/1soZtiW6gyVJPl7P_J60j2TL2Fqzl0QAs/view?usp=sharing
     2024: https://drive.google.com/file/d/1jCz7G1imwy1Z2LB0h05QCxwDYRuHrPzt/view?usp=drive_link
  
+- name: Tracy Creagh
+  role: Communications Assistant
+  photo: tracy.jpg
+  bio: "Tracy is Journal Manager, Academic Journals in the Office for Scholarly Communication at Queensland University of Technology (QUT), Australia where she manages QUT’s open access, peer reviewed scholarly journals. Tracy is also Managing Editor of the Student Success journal, an open access journal supported by the University of Southern Queensland (UniSQ); and co-convenor of the Australian Diamond Journal Publishing Community of Practice (supported by Open Access Australasia and the Council for Australasian University Librarians)."
+  coi:
+    2025: 
+
+- name: Yuliia Hartman
+  role: Managing Editor
+  photo: yuliia.jpeg
+  bio: "Yuliia is a PhD candidate in Law at Taras Shevchenko National University of Kyiv. Since 2023, she has worked as a Managing Editor at Access to Justice in Eastern Europe, overseeing editorial and publishing processes and facilitating communication with authors and reviewers. She is an active member of the Ukrainian regional chapter of the European Association of Science Editors. She contributes to public discussions on editorial best practices led by the Ministry of Education and Science of Ukraine. Yuliia has authored around 10 scientific publications focusing on law and research integrity. She regularly participates in thematic conferences such as PUBMET and the Association of University Presses. In her free time, she enjoys theater, traveling, and reading."
+  coi:
+    2025: https://drive.google.com/file/d/1DnAzynBnHBdbR7XJGlz5zf--S_3hNM6k/view?usp=sharing
+
 - name: Zhanna Protasevych
   role: Finance Administrator
   photo: zhanna.jpg
