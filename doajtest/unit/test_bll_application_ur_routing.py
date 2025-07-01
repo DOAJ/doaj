@@ -15,6 +15,8 @@ from portality.lib import paths
 from portality.lib.thread_utils import wait_until
 from portality.models import URReviewRoute
 from portality.util import patch_config
+from portality import datasets
+from portality.dao import find_indexes_by_prefix
 
 EXAMPLE_FILES_DIR = paths.rel2abs(__file__, "..", "example_files")
 
@@ -76,6 +78,8 @@ class TestURRouting(DoajTestCase):
                 if row[0] == "Country":
                     continue
 
+                cc = datasets.get_country_code(row[0])
+
                 if row[1] not in accounts:
                     source = AccountFixtureFactory.make_managing_editor_source()
                     source["id"] = row[1]
@@ -89,7 +93,7 @@ class TestURRouting(DoajTestCase):
                     group.save()
                     groups[row[1]] = group
 
-                ebc_map.append((row[0], row[1]))
+                ebc_map.append((cc, row[1]))
 
         assert len(ebp_map) == 4
         assert len(ebc_map) == 4
@@ -103,7 +107,7 @@ class TestURRouting(DoajTestCase):
         })
 
         svc = DOAJ.applicationService()
-        routers = svc.retrieve_ur_editor_group_sheets(prune=False)
+        routers = svc.retrieve_ur_editor_group_sheets()
 
         assert len(routers) == 8
         wait_until(lambda: models.URReviewRoute.count() == 8)
@@ -112,13 +116,13 @@ class TestURRouting(DoajTestCase):
             route = models.URReviewRoute.by_account(acc)
             assert route.target == target
             assert route.account_id == acc
-            assert route.country is None
+            assert route.country_code is None
 
         for country, target in ebc_map:
-            route = models.URReviewRoute.by_country_name(country)
+            route = models.URReviewRoute.by_country(country)
             assert route.target == target
             assert route.account_id is None
-            assert route.country == country
+            assert route.country_code == country
 
     def test_02_retrieve_fail(self):
         ebp = os.path.join(EXAMPLE_FILES_DIR, "editor_by_publisher.csv")
@@ -137,7 +141,7 @@ class TestURRouting(DoajTestCase):
         })
 
         with self.assertRaises(exceptions.RemoteServiceException):
-            routes = svc.retrieve_ur_editor_group_sheets(prune=False)
+            routes = svc.retrieve_ur_editor_group_sheets()
 
         # fail to retrieve editor by country
         requests.get = ResponseMockFactory.get_failure({
@@ -146,7 +150,7 @@ class TestURRouting(DoajTestCase):
         })
 
         with self.assertRaises(exceptions.RemoteServiceException):
-            routes = svc.retrieve_ur_editor_group_sheets(prune=False)
+            routes = svc.retrieve_ur_editor_group_sheets()
 
         # empty response to editor by publisher
         requests.get = ResponseMockFactory.get_failure({
@@ -155,7 +159,7 @@ class TestURRouting(DoajTestCase):
         })
 
         with self.assertRaises(ValueError):
-            routes = svc.retrieve_ur_editor_group_sheets(prune=False)
+            routes = svc.retrieve_ur_editor_group_sheets()
 
         # empty response to editor by country
         requests.get = ResponseMockFactory.get_failure({
@@ -163,7 +167,7 @@ class TestURRouting(DoajTestCase):
             "http://example.com/editor_by_country": (200, "")
         })
         with self.assertRaises(ValueError):
-            routes = svc.retrieve_ur_editor_group_sheets(prune=False)
+            routes = svc.retrieve_ur_editor_group_sheets()
 
     def test_03_retrieve_invalid(self):
         ebp = os.path.join(EXAMPLE_FILES_DIR, "editor_by_publisher.csv")
@@ -179,7 +183,7 @@ class TestURRouting(DoajTestCase):
             "http://example.com/editor_by_country": open(ebc, "r")
         })
         with self.assertRaises(ValueError):
-            svc.retrieve_ur_editor_group_sheets(prune=False)
+            svc.retrieve_ur_editor_group_sheets()
 
         # target group not supplied
         invalid_data = "Publisher,Account,Assign to...\nMissing Account,1234567890,"
@@ -189,7 +193,7 @@ class TestURRouting(DoajTestCase):
             "http://example.com/editor_by_country": open(ebc, "r")
         })
         with self.assertRaises(ValueError):
-            svc.retrieve_ur_editor_group_sheets(prune=False)
+            svc.retrieve_ur_editor_group_sheets()
 
         # country not supplied
         invalid_data = "Country,Assign to...\n,Group1"
@@ -199,7 +203,7 @@ class TestURRouting(DoajTestCase):
             "http://example.com/editor_by_country": stream
         })
         with self.assertRaises(ValueError):
-            svc.retrieve_ur_editor_group_sheets(prune=False)
+            svc.retrieve_ur_editor_group_sheets()
 
         # group not supplied
         invalid_data = "Country,Assign to...\nUnited Kingdom,"
@@ -209,7 +213,7 @@ class TestURRouting(DoajTestCase):
             "http://example.com/editor_by_country": stream
         })
         with self.assertRaises(ValueError):
-            svc.retrieve_ur_editor_group_sheets(prune=False)
+            svc.retrieve_ur_editor_group_sheets()
 
     def test_04_retrieve_objects_not_found(self):
         data = "Publisher,Account,Assign to...\nPublisher1,1234567890,Group1"
@@ -225,7 +229,7 @@ class TestURRouting(DoajTestCase):
                 "http://example.com/editor_by_publisher": stream,
                 "http://example.com/editor_by_country": null_stream
             })
-            svc.retrieve_ur_editor_group_sheets(prune=False)
+            svc.retrieve_ur_editor_group_sheets()
 
         # create the account
         source = AccountFixtureFactory.make_publisher_source()
@@ -241,7 +245,7 @@ class TestURRouting(DoajTestCase):
                 "http://example.com/editor_by_publisher": stream,
                 "http://example.com/editor_by_country": null_stream
             })
-            svc.retrieve_ur_editor_group_sheets(prune=False)
+            svc.retrieve_ur_editor_group_sheets()
 
         # create the group
         source = EditorGroupFixtureFactory.make_editor_group_source(group_name="Group1", editor="editor1", maned="maned1")
@@ -255,74 +259,7 @@ class TestURRouting(DoajTestCase):
             "http://example.com/editor_by_publisher": stream,
             "http://example.com/editor_by_country": null_stream
         })
-        svc.retrieve_ur_editor_group_sheets(prune=False)
-
-    def test_05_prune(self):
-        svc = DOAJ.applicationService()
-
-        # create some URReviewRoutes that are 2 days old
-        blocks = []
-        for i in range(5):
-            review = URReviewRoute()
-            review.account_id = f"account_{i}"
-            review.target = f"target_{i}"
-            review.set_created(dates.format(dates.before_now(2 * 86400)))
-            review.save()
-            blocks.append((review.id, review.last_updated))
-        URReviewRoute.blockall(blocks)
-
-        # request a prune of URReviewRoutes older than 1 day
-        deleted = svc.prune_ur_review_routes(cutoff=dates.before_now(86400))
-
-        # none should be deleted, as although they are older than the cutoff, this would leave nothing
-        # in the routing table
-        assert deleted == 0
-        assert URReviewRoute.count() == 5
-
-        # now create a couple more sets and we'll try removing them
-
-        # 5 days old
-        blocks = []
-        for i in range(5):
-            review = URReviewRoute()
-            review.account_id = f"account_{i}"
-            review.target = f"target_{i}"
-            review.set_created(dates.format(dates.before_now(5 * 86400)))
-            review.save()
-            blocks.append((review.id, review.last_updated))
-        URReviewRoute.blockall(blocks)
-
-        # 10 days old
-        blocks = []
-        for i in range(5):
-            review = URReviewRoute()
-            review.account_id = f"account_{i}"
-            review.target = f"target_{i}"
-            review.set_created(dates.format(dates.before_now(10 * 86400)))
-            review.save()
-            blocks.append((review.id, review.last_updated))
-        URReviewRoute.blockall(blocks)
-
-        # request a prune of URReviewRoutes older than 12 days, which is older
-        # than everything, so should have no effect
-        deleted = svc.prune_ur_review_routes(cutoff=dates.before_now(12 * 86400))
-        wait_until(lambda: URReviewRoute.count() == 15)
-        assert deleted == 0
-        assert URReviewRoute.count() == 15
-
-        # request a prune of URReviewRoutes older than 8 days, which should
-        # delete the 10 day old ones
-        deleted = svc.prune_ur_review_routes(cutoff=dates.before_now(8 * 86400))
-        wait_until(lambda: URReviewRoute.count() == 10)
-        assert deleted == 5
-        assert URReviewRoute.count() == 10
-
-        # request a prune of URReviewRoutes older than 3 days, which should
-        # delete the 5 day old ones
-        deleted = svc.prune_ur_review_routes(cutoff=dates.before_now(3 * 86400))
-        wait_until(lambda: URReviewRoute.count() == 5)
-        assert deleted == 5
-        assert URReviewRoute.count() == 5
+        svc.retrieve_ur_editor_group_sheets()
 
     def test_06_auto_assign(self):
         current_account = models.URReviewRoute()
@@ -338,13 +275,13 @@ class TestURRouting(DoajTestCase):
         old_account.save()
 
         current_country = models.URReviewRoute()
-        current_country.country = "France"
+        current_country.country_code = "FR"
         current_country.target = "C"
         current_country.set_created(dates.format(dates.before_now(86400)))
         current_country.save()
 
         old_country = models.URReviewRoute()
-        old_country.country = "France"
+        old_country.country_code = "FR"
         old_country.target = "D"
         old_country.set_created(dates.format(dates.before_now(2 * 86400)))
         old_country.save()
@@ -439,4 +376,36 @@ class TestURRouting(DoajTestCase):
         svc.auto_assign_ur_editor_group(application)
         assert application.editor_group is None
 
+    def test_ur_review_route_index_history_cleanup(self):
+        """
+        Test that only the correct number of historical indexes are kept after running
+        retrieve_ur_editor_group_sheets multiple times, according to keep_history.
+        """
+        # Create required fixtures: publisher account A1 and editor group G1
+        acc_source = AccountFixtureFactory.make_publisher_source()
+        acc_source["id"] = "A1"
+        acc = models.Account(**acc_source)
+        acc.save(blocking=True)
 
+        group_source = EditorGroupFixtureFactory.make_editor_group_source(group_name="G1", editor="A1", maned="A1")
+        group = models.EditorGroup(**group_source)
+        group.save(blocking=True)
+
+        svc = DOAJ.applicationService()
+        keep_history = 2
+
+        for i in range(6):
+            # Both publisher and country sheets must have valid data
+            data_pub = "Publisher,Account,Assign to...\nP1,A1,G1"
+            data_country = "Country,Assign to...\nDE,G1"
+            stream_pub = io.StringIO(data_pub)
+            stream_country = io.StringIO(data_country)
+            requests.get = ResponseMockFactory.get_file({
+                "http://example.com/editor_by_publisher": stream_pub,
+                "http://example.com/editor_by_country": stream_country
+            })
+            svc.retrieve_ur_editor_group_sheets(keep_history=keep_history)
+
+        prefix = URReviewRoute.index_name()
+        all_indexes = find_indexes_by_prefix(prefix)
+        assert len(all_indexes) == keep_history + 1, f"Expected {keep_history+1} indexes, found {len(all_indexes)}: {all_indexes}"

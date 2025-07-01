@@ -140,6 +140,7 @@ tests:
         results:
           - All alerts are now visible, including the one you just set to "In Progress" (there may only be this one alert in the test system)
           - The alert has only one option "Mark Closed"
+          - The alert has an audit trail showing that it was set to "In Progress" by the user
       - step: Click "Mark Closed"
         results:
           - A pop-up tells you the operation was successful and to reload the page
@@ -147,3 +148,4 @@ tests:
         results:
           - The alert is still visible, but now has a status of "Closed"
           - There are no buttons available on the alert.
+          - The alert has an audit trail showing that it was marked closed by the user

@@ -88,7 +88,8 @@ class Autoassign(TestDrive):
         ur1.save()
 
         ur2 = models.URReviewRoute()
-        ur2.country = "France"
+        ur2.country_name = "France"
+        ur2.country_code = "FR"
         ur2.target = eg2.name
         ur2.save()
 
@@ -127,7 +128,7 @@ class Autoassign(TestDrive):
                 "maned_password": pw6
             },
             "mappings": [ur1.id, ur2.id],
-            "alert": alert.id
+            "alert": [alert.id]
         }
 
 

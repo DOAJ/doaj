@@ -19,7 +19,7 @@ class AutoAssignEditorGroupDataTask(BackgroundTask):
         prune = self.get_param(params, "prune", True)
 
         try:
-            routers = DOAJ.applicationService().retrieve_ur_editor_group_sheets(prune=prune)
+            routers = DOAJ.applicationService().retrieve_ur_editor_group_sheets(keep_history=2 if prune else -1)
         except exceptions.RemoteServiceException as e:
             msg = "Failed to retrieve data from google sheets: " + str(e)
             self.background_job.add_audit_message(msg)

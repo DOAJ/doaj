@@ -32,10 +32,24 @@ class TestBLLAdminAlerts(DoajTestCase):
         assert alert.message == "This is a test alert message"
         assert alert.state == models.AdminAlert.STATE_NEW
 
+        # Account fixture
+        acc = models.Account()
+        acc.set_id("test_user")
+
         wait_until(lambda: models.AdminAlert.count() > 0)
-        svc.set_in_progress(alert.id)
+        # Pass account into set_in_progress
+        svc.set_in_progress(alert.id, acc)
         a2 = models.AdminAlert.pull(alert.id)
         assert a2.state == models.AdminAlert.STATE_IN_PROGRESS
+        # Check audit record
+        audit = a2.audit
+        assert isinstance(audit, list)
+        assert len(audit) == 1
+        entry = audit[0]
+        assert entry.get("user") == "test_user"
+        assert entry.get("from_state") == models.AdminAlert.STATE_NEW
+        assert entry.get("to_state") == models.AdminAlert.STATE_IN_PROGRESS
+        assert entry.get("date") is not None
 
     def test_03_set_closed(self):
         svc = DOAJ.adminAlertsService()
@@ -44,7 +58,20 @@ class TestBLLAdminAlerts(DoajTestCase):
         assert alert.message == "This is a test alert message"
         assert alert.state == models.AdminAlert.STATE_NEW
 
+        # Account fixture
+        acc = models.Account()
+        acc.set_id("test_user")
+
         wait_until(lambda: models.AdminAlert.count() > 0)
-        svc.set_closed(alert.id)
+        svc.set_closed(alert.id, acc)
         a2 = models.AdminAlert.pull(alert.id)
         assert a2.state == models.AdminAlert.STATE_CLOSED
+        # Check audit record
+        audit = a2.audit
+        assert isinstance(audit, list)
+        assert len(audit) == 1
+        entry = audit[0]
+        assert entry.get("user") == "test_user"
+        assert entry.get("from_state") == models.AdminAlert.STATE_NEW
+        assert entry.get("to_state") == models.AdminAlert.STATE_CLOSED
+        assert entry.get("date") is not None

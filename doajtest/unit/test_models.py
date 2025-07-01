@@ -1819,17 +1819,17 @@ class TestModels(DoajTestCase):
     def test_45_ur_routing(self):
         rr = models.URReviewRoute()
         rr.account_id = "1234"
-        rr.country = "GB"
+        rr.country_code = "GB"
         rr.target = "4321"
 
         assert rr.account_id == "1234"
-        assert rr.country == "GB"
+        assert rr.country_code == "GB"
         assert rr.target == "4321"
 
         rr.save(blocking=True)
         rr2 = models.URReviewRoute.pull(rr.id)
         assert rr2.account_id == "1234"
-        assert rr2.country == "GB"
+        assert rr2.country_code == "GB"
         assert rr2.target == "4321"
 
     def test_46_admin_alerts(self):

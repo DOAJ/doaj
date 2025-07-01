@@ -146,6 +146,21 @@ $.extend(true, doaj, {
                             [
                                 {
                                     valueFunction: function(val, res, component) {
+                                        let frag = "";
+                                        if (res.audit) {
+                                            frag += "<ul>";
+                                            for (let audit of res.audit) {
+                                                frag += `<li>[${audit.date}] ${audit.user}: "${audit.from_state}" to "${audit.to_state}"</li>`;
+                                            }
+                                            frag += "</ul>";
+                                        }
+                                        return frag;
+                                    }
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: function(val, res, component) {
                                         let controlClass = edges.css_classes(component.namespace, "control");
                                         let in_progress = `<a class="button ${controlClass}" href="${doaj.adminAlertsSearchConfig.managePath}${res.id}/in_progress">Set In Progress</a>`;
                                         let resolved = `<a class="button ${controlClass}" href="${doaj.adminAlertsSearchConfig.managePath}${res.id}/closed">Mark Closed</a>`;

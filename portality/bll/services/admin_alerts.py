@@ -32,20 +32,20 @@ class AdminAlertsService(object):
 
         return a
 
-    def set_in_progress(self, alert_id: str):
+    def set_in_progress(self, alert_id: str, user: models.Account):
         # ~~-> Notifications:Query ~~
         a = models.AdminAlert.pull(alert_id)
         if not a:
             return
-        a.state = models.AdminAlert.STATE_IN_PROGRESS
+        a.change_state(models.AdminAlert.STATE_IN_PROGRESS, user)
         a.save()
         return a
 
-    def set_closed(self, alert_id: str):
+    def set_closed(self, alert_id: str, user: models.Account):
         # ~~-> Notifications:Query ~~
         a = models.AdminAlert.pull(alert_id)
         if not a:
             return
-        a.state = models.AdminAlert.STATE_CLOSED
+        a.change_state(models.AdminAlert.STATE_CLOSED, user)
         a.save()
         return a

@@ -11,7 +11,8 @@ STRUCT = {
         "last_updated": {"coerce": "utcdatetime"},
         "es_type": {"coerce": "unicode"},
         "account_id": {"coerce": "unicode"},
-        "country": {"coerce": "unicode"},
+        "country_code": {"coerce": "unicode"},
+        "country_name": {"coerce": "unicode"},
         "target": {"coerce": "unicode"}
     }
 }
@@ -63,7 +64,7 @@ class URReviewRoute(SeamlessMixin, DomainObject):
             return None
 
     @classmethod
-    def by_country_name(cls, country_name):
+    def by_country(cls, country_code):
         """
         Get a URReviewRoute by country name
         :return:
@@ -71,7 +72,7 @@ class URReviewRoute(SeamlessMixin, DomainObject):
         q = {
             "query": {
                 "term": {
-                    "country.exact": country_name
+                    "country_code.exact": country_code
                 }
             },
             "sort": {
@@ -100,12 +101,20 @@ class URReviewRoute(SeamlessMixin, DomainObject):
         self.__seamless__.set_with_struct("account_id", val)
 
     @property
-    def country(self):
-        return self.__seamless__.get_single("country")
+    def country_code(self):
+        return self.__seamless__.get_single("country_code")
 
-    @country.setter
-    def country(self, val):
-        self.__seamless__.set_with_struct("country", val)
+    @country_code.setter
+    def country_code(self, val):
+        self.__seamless__.set_with_struct("country_code", val)
+
+    @property
+    def country_name(self):
+        return self.__seamless__.get_single("country_name")
+
+    @country_name.setter
+    def country_name(self, val):
+        self.__seamless__.set_with_struct("country_name", val)
 
     @property
     def target(self):

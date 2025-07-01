@@ -168,8 +168,8 @@ def manage_alert(alert_id, action):
 
     svc = DOAJ.adminAlertsService()
     if action == 'in_progress':
-        svc.set_in_progress(alert_id)
+        svc.set_in_progress(alert_id, current_user)
     elif action == 'closed':
-        svc.set_closed(alert_id)
+        svc.set_closed(alert_id, current_user)
 
     return make_response(json.dumps({"status": "success"}))

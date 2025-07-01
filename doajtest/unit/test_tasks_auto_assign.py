@@ -11,7 +11,7 @@ class MockApplicationService:
     EXCEPT = None
 
     @classmethod
-    def retrieve_ur_editor_group_sheets(cls, prune=True):
+    def retrieve_ur_editor_group_sheets(cls, keep_history=2):
         if cls.EXCEPT is not None:
             raise cls.EXCEPT("error")
         return cls.RETURN

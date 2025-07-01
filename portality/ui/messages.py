@@ -141,7 +141,7 @@ class Messages(object):
     ARE_YOU_A_HUMAN = "Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>."
 
     AUTOASSIGN__OWNER_MAPPED = "owner '{owner}' is mapped to editor group '{target}'"
-    AUTOASSIGN__COUNTRY_MAPPED = "country '{country}' is mapped to editor group '{target}'"
+    AUTOASSIGN__COUNTRY_MAPPED = "country '{country}' ({country_code}) is mapped to editor group '{target}'"
     AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING = "Autoassign: Editor group '{target}' does not exist, cannot auto assign"
     AUTOASSIGN__NOTE__ASSIGN = "Autoassign: Editor group auto assigned to '{target}' because {reason}"
 

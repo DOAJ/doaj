@@ -13,6 +13,7 @@ from portality.forms.application_forms import ApplicationFormFactory
 from portality.lib import dates, httputil
 from portality.lib.argvalidate import argvalidate
 from portality.ui.messages import Messages
+from portality import datasets
 
 
 class ApplicationService(object):
@@ -38,12 +39,16 @@ class ApplicationService(object):
             target = by_owner.target
 
         if target is None:
-            by_country = models.URReviewRoute.by_country_name(ur.bibjson().publisher_country)
+            by_country = models.URReviewRoute.by_country(ur.bibjson().publisher_country)
             if by_country is not None:
-                reason = Messages.AUTOASSIGN__COUNTRY_MAPPED.format(country=ur.bibjson().publisher_country, target=by_country.target)
+                reason = Messages.AUTOASSIGN__COUNTRY_MAPPED.format(country=by_country.country_name, country_code=by_country.country_code, target=by_country.target)
                 target = by_country.target
 
         if target is None:
+            return ur
+
+        if ur.editor_group == target:
+            # UR is already assigned to the correct editor group
             return ur
 
         id = models.EditorGroup.group_exists_by_name(target)
@@ -56,8 +61,7 @@ class ApplicationService(object):
         ur.add_note(Messages.AUTOASSIGN__NOTE__ASSIGN.format(target=target, reason=reason))
         return ur
 
-    @classmethod
-    def retrieve_ur_editor_group_sheets(cls, prune=True):
+    def retrieve_ur_editor_group_sheets(self, keep_history=1):
         start = dates.now()
 
         publisher_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET")
@@ -107,6 +111,7 @@ class ApplicationService(object):
             router = models.URReviewRoute()
             router.account_id = acc.id
             router.target = group
+            router.pre_save_prep()
             routers.append(router)
 
         for i, row in enumerate(creader):
@@ -126,49 +131,20 @@ class ApplicationService(object):
                 raise ValueError(f"Country Sheet: Country `{country}` does not match an existing ISO country name; row {i+2}")
 
             router = models.URReviewRoute()
-            router.country = cc
+            router.country_code = cc
+            router.country_name = country
             router.target = group
+            router.pre_save_prep()
             routers.append(router)
 
         # if we get to here we have two valid sheets, so we can update
-        # the local copy
-        # Note that we HAVE to block this save, as if the records are not
-        # guaranteed saved before the prune starts all the old records will remain, and
-        # they can mess with the auto-assignment logic
-        models.URReviewRoute.save_all(routers, blocking=True)
-
-        if prune:
-            cls.prune_ur_review_routes(cutoff=start)
+        # the local data using an index rollover technique
+        if len(routers) > 0:
+            mapping = routers[0].mappings()
+            docs = [router.data for router in routers]
+            models.URReviewRoute.create_and_seed_index_and_rollover_alias(docs, mapping, keep_history)
 
         return routers
-
-    @classmethod
-    def prune_ur_review_routes(cls, cutoff=None):
-        """
-        Prune the URReviewRoute records older than cutoff
-        :param cutoff:
-        :return:
-        """
-        if cutoff is None:
-            cutoff = dates.now() - dates.timedelta(days=1)
-
-        q = {
-            "query": {
-                "range": {
-                    "created_date": {
-                        "lt": dates.format(cutoff)
-                    }
-                }
-            }
-        }
-
-        total = models.URReviewRoute.count()
-        candidates = models.URReviewRoute.count(q)
-        if candidates == 0 or total <= candidates:
-            return 0
-
-        models.URReviewRoute.delete_by_query(q)
-        return candidates
 
 
     @staticmethod

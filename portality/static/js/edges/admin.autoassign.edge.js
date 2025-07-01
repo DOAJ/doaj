@@ -58,10 +58,10 @@ $.extend(true, doaj, {
                 }),
 
                 edges.newRefiningANDTermSelector({
-                    id: "country",
+                    id: "country_name",
                     category: "facet",
-                    field: "country.exact",
-                    display: "Country",
+                    field: "country_name.exact",
+                    display: "Country Name",
                     orderBy: "term",
                     orderDir: "asc",
                     deactivateThreshold: 0,
@@ -81,13 +81,13 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Import Date','field':'created_date'},
                         {'display':'Publisher','field':'account_id.exact'},
-                        {'display':'Country','field':'country.exact'},
+                        {'display':'Country Name','field':'country_name.exact'},
                         {'display':'Editor Group','field':'target.exact'}
                     ],
                     fieldOptions: [
                         {'display':'Editor Group','field':'target'},
                         {'display':'Publisher','field':'account_id'},
-                        {'display':'Country','field':'country'}
+                        {'display':'Country Name','field':'country_name'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -126,15 +126,35 @@ $.extend(true, doaj, {
                         fieldDisplay: [
                             {
                                 field: "account_id",
-                                display: "Publisher"
+                                display: "Publisher",
+                                valueFunction: function(value, result) {
+                                    if (value && value !== "-") {
+                                        return `<a href="/account/${value}">${value}</a>`;
+                                    }
+                                    return value;
+                                }
                             },
                             {
-                                field: "country",
-                                display: "Country"
+                                field: "country_name",
+                                display: "Country Name",
+                            },
+                            {
+                                field: "country_code",
+                                display: "Country Code"
                             },
                             {
                                 field: "target",
-                                display: "Editor Group"
+                                display: "Editor Group",
+                                valueFunction: function(value, result) {
+                                    if (value && value !== "-") {
+                                        let source = doaj.searchQuerySource({
+                                            queryString: value,
+                                            defaultField: "name",
+                                        })
+                                        return `<a href="/admin/editor_groups?source=${source}">${value}</a>`;
+                                    }
+                                    return value;
+                                }
                             },
                             {
                                 field: "created_date",
@@ -150,7 +170,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         "target.exact" : "Editor Group",
-                        "country.exact" : "Country",
+                        "country_name.exact" : "Country Name",
                         "account_id.exact" : "Publisher"
                     }
                 })
