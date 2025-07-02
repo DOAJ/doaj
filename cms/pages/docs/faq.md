@@ -8,7 +8,7 @@ featuremap: ~~FAQ:Fragment~~
 
 ---
 
-After your journal is indexed in DOAJ and you start to upload article metadata to us, we generate journal and article metadata. We make these publicly and freely available via different methods:
+After your journal is indexed in DOAJ and you start to upload article metadata to us, we generate journal and article metadata. We make these [publicly and openly available](/apply/why-index/) via different methods:
 
 - Our [Atom feed](https://doaj.org/feed)
 - Our [OAI-PMH service](https://doaj.org/docs/oai-pmh/)
@@ -16,8 +16,9 @@ After your journal is indexed in DOAJ and you start to upload article metadata t
 - Our [API](https://doaj.org/docs/api/)
 - On our website
 
-Our metadata is collected and incorporated into commercial discovery systems, library discovery portals and search engines around the world. Here are some of them:
+Our [metadata is collected and incorporated](/apply/why-index/) into commercial discovery systems, library discovery portals and search engines around the world. Here are some of them:
 
+- OpenAlex
 - OCLC
 - EBSCO products
 - Clarivate's Proquest and Ex Libris products
