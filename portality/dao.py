@@ -1367,6 +1367,16 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def create_and_seed_index_and_rollover_alias(cls, documents: List[dict], mapping=None, keep_history=0):
+        """
+        Create a new index based on this object's type, put the mapping if provided, and seed it with the documents.
+        The indexes alias is then repointed to the new index.
+        If a keep_history value is provided, the previous indexes with the same prefix as the alias will be deleted,
+
+        :param documents:
+        :param mapping:
+        :param keep_history: supply -1 to keep all history, 0 to keep no history, or a positive integer to keep that many previous indexes.
+        :return:
+        """
         full_alias = cls.index_name()
         new_name = cls.__type__ + "-" + dates.now_str(dates.FMT_DATETIME_LONG)
         if mapping is not None:
