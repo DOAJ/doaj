@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from flask import Blueprint, render_template, abort, redirect, url_for, request, make_response
+from flask import Blueprint, render_template, abort, redirect, url_for, request, make_response, session
 from flask_login import current_user
 
 from portality import models
@@ -12,6 +12,7 @@ from portality.view.view_helper import exparam_editing_user
 from portality.ui import templates
 
 blueprint = Blueprint('apply', __name__)
+blueprint_locale = Blueprint('apply_locale', __name__)
 
 
 @blueprint.route("/thank-you", methods=["GET"])
@@ -94,3 +95,7 @@ def public_application(draft_id=None):
                 return redirect(url_for('apply.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
+
+@blueprint_locale.route("/", methods=["GET", "POST"])
+def public_application_locale(lang):
+    return public_application()
