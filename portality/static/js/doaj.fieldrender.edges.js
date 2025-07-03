@@ -1289,6 +1289,17 @@ $.extend(true, doaj, {
     },
 
     renderers: {
+        newIssnsListResult: function(params) {
+            if (!params) {params = {}}
+            doaj.renderers.IssnsListResult.prototype = edges.newRenderer(params);
+            return new doaj.renderers.IssnsListResult(params);
+        },
+        IssnsListResult: function(params) {
+
+            this.draw = function() {
+
+            }
+        },
         newBSMultiDateRangeFacet: function (params) {
             if (!params) {params = {}}
             doaj.renderers.BSMultiDateRangeFacet.prototype = edges.newRenderer(params);
@@ -5242,19 +5253,14 @@ $.extend(true, doaj, {
         },
 
         issns: function (val, resultobj, renderer) {
-            if (resultobj.bibjson && (resultobj.bibjson.pissn || resultobj.bibjson.eissn)) {
-                var issn = resultobj.bibjson.pissn;
-                var eissn = resultobj.bibjson.eissn;
-                var issns = [];
-                if (issn) {
-                    issns.push(edges.escapeHtml(issn));
+            let issns = []
+            for (let variant of ["pissn", "eissn"]) {
+                let x_issn = resultobj.bibjson?.[variant] ?? false;
+                if (x_issn) {
+                    issns.push(`<strong>${variant.toUpperCase()}:</strong> ${x_issn}`)
                 }
-                if (eissn) {
-                    issns.push(edges.escapeHtml(eissn));
-                }
-                return issns.join(", ")
             }
-            return false
+            return issns.length ? issns.join(', ') : false;
         },
 
         countryName: function (val, resultobj, renderer) {
