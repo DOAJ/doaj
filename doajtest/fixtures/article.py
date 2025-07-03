@@ -87,7 +87,7 @@ class ArticleFixtureFactory(object):
                     source["bibjson"]["link"].append({"type": "fulltext", "url": fulltext})
 
         if overlay is not None:
-            template = dicts.deep_merge(source, overlay, overlay=True)
+            source = dicts.deep_merge(source, overlay, overlay=True)
 
         return source
 
