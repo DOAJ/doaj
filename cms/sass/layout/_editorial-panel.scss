@@ -19,7 +19,7 @@
     &__wrapper {
       display: flex;
       flex-direction: column;
-      max-height: calc(100vh - 75px - 1.5rem - 25px); //(full viewport)-(nav height)-(top padding)-(bottom padding)
+      max-height: calc(100vh - 4.6875rem - $spacing-04 - 1.5625rem); //(full viewport)-(nav height)-(top padding)-(bottom padding) adjust_values.py
     }
 
     &__content {

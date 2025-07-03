@@ -13,8 +13,8 @@
 
   .primary-nav--scrolled {
     background-color: rgba($light-grey, 0.5);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(0.5rem);
+    backdrop-filter: blur(0.5rem);
     color: $warm-black;
 
     .dropdown__link {
@@ -27,7 +27,7 @@
   }
 
   .secondary-nav {
-    margin-bottom: 25px;
+    margin-bottom: 1.5625rem;
   }
 
   a {
@@ -121,7 +121,7 @@
 
   &__blog {
     h3 {
-      @include typescale-05;
+      font-size: $typescale-05;
       line-height: 1.25;
     }
 
