@@ -1,3 +1,8 @@
 .error-page {
-  background-color: $light-grey;
+    .page-content > section {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    background-color: $light-grey;
 }
