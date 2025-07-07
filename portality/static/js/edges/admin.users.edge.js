@@ -50,6 +50,7 @@ $.extend(true, doaj, {
                     field: "role.exact",
                     display: "Role",
                     deactivateThreshold: 1,
+                    size: 20,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: true,
