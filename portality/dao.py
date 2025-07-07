@@ -1262,7 +1262,7 @@ class DomainObject(UserDict, object):
         # return requests.get(cls.target() + '_count').json()['count']
 
     @classmethod
-    def hit_count(cls, query, **kwargs):
+    def hit_count(cls, query, **kwargs) -> int:
         countable_query = deepcopy(query)
         if "track_total_hits" not in countable_query:
             countable_query["track_total_hits"] = True

@@ -117,7 +117,7 @@ Journals that publish special issues or other content curated by guest editors m
 ### Licensing
 
 - The licensing terms for use and re-use of the published content must be clearly stated on the website.
-- DOAJ recommends using [Creative Commons](https://creativecommons.org/) licenses for this purpose.
+- DOAJ recommends using [Creative Commons](https://creativecommons.org/share-your-work/cclicenses/) licenses for this purpose.
 - If Creative Commons licensing is not used, similar terms and conditions should be applied.
   - Extra care must be taken to state these terms clearly.
 - It is recommended that licensing information is displayed or embedded in full-text articles, but this is not required for inclusion in DOAJ.
@@ -176,8 +176,12 @@ The best practices in this section are about publishing standards based on finda
 {:.tabular-list}
 - ### Arts and humanities journals
    - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
-- ### Clinical case reports journals
-   - DOAJ only considers a case report research if it includes the retrospective analysis of three or more clinical cases or a literature review. The journal must publish at least five articles per year that meet this definition.
+- ### Clinical Case report journals
+   - For DOAJ to include case report journal they must have:
+    - A policy on [consent to publication](https://publicationethics.org/guidance/guideline/ensuring-consent-publishing-medical-case-reports) of case details and participant images, and articles must state whether or not this consent was given
+    - A policy on potentially identifiable participant information and anonymisation
+    - Reviewer guidelines specific for case reports 
+   - We recommend that all case reports and case series are identified as such in the title, and that case reports journals encourage or mandate using [CARE](https://www.care-statement.org/) reporting guidelines
 - ### Conference proceedings journals
    - For DOAJ to include journals dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer-reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
 - ### Data journals
@@ -195,6 +199,14 @@ The best practices in this section are about publishing standards based on finda
    - DOAJ will consider flipped journals for inclusion after they have published at least ten research articles as a fully Open Access journal.
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
+- ### Subscribe to Open journals (S2O)
+   - For journals that have transitioned from closed access to open access under the [S2O model](https://subscribetoopencommunity.org/), all DOAJ basic criteria, including open license and copyright terms must be clearly stated. Before applying to DOAJ, an S2O journal must demonstrate that the current year's S2O target has been met and that it has published a new issue or at least five OA research articles under the S2O model. Additionally the following must be indicated on the journal's website: 
+    - The year of transition to open access under the S2O model 
+    - A clear indication that all content published during the current S2O year is open access
+    - The availability status of previously published content (open access, free to read, or paywalled)
+    - The reuse rights for previously published content ( "all rights reserved" or under an open license)
+    - The copyright status of the previously published content 
+   - When an S2O offer reaches its subscription target, the journal must make all content from that publication year fully open access within the same calendar year. 
 - ### Book review journals
    - Journals consisting only of book reviews will not be accepted. 
 
@@ -302,12 +314,13 @@ Our criteria are available in:
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
 - [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
 - [Turkish](https://docs.google.com/document/d/18JYSfpAMxUsdQctxdqY2WCggGWHYGIiC/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Ukrainian](https://docs.google.com/document/d/10lGTROkEoTu8PwdVO440DsXuldGb_sUjxrFR1GmjD-w/edit?usp=sharing)
 
 ---
 
 ## Version history
 
-This is Version 2.4 of the DOAJ Guide to applying.
+This is Version 2.5 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 

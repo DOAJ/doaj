@@ -13,7 +13,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 ### Our commitment to you
 
 - **No charge** - we do not charge fees for reviewing or indexing your applications
-- **Fairness** - we assess all journals using the criteria in our [Guide to applying](/apply/guide/) However we acknowledge that publishing practices and interpretation of our criteria may vary across regions and disciplines and we encourage you to contact us if you have any concerns.
+- **Fairness** - we assess all journals using the criteria in our [Guide to applying](/apply/guide/) However, we acknowledge that publishing practices and interpretation of our criteria may vary across regions and disciplines, and we encourage you to contact us if you have any concerns.
 - **Confidentiality** - we will only share or discuss details and information collected during the review process with the applicant or an entity authorised to represent the journal.
 - **Privacy** - we [will not share your personal data](https://doaj.org/privacy/) with third parties unless you have permitted us to do so. We will always ask you first.
 
@@ -25,14 +25,15 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 - You will [upload article metadata](/publisher/uploadfile) to us if you are able to.
 - You will regularly review your indexed journals and ensure their compliance with current DOAJ criteria.
 
-We will treat you with respect and courtesy. We expect you to do the same.
+As is described in [our Code of Conduct](/code-of-conduct/), we will treat you with respect and courtesy. We expect you to do the same.
 
 ### Emails from us
 
-When you register with us, we use your email address to send important information about your applications, updates and journals. To make sure that our emails reach you, consider the following:
+When you register with us, we use your email address to send important information about your applications, updates and your journals. To make sure that our emails reach you, consider the following:
 
 - Add helpdesk@doaj.org to your contacts.
 - Check your Spam folder. If you see an email from us there, mark it as safe.
+- Log into your account regularly and check that your email address is up to date.
 
 **Using an institutional email address**
 If you use an institutional email address, your institution may apply extra security measures, such as a firewall. Your IT department administers the firewall. If you aren’t receiving our emails, contact your IT department to see if they can find emails from helpdesk@doaj.org and if they will let them through. If they have concerns about doing this, ask them to contact us.
@@ -80,11 +81,11 @@ On [your dashboard](/publisher/), you can
 - [Upload](/publisher/uploadfile) or [enter](/publisher/metadata) article metadata for your journals
 - Upload your full-text content (only for journals preserved via JASPER).
 
-### Settings
+### My Account
 
-The Settings button allows you to:
+'My Account' allows you to:
 
-- Update your account details
+- Update your name and email address
 - Change your password
 - Find your account ID
 - Find your API key
@@ -92,13 +93,13 @@ The Settings button allows you to:
 ### Contact details
 
 - You are responsible for keeping the name and email address on your DOAJ account up to date.
-- If the contact person changes, log in to your account and edit the details so that DOAJ always knows how to contact you.
+- If the contact person changes, log in to your account and edit the details.
 
 ### Problems logging in
 
 If you cannot log in, you can [reset your password](/account/forgot). We will send an email containing a reset link. The link is valid for 24 hours. 
 
-If you don’t get the email, check your Spam folder and which address you registered with us. If you haven’t received the email after three hours, [contact us](mailto:helpdesk@doaj.org).
+If you don’t get the email, check the email address you registered with us. If you haven’t received the email after three hours, [contact us](mailto:helpdesk@doaj.org). It's always worth checking your Spam folder, too.
 
 ## Your indexed journals
 
@@ -113,7 +114,7 @@ To show that your journal is indexed in DOAJ:
 We have [guidelines](https://doaj-kit.netlify.app/building-blocks/logotype/) about how you can use our logo on your website or in printed material.
 
 ### Keeping your journal records up to date
-When something changes, you must keep your journal records in DOAJ up to date.
+Keeping your journal records up to date has [very clear advantages](/apply/why-index/). When something changes, you must keep your journal records in DOAJ up to date.
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
 - Request a CSV file from us that allows you to update multiple journals and values at the same time and in spreadsheet format.

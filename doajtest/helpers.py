@@ -165,6 +165,7 @@ class DoajTestCase(TestCase):
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
             "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
+            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1'],
             'PREMIUM_MODE': False
         }
 

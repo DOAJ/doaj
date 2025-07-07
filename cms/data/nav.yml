@@ -92,18 +92,21 @@ entries:
     label: Stay up to date
     footer: true
     entries:
-      - label: Twitter
-        feather: twitter
-        url: https://twitter.com/DOAJplus   # ~~->Twitter:ExternalService~~
+      - label: Bluesky
+        url: https://bsky.app/profile/doaj.bsky.social   # ~~->Bluesky:ExternalService~~
       - label: Facebook
         feather: facebook
         url: https://www.facebook.com/DirectoryofOpenAccessJournals/  # ~~->Facebook:ExternalService~~
       - label: Github
         feather: github
         url: https://github.com/DOAJ    # ~~->GitHub:ExternalService~~
+      - label: Instagram
+        url: https://www.instagram.com/doajplus/   # ~~->Instagram:ExternalService~~
       - label: Linkedin
         feather: linkedin
         url: https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/  # ~~->LinkedIn:ExternalService~~
+      - label: Mastodon
+        url: https://masto.ai/@DOAJ  # ~~->Mastodon:ExternalService~~ 
       - label: WeChat
         include: "includes/svg/wechat.svg"
         url: '#'
