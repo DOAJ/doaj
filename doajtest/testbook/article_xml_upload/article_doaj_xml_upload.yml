@@ -344,8 +344,6 @@ tests:
         - status is "complete"
         - Outcome Status is "fail"
 
-
-
 - title: Check Outcome Status of "Successfully upload a file containing a new article"
   context:
     role: admin
