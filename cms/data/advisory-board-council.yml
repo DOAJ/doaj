@@ -55,36 +55,55 @@ board:
 - name: Andrea Chiarelli
   institution: Research Consulting Ltd.
   country: United Kingdom
-  coi:
-    2025: 
     
 - name: Andrea Vieira
   institution: CAPES
-  country: Brazil
-  coi:
-    2025: 
+  country: Brazil 
 
 - name: André Schüller-Zwierlein
   institution: Regensburg University Library
-  country: Germany
-  coi:
-    2025: 
+  country: Germany 
 
 - name: Arturo Garduño-Magaña
   institution: LA Referencia
-  country: Mexico
-  coi:
-    2025: 
+  country: Mexico 
 
 - name: Emily Choynowski
   institution: Forum for Open Research in MENA (FORM) and Knowledge E
-  country: United Arab Emirates
-  coi:
-    2025: 
+  country: United Arab Emirates 
 
 - name: Emmie Yang
   institution: IOP Publishing
-  country: China
-  coi:
-    2025: 
+  country: China 
 
+- name: Federico Vasen
+  institution: Universidad de Buenos Aires
+  country: Argentina
+
+- name: Heiner Mercado Percia
+  institution: Journals & Authors - Universidad EAFIT
+  country: Colombia
+
+- name: Ian Caswell
+  institution: UCL Press
+  country: United Kingdom
+
+- name: Izuchukwu Azuka Okafor
+  institution: Umass Chan Medical School
+  country: USA
+
+- name: Johanssen Obanda
+  institution: Crossref
+  country: Kenya
+
+- name: Jon Speilburg
+  institution: SPIE
+  country: USA
+
+- name: Jorge Polanco Cortés
+  institution: Universidad de Costa Rica
+  country: Costa Rica
+
+- name: Justin Gonder
+  institution: California Digital Library
+  country: USA
