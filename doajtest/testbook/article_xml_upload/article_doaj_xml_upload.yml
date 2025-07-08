@@ -362,11 +362,13 @@ tests:
   steps:
   - step: Ensure that the publisher account owns a journal with Print ISSN "1111-1111"
       and E-ISSN "2222-2222", and these are not attached to any other journals and
-      that these journal does not contain "Success" or "Update" articles from previous
-      tests.
-  - step: Update the Journal (if needed) to ensure the OA start date is in future
+      that this journal does not contain "Success" or "Update" articles from previous
+      tests.  You can use the testdrive endpoint "publisher_with_journal" to create this
+    path: /testdrive/publisher_with_journal
+  - step: Update the Journal (if needed) to ensure the OA start date is as late as possible (the current year is the latest you
+          can set it to)
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
-  - step: Select "Choose file" and select the test resource file "no_issn.xml"
+  - step: Select "Choose file" and select the test resource file "successful.xml"
     resource: /xml_upload_test_package/DOAJ/successful.xml
   - step: Click "Upload"
     results:
