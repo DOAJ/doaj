@@ -8,11 +8,12 @@ from typing import Callable, Iterable
 
 from unidecode import unidecode
 
+import portality.lib.dates
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
 from portality.lib.coerce import COERCE_MAP
-from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL, find_earliest_date
 from portality.lib.seamless import SeamlessMixin
 from portality.models.account import Account
 from portality.models.v2 import shared_structs
@@ -62,25 +63,6 @@ JOURNAL_STRUCT = {
 
 class ContinuationException(Exception):
     pass
-
-
-def _order_notes(notes):
-    clusters = {}
-    for note in notes:
-        if "date" not in note:
-            note[
-                "date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
-        if note["date"] not in clusters:
-            clusters[note["date"]] = [note]
-        else:
-            clusters[note["date"]].append(note)
-
-    ordered_keys = sorted(list(clusters.keys()), reverse=True)
-    ordered = []
-    for key in ordered_keys:
-        clusters[key].reverse()
-        ordered += clusters[key]
-    return ordered
 
 
 class JournalLikeObject(SeamlessMixin, DomainObject):
@@ -298,10 +280,12 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None, resolved=None):
+    #### Notes methods
+
+    def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()
-        obj = {"date": date, "note": note, "id": id, "author_id": author_id, "flag":  {"assigned_to": assigned_to, "deadline": deadline, "resolved": resolved}}
+        obj = {"date": date, "note": note, "id": id, "author_id": author_id, "flag":  {"assigned_to": assigned_to, "deadline": deadline}}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
         if not id:
             obj["id"] = uuid.uuid4()
@@ -319,9 +303,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def remove_notes(self):
         self.__seamless__.delete("admin.notes")
-
-    def is_assigned_to(self, user_id):
-        return any(user_id in flag['flag']['assigned_to'] for flag in self.flags)
 
     @property
     def notes(self):
@@ -352,7 +333,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if not len(deadlines):
             return dates.far_in_the_future()  # Dummy date for least urgent date
 
-        earliest_flag_deadline = coerce.find_earliest_date(deadlines, dates_format=FMT_DATE_STD)
+        earliest_flag_deadline = find_earliest_date(deadlines, dates_format=FMT_DATE_STD)
 
         return earliest_flag_deadline
 
@@ -360,12 +341,31 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def ordered_notes(self):
         """Orders notes by newest first"""
         notes = self.notes
-        return _order_notes(notes)
+        return self._order_notes(notes)
 
     @property
     def ordered_notes_except_flags(self):
         notes = self.notes_except_flags
-        return _order_notes(notes)
+        return self._order_notes(notes)
+
+    def _order_notes(self, notes):
+        clusters = {}
+        for note in notes:
+            if "date" not in note:
+                note["date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
+            if note["date"] not in clusters:
+                clusters[note["date"]] = [note]
+            else:
+                clusters[note["date"]].append(note)
+
+        ordered_keys = sorted(list(clusters.keys()), reverse=True)
+        ordered = []
+        for key in ordered_keys:
+            clusters[key].reverse()
+            ordered += clusters[key]
+        return ordered
+
+    #### end of notes methods
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")

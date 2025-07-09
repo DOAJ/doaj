@@ -31,7 +31,6 @@ def top_todo():
         update_requests = False
         new_applications = False
 
-
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(),

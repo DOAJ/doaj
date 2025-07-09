@@ -10,7 +10,7 @@
 
 {% block admin_content %}
     <div class="flex-end">
-        {% if request.values.get("filter") == None%}
+        {% if request.values.get("filter") == None %}
             <span class="tag tag--primary"><a href="{{ url_for('dashboard.top_todo') }}">Show all</a></span>
         {% else %}
             <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}">Show all</a></span>

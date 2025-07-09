@@ -2157,7 +2157,6 @@ var formulaic = {
             this.params = params.args;
 
             this.init = function () {
-                console.log(this.params["field"])
                 let doc_type = this.params.type || "journal";
                 let doc_field = this.params.field;
                 let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;

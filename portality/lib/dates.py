@@ -191,3 +191,9 @@ def is_before(mydate, comparison=None):
 
 def timestruct2datetime(ts):
     return datetime.fromtimestamp(time.mktime(ts))
+
+
+def find_earliest_date(dates_arr, dates_format, out_format=None):
+    parsed_dates = [parse(date, dates_format) for date in dates_arr]
+    earliest_date = min(parsed_dates)
+    return format(earliest_date, out_format or dates_format)

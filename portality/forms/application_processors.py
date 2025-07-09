@@ -15,8 +15,6 @@ from flask_login import current_user
 
 from wtforms import FormField, FieldList
 
-from datetime import date
-
 
 class ApplicationProcessor(FormProcessor):
 
@@ -357,12 +355,16 @@ class AdminApplication(ApplicationProcessor):
             elif not j.is_in_doaj():
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
 
+        # if the flags are resolved, record the user who resolved them
+        # FIXME: not sure if this actually works, needs review
+        # May be better to push resolved_by to the UI
+        for flag in self.form.flags.data:
+            if flag["resolved"] == "true":
+                flag["resolved_by"] = current_user.id if current_user and current_user.is_authenticated else None
+
         # if we are allowed to finalise, kick this up to the superclass
         # here I can do something before the crosswalk is called - to do, move the resovled note conversion here
         super(AdminApplication, self).finalise()
-
-        # instance of the events service to pick up any events we need to send
-        eventsSvc = DOAJ.eventsService()
 
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.

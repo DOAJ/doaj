@@ -87,7 +87,6 @@ class Account(DomainObject, UserMixin):
 
     @classmethod
     def autocomplete(cls, field, prefix, admin_only=False, size=5):
-        print("admin's autocomplete")
         filter_condition = {"role.exact": "admin"} if admin_only else None
         return {"suggestions": super().autocomplete(field, prefix, filter_condition=filter_condition, size=size)}
 
