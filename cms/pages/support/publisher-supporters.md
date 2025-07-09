@@ -63,6 +63,6 @@ We are particularly grateful to those publishers who can contribute over and abo
 
 Please [contact us](/contact/) to discuss further.
 
-## Supporting publishers, aggregators, and other organizations
+## Supporting publishers, aggregators, and other organisations
 
 <div>{% include 'public/includes/_sponsors.html' %}</div>

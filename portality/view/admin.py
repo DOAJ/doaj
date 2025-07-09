@@ -871,6 +871,8 @@ def request_report():
     model = request.values.get("model")
     query_raw = request.values.get("query")
     name = request.values.get("name")
+    # TODO: it's probably a bit cheeky to use the type param (used for casting) to run our lambda function, but it works
+    notes = request.values.get("notes", False, lambda x: json.loads(x))
 
     query = json.loads(query_raw)
     sane_query = {"query": query.get("query")}
@@ -885,7 +887,7 @@ def request_report():
     query_svc = DOAJ.queryService()
     real_query = query_svc.make_actionable_query("admin_query", model_endpoint_map.get(model), current_user, sane_query)
 
-    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, true_query=real_query.as_dict(), ui_query=sane_query, name=name)
+    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, true_query=real_query.as_dict(), ui_query=sane_query, name=name, notes=notes)
     admin_reports.AdminReportsBackgroundTask.submit(job)
 
     return make_json_resp({"job_id": job.id}, status_code=200)
