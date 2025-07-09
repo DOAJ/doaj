@@ -27,6 +27,7 @@ class ApplicationProcessor(FormProcessor):
         super().patch_target()
 
         self._patch_target_note_id()
+        self._transform_resolved_flags_to_notes()
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -204,6 +205,18 @@ class ApplicationProcessor(FormProcessor):
                         # Skip if we don't have a current_user
                         pass
 
+    def _transform_resolved_flags_to_notes(self):
+        if self.target.notes:
+            for note in self.target.notes:
+                if note.get("flag") and note.get("flag").get("resolved") == "true":
+                    try:
+                        resolver = current_user.id
+                    except AttributeError:
+                        # Skip if we don't have a current_user
+                        resolver = None
+                    new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(date=dates.today(), username=resolver, note=note['note'])
+                    note['note'] = new_note_text
+                    note["flag"] = {} # clear any flag data
 
 class NewApplication(ApplicationProcessor):
     """
@@ -342,11 +355,16 @@ class AdminApplication(ApplicationProcessor):
             elif not j.is_in_doaj():
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
 
-        # if we are allowed to finalise, kick this up to the superclass
-        super(AdminApplication, self).finalise()
+        # if the flags are resolved, record the user who resolved them
+        # FIXME: not sure if this actually works, needs review
+        # May be better to push resolved_by to the UI
+        for flag in self.form.flags.data:
+            if flag["resolved"] == "true":
+                flag["resolved_by"] = current_user.id if current_user and current_user.is_authenticated else None
 
-        # instance of the events service to pick up any events we need to send
-        eventsSvc = DOAJ.eventsService()
+        # if we are allowed to finalise, kick this up to the superclass
+        # here I can do something before the crosswalk is called - to do, move the resovled note conversion here
+        super(AdminApplication, self).finalise()
 
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
