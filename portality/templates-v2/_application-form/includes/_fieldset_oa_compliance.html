@@ -6,15 +6,10 @@
 <div class="alert alert--message">
     <p>{{ _("You are now logged in. When you submit your application, it will be registered to this account. Please note:") }}</p>
     <ol>
-      <li>{{ _("The application form takes approximately%(tag_start)s 30 minutes%(tag_end)s to complete.",
-          tag_start="<strong>"|safe, tag_end="</strong>"|safe) }}</li>
+      <li>{{ _("The application form takes approximately <strong>30 minutes</strong> to complete.") }}</li>
       <li>{{ _("Your progress is automatically saved.") }}</li>
-      <li>{{ _("You can return to this application at any time by clicking%(link_start)s Publisher dashboard%(link_end)s at the top.",
-          link_start='<a href="{{ url_for("publisher.index") }}" target=\"_blank\"><em>Dashboard</em> &rarr; <em>' | safe,
-              link_end='</em></a>' | safe) }}</li>
-      <li>{{ _("You can %(start_url)s print or download %(end_url)s a PDF list of the questions.",
-                        start_url='<a href="/static/doaj/docs/DOAJquestions-for-reference-only.pdf" target="_blank">'|safe,
-                        end_url='</a>'|safe) }}</li>
+      <li>{{ _("You can return to this application at any time by clicking <a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; <em>Publisher dashboard</em></a> at the top.", url=url_for("publisher.index")) | safe }}</li>
+      <li>{{ _("You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-only.pdf\" target=\"_blank\">print or download</a> a PDF list of the questions.") | safe }}</li>
       <li>{{ _("You must apply online.") }}</li>
     </ol>
 </div>
