@@ -679,30 +679,53 @@ $.extend(true, doaj, {
                     let display = this._exportDisplayName(facetExport);
                     facetOptions += `<option value="${facetExport.component_id}">${display}</option>`;
                 }
-
-                let frag = `<div class="row">
-                    <div class="col-md-12">
-                        <a href="#" class="${toggleClass}">Export Data as CSV</a>
-                        <div class="${controlsClass}" style="display:none">
-                            Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
-                            <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
-                            <div class="checkbox">
-                              <input type="checkbox" id="include_notes" class="${notesClass}">
-                              <label for="include_notes">Include notes</label>
+                if (current_user.role.includes("ultra_admin_reports_with_notes")) {
+                    let frag = `<div class="row">
+                        <div class="col-md-12">
+                            <a href="#" class="${toggleClass}">Export Data as CSV</a>
+                            <div class="${controlsClass}" style="display:none">
+                                Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
+                                <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
+                                <div class="checkbox">
+                                  <input type="checkbox" id="include_notes" class="${notesClass}">
+                                  <label for="include_notes">Include notes</label>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
+                                Or download the current facets<br>
+                                <select name="${facetId}" id="${facetId}">
+                                    <option value="all">All</option>
+                                    ${facetOptions}
+                                </select><br>
+                                <button type="button" class="btn btn-primary ${downloadClass}">Download</button>
                             </div>
-                            <br>
-                            <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
-                            Or download the current facets<br>
-                            <select name="${facetId}" id="${facetId}">
-                                <option value="all">All</option>
-                                ${facetOptions}
-                            </select><br>
-                            <button type="button" class="btn btn-primary ${downloadClass}">Download</button>
                         </div>
-                    </div>
-                </div>`;
-
-                this.context.html(frag);
+                    </div>`;
+                    this.context.html(frag);
+                } else {
+                    let frag = `<div class="row">
+                        <div class="col-md-12">
+                            <a href="#" class="${toggleClass}">Export Data as CSV</a>
+                            <div class="${controlsClass}" style="display:none">
+                                Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
+                                <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
+                                <div class="checkbox">
+                                  <input type="checkbox" disabled id="include_notes" class="${notesClass}">
+                                  <label for="include_notes">Include notes</label>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
+                                Or download the current facets<br>
+                                <select name="${facetId}" id="${facetId}">
+                                    <option value="all">All</option>
+                                    ${facetOptions}
+                                </select><br>
+                                <button type="button" class="btn btn-primary ${downloadClass}">Download</button>
+                            </div>
+                        </div>
+                    </div>`;
+                    this.context.html(frag);
+                }
 
                 let toggleSelector = edges.css_class_selector(this.namespace, "toggle", this);
                 edges.on(toggleSelector, "click", this, "toggleControls");
