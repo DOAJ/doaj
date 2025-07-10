@@ -15,7 +15,7 @@ class TestApplicationPublisherAssignedNotify(DoajTestCase):
         super(TestApplicationPublisherAssignedNotify, self).tearDown()
 
     def test_should_consume(self):
-        source = ApplicationFixtureFactory.make_application_source()
+        source = ApplicationFixtureFactory.make_update_request_source()
 
         event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : source, "old_editor": "", "new_editor" : source["admin"]["editor"]})
         assert UpdateRequestPublisherAssignedNotify.should_consume(event)

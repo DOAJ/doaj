@@ -17,7 +17,7 @@ class TestUpdateRequestPublisherSubmittedNotify(DoajTestCase):
 
     def test_should_consume(self):
         # success
-        source = ApplicationFixtureFactory.make_application_source()
+        source = ApplicationFixtureFactory.make_update_request_source()
         assert UpdateRequestPublisherSubmittedNotify.should_consume(models.Event(
             constants.EVENT_APPLICATION_UR_SUBMITTED,
             context={"application": source},

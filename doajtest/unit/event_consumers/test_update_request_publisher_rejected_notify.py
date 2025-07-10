@@ -15,7 +15,7 @@ class TestUpdateRequestPublisherRejectedNotify(DoajTestCase):
         super(TestUpdateRequestPublisherRejectedNotify, self).tearDown()
 
     def test_should_consume(self):
-        source = ApplicationFixtureFactory.make_application_source()
+        source = ApplicationFixtureFactory.make_update_request_source()
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : source, "old_status" : "in progress", "new_status": "rejected"})
         assert UpdateRequestPublisherRejectedNotify.should_consume(event)
