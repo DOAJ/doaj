@@ -14,6 +14,46 @@ import sys
 import os
 import shutil
 import argparse
+from datetime import datetime
+
+
+def extract_html_tags(text):
+    """Extract HTML tags from a text string.
+
+    Args:
+        text (str): The text to extract HTML tags from
+
+    Returns:
+        list: A list of HTML tags found in the text
+    """
+    # Use regex to find all HTML tags in the text
+    tags = re.findall(r'<[^>]+>', text)
+    return tags
+
+
+def compare_html_tags(msgid, msgstr):
+    """Compare HTML tags between msgid and msgstr.
+
+    Args:
+        msgid (str): The original message
+        msgstr (str): The translated message
+
+    Returns:
+        bool: True if the HTML tags match, False otherwise
+    """
+    msgid_tags = extract_html_tags(msgid)
+    msgstr_tags = extract_html_tags(msgstr)
+
+    # If there are no tags in msgid, we don't need to check
+    if not msgid_tags:
+        return True
+
+    # If the number of tags doesn't match, they don't match
+    if len(msgid_tags) != len(msgstr_tags):
+        return False
+
+    # Check if all tags in msgid are present in msgstr (order matters)
+    return msgid_tags == msgstr_tags
 
 
 def po_to_csv(po_file, csv_file):
@@ -189,7 +229,11 @@ def csv_to_po(csv_file, po_file):
 
 
 def update_po(csv_file, po_file):
-    """Update an existing PO file with translations from a CSV file."""
+    """Update an existing PO file with translations from a CSV file.
+
+    Checks for HTML tag mismatches between msgid and msgstr and saves mismatched entries
+    to a separate CSV file for manual review.
+    """
     if not os.path.exists(po_file):
         print(f"Error: PO file '{po_file}' does not exist.")
         sys.exit(1)
@@ -198,6 +242,11 @@ def update_po(csv_file, po_file):
     backup_file = f"{po_file}_bak"
     shutil.copy2(po_file, backup_file)
     print(f"Created backup of original file at {backup_file}")
+
+    # Create a file for mismatched entries
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    mismatched_file = f"{os.path.splitext(csv_file)[0]}_mismatched_{timestamp}.csv"
+    mismatched_entries = []
 
     # Read CSV entries into a dictionary for easy lookup
     csv_dict = {}
@@ -215,22 +264,31 @@ def update_po(csv_file, po_file):
     i = 0
     updated = False
     updated_msgids = []
+    skipped_msgids = []
 
-    # Debug: Print the first 10 lines of the PO file
-    print("First 10 lines of PO file:")
-    for debug_line in lines[:10]:
-        print(f"  {debug_line.strip()}")
-
-    # Debug: Print all msgids in the CSV
-    print("All msgids in CSV:")
-    for msgid in csv_dict.keys():
-        print(f"  '{msgid}'")
+    # Reduce debug output for clarity
+    print(f"Processing PO file with {len(lines)} lines")
+    print(f"CSV file contains {len(csv_dict)} entries")
 
     while i < len(lines):
         line = lines[i].strip()
 
         # Check if this is a msgid line
         if line.startswith('msgid "') and not line.startswith('msgid ""'):
+            # Extract location information from comments before this msgid
+            location = ""
+            # Look back for location comments
+            k = i - 1
+            while k >= 0 and k >= i - 10:  # Look back up to 10 lines
+                prev_line = lines[k].strip()
+                if prev_line.startswith('#:'):
+                    location = prev_line[2:].strip()
+                    break
+                elif prev_line and not prev_line.startswith('#'):
+                    # If we hit a non-comment line, stop looking
+                    break
+                k -= 1
+
             # Extract the msgid (removing 'msgid "' from start and '"' from end)
             current_msgid = line[7:-1]
             original_i = i
@@ -244,24 +302,25 @@ def update_po(csv_file, po_file):
 
             # Check if this msgid is in our CSV
             matching_msgid = None
-            for csv_msgid in csv_dict.keys():
-                # Try exact match first
-                if current_msgid == csv_msgid:
-                    matching_msgid = csv_msgid
-                    break
 
-                # Try normalized match (remove spaces, handle different apostrophes)
-                norm_current = current_msgid.replace(' ', '').replace("'", "").replace('"', '')
-                norm_csv = csv_msgid.replace(' ', '').replace("'", "").replace('"', '')
-                if norm_current == norm_csv:
-                    matching_msgid = csv_msgid
-                    break
-
-                # Try substring match for specific cases
-                if "homepage" in current_msgid and "homepage" in csv_msgid:
-                    if "Enter the URL for the journal" in current_msgid and "Enter the URL for the journal" in csv_msgid:
+            # Try exact match first
+            if current_msgid in csv_dict:
+                matching_msgid = current_msgid
+            else:
+                # Try other matching strategies
+                for csv_msgid in csv_dict.keys():
+                    # Try normalized match (remove spaces, handle different apostrophes)
+                    norm_current = current_msgid.replace(' ', '').replace("'", "").replace('"', '')
+                    norm_csv = csv_msgid.replace(' ', '').replace("'", "").replace('"', '')
+                    if norm_current == norm_csv:
                         matching_msgid = csv_msgid
                         break
+
+                    # Try substring match for specific cases
+                    if "homepage" in current_msgid and "homepage" in csv_msgid:
+                        if "Enter the URL for the journal" in current_msgid and "Enter the URL for the journal" in csv_msgid:
+                            matching_msgid = csv_msgid
+                            break
 
             if matching_msgid:
                 print(f"Found matching msgid: '{current_msgid}' for CSV entry '{matching_msgid}'")
@@ -274,8 +333,27 @@ def update_po(csv_file, po_file):
                         break
 
                 if msgstr_index is not None:
-                    # Replace the msgstr
+                    # Get the new msgstr from CSV
                     new_msgstr = csv_dict[matching_msgid]
+
+                    # Check if HTML tags match between msgid and msgstr
+                    if extract_html_tags(current_msgid) and not compare_html_tags(current_msgid, new_msgstr):
+                        print(f"HTML tags mismatch for msgid: '{current_msgid}'")
+                        print(f"  Original tags: {extract_html_tags(current_msgid)}")
+                        print(f"  Translation tags: {extract_html_tags(new_msgstr)}")
+
+                        # Add to mismatched entries for later review
+                        mismatched_entries.append({
+                            'location': location,  # Include the location information
+                            'fuzzy': 'No',
+                            'msgid': current_msgid,
+                            'msgstr': new_msgstr
+                        })
+
+                        skipped_msgids.append(matching_msgid)
+                        print(f"Skipping update for msgid with mismatched HTML tags: '{current_msgid}'")
+                        i += 1  # Make sure to advance the loop counter
+                        continue
 
                     # First, check for and remove any continuation lines
                     continuation_lines = []
@@ -311,7 +389,25 @@ def update_po(csv_file, po_file):
     else:
         print(f"No translations were updated in {po_file}")
 
+    # Write mismatched entries to a separate CSV file if any
+    if mismatched_entries:
+        with open(mismatched_file, 'w', encoding='utf-8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['location', 'fuzzy', 'msgid', 'msgstr'])
+            for entry in mismatched_entries:
+                writer.writerow([
+                    entry['location'],
+                    entry['fuzzy'],
+                    entry['msgid'],
+                    entry['msgstr']
+                ])
+        print(f"Saved {len(mismatched_entries)} mismatched entries to {mismatched_file} for manual review")
+        print(f"Skipped {len(skipped_msgids)} entries due to HTML tag mismatches:")
+        for msgid in skipped_msgids:
+            print(f"  - '{msgid}'")
+
     print(f"Total entries in CSV: {len(csv_dict)}")
+    print(f"Updated: {len(updated_msgids)}, Skipped: {len(skipped_msgids)}")
 
 
 def main():
