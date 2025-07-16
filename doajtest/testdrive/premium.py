@@ -1,16 +1,8 @@
-from io import StringIO
+from io import BytesIO
 
 from portality import constants
 from doajtest.testdrive.factory import TestDrive
-from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
-from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from portality import models
-from datetime import datetime
-from portality.autocheck.checkers.issn_active import ISSNActive, ISSNChecker
-from portality.autocheck.resources.issn_org import ISSNOrgData
-from portality.autocheck.checkers.keepers_registry import KeepersRegistry
-from portality.bll import DOAJ
-from flask import url_for
 from portality.core import app
 from portality.lib import dates
 
@@ -63,10 +55,10 @@ class Premium(TestDrive):
         container = app.config.get("STORE_JOURNAL_CSV_CONTAINER")
         current_csv = JournalCSVFixtureFactory.make_journal_csv({"export_date": dates.now(), "filename": "premium.csv"})
         current_csv.save()
-        csvstore.store(container, current_csv.filename, source_stream=StringIO("premium csv"))
+        csvstore.store(container, current_csv.filename, source_stream=BytesIO(b"premium csv"))
         free_csv = JournalCSVFixtureFactory.make_journal_csv({"export_date": dates.before_now(86400 * 29), "filename": "free.csv"})
         free_csv.save()
-        csvstore.store(container, free_csv.filename, source_stream=StringIO("free csv"))
+        csvstore.store(container, free_csv.filename, source_stream=BytesIO(b"free csv"))
 
         pddstore = StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
         container = app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER")
@@ -80,8 +72,8 @@ class Premium(TestDrive):
             }
         })
         current_pdd.save()
-        pddstore.store(container, current_pdd.article_filename, source_stream=StringIO("premium article"))
-        pddstore.store(container, current_pdd.journal_filename, source_stream=StringIO("premium journal"))
+        pddstore.store(container, current_pdd.article_filename, source_stream=BytesIO(b"premium article"))
+        pddstore.store(container, current_pdd.journal_filename, source_stream=BytesIO(b"premium journal"))
 
         free_pdd_rec = DataDumpFixtureFactory.make_data_dump({
             "dump_date": dates.before_now(86400 * 29),
@@ -93,8 +85,8 @@ class Premium(TestDrive):
             }
         })
         free_pdd_rec.save()
-        pddstore.store(container, free_pdd_rec.article_filename, source_stream=StringIO("free article"))
-        pddstore.store(container, free_pdd_rec.journal_filename, source_stream=StringIO("free journal"))
+        pddstore.store(container, free_pdd_rec.article_filename, source_stream=BytesIO(b"free article"))
+        pddstore.store(container, free_pdd_rec.journal_filename, source_stream=BytesIO(b"free journal"))
 
         # create a journal and article which are new enough to be excluded by the free OAI feed
         jsource = JournalFixtureFactory.make_journal_source(in_doaj=True, overlay={"created_date": dates.format(dates.before_now(86400))})
