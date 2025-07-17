@@ -72,7 +72,7 @@ tests:
           - In the flag form, in the Assign a User input, there is your id with a red flag icon
           - Resolve Flag button is active and all fields are editable
 
-  - title: Admin - Dashboard
+  - title: Admin - Dashboard [NOT CURRENTLY USED]
     context:
       role: Admin
     steps:

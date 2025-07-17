@@ -282,18 +282,18 @@ class JournalGenericXWalk(object):
                 flag_author = flag["flag_setter"]
                 flag_id = flag["flag_note_id"]
                 flag_note = flag["flag_note"]
-                resolved = flag["flag_resolved"] == "true"
-
-                if resolved:
-                    resolver = flag.get("flag_resolved_by", "unknown user")
-                    new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
-                        date=dates.today(),
-                        username=resolver,
-                        note=flag_note
-                    )
-                    obj.add_note(new_note_text, date=flag_date, id=flag_id, author_id=flag_author)
-                else:
-                    obj.add_note(flag_note, date=flag_date, id=flag_id,
+                # resolved = flag["flag_resolved"] == "true"
+                #
+                # if resolved:
+                #     resolver = flag.get("flag_resolved_by", "unknown user")
+                #     new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                #         date=dates.today(),
+                #         username=resolver,
+                #         note=flag_note
+                #     )
+                #     obj.add_note(new_note_text, date=flag_date, id=flag_id, author_id=flag_author)
+                # else:
+                obj.add_note(flag_note, date=flag_date, id=flag_id,
                              author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
 
         if getattr(form, 'owner', None):

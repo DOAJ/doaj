@@ -466,7 +466,7 @@ def application(application_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
             except Exception as e:
-                flash("unexpected form field" + str(e))
+                flash("unexpected field " + str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,

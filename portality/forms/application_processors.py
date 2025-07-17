@@ -355,16 +355,12 @@ class AdminApplication(ApplicationProcessor):
             elif not j.is_in_doaj():
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
 
-        # if the flags are resolved, record the user who resolved them
-        # FIXME: not sure if this actually works, needs review
-        # May be better to push resolved_by to the UI
-        for flag in self.form.flags.data:
-            if flag["flag_resolved"] == "true":
-                flag["flag_resolved_by"] = account.id
-
         # if we are allowed to finalise, kick this up to the superclass
         # here I can do something before the crosswalk is called - to do, move the resovled note conversion here
         super(AdminApplication, self).finalise()
+
+        # resolve any flags that were resolved in the form
+        self._resolve_flags(account)
 
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
@@ -490,6 +486,25 @@ class AdminApplication(ApplicationProcessor):
             if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
                 self.add_alert('A notification has been sent to the Managing Editors.')
                 # this template requires who made the change, say it was an Admin
+
+    def _resolve_flags(self, account):
+        # handle flag resolution
+        resolved_flags = []
+        for flag in self.form.flags.data:
+            if flag["flag_resolved"] == "true":
+                # Note: new notes do not necessarily have ids, but flags that are being
+                # resolved must have an id because they must exist already to be resolved
+                resolved_flags.append(flag["flag_note_id"])
+
+        for flag_id in resolved_flags:
+            flag = self.target.get_note_by_id(flag_id)
+            self.target.remove_note_by_id(flag_id)
+            new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                date=dates.today(),
+                username=account.id,
+                note=flag.get("note", "")
+            )
+            self.target.add_note(new_note_text, flag.get("date"), flag_id, flag.get("author_id"))
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']

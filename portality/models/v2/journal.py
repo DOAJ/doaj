@@ -298,6 +298,19 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_note(self, note):
         self.__seamless__.delete_from_list("admin.notes", matchsub=note)
 
+    def remove_note_by_id(self, note_id):
+        """
+        Remove a note by its ID.
+        :param note_id: The ID of the note to remove.
+        """
+        self.__seamless__.delete_from_list("admin.notes", matchsub={"id": note_id})
+
+    def get_note_by_id(self, note_id):
+        candidates = [n for n in self.notes if n.get("id") == note_id]
+        if len(candidates) == 0:
+            return None
+        return candidates[0]
+
     def set_notes(self, notes):
         self.__seamless__.set_with_struct("admin.notes", notes)
 
