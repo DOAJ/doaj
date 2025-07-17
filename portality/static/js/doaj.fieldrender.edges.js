@@ -707,17 +707,22 @@ $.extend(true, doaj, {
                     facetOptions += `<option value="${facetExport.component_id}">${display}</option>`;
                 }
 
+                let exportNotes = current_user && current_user.role.includes("ultra_admin_reports_with_notes")
+                let notesFrag = "";
+                if (exportNotes) {
+                    notesFrag = `<div class="checkbox">
+                              <input type="checkbox" id="include_notes" class="${notesClass}">
+                              <label for="include_notes">Include notes</label>
+                            </div>
+                            <br>`;
+                }
                 let frag = `<div class="row">
                     <div class="col-md-12">
                         <a href="#" class="${toggleClass}">Export Data as CSV</a>
                         <div class="${controlsClass}" style="display:none">
                             Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
                             <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
-                            <div class="checkbox">
-                              <input type="checkbox" id="include_notes" class="${notesClass}">
-                              <label for="include_notes">Include notes</label>
-                            </div>
-                            <br>
+                            ${notesFrag}
                             <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
                             Or download the current facets<br>
                             <select name="${facetId}" id="${facetId}">
@@ -728,7 +733,6 @@ $.extend(true, doaj, {
                         </div>
                     </div>
                 </div>`;
-
                 this.context.html(frag);
 
                 let toggleSelector = edges.css_class_selector(this.namespace, "toggle", this);
@@ -760,8 +764,13 @@ $.extend(true, doaj, {
                 let nameSelector = edges.css_class_selector(this.namespace, "name", this);
                 let name = this.context.find(nameSelector).val();
 
-                let includeNotesSelector = edges.css_class_selector(this.namespace, "notes", this);
-                let notes = this.context.find(includeNotesSelector).is(":checked");
+                let notes = false;
+                let exportNotes = current_user && current_user.role.includes("ultra_admin_reports_with_notes")
+                if (exportNotes) {
+                    let includeNotesSelector = edges.css_class_selector(this.namespace, "notes", this);
+                    notes = this.context.find(includeNotesSelector).is(":checked");
+                }
+
                 $.post({
                     url: this.reportUrl,
                     data: {
