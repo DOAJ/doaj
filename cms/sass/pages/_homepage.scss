@@ -13,8 +13,8 @@
 
   .primary-nav--scrolled {
     background-color: rgba($light-grey, 0.5);
-    -webkit-backdrop-filter: blur(0.5rem);
-    backdrop-filter: blur(0.5rem);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     color: $warm-black;
 
     .dropdown__link {
