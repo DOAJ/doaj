@@ -285,7 +285,7 @@ class JournalGenericXWalk(object):
                 resolved = flag["flag_resolved"] == "true"
 
                 if resolved:
-                    resolver = flag.get("resolved_by", "unknown user")
+                    resolver = flag.get("flag_resolved_by", "unknown user")
                     new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
                         date=dates.today(),
                         username=resolver,

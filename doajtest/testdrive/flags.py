@@ -155,7 +155,7 @@ class Flags(TestDrive):
                 source["admin"]["application_type"] = record["application_type"]
             bj = ap.bibjson()
             bj.title = record["title"]
-            ap.set_id(self.create_random_str())
+            ap.set_id(ap.makeid())
             ap.set_last_manual_update(dates.today())
             ap.set_created(dates.before_now(200))
             ap.remove_current_journal()
@@ -173,10 +173,9 @@ class Flags(TestDrive):
                         "flag": {
                             "assigned_to": record["flagged_to"],
                             "deadline": dates.days_after_now(record["deadline"]) if "deadline" in record.keys() else dates.far_in_the_future(),
-                            "resolved": False
                         }}
                 ap.set_notes(note)
-            ap.save(blocking=True)
+            ap.save()
             self.apps.append(ap.id)
 
     def teardown(self, params):

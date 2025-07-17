@@ -10,27 +10,61 @@
 
 <h1>{{ name }} - Testdrive setup results</h1>
 
+{% macro render_dict(d) %}
+    <dl>
+        {% for k, v in d.items() %}
+            <dt>{{ k }}</dt>
+            <dd>
+                {% if v is mapping %}
+                    {{ render_dict(v) }}
+                {% elif v is iterable and v is not string and v is not mapping %}
+                    <ul>
+                        {% for item in v %}
+                            <li>
+                                {% if item is mapping %}
+                                    {{ render_dict(item) }}
+                                {% else %}
+                                    {{ item }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    {% if v.startswith("http") %}<a href="{{ v }}" target="_blank">{% endif %}{{ v }}{% if v.startswith("http") %}</a>{% endif %}
+                {% endif %}
+            </dd>
+        {% endfor %}
+    </dl>
+{% endmacro %}
+
 {% for k, v in params.items() %}
     {% if k != "teardown" and k != "non_renderable" %}
     <h2>{{ k }}</h2>
     <dl>
     {% if v is mapping %}
-        {% for k1, v1 in v.items() %}
-            <dt>{{ k1 }}</dt>
-            <dd>
-                {% if v1 is iterable and (v1 is not string and v1 is not mapping) %}
-                    {{ v1 }}
-                {% else %}
-                    {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>
-                {% endif %}
-
-        {% endfor %}
+        {{ render_dict(v) }}
+{#        {% for k1, v1 in v.items() %}#}
+{#            <dt>{{ k1 }}</dt>#}
+{#            <dd>#}
+{#                {% if v1 is iterable and (v1 is not string and v1 is not mapping) %}#}
+{#                    {{ v1 }}#}
+{#                {% else %}#}
+{#                    {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>#}
+{#                {% endif %}#}
+{#        {% endfor %}#}
     {% elif v is iterable %}
         <dt>list of values:</dt>
+        <dd><ul>
         {% for v1 in v %}
-            <dd>
-                {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>
+            <li>
+            {% if v1 is mapping %}
+                {{ render_dict(v1) }}
+            {% else %}
+                {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}
+            {% endif %}
+            </li>
         {% endfor %}
+        </ul></dd>
     {% endif %}
     </dl>
     {% endif %}

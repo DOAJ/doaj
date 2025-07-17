@@ -359,8 +359,8 @@ class AdminApplication(ApplicationProcessor):
         # FIXME: not sure if this actually works, needs review
         # May be better to push resolved_by to the UI
         for flag in self.form.flags.data:
-            if flag["resolved"] == "true":
-                flag["resolved_by"] = current_user.id if current_user and current_user.is_authenticated else None
+            if flag["flag_resolved"] == "true":
+                flag["flag_resolved_by"] = account.id
 
         # if we are allowed to finalise, kick this up to the superclass
         # here I can do something before the crosswalk is called - to do, move the resovled note conversion here
