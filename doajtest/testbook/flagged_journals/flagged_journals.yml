@@ -118,3 +118,8 @@ tests:
           - Records flagged to someone else are marked with an empty flag
           - Records flagged to you are marked with a full flag
           - When a flag has a deadline, it is displayed under Alternative Title
+      - step: Select "Only Flagged to Me" filter
+        results:
+          - Only records flagged to you are listed
+          - Records flagged to you are marked with a full flag
+          - When a flag has a deadline, it is displayed under Alternative Title
