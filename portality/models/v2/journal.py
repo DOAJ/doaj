@@ -333,6 +333,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def is_flagged(self):
         return len(self.flags) > 0
 
+    def resolve_flag(self, flag_id, updated_note):
+        flag = self.get_note_by_id(flag_id)
+        self.remove_note_by_id(flag_id)
+        self.add_note(updated_note, flag.get("date"), flag_id, flag.get("author_id"))
+
     @property
     def most_urgent_flag_deadline(self):
         # We allow only 1 flag per record now, but this code allows more

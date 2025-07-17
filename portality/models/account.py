@@ -85,10 +85,16 @@ class Account(DomainObject, UserMixin):
                 return None
         return cls(**obs[0])
 
+    # @classmethod
+    # def autocomplete(cls, field, prefix, admin_only=False, size=5):
+    #
+    #     return {"suggestions": super().autocomplete(field, prefix, filter_condition=filter_condition, size=size)}
+
     @classmethod
-    def autocomplete(cls, field, prefix, admin_only=False, size=5):
-        filter_condition = {"role.exact": "admin"} if admin_only else None
-        return {"suggestions": super().autocomplete(field, prefix, filter_condition=filter_condition, size=size)}
+    def admin_autocomplete(cls, field, prefix, size=5):
+        """Autocomplete for admin users only."""
+        filter_condition = {"role.exact": "admin"}
+        return cls.autocomplete(field, prefix, filter_condition=filter_condition, size=size)
 
     @property
     def marketing_consent(self):

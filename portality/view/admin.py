@@ -668,10 +668,13 @@ def user_autocomplete():
     q = request.values.get("q")
     s = request.values.get("s", 10)
     admin_only = "admin_only" in request.args
-    ac = models.Account.autocomplete("id", q, admin_only, size=s)
+    if admin_only:
+        ac = models.Account.admin_autocomplete("id", q, size=s)
+    else:
+        ac = models.Account.autocomplete("id", q, size=s)
 
     # return a json response
-    resp = make_response(json.dumps(ac))
+    resp = make_response(json.dumps({"suggestions": ac}))
     resp.mimetype = "application/json"
     return resp
 

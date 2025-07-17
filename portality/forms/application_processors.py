@@ -27,7 +27,6 @@ class ApplicationProcessor(FormProcessor):
         super().patch_target()
 
         self._patch_target_note_id()
-        self._transform_resolved_flags_to_notes()
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -205,18 +204,6 @@ class ApplicationProcessor(FormProcessor):
                         # Skip if we don't have a current_user
                         pass
 
-    def _transform_resolved_flags_to_notes(self):
-        if self.target.notes:
-            for note in self.target.notes:
-                if note.get("flag") and note.get("flag").get("resolved") == "true":
-                    try:
-                        resolver = current_user.id
-                    except AttributeError:
-                        # Skip if we don't have a current_user
-                        resolver = None
-                    new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(date=dates.today(), username=resolver, note=note['note'])
-                    note['note'] = new_note_text
-                    note["flag"] = {} # clear any flag data
 
 class NewApplication(ApplicationProcessor):
     """
@@ -498,13 +485,12 @@ class AdminApplication(ApplicationProcessor):
 
         for flag_id in resolved_flags:
             flag = self.target.get_note_by_id(flag_id)
-            self.target.remove_note_by_id(flag_id)
             new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
                 date=dates.today(),
                 username=account.id,
                 note=flag.get("note", "")
             )
-            self.target.add_note(new_note_text, flag.get("date"), flag_id, flag.get("author_id"))
+            self.target.resolve_flag(flag_id, new_note_text)
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
