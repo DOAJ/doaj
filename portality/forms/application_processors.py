@@ -204,6 +204,25 @@ class ApplicationProcessor(FormProcessor):
                         # Skip if we don't have a current_user
                         pass
 
+    def _resolve_flags(self, account):
+        # handle flag resolution
+        resolved_flags = []
+        for flag in self.form.flags.data:
+            if flag["flag_resolved"] == "true":
+                # Note: new notes do not necessarily have ids, but flags that are being
+                # resolved must have an id because they must exist already to be resolved
+                resolved_flags.append(flag["flag_note_id"])
+
+        for flag_id in resolved_flags:
+            acc_id = account.id if account else "unknown user"
+            flag = self.target.get_note_by_id(flag_id)
+            new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                date=dates.today(),
+                username=acc_id,
+                note=flag.get("note", "")
+            )
+            self.target.resolve_flag(flag_id, new_note_text)
+
 
 class NewApplication(ApplicationProcessor):
     """
@@ -473,24 +492,6 @@ class AdminApplication(ApplicationProcessor):
             if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
                 self.add_alert('A notification has been sent to the Managing Editors.')
                 # this template requires who made the change, say it was an Admin
-
-    def _resolve_flags(self, account):
-        # handle flag resolution
-        resolved_flags = []
-        for flag in self.form.flags.data:
-            if flag["flag_resolved"] == "true":
-                # Note: new notes do not necessarily have ids, but flags that are being
-                # resolved must have an id because they must exist already to be resolved
-                resolved_flags.append(flag["flag_note_id"])
-
-        for flag_id in resolved_flags:
-            flag = self.target.get_note_by_id(flag_id)
-            new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
-                date=dates.today(),
-                username=account.id,
-                note=flag.get("note", "")
-            )
-            self.target.resolve_flag(flag_id, new_note_text)
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
@@ -818,7 +819,7 @@ class ManEdJournalReview(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
-    def finalise(self):
+    def finalise(self, account=None):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
 
@@ -827,6 +828,9 @@ class ManEdJournalReview(ApplicationProcessor):
 
         # if we are allowed to finalise, kick this up to the superclass
         super(ManEdJournalReview, self).finalise()
+
+        # resolve any flags that were resolved in the form
+        self._resolve_flags(account)
 
         # If we have changed the editors assinged to this application, let them know.
         # ~~-> JournalForm:Crosswalk~~

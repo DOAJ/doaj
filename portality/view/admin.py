@@ -241,7 +241,7 @@ def journal_page(journal_id):
         processor = fc.processor(formdata=request.form, source=journal)
         if processor.validate():
             try:
-                processor.finalise()
+                processor.finalise(current_user._get_current_object())
                 flash('Journal updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
