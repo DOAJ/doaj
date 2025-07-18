@@ -8,6 +8,9 @@ import selenium
 from selenium import webdriver
 from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from urllib.parse import urlencode
 
 from doajtest.fixtures.url_path import URL_LOGOUT
 from doajtest.helpers import DoajTestCase
@@ -180,12 +183,13 @@ class SeleniumTestCase(DoajTestCase):
         self.selenium.execute_script(script)
 
 
-def goto(driver: 'WebDriver', url_path: str):
+def goto(driver: 'WebDriver', url_path: str) -> str:
     if not url_path.startswith('/'):
         url_path = '/' + url_path
     url = SeleniumTestCase.get_doaj_url() + url_path
     log.info(f'goto: {url}')
     driver.get(url)
+    return url
 
 
 def cancel_alert(driver: 'WebDriver'):
@@ -197,10 +201,21 @@ def cancel_alert(driver: 'WebDriver'):
 
 
 def login(driver: 'WebDriver', username: str, password: str):
-    goto(driver, "/login")
+    # Preserve current URL to redirect back after login
+    login_url = goto(driver, "/login?" + urlencode({'next': driver.current_url}))
     driver.find_element(By.ID, 'user').send_keys(username)
     driver.find_element(By.ID, 'password').send_keys(password)
     driver.find_element(By.CSS_SELECTOR, 'input[type="submit"]').click()
+    
+    # Wait for login to complete - URL should change from login page
+    try:
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.url_changes(login_url))
+    except Exception as e:
+        log.error(f"Login failed to complete: {e}")
+        log.error(f"Current URL: {driver.current_url}")
+        log.error(f"Expected URL to change from: {login_url}")
+        raise
 
 
 def logout(driver: 'WebDriver'):
