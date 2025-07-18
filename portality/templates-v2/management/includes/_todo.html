@@ -187,7 +187,7 @@
             {% set app_route = "admin.application" if current_user.has_role("admin") else "editor.application" %}
             {% set app_url =  url_for(app_route, application_id=todo.object_id) %}
             {% set app_date = todo.object.date_applied_timestamp %}
-            {% set is_flagged = todo.object.is_flagged %}
+            {% set is_flagged = todo.object.is_flagged and current_user.has_role("admin") %}
 {#            {% set deadline = todo.object.most_urgent_flag_deadline %}#}
             <li class="todo-list__item" data-app-url="{{ app_url }}" data-action-ids="{{ todo.action_id|join(",") }}">
                 <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
