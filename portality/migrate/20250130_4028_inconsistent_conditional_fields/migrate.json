@@ -1,0 +1,58 @@
+{
+	"types": [
+		{
+			"type": "journal",
+			"action": "index",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"query": {
+				"query": {
+					"bool": {
+						"must": [
+							{
+								"term": {
+									"bibjson.apc.has_apc": false
+								}
+							},
+							{
+								"exists": {
+									"field": "bibjson.apc.max"
+								}
+							}
+						]
+					}
+				}
+			},
+			"functions": [
+				"portality.migrate.20250130_4028_inconsistent_conditional_fields.operations.enforce_consistency"
+			]
+		},
+		{
+			"type": "application",
+			"action": "index",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"query": {
+				"query": {
+					"bool": {
+						"must": [
+							{
+								"term": {
+									"bibjson.apc.has_apc": false
+								}
+							},
+							{
+								"exists": {
+									"field": "bibjson.apc.max"
+								}
+							}
+						]
+					}
+				}
+			},
+			"functions": [
+				"portality.migrate.20250130_4028_inconsistent_conditional_fields.operations.enforce_consistency"
+			]
+		}
+	]
+}

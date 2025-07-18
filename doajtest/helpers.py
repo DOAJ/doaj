@@ -8,6 +8,7 @@ from contextlib import contextmanager
 import time
 from glob import glob
 from unittest import TestCase
+from copy import deepcopy
 
 import dictdiffer
 from flask_login import login_user
@@ -19,16 +20,8 @@ from portality.dao import any_pending_tasks, query_data_tasks
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
-from portality.tasks.redis_huey import main_queue, long_running
-from portality.util import url_for
-
-
-def patch_config(inst, properties):
-    originals = {}
-    for k, v in properties.items():
-        originals[k] = inst.config.get(k)
-        inst.config[k] = v
-    return originals
+from portality.tasks.redis_huey import events_queue, scheduled_short_queue, scheduled_long_queue
+from portality.util import url_for, patch_config
 
 
 def with_es(_func=None, *, indices=None, warm_mappings=None):
@@ -67,6 +60,8 @@ class WithES:
         for im in self.warm_mappings:
             if im == "article":
                 self.warmArticle()
+            if im == "article_tombstone":
+                self.warmArticleTombstone()
             # add more types if they are necessary
 
     def tearDown(self):
@@ -82,6 +77,16 @@ class WithES:
         article.delete()
         Article.blockdeleted(article.id)
 
+    def warmArticleTombstone(self):
+        # push an article to initialise the mappings
+        from doajtest.fixtures import ArticleFixtureFactory
+        from portality.models import ArticleTombstone
+        source = ArticleFixtureFactory.make_article_source()
+        article = ArticleTombstone(**source)
+        article.save(blocking=True)
+        article.delete()
+        ArticleTombstone.blockdeleted(article.id)
+
 
 CREATED_INDICES = []
 
@@ -91,10 +96,17 @@ def initialise_index():
 
 
 def create_index(index_type):
-    if index_type in CREATED_INDICES:
-        return
-    core.initialise_index(app, core.es_connection, only_mappings=[index_type])
-    CREATED_INDICES.append(index_type)
+    if "," in index_type:
+        # this covers a DAO that has multiple index types for searching purposes
+        # expressed as a comma separated list
+        index_types = index_type.split(",")
+    else:
+        index_types = [index_type]
+    for it in index_types:
+        if it in CREATED_INDICES:
+            return
+        core.initialise_index(app, core.es_connection, only_mappings=[it])
+        CREATED_INDICES.append(it)
 
 
 def dao_proxy(dao_method, type="class"):
@@ -130,6 +142,7 @@ class DoajTestCase(TestCase):
     @classmethod
     def create_app_patch(cls):
         return {
+            'AUTOCHECK_INCOMING': False,  # old test cases design and depend on work flow of autocheck disabled
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
@@ -149,6 +162,10 @@ class DoajTestCase(TestCase):
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
             "UR_CONCURRENCY_TIMEOUT": 0,
             'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
+            'HUEY_IMMEDIATE': True,
+            'HUEY_ASYNC_DELAY': 0,
+            "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
+            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1']
         }
 
     @classmethod
@@ -160,13 +177,10 @@ class DoajTestCase(TestCase):
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
 
-        # always_eager has been replaced by immediate
-        # for huey version > 2
-        # https://huey.readthedocs.io/en/latest/guide.html
-        main_queue.always_eager = True
-        long_running.always_eager = True
-        main_queue.immediate = True
-        long_running.immediate = True
+        # Run huey jobs straight away
+        events_queue.immediate = True
+        scheduled_short_queue.immediate = True
+        scheduled_long_queue.immediate = True
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
@@ -288,6 +302,68 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
             d1=d1_label, d2=d2_label))
         print(differ.unchanged())
 
+def diff_dicts_recursive(d1, d2, d1_label, d2_label, context=None, sort_functions=None):
+
+    def _normalise(d, context=None):
+        if context is None:
+            context = "[root]"
+        if isinstance(d, dict):
+            for k in d.keys():
+                if isinstance(d[k], list):
+                    if context + "." + k in sort_functions:
+                        d[k] = sorted(d[k], key=sort_functions[context + "." + k])
+                    else:
+                        try:
+                            d[k] = sorted(d[k])
+                        except TypeError:
+                            pass
+                elif isinstance(d[k], dict):
+                    d[k] = _normalise(d[k], context + "." + k)
+        return d
+
+    # we're going to modify the dictionaries, so make sure we're not changing the originals
+    d1 = _normalise(deepcopy(d1))
+    d2 = _normalise(deepcopy(d2))
+
+    if context is None:
+        context = "[root]"
+
+    if not isinstance(d1, dict) or not isinstance(d2, dict):
+        if d1 != d2:
+            print("#"*(context.count(".") + 1) + " {}".format(context))
+            print("{d1} vs {d2}".format(d1=d1, d2=d2))
+            print()
+        return
+
+    differ = dictdiffer.DictDiffer(d1, d2)
+    print("#"*(context.count(".") + 1) + " {}".format(context))
+    if differ.added():
+        print('Added :: keys present in "{d1}" {ctx} which are not in "{d2}" {ctx}'.format(d1=d1_label, d2=d2_label, ctx=context))
+        print(differ.added())
+        print()
+
+    if differ.removed():
+        print('Removed :: keys present in "{d2}" {ctx} which are not in "{d1}" {ctx}'.format(d1=d1_label, d2=d2_label, ctx=context))
+        print(differ.removed())
+        print()
+
+    if differ.changed():
+        print('Changed :: keys present in "{d1}" {ctx} and "{d2}" {ctx} whose values are different'.format(d1=d1_label,
+                                                                                                      d2=d2_label, ctx=context))
+        print(differ.changed())
+        print()
+
+    if differ.changed():
+        for key in differ.changed():
+            ctx = context + "." + key if context else key
+            if isinstance(d1[key], list) and isinstance(d2[key], list):
+                for i in range(len(d1[key])):
+                    if len(d2[key]) < i + 1:
+                        print("{ctx} - index {i} does not exist in {d2}".format(ctx=ctx, i=i, d2=d2_label))
+                    else:
+                        diff_dicts_recursive(d1[key][i], d2[key][i], d1_label, d2_label, ctx + "[{}]".format(i), sort_functions=sort_functions)
+            else:
+                diff_dicts_recursive(d1[key], d2[key], d1_label, d2_label, ctx, sort_functions=sort_functions)
 
 def load_from_matrix(filename, test_ids):
     if test_ids is None:
@@ -417,9 +493,9 @@ def assert_expected_dict(test_case: TestCase, target, expected: dict):
     test_case.assertDictEqual(actual, expected)
 
 
-def login(app_client, username, password, follow_redirects=True):
+def login(app_client, email, password, follow_redirects=True):
     return app_client.post(url_for('account.login'),
-                           data=dict(user=username, password=password),
+                           data=dict(user=email, password=password),
                            follow_redirects=follow_redirects)
 
 

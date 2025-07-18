@@ -99,6 +99,9 @@ class OAI_DC_Article(OAI_DC):
     ~~->OAIDC:Crosswalk~~
     """
     def crosswalk(self, record):
+        if not record.is_in_doaj():
+            return None
+
         bibjson = record.bibjson()
 
         metadata = etree.Element(self.PMH + "metadata")
@@ -171,6 +174,9 @@ class OAI_DC_Article(OAI_DC):
         bibjson = record.bibjson()
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
 
+        if not record.is_in_doaj():
+            head.set("status", "deleted")
+
         identifier = etree.SubElement(head, self.PMH + "identifier")
         set_text(identifier, make_oai_identifier(record.id, "article"))
 
@@ -231,6 +237,9 @@ class OAI_DC_Journal(OAI_DC):
     ~~->OAIDC:Crosswalk~~
     """
     def crosswalk(self, record):
+        if not record.is_in_doaj():
+            return None
+
         bibjson = record.bibjson()
 
         metadata = etree.Element(self.PMH + "metadata")
@@ -267,7 +276,6 @@ class OAI_DC_Journal(OAI_DC):
 
         # We have removed the list of URLs in in model v2, so we need to gather the URLS one by one
         all_urls = [
-            bibjson.oa_statement_url,
             bibjson.journal_url,
             bibjson.aims_scope_url,
             bibjson.author_instructions_url,
@@ -293,6 +301,9 @@ class OAI_DC_Journal(OAI_DC):
         bibjson = record.bibjson()
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
 
+        if not record.is_in_doaj():
+            head.set("status", "deleted")
+
         identifier = etree.SubElement(head, self.PMH + "identifier")
         set_text(identifier, make_oai_identifier(record.id, "journal"))
 
@@ -315,6 +326,9 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
     NSMAP.update({"oai_doaj": OAI_DOAJ_NAMESPACE})
 
     def crosswalk(self, record):
+        if not record.is_in_doaj():
+            return None
+
         bibjson = record.bibjson()
 
         metadata = etree.Element(self.PMH + "metadata")
@@ -459,6 +473,9 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         bibjson = record.bibjson()
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
 
+        if not record.is_in_doaj():
+            head.set("status", "deleted")
+
         identifier = etree.SubElement(head, self.PMH + "identifier")
         set_text(identifier, make_oai_identifier(record.id, "article"))
 
@@ -472,10 +489,12 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
 CROSSWALKS = {
     "oai_dc": {
         "article": OAI_DC_Article,
-        "journal": OAI_DC_Journal
+        "journal": OAI_DC_Journal,
+        "article,article_tombstone": OAI_DC_Article
     },
     'oai_doaj': {
-        "article": OAI_DOAJ_Article
+        "article": OAI_DOAJ_Article,
+        "article,article_tombstone": OAI_DOAJ_Article
     }
 }
 

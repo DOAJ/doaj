@@ -100,12 +100,6 @@ tests:
     role: anonymous
   steps:
   - step: Go to the DOAJ search page at /search/journals
-  - step: Under 'See journals' facet on the left, click 'With a DOAJ Seal'
-    results:
-    - All Journals have the DOAJ Seal displayed in the search results
-  - step: Clear the "Journal has DOAJ Seal" filter
-    results:
-    - All Journals are shown
   - step: Open the facet "Journal License"
   - step: Select any CC licence from this facet
     results:
@@ -186,4 +180,13 @@ tests:
   - step: click spacebar to check the filter
     results:
       - filter is applied
-
+- title: Export article in RIS format
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ search page at /search/articles
+    results:
+      - Only articles are shown in the results
+  - step: Click on 'Export RIS' of any article
+    results:
+      - A RIS file is downloaded

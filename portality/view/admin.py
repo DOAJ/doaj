@@ -1,19 +1,20 @@
-import json
+import json, re
 from collections import namedtuple
 from typing import Iterable, List
 
 from flask import Blueprint, request, flash, abort, make_response
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, send_file
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
-from portality import dao
-import portality.models as models
+from portality import models
 from portality import constants
+from portality import dao
 from portality import lock
 from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
+from portality.bll.services.query import Query
 from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
@@ -24,13 +25,11 @@ from portality.lcc import lcc_jstree
 from portality.lib.query_filters import remove_search_limits, update_request, not_update_request
 from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
-    article_bulk_delete
+    article_bulk_delete, admin_reports
 from portality.ui.messages import Messages
 from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
-
-from portality.bll.services.query import Query
 from portality.view.view_helper import exparam_editing_user
 
 # ~~Admin:Blueprint~~
@@ -335,6 +334,31 @@ def journals_bulk_reinstate():
 #
 #####################################################################
 
+@blueprint.route("/journal/<journal_id>/article-info/", methods=["GET"])
+@login_required
+def journal_article_info(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    return {'n_articles': models.Article.count_by_issns(j.bibjson().issns(), in_doaj=True)}
+
+
+@blueprint.route("/journal/<journal_id>/article-info/admin-site-search", methods=["GET"])
+@login_required
+def journal_article_info_admin_site_search(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    issns = j.bibjson().issns()
+    if not issns:
+        abort(404)
+
+    target_url = '/admin/admin_site_search?source={"query":{"bool":{"must":[{"term":{"admin.in_doaj":true}},{"term":{"es_type.exact":"article"}},{"query_string":{"query":"%s","default_operator":"AND","default_field":"index.issn.exact"}}]}},"track_total_hits":true}'
+    return redirect(target_url % issns[0].replace('-', r'\\-'))
+
+
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -445,7 +469,8 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                      lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
@@ -834,3 +859,56 @@ def bulk_articles_delete():
     return make_json_resp(summary.as_dict(), status_code=200)
 
 #################################################
+
+################################################
+## Reporting endpoint
+
+@blueprint.route("/report", methods=["POST"])
+@write_required()
+@login_required
+def request_report():
+    model = request.values.get("model")
+    query_raw = request.values.get("query")
+    name = request.values.get("name")
+    # TODO: it's probably a bit cheeky to use the type param (used for casting) to run our lambda function, but it works
+    notes = request.values.get("notes", False, lambda x: json.loads(x))
+
+    if notes is True and not current_user.has_role(constants.ROLE_ADMIN_REPORT_WITH_NOTES): # "ultra_admin_reports_with_notes"
+        # Fixme: this abort is only visible within the network console, because it's a jSON endpoint to serve the page.
+        # It will just appear that the generate button isn't working (but they'll have edited the HTML to re-enable the checkbox)
+        abort(403)
+
+    query = json.loads(query_raw)
+    sane_query = {"query": query.get("query")}
+    if "sort" in query:
+        sane_query["sort"] = query["sort"]
+
+    model_endpoint_map = {
+        "journal": "journal",
+        "application": "suggestion"
+    }
+
+    query_svc = DOAJ.queryService()
+    real_query = query_svc.make_actionable_query("admin_query", model_endpoint_map.get(model), current_user, sane_query)
+
+    job = admin_reports.AdminReportsBackgroundTask.prepare(current_user.id, model=model, true_query=real_query.as_dict(), ui_query=sane_query, name=name, notes=notes)
+    admin_reports.AdminReportsBackgroundTask.submit(job)
+
+    return make_json_resp({"job_id": job.id}, status_code=200)
+
+
+@blueprint.route("/report/<report_id>", methods=["GET"])
+@login_required
+def get_report(report_id):
+    def safe(filename):
+        return re.sub(r'[^a-zA-Z0-9-_]', '_', filename)
+
+    exporter = DOAJ.exportService()
+    record, fh = exporter.retrieve(report_id)
+    safe_filename = safe(record.name) + "_" + safe(record.generated_date) + ".csv"
+    return send_file(fh, as_attachment=True, download_name=safe_filename)
+
+@blueprint.route("/reports", methods=["GET"])
+@login_required
+def reports_search():
+    return render_template(templates.ADMIN_REPORTS_SEARCH)

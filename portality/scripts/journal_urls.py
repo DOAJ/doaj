@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from portality.core import app
 from portality.bll.doaj import DOAJ
+from portality import models
 
 """
 This script is the first step of generating csv file with the details validity of the urls in the journal
@@ -36,7 +37,6 @@ url_for_deposit_policy = 'URL for deposit policy',
 url_for_the_editorial_board_page = 'URL for the Editorial Board page',
 review_process_information_url = 'Review process information URL',
 other_fees_information_url = 'Other fees information URL',
-plagiarism_information_url = 'Plagiarism information URL',
 preservation_information_url = 'Preservation information URL',
 url_for_journals_aims_and_scope = "URL for journal's aims & scope",
 url_for_journals_instructions_for_authors = "URL for journal's instructions for authors",
@@ -58,10 +58,11 @@ def extra_columns(j):
 
 def generate_journals_csv(csv_file):
     """Generate the csv file for all journals"""
-    journal_service = DOAJ.journalService()
+    # journal_service = DOAJ.journalService()
     extra_cols = [extra_columns]
-    with open(csv_file, 'w', encoding='utf-8') as csvfile:
-        journal_service._make_journals_csv(csvfile, extra_cols)
+    query = models.JournalQuery().all_in_doaj()
+    export_svc = DOAJ.exportService()
+    export_svc.csv(models.Journal, query, out_file=csv_file, custom_columns=extra_cols)
 
 
 def add_link(df, url_column):
@@ -102,7 +103,7 @@ def generate_html_from_csv(csv_file):
     # Specify the columns you want to include in the HTML table
     columns = ["Journal ID", "Journal URL", "URL in DOAJ", "APC information URL", "Copyright information URL",
                "URL for deposit policy", "URL for the Editorial Board page", "Review process information URL",
-               "Other fees information URL", "Plagiarism information URL",
+               "Other fees information URL",
                "Preservation information URL", "URL for journal's aims & scope",
                "URL for journal's instructions for authors", "URL for license terms",
                "URL to an example page with embedded licensing information",

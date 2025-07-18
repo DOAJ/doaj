@@ -3,6 +3,7 @@
 import math
 from datetime import datetime, timedelta
 from random import randint
+import time
 
 # Extracted from settings.py to prevent circular import
 config = {
@@ -92,8 +93,8 @@ def now_str_with_microseconds() -> str:
     return format(now(), format=FMT_DATETIME_MS_STD)
 
 
-def today() -> str:
-    return format(now(), format=FMT_DATE_STD)
+def today(str_format=FMT_DATE_STD) -> str:
+    return format(now(), format=str_format)
 
 
 def random_date(fro: datetime = None, to: datetime = None) -> str:
@@ -185,3 +186,5 @@ def is_before(mydate, comparison=None):
         comparison = parse(comparison)
     return mydate < comparison
 
+def timestruct2datetime(ts):
+    return datetime.fromtimestamp(time.mktime(ts))

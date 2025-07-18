@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "7.0.0"
+DOAJ_VERSION = "8.3.3"
 API_VERSION = "4.0.0"
 
 ######################################
@@ -17,13 +17,14 @@ API_VERSION = "4.0.0"
 
 HOST = '0.0.0.0'
 DEBUG = False
+DEBUG_DEV_LOG = False  # show all log of each module
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 CMS_BUILD_ASSETS_ON_STARTUP = False
 # Cookies security
-SESSION_COOKIE_SAMESITE='Strict'
-SESSION_COOKIE_SECURE=True
+SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SECURE = True
 REMEMBER_COOKIE_SECURE = True
 
 ####################################
@@ -51,7 +52,6 @@ DEBUG_TB_ENV_LIST_ENABLED = False
 # ~~->Elasticsearch:Technology
 
 # elasticsearch settings # TODO: changing from single host / esprit to multi host on ES & correct the default
-ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
 ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': 'localhost', 'port': 9201}]
 ELASTIC_SEARCH_VERIFY_CERTS = True  # Verify the SSL certificate of the ES host.  Set to False in dev.cfg to avoid having to configure your local certificates
 
@@ -62,8 +62,8 @@ ELASTIC_SEARCH_TEST_DB = "doajtest"
 
 # e.g. host:port/type/doc/id
 ELASTIC_SEARCH_INDEX_PER_TYPE = True
-INDEX_PER_TYPE_SUBSTITUTE = '_doc'      # Migrated from esprit
-ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
+INDEX_PER_TYPE_SUBSTITUTE = '_doc'  # Migrated from esprit
+ELASTIC_SEARCH_DB_PREFIX = "doaj-"  # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True  # whether or not to try creating the index and required index types on startup
@@ -82,15 +82,15 @@ ES_READ_TIMEOUT = '2m'  # Minutes - used in DAO for searches
 ENABLE_APM = False
 
 ELASTIC_APM = {
-  # Set required service name. Allowed characters:
-  # a-z, A-Z, 0-9, -, _, and space
-  'SERVICE_NAME': '',
+    # Set required service name. Allowed characters:
+    # a-z, A-Z, 0-9, -, _, and space
+    'SERVICE_NAME': '',
 
-  # Use if APM Server requires a token
-  'SECRET_TOKEN': '',
+    # Use if APM Server requires a token
+    'SECRET_TOKEN': '',
 
-  # Set custom APM Server URL (default: http://localhost:8200)
-  'SERVER_URL': '',
+    # Set custom APM Server URL (default: http://localhost:8200)
+    'SERVER_URL': '',
 }
 
 ###########################################
@@ -110,7 +110,6 @@ READ_ONLY_MODE = False
 
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
-
 
 ###########################################
 # Feature Toggles
@@ -175,8 +174,8 @@ REPORTS_BASE_DIR = "/home/cloo/reports/"
 
 STORE_IMPL = "portality.store.StoreLocal"
 STORE_SCOPE_IMPL = {
-# Enable this by scope in order to have different scopes store via different storage implementations
-#     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3"
+    # Enable this by scope in order to have different scopes store via different storage implementations
+    #     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3"
 }
 
 STORE_TMP_IMPL = "portality.store.TempStore"
@@ -194,31 +193,37 @@ STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 STORE_HARVESTER_CONTAINER = "doaj-harvester"
+STORE_EXPORT_CONTAINER = "doaj-export-placeholder"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
 STORE_S3_SCOPES = {
-    "anon_data" : {
-        "aws_access_key_id" : "put this in your dev/test/production.cfg",
-        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    "anon_data": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
-    "cache" : {
-        "aws_access_key_id" : "put this in your dev/test/production.cfg",
-        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    "cache": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used by the api_export script to dump data from the api
-    constants.STORE__SCOPE__PUBLIC_DATA_DUMP : {
-        "aws_access_key_id" : "put this in your dev/test/production.cfg",
-        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    constants.STORE__SCOPE__PUBLIC_DATA_DUMP: {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
     },
     # Used to store harvester run logs to S3
-    "harvester" : {
-        "aws_access_key_id" : "put this in your dev/test/production.cfg",
-        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    "harvester": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
+    },
+    # Used to store the admin-generated CSV reports
+    "export": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
     }
 }
 
-STORE_S3_MULTIPART_THRESHOLD = 5 * 1024**3   # 5GB
+STORE_S3_MULTIPART_THRESHOLD = 5 * 1024 ** 3  # 5GB
 
 ####################################
 # CMS configuration
@@ -256,7 +261,6 @@ SERVICE_NAME = "Directory of Open Access Journals"
 # ~~->Cookies:Feature~~
 SECRET_KEY = "default-key"
 
-
 # Consent Cookie and other Top-Level dismissable notes
 # ~~->ConsentCookie:Feature~~
 CONSENT_COOKIE_KEY = "doaj-cookie-consent"
@@ -265,7 +269,7 @@ CONSENT_COOKIE_KEY = "doaj-cookie-consent"
 # ~~-> SiteNote:Feature~~
 SITE_NOTE_ACTIVE = False
 SITE_NOTE_KEY = "doaj-site-note"
-SITE_NOTE_SLEEP = 259200    # every 3 days
+SITE_NOTE_SLEEP = 259200  # every 3 days
 SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
 
 ####################################
@@ -294,15 +298,16 @@ TOP_LEVEL_ROLES = [
     "ultra_bulk_delete",
     "preservation",
     constants.ROLE_PUBLIC_DATA_DUMP,
-    constants.ROLE_PUBLISHER_JOURNAL_CSV
+    constants.ROLE_PUBLISHER_JOURNAL_CSV,
+    constants.ROLE_ADMIN_REPORT_WITH_NOTES
 ]
 
 ROLE_MAP = {
     "editor": [
-        "associate_editor",     # note, these don't cascade, so we still need to list all the low-level roles
+        "associate_editor",  # note, these don't cascade, so we still need to list all the low-level roles
         "edit_journal",
         "edit_suggestion",
-        "edit_application",      # todo: switchover from suggestion to application
+        "edit_application",  # todo: switchover from suggestion to application
         "editor_area",
         "assign_to_associate",
         "list_group_journals",
@@ -379,8 +384,8 @@ REPORTS_EMAIL_TO = ["helpdesk@doaj.org"]
 # workflow email notification settings
 # ~~->WorkflowNotifications:Feature~~
 
-MAN_ED_IDLE_WEEKS = 4      # weeks before an application is considered reminder-worthy
-ED_IDLE_WEEKS = 3           # weeks before the editor is warned about idle applications in their group
+MAN_ED_IDLE_WEEKS = 4  # weeks before an application is considered reminder-worthy
+ED_IDLE_WEEKS = 3  # weeks before the editor is warned about idle applications in their group
 ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 3
 
@@ -406,7 +411,7 @@ ASSOC_ED_NOTIFICATION_STATUSES = [
 # ~~->StatusEndpoint:Feature~~
 
 # /status endpoint connection to all app machines
-APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in production.cfg (or dev.cfg etc)
+APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)]  # This should be set in production.cfg (or dev.cfg etc)
 
 ###########################################
 # Background Jobs settings
@@ -417,7 +422,8 @@ APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in pro
 # huey/redis settings
 REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
-HUEY_EAGER = False
+HUEY_IMMEDIATE = False
+HUEY_ASYNC_DELAY = 10
 
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
@@ -438,12 +444,11 @@ HUEY_SCHEDULE = {
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
-    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
-    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
-    "article_bulk_create": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"}
 }
 
 
@@ -483,7 +488,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
-    "portality.models.autocheck.Autocheck" # ~~-> Autocheck:Model~~
+    "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
+    "portality.models.export.Export", # ~~-> Export:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -495,7 +501,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -505,7 +511,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -515,7 +521,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -525,7 +531,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -535,7 +541,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -545,7 +551,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -555,7 +561,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -565,7 +571,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -575,7 +581,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -585,7 +591,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -595,7 +601,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -605,7 +611,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         "fields": {
             "exact": {
                 "type": "keyword",
-#                "index": False,
+                # "index": False,
                 "store": True
             }
         }
@@ -654,7 +660,6 @@ DEFAULT_INDEX_SETTINGS = \
         'number_of_replicas': 1
     }
 
-
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
         {
@@ -665,7 +670,7 @@ DEFAULT_DYNAMIC_MAPPING = {
                     "fields": {
                         "exact": {
                             "type": "keyword",
-                            #"normalizer": "lowercase"
+                            # "normalizer": "lowercase"
                         }
                     }
                 }
@@ -678,7 +683,7 @@ DEFAULT_DYNAMIC_MAPPING = {
 # a dict of the ES mappings. identify by name, and include name as first object name
 # and identifier for how non-analyzed fields for faceting are differentiated in the mappings
 MAPPINGS = {
-    'account': {  #~~->Account:Model~~
+    'account': {  # ~~->Account:Model~~
         # 'aliases': {
         #     'account': {}
         # },
@@ -687,17 +692,19 @@ MAPPINGS = {
     }
 }
 
-MAPPINGS['article'] = MAPPINGS["account"]  #~~->Article:Model~~
-MAPPINGS['upload'] = MAPPINGS["account"] #~~->Upload:Model~~
-MAPPINGS['bulk_articles'] = MAPPINGS["account"] #~~->BulkArticles:Model~~
-MAPPINGS['cache'] = MAPPINGS["account"] #~~->Cache:Model~~
-MAPPINGS['lcc'] = MAPPINGS["account"]  #~~->LCC:Model~~
-MAPPINGS['editor_group'] = MAPPINGS["account"] #~~->EditorGroup:Model~~
-MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
-MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
-MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
-MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
-MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
+MAPPINGS['article'] = MAPPINGS["account"]  # ~~->Article:Model~~
+MAPPINGS['upload'] = MAPPINGS["account"]  # ~~->Upload:Model~~
+MAPPINGS['bulk_articles'] = MAPPINGS["account"]  # ~~->BulkArticles:Model~~
+MAPPINGS['cache'] = MAPPINGS["account"]  # ~~->Cache:Model~~
+MAPPINGS['lcc'] = MAPPINGS["account"]  # ~~->LCC:Model~~
+MAPPINGS['editor_group'] = MAPPINGS["account"]  # ~~->EditorGroup:Model~~
+MAPPINGS['news'] = MAPPINGS["account"]  # ~~->News:Model~~
+MAPPINGS['lock'] = MAPPINGS["account"]  # ~~->Lock:Model~~
+MAPPINGS['provenance'] = MAPPINGS["account"]  # ~~->Provenance:Model~~
+MAPPINGS['preserve'] = MAPPINGS["account"]  # ~~->Preservation:Model~~
+MAPPINGS['notification'] = MAPPINGS["account"]  # ~~->Notification:Model~~
+MAPPINGS['article_tombstone'] = MAPPINGS["account"]  # ~~->ArticleTombstone:Model~~
+MAPPINGS['shortened_url'] = MAPPINGS["account"]    #~~->URLShortener:Model~~
 
 #########################################
 # Query Routes
@@ -817,6 +824,11 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
             "required_parameters": None
+        },
+        "reports": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Export"
         }
     },
     "associate_query": {
@@ -948,31 +960,31 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
 
 ADMIN_NOTES_SEARCH_MAPPING = {
     "admin.notes.id": {
-            "type": "text",
-            "fields": {
-                "exact": {
-                    "type": "keyword",
-                    "store": True
-                }
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+                "store": True
             }
+        }
     },
     "admin.notes.note": {
-            "type": "text",
-            "fields": {
-                "exact": {
-                    "type": "keyword",
-                    "store": True
-                }
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+                "store": True
             }
+        }
     },
     "admin.notes.author_id": {
-            "type": "text",
-            "fields": {
-                "exact": {
-                    "type": "keyword",
-                    "store": True
-                }
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+                "store": True
             }
+        }
     }
 }
 
@@ -991,7 +1003,6 @@ AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
 
 # save the public application form as a draft every 60 seconds
 PUBLIC_FORM_AUTOSAVE = 60000
-
 
 ############################################
 # Atom Feed
@@ -1016,7 +1027,6 @@ FEED_GENERATOR = "CottageLabs feed generator"
 # Larger image to use as the logo for all of the feeds
 # ~~->Favicon:Content~~
 FEED_LOGO = "https://doaj.org/static/doaj/images/favicon.ico"
-
 
 ###########################################
 # OAI-PMH SETTINGS
@@ -1052,7 +1062,6 @@ OAIPMH_LIST_RECORDS_PAGE_SIZE = 100
 OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = 300
 
 OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
-
 
 ##########################################
 # Article XML configuration
@@ -1102,7 +1111,6 @@ CACHE_DIR = os.path.join(ROOT_DIR, "cache")
 ARTICLE_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "article")
 JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 
-
 #################################################
 # Sitemap settings
 # ~~->Sitemap:Feature~~
@@ -1110,19 +1118,17 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
-
 ##################################################
 # News feed settings
 # ~~->News:Feature~~
 
-BLOG_URL = "http://doajournals.wordpress.com/"
+BLOG_URL = "https://blog.doaj.org/"
 
-BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
+BLOG_FEED_URL = "https://blog.doaj.org/feed/"
 
 FRONT_PAGE_NEWS_ITEMS = 4
 
 NEWS_PAGE_NEWS_ITEMS = 20
-
 
 ##################################################
 # Edit Lock settings
@@ -1134,17 +1140,16 @@ EDIT_LOCK_TIMEOUT = 1200
 # amount of time a background task can lock a resource for, in seconds
 BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 
-
 ###############################################
 # Bit.ly configuration
 # ~~->Bitly:ExternalService~~
 
 # bit,ly api shortening service
-#BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
+# BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
 
 # bitly oauth token
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
-#BITLY_OAUTH_TOKEN = ""
+# BITLY_OAUTH_TOKEN = ""
 
 
 #################################################
@@ -1202,14 +1207,12 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
 DISCOVERY_BULK_PAGE_SIZE = 1000
 DISCOVERY_RECORDS_PER_FILE = 100000
 
-
 ######################################################
 # Hotjar configuration
 # ~~->Hotjar:ExternalService~~
 
 # hotjar id - only activate this in production
 HOTJAR_ID = ""
-
 
 ######################################################
 # Analytics configuration
@@ -1227,7 +1230,7 @@ PLAUSIBLE_LOG_DIR = None
 
 # Analytics custom dimensions. These are configured in the interface. #fixme: are these still configured since the move from GA?
 ANALYTICS_DIMENSIONS = {
-    'oai_res_id': 'dimension1',                                                             # In analytics as OAI:Record
+    'oai_res_id': 'dimension1',  # In analytics as OAI:Record
 }
 
 # Plausible for OAI-PMH
@@ -1253,6 +1256,17 @@ ANALYTICS_CATEGORY_OPENURL = 'OpenURL'
 ANALYTICS_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
 ANALYTICS_ACTION_PUBLICDATADUMP = 'Download'
 
+# Plausible for RIS
+# ~~->PublicDataDump:Feature~~
+ANALYTICS_CATEGORY_RIS = 'RIS'
+ANALYTICS_ACTION_RISEXPORT = 'Export'
+
+# Plausible for Urlshort
+# ~~->URLShortener:Feature~~
+ANALYTICS_CATEGORY_URLSHORT = 'ShortURL'
+ANALYTICS_ACTION_URLSHORT_ADD = 'Find or create short url'
+ANALYTICS_ACTION_URLSHORT_REDIRECT = 'Redirect'
+
 # Plausible for API
 # ~~-> API:Feature~~
 ANALYTICS_CATEGORY_API = 'API Hit'
@@ -1275,7 +1289,6 @@ ANALYTICS_ACTIONS_API = {
     'bulk_article_create_status': 'Bulk article create status',
     'bulk_article_delete': 'Bulk article delete'
 }
-
 
 # Plausible for fixed query widget
 # ~~->FixedQueryWidget:Feature~~
@@ -1314,7 +1327,6 @@ QUICK_REJECT_REASONS = [
 
 MINIMAL_OA_START_DATE = 1900
 
-
 #############################################
 # Harvester Configuration
 # ~~->Harvester:Feature~~
@@ -1324,7 +1336,7 @@ MINIMAL_OA_START_DATE = 1900
 # EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
-EPMC_TARGET_VERSION = "6.9"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
+EPMC_TARGET_VERSION = "6.9"  # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
 
 # General harvester configuration
@@ -1343,22 +1355,12 @@ HARVEST_ACCOUNTS = []
 HARVESTER_ZOMBIE_AGE = 604800
 
 #######################################################
-# ReCAPTCHA configuration
-# ~~->ReCAPTCHA:ExternalService
-
-#Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
-RECAPTCHA_ENABLE = True
-RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
-RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
-
-#######################################################
 # Preservation configuration
 # ~~->Preservation:Feature
 PRESERVATION_URL = "http://PresevatinURL"
 PRESERVATION_USERNAME = "user_name"
 PRESERVATION_PASSWD = "password"
 PRESERVATION_COLLECTION = {}
-
 
 #########################################################
 # Background tasks --- anon export
@@ -1370,58 +1372,91 @@ TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 #########################################################
 # Background tasks --- old_data_cleanup
 TASK_DATA_RETENTION_DAYS = {
-    "notification": 180, # ~~-> Notifications:Feature ~~
-    "background_job": 180, # ~~-> BackgroundJobs:Feature ~~
+    "notification": 180,  # ~~-> Notifications:Feature ~~
+    "background_job": 180,  # ~~-> BackgroundJobs:Feature ~~
 }
 
 ########################################
 # Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
 
-
 #########################################################
 # Background tasks --- monitor_bgjobs
-TASKS_MONITOR_BGJOBS_TO = ["helpdesk@doaj.org",]
+TASKS_MONITOR_BGJOBS_TO = ["helpdesk@doaj.org", ]
 TASKS_MONITOR_BGJOBS_FROM = "helpdesk@doaj.org"
-
 
 ##################################
 # Background monitor
 # ~~->BackgroundMonitor:Feature~~
 
+# some time period for convenience
+_MIN = 60
+_HOUR = 3600
+_DAY = 24 * _HOUR
+_WEEK = 7 * _DAY
+
 # Configures the age of the last completed job on the queue before the queue is marked as unstable
 # (in seconds)
 BG_MONITOR_LAST_COMPLETED = {
-    'main_queue': 7200,     # 2 hours
-    'long_running': 93600,  # 26 hours
+    'events': 2 * _HOUR,  # 2 hours
+    'scheduled_short': 2 * _HOUR,  # 2 hours
+    'scheduled_long': _DAY + 2 * _HOUR,  # 26 hours
 }
 
 # Default monitoring config for background job types which are not enumerated in BG_MONITOR_ERRORS_CONFIG below
 BG_MONITOR_DEFAULT_CONFIG = {
+    ## default values for queued config
+
+    # the total number of items that are allowed to be in `queued` state at the same time.
+    # Any more than this and the result is flagged
     'total': 2,
-    'oldest': 1200,
+
+    # The age of the oldest record allowed to be in the `queued` state.
+    # If the oldest queued item was created before this, the result is flagged
+    'oldest': 20 * _MIN,
+
+    ## default values for error config
+
+    # The time period over which to check for errors, from now to now - check_sec
+    'check_sec': _HOUR,
+
+    # The number of errors allowed in the check period before the result is flagged
+    'allowed_num_err': 0,
+
+    # The last time this job ran within the specified time period, was it successful.
+    # If the most recent job in the timeframe is an error, this will trigger an "unstable" state (0 turns this off)
+    'last_run_successful_in': 0
 }
 
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
-    # Main queue
-    'journal_csv': {
-        'check_sec': 3600,  # 1 hour, time period between scheduled runs
+    'anon_export': {
+        'check_sec': _WEEK,    # a week
+        'allowed_num_err': 0
+    },
+    'article_bulk_create': {
+        'check_sec': _DAY,  # 1 day
+        'allowed_num_err': 0,
+    },
+    'article_cleanup_sync': {
+        'check_sec': 2 * _DAY,    # 2 days
+        'allowed_num_err': 0
+    },
+    'harvest': {
+        'check_sec': _DAY,
         'allowed_num_err': 0,
     },
     'ingest_articles': {
-        'check_sec': 86400,
+        'check_sec': _DAY,
         'allowed_num_err': 0
     },
-
-    # Long running
-    'harvest': {
-        'check_sec': 86400,
-        'allowed_num_err': 0,
+    'journal_csv': {
+        'check_sec': 3 * _HOUR,
+        'allowed_num_err': 1,
     },
     'public_data_dump': {
-        'check_sec': 86400 * 7,
+        'check_sec': 2 * _HOUR,
         'allowed_num_err': 0
     }
 }
@@ -1429,24 +1464,92 @@ BG_MONITOR_ERRORS_CONFIG = {
 # Configures the total number of queued items and the age of the oldest of those queued items allowed
 # before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
 BG_MONITOR_QUEUED_CONFIG = {
-    # Main queue
-    'journal_csv': {
-        'total': 2,
-        'oldest': 1200,     # 20 mins
+    'anon_export': {
+        'total': 1,
+        'oldest': 20 * _MIN
     },
-    'ingest_articles': {
-        'total': 250,
-        'oldest': 86400
+    'article_bulk_create': {
+        'total': 3,
+        'oldest': 10 * _MIN
     },
-
-    # Long running
     'harvest': {
         'total': 1,
-        'oldest': 86400
+        'oldest': _DAY
+    },
+    'ingest_articles': {
+        'total': 10,
+        'oldest': 10 * _MIN
+    },
+    'journal_bulk_edit': {
+        'total': 2,
+        'oldest': 10 * _MIN
+    },
+    'journal_csv': {
+        'total': 1,
+        'oldest': 20 * _MIN
     },
     'public_data_dump': {
         'total': 1,
-        'oldest': 86400
+        'oldest': _DAY
+    },
+    'set_in_doaj': {
+        'total': 2,
+        'oldest': 10 * _MIN
+    },
+    'suggestion_bulk_edit': {
+        'total': 2,
+        'oldest': 10 * _MIN
+    }
+}
+
+BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
+    'anon_export': {
+        'last_run_successful_in': 32 * _DAY
+    },
+    'article_cleanup_sync': {
+        'last_run_successful_in': 33 * _DAY
+    },
+    'async_workflow_notifications': {
+        'last_run_successful_in': _WEEK + _DAY
+    },
+    'check_latest_es_backup': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
+    'datalog_journal_added_update': {
+        'last_run_successful_in': _HOUR
+    },
+    'find_discontinued_soon': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
+    'harvest': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
+    'journal_csv': {
+        'last_run_successful_in': 2 * _HOUR
+    },
+    'monitor_bgjobs': {
+        'last_run_successful_in': _WEEK + _DAY
+    },
+    'old_data_cleanup': {
+        'last_run_successful_in': 32 * _DAY
+    },
+    'prune_es_backups': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
+    'public_data_dump': {
+        'last_run_successful_in': 32 * _DAY
+    },
+    'read_news': {
+        'last_run_successful_in': 2 * _HOUR
+    },
+    'reporting': {
+        'last_run_successful_in': 32 * _DAY
+    },
+    'request_es_backup': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
+    'sitemap': {
+        'last_run_successful_in': _DAY + _HOUR
     }
 }
 
@@ -1471,20 +1574,6 @@ TOUR_COOKIE_PREFIX = "doaj_tour_"
 TOUR_COOKIE_MAX_AGE = 31536000
 
 TOURS = {
-    "/editor/": [
-        {
-            "roles": ["editor", "associate_editor"],
-            "content_id": "dashboard_ed_assed",
-            "name": "Welcome to your dashboard!",
-            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
-        },
-        {
-            "roles": ["editor"],
-            "content_id": "dashboard_ed",
-            "name": "Your group activity",
-            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
-        }
-    ],
     "/admin/journal/*": [
         {
             "roles": ["admin"],
@@ -1493,9 +1582,24 @@ TOURS = {
             "name": "Autochecks",
             "description": "Autochecks are available on some journals, and can help you to identify potential problems with the journal's metadata."
         }
+    ],
+    "/editor/": [
+        {
+            "roles": ["editor"],
+            "content_id": "application_by_status",
+            "name": "New Links in the Colour Legend",
+            "description": "Discover how the colour legend labels now serve as links to quickly filter and view applications by group and status."
+        }
+    ],
+    "/dashboard/": [
+        {
+            "roles": ["admin"],
+            "content_id": "application_by_status",
+            "name": "New Links in the Colour Legend",
+            "description": "Discover how the colour legend labels now serve as links to quickly filter and view applications by group and status."
+        }
     ]
 }
-
 
 #######################################################
 # Selenium test environment
@@ -1515,7 +1619,6 @@ SELENIUM_DOAJ_PORT = 5014
 
 UR_CONCURRENCY_TIMEOUT = 10
 
-
 #############################################
 # Google Sheet
 # ~~->GoogleSheet:ExternalService~~
@@ -1523,6 +1626,9 @@ UR_CONCURRENCY_TIMEOUT = 10
 # Google Sheet API
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
+
+# The /export path to test users CSV file on google sheets (file is public)
+TEST_USERS_CSV_DL_PATH = ""
 
 
 #############################################
@@ -1544,8 +1650,7 @@ DATALOG_JA_WORKSHEET_NAME = 'Added'
 AUTOCHECK_INCOMING = False
 
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
-AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
-
+AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1  # seconds between requests
 
 ##################################################
 # Background jobs Management settings
@@ -1554,3 +1659,25 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+##################################################
+# Honeypot bot-trap settings for forms (now: only registration form)
+HONEYPOT_TIMER_THRESHOLD = 5000
+
+
+################################
+# Url Shortener
+# ~~->URLShortener:Feature~~
+
+# URLSHORT_LIMIT* used to limit the number of short URLs (URLSHORT_LIMIT) created
+# by a user within a certain time period (URLSHORT_LIMIT_WITHIN_DAYS)
+URLSHORT_LIMIT_WITHIN_DAYS = 7
+URLSHORT_LIMIT = 50_000
+
+URLSHORT_ALLOWED_SUPERDOMAINS = ['doaj.org']
+URLSHORT_ALIAS_LENGTH = 6
+
+##################################################
+# Object validation settings
+
+SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False

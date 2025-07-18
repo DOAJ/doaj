@@ -85,6 +85,9 @@ if __name__ == "__main__":
     # Turn off debug so we don't get extra messages in the output
     app.config['DEBUG'] = False
 
+    # Disable autochecks so that they don't interfere with the process
+    app.config['AUTOCHECK_INCOMING'] = False
+
     if args.sys:
         acc = sys_acc
     else:
@@ -131,6 +134,7 @@ if __name__ == "__main__":
         for row in reader:
             row_ix += 1
             print(f'\n***\nCSV row {row_ix}')
+            assert isinstance(row, dict)
 
             # Skip empty rows
             if not any(row.values()):
@@ -189,6 +193,10 @@ if __name__ == "__main__":
 
             try:
                 if not args.dry_run:
+                    # FIXME: we have to validate, as this pre-filters conditional fields and makes other protections
+                    # on the form values.  This is not really ideal, as validate shouldn't really be changing the data!
+                    fc.validate()
+
                     # Save the update request
                     fc.finalise(email_alert=False)
                     print('Update request created.')

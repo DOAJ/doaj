@@ -119,27 +119,10 @@ $.extend(true, doaj, {
                     })
                 }),
 
-                edges.newORTermSelector({
-                    id: "seal",
-                    category: "facet",
-                    field: "index.has_seal.exact",
-                    display: "Journal has the Seal",
-                    syncCounts: false,
-                    lifecycle: "update",
-                    orderBy: "count",
-                    orderDir: "desc",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: true,
-                        hideEmpty: false,
-                        open: false,
-                        togglable: true
-                    })
-                }),
-
                 edges.newFullSearchController({
                     id: "share_embed",
                     category: "controller",
-                    // urlShortener : doaj.bitlyShortener,
+                    urlShortener : doaj.doajUrlShortener,
                     embedSnippet : doaj.publicSearch.embedSnippet,
                     renderer: doaj.renderers.newShareEmbedRenderer({
                         shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share or embed'
@@ -180,8 +163,7 @@ $.extend(true, doaj, {
                     fieldDisplays : {
                         "index.schema_codes_tree.exact" : "Subject",
                         "bibjson.journal.title.exact" : "Journal",
-                        "index.date" : "Year of publication",
-                        "index.has_seal.exact" : "Journal has the Seal"
+                        "index.date" : "Year of publication"
                     },
                     rangeFunctions : {
                         "index.date" : doaj.valueMaps.displayYearPeriod

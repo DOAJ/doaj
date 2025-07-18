@@ -10,12 +10,16 @@
 
 {% block admin_content %}
     <h1 class="sr-only">Journals</h1>
-
     <div id="admin_journals"></div>
 {% endblock %}
 
 {% block admin_js %}
     <script type="text/javascript">
+        var current_user = {
+            "id": "{{ current_user['id'] }}",
+            "role": {{ current_user['role'] | tojson }}
+        };
+
         $.extend(true, doaj, {
             adminJournalsSearchConfig : {
                 journalEditUrl : "{{ url_for('admin.journal_page', journal_id='') }}",
@@ -27,4 +31,35 @@
 
     {% include "includes/_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+    <script type="text/javascript">
+        {# $(document).ready(function() {#}
+        {#    $("#export_as_csv").on("click", function() {#}
+        {#        $(".export_request").toggle();#}
+        {#    });#}
+        {#    $("#generate_csv").on("click", function() {#}
+        {#        let cq = doaj.adminJournalsSearch.activeEdges["#admin_journals"].currentQuery;#}
+        {#        let query = cq.objectify({#}
+        {#            include_paging: false,#}
+        {#            include_fields: false,#}
+        {#            include_aggregations: false,#}
+        {#            include_source_filters: false#}
+        {#        });#}
+        {#        let qa = JSON.stringify(query);#}
+        {#        let name = $("input[name=export_name]").val();#}
+        {#        $.post({#}
+        {#            url: "/admin/report",#}
+        {#            data: {#}
+        {#                query: qa,#}
+        {#                name: name,#}
+        {#                model: "journal"#}
+        {#            },#}
+        {#            dataType: "json",#}
+        {#            success: function(data) {#}
+        {#                alert("Export requested, you will be notified when it is ready");#}
+        {#            }#}
+        {#        });#}
+        {#    });#}
+        {# });#}
+    </script>
 {% endblock %}

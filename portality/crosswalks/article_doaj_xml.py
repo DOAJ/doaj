@@ -28,9 +28,8 @@ class DOAJXWalk(object):
             with open(self.schema_path) as schema_file:
                 schema_doc = etree.parse(schema_file)
 
-                # If we are using a test or dev environment, edit the schema to use local paths
-                if app.config.get("DOAJENV") != 'production':
-                    self._localise_schema(schema_doc)
+                # for our own internal use, localise the schema
+                self._localise_schema(schema_doc)
 
                 self.schema = etree.XMLSchema(schema_doc)
         except Exception as e:

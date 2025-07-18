@@ -7,7 +7,9 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-Before you start the application process, you will be asked to log in or register. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
+Before you start the application process, you will be asked to log in or register. The registration process requires an email address. You must use an official email for the journal or an email address that is checked regularly by the journal’s management office.  
+
+Once registered you may begin the application process. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
 
 ## Basic criteria for inclusion
 
@@ -44,7 +46,7 @@ Open access journals published in any language may apply. Journals should adhere
   - one unique URL per article
   - HTML or PDF, as a minimum
 - Journals that include intrusive advertising will not be accepted. See best practice [recommendations](https://www.doaj.org/apply/transparency) for advertising. 
-- DOAJ does not approve of using Impact Factors or ranking metrics. However, journals may display the Journal Impact Factor calculated by Clarivate and metrics from Scopus. Journals must not display any reference (images, links, logos) to Impact Factors or ranking metrics from any other service.
+- As a signatory to the San Francisco Declaration on Research Assessment (DORA), DOAJ does not endorse using Impact Factors or other bibliometrics to assess the quality of journals or researchers. However, journals may display widely adopted metrics, including Clarivate’s (e.g., the Journal Impact Factor), Scopus’ (e.g., CiteScore, SCImagoJR), official national accreditation lists such as Qualis in Brazil or the Norwegian Register, the Eigenfactor, Google Scholar’s h5-index, or article-level metrics including Altmetric and Crossref Event Data.  Journals must not display any reference (images, links, logos) to Impact Factors or ranking metrics from any other service. Journals must avoid being listed in unreliable indexes.
 - The website does not need to be in English. If the site is available in multiple languages, the information provided must be the same in all languages.
 
 The following information must be available online and easily accessible from the journal homepage:
@@ -66,9 +68,10 @@ The following information must be available online and easily accessible from th
     - colour charges
   - Any fee waiver must be clearly specified with the conditions of waiver, e.g. amount, time period.
   - If there are charges for withdrawing the article after submission, they cannot exceed the author charges. 
-- Contact details
+- Publisher information
+  - The journal must provide the name and address of the publisher, with a link to the publisher website, if available.  
   - Include the name of a contact person and the journal's dedicated email address.
-  - The country in the application and on the journal website must be where the publisher is registered and carries out its business activities.
+  - The country given in the application and on the journal website must be where the publisher is registered and carries out its business activities.
 
 ---
 
@@ -94,6 +97,8 @@ The following information must be available online and easily accessible from th
 - Endogeny should be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
   - Where content is not divided into issues, for example in a continuous publication model, endogeny must not exceed 25% in the last calendar year (minimum 5 articles per year).
+- It is strongly recommended that articles should display submitted/accepted/published dates.
+
   
 ---
 
@@ -112,7 +117,7 @@ Journals that publish special issues or other content curated by guest editors m
 ### Licensing
 
 - The licensing terms for use and re-use of the published content must be clearly stated on the website.
-- DOAJ recommends using [Creative Commons](https://creativecommons.org/) licenses for this purpose.
+- DOAJ recommends using [Creative Commons](https://creativecommons.org/share-your-work/cclicenses/) licenses for this purpose.
 - If Creative Commons licensing is not used, similar terms and conditions should be applied.
   - Extra care must be taken to state these terms clearly.
 - It is recommended that licensing information is displayed or embedded in full-text articles, but this is not required for inclusion in DOAJ.
@@ -129,13 +134,54 @@ Journals that publish special issues or other content curated by guest editors m
 
 ---
 
+## Best practices
+
+The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We recommend journals to adopt these best practices but they are not mandatory for DOAJ indexing.
+
+### Archiving policy
+
+- The journal content should be continuously deposited in a long-term digital archiving system. Deposits should be into one of these archives:
+  - any archiving agency included in Keepers Registry 
+  - Internet Archive
+  - PubMed Central
+
+---
+
+### Repository policy
+
+- This is also known as self-archiving. Does the journal have a policy allowing authors to deposit versions of their work in an institutional or other repository of their choice?
+- Authors should be permitted to deposit all versions of their paper in an institutional or subject repository:
+  - Preprint
+  - Author's Accepted Manuscript
+  - Published article (Version of Record)
+- An embargo should not be applied.
+
+---
+
+### Persistent article identifiers
+
+- Articles should use persistent article identifiers. DOI, ARK or Handle are the most commonly used.
+- All persistent links should resolve correctly.
+
+---
+
+### Metadata supply to DOAJ	
+
+- Article metadata should be uploaded to DOAJ regularly. [Uploading article metadata](https://doaj.org/docs/faq/#uploading-article-metadata) increases the visibility and impact of published research.
+
+---
+
 ## Additional criteria for some journal types
 
 {:.tabular-list}
 - ### Arts and humanities journals
    - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
-- ### Clinical case reports journals
-   - DOAJ only considers a case report research if it includes the retrospective analysis of three or more clinical cases or a literature review. The journal must publish at least five articles per year that meet this definition.
+- ### Clinical Case report journals
+   - For DOAJ to include case report journal they must have:
+    - A policy on [consent to publication](https://publicationethics.org/guidance/guideline/ensuring-consent-publishing-medical-case-reports) of case details and participant images, and articles must state whether or not this consent was given
+    - A policy on potentially identifiable participant information and anonymisation
+    - Reviewer guidelines specific for case reports 
+   - We recommend that all case reports and case series are identified as such in the title, and that case reports journals encourage or mandate using [CARE](https://www.care-statement.org/) reporting guidelines
 - ### Conference proceedings journals
    - For DOAJ to include journals dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer-reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
 - ### Data journals
@@ -153,6 +199,14 @@ Journals that publish special issues or other content curated by guest editors m
    - DOAJ will consider flipped journals for inclusion after they have published at least ten research articles as a fully Open Access journal.
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
+- ### Subscribe to Open journals (S2O)
+   - For journals that have transitioned from closed access to open access under the [S2O model](https://subscribetoopencommunity.org/), all DOAJ basic criteria, including open license and copyright terms must be clearly stated. Before applying to DOAJ, an S2O journal must demonstrate that the current year's S2O target has been met and that it has published a new issue or at least five OA research articles under the S2O model. Additionally the following must be indicated on the journal's website: 
+    - The year of transition to open access under the S2O model 
+    - A clear indication that all content published during the current S2O year is open access
+    - The availability status of previously published content (open access, free to read, or paywalled)
+    - The reuse rights for previously published content ( "all rights reserved" or under an open license)
+    - The copyright status of the previously published content 
+   - When an S2O offer reaches its subscription target, the journal must make all content from that publication year fully open access within the same calendar year. 
 - ### Book review journals
    - Journals consisting only of book reviews will not be accepted. 
 
@@ -191,19 +245,36 @@ You are responsible for providing accurate information when you submit an applic
 
 DOAJ only accepts journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, has provided information that is untrue or misleading, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
 
-Journals or publishers that have had multiple exclusions totalling six years or more will not be considered for inclusion in DOAJ and applications from them will be automatically rejected.
+Applications will be automatically rejected for:
 
-Journals already accepted into DOAJ may be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
+- Journals or publishers that have had multiple exclusions totalling six years or more.
+- Journals or publishers with three or more exclusions, regardless of whether the total duration reaches six years, will not be considered for inclusion in DOAJ if no adequate improvements are demonstrated in the most recent review.
 
 Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and that any necessary changes have been made to the journal website or policies.
 
 ---
 
+## If your application is accepted
+
+After your journal is accepted, you are responsible for updating the DOAJ record and ensuring the journal continues to comply with DOAJ criteria. See the [Publisher Information Page](/apply/publisher-responsibilities/) for details of how to submit an update request. 
+
+We undertake periodic re-evaluation of journals accepted into DOAJ, particularly when:
+
+- They have not been updated by the publisher for several years 
+- Reports are received of website unavailability or questionable practices
+
+Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
+
+---
+
 ## Appeals
 
-You may submit an appeal if your journal has been removed from DOAJ or your application has been rejected and no new application is allowed for at least a year. Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
+Appeals must be submitted within six months from the decision date. Your journal is eligible to submit an appeal if
 
-The appeal should contain the following information:
+- It has been removed from DOAJ.
+- The application has been rejected, and no new application is allowed for at least one year.
+
+Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal should contain the following information:
 
 - Journal title
 - Journal ISSN
@@ -211,11 +282,11 @@ The appeal should contain the following information:
 - Evidence for the DOAJ Appeals Committee to consider
 - The original notification of rejection/removal
 
-Appeals are considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
+Appeals related to the outcome of a [quality investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
 
-Appeals or complaints that include abuse of DOAJ editors will not be considered. See our [Zero tolerance policy](https://doaj.org/about/#zero-tolerance-policy). DOAJ reserves the right to impose a penalty on publishers for such behaviour. 
+Appeals or complaints that include abuse of DOAJ editors will not be considered. See our [Zero tolerance policy](https://doaj.org/code-of-conduct/). DOAJ reserves the right to impose a penalty on publishers for such behaviour. 
 
 ---
 
@@ -223,11 +294,14 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
 
-Please note that these translations may not include the latest changes made to the Guide in November 2023.
+Please note that these translations may not include the latest changes made to the Guide.
 
 Our criteria are available in:
 
+- [Afrikaans](https://docs.google.com/document/d/1CePOCIpIRMmXQZGV_oSqagTlmpb7YG9vG9CShry7Okw/edit?usp=sharing)
 - [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
+- [Bahasa Indonesia](https://docs.google.com/document/d/1cONA_31Hq8_nvFKQ2_vu0LZ5c4ipdRtE/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
 - [Chinese (application form)](https://zenodo.org/record/4350096)
 - [Chinese](https://zenodo.org/record/4633341)
 - [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
@@ -239,18 +313,14 @@ Our criteria are available in:
 - [Portuguese](https://drive.google.com/file/d/15ThVsQCJkYnv2Vw-A6mkgMVGVoO9oBB7/view?usp=sharing)
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
 - [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
-- [Turkish](https://docs.google.com/document/d/1phq4wUlmt2nsg-XNuuYIP3DCxQqf62n6/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Turkish](https://docs.google.com/document/d/18JYSfpAMxUsdQctxdqY2WCggGWHYGIiC/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Ukrainian](https://docs.google.com/document/d/10lGTROkEoTu8PwdVO440DsXuldGb_sUjxrFR1GmjD-w/edit?usp=sharing)
 
 ---
 
 ## Version history
 
-This is Version 2.2 of our Guide to applying.
+This is Version 2.5 of the DOAJ Guide to applying.
 
-*Version 2.2 (January 2024 - removed 'DOAJ will not accept a journal if all content in the last year/volume is published as special issues' from the Special Issues section of the Basic criteria.)*<br>
-<s>Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)</s><br>
-<s>Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)</s><br>
-<s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
-<s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
-<s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
-<s>Version 1.0 (November 1.0)</s>
+For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
+

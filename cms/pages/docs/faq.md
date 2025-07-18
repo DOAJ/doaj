@@ -8,7 +8,7 @@ featuremap: ~~FAQ:Fragment~~
 
 ---
 
-After your journal is indexed in DOAJ and you start to upload article metadata to us, we generate journal and article metadata. We make these publicly and freely available via different methods:
+After your journal is indexed in DOAJ and you start to upload article metadata to us, we generate journal and article metadata. We make these [publicly and openly available](/apply/why-index/) via different methods:
 
 - Our [Atom feed](https://doaj.org/feed)
 - Our [OAI-PMH service](https://doaj.org/docs/oai-pmh/)
@@ -16,8 +16,9 @@ After your journal is indexed in DOAJ and you start to upload article metadata t
 - Our [API](https://doaj.org/docs/api/)
 - On our website
 
-Our metadata is collected and incorporated into commercial discovery systems, library discovery portals and search engines around the world. Here are some of them:
+Our [metadata is collected and incorporated](/apply/why-index/) into commercial discovery systems, library discovery portals and search engines around the world. Here are some of them:
 
+- OpenAlex
 - OCLC
 - EBSCO products
 - Clarivate's Proquest and Ex Libris products
@@ -98,21 +99,23 @@ Choose how you want to upload article metadata to us.
 - **Help available?** Yes. [Contact our Help Desk](mailto:helpdesk@doaj.org).
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
 - **Documentation** No
-- **Troubleshooting**: you must be careful to enter the Print ISSN and Electronic ISSN in the right field.
+- **Troubleshooting**: make sure you enter the Print ISSN and Electronic ISSN in the right ISSN field.
 
-### A note about updating articles
+## Correcting or updating article metadata
 
-Sometimes article metadata needs to be updated. We use the Full Text URL and DOI, if present, to identify and match articles. If you are updating article metadata with details about authors, affiliations, year, volume, issue, etc or adding a DOI to an article that doesn't have one in DOAJ, you will be able to send us the updated metadata, using one of the methods above, without any problem.
+Sometimes, article metadata needs to be updated or corrected. When you upload new metadata, we use the Full Text URL and DOI (if present) to identify and match articles. This allows existing metadata to be updated.
 
-However, if you need to update the Full Text URL or DOI of articles that already have that metadata present in DOAJ, you will need to contact us first. Submitting new FUll Text URLs or DOIs will cause duplicate articles to be created. Our preferenc here is that we delete the existing article records first.
+If you are updating article metadata with bibliographic details such as title, authors, affiliations, year, volume, issue, or page number, you can send us the updated metadata using one of the methods above. For a successful update, the metadata must include an identical identifier, such as Full Text URL or DOI. 
 
-If you do need us to delete article metadata, please contact Help Desk with the following details:
+If you need to update or correct either the Full Text URL or DOI for articles that already have either a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing articles for you before you upload the new version. Submitting new Full Text URLs or DOIs will cause duplicate articles to be created. [You may find this table helpful](https://docs.google.com/spreadsheets/d/1rpmzJdut_Nfl6jph5uGTc4q-i3q73iMT7W-qtUY3X0A/edit?usp=sharing). It illustrates which uploads fail and which ones succeed.
+
+To delete article metadata, please contact Help Desk with the following details:
 
 - journal title
 - ISSN(s)
-- years to be deleted (we can only delete whole years) or if we should delete all article for a journal
+- years to be deleted (we can only delete whole years) or if we should delete all articles for a journal
 
-We will confirm the number of articles to delete with you. Deleting articles is instantaneous and cannot be reversed.
+We will first confirm with you the number of articles to be deleted. Deleting articles is instantaneous and cannot be reversed.
 
 ## Help with metadata uploads
 
@@ -193,7 +196,8 @@ From time to time, other validation errors might be seen if one of the cells con
 
 ## Version history
 
-This is Version 2 of our Metadata help page.
+This is Version 3 of our Metadata help page.
 
-*Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)*<br>
+*Version 3.0 (January 2025 - added a new section: 'Correcting or updating article metadata')*<br>
+<s>Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)</s><br>
 <s>Version 1.0 (November 2023 - created this whole page with new content)</s><br>
