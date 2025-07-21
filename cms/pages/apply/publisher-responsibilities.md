@@ -25,7 +25,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 - You will [upload article metadata](/publisher/uploadfile) to us if you are able to.
 - You will regularly review your indexed journals and ensure their compliance with current DOAJ criteria.
 
-We will treat you with respect and courtesy. We expect you to do the same.
+As is described in [our Code of Conduct](/code-of-conduct/), we will treat you with respect and courtesy. We expect you to do the same.
 
 ### Emails from us
 
@@ -114,7 +114,7 @@ To show that your journal is indexed in DOAJ:
 We have [guidelines](https://doaj-kit.netlify.app/building-blocks/logotype/) about how you can use our logo on your website or in printed material.
 
 ### Keeping your journal records up to date
-When something changes, you must keep your journal records in DOAJ up to date.
+Keeping your journal records up to date has [very clear advantages](/apply/why-index/). When something changes, you must keep your journal records in DOAJ up to date.
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
 - Request a CSV file from us that allows you to update multiple journals and values at the same time and in spreadsheet format.
