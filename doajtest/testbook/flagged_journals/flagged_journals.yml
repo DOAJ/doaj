@@ -123,3 +123,18 @@ tests:
           - Only records flagged to you are listed
           - Records flagged to you are marked with a full flag
           - When a flag has a deadline, it is displayed under Alternative Title
+
+  - title: Editor
+    context:
+      role: Editor
+    steps:
+      - step: Navigate to /testdrive/flags
+      - step: Login as an editor
+      - step: Navigate to /applications
+      - step: Open to Open Journal of Intergalactic Diplomacy - make sure you haven't resolved the flag while logged as an admin in one of the previous tests
+        results:
+          - There is no information about any flags and "Add flag" button is **not** displayed
+      - step: Navigate to /editor/your_applications
+        results:
+          - There is no information about any flags
+          - Only Flagged Records and Flagged to you" facets are **not** displayed
