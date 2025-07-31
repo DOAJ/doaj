@@ -210,12 +210,3 @@ class TestJournalLikeFlagsModel(DoajTestCase):
                 note=ftext
             )
             assert msg in [note["note"] for note in app.notes]
-
-
-    def editFlagAsAdmin(self):
-        # expected result: success
-        pass
-
-    def editFlagAsNonAdmin(self):
-        # expected result: error
-        pass
