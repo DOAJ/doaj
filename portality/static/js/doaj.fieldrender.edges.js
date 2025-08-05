@@ -1289,17 +1289,6 @@ $.extend(true, doaj, {
     },
 
     renderers: {
-        newIssnsListResult: function(params) {
-            if (!params) {params = {}}
-            doaj.renderers.IssnsListResult.prototype = edges.newRenderer(params);
-            return new doaj.renderers.IssnsListResult(params);
-        },
-        IssnsListResult: function(params) {
-
-            this.draw = function() {
-
-            }
-        },
         newBSMultiDateRangeFacet: function (params) {
             if (!params) {params = {}}
             doaj.renderers.BSMultiDateRangeFacet.prototype = edges.newRenderer(params);
