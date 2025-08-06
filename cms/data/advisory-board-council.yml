@@ -55,7 +55,6 @@ council:
 - name: Andrea Chiarelli
   institution: Research Consulting Ltd.
   country: United Kingdom
-  ORCiD: https://orcid.org/0000-0001-7336-8330
     
 - name: Andrea Vieira
   institution: CAPES
@@ -141,18 +140,18 @@ council:
   institution: Spanish National Research Council (CSIC)
   country: Spain
 
-- name: Justin Gonder
-  institution: California Digital Library
-  country: USA
+- name: Sandra F. Gomes
+  institution: Faculty of Medicine, University of Porto (FMUP)
+  country: Portugal
 
-- name: Justin Gonder
-  institution: California Digital Library
-  country: USA
+- name: Santosh C Hulagabali
+  institution: Central University of Haryana, Ministry of Education, Govt. of India
+  country: India
 
-- name: Justin Gonder
-  institution: California Digital Library
-  country: USA
+- name: Trude Eikebrokk
+  institution: SINTEF
+  country: Norway
 
-- name: Justin Gonder
-  institution: California Digital Library
-  country: USA
+- name: Umar Ahmad
+  institution: Sa'adu Zungur University, Bauchi State/Africa CDC
+  country: Nigeria
