@@ -1,4 +1,24 @@
 .editorial-panel {
+    @media (min-width: 992px) {
+        position: sticky;
+        top: 100px;
+
+        &__wrapper {
+          display: flex;
+          flex-direction: column;
+          max-height: calc(100vh - 75px - 1.5rem - 25px); //(full viewport)-(nav height)-(top padding)-(bottom padding)
+        }
+
+        &__content {
+          flex: 1;
+          overflow-y: scroll;
+    
+          select, textarea, input {
+            display: block;
+          }
+        }
+      }
+
     .flag--resolved {
         position: relative;
         opacity: 0.2; /* Set opacity of entire div */
