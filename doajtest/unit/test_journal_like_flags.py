@@ -1,7 +1,5 @@
 from contextlib import contextmanager
-from copy import deepcopy
-
-from multidict import MultiDict
+from werkzeug.datastructures import MultiDict
 
 from doajtest.helpers import DoajTestCase, create_random_str
 from doajtest.unit.application_processors.test_application_processor_emails import UPDATE_REQUEST_SOURCE_TEST_1
@@ -135,8 +133,8 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
 
     def test_setFlagWithCorrectDeadline(self):
-        with self._log_in(self.admin):
-            fsource = ApplicationFixtureFactory.make_application_form(flag=True, assignee=self.admin.id, deadline=short_deadline, note="Flag with a correct deadline")
+        with self._make_and_push_test_context_manager(acc=self.admin):
+            fsource = ApplicationFixtureFactory.make_application_form(flag=True, assignee=self.admin.id, setter=self.admin.id, deadline=short_deadline, note="Flag with a correct deadline")
             form = self.pc.wtform(MultiDict(fsource))
             app = ApplicationFormXWalk.form2obj(form)
             app.save()
@@ -146,8 +144,9 @@ class TestJournalLikeFlagsModel(DoajTestCase):
             assert f["flag"]["deadline"] == short_deadline
             assert f["author_id"] == current_user.id
 
+
     def setFlagWithIncorrectDeadline(self):
-        with self._log_in(self.admin):
+        with self._make_and_push_test_context_manager(acc=self.admin):
             fsource = ApplicationFixtureFactory.make_application_form(flag=True, assignee=self.admin.id,
                                                                       note="Flag without deadline")
             form = self.pc.wtform(MultiDict(fsource))
@@ -156,7 +155,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
     def test_setFlagWithoutDeadline(self):
         ftext = "Flag without deadline"
-        with self._log_in(self.admin):
+        with self._make_and_push_test_context_manager(acc=self.admin):
             fsource = ApplicationFixtureFactory.make_application_form(flag=True, assignee=self.admin.id,
                                                                       note=ftext)
             form = self.pc.wtform(MultiDict(fsource))
@@ -169,7 +168,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
     def test_setFlagWithoutAssignee(self):
         ftext = "Flag without an assignee"
-        with self._log_in(self.admin):
+        with self._make_and_push_test_context_manager(acc=self.admin):
             fsource = ApplicationFixtureFactory.make_application_form(flag=True, note=ftext, deadline=short_deadline)
             form = self.pc.wtform(MultiDict(fsource))
             app = ApplicationFormXWalk.form2obj(form)
@@ -179,7 +178,8 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
     def test_resolveFlag(self):
         ftext = "Resolved flag"
-        with self._log_in(self.admin):
+        # with self._log_in(self.admin):
+        with self._make_and_push_test_context_manager(acc=self.admin):
             ready_application = Application(**UPDATE_REQUEST_SOURCE_TEST_1)
             ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
             ready_application.set_current_journal(self.journal.id)
@@ -201,8 +201,9 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
             # Emails are sent during the finalise stage, and requires the app context to build URLs
             processor.finalise(current_user)
-            app = ApplicationFormXWalk.form2obj(processor.form)
-            app.save(blocking=True)
+            # app = ApplicationFormXWalk.form2obj(processor.form)
+            # app.save(blocking=True)
+            app = processor.target
             assert app.is_flagged == False, "Flag hasn't been resolved"
             msg = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
                 date=dates.today(),
