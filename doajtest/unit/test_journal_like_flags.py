@@ -83,12 +83,6 @@ class TestJournalLikeFlagsModel(DoajTestCase):
         self.journal.remove_notes()
         self.journal.save()
 
-    @contextmanager
-    def _log_in(self, user: Account):
-        with self.app_test.test_request_context():
-            login_user(user)
-            yield
-
     def test_flags_model(self):
         flag = _create_note_object(author_id=create_random_str(), assignee_id=create_random_str(),
                                    deadline=short_deadline)
@@ -178,7 +172,6 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
     def test_resolveFlag(self):
         ftext = "Resolved flag"
-        # with self._log_in(self.admin):
         with self._make_and_push_test_context_manager(acc=self.admin):
             ready_application = Application(**UPDATE_REQUEST_SOURCE_TEST_1)
             ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
