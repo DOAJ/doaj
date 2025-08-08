@@ -27,6 +27,10 @@ from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
 from portality.ui import templates
+from portality import constants
+
+from portality.bll import exceptions
+from portality.ui.messages import Messages
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -425,12 +429,28 @@ def page_not_found(e):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template(templates.ERROR_404), 404
+    return render_template(templates.ERROR_PAGE, error_code=404), 404
 
+@app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
+def article_withdrawn(e):
+    return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.WITHDRAWN, error_code=410), 410
 
+@app.errorhandler(exceptions.TombstoneArticle)
+def article_withdrawn(e):
+    return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.TOMBSTONE, error_code=410), 410
+
+@app.errorhandler(exceptions.JournalWithdrawn)
+def journal_withdrawn(e):
+    return render_template(templates.ERROR_PAGE, record=constants.JOURNAL, context=constants.WITHDRAWN, error_code=410), 410
+
+@app.errorhandler(ValueError)
 @app.errorhandler(500)
-def page_not_found(e):
-    return render_template(templates.ERROR_500), 500
+def handle_500(e):
+    if e.description == e.__class__.description:
+        description = Messages.DEFAULT_500_DESCRIPTION
+    else:
+        description = e.description
+    return render_template(templates.ERROR_500, description=description), 500
 
 
 @app.errorhandler(elasticsearch.exceptions.RequestError)
