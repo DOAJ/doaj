@@ -142,6 +142,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
 
         self.assert_history_row(history_row, status_msg=HISTORY_ROW_PROCESSING_FAILED, file_path=file_path,
                                 note='One or more articles in this batch have duplicate identifiers')
+        selenium_helpers.logout(self.selenium)
 
         """ Check Outcome Status of "Upload a file with duplicates inside the file"  """
         self.assert_outcome_status('fail')
@@ -157,7 +158,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
 
         assert f'Outcome Status: {outcome_status}' in (
             selenium_helpers
-            .find_ele_by_css(self.selenium, '.doaj-bg-results-container-results .row-fluid')
+            .find_ele_by_css(self.selenium, '.doaj-bg-results-container-results .row-fluid .span12')
             .get_attribute('innerHTML'))
 
     def select_xml_format_by_value(self, value):
@@ -296,6 +297,9 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
 
         """ Successfully upload a file by reference containing a new or updated article """
         self.step_upload_success(publisher, ARTICLE_UPLOAD_SUCCESSFUL, journal.bibjson().eissn, 'Success!')
+
+        """ Logout from Publisher account """
+        selenium_helpers.logout(self.selenium)
 
         """ Check Outcome Status of "Successfully upload a file containing a new article" """
         self.assert_outcome_status('success')
