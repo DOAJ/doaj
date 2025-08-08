@@ -23,10 +23,10 @@ def send_markdown_mail(to, fro, subject, template_name=None, bcc=None, files=Non
         md = markdown.Markdown()
         html_body = md.convert(markdown_body)
 
-    send_mail(to, fro, subject, template_name=template_name, bcc=bcc, files=files, msg_body=msg_body, html_body=html_body, **template_params)
+    send_mail(to, fro, subject, template_name=template_name, bcc=bcc, files=files, msg_body=msg_body, html_body=html_body, html_body_flag=True, **template_params)
 
 # Flask-Mail version of email service from util.py
-def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, html_body=None, **template_params):
+def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, html_body=None, html_body_flag=False, **template_params):
     """
     ~~-> Email:ExternalService~~
     ~~-> FlaskMail:Library~~
@@ -37,6 +37,8 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     :param bcc:
     :param files:
     :param msg_body:
+    :param html_body_flag:
+    :param html_body:
     :param template_params:
     :return:
     """
@@ -71,23 +73,35 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     # Get the body text from the msg_body parameter (for a contact form),
     # or render from a template.
     # TODO: This could also find and render an HTML template if present
-    if msg_body:
-        plaintext_body = msg_body
-    else:
-        try:
-            plaintext_body = render_template(template_name, **template_params)
-        except:
-            with app.test_request_context():
-                plaintext_body = render_template(template_name, **template_params)
 
-    # strip all the leading and trailing whitespace from the body, which the templates
-    # leave lying around
-    plaintext_body = plaintext_body.strip()
+    def _msg_to_plaintext():
+        if msg_body:
+            plaintext_body = msg_body
+        else:
+            try:
+                plaintext_body = render_template(template_name, **template_params)
+            except:
+                with app.test_request_context():
+                    plaintext_body = render_template(template_name, **template_params)
+
+        # strip all the leading and trailing whitespace from the body, which the templates
+        # leave lying around
+        plaintext_body = plaintext_body.strip()
+
+        return plaintext_body
+
+    if html_body_flag and not html_body:
+        try:
+            html_body = render_template(template_name, **template_params)
+        except:
+            msg_body = _msg_to_plaintext()
+    else:
+        msg_body = _msg_to_plaintext()
 
     # create a message
     msg = Message(subject=subject,
                   recipients=to,
-                  body=plaintext_body,
+                  body=msg_body,
                   html=html_body,
                   sender=fro,
                   cc=None,
