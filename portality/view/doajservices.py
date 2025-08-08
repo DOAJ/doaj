@@ -148,3 +148,28 @@ def export_article_ris(article_id, fmt):
 
     resp = make_response(send_file(byte_stream, as_attachment=True, download_name=filename))
     return resp
+
+@blueprint.route("/alerts/<alert_id>/<action>", methods=["POST"])
+def manage_alert(alert_id, action):
+    """
+    Manage user alerts
+    :param alert_id: the id of the alert to manage
+    :param action: the action to perform on the alert, either 'delete' or 'mark_read'
+    :return: JSON response indicating success or failure
+    """
+    if not current_user.is_authenticated:
+        abort(401)
+
+    if not current_user.has_role("admin"):
+        abort(403)
+
+    if action not in ['in_progress', 'closed']:
+        abort(400)
+
+    svc = DOAJ.adminAlertsService()
+    if action == 'in_progress':
+        svc.set_in_progress(alert_id, current_user)
+    elif action == 'closed':
+        svc.set_closed(alert_id, current_user)
+
+    return make_response(json.dumps({"status": "success"}))
