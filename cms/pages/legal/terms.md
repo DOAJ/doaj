@@ -37,11 +37,12 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Copyright
-5. Copyright of this site and the intellectual property contained in it is owned by Infrastructure Services for Open Access C.I.C. ("IS4OA"), 2 Clyst Works, Clyst Road, Topsham, Devon EX3 0EP, United Kingdom and defaults to all rights reserved unless otherwise specified. [Contact IS4OA here](https://is4oa.org/contact-us/) or email helpdesk@doaj.org.
 
-6. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by IS4OA.
+1. Copyright of this site and the intellectual property contained in it is owned by Infrastructure Services for Open Access C.I.C. ("IS4OA"), 2 Clyst Works, Clyst Road, Topsham, Devon EX3 0EP, United Kingdom and defaults to all rights reserved unless otherwise specified. [Contact IS4OA here](https://is4oa.org/contact-us/) or email helpdesk@doaj.org.
+2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.  The DOAJ Foundation has adopted [a patent non-assertion policy](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing).
+3. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in IS4OA or other third parties.
 
-7. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in IS4OA or other third parties.
+
 
 ---
 
