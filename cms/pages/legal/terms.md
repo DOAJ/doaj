@@ -25,7 +25,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
   + In the [full data dump of all journal metadata](/docs/public-data-dump/)
   + As the [list of journals which say they are in DOAJ but are not](https://docs.google.com/spreadsheets/d/1Y_Sza4rPDkf-NNX9kwiErGrKeNTM75md9B63A_gVpaQ/edit?usp=sharing)
 
-3. The *article metadata* provided to us by publishers or that we collect from EuropePMC, which we then process and display, is available with a [CC0 waiver](https://creativecommons.org/share-your-work/public-domain/cc0/). Collecting, using and reusing part or all of the article-level metadata must be done under the terms of the CC0 waiver. The article-level metadata is available:
+3. The *article metadata* provided to us by publishers or that we collect from EuropePMC, which we then process and display, is available with a [CC0 waiver](https://creativecommons.org/publicdomain/zero/1.0/). Collecting, using and reusing part or all of the article-level metadata must be done under the terms of the CC0 waiver. The article-level metadata is available:
 
   + On individual journal pages in DOAJ, for example [https://doaj.org/toc/1932-6203](/toc/1932-6203)
   + Via our API
