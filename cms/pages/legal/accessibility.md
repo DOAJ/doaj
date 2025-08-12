@@ -27,7 +27,7 @@ This website is run by DOAJ on behalf of IS4OA. We want as many people as possib
 We know some parts of this website may not be fully accessible:
 
 - The Publisher, Editor, and Admin dashboards (accessible via log-in only) are not responsive and accessible.
-- You cannot use the journal or article search function with Javascript disabled.
+- You cannot use the journal or article search function with JavaScript disabled.
   - However, if you are using a device that renders JavaScript, the HTML output will be accessible.
 - You cannot modify the line height or spacing of the text.
 
@@ -45,7 +45,7 @@ Fixes that are in progress now after a review of the changes laid out in WCAG 2.
 - on our forms, start using 'aria-describedby' for hint/help text
 - making radio buttons on search focusable
 
-We are continuing to update this document as we find accessibility issues or as we fix them.
+We are continuing to update this document as we find and fix accessibility issues.
 
 ## VPAT Accessibility Conformance Report
 
@@ -71,11 +71,11 @@ The Equality and Human Rights Commission (EHRC) is responsible for enforcing the
 
 ## Technical information about this website's accessibility
 
-DOAJ is committed to making its website accessible in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
+DOAJ is committed to making its website accessible per the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
 
 ### Compliance status
 
-This website is partially compliant with the [Web Content Accessibility Guidelines version 2.2 AA standard](https://www.w3.org/TR/WCAG22/) subject to the non-compliances listed below.
+This website is partially compliant with the [Web Content Accessibility Guidelines version 2.2 AA standard](https://www.w3.org/TR/WCAG22/), subject to the non-compliances listed below.
 
 ## Non-accessible content
 
@@ -84,9 +84,9 @@ The content listed below is non-accessible for the following reasons.
 ### Non-compliance with the accessibility regulations
 
 - Some images may not have a text alternative, so people using a screen reader cannot access the information. This fails WCAG 2.1 Success Criterion 1.1.1 (Non-text content).
-- Some form fields may be missing a label identifying the purpose of its corresponding field. This fails WCAG Success Criterion 1.3.5 (Identify Input Purpose).
-- We make users solve, recall, or transcribe something to log in. This fails WCAG Success Criterion Success 3.3.8 (Accessible Authentication)
-- We use ReCAPTCHA. This fails WCAG Success Criterion Success 3.3.8 (Accessible Authentication)
+- Some form fields may be missing a label identifying the purpose of their corresponding field. This fails WCAG Success Criterion 1.3.5 (Identify Input Purpose).
+- We make users solve, recall, or transcribe something to log in. This fails WCAG Success Criterion 3.3.8 (Accessible Authentication)
+- We use ReCAPTCHA. This fails WCAG Success Criterion 3.3.8 (Accessible Authentication)
 
 ### Disproportionate burden
 
@@ -97,10 +97,11 @@ The content listed below is non-accessible for the following reasons.
 
 This statement was prepared on **28 May 2020**. It was last reviewed on **06 September 2024** with the WCAG 2.2 accessibility guidelines.
 
-This website was last tested on **24 November 2020**. The DOAJ team carried out testing.
+This website was last tested on **14 April 2025**. An independent organisation, Torchbox, did the testing for us and helped us write the VPAT.
 
 ## Changes to this document 
 
+- 4 August 2025: added the VPAt statement and updated the last tested date
 - 28 September 2024: moved the ReCAPTCHA work to completed and added a problem with radio buttons in search to the in progress list
 - 06 September 2024: added details on things we have fixed; removed references to the PDFs and the blog, which are not covered by this statement; added the last point to the Non-compliance section; updated compliance status
 - 20 December 2021: updated target date to meet accessibility standards to January 2021. 

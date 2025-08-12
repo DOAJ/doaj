@@ -8,7 +8,8 @@
             {% include "includes/_error_header.html" %}
             {% from "includes/_formhelpers.html" import render_field_horizontal %}
 
-            <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form form--compact" id="editor_group_form">
+            <!-- form requires novalidate to prevent the browser from trying to focus invalid fields - hidden by select2; validation handled by WTForm at the backend -->
+            <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form form--compact editor_group_form" id="editor_group_form"  novalidate>
                 <fieldset>
                     {{ form.group_id }}
                     {% if form.name.data %}
@@ -17,7 +18,13 @@
                     {% endif %}
                     {{ render_field_horizontal(form.name, placeholder="Enter a unique group name") }}
                     {{ render_field_horizontal(form.maned, placeholder="Managing Editor’s user ID") }}
+                    {% if form.maned_error %}
+                            <p class="editor_group_form--error">Please provide a managing editor for the group.</p>
+                    {% endif %}
                     {{ render_field_horizontal(form.editor, placeholder="Editor’s user ID") }}
+                    {% if form.editor_error %}
+                            <p class="editor_group_form--error">Please provide an editor for the group.</p>
+                    {% endif %}
                     {{ render_field_horizontal(form.associates, placeholder="Associate editor user IDs") }}
                     <button class="button button--primary" type="submit">Save Group</button>
                 </fieldset>
@@ -55,6 +62,7 @@
         });
 
         $("#editor").select2({
+            allowClear: true,
             minimumInputLength: 1,
             query : function(query) {
                 userAutocomplete(query.term, query.callback)
