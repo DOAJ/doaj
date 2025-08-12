@@ -2,42 +2,55 @@
 """
 Script to collect DOAJ billing information from Digital Ocean invoices for a specific month.
 
-Usage: python collect_do_billing.py YYYY-MM
+Usage: python collect_do_billing.py YYYY-MM -t TOKEN [--show-total]
 
 This script:
 1. Lists invoices for the specified month
-2. Downloads CSV data for matching invoices
+2. Gets invoice items using doctl API
 3. Filters for DOAJ-related items:
    - Items in the DOAJ project
    - Items without project assignment but with 'doaj' in the name (e.g., snapshots)
-4. Outputs a summary report with all matching resources and total cost
+4. Categorizes resources as Production or Test based on droplet tags and naming conventions
+5. Outputs a summary report with environment breakdown
 """
 
 import sys
 import subprocess
 import json
 import argparse
+import re
 from datetime import datetime
+from enum import Enum
 
-# Global token variable
+# Global variables
 DO_TOKEN = None
+
+class Envs(Enum):
+    PRODUCTION = 'Production'
+    TEST = 'Test'
+
+TAG_ENVIRONMENT_MAP = {'doaj-test': Envs.TEST, 'doaj': Envs.PRODUCTION}
+
+# Store the tags for all droplets for lookup later
+DROPLET_TAGS = {}
 
 
 def run_doctl_command(command):
     """Run a doctl command and return the result."""
-    command = f"{command} --access-token {DO_TOKEN}"
+    # Split command into list for safe execution
+    cmd_parts = command.split()
+    cmd_parts.extend(['--access-token', DO_TOKEN])
     
     try:
         result = subprocess.run(
-            command,
-            shell=True,
+            cmd_parts,
             capture_output=True,
             text=True,
             check=True
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        print(f"Error running doctl command: {command}")
+        print(f"Error running doctl command: {' '.join(cmd_parts[:-2])} --access-token [REDACTED]")
         print(f"Error: {e.stderr}")
         sys.exit(1)
 
@@ -88,6 +101,29 @@ def get_invoice_items(invoice_uuid):
         return []
 
 
+def get_droplet_tags():
+    """Get droplet names and their tags."""
+    command = "doctl compute droplet list --output json"
+    
+    try:
+        output = run_doctl_command(command)
+        if not output:
+            return {}
+        
+        droplets = json.loads(output)
+        tags_map = {}
+        
+        for droplet in droplets:
+            name = droplet.get('name', '')
+            tags = droplet.get('tags', [])
+            tags_map[name] = tags
+            
+        return tags_map
+    except Exception as e:
+        print(f"Error getting droplet tags: {e}")
+        return {}
+
+
 def is_doaj_related(item):
     """Check if an item is DOAJ-related based on project or name."""
     project_name = item.get('project_name', '').lower()
@@ -104,8 +140,37 @@ def is_doaj_related(item):
     return False, ''
 
 
+def get_droplet_name_from_description(description):
+    """Extract droplet name from invoice description."""
+    # Description format is usually "droplet-name (size)" for droplets
+    match = re.match(r'^([^(]+)', description)
+    return match.group(1).strip() if match else description
+
+
+def categorize_item_environment(item):
+    """Categorize an item as Production or Test using global tag mapping."""
+    if item.get('product') == 'Droplets':
+        droplet_name = get_droplet_name_from_description(item.get('description', ''))
+        tags = DROPLET_TAGS.get(droplet_name, [])
+        
+        # Check tags against environment mapping
+        for tag in tags:
+            if env := TAG_ENVIRONMENT_MAP.get(tag):
+                return env
+        
+        # Droplet not in current list - probably a destroyed test server
+        if droplet_name not in DROPLET_TAGS:
+            # Use naming convention: 4-digit names are test servers
+            return Envs.TEST if re.match(r'^\d{4}$', droplet_name) else Envs.PRODUCTION
+        else:
+            return Envs.PRODUCTION
+    else:
+        # For non-droplets, use naming convention or default to production
+        return Envs.TEST if 'test' in item.get('description', '').lower() else Envs.PRODUCTION
+
+
 def process_invoice_items(invoice_items):
-    """Process invoice items and return DOAJ-related items."""
+    """Process invoice items and return DOAJ-related items with environment categorization."""
     doaj_items = []
     
     for item in invoice_items:
@@ -119,7 +184,8 @@ def process_invoice_items(invoice_items):
                 'amount': amount,
                 'project': item.get('project_name', ''),
                 'category': item.get('category', ''),
-                'reason': reason
+                'reason': reason,
+                'environment': categorize_item_environment(item).value
             })
     
     print(f"    Processed {len(invoice_items)} items, found {len(doaj_items)} DOAJ items")
@@ -148,22 +214,22 @@ def print_summary_report(all_doaj_items, target_month):
     all_items.sort(key=lambda x: x['amount'], reverse=True)
     
     # Print each resource
-    print(f"{'Description':<50} {'Product':<20} {'Project':<15} {'Amount (USD)':>12}")
-    print("-" * 80)
+    print(f"{'Description':<45} {'Product':<18} {'Environment':<12} {'Amount (USD)':>12}")
+    print("-" * 90)
     
     total_amount = 0
     for item in all_items:
-        description = item['description'][:47] + "..." if len(item['description']) > 50 else item['description']
-        product = item['product'][:17] + "..." if len(item['product']) > 20 else item['product']
-        project = item['project'][:12] + "..." if len(item['project']) > 15 else item['project']
+        description = item['description'][:42] + "..." if len(item['description']) > 45 else item['description']
+        product = item['product'][:15] + "..." if len(item['product']) > 18 else item['product']
+        environment = item['environment']
         amount = item['amount']
         
         total_amount += amount
         
-        print(f"{description:<50} {product:<20} {project:<15} ${amount:>10.2f}")
+        print(f"{description:<45} {product:<18} {environment:<12} ${amount:>10.2f}")
     
-    print("-" * 80)
-    print(f"{'TOTAL':<87} ${total_amount:>10.2f}")
+    print("-" * 90)
+    print(f"{'TOTAL':<77} ${total_amount:>10.2f}")
     
     # Print breakdown by product type
     product_totals = {}
@@ -175,6 +241,17 @@ def print_summary_report(all_doaj_items, target_month):
     print("-" * 40)
     for product, amount in sorted(product_totals.items(), key=lambda x: x[1], reverse=True):
         print(f"{product:<30} ${amount:>8.2f}")
+    
+    # Print breakdown by Environment
+    env_totals = {}
+    for item in all_items:
+        env = item['environment']
+        env_totals[env] = env_totals.get(env, 0) + item['amount']
+    
+    print(f"\nBreakdown by Environment:")
+    print("-" * 40)
+    for env, amount in sorted(env_totals.items(), key=lambda x: x[1], reverse=True):
+        print(f"{env:<30} ${amount:>8.2f}")
 
 
 def main():
@@ -184,6 +261,7 @@ def main():
     parser = argparse.ArgumentParser(description='Collect DOAJ billing data from Digital Ocean for a specific month')
     parser.add_argument('month', help='Month in YYYY-MM format (e.g., 2024-01)')
     parser.add_argument('-t', '--token', required=True, help='DigitalOcean API access token')
+    parser.add_argument('--show-total', action='store_true', help='Show total invoice amount (for auditing purposes)')
     
     args = parser.parse_args()
     target_month = args.month
@@ -203,11 +281,17 @@ def main():
     if not invoice:
         return
     
+    # Get droplet tags for categorization
+    print("Fetching droplet tags...")
+    global DROPLET_TAGS
+    DROPLET_TAGS = get_droplet_tags()
+    print(f"Retrieved tags for {len(DROPLET_TAGS)} droplets")
+    
     # Process the invoice
     uuid = invoice.get('invoice_uuid', '')
-    amount = invoice.get('amount', 0)
+    total_info = f" (Total: ${invoice['amount']})" if args.show_total else ""
     
-    print(f"\nProcessing invoice: {uuid} (${amount})")
+    print(f"\nProcessing invoice: {uuid}{total_info}")
     
     # Get invoice items
     invoice_items = get_invoice_items(uuid)
