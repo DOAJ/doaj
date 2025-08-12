@@ -3,7 +3,6 @@ import json
 
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.bll import DOAJ
 from portality.tasks.process_event import ProcessEventBackgroundTask
 from portality.events.background import send_event
 from doajtest.mocks.events_Consumer import MockConsumer

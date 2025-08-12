@@ -13,6 +13,14 @@ class ProcessEventBackgroundTask(BackgroundTask):
     """
     __action__ = "process_event"
 
+    def post_execute(self):
+        """
+        Override default post-execution to do nothing.
+        We intentionally avoid triggering BACKGROUND_JOB_FINISHED for this task,
+        as it is itself processing events and should not emit another event.
+        """
+        return
+
     def run(self):
         """
         Execute the task as specified by the background_job
