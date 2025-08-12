@@ -12,6 +12,33 @@ This script:
    - Items without project assignment but with 'doaj' in the name (e.g., snapshots)
 4. Categorizes resources as Production or Test based on droplet tags and naming conventions
 5. Outputs a summary report with environment breakdown
+
+Required DigitalOcean API Token Permissions:
+===========================================
+
+This script requires a DigitalOcean API token with the following permissions:
+
+MINIMAL CUSTOM SCOPES (Recommended):
+- billing:read    - Access billing invoices and invoice items
+- droplet:read    - List droplets and their tags for categorization
+- account:read    - Access account-level billing information
+
+ALTERNATIVE (Less Secure):
+- Read Only       - Grants read access to all resources in your account
+- Full Access     - Grants full access (not recommended for this script)
+
+To create a token with custom scopes:
+1. Go to DigitalOcean Control Panel > API > Tokens/Keys
+2. Click "Generate New Token"
+3. Select "Custom Scopes" 
+4. Enable: billing:read, droplet:read, account:read
+5. Set appropriate expiration date
+
+Note: You cannot modify token scopes after creation. If you need different 
+permissions, you must create a new token.
+
+Security Best Practice: Use the minimal custom scopes rather than Full Access
+to follow the principle of least privilege.
 """
 
 import sys
