@@ -64,7 +64,7 @@ class Messages(object):
     EXCEPTION_IDENTICAL_PISSN_AND_EISSN = "The Print and Online ISSNs supplied are identical. If you supply two ISSNs, they must be different."
     EXCEPTION_NO_ISSNS = "Neither the Print ISSN nor Online ISSN have been supplied. DOAJ requires at least one ISSN."
     EXCEPTION_INVALID_BIBJSON = "Invalid article bibjson: "  # + Dataobj exception message
-    EXCEPTION_ARTICLE_BEFORE_OA_START_DATE = "Article(s) '{title}' cannot be uploaded before OA start date of the Journal"
+    EXCEPTION_ARTICLE_BEFORE_OA_START_DATE = "One or more rticles cannot be uploaded, as they have a publication date before the 'OA start date' of the Journal"
 
     EXCEPTION_IDENTIFIER_CHANGE_CLASH = "DOI or Fulltext URL has been changed to match another article that already exists in DOAJ"
     EXCEPTION_IDENTIFIER_CHANGE = "Either the DOI or Fulltext URL has been changed.  This operation is not permitted; please contact an administrator for help."

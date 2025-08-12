@@ -72,9 +72,7 @@ class ArticleService(object):
             except (exceptions.ArticleMergeConflict, exceptions.ConfigurationException):
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
             except exceptions.ArticleBeforeOAStartDate as e:
-                all_before_oa_start_date.add(article.bibjson().title)
                 result = {'fail': 1}
-                e.message = e.message.format(title=",".join(list(all_before_oa_start_date)))
                 e_not_acceptable = e
             except exceptions.ArticleNotAcceptable as e:
                 # The ArticleNotAcceptable exception is a superset of reasons we can't match a journal to this article
