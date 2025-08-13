@@ -21,7 +21,7 @@
                     <a href="{{ url_for("doaj.premium") }}"
        class="nav-bar__link label"
        role="button" aria-expanded="false" role="menuitem">
-                      Premium Mode {% if not current_user.is_anonymous and current_user.is_premium %}IS ON{% else %}IS OFF{% endif %}
+                      {% if not current_user.is_anonymous and current_user.is_premium %}Premium{% else %}Get Premium{% endif %}
                     </a>
                       <span {% if not current_user.is_anonymous and current_user.is_premium %}style="color: #ffd700"{% endif %} data-feather="star" aria-hidden="true"></span>
                     </li>
