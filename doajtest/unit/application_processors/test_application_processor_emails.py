@@ -1012,6 +1012,8 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise(acc)
             info_stream_contents = self.info_stream.getvalue()
 
+            # We expect 1 email to be sent synchronously - others are handled by events
+            #   * to the journal owner, informing them of the journal's acceptance
             publisher_template = templates.EMAIL_NOTIFICATION
             publisher_to = re.escape(owner.email)
             publisher_subject = re.escape(
