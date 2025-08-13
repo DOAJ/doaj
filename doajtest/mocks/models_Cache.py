@@ -41,6 +41,23 @@ class InMemoryCache(object):
         return cls.__memory__["sitemap"]
 
     @classmethod
+    def cache_sitemap_indexes(cls, urls):
+        """Cache multiple sitemap index URLs"""
+        for idx, url in enumerate(urls):
+            cls.__memory__[f"sitemap_index_{idx}"] = {
+                "filename": url
+            }
+
+    @classmethod
+    def get_sitemap_index(cls, n):
+        """Get a specific sitemap index URL"""
+        key = f"sitemap_index_{n}"
+        cached = cls.__memory__.get(key)
+        if cached is None:
+            return None
+        return cached.get("filename")
+
+    @classmethod
     def cache_public_data_dump(cls, article_url, article_size, journal_url, journal_size):
         cls.__memory__["public_data_dump"] = {
             "article": {"url" : article_url, "size" : article_size},
