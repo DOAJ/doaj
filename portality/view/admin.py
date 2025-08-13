@@ -933,3 +933,24 @@ def journal_csv_delete():
         return make_json_resp({"status": "success"}, status_code=200)
     except:
         abort(400)
+
+@blueprint.route("/pdd", methods=["GET"])
+@login_required
+def pdd_search():
+    svc = DOAJ.publicDataDumpService()
+    free = svc.get_free_dump()
+    premium = svc.get_premium_dump()
+    return render_template(templates.ADMIN_PDD_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/pdd/delete", methods=["POST"])
+@login_required
+def pdd_delete():
+    svc = DOAJ.publicDataDumpService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_pdd(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)

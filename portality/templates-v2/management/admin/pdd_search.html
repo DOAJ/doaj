@@ -1,7 +1,7 @@
 {% extends "management/admin/base.html" %}
 {# ~~ JournalCSVearch:Page -> AdminAlerts:Edge~~ #}
 
-{% block page_title %}Journal CSVs{% endblock %}
+{% block page_title %}Public Data Dumps{% endblock %}
 
 {% block admin_stylesheets %}
     {% include "management/includes/_edges_common_css.html" %}
@@ -36,16 +36,16 @@
 {% endmacro %}
 
 {% block admin_content %}
-    <p>Journal CSVs are generated automatically on a schedule.  Premium users receive the CSV with the most recent Export Date, non-premium users
-    receive the CSV which lags behind the current date by {{ format_seconds(config.get("NON_PREMIUM_DELAY_SECONDS")) }}.</p>
-    <div id="journal_csvs"></div>
+    <p>Public Data Dumps are generated automatically on a schedule.  Premium users receive the download with the most recent Export Date, non-premium users
+    receive the download which lags behind the current date by {{ format_seconds(config.get("NON_PREMIUM_DELAY_SECONDS")) }}.</p>
+    <div id="pdds"></div>
 {% endblock %}
 
 {% block admin_js %}
     <script type="text/javascript">
         $.extend(true, doaj, {
-            adminJournalCSVSearchConfig : {
-                searchPath : '/admin_query/journal_csv/_search',
+            adminPDDSearchConfig : {
+                searchPath : '/admin_query/pdd/_search',
                 free: "{{ free.id }}",
                 premium: "{{ premium.id }}"
             }
@@ -54,6 +54,6 @@
 
     {% include "includes/_edges_common_js.html" %}
     <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.TabularResultsRenderer.js"></script>
-    <script type="text/javascript" src="/static/js/edges/admin.journal_csv.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/js/edges/admin.pdd.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}

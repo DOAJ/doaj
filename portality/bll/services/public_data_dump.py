@@ -253,6 +253,30 @@ class PublicDataDumpService:
                 dd.remove_journal_dump()
                 dd.save()
 
+    def delete_pdd(self, id):
+        dd = models.DataDump.pull(id)
+        if dd is None:
+            return False
+
+        store = StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
+
+        ac = dd.article_container
+        af = dd.article_filename
+        try:
+            store.delete_file(ac, af)
+        except:
+            pass
+
+        jc = dd.journal_container
+        jf = dd.journal_filename
+        try:
+            store.delete_file(jc, jf)
+        except:
+            pass
+
+        dd.delete()
+        return True
+
     def _start_new_file(self, storage, container, typ, day_at_start, file_num):
         filename = self._filename(typ, day_at_start, file_num)
         output_file = storage.path(container, filename, create_container=True, must_exist=False)

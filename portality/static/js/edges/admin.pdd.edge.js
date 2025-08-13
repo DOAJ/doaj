@@ -2,17 +2,17 @@
 // ~~-> Edges:Technology ~~
 $.extend(true, doaj, {
 
-    adminJournalCSVSearch : {
+    adminPDDSearch : {
         activeEdges : {},
 
-        deleteCSV: function(params) {
+        deletePDD: function(params) {
             let id = params.id;
             let success = params.success || function() {};
             let error = params.error || function() {};
 
             $.ajax({
                 type: "POST",
-                url: "/admin/journal-csv/delete",
+                url: "/admin/pdd/delete",
                 data: {"id": id},
                 success : success,
                 error: error
@@ -25,8 +25,8 @@ $.extend(true, doaj, {
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
 
-            var selector = params.selector || "#journal_csvs";
-            var search_url = current_scheme + "//" + current_domain + doaj.adminJournalCSVSearchConfig.searchPath;
+            var selector = params.selector || "#pdds";
+            var search_url = current_scheme + "//" + current_domain + doaj.adminPDDSearchConfig.searchPath;
 
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
@@ -37,8 +37,8 @@ $.extend(true, doaj, {
                 decimalPlaces: 2
             });
 
-            let deleteClass = edges.css_classes("journal-csvs", "delete");
-            let deleteClassSelector = edges.css_class_selector("journal-csvs", "delete");
+            let deleteClass = edges.css_classes("pdds", "delete");
+            let deleteClassSelector = edges.css_class_selector("pdds", "delete");
 
             var components = [
                 doaj.components.searchingNotification(),
@@ -48,13 +48,13 @@ $.extend(true, doaj, {
                     id: "search-controller",
                     category: "controller",
                     sortOptions: [
-                        {'display':'Export Date','field':'export_date'}
+                        {'display':'Export Date','field':'dump_date'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: -1,
                         searchButton: true,
-                        searchPlaceholder: "Search All Journal CSV Records"
+                        searchPlaceholder: "Search All Data Dump Records"
                     })
                 }),
 
@@ -90,10 +90,10 @@ $.extend(true, doaj, {
                                 display: "Free/Premium",
                                 valueFunction: function(value, result) {
                                     if (value && value !== "-") {
-                                        if (value === doaj.adminJournalCSVSearchConfig.free) {
+                                        if (value === doaj.adminPDDSearchConfig.free) {
                                             return "CURRENT FREE"
                                         }
-                                        else if (value === doaj.adminJournalCSVSearchConfig.premium) {
+                                        else if (value === doaj.adminPDDSearchConfig.premium) {
                                             return "CURRENT PREMIUM"
                                         }
                                     }
@@ -101,16 +101,16 @@ $.extend(true, doaj, {
                                 }
                             },
                             {
-                                field: "export_date",
+                                field: "dump_date",
                                 display: "Export Date"
                             },
                             {
-                                field: "filename",
-                                display: "Filename/URL",
+                                field: "article.filename",
+                                display: "Article Filename/URL",
                                 valueFunction: function(value, result) {
                                     if (value && value !== "-") {
-                                        if (result.url) {
-                                            return `<a href="${result.url}">${value}</a>`;
+                                        if (result.article.url) {
+                                            return `<a href="${result.article.url}">${value}</a>`;
                                         }
                                         return `${value} [WARNING: NO URL]`;
                                     }
@@ -118,12 +118,34 @@ $.extend(true, doaj, {
                                 }
                             },
                             {
-                                field: "size",
-                                display: "File Size",
+                                field: "article.size",
+                                display: "Article File Size",
                                 valueFunction: function(value, result) {
                                     if (value && value !== "-") {
                                         return doaj.humanFileSize(value, fileSizeFormat);
-                                        // return `${countFormat(value)} b`;
+                                    }
+                                    return value;
+                                }
+                            },
+                            {
+                                field: "journal.filename",
+                                display: "Journal Filename/URL",
+                                valueFunction: function(value, result) {
+                                    if (value && value !== "-") {
+                                        if (result.journal.url) {
+                                            return `<a href="${result.journal.url}">${value}</a>`;
+                                        }
+                                        return `${value} [WARNING: NO URL]`;
+                                    }
+                                    return value;
+                                }
+                            },
+                            {
+                                field: "journal.size",
+                                display: "Journal File Size",
+                                valueFunction: function(value, result) {
+                                    if (value && value !== "-") {
+                                        return doaj.humanFileSize(value, fileSizeFormat);
                                     }
                                     return value;
                                 }
@@ -147,7 +169,7 @@ $.extend(true, doaj, {
                 manageUrl: true,
                 components: components,
                 openingQuery: es.newQuery({
-                    sort: [{field: "export_date", order: "desc"}],
+                    sort: [{field: "dump_date", order: "desc"}],
                     size: 50
                 }),
                 callbacks : {
@@ -157,33 +179,33 @@ $.extend(true, doaj, {
                     "edges:post-render": function() {
                         $(deleteClassSelector).bind("click", function(e) {
                             e.preventDefault();
-                            let c = confirm("Are you sure you want to delete this CSV record? This action cannot be undone.");
+                            let c = confirm("Are you sure you want to delete this Data Dump record? This action cannot be undone.");
                             if (!c) {
                                 return;
                             }
 
                             let el = $(e.currentTarget);
                             let id = el.attr("data-id");
-                            doaj.adminJournalCSVSearch.deleteCSV({
+                            doaj.adminPDDSearch.deletePDD({
                                 id: id,
                                 success: function() {
-                                    alert("CSV record deleted successfully.   You may need to refresh the page to see the latest current premium and free records.");
-                                    doaj.adminJournalCSVSearch.activeEdges[selector].cycle();
+                                    alert("Data Dump record deleted successfully.  You may need to refresh the page to see the latest current premium and free records.");
+                                    doaj.adminPDDSearch.activeEdges[selector].cycle();
                                 },
                                 error: function() {
-                                    alert("There was an error deleting the CSV record. Please try again later.");
+                                    alert("There was an error deleting the Data Dump record. Please try again later.");
                                 }
                             });
                         });
                     }
                 }
             });
-            doaj.adminJournalCSVSearch.activeEdges[selector] = e;
+            doaj.adminPDDSearch.activeEdges[selector] = e;
         }
     }
 });
 
 
 jQuery(document).ready(function($) {
-    doaj.adminJournalCSVSearch.init();
+    doaj.adminPDDSearch.init();
 });
