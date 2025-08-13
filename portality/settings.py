@@ -852,6 +852,11 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "admin",
             "dao": "portality.models.Export"
+        },
+        "journal_csv": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.JournalCSV"  # ~~->JournalCSV:Model~~
         }
     },
     "associate_query": {

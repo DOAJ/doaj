@@ -1,0 +1,54 @@
+{% extends "management/admin/base.html" %}
+{# ~~ JournalCSVearch:Page -> AdminAlerts:Edge~~ #}
+
+{% block page_title %}Journal CSVs{% endblock %}
+
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% macro format_seconds(total_seconds) %}
+    {%- set days = total_seconds // 86400 -%}
+    {%- set hours = (total_seconds % 86400) // 3600 -%}
+    {%- set minutes = (total_seconds % 3600) // 60 -%}
+    {%- set seconds = total_seconds % 60 -%}
+    {%- set parts = [seconds ~ ' seconds', minutes ~ ' minutes', hours ~ ' hours', days ~ ' days'] -%}
+    {%- set values = [seconds, minutes, hours, days] -%}
+    {%- set arr_int = values | map('int') | list -%}
+    {%- set nonzero = arr_int | select('gt', 0) | list -%}
+    {%- if nonzero -%}
+        {%- set first_index = values.index(nonzero[0]) -%}
+        {%- set values = values[first_index:] %}
+        {%- set parts = parts[first_index:] %}
+        {%- set parts = parts|reverse %}
+        {{ parts|join(' ') }}
+    {%- else %}
+        {%- set parts = parts|reverse %}
+        {{ parts|join(' ') }}
+    {%- endif %}
+{% endmacro %}
+
+{% block admin_content %}
+    <p>Journal CSVs are generated automatically on a schedule.  Premium users receive the CSV with the most recent Export Date, non-premium users
+    receive the CSV which lags behind the current date by {{ format_seconds(config.get("NON_PREMIUM_DELAY_SECONDS")) }}.</p>
+    <div id="journal_csvs"></div>
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript">
+        $.extend(true, doaj, {
+            adminJournalCSVSearchConfig : {
+                searchPath : '/admin_query/journal_csv/_search',
+                free: "{{ free.id }}",
+                premium: "{{ premium.id }}"
+            }
+        });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.TabularResultsRenderer.js"></script>
+    <script type="text/javascript" src="/static/js/edges/admin.journal_csv.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% endblock %}

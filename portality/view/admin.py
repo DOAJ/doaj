@@ -912,3 +912,24 @@ def get_report(report_id):
 @login_required
 def reports_search():
     return render_template(templates.ADMIN_REPORTS_SEARCH)
+
+@blueprint.route("/journal-csv", methods=["GET"])
+@login_required
+def journal_csv_search():
+    svc = DOAJ.journalService()
+    free = svc.get_free_csv()
+    premium = svc.get_premium_csv()
+    return render_template(templates.ADMIN_JOURNAL_CSV_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/journal-csv/delete", methods=["POST"])
+@login_required
+def journal_csv_delete():
+    svc = DOAJ.journalService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_csv(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)

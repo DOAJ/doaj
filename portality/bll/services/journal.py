@@ -319,3 +319,26 @@ class JournalService(object):
         store_url = main_store.temporary_url(container, filename,
                                              timeout=app.config.get("JOURNAL_CSV_URL_TIMEOUT", 3600))
         return store_url
+
+    def delete_csv(self, id:str):
+        """
+        Delete a journal csv by id.
+
+        :param id: the id of the journal csv to delete
+        :return: True if deleted, False if not found
+        """
+        jc = models.JournalCSV.pull(id)
+        if jc is None:
+            return False
+
+        container = jc.container
+        filename = jc.filename
+
+        try:
+            store = StoreFactory.get(constants.STORE__SCOPE__JOURNAL_CSV)
+            store.delete_file(container, filename)
+        except:
+            pass
+
+        jc.delete()
+        return True

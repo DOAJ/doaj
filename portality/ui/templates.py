@@ -52,6 +52,7 @@ UPDATE_REQUESTS_SEARCH = "management/admin/update_requests.html"
 DASHBOARD = "management/admin/dashboard.html"
 NOTIFICATIONS = "management/admin/notifications.html"
 ADMIN_UNLOCKED = "management/admin/unlocked.html"
+ADMIN_JOURNAL_CSV_SEARCH = "management/admin/journal_csv_search.html"
 
 # Application Form
 MANED_APPLICATION_FORM = "management/admin/maned_application.html"
