@@ -1,3 +1,4 @@
+import random
 import uuid, json
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
@@ -7,6 +8,7 @@ from wtforms import StringField, HiddenField, PasswordField, DecimalField, valid
 
 from portality import util
 from portality import constants
+from portality.app_email import send_mail
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
@@ -185,8 +187,107 @@ class RedirectForm(Form):
 
 class LoginForm(RedirectForm):
     user = StringField('Email address or username', [validators.DataRequired()])
-    password = PasswordField('Password', [validators.DataRequired()])
+    password = PasswordField('Password', [validators.Optional()])
+    action = StringField('Action', [validators.DataRequired()])
 
+class LoginCodeForm(RedirectForm):
+    code = StringField('Code', [validators.DataRequired()])
+    user = HiddenField('User')
+
+def _get_param(param_name):
+    """Get parameter value from either GET or POST request"""
+    return request.args.get(param_name) or request.form.get(param_name)
+
+def _complete_verification(account):
+    """Complete the verification process and log in the user"""
+    account.remove_login_code()
+    account.save()
+    login_user(account)
+
+@blueprint.route('/verify-code', methods=['GET', 'POST'])
+def verify_code():
+    form = LoginForm(request.form, csrf_enabled=False)
+    email = _get_param('email')
+    verification_code = _get_param('code')
+    if request.args.get("redirected") == "apply":
+        form['next'].data = url_for("apply.public_application")
+
+    if not email or not verification_code:
+        flash("Required parameters not available.")
+        return redirect(url_for('account.login'))
+
+    account = Account.pull_by_email(email)
+    if not account:
+        flash("Account not recognised.")
+        return redirect(url_for('account.login'))
+
+    if not account.is_login_code_valid(verification_code):
+        flash("Invalid or expired verification code")
+        return redirect(url_for('account.login'))
+
+    _complete_verification(account)
+    return redirect(get_redirect_target(form=form, acc=account))
+
+
+def send_login_code_email(email: str, code: str, redirect_url: str):
+    """Send login code email with both code and direct link"""
+    login_url = url_for('account.verify_code', code=code, email=email, redirected=redirect_url, _external=True)
+
+    send_mail(
+        to=[email],
+        fro=app.config.get('SYSTEM_EMAIL_FROM'),
+        html_body_flag = True,
+        subject="Your Login Code for DOAJ",
+        template_name=templates.EMAIL_LOGIN_LINK,
+        code=code,
+        login_url=login_url,
+        expiry_minutes=10
+    )
+
+def get_user_account(username):
+    # If our settings allow, try getting the user account by ID first, then by email address
+    if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
+        return Account.pull(username) or Account.pull_by_email(username)
+    return Account.pull_by_email(username)
+
+
+def handle_login_code_request(user, form):
+    LOGIN_CODE_LENGTH = 6
+    LOGIN_CODE_TIMEOUT = 600  # 10 minutes
+
+    code = ''.join(str(random.randint(0, 9)) for _ in range(LOGIN_CODE_LENGTH))
+    user.set_login_code(code, timeout=LOGIN_CODE_TIMEOUT)
+    user.save()
+
+    send_login_code_email(user.email, code, request.args.get("redirected", ""))
+    flash('A login link along with login code has been sent to your email.')
+
+    return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
+
+def handle_password_login(user, form):
+    if user.check_password(form.password.data):
+        login_user(user, remember=True)
+        flash('Welcome back.', 'success')
+        return redirect(get_redirect_target(form=form, acc=user))
+    else:
+        forgot_url = url_for(".forgot")
+        form.password.errors.append(
+            f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
+        )
+
+def handle_incomplete_verification():
+    forgot_url = url_for('.forgot')
+    forgot_instructions = f'<a href="{forgot_url}">&lt;click here&gt;</a> to send a new reset link.'
+    util.flash_with_url(
+        'Account verification is incomplete. Check your emails for the link or ' + forgot_instructions,
+        'error'
+    )
+
+def handle_login_template_rendering(form):
+    if request.args.get("redirected") == "apply":
+        form['next'].data = url_for("apply.public_application")
+        return render_template(templates.LOGIN_TO_APPLY, form=form)
+    return render_template(templates.GLOBAL_LOGIN, form=form)
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
@@ -194,38 +295,26 @@ def login():
     current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
-        password = form.password.data
         username = form.user.data
+        action = request.form.get('action')
 
-        # If our settings allow, try getting the user account by ID first, then by email address
-        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
-            user = Account.pull(username) or Account.pull_by_email(username)
-        else:
-            user = Account.pull_by_email(username)
+        user = get_user_account(username)
 
         # If we have a verified user account, proceed to attempt login
         try:
             if user is not None:
-                if user.check_password(password):
-                    login_user(user, remember=True)
-                    flash('Welcome back.', 'success')
-                    return redirect(get_redirect_target(form=form, acc=user))
-                else:
-                    form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
+                if action == 'get_link':
+                    return handle_login_code_request(user, form)
+                elif action == 'password_login':
+                    return handle_password_login(user, form)
             else:
                 form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
         except KeyError:
             # Account has no password set, the user needs to reset or use an existing valid reset link
-            FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to send a new reset link.'.format(url=url_for('.forgot'))
-            util.flash_with_url('Account verification is incomplete. Check your emails for the link or ' + FORGOT_INSTR,
-                                'error')
+            handle_incomplete_verification()
             return redirect(url_for('doaj.home'))
 
-    if request.args.get("redirected") == "apply":
-        form['next'].data = url_for("apply.public_application")
-        return render_template(templates.LOGIN_TO_APPLY, form=form)
-    return render_template(templates.GLOBAL_LOGIN, form=form)
-
+    return handle_login_template_rendering(form)
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
