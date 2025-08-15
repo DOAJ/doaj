@@ -2812,6 +2812,15 @@ $.extend(true, doaj, {
             this.showShortened = false;
 
             this.namespace = "doaj-share-embed";
+            this.copyLinkBtnId = edges.css_id(this.namespace, "btn--copy-link", this);
+            this.copyEmbedBtnId = edges.css_id(this.namespace, "btn--copy-embed", this);
+            this.clickToCopyBtnClass = edges.css_classes(this.namespace, "btn--click-to-copy", this);
+
+            this.generateButton = function(id, cssClass, text) {
+                return '<div class="button-wrapper" style="display: flex; justify-content: flex-end;"><button type="button" class="' + cssClass + '" id="' + id + '">' +
+                    '<span data-feather="copy" aria-hidden="true"></span>&nbsp;&nbsp;  ' + text + '</button>' +
+                    '<span id="' + id +'--copy-status" class="sr-only" aria-live="polite"></span></div>'
+            }
 
             this.draw = function () {
                 // reset these on each draw
@@ -2829,11 +2838,22 @@ $.extend(true, doaj, {
                     var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this)
                     shorten = '<p><button class="' + shortenButtonClass + '">shorten url</button></p>';
                 }
+
                 var embed = "";
+
+                // The following code is rendered only after the modal is open:
+                // None of the code in this draw function is rendered only after the modal is open.
+                // All modal content (including share link, embed, copy buttons, etc.) is rendered
+                // immediately as part of the modal HTML, even before the modal is opened.
+                // The only thing that happens after the modal is opened is that event handlers
+                // (like click handlers) may be triggered, or values in the textareas may be set
+                // by the toggleShare function, but the HTML itself is rendered up front.
+
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
-                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>' +
+                            this.generateButton(this.copyEmbedBtnId, this.clickToCopyBtnClass, "Copy this script");
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -2841,9 +2861,10 @@ $.extend(true, doaj, {
                 var shareFrag = '<div class="' + shareBoxClass + '">\
                     <p>Share a link to this search</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
+                    '+ this.generateButton(this.copyLinkBtnId, this.clickToCopyBtnClass, "Copy this link") + '\
                     ' + shorten + '\
                     ' + embed + '\
-                </div>';
+                    </div>'
 
                 var modal = '<section class="modal" id="' + modalId + '" tabindex="-1" role="dialog">\
                     <div class="modal__dialog" role="document">\
@@ -2869,10 +2890,34 @@ $.extend(true, doaj, {
                     var shortenSelector = edges.css_class_selector(this.namespace, "shorten-url", this);
                     edges.on(shortenSelector, "click", this, "toggleShorten");
                 }
-            };
+
+                edges.on("#"+this.copyLinkBtnId, "click", this, "clickToCopy");
+                edges.on("#"+this.copyEmbedBtnId, "click", this, "clickToCopy");
+            }
 
             //////////////////////////////////////////////////////
             // functions for setting UI values
+
+            this.clickToCopy = function(e) {
+                var value = $(e).parent().prevAll("textarea").val()
+                navigator.clipboard.writeText(value).then(() => {
+                    const originalText = $(e).html();
+                    $(e).html('<span data-feather="check" aria-hidden="true"></span>&nbsp;&nbsp;Value copied!');
+                    feather.replace();
+                    setTimeout(() => {
+                        $(e).html(originalText);
+                    }, 1500);
+                });
+                if (e.id == this.copyEmbedBtnId) {
+                    console.log("Copying embed snippet");
+                }
+                else if (e.id == this.copyLinkBtnId) {
+                    console.log("Copying share link");
+                } else {
+                    console.error("Unknown button clicked: " + e.id);
+                    return;
+                }
+            }
 
             this.toggleShare = function (element) {
                 var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
@@ -5331,19 +5376,14 @@ $.extend(true, doaj, {
         },
 
         issns: function (val, resultobj, renderer) {
-            if (resultobj.bibjson && (resultobj.bibjson.pissn || resultobj.bibjson.eissn)) {
-                var issn = resultobj.bibjson.pissn;
-                var eissn = resultobj.bibjson.eissn;
-                var issns = [];
-                if (issn) {
-                    issns.push(edges.escapeHtml(issn));
+            let issns = []
+            for (let variant of ["pissn", "eissn"]) {
+                let x_issn = resultobj.bibjson?.[variant] ?? false;
+                if (x_issn) {
+                    issns.push(`<strong>${variant.toUpperCase()}:</strong> ${x_issn}`)
                 }
-                if (eissn) {
-                    issns.push(edges.escapeHtml(eissn));
-                }
-                return issns.join(", ")
             }
-            return false
+            return issns.length ? issns.join(', ') : false;
         },
 
         countryName: function (val, resultobj, renderer) {
