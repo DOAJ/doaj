@@ -421,11 +421,9 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
 def page_not_found(e):
     return render_template(templates.ERROR_400), 400
 
-
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template(templates.ERROR_401), 401
-
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -456,7 +454,7 @@ def handle_500(e):
 @app.errorhandler(elasticsearch.exceptions.RequestError)
 def handle_es_request_error(e):
     app.logger.exception(e)
-    return render_template('400.html'), 400
+    return render_template(templates.ERROR_400), 400
 
 
 def run_server(host=None, port=None, fake_https=False):

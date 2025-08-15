@@ -590,15 +590,18 @@ class Journal(JournalLikeObject):
     @classmethod
     def get_active_journal(cls, journals) -> Journal:
         """
-        From the list of journals with the same ISSNs finds the one that is In Doaj
+        From the list of journals with the same ISSNs find the one that is In DOAJ
+
         If > 1: raise TooManyJournals (500)
         If == 0: raise JournalWithdrawn (410)
-        If journals on the list have different ISSNs: raise ValueError
-        :param journals:
+        If journals on the list have different ISSNs or nothing supplied: raise ValueError
+
+        :param journals: List of Journal objects with the same ISSNs
         :return: Journal
+        :raises TooManyJournals (500), JournalWithdrawn (410), ValueError (400)
         """
         if not journals:
-            raise(400)
+            raise ValueError("No Journals supplied.")
 
         first_issns = set(journals[0].known_issns())
         if not all(set(j.known_issns()) == first_issns for j in journals[1:]):
@@ -606,16 +609,19 @@ class Journal(JournalLikeObject):
 
         journals_in_doaj = 0
         the_one = None
+
+        # Check all of the journals for the one that's publicly visible
         for j in journals:
             if j.is_in_doaj():
                 journals_in_doaj += 1
                 the_one = j
             if journals_in_doaj > 1:
                 raise exceptions.TooManyJournals
+
+        # Return strictly one journal
         if journals_in_doaj == 0:
             raise exceptions.JournalWithdrawn
-        if journals_in_doaj == 1:
-            return the_one
+        return the_one
 
     def all_articles(self):
         from portality.models import Article

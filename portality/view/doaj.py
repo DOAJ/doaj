@@ -283,6 +283,7 @@ def find_toc_journal_by_identifier(identifier):
             abort(404)
 
         try:
+            # Can raise BadRequest (400), TooManyJournals (500), JournalWithdrawn (410), ValueError, see error handlers.
             journal = models.Journal.get_active_journal(js)
         except exceptions.TooManyJournals:
             app.logger.exception(Messages.TOO_MANY_JOURNALS_LOG.format(identifier=identifier))
@@ -291,13 +292,16 @@ def find_toc_journal_by_identifier(identifier):
         return journal
 
     elif len(identifier) == 32:
-        js = models.Journal.pull(identifier)  # Returns None on fail
+        # Pull by ES identifier
+        j = models.Journal.pull(identifier)  # Returns None on fail
 
-        if js is None:
+        if j is None:
             abort(404)
 
-        if not js.is_in_doaj():
+        if j.is_in_doaj() is False:
             raise exceptions.JournalWithdrawn
+        return j
+
     abort(400)
 
 
