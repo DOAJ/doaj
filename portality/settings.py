@@ -1118,6 +1118,9 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
+# Maximum number of sitemap entries per index file before splitting into chunks (50K entries, 50MB size is actual limit)
+SITEMAP_INDEX_MAX_ENTRIES = 90
+
 ##################################################
 # News feed settings
 # ~~->News:Feature~~
