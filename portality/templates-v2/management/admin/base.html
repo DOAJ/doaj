@@ -1,6 +1,8 @@
 {% extends "management/base.html" %}
 
 {% block management_stylesheets %}
+    {# CSS for datepicker #}
+    <link rel="stylesheet" href="/static/vendor/flatpickr-4.6.13/flatpickr-4.6.13.min.css">
     {% block admin_stylesheets %}{% endblock %}
 {% endblock %}
 
@@ -13,5 +15,6 @@
 {% endblock %}
 
 {% block management_js %}
+    <script src="/static/vendor/flatpickr-4.6.13/flatpickr-4.6.13.min.js"></script>
     {% block admin_js %}{% endblock %}
 {% endblock %}
