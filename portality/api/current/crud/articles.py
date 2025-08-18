@@ -2,13 +2,14 @@
 import json
 from typing import Dict
 
+from portality import constants
 from portality.api.current.crud.common import CrudApi
 from portality.api.current import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.bll import exceptions
 from portality.core import app
 from portality.dao import ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached
-from portality.lib import dataobj, constants
+from portality.lib import dataobj
 from portality import models, app_email
 from portality.bll.doaj import DOAJ
 from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException, \
