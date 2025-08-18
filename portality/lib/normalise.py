@@ -46,6 +46,7 @@ def normalise_doi(doi):
     * strips leading/trailing whitespace
     * validates that the DOI meets the regex
     * extracts only the 10.xxxx portion
+    * Converts the DOI to lower case.  While this is not part of the standard, it is a common practice
 
     :param doi:
     :return:
@@ -56,4 +57,6 @@ def normalise_doi(doi):
     norm = regex.group_match(regex.DOI_COMPILED, doi, "id")
     if norm is None:
         raise ValueError("Could not extract a normalised DOI from '{x}'".format(x=doi))
+    norm = norm.lower()
+    print(norm)
     return norm

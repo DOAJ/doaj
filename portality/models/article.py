@@ -478,8 +478,8 @@ class Article(DomainObject):
         try:
             doi = normalise.normalise_doi(source_doi)
         except ValueError as e:
-            # if we can't normalise the DOI, just store it as-is.
-            doi = source_doi
+            # if we can't normalise the DOI, just store it cast to lower case.
+            doi = source_doi.lower()
 
         # create a normalised version of the fulltext URL for deduplication
         fulltexts = cbib.get_urls(constants.LINK_TYPE_FULLTEXT)

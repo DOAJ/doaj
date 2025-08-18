@@ -3,7 +3,7 @@ import json
 from flask import url_for
 from doajtest.helpers import DoajTestCase, with_es
 from portality.lib import dates
-from portality.lib.dataobj import DataStructureException, ScriptTagFoundException
+from portality.lib.dataobj import DataStructureException, ScriptTagFoundException, DataObjException
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.api.current import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
@@ -59,6 +59,16 @@ class TestCrudArticle(DoajTestCase):
         # issns the same (but not normalised the same)
         data["bibjson"]["identifier"] = [{"type" : "pissn", "id": "12345678"}, {"type" : "eissn", "id": "1234-5678"}]
         with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
+        # incorrect capitalisation on doi
+        data["bibjson"]["identifier"] = [{"type" : "DOI", "id": "10.1234/5678"}]
+        with self.assertRaises(DataObjException):
+            ia = IncomingArticleDO(data)
+
+        # additional identifier that's not one of the allowed types
+        data["bibjson"]["identifier"] = [{"type": "wibble", "id": "12345678"}, {"type" : "pissn", "id": "12345678"}, {"type" : "eissn", "id": "1234-5678"}]
+        with self.assertRaises(DataObjException):
             ia = IncomingArticleDO(data)
 
         # test unnecessary https://github.com/DOAJ/doajPM/issues/2950
@@ -189,6 +199,19 @@ class TestCrudArticle(DoajTestCase):
             a = ArticlesCrudApi.create(data, account)
 
         # TODO add test for when you're trying to create an article for a journal not owned by you
+
+    def test_03a_create_article_with_incorrect_identifiers(self):
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        data = ArticleFixtureFactory.make_incoming_api_article()
+        data["bibjson"]["identifier"] = [
+            {"type": "DOI", "id": "10.1234/5678"},
+            {"type": "whatever", "id": "wibble"}
+        ]
+        a = ArticlesCrudApi.create(data, account)
 
     def test_04_coerce(self):
         data = ArticleFixtureFactory.make_article_source()
