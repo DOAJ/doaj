@@ -58,5 +58,4 @@ def normalise_doi(doi):
     if norm is None:
         raise ValueError("Could not extract a normalised DOI from '{x}'".format(x=doi))
     norm = norm.lower()
-    print(norm)
     return norm
