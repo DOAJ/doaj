@@ -36,8 +36,15 @@ jobs:
       run: |
         python dependencies.py >> system_info.txt
 
+    - name: Prepare outputs
+      shell: /bin/bash
+      run: |
+        mkdir -p analysis_output
+        mv system_info.txt analysis_output/
+        cp -r dependencies_analysis analysis_output/
+
     - name: Upload dependencies output
       uses: actions/upload-artifact@v4
       with:
         name: dependencies-report
-        path: system_info.txt
+        path: analysis_output
