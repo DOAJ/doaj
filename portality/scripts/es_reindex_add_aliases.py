@@ -232,7 +232,6 @@ def main():
                     client=es,
                     source_index=idx,
                     target_index=new_index,
-                    request_timeout=60 * 30,
                     chunk_size=500,
                 )
                 per['reindex']['result'] = result
