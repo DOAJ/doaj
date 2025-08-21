@@ -243,6 +243,11 @@ forms/application_forms.py:2584,No,No editor assigned,
 forms/validate.py:141,No,Invalid URL.,
 forms/validate.py:209,No,Invalid input.,
 forms/validate.py:588,No,This field is required.,
+templates-v2/_application-form/includes/_field.html:8,No,Optional,
+templates-v2/_application-form/includes/_field.html:12,Yes,More help,Aide associée
+templates-v2/_application-form/includes/_field.html:15,No,Copy value,
+templates-v2/_application-form/includes/_field.html:16,No,Copied!,
+templates-v2/_application-form/includes/_field.html:33,No,Add,
 templates-v2/_application-form/includes/_fieldset_best-practice.html:6; templates-v2/public/_application-form/includes/_pagination_menu.html:20; templates-v2/public/public_application.html:20,No,Best practice,Pratiques exemplaires
 templates-v2/_application-form/includes/_fieldset_business-model.html:6,No,Business Model,Modèle économique
 templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:6; templates-v2/public/_application-form/includes/_pagination_menu.html:11; templates-v2/public/public_application.html:17,No,Copyright & licensing,Droit d’auteur et conditions d'utilisation

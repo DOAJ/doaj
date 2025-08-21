@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-09 19:18+0530\n"
+"POT-Creation-Date: 2025-08-21 19:33+0530\n"
 "PO-Revision-Date: 2025-05-05 11:30+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -594,8 +594,7 @@ msgstr ""
 "Veuillez saisir l'année où la revue a commencé à publier tout son contenu"
 " en libre accès véritable, selon la <a "
 "href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-"
-"access/' target='_blank' rel='nofollow'>définition</a> "
-"du DOAJ"
+"access/' target='_blank' rel='nofollow'>définition</a> du DOAJ"
 
 #: forms/application_forms.py:965
 msgid ""
@@ -665,15 +664,13 @@ msgstr ""
 
 #: forms/application_forms.py:1019
 msgid "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
-msgstr ""
-"Saisissez l'URL où se trouve la <strong>politique de "
-"plagiat</strong>"
+msgstr "Saisissez l'URL où se trouve la <strong>politique de plagiat</strong>"
 
 #: forms/application_forms.py:1033
 msgid "Link to the journal’s <b>Aims & Scope</b>"
 msgstr ""
-"Saisissez l'URL où se trouvent les <b>objectifs et la "
-"couverture</b> de la revue"
+"Saisissez l'URL où se trouvent les <b>objectifs et la couverture</b> de "
+"la revue"
 
 #: forms/application_forms.py:1040
 msgid "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"
@@ -706,8 +703,8 @@ msgid ""
 "Average number of <strong>weeks</strong> between article submission & "
 "publication"
 msgstr ""
-"Nombre moyen de <strong>semaines</strong> entre la soumission "
-"d’un article et sa publication"
+"Nombre moyen de <strong>semaines</strong> entre la soumission d’un "
+"article et sa publication"
 
 #: forms/application_forms.py:1094
 msgid "Enter an average number of weeks"
@@ -765,16 +762,15 @@ msgid ""
 "or not</b> there is a fee to publish an article in the journal."
 msgstr ""
 "Lien vers la page où cette information se trouve. Celle-ci doit préciser "
-"s'il y a des frais pour publier un article dans la <b>revue ou "
-"non</b>."
+"s'il y a des frais pour publier un article dans la <b>revue ou non</b>."
 
 #: forms/application_forms.py:1221
 msgid ""
 "Enter the URL for the journal’s <strong>publication fees</strong> "
 "information page"
 msgstr ""
-"Saisissez l'URL où se trouvent les informations sur les <strong>"
-"frais de publication</strong>"
+"Saisissez l'URL où se trouvent les informations sur les <strong>frais de "
+"publication</strong>"
 
 #: forms/application_forms.py:1233
 msgid ""
@@ -791,11 +787,11 @@ msgid ""
 " lower middle-income economies, and/or waivers and discounts for other "
 "authors with demonstrable needs."
 msgstr ""
-"Répondez <strong>Oui</strong> si la revue offre des exonérations "
-"de frais de publication pour les auteur·trices venant de pays à faible "
-"revenu, des réductions pour les auteur·trices venant de pays au revenu "
-"moyen inférieur ou des exonérations et réductions pour d'autres "
-"auteur·trices ayant des besoins pouvant être démontrés."
+"Répondez <strong>Oui</strong> si la revue offre des exonérations de frais"
+" de publication pour les auteur·trices venant de pays à faible revenu, "
+"des réductions pour les auteur·trices venant de pays au revenu moyen "
+"inférieur ou des exonérations et réductions pour d'autres auteur·trices "
+"ayant des besoins pouvant être démontrés."
 
 #: forms/application_forms.py:1258
 msgid "Publication fee waiver"
@@ -808,8 +804,8 @@ msgstr "Lien vers les informations sur l'exonération de frais"
 #: forms/application_forms.py:1271
 msgid "Enter the URL for the journal’s <strong>waiver information</strong> page"
 msgstr ""
-"Saisissez l'URL où se <strong>trouve l'information</strong> sur "
-"les exonérations"
+"Saisissez l'URL où se <strong>trouve l'information</strong> sur les "
+"exonérations"
 
 #: forms/application_forms.py:1285
 msgid "Does the journal charge any other fees to authors?"
@@ -841,8 +837,8 @@ msgstr "Lien vers la déclaration de libre accès de la revue"
 #: forms/application_forms.py:1319
 msgid "Enter the URL for the journal’s <strong>fees<strong> information page"
 msgstr ""
-"Saisissez l'URL où se trouvent les informations sur les <strong>"
-"frais</strong>"
+"Saisissez l'URL où se trouvent les informations sur les "
+"<strong>frais</strong>"
 
 #: forms/application_forms.py:1333
 msgid "Long-term preservation service(s) where the journal is currently archived"
@@ -899,9 +895,8 @@ msgid ""
 msgstr ""
 "Le contenu doit être déposé en continu dans chacune des options que vous "
 "sélectionnez. Si la revue est enregistrée auprès d'un service, mais que "
-"l'archivage n'est pas encore actif, <em>choisissez « Le contenu "
-"de la revue n'est pas archivé par un service de préservation à long terme"
-"</em>."
+"l'archivage n'est pas encore actif, <em>choisissez « Le contenu de la "
+"revue n'est pas archivé par un service de préservation à long terme</em>."
 
 #: forms/application_forms.py:1356
 msgid "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."
@@ -1034,9 +1029,7 @@ msgstr "PURL"
 
 #: forms/application_forms.py:1596
 msgid "<em>The journal does not use persistent article identifiers</em>"
-msgstr ""
-"<em>La revue n’utilise pas d'identifiants pérennes "
-"d’articles</em>"
+msgstr "<em>La revue n’utilise pas d'identifiants pérennes d’articles</em>"
 
 #: forms/application_forms.py:1600
 msgid ""
@@ -1321,6 +1314,27 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
+#: templates-v2/_application-form/includes/_field.html:8
+msgid "Optional"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_field.html:12
+#, fuzzy
+msgid "More help"
+msgstr "Aide associée"
+
+#: templates-v2/_application-form/includes/_field.html:15
+msgid "Copy value"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_field.html:16
+msgid "Copied!"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_field.html:33
+msgid "Add"
+msgstr ""
+
 #: templates-v2/_application-form/includes/_fieldset_best-practice.html:6
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:20
 #: templates-v2/public/public_application.html:20
@@ -1352,22 +1366,24 @@ msgid ""
 "The application form takes approximately <strong>30 minutes</strong> to "
 "complete."
 msgstr ""
-"Il faut environ <strong>30 minutes</strong> pour compléter le "
-"formulaire de candidature."
+"Il faut environ <strong>30 minutes</strong> pour compléter le formulaire "
+"de candidature."
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:10
 msgid "Your progress is automatically saved."
 msgstr "Votre progression sera automatiquement sauvegardée."
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:11
+#, python-format
 msgid ""
 "You can return to this application at any time by clicking <a "
 "href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
 "<em>Publisher dashboard</em></a> at the top."
 msgstr ""
-"Vous pourrez revenir à ce formulaire à tout moment en cliquant sur "
-"<a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; <em>Publisher dashboard</em></a>  (Mon compte → Éditeur) en "
-"haut de la page"
+"Vous pourrez revenir à ce formulaire à tout moment en cliquant sur <a "
+"href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
+"<em>Publisher dashboard</em></a>  (Mon compte → Éditeur) en haut de la "
+"page"
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:12
 #: templates-v2/public/account/login_to_apply.html:14
@@ -1490,3 +1506,4 @@ msgid ""
 "password</a>. If you still cannot login, <a href=\"/contact\">contact "
 "us</a>."
 msgstr ""
+

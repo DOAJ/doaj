@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-09 19:18+0530\n"
+"POT-Creation-Date: 2025-08-21 19:33+0530\n"
 "PO-Revision-Date: 2025-05-05 11:30+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -1190,6 +1190,26 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
+#: templates-v2/_application-form/includes/_field.html:8
+msgid "Optional"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_field.html:12
+msgid "More help"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_field.html:15
+msgid "Copy value"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_field.html:16
+msgid "Copied!"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_field.html:33
+msgid "Add"
+msgstr ""
+
 #: templates-v2/_application-form/includes/_fieldset_best-practice.html:6
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:20
 #: templates-v2/public/public_application.html:20
@@ -1213,7 +1233,7 @@ msgid ""
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:9
-#, fuzzy, python-format
+#, fuzzy
 msgid ""
 "The application form takes approximately <strong>30 minutes</strong> to "
 "complete."
