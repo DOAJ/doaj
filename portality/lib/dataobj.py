@@ -51,6 +51,11 @@ def to_unicode_upper(val):
     val = ufn(val)
     return val.upper()
 
+def to_unicode_lower(val):
+    ufn = to_unicode()
+    val = ufn(val)
+    return val.lower()
+
 def to_int():
     def intify(val):
         # strip any characters that are outside the ascii range - they won't make up the int anyway
@@ -259,6 +264,7 @@ class DataObj(object):
         # extend the coerce map.
         "unicode": to_unicode(),
         "unicode_upper" : to_unicode_upper,
+        "unicode_lower": to_unicode_lower,
         "utcdatetime": date_str(),
         "utcdatetimemicros" : date_str(out_format=FMT_DATETIME_MS_STD),
         "bigenddate" : date_str(out_format=FMT_DATE_STD),
