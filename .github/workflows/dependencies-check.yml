@@ -37,7 +37,7 @@ jobs:
         python dependencies.py >> system_info.txt
 
     - name: Prepare outputs
-      shell: /bin/bash
+      shell: bash
       run: |
         mkdir -p analysis_output
         mv system_info.txt analysis_output/
