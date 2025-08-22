@@ -1,5 +1,5 @@
 ---
-layout: sidenav
+layout: no-sidenav
 include: /public/includes/_team.html
 title: DOAJ team
 section: About
@@ -8,4 +8,5 @@ featuremap: ~~Team:Fragment->TeamData:Template~~
 data: true
 
 ---
+
 

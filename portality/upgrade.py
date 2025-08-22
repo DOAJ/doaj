@@ -92,15 +92,16 @@ def do_upgrade(definition: Definition, verbose, save_batches=None):
         default_query = {
             "query": {"match_all": {}}
         }
+        query = tdef.get("query", default_query)
 
         # learn what kind of model we've got
         model_class = MODELS.get(tdef.get("type"))
-        max = model_class.count()
+        max = model_class.count(query=query)
         action = tdef.get("action", "update")
 
         # Iterate through all of the records in the model class
         try:
-            for result in model_class.iterate(q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"),
+            for result in model_class.iterate(q=query, keepalive=tdef.get("keepalive", "1m"),
                                               page_size=tdef.get("scroll_size", 1000), wrap=False):
 
                 original = deepcopy(result)

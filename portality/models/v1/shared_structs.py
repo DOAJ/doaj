@@ -1,3 +1,5 @@
+from portality import constants
+
 SHARED_BIBJSON = {
     "objects" : [
         "bibjson"
@@ -16,7 +18,7 @@ SHARED_BIBJSON = {
             "structs" : {
                 "identifier" : {
                     "fields" : {
-                        "type" : {"coerce" : "unicode"},
+                        "type" : {"coerce" : "unicode_lower", "allowed_values": constants.ALLOWED_ARTICLE_IDENT_TYPES},
                         "id" : {"coerce" : "unicode"}
                     }
                 },
