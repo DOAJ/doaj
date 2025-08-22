@@ -85,6 +85,24 @@ class Cache(DomainObject):
         return rec.get("filename")
 
     @classmethod
+    def cache_sitemap_indexes(cls, urls):
+        """Cache multiple sitemap index URLs"""
+        for idx, url in enumerate(urls):
+            cobj = cls(**{
+                "filename": url
+            })
+            cobj.set_id(f"sitemap_index_{idx}")
+            cobj.save()
+
+    @classmethod
+    def get_sitemap_index(cls, n):
+        """Get a specific sitemap index URL"""
+        rec = cls.pull(f"sitemap_index_{n}")
+        if rec is None:
+            return None
+        return rec.get("filename")
+
+    @classmethod
     def cache_public_data_dump(cls, article_container, article_filename, article_url, article_size,
                                     journal_container, journal_filename, journal_url, journal_size):
         cobj = cls(**{

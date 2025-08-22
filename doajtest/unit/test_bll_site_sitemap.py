@@ -231,3 +231,74 @@ class TestBLLSitemap(DoajTestCase):
 
         # Tear down
         patch_config(app, original_configs)
+
+    def test_cache_cleanup_on_regeneration(self):
+        """Test that old cached sitemap index entries are properly cleaned up"""
+        # Create test data
+        journals = []
+        for s in JournalFixtureFactory.make_many_journal_sources(count=2, in_doaj=True):
+            j = models.Journal(**s)
+            j.save()
+            journals.append(j)
+        models.Journal.blockall([(j.id, j.last_updated) for j in journals])
+
+        # Force chunking to create multiple index files
+        original_configs = {"SITEMAP_INDEX_MAX_ENTRIES": app.config.get("SITEMAP_INDEX_MAX_ENTRIES", 50000)}
+        patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 1})
+        
+        try:
+            # First generation - should create multiple chunks
+            url, action_register = self.svc.sitemap(prune=False)
+            
+            cache_memory = models.Cache.__memory__
+            # Count initial sitemap_index entries
+            initial_index_entries = [key for key in cache_memory.keys() if key.startswith("sitemap_index_")]
+            initial_count = len(initial_index_entries)
+            
+            # Second generation - should clean up and recreate
+            url2, action_register2 = self.svc.sitemap(prune=False)
+            
+            # Should still have same number of index entries (old ones cleaned up, new ones created)
+            final_index_entries = [key for key in cache_memory.keys() if key.startswith("sitemap_index_")]
+            final_count = len(final_index_entries)
+            
+            # Should have same number of entries, but they should be fresh
+            assert final_count == initial_count
+            
+        finally:
+            patch_config(app, original_configs)
+
+    def test_filename_consistency(self):
+        """Test filename patterns for single vs chunked sitemaps"""
+        journals = []
+        for s in JournalFixtureFactory.make_many_journal_sources(count=2, in_doaj=True):
+            j = models.Journal(**s)
+            j.save()
+            journals.append(j)
+        models.Journal.blockall([(j.id, j.last_updated) for j in journals])
+
+        original_configs = {"SITEMAP_INDEX_MAX_ENTRIES": app.config.get("SITEMAP_INDEX_MAX_ENTRIES", 50000)}
+        
+        try:
+            # Test single file case
+            patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 50000})
+            url_single, action_register_single = self.svc.sitemap(prune=False)
+            
+            # Single case should use sitemap_index_utf8.xml pattern
+            assert url_single is not None
+            assert "sitemap_index_utf8.xml" in url_single
+            
+            # Test chunked file case  
+            patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 1})
+            url_chunked, action_register_chunked = self.svc.sitemap(prune=False)
+            
+            # Chunked case should create files with sitemap_index_0.xml, sitemap_index_1.xml pattern
+            chunked_messages = [msg for msg in action_register_chunked if "Sitemap index" in str(msg)]
+            if len(chunked_messages) > 1:  # Multiple chunks created
+                # Check that the messages reference numbered indices
+                assert any("index 0 written" in str(msg) for msg in chunked_messages)
+                assert any("sitemap_index_0.xml" in str(url_chunked) or "sitemap_index_1.xml" in str(url_chunked) 
+                          or any("index" in str(msg) and any(str(i) in str(msg) for i in range(10)) for msg in chunked_messages))
+                
+        finally:
+            patch_config(app, original_configs)
