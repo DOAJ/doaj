@@ -27,7 +27,7 @@
     display: none;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1279px) {
     .secondary-nav__menu-toggle {
       display: flex;
       margin-left: $spacing-03;
@@ -67,7 +67,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1279px) {
     .nav-bar {
       float: right;
     }
