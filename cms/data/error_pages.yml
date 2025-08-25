@@ -1,19 +1,19 @@
 404:
   header: "Hmm, we couldn’t find that page – maybe the link’s broken or it never existed."
-  text: "You can search for articles or look through our list of journals to keep exploring."
+  text: "You can keep exploring by searching through all the journals or articles."
 
 410:
   article:
     withdrawn:
-      header: "This article came from a journal that’s no longer listed in DOAJ."
-      text: "You might still find similar articles in other journals or browse all articles listed."
+      header: "This article came from a journal that’s no longer in DOAJ."
+      text: "You might find similar articles in other journals or you can search all articles."
 
     tombstone:
       header: "This article has been removed and isn’t available anymore."
-      text: "But you can check out other articles or browser our listed journals."
+      text: "But you can search for other journals or articles."
 
 
   journal:
     withdrawn:
       header: "This journal isn’t in DOAJ anymore."
-      text: "But you can browse through our other listed journals or articles."
+      text: "But you can search for other journals or articles."
