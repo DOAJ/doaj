@@ -54,6 +54,12 @@ entries:
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: News
         url: https://blog.doaj.org    # ~~->News:ExternalService~~
+  - id: premium # label is set dynamically in the html
+    feather: star
+    footer: true
+    primary: true
+    secondary_mobile: true
+    route: doaj.premium
   - id: support
     label: Support
     feather: heart

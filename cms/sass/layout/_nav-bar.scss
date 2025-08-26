@@ -21,6 +21,15 @@
     &:last-child {
       margin-right: 0;
     }
+
+    a {
+      display: flex;
+      align-items: baseline;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      gap: .25rem;
+    }
   }
 
   .feather {
