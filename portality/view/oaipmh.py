@@ -297,6 +297,8 @@ def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_
             if record.is_in_doaj():
                 metadata = xwalk.crosswalk(record)
                 gr.metadata = metadata
+            else:
+                return RecordGone(base_url)
 
             return gr
 
@@ -841,6 +843,12 @@ class NoRecordsMatch(OAIPMHError):
         super(NoRecordsMatch, self).__init__(base_url)
         self.code = "noRecordsMatch"
         self.description = "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+
+class RecordGone(OAIPMHError):
+    def __init__(self, base_url):
+        super(RecordGone, self).__init__(base_url)
+        self.code = "RecordGone"
+        self.description = "This record is no longer available in DOAJ"
 
 
 class NoMetadataFormats(OAIPMHError):

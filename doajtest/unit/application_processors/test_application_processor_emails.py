@@ -1012,9 +1012,8 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             processor.finalise(acc)
             info_stream_contents = self.info_stream.getvalue()
 
-            # We expect 3 email to be sent:
-            #   * to the publisher, informing them of the journal's acceptance
-            #   * to the journal contact, informing them of the journal's acceptance
+            # We expect 1 email to be sent synchronously - others are handled by events
+            #   * to the journal owner, informing them of the journal's acceptance
             publisher_template = templates.EMAIL_NOTIFICATION
             publisher_to = re.escape(owner.email)
             publisher_subject = re.escape(
@@ -1024,7 +1023,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                                 info_stream_contents,
                                                 re.DOTALL)
             assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
-            assert len(re.findall(email_count_string, info_stream_contents)) == 3   # it's 3, we need a better way of testing these
+            assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""

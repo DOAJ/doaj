@@ -17,6 +17,13 @@
 {% block admin_js %}
 
     <script type="text/javascript">
+
+    var current_user = {
+        "id": "{{ current_user['id'] }}",
+        "role": {{ current_user['role'] | tojson }}
+    };
+
+
     $.extend(true, doaj, {
         adminApplicationsSearchConfig : {
             applicationEditUrl : "{{ url_for('admin.application', application_id='') }}",

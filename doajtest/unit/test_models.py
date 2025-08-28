@@ -614,6 +614,25 @@ class TestModels(DoajTestCase):
         assert len(gbj.get_identifiers()) == 0
         assert len(gbj.subjects()) == 0
 
+    def test_13a_article_bibjson_identifiers(self):
+        """Check that the ArticleBibJSON identifiers are correctly set up"""
+        source = BibJSONFixtureFactory.article_bibjson()
+        abj = models.ArticleBibJSON(source)
+
+        # check the fixture's identifier, which is in the correct field
+        assert abj.get_one_identifier(constants.IDENT_TYPE_DOI) == "10.1234/article"
+        assert len(abj.get_identifiers()) == 3
+
+        # add the identifier with the upper case type
+        abj.add_identifier("DOI", "10.1234/7")
+        assert abj.get_one_identifier(constants.IDENT_TYPE_DOI) == "10.1234/7"
+        assert len(abj.get_identifiers()) == 3
+
+        with self.assertRaises(dataobj.DataObjException) as cm:
+            # try to add an identifier with an invalid type
+            abj.add_identifier("invalid_type", "10.1234/8")
+
+
     def test_14_journal_like_bibjson(self):
         source = BibJSONFixtureFactory.journal_bibjson()
         bj = models.JournalLikeBibJSON(source)

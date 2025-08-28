@@ -168,6 +168,17 @@ DOAJ stores the personal data of applicants in a Google Sheet until we have fini
 
 DOAJ does not share personal data with any organisation or individual outside the immediate DOAJ organisation, nor will it grant requests from industry organisations for access to user data.
 
+#### 7a Data transfer to another organisation
+
+If the current incarnation of DOAJ must wind down, the whole operation will be transferred to another organisation. This is described in full in our POSI statement. The transfer of your user data will be necessary in order for you to continue to use the site. Before any transfer occurs, all email addresses in our user database will receive an email from us that describes: 
+
+- the reason for the transfer
+- the data being transferred
+- the recipient of the data
+- the recipients commitment to store user data securely and under the conditions laid out by GDPR
+- what to do if you do not want your data transferred and what it will mean for your use of the site
+- details on how to contact someone with questions or concerns
+
 ### 8) How to delete your account and request that personal data be deleted
 
 #### 8a How to delete your account

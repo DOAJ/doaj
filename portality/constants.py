@@ -40,6 +40,9 @@ LOCK_APPLICATION = "suggestion"
 LOCK_JOURNAL = "journal"
 
 IDENT_TYPE_DOI = "doi"
+IDENT_TYPE_PISSN = "pissn"
+IDENT_TYPE_EISSN = "eissn"
+ALLOWED_ARTICLE_IDENT_TYPES = [IDENT_TYPE_DOI, IDENT_TYPE_PISSN, IDENT_TYPE_EISSN]
 LINK_TYPE_FULLTEXT = "fulltext"
 
 # ~~-> Todo:Service~~
@@ -91,6 +94,8 @@ ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
 ROLE_API = "api"
+# TODO add ultra_bulk_delete and refactor view to use constants
+ROLE_ADMIN_REPORT_WITH_NOTES = "ultra_admin_reports_with_notes"  # MUST start with ultra_ so that superusers don't gain
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
@@ -114,6 +119,10 @@ BGJOB_QUEUE_ID_SCHEDULED_LONG = "scheduled_long"
 BG_STATUS_STABLE = 'stable'
 BG_STATUS_UNSTABLE = 'unstable'
 
+WITHDRAWN = "withdrawn"
+TOMBSTONE = "tombstone"
+ARTICLE = "article"
+JOURNAL = "journal"
 
 class ConstantList:
     @classmethod
