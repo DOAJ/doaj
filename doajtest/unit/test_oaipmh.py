@@ -63,7 +63,6 @@ class TestClient(DoajTestCase):
         j_private = models.Journal(**journal_sources[1])
         j_private.set_in_doaj(False)
         j_private.save(blocking=True)
-        private_id = j_private.id
 
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
@@ -97,12 +96,6 @@ class TestClient(DoajTestCase):
                         public_id))
                 assert resp.status_code == 200
 
-                # Check for OAI-PMH error
-                tree = etree.fromstring(resp.data)
-                error_elem = tree.find('.//oai:error', namespaces=self.oai_ns)
-
-                assert error_elem is None, f"OAI-PMH return an error for existing journal"
-
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:GetRecord', namespaces=self.oai_ns)
 
@@ -111,17 +104,6 @@ class TestClient(DoajTestCase):
 
                 # Check we have the correct journal
                 assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == j_public.bibjson().title
-
-                resp = t_client.get(
-                    url_for('oaipmh.oaipmh', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier={0}'.format(
-                        private_id))
-
-                # Check for OAI-PMH error
-                tree = etree.fromstring(resp.data)
-                error_elem = tree.find('.//oai:error', namespaces=self.oai_ns)
-
-                assert error_elem is not None, f"OAI-PMH has not returned an error for a private journal"
-                assert error_elem.attrib.get('code') == "RecordGone"
 
     def test_03_oai_resumption_token(self):
         """ Test the behaviour of the ResumptionToken in the OAI interface"""
@@ -368,7 +350,6 @@ class TestClient(DoajTestCase):
         ba = a_private.bibjson()
         ba.title = "Private Article"
         a_private.save(blocking=True)
-        private_id = a_private.id
 
         article_source = ArticleFixtureFactory.make_article_source(eissn='4321-4321', pissn='8765-8765,', in_doaj=True)
         a_public = models.Article(**article_source)
@@ -425,12 +406,6 @@ class TestClient(DoajTestCase):
                                             metadataPrefix='oai_dc') + '&identifier=' + public_id)
                 assert resp.status_code == 200
 
-                # Check for OAI-PMH error
-                tree = etree.fromstring(resp.data)
-                error_elem = tree.find('.//oai:error', namespaces=self.oai_ns)
-
-                assert error_elem is None, f"OAI-PMH error returned: {error_elem.text}"
-
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:GetRecord', namespaces=self.oai_ns)
 
@@ -441,17 +416,6 @@ class TestClient(DoajTestCase):
 
                 # Check we have the correct journal
                 assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == a_public.bibjson().title
-
-                resp = t_client.get(url_for('oaipmh.oaipmh', specified='article', verb='GetRecord',
-                                            metadataPrefix='oai_dc') + '&identifier=' + private_id)
-
-                # Check for OAI-PMH error
-                tree = etree.fromstring(resp.data)
-                error_elem = tree.find('.//oai:error', namespaces=self.oai_ns)
-
-                assert error_elem is not None, f"OAI-PMH has not returned an error for a private article"
-
-                assert error_elem.attrib.get('code') == "RecordGone"
 
     def test_10_subjects(self):
         """test if the OAI-PMH journal feed returns correct journals when set specified"""

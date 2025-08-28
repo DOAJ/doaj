@@ -784,6 +784,8 @@
             "paths": [
               [
                 "layouts/base.html",
+                "layouts/public_base.html",
+                "layouts/single_col_page.html",
                 "404.html"
               ]
             ]
