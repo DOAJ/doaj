@@ -1,9 +1,6 @@
 import re
 import os
-from abc import ABC
 from datetime import datetime
-
-from lxml import etree
 
 from portality import models
 from portality.bll import exceptions
@@ -14,7 +11,6 @@ from portality.lib.dates import FMT_DATETIME_SHORT, FMT_DATETIME_STD
 from portality.store import StoreFactory, prune_container
 from portality.util import get_full_url_safe
 from collections.abc import Iterable
-from portality.view.doaj import sitemap
 
 NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 IN_DOAJ = {
@@ -28,28 +24,79 @@ IN_DOAJ = {
 }
 NMSP = "http://www.sitemaps.org/schemas/sitemap/0.9"
 MAX_FILE_SIZE = (49 * 1024 * 1024)
-MAX_URL_COUNT = 49000
+MAX_URL_COUNT = 400
 
-class SitemapGenerator(Iterable):
-
-    def __init__(self, filename_prefix, temp_store, main_store, container_id):
+class ChunkedURLListFileGenerator(Iterable):
+    def __init__(self, directory, filename_prefix, temp_store, main_store, container_id, max_file_size=MAX_FILE_SIZE, max_url_count=MAX_URL_COUNT):
         self.file_idx = 0
         self.url_count = 0
         self.current_file_path = None
         self.current_filename = None
         self.file = None
-        self.sitemap_files = []
+        self.max_file_size = max_file_size
+        self.max_url_count = max_url_count
+        self.directory = directory
         self.filename_prefix = filename_prefix
         self.temp_store = temp_store
         self.main_store = main_store
         self.container_id = container_id
-        self.change_freq = app.config.get("TOC_CHANGEFREQ", "monthly")
-        self.create_sitemap_file()
+        self.files = []
+
+        self.create_file()
 
     def add_url(self, url, lastmod=None):
         self.write_url_element(url, lastmod=lastmod)
         self.check_and_finalize_file()
         self.url_count += 1
+
+    def create_file(self):
+        self.current_filename = os.path.join(self.directory, f'{self.filename_prefix}_{self.file_idx}_utf8.xml')
+        self.current_file_path = os.path.join(self.temp_store, self.current_filename)
+        self.file = open(self.current_file_path, "w")
+        self.file.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        self.write_list_start_tag()
+        self.file_idx += 1
+
+    def check_and_finalize_file(self):
+        file_size = os.path.getsize(self.current_file_path)
+        if file_size >= self.max_file_size or self.url_count >= self.max_url_count:
+            self.finalize_file()
+            self.create_file()
+            self.url_count = 0
+
+    def finalize_file(self):
+        self.write_list_end_tag()
+        self.file.close()
+        self.main_store.store(self.container_id, self.current_filename, source_path=self.current_file_path)
+        self.files.append(self.main_store.url(self.container_id, self.current_filename))
+
+    def get_url_count(self):
+        return self.url_count
+
+    def get_files(self):
+        return self.files
+
+    def __iter__(self):
+        return iter(self.files)
+
+    ###########################################
+    ## functions to be implemented by subclasses
+
+    def write_url_element(self, loc, lastmod=None):
+        raise NotImplementedError("Subclasses must implement write_url_element")
+
+    def write_list_start_tag(self):
+        raise NotImplementedError("Subclasses must implement write_list_start_tag")
+
+    def write_list_end_tag(self):
+        raise NotImplementedError("Subclasses must implement write_list_end_tag")
+
+
+class SitemapGenerator(ChunkedURLListFileGenerator):
+
+    def __init__(self, directory, filename_prefix, temp_store, main_store, container_id):
+        super(SitemapGenerator, self).__init__(directory, filename_prefix, temp_store, main_store, container_id)
+        self.change_freq = app.config.get("TOC_CHANGEFREQ", "monthly")
 
     def write_url_element(self, loc, lastmod=None):
         url_ele = f"""
@@ -61,36 +108,32 @@ class SitemapGenerator(Iterable):
         url_ele += "\n    </url>"
         self.file.write(url_ele)
 
-    def create_sitemap_file(self):
-        self.current_filename = os.path.join(self.filename_prefix, f'_{self.file_idx}_utf8.xml')
-        self.current_file_path = os.path.join(self.temp_store, self.current_filename)
-        self.file =  open(self.current_file_path, "w")
-        self.file.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    def write_list_start_tag(self):
         self.file.write('<urlset xmlns="'+NMSP+'">')
-        self.file_idx += 1
 
-    def finalize_sitemap_file(self):
+    def write_list_end_tag(self):
         self.file.write('\n</urlset>\n')
-        self.file.close()
-        self.main_store.store(self.container_id, self.current_filename, source_path=self.current_file_path)
-        self.sitemap_files.append(self.main_store.url(self.container_id, self.current_filename))
 
-    def check_and_finalize_file(self):
-        file_size = os.path.getsize(self.current_file_path)
-        if file_size >= MAX_FILE_SIZE or self.url_count >= MAX_URL_COUNT:
-            self.finalize_sitemap_file()
-            self.create_sitemap_file()
-            self.url_count = 0
 
-    def get_url_count(self):
-        return self.url_count
+class SitemapIndexGenerator(ChunkedURLListFileGenerator):
 
-    def get_sitemap_files(self):
-        return self.sitemap_files
+    def __init__(self, directory, filename_prefix, temp_store, main_store, container_id):
+        max_entries = app.config.get("SITEMAP_INDEX_MAX_ENTRIES", 50000)
+        super(SitemapIndexGenerator, self).__init__(directory, filename_prefix, temp_store, main_store, container_id, max_url_count=max_entries)
 
-    def __iter__(self):
-        """Make SitemapGenerator iterable over its sitemap files"""
-        return iter(self.sitemap_files)
+    def write_url_element(self, loc, lastmod=None):
+        self.file.write(f"    <sitemap>\n")
+        self.file.write(f"        <loc>{loc}</loc>\n")
+        if lastmod is not None:
+            self.file.write(f"        <lastmod>{lastmod}</lastmod>\n")
+        self.file.write(f"    </sitemap>\n")
+
+    def write_list_start_tag(self):
+        self.file.write('<sitemapindex xmlns="' + NMSP + '">\n')
+
+    def write_list_end_tag(self):
+        self.file.write('\n</sitemapindex>\n')
+
 
 class SiteService(object):
 
@@ -111,7 +154,8 @@ class SiteService(object):
             base_url += "/"
 
         run_start_time = dates.now_str(FMT_DATETIME_SHORT)
-        filename_prefix = 'sitemap_doaj_' + run_start_time
+        directory = 'sitemap_doaj_' + run_start_time
+        filename_prefix = "sitemap_"
         container_id = app.config.get("STORE_CACHE_CONTAINER")
 
         total_static_pages = 0
@@ -125,9 +169,9 @@ class SiteService(object):
         # temporary directory
         tmp_store_dir = tmpStore.path(container_id, '', create_container=True)
         # Create the directories if they don't exist
-        os.makedirs(os.path.join(tmp_store_dir,filename_prefix) , exist_ok=True)
+        os.makedirs(os.path.join(tmp_store_dir,directory) , exist_ok=True)
 
-        sitemap_generator = SitemapGenerator(filename_prefix, tmp_store_dir, mainStore, container_id)
+        sitemap_generator = SitemapGenerator(directory, filename_prefix, tmp_store_dir, mainStore, container_id)
 
         # Generating URLs for static pages
         _entries = nav.get_nav_entries()
@@ -158,57 +202,30 @@ class SiteService(object):
 
         # check last sitemap
         if sitemap_generator.get_url_count() > 0:
-            sitemap_generator.finalize_sitemap_file()
+            sitemap_generator.finalize_file()
 
         # Create sitemap index file(s)
-        max_entries = app.config.get("SITEMAP_INDEX_MAX_ENTRIES", 50000)
-        sitemap_files = sitemap_generator.get_sitemap_files()
+        sitemap_files = sitemap_generator.get_files()
         lastmod_date = dates.now_str(FMT_DATETIME_STD)
 
-        next_sitemap_ix = None
-        index_url = None
+        sitemap_prefix = "sitemap_index_"
+        index_generator = SitemapIndexGenerator(directory, sitemap_prefix, tmp_store_dir, mainStore, container_id)
 
-        if len(sitemap_files) > max_entries:
-            # Split sitemap files into chunks
-            def chunk_list(lst, chunk_size):
-                for i in range(0, len(lst), chunk_size):
-                    yield lst[i:i + chunk_size]
-            
-            sitemap_chunks = list(chunk_list(sitemap_files, max_entries))
-            index_urls = []
-            
-            # Create multiple sitemap index files
-            for chunk_idx, chunk in enumerate(sitemap_chunks):
-                sitemap_index_filename = os.path.join(filename_prefix, f'sitemap_index_{chunk_idx}.xml')
-                sitemap_index_path = os.path.join(tmp_store_dir, sitemap_index_filename)
-                
-                next_sitemap_ix = SiteService.write_sitemap_index(sitemap_index_path, chunk, base_url, lastmod_date)
-                mainStore.store(container_id, sitemap_index_filename, source_path=sitemap_index_path)
-                index_url = mainStore.url(container_id, sitemap_index_filename)
-                index_urls.append(index_url)
-                
-                action_register.append(f"Sitemap index {chunk_idx} written to store with url {index_url}")
-            
-            # Cache all sitemap index URLs
-            models.Cache.cache_sitemap_indexes(index_urls)
-            index_url = f'{{{", ".join(index_urls)}}}'
-            
-        else:
+        for i, sitemap_file in enumerate(sitemap_files):
+            public_url = f"{base_url}sitemap{i}.xml"
+            index_generator.add_url(public_url, lastmod=lastmod_date)
+            models.Cache.cache_nth_sitemap(i, sitemap_file)
 
-            sitemap_index_filename = os.path.join(filename_prefix, f'sitemap_index_utf8.xml')
-            sitemap_index_path = os.path.join(tmp_store_dir, sitemap_index_filename)
-            next_sitemap_ix = SiteService.write_sitemap_index(sitemap_index_path, sitemap_generator, base_url, lastmod_date)
+        # check the last index
+        if index_generator.get_url_count() > 0:
+            index_generator.finalize_file()
 
-            mainStore.store(container_id, sitemap_index_filename, source_path=sitemap_index_path)
-            index_url = mainStore.url(container_id, sitemap_index_filename)
-
-            action_register.append("Sitemap index written to store with url {x}".format(x=index_url))
-            
-            # Update the cache record to point to the new sitemap index and all sitemaps
-            models.Cache.cache_sitemap(index_url)
+        index_files = index_generator.get_files()
+        models.Cache.cache_sitemap_indexes(index_files)
 
         # Delete any additional maps from previous cache. Usually this may not be the situation but check
         # Count up any additional cached sitemaps we find and delete them.
+        next_sitemap_ix = len(sitemap_files)
         while True:
             cache = models.Cache.pull("sitemap" + str(next_sitemap_ix))
             if cache:
@@ -239,7 +256,7 @@ class SiteService(object):
         action_register.append(f"Journal URLs count : {total_journals_count}")
         action_register.append(f"Article URLs count : {total_articles_count}")
 
-        return index_url, action_register
+        return index_files, action_register
 
     @staticmethod
     def write_sitemap_index(sitemap_index_path: str, sitemap_files: Iterable, base_url: str, lastmod_date: str):

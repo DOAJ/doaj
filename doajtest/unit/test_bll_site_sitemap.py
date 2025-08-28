@@ -248,7 +248,7 @@ class TestBLLSitemap(DoajTestCase):
         
         try:
             # First generation - should create multiple chunks
-            url, action_register = self.svc.sitemap(prune=False)
+            urls, action_register = self.svc.sitemap(prune=False)
             
             cache_memory = models.Cache.__memory__
             # Count initial sitemap_index entries
@@ -256,7 +256,7 @@ class TestBLLSitemap(DoajTestCase):
             initial_count = len(initial_index_entries)
             
             # Second generation - should clean up and recreate
-            url2, action_register2 = self.svc.sitemap(prune=False)
+            urls2, action_register2 = self.svc.sitemap(prune=False)
             
             # Should still have same number of index entries (old ones cleaned up, new ones created)
             final_index_entries = [key for key in cache_memory.keys() if key.startswith("sitemap_index_")]
