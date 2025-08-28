@@ -8,7 +8,6 @@ from typing import Callable, Iterable
 
 from unidecode import unidecode
 
-from portality.bll import exceptions
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
@@ -586,42 +585,6 @@ class Journal(JournalLikeObject):
             if key in default_mappings_copy:
                 default_mappings_copy[key] = {**default_mappings_copy[key], **value}
         return default_mappings_copy
-
-    @classmethod
-    def get_active_journal(cls, journals) -> Journal:
-        """
-        From the list of journals with the same ISSNs find the one that is In DOAJ
-
-        If > 1: raise TooManyJournals (500)
-        If == 0: raise JournalWithdrawn (410)
-        If journals on the list have different ISSNs or nothing supplied: raise ValueError
-
-        :param journals: List of Journal objects with the same ISSNs
-        :return: Journal
-        :raises TooManyJournals (500), JournalWithdrawn (410), ValueError (400)
-        """
-        if not journals:
-            raise ValueError("No Journals supplied.")
-
-        first_issns = set(journals[0].known_issns())
-        if not all(set(j.known_issns()) == first_issns for j in journals[1:]):
-            raise ValueError("This method cannot be used for journals with different ISSNs; expected all to match.")
-
-        journals_in_doaj = 0
-        the_one = None
-
-        # Check all of the journals for the one that's publicly visible
-        for j in journals:
-            if j.is_in_doaj():
-                journals_in_doaj += 1
-                the_one = j
-            if journals_in_doaj > 1:
-                raise exceptions.TooManyJournals
-
-        # Return strictly one journal
-        if journals_in_doaj == 0:
-            raise exceptions.JournalWithdrawn
-        return the_one
 
     def all_articles(self):
         from portality.models import Article

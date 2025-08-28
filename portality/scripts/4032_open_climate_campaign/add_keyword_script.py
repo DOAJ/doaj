@@ -22,14 +22,17 @@ def add_keyword_script():
         reader = csv.DictReader(file)
         for row in reader:
             aid = row.get("article_id")
-            a = Article.pull(aid)
-            if a.is_in_doaj():
-                try:
-                    add_occ_keyword(a)
-                    a.save()
-                    log.write(f'"{OCC_KEYWORD}" added to article {aid}\n')
-                except Exception as e:
-                    log.write(f'Error processing article {aid}: {str(e)}\n')
+            if aid:
+                a = Article.pull(aid)
+                if a is not None and a.is_in_doaj():
+                    try:
+                        add_occ_keyword(a)
+                        a.save()
+                        log.write(f'"{OCC_KEYWORD}" added to article {aid}\n')
+                    except Exception as e:
+                        log.write(f'Error processing article {aid}: {str(e)}\n')
+                else:
+                    log.write(f'Skipping non-public article {aid}\n')
 
 if __name__ == "__main__":
     add_keyword_script()
