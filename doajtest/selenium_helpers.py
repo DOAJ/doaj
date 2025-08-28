@@ -8,6 +8,9 @@ import selenium
 from selenium import webdriver
 from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from urllib.parse import urlencode
 
 from doajtest.fixtures.url_path import URL_LOGOUT
 from doajtest.helpers import DoajTestCase
@@ -180,12 +183,13 @@ class SeleniumTestCase(DoajTestCase):
         self.selenium.execute_script(script)
 
 
-def goto(driver: 'WebDriver', url_path: str):
+def goto(driver: 'WebDriver', url_path: str) -> str:
     if not url_path.startswith('/'):
         url_path = '/' + url_path
     url = SeleniumTestCase.get_doaj_url() + url_path
     log.info(f'goto: {url}')
     driver.get(url)
+    return url
 
 
 def cancel_alert(driver: 'WebDriver'):
@@ -197,10 +201,24 @@ def cancel_alert(driver: 'WebDriver'):
 
 
 def login(driver: 'WebDriver', username: str, password: str):
-    goto(driver, "/login")
+    # Preserve current URL to redirect back after login
+    login_path = "/login?" + urlencode({'next': driver.current_url}) if driver.current_url else "/login"
+    login_url = goto(driver, login_path)
+
     driver.find_element(By.ID, 'user').send_keys(username)
+    assert driver.find_element(By.ID, 'user').get_attribute('value') == username
     driver.find_element(By.ID, 'password').send_keys(password)
+    assert driver.find_element(By.ID, 'password').get_attribute('value') == password
+    driver.save_screenshot(f'doaj_seleniumtest_{username}.png')
     driver.find_element(By.CSS_SELECTOR, 'input[type="submit"]').click()
+
+    # Wait for login to complete - URL should change away from login page
+    try:
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.url_changes(login_url))
+    except Exception as e:
+        log.error(f"Login failed to complete, current_url: {driver.current_url}\n Error: {e}")
+        raise
 
 
 def logout(driver: 'WebDriver'):
@@ -212,12 +230,24 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
     acc.set_password(password)
     acc.save(blocking=True)
     from selenium.common import NoSuchElementException
+    
+    # Check if already logged in (as ANY user) by looking for logout link
+    try:
+        driver.find_element(By.CSS_SELECTOR, 'a[href*="/account/logout"]')
+        return
+    except NoSuchElementException:
+        pass # Couldn't find the logout button, we're not logged in
+
+    print('pre login: ', driver.current_url)
     try:
         login(driver, acc.id, password)
     except NoSuchElementException:
         import traceback
         traceback.print_exc()
         breakpoint()  # for checking, how could this happen?
+
+    print('post login: ', driver.current_url)
+
     assert "/login" not in driver.current_url
 
 
@@ -251,6 +281,7 @@ def wait_until_click(driver: 'WebDriver', css_selector: str, timeout=10, check_i
 
 
 def click_edges_item(driver: 'WebDriver', ele_name, item_name):
+    print("click_edges: ", driver.current_url)
     wait_until_click(driver, f'#edges-bs3-refiningand-term-selector-toggle-{ele_name}')
     for ele in find_eles_by_css(driver, f'.edges-bs3-refiningand-term-selector-result-{ele_name} a'):
         if item_name in ele.text.strip():

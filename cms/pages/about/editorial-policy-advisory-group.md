@@ -34,7 +34,7 @@ He serves on the editorial boards of several SINTA-accredited journals in Indone
 
 ### Esther Jackson
 
-Esther is the Scholarly Communications Technology Librarian at Columbia University Libraries, where she primarily works with the repository ([Academic Commons](https://academiccommons.columbia.edu/)) and supports the Digital Publishing Program which includes [journals](https://journals.library.columbia.edu/) and [podcasts](https://podcasts.library.columbia.edu/). She holds a BA and a BSci from the University of Toronto (Celtic Studies, East Asian Studies, Art History) and an MLS from SUNY Buffalo.
+Esther is Head of Open Scholarship at Columbia University Libraries, where she primarily works with the repository ([Academic Commons](https://academiccommons.columbia.edu/)) and supports the Digital Publishing Program which includes [journals](https://journals.library.columbia.edu/) and [podcasts](https://podcasts.library.columbia.edu/). She holds a BA and a BSci from the University of Toronto (Celtic Studies, East Asian Studies, Art History) and an MLS from SUNY Buffalo.
 
 In addition to her work with researchers, code, and metadata, she is an active member of the Wikiverse, including serving as a committee member of the [Wikimedia Foundation’s Regional Fund for North America](https://meta.wikimedia.org/wiki/Grants:Regions/North_America). She serves as a member of [DataCite](https://datacite.org/)'s Services and Technologies Steering Group, on [OpenRefine](https://openrefine.org/)'s Advisory Committee, and is a member of the [Library Freedom Project](https://libraryfreedom.org/).
 
