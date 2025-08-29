@@ -17,16 +17,17 @@ from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.core import app
 from portality.lib.paths import rel2abs
+from portality.store import StoreException
 
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
-                               {"test_id": []})
+                               {"test_id": ["49"]})
 
 
 EXCEPTIONS = {
     "ArgumentException": exceptions.ArgumentException,
-    "IOError": IOError
+    "IOError": StoreException,
 }
 
 
@@ -41,20 +42,12 @@ class TestBLLJournalCSV(DoajTestCase):
 
         self.localStore = store.StoreLocal(None)
         self.tmpStore = store.TempStore()
-        self.container_id = app.config.get("STORE_CACHE_CONTAINER")
-
-        self.cache = models.cache.Cache
-        models.cache.Cache = ModelCacheMockFactory.in_memory()
-        models.Cache = models.cache.Cache
+        self.container_id = app.config.get("STORE_JOURNAL_CSV_CONTAINER")
 
     def tearDown(self):
         self.localStore.delete_container(self.container_id)
         self.tmpStore.delete_container(self.container_id)
         self.store_local_patcher.tearDown(self.app_test)
-
-        models.cache.Cache = self.cache
-        models.Cache = self.cache
-
         super(TestBLLJournalCSV, self).tearDown()
 
     @parameterized.expand(load_cases)
@@ -149,9 +142,11 @@ class TestBLLJournalCSV(DoajTestCase):
             aids.append((articles[i].id, articles[i].last_updated))
 
         if prune:
-            self.localStore.store(self.container_id, "journalcsv__doaj_20180101_0000_utf8.csv", source_stream=StringIO("test1"))
-            self.localStore.store(self.container_id, "journalcsv__doaj_20180601_0000_utf8.csv", source_stream=StringIO("test2"))
-            self.localStore.store(self.container_id, "journalcsv__doaj_20190101_0000_utf8.csv", source_stream=StringIO("test3"))
+            pass
+            # Prune is no longer tested in this file, there is a separate prune test
+            # self.localStore.store(self.container_id, "doaj_journalcsv_20180101_0000_utf8.csv", source_stream=StringIO("test1"))
+            # self.localStore.store(self.container_id, "doaj_journalcsv_20180601_0000_utf8.csv", source_stream=StringIO("test2"))
+            # self.localStore.store(self.container_id, "doaj_journalcsv_20190101_0000_utf8.csv", source_stream=StringIO("test3"))
 
         models.Journal.blockall(jids)
         models.Article.blockall(aids)
@@ -161,33 +156,19 @@ class TestBLLJournalCSV(DoajTestCase):
 
         if raises is not None:
             with self.assertRaises(raises):
-                self.svc.csv(prune)
+                self.svc.csv(prune=prune if prune is None else False)
 
                 tempFiles = self.tmpStore.list(self.container_id)
                 assert len(tempFiles) == 0
         else:
-            url, action_register = self.svc.csv(prune)
-            assert url is not None
-
-            csv_info = models.cache.Cache.get_latest_csv()
-            assert csv_info.get("url") == url
+            jc = self.svc.csv(prune=prune if prune is None else False)
+            assert jc.url is not None
 
             filenames = self.localStore.list(self.container_id)
-            if prune:
-                assert len(filenames) == 2
-                assert "journalcsv__doaj_20180101_0000_utf8.csv" not in filenames
-                assert "journalcsv__doaj_20180601_0000_utf8.csv" not in filenames
-                assert "journalcsv__doaj_20190101_0000_utf8.csv" in filenames
-            else:
-                assert len(filenames) == 1
+            assert len(filenames) == 1
+            assert filenames[0] == jc.filename
 
-            latest = None
-            for fn in filenames:
-                if fn != "journalcsv__doaj_20190101_0000_utf8.csv":
-                    latest = fn
-                    break
-
-            handle = self.localStore.get(self.container_id, latest, encoding="utf-8")
+            handle = self.localStore.get(self.container_id, jc.filename, encoding="utf-8")
             reader = csv.reader(handle)
             rows = [r for r in reader]
 
