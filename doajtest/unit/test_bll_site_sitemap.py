@@ -142,13 +142,14 @@ class TestBLLSitemap(DoajTestCase):
                 tempFiles = self.tmpStore.list(self.container_id)
                 assert len(tempFiles) == 0, "expected 0, received {}".format(len(tempFiles))
         else:
-            url, action_register = self.svc.sitemap(prune)
-            assert url is not None
+            index_urls, action_register = self.svc.sitemap(prune)
+            assert index_urls is not None
+            assert len(index_urls) > 0
 
             # Check the results
             ################################
-            sitemap_info = models.cache.Cache.get_latest_sitemap()
-            assert sitemap_info.get("filename") == url
+            index_filename = models.cache.Cache.get_sitemap_index("0")
+            assert index_filename in index_urls
 
             filenames = self.localStore.list(self.container_id)
             if prune:
@@ -168,7 +169,7 @@ class TestBLLSitemap(DoajTestCase):
             NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
             file_date = '_'.join(latest.split('_')[2:])
-            index_file = os.path.join(latest, 'sitemap_index_utf8.xml')
+            index_file = os.path.join(latest, 'sitemap_index_0_utf8.xml')
 
             handle = self.localStore.get(self.container_id, index_file, encoding="utf-8")
 
@@ -184,7 +185,7 @@ class TestBLLSitemap(DoajTestCase):
             article_ids = []
 
             # check sitemap file
-            sitemap_file = os.path.join(latest, '_0_utf8.xml')
+            sitemap_file = os.path.join(latest, 'sitemap_0_utf8.xml')
             handle = self.localStore.get(self.container_id, sitemap_file, encoding="utf-8")
 
             tree = etree.parse(handle)
@@ -283,10 +284,10 @@ class TestBLLSitemap(DoajTestCase):
             # Test single file case
             patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 50000})
             url_single, action_register_single = self.svc.sitemap(prune=False)
-            
-            # Single case should use sitemap_index_utf8.xml pattern
+
             assert url_single is not None
-            assert "sitemap_index_utf8.xml" in url_single
+            filenames = [url.split("/")[-1] for url in url_single]  # Get the filename part
+            assert "sitemap_index_0_utf8.xml" in filenames
             
             # Test chunked file case  
             patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 1})

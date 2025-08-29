@@ -21,12 +21,6 @@ class InMemoryCache(object):
         return cls.__memory__["csv"]
 
     @classmethod
-    def cache_sitemap(cls, filename):
-        cls.__memory__["sitemap"] = {
-            "filename" : filename
-        }
-
-    @classmethod
     def cache_nth_sitemap(cls, n, url):
         cls.__memory__["sitemap" + str(n)] = {
             "filename": url
@@ -35,10 +29,6 @@ class InMemoryCache(object):
     @classmethod
     def get_sitemap(cls, n):
         return cls.__memory__["sitemap" + str(n)]
-
-    @classmethod
-    def get_latest_sitemap(cls):
-        return cls.__memory__["sitemap"]
 
     @classmethod
     def cache_sitemap_indexes(cls, urls):

@@ -55,27 +55,12 @@ class Cache(DomainObject):
         return cls.pull("csv")
 
     @classmethod
-    def cache_sitemap(cls, url):
-        cobj = cls(**{
-            "filename": url
-        })
-        cobj.set_id("sitemap")
-        cobj.save()
-
-    @classmethod
     def cache_nth_sitemap(cls, n, url):
         cobj = cls(**{
             "filename": url
         })
         cobj.set_id("sitemap"+str(n))
         cobj.save()
-
-    @classmethod
-    def get_latest_sitemap(cls):
-        rec = cls.pull("sitemap")
-        if rec is None:
-            return None
-        return rec.get("filename")
 
     @classmethod
     def get_sitemap(cls, n):

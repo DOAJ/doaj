@@ -155,7 +155,7 @@ class SiteService(object):
 
         run_start_time = dates.now_str(FMT_DATETIME_SHORT)
         directory = 'sitemap_doaj_' + run_start_time
-        filename_prefix = "sitemap_"
+        filename_prefix = "sitemap"
         container_id = app.config.get("STORE_CACHE_CONTAINER")
 
         total_static_pages = 0
@@ -208,7 +208,7 @@ class SiteService(object):
         sitemap_files = sitemap_generator.get_files()
         lastmod_date = dates.now_str(FMT_DATETIME_STD)
 
-        sitemap_prefix = "sitemap_index_"
+        sitemap_prefix = "sitemap_index"
         index_generator = SitemapIndexGenerator(directory, sitemap_prefix, tmp_store_dir, mainStore, container_id)
 
         for i, sitemap_file in enumerate(sitemap_files):
@@ -257,25 +257,3 @@ class SiteService(object):
         action_register.append(f"Article URLs count : {total_articles_count}")
 
         return index_files, action_register
-
-    @staticmethod
-    def write_sitemap_index(sitemap_index_path: str, sitemap_files: Iterable, base_url: str, lastmod_date: str):
-        """
-        Write a single sitemap index
-        """
-        with open(sitemap_index_path, "w") as f:
-            f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-            f.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-            sitemap_count = 0
-            for sitemap_url in sitemap_files:
-                f.write(f"    <sitemap>\n")
-                f.write(f"        <loc>{base_url}sitemap{sitemap_count}.xml</loc>\n")
-                f.write(f"        <lastmod>{lastmod_date}</lastmod>\n")
-                f.write(f"    </sitemap>\n")
-                # Cache the sitemap
-                models.Cache.cache_nth_sitemap(sitemap_count, sitemap_url)
-                sitemap_count += 1
-            f.write('</sitemapindex>\n')
-
-        # Return the count, it's the index for the NEXT sitemap that would be written
-        return sitemap_count
