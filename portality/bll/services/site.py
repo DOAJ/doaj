@@ -24,7 +24,7 @@ IN_DOAJ = {
 }
 NMSP = "http://www.sitemaps.org/schemas/sitemap/0.9"
 MAX_FILE_SIZE = (49 * 1024 * 1024)
-MAX_URL_COUNT = 400
+MAX_URL_COUNT = 49000
 
 class ChunkedURLListFileGenerator(Iterable):
     def __init__(self, directory, filename_prefix, temp_store, main_store, container_id, max_file_size=MAX_FILE_SIZE, max_url_count=MAX_URL_COUNT):
