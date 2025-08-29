@@ -94,7 +94,7 @@ class EditorGroupForm(Form):
     """
     group_id = HiddenField("Group ID", [validators.Optional()])
     name = StringField("Group Name", [validators.DataRequired(), UniqueGroupName()])
-    maned = StringField("Managing Editor", [validators.Optional(), MustHaveRole("admin")])
+    maned = StringField("Managing Editor", [validators.DataRequired(), MustHaveRole("admin")])
     editor = StringField("Editor", [validators.DataRequired(), NotRole("publisher")])
     associates = StringField("Associate Editors", [validators.Optional(), NotRole("publisher")])
 
