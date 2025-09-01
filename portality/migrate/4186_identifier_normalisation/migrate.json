@@ -1,0 +1,13 @@
+{
+	"batch" : 1000,
+	"types": [
+		{
+			"type" : "article",
+			"init_with_model" : false,
+			"keepalive" : "2m",
+			"functions" : [
+                "portality.migrate.4186_identifier_normalisation.operations.amend_identifiers"
+			]
+		}
+	]
+}

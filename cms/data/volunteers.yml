@@ -191,14 +191,6 @@ ass_ed:
   country: USA
   language: Hungarian, English
   photo: "imre.jpg"
-
-- name: Andrea Marchitelli
-  area: Library Science
-  year_since:
-  city: Rome
-  country: Italy
-  language: Italian, English
-  photo: "Marchitelli.jpg"
   
 - name: Annarita Barbaro
   area: Humanities
@@ -246,14 +238,6 @@ ass_ed:
   country: Argentina
   language: Spanish, English
   photo: "CarlosAlegre.jpg"
-  
-- name: Carla Longo
-  area: Humanities
-  year_since:
-  city: St Andrews
-  country: Scotland
-  language: Italian, English, Latin, Ancient Greek
-  photo: "Longo.jpg"
 
 - name: Carla Marques
   area: Information and Library Sciences
@@ -354,7 +338,7 @@ ass_ed:
 - name: Flavius-Cristian Marcau 
   area: Social Sciences
   year_since:
-  city: Târgu jiu
+  city: Târgu Jiu
   country: Romania
   language: Romanian, English
   photo: "Flavius.jpg"
@@ -436,7 +420,7 @@ ass_ed:
 - name: Juliana Soares Lima
   area: Librarianship and information science
   year_since:
-  city:
+  city: Fortaleza
   country: Brazil
   language: Portuguese, English
   photo: "jlima.jpg"
@@ -610,7 +594,7 @@ ass_ed:
   city: Moscow
   country: Russian Federation
   language: Russian, English
-  photo: "max.png"
+  photo:
   
 - name: Melih Sever
   area: Social Sciences

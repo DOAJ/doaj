@@ -436,7 +436,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
                                     "valueFunction" : doaj.fieldRender.issns
                                 }
                             ],
