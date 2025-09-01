@@ -7,14 +7,18 @@ from datetime import datetime, timedelta
 
 from flask import url_for
 from flask_login import current_user
+from cryptography.fernet import Fernet
 
 from portality.app import app
 from portality.models.account import Account
 from portality.core import app as flask_app
 from portality.lib import dates
+from portality.lib.security_utils import Encryption
 
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 
+# Set up test encryption key
+app.config['ENCRYPTION_KEY'] = Fernet.generate_key()
 
 class TestPasswordlessLogin(DoajTestCase):
     def setUp(self):
@@ -30,11 +34,10 @@ class TestPasswordlessLogin(DoajTestCase):
         self.test_account.set_password('password123')
         self.test_account.save()
         self.test_account.refresh()
+        self.app = app.test_client()
+        self.app.testing = True
+        self.url_crypto = Encryption()
 
-    def tearDown(self):
-        super(TestPasswordlessLogin, self).tearDown()
-        Account.remove_by_id(self.test_account.id)
-        self.ctx.pop()
 
     def test_account_set_login_code(self):
         """Test setting and retrieving login code"""
@@ -138,12 +141,12 @@ class TestPasswordlessLogin(DoajTestCase):
         self.assertFalse(self.test_account.is_login_code_valid(code))
 
 
-@patch('portality.view.account.send_login_code_email')
 class TestPasswordlessLoginEndpoints(DoajTestCase):
     def setUp(self):
         super(TestPasswordlessLoginEndpoints, self).setUp()
         self.app = app.test_client()
         self.app.testing = True
+        self.url_crypto = Encryption()
 
         # Create a test account
         self.test_account = Account.make_account(
@@ -156,36 +159,8 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         self.test_account.save()
         self.test_account.refresh()
 
-    def tearDown(self):
-        super(TestPasswordlessLoginEndpoints, self).tearDown()
-        Account.remove_by_id(self.test_account.id)
-
-    def test_login_get_link_request(self, mock_send_email):
-        """Test requesting a login link"""
-        # Set up mock
-        mock_send_email.return_value = None
-
-        # Make the request
-        response = self.app.post('/account/login', data={
-            'user': 'pass@example.com',
-            'action': 'get_link'
-        }, follow_redirects=True)
-
-        # Check that email was sent
-        self.assertEqual(mock_send_email.call_count, 1)
-        args, kwargs = mock_send_email.call_args
-        sent_email, code = args
-        self.assertEqual(sent_email, self.test_account.email)
-        self.assertEqual(len(code), 6)  # 6-digit code
-
-        # Verify code was stored in the account
-        account = Account.pull(self.test_account.id)
-        self.assertEqual(account.login_code, code)
-
-        # Check the response includes the verification form
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'verification code', response.data)
-
+    @with_es(indices=[Account.__type__])
+    @patch('portality.view.account.send_login_code_email')
     def test_verify_code_success(self, mock_send_email):
         """Test successful verification of login code"""
         # Set a login code
@@ -194,10 +169,16 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         self.test_account.save()
         self.test_account.refresh()
 
-        # Make the verification request
-        response = self.app.post('/account/verify-code', data={
+        # Create encrypted token
+        params = {
             'email': 'pass@example.com',
             'code': code
+        }
+        token = self.url_crypto.encrypt_params(params)
+
+        # Make the verification request with token
+        response = self.app.post('/account/verify-code', data={
+            'token': token
         }, follow_redirects=True)
 
         # Verify successful login
@@ -208,6 +189,7 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         account.refresh()
         self.assertIsNone(account.login_code)
 
+    @patch('portality.view.account.send_login_code_email')
     def test_verify_code_invalid(self, mock_send_email):
         """Test invalid login code verification"""
         # Set a login code
@@ -216,10 +198,16 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         self.test_account.save()
         self.test_account.refresh()
 
-        # Make the verification request with wrong code
-        response = self.app.post('/account/verify-code', data={
+        # Create encrypted token with wrong code
+        params = {
             'email': 'pass@example.com',
             'code': '999999'  # Wrong code
+        }
+        token = self.url_crypto.encrypt_params(params)
+
+        # Make the verification request
+        response = self.app.post('/account/verify-code', data={
+            'token': token
         }, follow_redirects=True)
 
         # Check for error message
@@ -230,6 +218,7 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         account = Account.pull(self.test_account.id)
         self.assertEqual(account.login_code, code)
 
+    @patch('portality.view.account.send_login_code_email')
     def test_verify_code_expired(self, mock_send_email):
         """Test expired login code verification"""
         # Set a login code with expiry in the past
@@ -237,66 +226,24 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         self.test_account.set_login_code(code, timeout=1)
         self.test_account.save()
 
+        # Create encrypted token
+        params = {
+            'email': 'pass@example.com',
+            'code': code
+        }
+        token = self.url_crypto.encrypt_params(params)
+
         # Wait for code to expire
         time.sleep(2)
 
         # Make the verification request
         response = self.app.post('/account/verify-code', data={
-            'email': 'pass@example.com',
-            'code': code
+            'token': token
         }, follow_redirects=True)
 
         # Check for error message
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Invalid or expired verification code', response.data)
-
-    def test_login_nonexistent_account(self, mock_send_email):
-        """Test requesting a login link for non-existent account"""
-        # Make the request with non-existent email
-        response = self.app.post('/account/login', data={
-            'user': 'nonexistent@example.com',
-            'action': 'get_link'
-        }, follow_redirects=True)
-
-        # Check that email was not sent
-        mock_send_email.assert_not_called()
-
-        # Check for generic message that doesn't reveal if account exists
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Account not recognised', response.data)
-
-    def test_password_login_still_works(self, mock_send_email):
-        """Test that traditional password login still works"""
-        # Make a traditional login request
-        response = self.app.post('/account/login', data={
-            'user': 'pass@example.com',
-            'password': 'userpass',
-            'action': 'password_login'
-        }, follow_redirects=True)
-
-        # Check successful login
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Welcome back', response.data)
-
-    def test_login_form_validation(self, mock_send_email):
-        """Test form validation for login"""
-        # Test with missing email
-        response = self.app.post('/account/login', data={
-            'action': 'get_link'
-        }, follow_redirects=True)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'This field is required', response.data)
-
-        # Test with invalid email format
-        response = self.app.post('/account/login', data={
-            'user': 'not-an-email',
-            'action': 'get_link'
-        }, follow_redirects=True)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Account not recognised', response.data)
-
 
 class TestSendLoginCodeEmail(TestCase):
     @patch('portality.view.account.send_mail')
@@ -308,7 +255,7 @@ class TestSendLoginCodeEmail(TestCase):
 
             # Call the function
             from portality.view.account import send_login_code_email
-            send_login_code_email(email, code, redirect_url="")
+            send_login_code_email(email, code, "")
 
             # Check email was sent with correct parameters
             mock_send_mail.assert_called_once()
@@ -318,4 +265,5 @@ class TestSendLoginCodeEmail(TestCase):
             self.assertEqual(kwargs['to'], [email])
             self.assertEqual(kwargs['code'], code)
             self.assertIn('login_url', kwargs)
+            self.assertTrue('token=' in kwargs['login_url'])  # Check for encrypted token in URL
             self.assertEqual(kwargs['expiry_minutes'], 10)

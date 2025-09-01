@@ -14,6 +14,7 @@ from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.bll import DOAJ
+from portality.lib.security_utils import Encryption
 from portality.ui.messages import Messages
 
 from portality.ui import templates
@@ -207,8 +208,21 @@ def _complete_verification(account):
 @blueprint.route('/verify-code', methods=['GET', 'POST'])
 def verify_code():
     form = LoginForm(request.form, csrf_enabled=False)
-    email = _get_param('email')
-    verification_code = _get_param('code')
+
+    # get encrypted token
+    encrypted_token = _get_param('token')
+    if encrypted_token:
+        # Decrypt parameters using a fresh Encryption instance (ensures current key)
+        params = Encryption().decrypt_params(encrypted_token)
+        email = params.get('email')
+        verification_code = params.get('code')
+        redirected = params.get('redirected')
+    else:
+        # Fall back to plain parameters (for backward compatibility or form submission)
+        email = _get_param('email')
+        verification_code = _get_param('code')
+        redirected = _get_param('redirected')
+
     if request.args.get("redirected") == "apply":
         form['next'].data = url_for("apply.public_application")
 
@@ -231,7 +245,17 @@ def verify_code():
 
 def send_login_code_email(email: str, code: str, redirect_url: str):
     """Send login code email with both code and direct link"""
-    login_url = url_for('account.verify_code', code=code, email=email, redirected=redirect_url, _external=True)
+    # Encrypt parameters
+    params = {
+        'email': email,
+        'code': code
+    }
+    if redirect_url:
+        params['redirected'] = redirect_url
+
+    encrypted = Encryption().encrypt_params(params)
+
+    login_url = url_for('account.verify_code', token=encrypted, _external=True)
 
     send_mail(
         to=[email],
