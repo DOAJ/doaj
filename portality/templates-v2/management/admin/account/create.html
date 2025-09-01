@@ -24,6 +24,7 @@
         jQuery(document).ready(function($) {
             $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
         });
+        $("#submitBtn").prop("disabled", false);
         </script>
 
     {% else %}
