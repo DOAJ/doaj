@@ -222,6 +222,14 @@ ass_ed:
   country: United Kingdom
   language: English
   photo: "Ben Catt.jpg"
+
+- name: Bianca Savegnago de Mira
+  area: Information Science, Economics
+  year_since:
+  city: Marília - SP
+  country: Brazil
+  language: Portuguese, English, Spanish
+  photo: "Bianca.jpeg"
   
 - name: Busro Busro
   area: Humanities
