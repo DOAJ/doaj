@@ -11,6 +11,33 @@ NOTES_FORM_EXPANDED = {
     ]
 }
 
+from portality.lib import dates
+
+def build_flags_form_expanded(assignee=None, deadline="", setter=None, created_date=None, note=None, resolved=False):
+    if not setter:
+        setter = "(fake_setter_id)"
+    if not created_date:
+        created_date = dates.today()
+    if not note:
+        note = "This is a flag"
+
+    flags_form_expanded = {
+        'flags': [
+            {
+                "flag_created_date": created_date,
+                "flag_deadline": deadline,
+                "flag_assignee": assignee,
+                "flag_setter": setter,
+                "flag_note_id": "1234-5678-9012",
+                "flag_note": note,
+                "flag_resolved": "true" if resolved else "false"
+            }
+        ]
+    }
+
+    return flags_form_expanded
+
+
 SUBJECT_FORM_EXPANDED = {
     "subject": ['HB1-3840', 'H', 'SF600-1100']
 }
