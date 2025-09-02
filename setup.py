@@ -12,6 +12,7 @@ setup(
         "bagit==1.8.1",
         "beautifulsoup4",
         "boto3==1.35.25",
+        "cryptography~=42.0",
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",
         "Faker==2.0.3",
@@ -72,7 +73,6 @@ setup(
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@c96e6035244e29d4709fff23103405c17cd04a13#egg=combinatrix",
                  "bs4==0.0.2",   # beautifulsoup for HTML parsing
                  'openapi-spec-validator~=0.5',
-                 "cryptography~=42.0", # for ad-hoc https
                  ],
 
         # additional test dependencies for the test-extras target
