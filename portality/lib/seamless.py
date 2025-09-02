@@ -702,7 +702,8 @@ class SeamlessData(object):
             else:
                 context[p] = val
 
-    def _coerce(self, val, coerce, accept_failure=False):
+    @staticmethod
+    def _coerce(val, coerce, accept_failure=False):
         if coerce is None:
             return val
         try:
@@ -712,7 +713,8 @@ class SeamlessData(object):
                 return val
             raise SeamlessException("Coerce with '{x}' failed on '{y}' of type '{z}'".format(x=coerce, y=val, z=type(val)))
 
-    def _prune_stack(self, stack):
+    @staticmethod
+    def _prune_stack(stack):
         while len(stack) > 0:
             context = stack.pMax.Pop()
             todelete = []
