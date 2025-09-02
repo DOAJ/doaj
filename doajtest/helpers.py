@@ -495,7 +495,7 @@ def assert_expected_dict(test_case: TestCase, target, expected: dict):
 
 def login(app_client, email, password, follow_redirects=True):
     return app_client.post(url_for('account.login'),
-                           data=dict(user=email, password=password),
+                           data=dict(user=email, password=password, action='password_login'),
                            follow_redirects=follow_redirects)
 
 
