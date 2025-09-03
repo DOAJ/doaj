@@ -479,9 +479,10 @@ msgid ""
 "exclusive rights to the publisher (including commercial rights). "
 "<br/><br/> Answer <strong>Yes</strong> only if authors publishing under "
 "any license allowed by the journal retain all rights."
-msgstr "Répondez <strong>Non</strong> si les auteur·trices transfèrent leur droit d'auteur ou cèdent des droits exclusifs à l'éditeur (y compris les droits commerciaux).
-<br/><br/>
-Répondez <strong>Oui</strong> seulement si les auteur·trices conservent tous les droits."
+msgstr ""
+"Répondez <strong>Non</strong> si les auteur·trices transfèrent leur droit d'auteur ou cèdent des droits exclusifs à l'éditeur (y compris les droits commerciaux)."
+"<br/><br/>"
+"Répondez <strong>Oui</strong> seulement si les auteur·trices conservent tous les droits."
 
 #: forms/application_forms.py:856
 msgid "Copyright terms"
