@@ -1,0 +1,31 @@
+suite: Accessibility
+testset: Base Font Size
+tests:
+- title: Test Changing Base Font Size Through Browser Settings
+  context:
+    role: any
+  steps:
+  - step: Open the website in Google Chrome
+  - step: Open Chrome Settings from the menu (⋮ > Settings)
+  - step: Navigate to Appearance > Font size
+  - step: Change the font size to "Very small"
+    results:
+    - Text on the website becomes noticeably smaller
+    - Page layout remains usable and readable
+  - step: Change the font size to "Very large"
+    results:
+    - Text on the website becomes noticeably larger
+    - Page layout adjusts appropriately (no overlapping or cut-off text)
+  - step: Reset the font size back to "Medium (recommended)"
+    results:
+    - Website text returns to default size
+  - step: Open the website in Mozilla Firefox
+  - step: Open Firefox Settings from the menu (☰ > Settings)
+  - step: Navigate to General > Language and Appearance > Fonts and Colors > Advanced
+  - step: Increase the Minimum font size to a larger value (e.g., 24px)
+    results:
+    - Text on the website becomes larger while respecting minimum font size
+    - Page remains usable and accessible without broken layouts
+  - step: Reset the minimum font size to default (e.g., "None" or 0)
+    results:
+    - Website text returns to default size
