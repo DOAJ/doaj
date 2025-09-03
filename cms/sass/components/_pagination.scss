@@ -2,7 +2,7 @@
   text-align: center;
   color: rgba($warm-black, 0.75);
   font-style: italic;
-  @include typescale-06;
+  font-size: $typescale-06;
 
   ul {
     display: flex;

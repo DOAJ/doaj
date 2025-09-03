@@ -7,8 +7,8 @@
   justify-content: space-between;
   align-items: center;
   list-style: none;
-  height: 75px;
-  font-size: smaller;
+  height: 4.6875rem;
+  font-size: $typescale-07;
   transition: height 0.3s ease-out;
 
   > li {
@@ -25,11 +25,11 @@
 
   .feather {
     margin: 0 $spacing-01;
-    height: 15px;
+    height: $spacing-03;
   }
 }
 
 .nav-bar__link {
   display: block;
-  line-height: 75px;
+  line-height: 4.6875rem;
 }
