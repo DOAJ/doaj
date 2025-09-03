@@ -163,8 +163,8 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["new"] == 0, "expected 1 updated, received: {}".format(resp)
         art = Article.pull(self.article10.id)
-        assert art.get_normalised_doi() == "10.0000/article-UPDATED", \
-            "expected 10.0000/article-UPDATED, received: {}".format(
+        assert art.get_normalised_doi() == "10.0000/article-updated", \
+            "expected 10.0000/article-updated, received: {}".format(
                 self.article10.get_normalised_doi())
 
     def test_06_existing_doi_new_url(self):

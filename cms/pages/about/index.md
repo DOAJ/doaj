@@ -84,8 +84,8 @@ Established in 2015, Think. Check. Submit. was developed with the support of an 
 
 Think. Check. Submit. provides tools and practical resources to educate researchers, promote integrity, and build trust in credible research and publications. Separate checklists for [journals](https://thinkchecksubmit.org/journals/) and [books](https://thinkchecksubmit.org/books-and-chapters/) are available to guide researchers through the key criteria for selecting where to publish their research and are also invaluable to scholarly communications professionals who are advising researchers about these issues. Both checklists are also available in a growing number of languages.
 
-## Diversity
+## Diversity, Equity and Inclusion
 
-DOAJ believes in the power and value of diversity in scholarly communications. DOAJ is an [adopting organisation](https://c4disc.org/about/adopting-organizations/) of the [C4DISC Joint Statement of Principles](https://c4disc.org/joint-statement-of-principles/). Adopting the Joint Statement of Principles demonstrates our support for improving diversity and inclusion in our industry.
+DOAJ believes in the power and value of diversity in scholarly communications. DOAJ is an [adopting organisation](https://c4disc.org/about/adopting-organizations/) of the [C4DISC Joint Statement of Principles](https://c4disc.org/joint-statement-of-principles/). Adopting the Joint Statement of Principles demonstrates our support for improving diversity, equity and inclusion (DEI) in our industry.
 
-
+DEI takes many forms, and at DOAJ, we apply these values across multiple levels. Our Foundation Board and Advisory Board have been designed to represent different regions and user communities because we believe that global representation is the best way to promote the values of DEI. We think of DEI values operationally when we discuss the running of the organisation, who we work with and who chooses to work with us. We build DEI into our editorial policies and our approaches for onboarding journals. We actively work to make the range of journals we index as diverse as possible, including journals from all disciplines, in all languages and regardless of business model. We ensure that our website and our services are as [accessible](/accessibility/) and [open](/terms/) as possible to anyone who wants to use them.

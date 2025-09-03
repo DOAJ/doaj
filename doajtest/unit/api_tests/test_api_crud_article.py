@@ -2,21 +2,26 @@ import time
 import json
 from flask import url_for
 from doajtest.helpers import DoajTestCase, with_es
+from portality.bll.services.article import ArticleService
 from portality.lib import dates
-from portality.lib.dataobj import DataStructureException, ScriptTagFoundException
+from portality.lib.dataobj import DataStructureException, ScriptTagFoundException, DataObjException
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.api.current import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 
+def mock_create_article(*args, **kwargs):
+    return {"success": 1}
 
 class TestCrudArticle(DoajTestCase):
 
     def setUp(self):
         super(TestCrudArticle, self).setUp()
+        self._create_article = ArticleService.create_article
 
     def tearDown(self):
         super(TestCrudArticle, self).tearDown()
+        ArticleService.create_article = self._create_article
 
     def test_01_incoming_article_do(self):
         # make a blank one
@@ -59,6 +64,16 @@ class TestCrudArticle(DoajTestCase):
         # issns the same (but not normalised the same)
         data["bibjson"]["identifier"] = [{"type" : "pissn", "id": "12345678"}, {"type" : "eissn", "id": "1234-5678"}]
         with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
+        # incorrect capitalisation on doi
+        data["bibjson"]["identifier"] = [{"type" : "DOI", "id": "10.1234/5678"}]
+        with self.assertRaises(DataObjException):
+            ia = IncomingArticleDO(data)
+
+        # additional identifier that's not one of the allowed types
+        data["bibjson"]["identifier"] = [{"type": "wibble", "id": "12345678"}, {"type" : "pissn", "id": "12345678"}, {"type" : "eissn", "id": "1234-5678"}]
+        with self.assertRaises(DataObjException):
             ia = IncomingArticleDO(data)
 
         # test unnecessary https://github.com/DOAJ/doajPM/issues/2950
@@ -189,6 +204,70 @@ class TestCrudArticle(DoajTestCase):
             a = ArticlesCrudApi.create(data, account)
 
         # TODO add test for when you're trying to create an article for a journal not owned by you
+
+    def test_03a_create_article_with_incorrect_identifiers(self):
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        data = ArticleFixtureFactory.make_incoming_api_article()
+        data["bibjson"]["identifier"] = [
+            {"type": "eissn", "id": "1234-5678"},
+            {"type": "DOI", "id": "10.1234/5678"},
+            {"type": "whatever", "id": "wibble"}
+        ]
+
+        ArticleService.create_article = mock_create_article
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.bibjson().eissn = "1234-5678"
+        journal.bibjson().pissn = None
+        journal.save(blocking=True)
+
+        a = ArticlesCrudApi.create(data, account)
+
+        idents = [i.get("type") for i in a.bibjson().get_identifiers()]
+        assert "DOI" not in idents
+        assert "doi" in idents
+        assert "whatever" not in idents
+
+    def test_03b_update_article_with_incorrect_identifiers(self):
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.save(blocking=True)
+
+        article_data = ArticleFixtureFactory.make_article_source()
+        article_data["bibjson"]["identifier"] = [
+            {"type": "eissn", "id": "1234-5678"}
+        ]
+        article = models.Article(**article_data)
+        article.save(blocking=True)
+
+        data = ArticleFixtureFactory.make_incoming_api_article()
+        data["bibjson"]["identifier"] = [
+            {"type": "eissn", "id": "1234-5678"},
+            {"type": "DOI", "id": "10.1234/5678"},
+            {"type": "whatever", "id": "wibble"}
+        ]
+
+        ArticleService.create_article = mock_create_article
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.bibjson().eissn = "1234-5678"
+        journal.bibjson().pissn = None
+        journal.save(blocking=True)
+
+        a = ArticlesCrudApi.update(article.id, data, account)
+
+        idents = [i.get("type") for i in a.bibjson().get_identifiers()]
+        assert "DOI" not in idents
+        assert "doi" in idents
+        assert "whatever" not in idents
 
     def test_04_coerce(self):
         data = ArticleFixtureFactory.make_article_source()
