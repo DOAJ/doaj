@@ -156,7 +156,7 @@ def csv_to_po(csv_file, po_file):
     """Convert a CSV file back to PO format."""
     entries = []
 
-    with open(csv_file, 'r', encoding='utf-8') as f:
+    with open(csv_file, 'r', encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)
         for row in reader:
             entries.append({
@@ -273,8 +273,8 @@ def update_po(csv_file, po_file):
     while i < len(lines):
         line = lines[i].strip()
 
-        # Check if this is a msgid line
-        if line.startswith('msgid "') and not line.startswith('msgid ""'):
+        # Check if this is a msgid line (including multiline entries starting with msgid "")
+        if line.startswith('msgid "'):
             # Extract location information from comments before this msgid
             location = ""
             # Look back for location comments
@@ -289,11 +289,32 @@ def update_po(csv_file, po_file):
                     break
                 k -= 1
 
-            # Extract the msgid (removing 'msgid "' from start and '"' from end)
-            current_msgid = line[7:-1]
+            current_msgid = ""
             original_i = i
 
-            # Handle multi-line msgid
+            # If this is the header block (msgid "" with header key in following lines), skip it
+            if line.startswith('msgid ""'):
+                header_probe_idx = i + 1
+                is_header = False
+                while header_probe_idx < len(lines):
+                    probeline = lines[header_probe_idx].strip()
+                    if probeline.startswith('msgstr'):
+                        break
+                    if probeline.startswith('"') and 'Project-Id-Version:' in probeline:
+                        is_header = True
+                        break
+                    if not probeline.startswith('"'):
+                        break
+                    header_probe_idx += 1
+                if is_header:
+                    i += 1
+                    continue
+            else:
+                # Single-line msgid initial content
+                if line[6:].startswith('"') and line.endswith('"'):
+                    current_msgid = line[7:-1]
+
+            # Handle multi-line msgid continuations (also for msgid "")
             j = i + 1
             while j < len(lines) and lines[j].strip().startswith('"') and lines[j].strip().endswith('"'):
                 current_msgid += lines[j].strip()[1:-1]
