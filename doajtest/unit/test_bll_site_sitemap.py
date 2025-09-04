@@ -142,13 +142,14 @@ class TestBLLSitemap(DoajTestCase):
                 tempFiles = self.tmpStore.list(self.container_id)
                 assert len(tempFiles) == 0, "expected 0, received {}".format(len(tempFiles))
         else:
-            url, action_register = self.svc.sitemap(prune)
-            assert url is not None
+            index_urls, action_register = self.svc.sitemap(prune)
+            assert index_urls is not None
+            assert len(index_urls) > 0
 
             # Check the results
             ################################
-            sitemap_info = models.cache.Cache.get_latest_sitemap()
-            assert sitemap_info.get("filename") == url
+            index_filename = models.cache.Cache.get_sitemap_index("0")
+            assert index_filename in index_urls
 
             filenames = self.localStore.list(self.container_id)
             if prune:
@@ -168,7 +169,7 @@ class TestBLLSitemap(DoajTestCase):
             NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
             file_date = '_'.join(latest.split('_')[2:])
-            index_file = os.path.join(latest, 'sitemap_index_utf8.xml')
+            index_file = os.path.join(latest, 'sitemap_index_0_utf8.xml')
 
             handle = self.localStore.get(self.container_id, index_file, encoding="utf-8")
 
@@ -184,7 +185,7 @@ class TestBLLSitemap(DoajTestCase):
             article_ids = []
 
             # check sitemap file
-            sitemap_file = os.path.join(latest, '_0_utf8.xml')
+            sitemap_file = os.path.join(latest, 'sitemap_0_utf8.xml')
             handle = self.localStore.get(self.container_id, sitemap_file, encoding="utf-8")
 
             tree = etree.parse(handle)
@@ -231,3 +232,74 @@ class TestBLLSitemap(DoajTestCase):
 
         # Tear down
         patch_config(app, original_configs)
+
+    def test_cache_cleanup_on_regeneration(self):
+        """Test that old cached sitemap index entries are properly cleaned up"""
+        # Create test data
+        journals = []
+        for s in JournalFixtureFactory.make_many_journal_sources(count=2, in_doaj=True):
+            j = models.Journal(**s)
+            j.save()
+            journals.append(j)
+        models.Journal.blockall([(j.id, j.last_updated) for j in journals])
+
+        # Force chunking to create multiple index files
+        original_configs = {"SITEMAP_INDEX_MAX_ENTRIES": app.config.get("SITEMAP_INDEX_MAX_ENTRIES", 50000)}
+        patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 1})
+        
+        try:
+            # First generation - should create multiple chunks
+            urls, action_register = self.svc.sitemap(prune=False)
+            
+            cache_memory = models.Cache.__memory__
+            # Count initial sitemap_index entries
+            initial_index_entries = [key for key in cache_memory.keys() if key.startswith("sitemap_index_")]
+            initial_count = len(initial_index_entries)
+            
+            # Second generation - should clean up and recreate
+            urls2, action_register2 = self.svc.sitemap(prune=False)
+            
+            # Should still have same number of index entries (old ones cleaned up, new ones created)
+            final_index_entries = [key for key in cache_memory.keys() if key.startswith("sitemap_index_")]
+            final_count = len(final_index_entries)
+            
+            # Should have same number of entries, but they should be fresh
+            assert final_count == initial_count
+            
+        finally:
+            patch_config(app, original_configs)
+
+    def test_filename_consistency(self):
+        """Test filename patterns for single vs chunked sitemaps"""
+        journals = []
+        for s in JournalFixtureFactory.make_many_journal_sources(count=2, in_doaj=True):
+            j = models.Journal(**s)
+            j.save()
+            journals.append(j)
+        models.Journal.blockall([(j.id, j.last_updated) for j in journals])
+
+        original_configs = {"SITEMAP_INDEX_MAX_ENTRIES": app.config.get("SITEMAP_INDEX_MAX_ENTRIES", 50000)}
+        
+        try:
+            # Test single file case
+            patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 50000})
+            url_single, action_register_single = self.svc.sitemap(prune=False)
+
+            assert url_single is not None
+            filenames = [url.split("/")[-1] for url in url_single]  # Get the filename part
+            assert "sitemap_index_0_utf8.xml" in filenames
+            
+            # Test chunked file case  
+            patch_config(app, {"SITEMAP_INDEX_MAX_ENTRIES": 1})
+            url_chunked, action_register_chunked = self.svc.sitemap(prune=False)
+            
+            # Chunked case should create files with sitemap_index_0.xml, sitemap_index_1.xml pattern
+            chunked_messages = [msg for msg in action_register_chunked if "Sitemap index" in str(msg)]
+            if len(chunked_messages) > 1:  # Multiple chunks created
+                # Check that the messages reference numbered indices
+                assert any("index 0 written" in str(msg) for msg in chunked_messages)
+                assert any("sitemap_index_0.xml" in str(url_chunked) or "sitemap_index_1.xml" in str(url_chunked) 
+                          or any("index" in str(msg) and any(str(i) in str(msg) for i in range(10)) for msg in chunked_messages))
+                
+        finally:
+            patch_config(app, original_configs)

@@ -335,7 +335,7 @@ class RegisterForm(RedirectForm):
         Checks honeypot fields and determines whether the form was submitted by a bot
         :return: True, if bot suspected; False, if human
         """
-        return self.email.data != "" or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
+        return self.email.data != "" or self.hptimer.data is None or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
