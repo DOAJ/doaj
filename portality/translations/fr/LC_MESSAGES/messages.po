@@ -1053,7 +1053,7 @@ msgstr ""
 
 #: forms/application_forms.py:1795
 msgid "Continues an <strong>older</strong> journal with the ISSN(s)"
-msgstr "Continue une revue <strong>plus ancienne</strong> avec les ISSN"
+msgstr ""
 
 #: forms/application_forms.py:1800 forms/application_forms.py:1828
 msgid ""
@@ -1072,7 +1072,7 @@ msgstr ""
 
 #: forms/application_forms.py:1823
 msgid "Continued by a <strong>newer</strong> journal with the ISSN(s)"
-msgstr "Continué par une revue <strong>plus récente</strong> avec l'ISSN(s)"
+msgstr ""
 
 #: forms/application_forms.py:1838
 msgid "Enter the ISSN(s) of the later title(s) that continue this publication."
@@ -1213,7 +1213,6 @@ msgid "Optional"
 msgstr "Optionnel"
 
 #: templates-v2/_application-form/includes/_field.html:12
-#, fuzzy
 msgid "More help"
 msgstr "Plus d'aide"
 

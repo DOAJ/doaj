@@ -3,7 +3,8 @@
 Script to convert between PO and CSV files for translation purposes
 
 Usage:
-  To convert from PO to CSV: python po_csv_converter.py po2csv <po_file> <csv_file>
+  To convert from PO to CSV: python po_csv_converter.py po2csv <po_file> <csv_file> [--fuzzy]
+    --fuzzy: include only entries marked with '#, fuzzy' or entries with empty msgstr
   To convert from CSV to PO: python po_csv_converter.py csv2po <csv_file> <po_file>
   To update existing PO file from CSV: python po_csv_converter.py update_po <csv_file> <po_file>
 """
@@ -56,7 +57,7 @@ def compare_html_tags(msgid, msgstr):
     return msgid_tags == msgstr_tags
 
 
-def po_to_csv(po_file, csv_file):
+def po_to_csv(po_file, csv_file, only_fuzzy=False):
     """Convert a PO file to CSV format."""
     with open(po_file, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -136,11 +137,16 @@ def po_to_csv(po_file, csv_file):
     if current_entry['msgid']:
         entries.append(current_entry)
 
+    # Optionally filter entries to only fuzzy or empty translations
+    filtered_entries = entries
+    if only_fuzzy:
+        filtered_entries = [e for e in entries if e.get('fuzzy') or e.get('msgstr', '') == '']
+
     # Write to CSV
     with open(csv_file, 'w', encoding='utf-8', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['location', 'fuzzy', 'msgid', 'msgstr'])
-        for entry in entries:
+        for entry in filtered_entries:
             writer.writerow([
                 '; '.join(entry['locations']),
                 'Yes' if entry['fuzzy'] else 'No',
@@ -149,7 +155,10 @@ def po_to_csv(po_file, csv_file):
             ])
 
     print(f"Successfully converted {po_file} to {csv_file}")
-    print(f"Total entries: {len(entries)}")
+    if only_fuzzy:
+        print(f"Total entries (all): {len(entries)}; filtered (fuzzy or empty msgstr): {len(filtered_entries)}")
+    else:
+        print(f"Total entries: {len(entries)}")
 
 
 def csv_to_po(csv_file, po_file):
@@ -437,6 +446,9 @@ def main():
                         help='Conversion mode: po2csv, csv2po, or update_po')
     parser.add_argument('input_file', help='Input file path')
     parser.add_argument('output_file', help='Output file path')
+    # Optional flags
+    parser.add_argument('--fuzzy', action='store_true',
+                        help='When used with po2csv, include only entries marked fuzzy or with empty msgstr')
 
     args = parser.parse_args()
 
@@ -447,7 +459,7 @@ def main():
 
     # Execute the appropriate function based on mode
     if args.mode == 'po2csv':
-        po_to_csv(args.input_file, args.output_file)
+        po_to_csv(args.input_file, args.output_file, only_fuzzy=args.fuzzy)
     elif args.mode == 'csv2po':
         csv_to_po(args.input_file, args.output_file)
     elif args.mode == 'update_po':
