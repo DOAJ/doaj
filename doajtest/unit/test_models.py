@@ -1451,9 +1451,6 @@ class TestModels(DoajTestCase):
         })
 
         models.Cache.cache_csv("/csv/filename.csv")
-
-        models.Cache.cache_sitemap("sitemap.xml")
-
         models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
 
         time.sleep(1)
@@ -1466,8 +1463,6 @@ class TestModels(DoajTestCase):
         assert stats["no_apc"] == 50
 
         assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
-
-        assert models.Cache.get_latest_sitemap() == "sitemap.xml"
 
         article_data = models.Cache.get_public_data_dump().get("article")
         assert article_data.get("url") == "http://example.com/article"
