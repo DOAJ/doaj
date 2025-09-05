@@ -29,6 +29,10 @@ def redirect_url(lang: str = DEFAULT_LOCALE):
 
 def locale_middleware():
     try:
+        # Only handle GET requests, let POST pass through
+        if request.method != 'GET':
+            return None
+
         # Redirect for included routes
         if request.path and any(request.path.startswith(f'/{route}') for route in INCLUDE_ROUTES):
             # update selected language
