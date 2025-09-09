@@ -12,7 +12,7 @@ setup(
         "bagit==1.8.1",
         "beautifulsoup4",
         "boto3==1.35.25",
-        "elastic-apm==5.2.2",
+        "elastic-apm==6.24.0",
         "elasticsearch==7.13.0",
         "Faker==2.0.3",
         "feedparser==6.0.11",
