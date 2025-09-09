@@ -1,6 +1,6 @@
 from portality.api.current.data_objects.common import _check_for_script
 from portality.lib import dataobj, swagger
-from portality import models, regex
+from portality import models, regex, constants
 from portality.ui.messages import Messages
 from portality.util import normalise_issn
 from copy import deepcopy
@@ -46,7 +46,7 @@ BASE_ARTICLE_STRUCT = {
 
                 "identifier": {
                     "fields": {
-                        "type": {"coerce": "unicode"},
+                        "type": {"coerce": "unicode_lower", "allowed_values": constants.ALLOWED_ARTICLE_IDENT_TYPES},
                         "id": {"coerce": "unicode"}
                     }
                 },

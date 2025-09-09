@@ -873,6 +873,11 @@ def request_report():
     # TODO: it's probably a bit cheeky to use the type param (used for casting) to run our lambda function, but it works
     notes = request.values.get("notes", False, lambda x: json.loads(x))
 
+    if notes is True and not current_user.has_role(constants.ROLE_ADMIN_REPORT_WITH_NOTES): # "ultra_admin_reports_with_notes"
+        # Fixme: this abort is only visible within the network console, because it's a jSON endpoint to serve the page.
+        # It will just appear that the generate button isn't working (but they'll have edited the HTML to re-enable the checkbox)
+        abort(403)
+
     query = json.loads(query_raw)
     sane_query = {"query": query.get("query")}
     if "sort" in query:

@@ -2,6 +2,7 @@
 import json
 from typing import Dict
 
+from portality import constants
 from portality.api.current.crud.common import CrudApi
 from portality.api.current import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
@@ -117,9 +118,29 @@ class ArticlesCrudApi(CrudApi):
         ) as e:
             raise Api400Error(str(e))
 
+    @classmethod
+    def _normalise_and_prune_identifiers(cls, data: Dict) -> None:
+        """
+        Normalises and prunes identifiers in the article data.
+        This method modifies the data in place.
+        """
+        idents = data.get("bibjson", {}).get("identifier")
+        if idents is not None:
+            # normalise the identifiers to lower case
+            for ident in idents:
+                if ident.get("type") is not None:
+                    ident["type"] = ident["type"].lower()
+
+            # remove any identifiers that are not allowed
+            allowed_idents = constants.ALLOWED_ARTICLE_IDENT_TYPES
+            data["bibjson"]["identifier"] = [i for i in idents if i.get("type") in allowed_idents]
 
     @classmethod
     def prep_article(cls, data: Dict, account: models.Account) -> models.Article:
+        # ensure that the identifiers supplied are allowed, before we send it over to the
+        # data object.  We will silently remove any identifiers that are not allowed
+        cls._normalise_and_prune_identifiers(data)
+
         # first thing to do is a structural validation, by instantiating the data object
         try:
             ia = IncomingArticleDO(data)
@@ -233,6 +254,10 @@ class ArticlesCrudApi(CrudApi):
         articleService = DOAJ.articleService()
         if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
+
+        # ensure that the identifiers supplied are allowed, before we send it over to the
+        # data object.  We will silently remove any identifiers that are not allowed
+        cls._normalise_and_prune_identifiers(data)
 
         # next thing to do is a structural validation of the replacement data, by instantiating the object
         try:
