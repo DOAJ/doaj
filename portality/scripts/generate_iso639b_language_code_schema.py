@@ -1,12 +1,12 @@
 """ Use pycountry to write the XML Schema for ISO-639-2b: the bibliographic language codes, used by our XML importer."""
 
 import os
-import pycountry
 import difflib
 from lxml import etree
 from lxml.builder import ElementMaker
 from portality.lib import paths, dates
 from glob import glob
+from portality.datasets import language_options
 
 from portality.lib.dates import FMT_DATE_STD
 
@@ -57,7 +57,7 @@ def write_lang_schema(out_file, schema_version):
     DOCU = E.documentation
 
     # Gather names and 3-char codes (bibliographic preferred) for only the languages with 2-character codes (ISO639-1)
-    for l in pycountry.languages:
+    for l in language_options:
         try:
             _ = l.alpha_2
         except AttributeError:
