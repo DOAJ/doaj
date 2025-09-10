@@ -649,6 +649,14 @@ ass_ed:
   language: English, Arabic, Amharic
   photo: "Musa_Ali.jpg"
   
+- name: Natalia Mikołajczak
+  area: Food Science, Publication Ethics
+  year_since:
+  city: Warsaw
+  country: Poland
+  language: Polish, English
+  photo: "Mikołajczak, photo.jpg"
+  
 - name: Natalia Popova
   area: Sociology
   year_since:
