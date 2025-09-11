@@ -635,7 +635,7 @@ class ApplicationService(object):
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("pissn")),
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("eissn"))
                 ]
-                issns = [issn for issn in issns if issn is not None and issn is not ""]
+                issns = [issn for issn in issns if issn is not None and issn != ""]
 
                 try:
                     j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)
