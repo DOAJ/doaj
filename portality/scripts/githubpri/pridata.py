@@ -17,6 +17,8 @@ import pandas as pd
 
 from portality.scripts.githubpri import github_utils
 from portality.scripts.githubpri.github_utils import GithubReqSender, Issue
+from datetime import datetime
+
 
 PROJECT_NAME = "DOAJ Kanban"
 DEFAULT_COLUMNS = ["Review", "In progress", "To Do"]
@@ -45,6 +47,7 @@ class GithubIssue(TypedDict):
     status: str  # e.g. 'To Do', 'In progress', 'Review'
     title: str
     assignees: list[str]
+    deadline: datetime | None
 
 
 def load_rules(rules_file) -> list[Rule]:
@@ -97,12 +100,33 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> di
 
         for user, issues in issues_by_user.items():
             issues: list[GithubIssue]
-            pri_issues = [PriIssue(rule_id=priority.get("id", 1),
-                                   title='[{}] {}'.format(github_issue['issue_number'], github_issue['title']),
+
+            pri_issues = []
+            no_deadline_issues = []
+            deadline_issues = {}
+
+            for github_issue in issues:
+                dl = github_issue.get("deadline", None)
+                if dl is None:
+                    no_deadline_issues.append(github_issue)
+                else:
+                    deadline_issues[dl] = github_issue
+
+            if len(deadline_issues) > 0:
+                for dl in sorted(deadline_issues.keys()):
+                    pri_issues.append(PriIssue(rule_id=priority.get("id", 1),
+                                       title=_make_title(deadline_issues[dl]),
+                                       issue_url=deadline_issues[dl]['url'],
+                                       status=deadline_issues[dl]['status']
+                                       ))
+
+            for github_issue in no_deadline_issues:
+                pri_issues.append(PriIssue(rule_id=priority.get("id", 1),
+                                   title=_make_title(github_issue),
                                    issue_url=github_issue['url'],
-                                   status=github_issue['status'],
-                                   )
-                          for github_issue in issues]
+                                   status=github_issue['status']
+                                   ))
+
             pri_issues = [i for i in pri_issues if
                           i['issue_url'] not in {u['issue_url'] for u in user_priorities[user]}]
             for i in pri_issues:
@@ -114,6 +138,23 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> di
         df_list[user] = pd.DataFrame(pri_issues)
 
     return df_list
+
+
+def _make_title(github_issue: GithubIssue) -> str:
+    issue = github_issue.get("issue_number", "")
+    title = github_issue.get("title", "")
+    deadline = github_issue.get("deadline", None)
+
+    base = "[{}]".format(issue)
+    if deadline:
+        if isinstance(deadline, datetime):
+            deadline_str = deadline.strftime("%Y-%m-%d")
+        else:
+            deadline_str = str(deadline)
+        base += " (by {})".format(deadline_str)
+
+    base += " " + title
+    return base
 
 
 def _issues_by_user(issues: Iterable[Issue], priority) -> dict[str, list[GithubIssue]]:
@@ -140,6 +181,7 @@ def to_github_issue(issue: Issue):
                                issue_number=issue.get("number"),
                                status=issue['status'],
                                title=issue.get("title"),
-                               assignees=issue['assignees'] or [DEFAULT_USER]
+                               assignees=issue['assignees'] or [DEFAULT_USER],
+                               deadline=issue.get("deadline", None)
                                )
     return github_issue
