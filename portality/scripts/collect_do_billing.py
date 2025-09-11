@@ -219,7 +219,7 @@ def process_invoice_items(invoice_items):
     return doaj_items
 
 
-def print_summary_report(all_doaj_items, target_month):
+def print_summary_report(all_doaj_items, target_month, exchange_rate=None):
     """Print a summary report of all DOAJ resources and costs."""
     print(f"\nDOAJ Digital Ocean Billing Summary for {target_month}")
     print("=" * 80)
@@ -241,8 +241,8 @@ def print_summary_report(all_doaj_items, target_month):
     all_items.sort(key=lambda x: x['amount'], reverse=True)
     
     # Print each resource
-    print(f"{'Description':<45} {'Product':<18} {'Environment':<12} {'Amount (USD)':>12}")
-    print("-" * 90)
+    print(f"{'Description':<45} {'Product':<18} {'Environment':<12} {'Amount (USD)':>12} {'Amount (GBP)':>12}")
+    print("-" * 102)
     
     total_amount = 0
     for item in all_items:
@@ -250,13 +250,15 @@ def print_summary_report(all_doaj_items, target_month):
         product = item['product'][:15] + "..." if len(item['product']) > 18 else item['product']
         environment = item['environment']
         amount = item['amount']
+        gbp = amount / exchange_rate if exchange_rate else 0.0
         
         total_amount += amount
         
-        print(f"{description:<45} {product:<18} {environment:<12} ${amount:>10.2f}")
-    
-    print("-" * 90)
-    print(f"{'TOTAL':<77} ${total_amount:>10.2f}")
+        print(f"{description:<45} {product:<18} {environment:<12} ${amount:>10.2f} £{gbp:>10.2f}")
+
+    total_gbp = total_amount / exchange_rate if exchange_rate else 0.0
+    print("-" * 102)
+    print(f"{'TOTAL':<77} ${total_amount:>10.2f} £{total_gbp:>10.2f}")
     
     # Print breakdown by product type
     product_totals = {}
@@ -265,9 +267,10 @@ def print_summary_report(all_doaj_items, target_month):
         product_totals[product] = product_totals.get(product, 0) + item['amount']
     
     print(f"\nBreakdown by Product Type:")
-    print("-" * 40)
+    print("-" * 48)
     for product, amount in sorted(product_totals.items(), key=lambda x: x[1], reverse=True):
-        print(f"{product:<30} ${amount:>8.2f}")
+        gbp = amount / exchange_rate if exchange_rate else 0.0
+        print(f"{product:<30} ${amount:>8.2f} £{gbp:>8.2f}")
     
     # Print breakdown by Environment
     env_totals = {}
@@ -276,9 +279,10 @@ def print_summary_report(all_doaj_items, target_month):
         env_totals[env] = env_totals.get(env, 0) + item['amount']
     
     print(f"\nBreakdown by Environment:")
-    print("-" * 40)
+    print("-" * 48)
     for env, amount in sorted(env_totals.items(), key=lambda x: x[1], reverse=True):
-        print(f"{env:<30} ${amount:>8.2f}")
+        gbp = amount / exchange_rate if exchange_rate else 0.0
+        print(f"{env:<30} ${amount:>8.2f} ${gbp:>8.2f}")
 
 
 def main():
@@ -288,11 +292,13 @@ def main():
     parser = argparse.ArgumentParser(description='Collect DOAJ billing data from Digital Ocean for a specific month')
     parser.add_argument('month', help='Month in YYYY-MM format (e.g., 2024-01)')
     parser.add_argument('-t', '--token', required=True, help='DigitalOcean API access token')
+    parser.add_argument('-g', '--gbp', required=False, help='GBP Amount paid for this invoice')
     parser.add_argument('--show-total', action='store_true', help='Show total invoice amount (for auditing purposes)')
     
     args = parser.parse_args()
     target_month = args.month
     DO_TOKEN = args.token
+    gbp_amount = float(args.gbp) if args.gbp else None
     
     # Validate month format
     try:
@@ -326,13 +332,22 @@ def main():
         print(f"  Retrieved {len(invoice_items)} invoice items")
         # Process items for DOAJ-related resources
         doaj_items = process_invoice_items(invoice_items)
+
+        total_invoice = sum(float(item.get('amount', 0)) for item in invoice_items)
+        print(f"  Invoice total amount: ${total_invoice:.2f}")
+        exchange_rate = None
+        if gbp_amount:
+            print(f"  GBP Amount provided: £{gbp_amount:.2f}")
+            exchange_rate = total_invoice / gbp_amount if gbp_amount != 0 else 0
+            print(f"  Implied Exchange Rate: {exchange_rate:.4f} USD/GBP")
+
         if doaj_items:
             doaj_amount = sum(item['amount'] for item in doaj_items)
             print(f"  Found {len(doaj_items)} DOAJ items totaling ${doaj_amount:.2f}")
             
             # Print summary report
             all_doaj_items = {uuid: doaj_items}
-            print_summary_report(all_doaj_items, target_month)
+            print_summary_report(all_doaj_items, target_month, exchange_rate)
         else:
             print(f"\nNo DOAJ-related resources found for {target_month}")
     else:
