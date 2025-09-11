@@ -10,12 +10,16 @@
     cursor: pointer;
   }
 
-  fieldset {
+  section {
     margin: 0 0 $spacing-04 0;
     padding: 0 $spacing-04;
     border-radius: $spacing-02;
     background: $white;
     @include box-shadow;
+  }
+
+  fieldset {
+    padding-left: 0;
   }
 
   .page-content {
