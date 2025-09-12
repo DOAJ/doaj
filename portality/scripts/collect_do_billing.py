@@ -2,16 +2,17 @@
 """
 Script to collect DOAJ billing information from Digital Ocean invoices for a specific month.
 
-Usage: python collect_do_billing.py YYYY-MM -t TOKEN [--show-total]
+Usage: python collect_do_billing.py YYYY-MM -t TOKEN [-g <GBP paid>] [--hide-total]
 
 This script:
 1. Lists invoices for the specified month
-2. Gets invoice items using doctl API
-3. Filters for DOAJ-related items:
+2. Accepts a GPB amout paid for the invoice to convert USD to GBP
+3. Gets invoice items using doctl API
+4. Filters for DOAJ-related items:
    - Items in the DOAJ project
    - Items without project assignment but with 'doaj' in the name (e.g., snapshots)
-4. Categorizes resources as Production or Test based on droplet tags and naming conventions
-5. Outputs a summary report with environment breakdown
+5. Categorizes resources as Production or Test based on droplet tags and naming conventions
+6. Outputs a summary report with environment breakdown
 
 Required DigitalOcean API Token Permissions:
 ===========================================
@@ -293,7 +294,7 @@ def main():
     parser.add_argument('month', help='Month in YYYY-MM format (e.g., 2024-01)')
     parser.add_argument('-t', '--token', required=True, help='DigitalOcean API access token')
     parser.add_argument('-g', '--gbp', required=False, help='GBP Amount paid for this invoice')
-    parser.add_argument('--show-total', action='store_true', help='Show total invoice amount (for auditing purposes)')
+    parser.add_argument('--hide-total', action='store_true', help='Hide the total invoice amount')
     
     args = parser.parse_args()
     target_month = args.month
@@ -322,7 +323,7 @@ def main():
     
     # Process the invoice
     uuid = invoice.get('invoice_uuid', '')
-    total_info = f" (Total: ${invoice['amount']})" if args.show_total else ""
+    total_info = "" if args.hide_total else f" (Total: ${invoice['amount']})"
     
     print(f"\nProcessing invoice: {uuid}{total_info}")
     
@@ -333,8 +334,8 @@ def main():
         # Process items for DOAJ-related resources
         doaj_items = process_invoice_items(invoice_items)
 
-        total_invoice = sum(float(item.get('amount', 0)) for item in invoice_items)
-        print(f"  Invoice total amount: ${total_invoice:.2f}")
+        total_invoice = float(invoice['amount'])
+        if not args.hide_total: print(f"  Invoice total amount: ${total_invoice:.2f}")
         exchange_rate = None
         if gbp_amount:
             print(f"  GBP Amount provided: £{gbp_amount:.2f}")
@@ -343,7 +344,8 @@ def main():
 
         if doaj_items:
             doaj_amount = sum(item['amount'] for item in doaj_items)
-            print(f"  Found {len(doaj_items)} DOAJ items totaling ${doaj_amount:.2f}")
+            gbp_tot = f" (£{doaj_amount / exchange_rate:.2f})" if exchange_rate else ""
+            print(f"  Found {len(doaj_items)} DOAJ items totaling ${doaj_amount:.2f}{gbp_tot}")
             
             # Print summary report
             all_doaj_items = {uuid: doaj_items}
