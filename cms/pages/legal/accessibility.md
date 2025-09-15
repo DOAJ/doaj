@@ -9,7 +9,7 @@ featuremap: ~~Accessibility:Fragment~~
 
 This accessibility statement applies to [doaj.org](https://doaj.org) exclusively.
 
-Its subdomain [blog.doaj.org](https://blog.doaj.org) and sister site [doajbestpracticeguide.org](https://www.doajbestpracticeguide.org) are WordPress sites and **are not covered by this statement**.
+Its subdomain [blog.doaj.org](https://blog.doaj.org) is a WordPress site and **is not covered by this statement**.
 
 This website is run by DOAJ on behalf of IS4OA. We want as many people as possible to be able to use this website. For example, that means you should be able to:
 
