@@ -103,7 +103,7 @@ This website was last tested on **14 April 2025**. An independent organisation, 
 ## Changes to this document 
 
 - 11 September 2025: made radio buttons on search focusable
-- 4 August 2025: added the VPAt statement and updated the last tested date
+- 4 August 2025: added the VPAT statement and updated the last tested date
 - 28 September 2024: moved the ReCAPTCHA work to completed and added a problem with radio buttons in search to the in progress list
 - 06 September 2024: added details on things we have fixed; removed references to the PDFs and the blog, which are not covered by this statement; added the last point to the Non-compliance section; updated compliance status
 - 20 December 2021: updated target date to meet accessibility standards to January 2021. 
