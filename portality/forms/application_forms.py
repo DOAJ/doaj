@@ -3094,6 +3094,31 @@ JAVASCRIPT_FUNCTIONS = {
 class NumberWidget(widgets.Input):
     input_type = 'number'
 
+class FieldsetWidget(object):
+    """
+       Renders a fieldset with a legend
+       if legend_display is true the question is displayed
+       if legend_display is false it is for screen readers only
+    """
+    def __init__(self, legend, sr_only_label = True, prefix_label=False):
+        self.sr_only = sr_only_label
+        self.prefix_label = prefix_label
+
+        self.legend = f'<legend '
+        if self.sr_only:
+            self.legend += f'class="sr-only"'
+        self.legend += f'>{legend}</legend>'
+
+        self.html_wrapper = f"<fieldset> {self.legend} [BODY]</fieldset>"
+
+    def __call__(self, field, **kwargs):
+        fields = ''
+        for subfield in field:
+            fields += f'{subfield.label}{subfield(**kwargs)}' if self.prefix_label else f'{subfield(**kwargs)}{subfield.label}'
+
+        html = self.html_wrapper.replace("[BODY]", fields)
+        return HTMLString(''.join(html))
+
 
 class ListWidgetWithSubfields(object):
     """
@@ -3141,7 +3166,8 @@ class RadioBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        wtfargs["widget"] = ListWidgetWithSubfields()
+        # wtfargs["widget"] = ListWidgetWithSubfields()
+        wtfargs["widget"] = FieldsetWidget(legend=field.get("label"), sr_only_label=True)
         return UnconstrainedRadioField(**wtfargs)
 
 

@@ -119,6 +119,8 @@ We will first confirm with you the number of articles to be deleted. Deleting ar
 
 ## Help with metadata uploads
 
+If article XML uploading fails, there might be a problem with the XML. An error message will be displayed at the top of the '[Upload article XML](/publisher/uploadfile)' page. Even more information is shown in the 'History of uploads' table at the bottom of the same page. (Click the 'Upload article XML' tab again to see the most recent messages in the table.)
+
 ### My authors have multiple affiliations
 
 We are currently unable to display more than one affiliation per author. We are investigating how we can change this. More information will be posted on our blog.
