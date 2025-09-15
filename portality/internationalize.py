@@ -92,7 +92,7 @@ def internationalize(app):
     app.config['BABEL_DEFAULT_LOCALE'] = DEFAULT_LOCALE  # Default
     app.config['BABEL_DEFAULT_TIMEZONE'] = DEFAULT_TIMEZONE
     app.config['LANGUAGES'] = LANGUAGES
-    app.config['BABEL_TRANSLATION_DIRECTORIES'] = "translations"
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = "ui/translations"
 
     app.babel = Babel(app, locale_selector=get_locale, timezone_selector=get_timezone)
 

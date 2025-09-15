@@ -12,8 +12,12 @@ from portality.view.view_helper import exparam_editing_user
 from portality.ui import templates
 
 blueprint = Blueprint('apply', __name__)
-blueprint_locale = Blueprint('apply_locale', __name__)
 
+@blueprint.url_value_preprocessor
+def pull_lang(endpoint, values):
+    # Remove 'lang' so it is not passed to the view function
+    if values:
+        lang = values.pop('lang', None)
 
 @blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
@@ -95,7 +99,3 @@ def public_application(draft_id=None):
                 return redirect(url_for('apply.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
-
-@blueprint_locale.route("/", methods=["GET", "POST"])
-def public_application_locale(lang):
-    return public_application()
