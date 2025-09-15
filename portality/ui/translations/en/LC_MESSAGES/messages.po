@@ -1370,6 +1370,25 @@ msgid ""
 "us</a>."
 msgstr ""
 
+#: templates-v2/public/public_application.html:84
+msgid "You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this "
+      "message and click the \"Save Draft\" button at the bottom of the page."
+msgstr "You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this "
+      "message and click the \"Save Draft\" button at the bottom of the page."
+#: templates-v2/public/_application_form/includes/buttons.html:4
+msgid "Back"
+msgstr "Back"
+#: templates-v2/public/_application_form/includes/buttons.html:5
+msgid "Next"
+msgstr "Next"
+#: templates-v2/public/_application_form/includes/buttons.html:9
+msgid "Submit"
+msgstr "Submit"
+#: templates-v2/public/_application_form/includes/buttons.html:12
+msgid "Save the draft"
+msgstr "Save the draft"
+
+
 #~ msgid ""
 #~ "<a "
 #~ "href='https://wiki.creativecommons.org/wiki/CC0_FAQ#What_is_the_difference_between_CC0_and_the_Public_Domain_Mark_.28.22PDM.22.29.3F'"
