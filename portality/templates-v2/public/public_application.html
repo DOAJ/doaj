@@ -7,7 +7,7 @@
 {% set form_action = url_for("apply.public_application") %}
 {% set formulaic_after = url_for("apply.application_thanks") %}
 {% if obj %}
-    {% set form_action = url_for("apply.public_application", draft_id=obj.id) %}
+{% set form_action = url_for("apply.public_application", draft_id=obj.id) %}
 {% endif %}
 
 {% set js_validation = True %}
@@ -22,58 +22,77 @@
 
 
 {% block public_content scoped %}
-    <div class="container">
-        {% include "_application-form/includes/_backend_validation.html" %}
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content">
-                    <form id="{{ form_id }}"
-                          data-context = "{{ formulaic_context.name }}"
-                          class="application_form"
-                          novalidate
-                          action="{{ form_action }}"
-                          method="post"
-                          data-formulaic-after="{{ formulaic_after }}">
+<div class="container">
+    {% include "_application-form/includes/_backend_validation.html" %}
+    <div class="row">
+        <div class="col-md-8">
+            <section class="page-content">
+                <form id="{{ form_id }}"
+                      data-context="{{ formulaic_context.name }}"
+                      class="application_form"
+                      novalidate
+                      action="{{ form_action }}"
+                      method="post"
+                      data-formulaic-after="{{ formulaic_after }}">
 
-                        {% include "_application-form/includes/_public_fieldsets.html" %}
+                    {% include "_application-form/includes/_public_fieldsets.html" %}
 
-                        <div class="tab form-section">
-                            {% include "public/_application-form/includes/_review.html" %}
-                        </div>
-                        <p class="alert alert--danger" id="cannot-submit-invalid-fields" style="display: none">
-                            You cannot submit the application because it contains some invalid fields. Please review your answers and try again.
-                        </p>
-                        {% include "public/_application-form/includes/_buttons.html" %}
+                    <div class="tab form-section">
+                        {% include "public/_application-form/includes/_review.html" %}
+                    </div>
+                    <p class="alert alert--danger" id="cannot-submit-invalid-fields" style="display: none">
+                        You cannot submit the application because it contains some invalid fields. Please review your
+                        answers and try again.
+                    </p>
+                    {% include "public/_application-form/includes/_buttons.html" %}
 
-                        {% if obj %}
-                            <input type="hidden" name="id" value="{{ obj.id }}">
-                        {% elif draft_data %}
-                            <input type="hidden" name="id" value="{{ draft_data.id }}">
-                        {% endif %}
-                    </form>
-                </section>
-            </div>
+                    {% if obj %}
+                    <input type="hidden" name="id" value="{{ obj.id }}">
+                    {% elif draft_data %}
+                    <input type="hidden" name="id" value="{{ draft_data.id }}">
+                    {% endif %}
+                </form>
+            </section>
+        </div>
 
-            <div class="col-md-4">
-                <div class="language-selector">
-                  <form action="/apply/" method="GET">
-                    <select id="languageSelect" name="lang" onchange="this.form.submit()">
-                        <option value="en" {% if session.get('lang') == 'en' %}selected{% endif %}>English</option>
-                        <option value="fr" {% if session.get('lang') == 'fr' %}selected{% endif %}>Français</option>
+        <div class="col-md-4">
+            <div class="language-selector">
+                <form action="/apply/" method="GET" id="language_form">
+                    <select id="languageSelect" name="lang" onchange="$(this.form).trigger('submit')">
+                        <option value="en" {% if session.get(
+                        'lang') == 'en' %}selected{% endif %}>English</option>
+                        <option value="fr" {% if session.get(
+                        'lang') == 'fr' %}selected{% endif %}>Français</option>
                     </select>
-                  </form>
-                </div>
-                <div >
-                    {% include "public/_application-form/includes/_pagination_menu.html" %}
-                </div>
-                <div class="row">
-                    {% include "public/_application-form/includes/_aside_menu.html" %}
-                </div>
+                </form>
+            </div>
+            <div>
+                {% include "public/_application-form/includes/_pagination_menu.html" %}
+            </div>
+            <div class="row">
+                {% include "public/_application-form/includes/_aside_menu.html" %}
             </div>
         </div>
     </div>
+</div>
+<!-- Modal -->
+
+<div id="warningModal" class="modal" style="display: none;" role="dialog">
+    <div class="modal__dialog" style="height: max-content">
+        <p>You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this
+            message and click the "Save Draft" button at the bottom of the page.
+        </p>
+        <button id="stayBtn" style="margin-right:10px;">Cancel</button>
+        <button id="leaveBtn">Submit Anyway</button>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block public_js scoped %}
-    {% include "_application-form/includes/_form_js.html" %}
+{% include "_application-form/includes/_form_js.html" %}
+<script type="text/javascript" src="/static/js/change_language_alert.js"></script>
+<script>
+    doaj.lang_change.init({containerSelector: "#new_form", submitSelector: "#language_form", warningModal: "#warningModal"});
+</script>
 {% endblock %}
