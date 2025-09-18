@@ -9,7 +9,7 @@ log_format ip_cloudflare '$remote_addr - $remote_user [$time_local] "$request" '
 # NOTE: change back to $binary_remote_addr if the app is no longer being served through cloudflare.
 limit_req_zone $http_cf_connecting_ip zone=general:100m rate=8r/s;
 limit_req_zone $http_cf_connecting_ip zone=api:100m rate=12r/s;
-limit_req_zone $http_cf_connecting_ip zone=oai:100m rate=30r/m;
+limit_req_zone $http_cf_connecting_ip zone=oai:100m rate=10r/m;
 limit_req_status 429;
 
 map $http_user_agent $block_ua {
@@ -131,7 +131,7 @@ server {
         if ($http_user_agent ~* (bot|spider) ) {
             return 403;
         }
-        limit_req zone=oai burst=2;
+        limit_req zone=oai burst=5;
         proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
