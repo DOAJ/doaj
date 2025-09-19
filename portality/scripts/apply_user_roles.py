@@ -8,26 +8,35 @@ def apply_user_roles(source):
     with open(source, "r", encoding="utf-8") as f:
         reader = csv.reader(f)
         for row in reader:
+            if len(row) == 0:
+                continue
             username = row[0]
-            roles = [r.strip() for r in row[3].split(",")]
-            acc = apply_roles(username, roles)
+            if username is None or username.strip() == "":
+                continue
+            roles = [r.strip() for r in row[1].split(",")]
+            if len(roles) == 0:
+                continue
+            acc, applied, skipped = apply_roles(username, roles)
             if acc is None:
                 report["missing"].append(username)
             else:
-                report["upgraded"].append(username)
+                report["upgraded"].append({"username": username, "applied": applied, "skipped": skipped})
     return report
 
 
-def apply_roles(username, roles, overwrite_roles=False):
+def apply_roles(username, roles):
     acc = Account.pull(username)
     if not acc:
-        return None
+        return None, None, None
 
-    for role in roles:
+    allowed = app.config.get("TOP_LEVEL_ROLES", [])
+    apply = [r for r in roles if r in allowed]
+    skip = [r for r in roles if r not in allowed]
+    for role in apply:
         acc.add_role(role)
-    acc.set_role(roles)
+
     acc.save()
-    return acc
+    return acc, apply, skip
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
@@ -37,19 +46,19 @@ if __name__ == "__main__":
     import argparse, getpass
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-c", "--csv", help="csv of users, and roles to assign/add")
-    
+    parser.add_argument("csv", help="csv of users, and roles to assign/add")
+
     args = parser.parse_args()
     
     if not args.csv:
-        print("Please specify a csv of users to create")
+        print("Please specify a csv of existing users and their new roles to add")
         exit()
 
     report = apply_user_roles(args.csv)
 
     print("The following users were upgraded: ")
     for u in report["upgraded"]:
-        print("  - " + u)
+        print("  - " + u["username"] + " (applied: " + ", ".join(u["applied"]) + "; skipped: " + ", ".join(u["skipped"]) + ")")
     if len(report["missing"]) > 0:
         print("The following users were not found: ")
         for u in report["missing"]:
