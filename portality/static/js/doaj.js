@@ -292,6 +292,7 @@ var doaj = {
         let terms = params.terms;
         let term = params.term;
         let queryString = params.queryString;
+        let defaultField = params.defaultField || false;
         let sort = params.sort;
 
         let musts = [];
@@ -308,12 +309,16 @@ var doaj = {
         }
 
         if (queryString) {
-            musts.push({
+            let qs = {
                 "query_string" : {
                     "default_operator" : "AND",
                     "query" : queryString
                 }
-            })
+            }
+            if (defaultField) {
+                qs.query_string.default_field = defaultField;
+            }
+            musts.push(qs);
         }
 
         let query = {"match_all": {}}

@@ -29,6 +29,8 @@ from portality.models.event import Event
 from portality.models.notifications import Notification
 from portality.models.autocheck import Autocheck
 from portality.models.export import Export
+from portality.models.ur_review_route import URReviewRoute
+from portality.models.admin_alert import AdminAlert
 from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
 from portality.models.data_dump import DataDump
 from portality.models.journal_csv import JournalCSV

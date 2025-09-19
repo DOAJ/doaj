@@ -178,24 +178,33 @@ def csv_data():
 
     return redirect(store_url, code=307)
 
-@blueprint.route("/sitemap_index.xml")
-@blueprint.route("/sitemap.xml")
-def sitemap():
-    sitemap_url = models.Cache.get_latest_sitemap()
-    if sitemap_url is None:
-        abort(404)
-    if sitemap_url.startswith("/"):
-        sitemap_url = "/store" + sitemap_url
-    return redirect(sitemap_url, code=307)
 
-@blueprint.route("/sitemap<n>.xml")
-def nth_sitemap(n):
-    sitemap_url = models.Cache.get_sitemap(n)
-    if sitemap_url is None:
+@blueprint.route("/sitemap.xml")
+def sitemap_legacy():
+    return redirect(url_for('doaj.sitemap', suffix="0"), 301)
+
+@blueprint.route("/sitemap_index.xml")
+def sitemap_index_legacy():
+    return redirect(url_for('doaj.sitemap', suffix="_index_0"), 301)
+
+@blueprint.route("/sitemap<suffix>.xml")
+def sitemap(suffix):
+    """
+    This route handles both sitemaps, of the form /sitemapN.xml, and sitemap indexes, of the form /sitemap_index_N.xml
+    :param suffix:
+    :return:
+    """
+    url = None
+    if suffix.startswith("_index_"):
+        n = suffix[len("_index_"):]
+        url = models.Cache.get_sitemap_index(n)
+    else:
+        url = models.Cache.get_sitemap(suffix)
+    if url is None:
         abort(404)
-    if sitemap_url.startswith("/"):
-        sitemap_url = "/store" + sitemap_url
-    return redirect(sitemap_url, code=307)
+    if url.startswith("/"):
+        url = "/store" + url
+    return redirect(url, code=307)
 
 
 @blueprint.route("/public-data-dump/<record_type>")

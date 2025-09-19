@@ -170,3 +170,12 @@ class DOAJ(object):
     def publicDataDumpService(cls, *args, **kwargs):
         from portality.bll.services import public_data_dump
         return public_data_dump.PublicDataDumpService(*args, **kwargs)
+
+    @classmethod
+    def adminAlertsService(cls):
+        """
+        Obtain an instance of the admin alerts service  ~~->AdminAlerts:Service~~
+        :return:  AdminAlertsService
+        """
+        from portality.bll.services import admin_alerts
+        return admin_alerts.AdminAlertsService()

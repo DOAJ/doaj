@@ -56,3 +56,11 @@ class TestLibNormaliseDOI(TestCase):
         else:
             norm = normalise_doi(doi)
             assert norm == rawDOI
+
+    def test_02_uppercase_doi(self):
+        """
+        Test that a DOI is normalised to lower case
+        """
+        doi = "10.1234/ABC/122"
+        norm = normalise_doi(doi)
+        assert norm == doi.lower()

@@ -206,7 +206,7 @@ def put_mappings(conn, mappings, force_mappings=False):
         else:
             print("Preparing new index / alias for " + key)
             # Set up a new index and corresponding alias
-            idx_name = altered_key + '-{}'.format(dates.today(dates.FMT_DATE_SHORT))
+            idx_name = altered_key + '-{}'.format(dates.now_str(dates.FMT_DATETIME_LONG))
 
             try:
                 resp = es_connection.indices.create(index=idx_name,

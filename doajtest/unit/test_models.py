@@ -615,6 +615,25 @@ class TestModels(DoajTestCase):
         assert len(gbj.get_identifiers()) == 0
         assert len(gbj.subjects()) == 0
 
+    def test_13a_article_bibjson_identifiers(self):
+        """Check that the ArticleBibJSON identifiers are correctly set up"""
+        source = BibJSONFixtureFactory.article_bibjson()
+        abj = models.ArticleBibJSON(source)
+
+        # check the fixture's identifier, which is in the correct field
+        assert abj.get_one_identifier(constants.IDENT_TYPE_DOI) == "10.1234/article"
+        assert len(abj.get_identifiers()) == 3
+
+        # add the identifier with the upper case type
+        abj.add_identifier("DOI", "10.1234/7")
+        assert abj.get_one_identifier(constants.IDENT_TYPE_DOI) == "10.1234/7"
+        assert len(abj.get_identifiers()) == 3
+
+        with self.assertRaises(dataobj.DataObjException) as cm:
+            # try to add an identifier with an invalid type
+            abj.add_identifier("invalid_type", "10.1234/8")
+
+
     def test_14_journal_like_bibjson(self):
         source = BibJSONFixtureFactory.journal_bibjson()
         bj = models.JournalLikeBibJSON(source)
@@ -1896,6 +1915,41 @@ class TestModels(DoajTestCase):
         assert len(before) == 2
         assert before[0].id == jcs[0].id
         assert before[1].id == jcs[1].id
+
+    def test_49_ur_routing(self):
+        rr = models.URReviewRoute()
+        rr.account_id = "1234"
+        rr.country_code = "GB"
+        rr.target = "4321"
+
+        assert rr.account_id == "1234"
+        assert rr.country_code == "GB"
+        assert rr.target == "4321"
+
+        rr.save(blocking=True)
+        rr2 = models.URReviewRoute.pull(rr.id)
+        assert rr2.account_id == "1234"
+        assert rr2.country_code == "GB"
+        assert rr2.target == "4321"
+
+    def test_50_admin_alerts(self):
+        a = models.AdminAlert()
+        a.source = "test_source"
+        a.message = "This is a test message"
+        a.state = a.STATE_NEW
+
+        assert a.source == "test_source"
+        assert a.message == "This is a test message"
+        assert a.state == a.STATE_NEW
+
+        with self.assertRaises(seamless.SeamlessException):
+            a.state = "random_state"  # should raise an error for invalid state
+
+        a.save(blocking=True)
+        a2 = models.AdminAlert.pull(a.id)
+        assert a2.source == "test_source"
+        assert a2.message == "This is a test message"
+        assert a2.state == a.STATE_NEW
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

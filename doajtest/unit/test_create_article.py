@@ -174,7 +174,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
     def test_05_new_doi_old_url(self):
         ba = self.article10.bibjson()
         ba.remove_identifiers(ba.DOI)
-        ba.add_identifier(ba.DOI, "10.0000/article-UPDATED")
+        ba.add_identifier(ba.DOI, "10.0000/article-updated")
 
         # try as publisher
         with self.assertRaises(DuplicateArticleException):
@@ -186,8 +186,8 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["new"] == 0, "expected 1 updated, received: {}".format(resp)
-        assert self.article10.get_normalised_doi() == "10.0000/article-UPDATED", \
-            "expected 10.0000/article-UPDATED, received: {}".format(
+        assert self.article10.get_normalised_doi() == "10.0000/article-updated", \
+            "expected 10.0000/article-updated, received: {}".format(
                 self.article10.get_normalised_fulltext())
 
     def test_06_existing_doi_new_url(self):
