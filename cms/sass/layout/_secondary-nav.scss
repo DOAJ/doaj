@@ -12,7 +12,7 @@
 }
 // Mobile / hamburger menu
 
-@media (max-width: 768px) {
+@media (max-width: 1279px) {
   .secondary-nav {
     height: 75px;
   }
@@ -83,7 +83,7 @@
 }
 
 .secondary-nav__item_mobile {
-  @media (min-width: 769px) {
+  @media (min-width: 1279px) {
     display: none;
   }
 }
