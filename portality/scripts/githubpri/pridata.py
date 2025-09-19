@@ -110,14 +110,18 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> di
                 if dl is None:
                     no_deadline_issues.append(github_issue)
                 else:
-                    deadline_issues[dl] = github_issue
+                    if dl not in deadline_issues:
+                        deadline_issues[dl] = [github_issue]
+                    else:
+                        deadline_issues[dl].append(github_issue)
 
             if len(deadline_issues) > 0:
                 for dl in sorted(deadline_issues.keys()):
-                    pri_issues.append(PriIssue(rule_id=priority.get("id", 1),
-                                       title=_make_title(deadline_issues[dl]),
-                                       issue_url=deadline_issues[dl]['url'],
-                                       status=deadline_issues[dl]['status']
+                    for dl_issue in deadline_issues[dl]:
+                        pri_issues.append(PriIssue(rule_id=priority.get("id", 1),
+                                       title=_make_title(dl_issue),
+                                       issue_url=dl_issue['url'],
+                                       status=dl_issue['status']
                                        ))
 
             for github_issue in no_deadline_issues:
