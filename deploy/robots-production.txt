@@ -1,4 +1,6 @@
-Sitemap: https://doaj.org/sitemap.xml
+Sitemap: https://doaj.org/sitemap_index_0.xml
+Sitemap: https://doaj.org/sitemap_index_1.xml
+Sitemap: https://doaj.org/sitemap_index_2.xml
 
 User-agent: *
 Disallow: /search/

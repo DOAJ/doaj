@@ -1,7 +1,12 @@
 .editorial-panel {
   margin-top: 0;
 
+  fieldset {
+    padding: 0 !important;
+  }
+
   .form__question {
+    margin: 0 !important;
     select, textarea, input {
       width: 100%;
     }
