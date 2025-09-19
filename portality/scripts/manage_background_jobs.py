@@ -49,6 +49,7 @@ def get_action_handler(action):
     from portality.tasks.sitemap import SitemapBackgroundTask
     from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTask
     from portality.tasks.application_autochecks import ApplicationAutochecks
+    from portality.events.background import ProcessEventBackgroundTask
 
     # dict of {task_name: task_class} so we can interact with the jobs
     HANDLERS: Dict[str, Type[BackgroundTask]] = {
@@ -74,7 +75,8 @@ def get_action_handler(action):
         ReportingBackgroundTask.__action__: ReportingBackgroundTask,
         SitemapBackgroundTask.__action__: SitemapBackgroundTask,
         SuggestionBulkEditBackgroundTask.__action__: SuggestionBulkEditBackgroundTask,
-        ApplicationAutochecks.__action__: ApplicationAutochecks
+        ApplicationAutochecks.__action__: ApplicationAutochecks,
+        ProcessEventBackgroundTask.__action__: ProcessEventBackgroundTask
     }
     return HANDLERS.get(action)
 
