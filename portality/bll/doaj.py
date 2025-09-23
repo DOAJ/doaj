@@ -165,3 +165,8 @@ class DOAJ(object):
         """
         from portality.bll.services import huey_job
         return huey_job.HueyJobService()
+
+    @classmethod
+    def accountService(cls):
+        from portality.bll.services import account
+        return account.AccountService()

@@ -14,7 +14,8 @@ from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.bll import DOAJ
-from portality.lib.security_utils import Encryption
+from portality.bll import exceptions as bll_exc
+from portality.lib.security import Encryption
 from portality.ui.messages import Messages
 
 from portality.ui import templates
@@ -209,33 +210,25 @@ def _complete_verification(account):
 def verify_code():
     form = LoginForm(request.form, csrf_enabled=False)
 
-    # get encrypted token
-    encrypted_token = _get_param('token')
-    if encrypted_token:
-        # Decrypt parameters using a fresh Encryption instance (ensures current key)
-        params = Encryption().decrypt_params(encrypted_token)
-        email = params.get('email')
-        verification_code = params.get('code')
-        redirected = params.get('redirected')
-    else:
-        # Fall back to plain parameters (for backward compatibility or form submission)
-        email = _get_param('email')
-        verification_code = _get_param('code')
-        redirected = _get_param('redirected')
-
+    # Preserve existing UI behavior for application redirect
     if request.args.get("redirected") == "apply":
         form['next'].data = url_for("apply.public_application")
 
-    if not email or not verification_code:
+    svc = DOAJ.accountService()
+
+    try:
+        account, _redirected = svc.verify_login_code(
+            encrypted_token=_get_param('token'),
+            email=_get_param('email'),
+            code=_get_param('code'),
+        )
+    except bll_exc.ArgumentException:
         flash("Required parameters not available.")
         return redirect(url_for('account.login'))
-
-    account = Account.pull_by_email(email)
-    if not account:
+    except bll_exc.NoSuchObjectException:
         flash("Account not recognised.")
         return redirect(url_for('account.login'))
-
-    if not account.is_login_code_valid(verification_code):
+    except bll_exc.IllegalStatusException:
         flash("Invalid or expired verification code")
         return redirect(url_for('account.login'))
 
@@ -253,7 +246,7 @@ def send_login_code_email(email: str, code: str, redirect_url: str):
     if redirect_url:
         params['redirected'] = redirect_url
 
-    encrypted = Encryption().encrypt_params(params)
+    encrypted = Encryption(app.config.get('PASSWORDLESS_ENCRYPTION_KEY')).encrypt_params(params)
 
     login_url = url_for('account.verify_code', token=encrypted, _external=True)
 

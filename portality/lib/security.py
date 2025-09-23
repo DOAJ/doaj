@@ -1,5 +1,3 @@
-# portality/lib/security_utils.py
-
 from cryptography.fernet import Fernet
 import base64
 import json
@@ -7,9 +5,10 @@ from urllib.parse import quote, unquote
 from portality.core import app
 
 class Encryption:
-    def __init__(self):
-        # Get key from config or generate one
-        key = app.config.get('ENCRYPTION_KEY', Fernet.generate_key())
+    def __init__(self, key=None):
+        # Use provided key or generate a new one
+        if key is None:
+            key = Fernet.generate_key()
         if isinstance(key, str):
             key = key.encode('utf-8')
         self.fernet = Fernet(key)
