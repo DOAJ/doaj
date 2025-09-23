@@ -167,6 +167,19 @@ class DOAJ(object):
         return huey_job.HueyJobService()
 
     @classmethod
+    def adminAlertsService(cls):
+        """
+        Obtain an instance of the admin alerts service  ~~->AdminAlerts:Service~~
+        :return:  AdminAlertsService
+        """
+        from portality.bll.services import admin_alerts
+        return admin_alerts.AdminAlertsService()
+
+    @classmethod
     def accountService(cls):
+        """
+        Obtain an instance of the AccountSrvice ~~->AccountService:Service~~
+        :return: AccountService
+        """
         from portality.bll.services import account
         return account.AccountService()
