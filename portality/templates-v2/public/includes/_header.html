@@ -52,11 +52,15 @@
                     {% set section_id=column.id %}
                     {% include "public/includes/_header-secondary-navigation.html" %}
                 {% endfor %}
+
                 {% set columns = data.nav.entries|selectattr("secondary")|list %}
+                {% set mobile=False %}
                 {% for column in columns %}
                     {% set section_id=column.id %}
                     {% include "public/includes/_header-secondary-navigation.html" %}
                 {% endfor %}
+
+                {% set mobile=True %}
                 {% include "public/includes/_header-secondary-navigation-account.html" %}
             </ul>
             <ul class="nav-bar secondary-nav__menu" role="menu">
