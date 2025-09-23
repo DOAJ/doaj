@@ -1,41 +1,7 @@
-{% set selected_nav = data.nav.entries|selectattr("id", "equalto", section_id)|first %}
-<li class="{% if selected_nav.entries %}dropdown {% endif %} primary-nav__item_desktop" role="menuitem">
-    <a href="{% if selected_nav.route %}{{ url_for(selected_nav.route) }}{% else %}#{% endif %}"
-       class="{% if selected_nav.entries %}dropdown__trigger{% endif %} nav-bar__link label"
-       {% if selected_nav.entries %} data-toggle="dropdown" {% endif %}
-       id="action-menu-{{ selected_nav.id }}"
-       role="button" aria-haspopup="true" aria-expanded="false" role="menuitem">
-        {% if selected_nav.id == "premium" and not current_user.is_anonymous and current_user.is_premium %}
-          Premium
-        {% elif selected_nav.id == "premium" %}
-          Get Premium
-        {% else %}
-          {{ selected_nav.label }}
-        {% endif %}
-        {% if selected_nav.feather %}
-            <span data-feather="{{ selected_nav.feather }}" aria-hidden="true" {% if selected_nav.feather == "star" %} style="color: #ffd700" {% endif %}></span>
-        {% endif %}
-        {% if selected_nav.entries %}
-            <span data-feather="chevron-down" aria-hidden="true"></span>
-        {% endif %}
-    </a>
-    {% if selected_nav.entries %}
-        <ul class="dropdown__menu" aria-labelledby="action-menu-{{ selected_nav.id }}" role="menu" aria-label="{{ selected_nav.label }}">
-            {% for entry in selected_nav.entries %}
-                {% set url = entry.url %}
-                {% set urlAttrs = 'rel="noopener" target="_blank"' %}
-                {% if entry.route %}
-                    {% set url = url_for(entry.route) %}
-                    {% set urlAttrs = "" %}
-                {% endif %}
-
-                <li>
-                    <a {{ urlAttrs }} href="{{ url }}" class="dropdown__link" role="menuitem">
-                        {{ entry.label }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-</li>
+{%- set selected_nav = data.nav.entries|selectattr("id", "equalto", section_id)|first -%}
+{%- set extraClasses = "primary-nav__item_desktop" -%}
+{%- if selected_nav.entries -%}
+    {%- include "public/includes/_menu_dropdown.html" with context -%}
+{%- else -%}
+    {%- include "public/includes/_menu_item.html" with context -%}
+{%- endif -%}
