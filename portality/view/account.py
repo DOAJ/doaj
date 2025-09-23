@@ -8,14 +8,12 @@ from wtforms import StringField, HiddenField, PasswordField, DecimalField, valid
 
 from portality import util
 from portality import constants
-from portality.app_email import send_mail
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.bll import DOAJ
 from portality.bll import exceptions as bll_exc
-from portality.lib.security import Encryption
 from portality.ui.messages import Messages
 
 from portality.ui import templates
@@ -210,10 +208,6 @@ def _complete_verification(account):
 def verify_code():
     form = LoginForm(request.form, csrf_enabled=False)
 
-    # Preserve existing UI behavior for application redirect
-    if request.args.get("redirected") == "apply":
-        form['next'].data = url_for("apply.public_application")
-
     svc = DOAJ.accountService()
 
     try:
@@ -232,34 +226,15 @@ def verify_code():
         flash("Invalid or expired verification code")
         return redirect(url_for('account.login'))
 
+    # Preserve existing UI behavior for application redirect
+    redirected_page = request.args.get("redirected") or _redirected
+    if redirected_page == "apply":
+        form['next'].data = url_for("apply.public_application")
+
     _complete_verification(account)
     return redirect(get_redirect_target(form=form, acc=account))
 
 
-def send_login_code_email(email: str, code: str, redirect_url: str):
-    """Send login code email with both code and direct link"""
-    # Encrypt parameters
-    params = {
-        'email': email,
-        'code': code
-    }
-    if redirect_url:
-        params['redirected'] = redirect_url
-
-    encrypted = Encryption(app.config.get('PASSWORDLESS_ENCRYPTION_KEY')).encrypt_params(params)
-
-    login_url = url_for('account.verify_code', token=encrypted, _external=True)
-
-    send_mail(
-        to=[email],
-        fro=app.config.get('SYSTEM_EMAIL_FROM'),
-        html_body_flag = True,
-        subject="Your Login Code for DOAJ",
-        template_name=templates.EMAIL_LOGIN_LINK,
-        code=code,
-        login_url=login_url,
-        expiry_minutes=10
-    )
 
 def get_user_account(username):
     # If our settings allow, try getting the user account by ID first, then by email address
@@ -276,7 +251,8 @@ def handle_login_code_request(user, form):
     user.set_login_code(code, timeout=LOGIN_CODE_TIMEOUT)
     user.save()
 
-    send_login_code_email(user.email, code, request.args.get("redirected", ""))
+    svc = DOAJ.accountService()
+    svc.send_login_code_email(user, code, request.args.get("redirected", ""))
     flash('A login link along with login code has been sent to your email.')
 
     return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
@@ -315,21 +291,46 @@ def login():
         username = form.user.data
         action = request.form.get('action')
 
-        user = get_user_account(username)
-
-        # If we have a verified user account, proceed to attempt login
+        svc = DOAJ.accountService()
         try:
-            if user is not None:
-                if action == 'get_link':
-                    return handle_login_code_request(user, form)
-                elif action == 'password_login':
-                    return handle_password_login(user, form)
+            user = svc.resolve_user(username)
+            if user is None:
+                raise bll_exc.NoSuchObjectException()
+
+            if action == 'get_link':
+                # Generate and persist code in BLL, then send email and show verify template
+                code = svc.initiate_login_code(user)
+                svc.send_login_code_email(user, code, request.args.get("redirected", ""))
+                flash('A login link along with login code has been sent to your email.')
+                return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
+
+            elif action == 'password_login':
+                account = svc.verify_password_login(user, form.password.data)
+                login_user(account, remember=True)
+                flash('Welcome back.', 'success')
+                return redirect(get_redirect_target(form=form, acc=account))
+
             else:
-                form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
-        except KeyError:
-            # Account has no password set, the user needs to reset or use an existing valid reset link
-            handle_incomplete_verification()
-            return redirect(url_for('doaj.home'))
+                # Unknown action
+                raise bll_exc.ArgumentException("Unknown login action")
+
+        except bll_exc.NoSuchObjectException:
+            form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
+        except bll_exc.IllegalStatusException as e:
+            msg = str(e) if e.args else ""
+            if msg == 'incomplete_verification':
+                handle_incomplete_verification()
+                return redirect(url_for('doaj.home'))
+            elif msg == 'incorrect_password':
+                forgot_url = url_for(".forgot")
+                form.password.errors.append(
+                    f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
+                )
+            else:
+                # Generic illegal status
+                flash('Login could not be completed due to account status.', 'error')
+        except bll_exc.ArgumentException:
+            flash('There was a problem with your request.', 'error')
 
     return handle_login_template_rendering(form)
 
