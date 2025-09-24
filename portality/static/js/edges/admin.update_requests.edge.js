@@ -40,22 +40,6 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
-                edges.newFilterSetter({
-                    id : "flagged",
-                    category: "facet",
-                    showCount: true,
-                    filters : [
-                        doaj.filters.isFlagged(),
-                        doaj.filters.flaggedToMe()
-                    ],
-                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
-                        facetTitle : "",
-                        open: true,
-                        togglable: false,
-                        showCount: true,
-                        countFormat: doaj.valueMaps.countFormat
-                    })
-                }),
                 doaj.facets.openOrClosed(),
                 doaj.facets.applicationStatus(),
                 doaj.facets.hasEditorGroup(),
