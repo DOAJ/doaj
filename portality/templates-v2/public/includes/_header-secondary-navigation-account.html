@@ -46,10 +46,11 @@
             <span data-feather="log-in" aria-hidden="true"></span>
         </a>
     {% else %}
-<!--  change to a button in a form  -->
-        <a href="{{ url_for('account.logout') }}" class="nav-bar__link">
-            Logout
-            <span data-feather="log-out" aria-hidden="true"></span>
-        </a>
+        <form method="POST" action="{{ url_for('account.logout') }}" class="nav-bar__logout-form">
+            <button type="submit" class="nav-bar__link btn-logout">
+                Logout
+                <span data-feather="log-out" aria-hidden="true"></span>
+            </button>
+        </form>
     {% endif %}
 </li>

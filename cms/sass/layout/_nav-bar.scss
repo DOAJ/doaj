@@ -22,10 +22,20 @@
       margin-right: 0;
     }
 
-    button.dropdown__trigger {
+    .nav-bar__logout-form {
+      margin: 0;
+      > button.btn-logout {
+        font-size: unset;
+      }
+    }
+
+    button.dropdown__trigger,
+    .nav-bar__logout-form > button.btn-logout{
       padding: 0;
       border: none;
       line-height: 75px;
+      background-color: transparent;
+      margin-bottom: 0;
 
       &:hover,
       &:active {
