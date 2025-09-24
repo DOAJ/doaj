@@ -204,9 +204,66 @@ def _complete_verification(account):
     account.save()
     login_user(account)
 
+
+def get_wait_period(secs: int) -> str:
+    secs = int(secs or 0)
+    if secs >= 7200:
+        return f"{(secs + 3599) // 3600} hours"
+    if secs >= 3600:
+        return "1 hour"
+    if secs >= 120:
+        return f"{(secs + 59) // 60} minutes"
+    if secs >= 60:
+        return "1 minute"
+    return f"{secs} seconds"
+
+
+def _handle_pwless_login(user, form, redirected: str = "", success_category: str | None = None):
+    """ Handler for passwordless login backoff + email sending.
+
+    Returns a rendered verify_code template with appropriate resend_wait.
+    """
+    cps = DOAJ.concurrencyPreventionService()
+    allowed, wait_remaining, interval = cps.record_pwless_resend(user.email)
+
+    if not allowed:
+        util.flash_with_url(
+            f"You requested a multiple times. Please wait {get_wait_period(wait_remaining)} before trying again.",
+            'error'
+        )
+        return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form, resend_wait=wait_remaining)
+
+    try:
+        svc = DOAJ.accountService()
+        code = svc.initiate_login_code(user)
+        svc.send_login_code_email(user, code, redirected or "")
+        message = 'A login link along with login code has been sent to your email.'
+        if success_category:
+            flash(message, success_category)
+        else:
+            flash(message)
+    except bll_exc.ArgumentException:
+        flash('There was a problem generating the login email.', 'error')
+
+    return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form, resend_wait=interval)
+
 @blueprint.route('/verify-code', methods=['GET', 'POST'])
 def verify_code():
     form = LoginForm(request.form, csrf_enabled=False)
+
+    # Handle resend requests posted from the code entry page
+    if request.method == 'POST' and (request.form.get('action') == 'resend'):
+        email = _get_param('email')
+        if not email:
+            flash('Email address is required to resend the code.', 'error')
+            return redirect(url_for('account.login'))
+
+        user = Account.pull_by_email(email)
+        if not user:
+            flash('Account not recognised.')
+            return redirect(url_for('account.login'))
+
+        return _handle_pwless_login(user, form, _get_param('redirected') or '', 'success')
 
     svc = DOAJ.accountService()
 
@@ -298,11 +355,7 @@ def login():
                 raise bll_exc.NoSuchObjectException()
 
             if action == 'get_link':
-                # Generate and persist code in BLL, then send email and show verify template
-                code = svc.initiate_login_code(user)
-                svc.send_login_code_email(user, code, request.args.get("redirected", ""))
-                flash('A login link along with login code has been sent to your email.')
-                return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
+                return _handle_pwless_login(user, form, request.args.get("redirected", ""))
 
             elif action == 'password_login':
                 account = svc.verify_password_login(user, form.password.data)

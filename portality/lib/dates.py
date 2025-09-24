@@ -85,6 +85,9 @@ def now() -> datetime:
     """ standard now function for DOAJ  """
     return datetime.utcnow()
 
+def now_in_sec() -> int:
+    return int(now().timestamp())
+
 
 def now_str(fmt=FMT_DATETIME_STD) -> str:
     return format(now(), format=fmt)
