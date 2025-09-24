@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.3.9"
+DOAJ_VERSION = "8.3.10"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -106,7 +106,7 @@ EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
 
 # This puts the UI into READ_ONLY mode
 # ~~->ReadOnlyMode:Feature~~
-READ_ONLY_MODE = False
+READ_ONLY_MODE = True
 
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
