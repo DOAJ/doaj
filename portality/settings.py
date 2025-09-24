@@ -106,7 +106,7 @@ EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
 
 # This puts the UI into READ_ONLY mode
 # ~~->ReadOnlyMode:Feature~~
-READ_ONLY_MODE = False
+READ_ONLY_MODE = True
 
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
