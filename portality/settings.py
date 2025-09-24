@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.3.9"
+DOAJ_VERSION = "8.3.10"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -106,7 +106,7 @@ EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
 
 # This puts the UI into READ_ONLY mode
 # ~~->ReadOnlyMode:Feature~~
-READ_ONLY_MODE = False
+READ_ONLY_MODE = True
 
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
@@ -860,7 +860,7 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "associate_editor",
             "query_validators": ["non_public_fields_validator"],
-            "query_filters": ["associate", "search_all_meta"],
+            "query_filters": ["associate", "search_all_meta", "flagged"],
             "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
@@ -1619,6 +1619,15 @@ TOUR_COOKIE_PREFIX = "doaj_tour_"
 TOUR_COOKIE_MAX_AGE = 31536000
 
 TOURS = {
+    "/admin/application/*": [
+        {
+            "roles": ["admin"],
+            "selectors": [".flags__container"],
+            "content_id": "admin_flags",
+            "name": "Flags",
+            "description": "Make teamwork smoother by adding a flag to journals and applications — a note assigned to a teammate, with an optional deadline."
+        }
+    ],
     "/admin/journal/*": [
         {
             "roles": ["admin"],
