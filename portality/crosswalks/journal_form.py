@@ -269,6 +269,11 @@ class JournalGenericXWalk(object):
 
         if getattr(form, "flags", None):
             for flag in form.flags.data:
+
+                # Don't try to parse an empty flag
+                if all(value is None for value in flag.values()):
+                    break
+
                 flag_date = flag["flag_created_date"]
                 try:
                     if flag.get("flag_deadline") == "":

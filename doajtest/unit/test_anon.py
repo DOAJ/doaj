@@ -60,12 +60,14 @@ class TestAnon(DoajTestCase):
                 {
                     "id": "note1",
                     'note': 'Test note',
-                    'date': '2017-02-23T00:00:00Z'
+                    'date': '2017-02-23T00:00:00Z',
+                    'flag': {}
                 },
                 {
                     "id": "note2",
                     'note': 'Test note 2',
-                    'date': '2017-02-23T00:00:00Z'
+                    'date': '2017-02-23T00:00:00Z',
+                    'flag': {}
                 }
             ]
         }
@@ -82,12 +84,14 @@ class TestAnon(DoajTestCase):
                 {
                     "id": "note1",
                     'note': '---note removed for data security---',
-                    'date': '2017-02-23T00:00:00Z'
+                    'date': '2017-02-23T00:00:00Z',
+                    'flag': {}
                 },
                 {
                     "id": "note2",
                     'note': '---note removed for data security---',
-                    'date': '2017-02-23T00:00:00Z'
+                    'date': '2017-02-23T00:00:00Z',
+                    'flag': {}
                 }
             ]
         }, ar['admin']
