@@ -1,19 +1,15 @@
-import uuid
+from flask import url_for, has_request_context
+from flask_login import current_user
+from wtforms import FormField, FieldList
 
-from portality.core import app
 from portality import models, constants, app_email
+from portality.bll import DOAJ, exceptions
+from portality.core import app
+from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.lib import dates
 from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
-from portality.crosswalks.application_form import ApplicationFormXWalk
-from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.bll import exceptions
-from portality.bll.doaj import DOAJ
-
-from flask import url_for, has_request_context
-from flask_login import current_user
-
-from wtforms import FormField, FieldList
 
 
 class ApplicationProcessor(FormProcessor):
@@ -736,6 +732,9 @@ class PublisherUpdateRequest(ApplicationProcessor):
         else:
             self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
+        # automatically assign the Editorial group (turn this off in configuration if needed)
+        DOAJ.applicationService().auto_assign_ur_editor_group(self.target)
+
         # Save the target
         self.target.set_last_manual_update()
         if save_target:
@@ -746,7 +745,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
         # obtain the related journal, and attach the current application id to it
         # ~~-> Journal:Service~~
         journal_id = self.target.current_journal
-        from portality.bll.doaj import DOAJ
         journalService = DOAJ.journalService()
         if journal_id is not None:
             journal, _ = journalService.journal(journal_id)

@@ -1,7 +1,25 @@
 .editorial-panel {
-    @media (min-width: 992px) {
-        position: sticky;
-        top: 100px;
+  margin-top: 0;
+
+  fieldset {
+    padding: 0 !important;
+  }
+
+  .form__question {
+    margin: 0 !important;
+    select, textarea, input {
+      width: 100%;
+    }
+  }
+
+  hr {
+    margin: $spacing-02;
+  }
+
+  @media (min-width: 992px) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 100px;
 
         &__wrapper {
           display: flex;

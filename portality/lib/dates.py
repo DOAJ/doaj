@@ -40,6 +40,7 @@ FMT_DATETIME_A = '%Y-%m-%d %H:%M:%S'
 FMT_DATETIME_NO_SECS = '%Y-%m-%d %H:%M'
 FMT_DATETIME_MS_STD = '%Y-%m-%dT%H:%M:%S.%fZ'
 FMT_DATETIME_SHORT = '%Y%m%d_%H%M'
+FMT_DATETIME_LONG = "%Y%m%d_%H%M%S_%f"
 
 FMT_DATE_STD = '%Y-%m-%d'
 FMT_DATE_SHORT = '%Y%m%d'

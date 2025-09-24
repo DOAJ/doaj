@@ -7,7 +7,6 @@ from portality.lib import dates
 from portality.lib.argvalidate import argvalidate
 
 
-
 class TodoService(object):
     """
     ~~Todo:Service->DOAJ:Service~~
@@ -91,14 +90,16 @@ class TodoService(object):
 
         # ~~-> Account:Model ~~
         acc = models.Account.pull(editor_group.editor)
-        stats["editor"] = {"id": acc.id, "count": editor_count}
+        if acc is not None:
+            stats["editor"] = {"id": acc.id, "count": editor_count}
 
         stats["associate_editors"] = []
         for associate in editor_group.associates:
             hs = HistoricalNumbersQuery(associate, associate_status, editor_group.id)
             associate_count = models.Provenance.count(query=hs.query())
             acc = models.Account.pull(associate)
-            stats["associate_editors"].append({"id": acc.id, "name": acc.name, "count": associate_count})
+            if acc is not None:
+                stats["associate_editors"].append({"id": acc.id, "name": acc.name, "count": associate_count})
 
         return stats
 

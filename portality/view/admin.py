@@ -916,3 +916,13 @@ def get_report(report_id):
 @login_required
 def reports_search():
     return render_template(templates.ADMIN_REPORTS_SEARCH)
+
+@blueprint.route("/alerts", methods=["GET"])
+@login_required
+def admin_alerts():
+    return render_template(templates.ADMIN_ALERTS_SEARCH)
+
+@blueprint.route("/autoassign", methods=["GET"])
+@login_required
+def autoassign_search():
+    return render_template(templates.ADMIN_AUTOASSIGN_SEARCH)
