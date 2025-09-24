@@ -149,11 +149,17 @@ class TodoService(object):
                 queries.append(TodoRules.maned_ready(size, maned_of))
                 queries.append(TodoRules.maned_completed(size, maned_of))
                 queries.append(TodoRules.maned_assign_pending(size, maned_of))
+                #queries.append(TodoRules.urgent_flags_new_applications(account.id, size))
+                #queries.append(TodoRules.regular_flags_new_applications(account.id, size))
             if update_requests:
                 queries.append(TodoRules.maned_last_month_update_requests(size, maned_of))
                 queries.append(TodoRules.maned_new_update_requests(size, maned_of))
+                #queries.append(TodoRules.urgent_flags_update_requests(account.id, size))
+                #queries.append(TodoRules.regular_flags_update_requests(account.id, size))
             if on_hold:
                 queries.append(TodoRules.maned_on_hold(size, account.id, maned_of))
+                #queries.append(TodoRules.urgent_flags_onhold(account.id, size))
+                #queries.append(TodoRules.regular_flags_onhold(account.id, size))
 
         if new_applications:  # editor and associate editor roles only deal with new applications
             if account.has_role("editor"):
@@ -188,8 +194,13 @@ class TodoService(object):
         for aid, q, sort, boost in queries:
             applications = models.Application.object_query(q=q.query())
             for ap in applications:
+                sort_map = {
+                    "last_manual_update": ap.last_manual_update_timestamp,
+                    "created_date": ap.date_applied_timestamp,
+                    "most_urgent_flag_deadline": ap.most_urgent_flag_deadline_timestamp
+                }
                 todos.append({
-                    "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
+                    "date": sort_map.get(sort, ap.date_applied_timestamp),
                     "date_type": sort,
                     "action_id": [aid],
                     "title": ap.bibjson().title,
@@ -229,6 +240,7 @@ class TodoService(object):
 
 
 class TodoRules(object):
+
     @classmethod
     def maned_stalled(cls, size, maned_of):
         sort_date = "created_date"
@@ -339,7 +351,6 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED
                 ])
-                # TodoQuery.exists("admin.editor")
             ],
             sort=sort_date,
             size=size
@@ -362,7 +373,6 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED
                 ])
-                # TodoQuery.exists("admin.editor")
             ],
             sort=sort_date,
             size=size
@@ -548,6 +558,128 @@ class TodoRules(object):
         )
         return constants.TODO_ASSOCIATE_ALL_APPLICATIONS, all, sort_field, -1
 
+    # @classmethod
+    # def urgent_flags_all(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id),
+    #             TodoQuery.urgent_flags()
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_URGENT_FLAGS_ALL, all, sort_field, 4
+    #
+    # @classmethod
+    # def regular_flags_all(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id)
+    #         ],
+    #         must_nots=[
+    #             TodoQuery.urgent_flags()
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_REGULAR_FLAGS_ALL, all, sort_field, 3
+    #
+    # @classmethod
+    # def urgent_flags_new_applications(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id),
+    #             TodoQuery.urgent_flags(),
+    #             TodoQuery.is_new_application()
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS, all, sort_field, 4
+    #
+    # @classmethod
+    # def urgent_flags_update_requests(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id),
+    #             TodoQuery.urgent_flags(),
+    #             TodoQuery.is_update_request()
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS, all, sort_field, 4
+    #
+    # @classmethod
+    # def urgent_flags_onhold(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id),
+    #             TodoQuery.urgent_flags(),
+    #             TodoQuery.is_new_application(),
+    #             TodoQuery.status([constants.APPLICATION_STATUS_ON_HOLD])
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_URGENT_FLAGS_ONHOLD, all, sort_field, 4
+    #
+    # @classmethod
+    # def regular_flags_new_applications(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id),
+    #             TodoQuery.is_new_application()
+    #         ],
+    #         must_nots=[
+    #             TodoQuery.urgent_flags()
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS, all, sort_field, 3
+    #
+    # @classmethod
+    # def regular_flags_update_requests(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id),
+    #             TodoQuery.is_update_request()
+    #         ],
+    #         must_nots=[
+    #             TodoQuery.urgent_flags()
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS, all, sort_field, 3
+    #
+    # @classmethod
+    # def regular_flags_onhold(cls, acc_id, size):
+    #     sort_field = "most_urgent_flag_deadline"
+    #
+    #     all = TodoQuery(
+    #         musts=[
+    #             TodoQuery.flagged_to_me(acc_id),
+    #             TodoQuery.is_new_application(),
+    #             TodoQuery.status([constants.APPLICATION_STATUS_ON_HOLD])
+    #         ],
+    #         must_nots=[
+    #             TodoQuery.urgent_flags()
+    #         ],
+    #         sort=sort_field,
+    #         size=size
+    #     )
+    #     return constants.TODO_REGULAR_FLAGS_ONHOLD, all, sort_field, 3
+
 
 class TodoQuery(object):
     """
@@ -559,16 +691,22 @@ class TodoQuery(object):
     # NOTE that admin.date_applied and created_date should be the same for applications, but for some reason this is not always the case
     # therefore, we take a created_date sort to mean a date_applied sort
     cd_sort = {"admin.date_applied": {"order": "asc"}}
+    flag_sort = {"index.most_urgent_flag_deadline": {"order": "asc"}}
+
+    sort_map = {
+        "last_manual_update": lmu_sort,
+        "created_date": cd_sort,
+        "most_urgent_flag_deadline": flag_sort
+    }
 
     def __init__(self, musts=None, must_nots=None, ors=None, sort="last_manual_update", size=10):
         self._musts = [] if musts is None else musts
         self._must_nots = [] if must_nots is None else must_nots
         self._ors = [] if ors is None else ors
-        self._sort = sort
+        self._sort = self.sort_map.get(sort, self.cd_sort)
         self._size = size
 
     def query(self):
-        sort = self.lmu_sort if self._sort == "last_manual_update" else self.cd_sort
         q = {
             "query": {
                 "bool": {
@@ -577,7 +715,7 @@ class TodoQuery(object):
                 }
             },
             "sort": [
-                sort
+                self._sort
             ],
             "size": self._size
         }
@@ -668,6 +806,34 @@ class TodoQuery(object):
                 "admin.editor.exact": [acc_id],
             }
         }
+
+    # @classmethod
+    # def flagged_to_me(cls, acc_id):
+    #     return {
+    #         "terms": {
+    #             "index.flag_assignees.exact": [acc_id]
+    #         }
+    #     }
+    #
+    # @classmethod
+    # def urgent_flags(cls):
+    #     return {
+    #         "range": {
+    #             "index.most_urgent_flag_deadline": {
+    #                 "lte": "now+7d/d"
+    #             }
+    #         }
+    #     }
+    #
+    # @classmethod
+    # def flags_with_nonurgent_deadline(cls):
+    #     return {
+    #         "range": {
+    #             "index.most_urgent_flag_deadline": {
+    #                 "gt": "now+7d/d"
+    #             }
+    #         }
+    #     }
 
 
 class GroupStatsQuery():

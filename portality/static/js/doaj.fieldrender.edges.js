@@ -15,7 +15,34 @@ $.extend(true, doaj, {
                     })
                 ]
             }
+        },
+        isFlagged : function() {
+            return {
+                id: "is_flagged",
+                display: "Only flagged records",
+                includes: "flagged_to_me",
+                must: [
+                    es.newTermFilter({
+                        field: "index.is_flagged",
+                        value: true
+                    })
+                ]
+            }
+        },
+        flaggedToMe : function() {
+            return {
+                id: "flagged_to_me",
+                display: "Flagged to me",
+                includedIn: "is_flagged",
+                must: [
+                    es.newTermFilter({
+                        field: "index.flag_assignees.exact",
+                        value: doaj.session.currentUserId
+                    })
+                ]
+            }
         }
+
     },
     facets: {
         inDOAJ: function () {
@@ -3123,6 +3150,8 @@ $.extend(true, doaj, {
             // whether the facet should be open or closed
             // can be initialised and is then used to track internal state
             this.open = edges.getParam(params.open, false);
+            this.isIncludedIn = edges.getParam(params.isIncludedIn, null);
+            this.includes = edges.getParam(params.includes, null);
 
             // whether the facet can be opened and closed
             this.togglable = edges.getParam(params.togglable, true);
@@ -3220,11 +3249,19 @@ $.extend(true, doaj, {
 
             this.filterToggle = function (element) {
                 var filter_id = this.component.jq(element).attr("id");
+                var filter = this.component.filters.find(obj => obj.id === filter_id)
                 var checked = this.component.jq(element).is(":checked");
                 if (checked) {
                     this.component.addFilter(filter_id);
+                    // to do: these filters should be synched but it this doesn't work
+                    // if (filter.includedIn) {
+                    //     this.component.addFilter(filter.includedIn)
+                    // }
                 } else {
                     this.component.removeFilter(filter_id);
+                    // if (filter.includes) {
+                    //     this.component.removeFilter(filter.includes);
+                    // }
                 }
             };
 
@@ -4116,9 +4153,9 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
@@ -4289,7 +4326,7 @@ $.extend(true, doaj, {
 
                 var date = "";
                 if (resultobj.index.date) {
-                    let humanised = doaj.humanYearMonth(resultobj.index.date);
+                    let humanised = doaj.dates.humanYearMonth(resultobj.index.date);
                     if (humanised) {
                         date = "(" + humanised + ")";
                     }
@@ -4592,7 +4629,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.humanDate(resultobj.last_updated);
+                last_updated += doaj.dates.humanDate(resultobj.last_updated);
 
                 var icon = "edit-3";
                 if (accessLink[1] === "View") {
@@ -4748,7 +4785,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.humanDate(resultobj.last_manual_update);
+                last_updated += doaj.dates.humanDate(resultobj.last_manual_update);
 
                 var deleteLink = "";
                 var deleteLinkTemplate = doaj.publisherUpdatesSearchConfig.deleteLinkTemplate;
@@ -4882,9 +4919,9 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
@@ -5140,30 +5177,69 @@ $.extend(true, doaj, {
     },
 
     fieldRender: {
+        fragment:
+            {
+                fullFlagHTML: `<span class="flag flag--full" title="Record flagged to me"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_137_201)">
+                    <path d="M1.875 0.9375C1.875 0.417969 1.45703 0 0.9375 0C0.417969 0 0 0.417969 0 0.9375V2.5V13.6914V15.625V19.0625C0 19.582 0.417969 20 0.9375 20C1.45703 20 1.875 19.582 1.875 19.0625V15.1562L5.01172 14.3711C6.61719 13.9688 8.31641 14.1562 9.79688 14.8945C11.5234 15.7578 13.5273 15.8633 15.332 15.1836L16.6875 14.6758C17.1758 14.4922 17.5 14.0273 17.5 13.5039V2.57812C17.5 1.67969 16.5547 1.09375 15.75 1.49609L15.375 1.68359C13.5664 2.58984 11.4375 2.58984 9.62891 1.68359C8.25781 0.996094 6.68359 0.824219 5.19531 1.19531L1.875 2.03125V0.9375ZM1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#282624"/>
+                    <path d="M1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#982E0A"/>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_137_201">
+                    <rect width="17.5" height="20" fill="white"/>
+                    </clipPath>
+                    </defs>
+                    </svg>
+                    </span>
+                `,
+                emptyFlagHTML: `<span class="flag flag--empty" title="Record flagged"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_137_174)">
+                    <path d="M1.875 0.9375C1.875 0.417969 1.45703 0 0.9375 0C0.417969 0 0 0.417969 0 0.9375V2.5V13.6914V15.625V19.0625C0 19.582 0.417969 20 0.9375 20C1.45703 20 1.875 19.582 1.875 19.0625V15.1562L5.01172 14.3711C6.61719 13.9688 8.31641 14.1562 9.79688 14.8945C11.5234 15.7578 13.5273 15.8633 15.332 15.1836L16.6875 14.6758C17.1758 14.4922 17.5 14.0273 17.5 13.5039V2.57812C17.5 1.67969 16.5547 1.09375 15.75 1.49609L15.375 1.68359C13.5664 2.58984 11.4375 2.58984 9.62891 1.68359C8.25781 0.996094 6.68359 0.824219 5.19531 1.19531L1.875 2.03125V0.9375ZM1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="black"/>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_137_174">
+                    <rect width="17.5" height="20" fill="white"/>
+                    </clipPath>
+                    </defs>
+                    </svg>
+                    </span>
+                `
+            },
         titleField: function (val, resultobj, renderer) {
-            var field = '<div class="flex-start flex-space-between flex-wrap"><h3 class="type-01 font-serif" >';
+            let field = '<div class="flex-start flex-space-between flex-wrap"><h3 class="type-01 font-serif" >';
+            let display = '';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
-                    var display = edges.escapeHtml(resultobj.bibjson.title);
+                    display += edges.escapeHtml(resultobj.bibjson.title);
                     if (resultobj.admin.in_doaj) {
                         display = "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
                     }
                     field += display;
                 } else {
+                    field += display;
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 field += "</h3>";
-
                 var s2o = '';
                 if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
                     s2o = s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank" style="padding: .25rem;"> ' +
                         '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
                         '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
-                        '</a>';;
+                        '</a>';
                 }
-
-                if (s2o) {
-                    field += '<div class="badges badges--search-result badges--search-result--maned">' + s2o + '</div>';
+                if (resultobj.index.is_flagged  || s2o) {
+                    field += '<div class="badges badges--search-result badges--search-result--maned flex-start">'
+                    if (resultobj.index.is_flagged) {
+                        if (resultobj.index.flag_assignees.includes(doaj.session.currentUserId)) {
+                            field += doaj.fieldRender.fragment.fullFlagHTML;
+                        } else {
+                            field += doaj.fieldRender.fragment.emptyFlagHTML;
+                        }
+                    }
+                    if (s2o) {
+                        field += s2o;
+                    }
+                    field += '</div>';
                 }
                 return field + "</div>";
             }
@@ -5171,7 +5247,11 @@ $.extend(true, doaj, {
                 return false;
             }
         },
-
+        deadline: function(val, resultobj, renderer) {
+            if ((typeof resultobj.index.most_urgent_flag_deadline != 'undefined' ) && resultobj.index.most_urgent_flag_deadline !== "9999-12-31") {
+                return "<strong>Flag's deadline: </strong>" + resultobj.index.most_urgent_flag_deadline;
+            }
+        },
         authorPays: function (val, resultobj, renderer) {
             if (resultobj.es_type === "journal") {
                 var field = "";
@@ -5345,7 +5425,7 @@ $.extend(true, doaj, {
         },
 
         createdDateWithTime: function (val, resultobj, renderer) {
-            return doaj.iso_datetime2date_and_time(resultobj['created_date']);
+            return doaj.dates.iso_datetime2date_and_time(resultobj['created_date']);
         },
 
         lastManualUpdate: function (val, resultobj, renderer) {
@@ -5353,13 +5433,13 @@ $.extend(true, doaj, {
             if (man_update === '1970-01-01T00:00:00Z') {
                 return 'Never'
             } else {
-                return doaj.iso_datetime2date_and_time(man_update);
+                return doaj.dates.iso_datetime2date_and_time(man_update);
             }
         },
 
         suggestedOn: function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
-                return doaj.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
+                return doaj.dates.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
             } else {
                 return false;
             }

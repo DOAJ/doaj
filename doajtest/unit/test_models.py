@@ -1217,6 +1217,27 @@ class TestModels(DoajTestCase):
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed C")
         assert len(res) == 1, "autocomplete for 'BioMed C': found {}, expected 2".format(len(res))
 
+    def test_22a_users_autocomplete(test):
+        test_users = [
+            {"name": "Chomp Nougat", "email": "chompnougat@example.com", "password": "pass", "role": ["admin", "api"]},
+            {"name": "Choco Li", "email": "chocoli@example.com", "password": "pass", "role": ["associated editor"]},
+            {"name": "Chonky Bar", "email": "chonkybar@example.com", "password": "pass", "role": ["admin"]},
+            {"name": "Marsh Mellow", "email": "mellow@example.com", "password": "pass", "role": ["admin"]}
+        ]
+
+        for u in test_users:
+            acc = models.Account(id=u["name"])
+            acc.set_email(u["email"])
+            acc.set_role(u["role"])
+            acc.set_password(u["password"])
+            acc.save(blocking=True)
+
+        res = models.Account.autocomplete("id", "cho")["suggestions"]
+        assert len(res) == 3, "autocomplete for 'cho': found {}, expected 3".format(len(res))
+        res = models.Account.autocomplete("id", "cho", True)["suggestions"]
+        assert len(res) == 2, "autocomplete for 'cho', admin only: found {}, expected 2".format(len(res))
+
+
     def test_23_provenance(self):
         """Read and write properties into the provenance model"""
         p = models.Provenance()
