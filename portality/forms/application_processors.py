@@ -202,6 +202,11 @@ class ApplicationProcessor(FormProcessor):
 
     def _resolve_flags(self, account):
         # handle flag resolution
+
+        # check that this form knows about flags
+        if getattr(self.form, "flags", None) is None:
+            return
+
         resolved_flags = []
         for flag in self.form.flags.data:
             if flag["flag_resolved"] == "true":
@@ -362,7 +367,7 @@ class AdminApplication(ApplicationProcessor):
         super(AdminApplication, self).finalise()
 
         # resolve any flags that were resolved in the form
-        self._resolve_flags(account)
+        # self._resolve_flags(account)
 
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
