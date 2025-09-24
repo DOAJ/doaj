@@ -5,14 +5,14 @@ import sys
 
 setup(
     name='doaj',
-    version='8.3.6',
+    version='8.4.0',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
         "bagit==1.8.1",
         "beautifulsoup4",
         "boto3==1.35.25",
-        "elastic-apm==5.2.2",
+        "elastic-apm==6.24.0",
         "elasticsearch==7.13.0",
         "Faker==2.0.3",
         "feedparser==6.0.11",

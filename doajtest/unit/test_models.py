@@ -1217,6 +1217,27 @@ class TestModels(DoajTestCase):
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed C")
         assert len(res) == 1, "autocomplete for 'BioMed C': found {}, expected 2".format(len(res))
 
+    def test_22a_users_autocomplete(test):
+        test_users = [
+            {"name": "Chomp Nougat", "email": "chompnougat@example.com", "password": "pass", "role": ["admin", "api"]},
+            {"name": "Choco Li", "email": "chocoli@example.com", "password": "pass", "role": ["associated editor"]},
+            {"name": "Chonky Bar", "email": "chonkybar@example.com", "password": "pass", "role": ["admin"]},
+            {"name": "Marsh Mellow", "email": "mellow@example.com", "password": "pass", "role": ["admin"]}
+        ]
+
+        for u in test_users:
+            acc = models.Account(id=u["name"])
+            acc.set_email(u["email"])
+            acc.set_role(u["role"])
+            acc.set_password(u["password"])
+            acc.save(blocking=True)
+
+        res = models.Account.autocomplete("id", "cho")["suggestions"]
+        assert len(res) == 3, "autocomplete for 'cho': found {}, expected 3".format(len(res))
+        res = models.Account.autocomplete("id", "cho", True)["suggestions"]
+        assert len(res) == 2, "autocomplete for 'cho', admin only: found {}, expected 2".format(len(res))
+
+
     def test_23_provenance(self):
         """Read and write properties into the provenance model"""
         p = models.Provenance()
@@ -1451,9 +1472,6 @@ class TestModels(DoajTestCase):
         })
 
         models.Cache.cache_csv("/csv/filename.csv")
-
-        models.Cache.cache_sitemap("sitemap.xml")
-
         models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
 
         time.sleep(1)
@@ -1466,8 +1484,6 @@ class TestModels(DoajTestCase):
         assert stats["no_apc"] == 50
 
         assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
-
-        assert models.Cache.get_latest_sitemap() == "sitemap.xml"
 
         article_data = models.Cache.get_public_data_dump().get("article")
         assert article_data.get("url") == "http://example.com/article"
@@ -1834,6 +1850,42 @@ class TestModels(DoajTestCase):
         assert e2.name == "Random Name"
         assert e2.request_date == "2021-06-09T00:00:00Z"
         assert e2.requester == "maned"
+
+    def test_45_ur_routing(self):
+        rr = models.URReviewRoute()
+        rr.account_id = "1234"
+        rr.country_code = "GB"
+        rr.target = "4321"
+
+        assert rr.account_id == "1234"
+        assert rr.country_code == "GB"
+        assert rr.target == "4321"
+
+        rr.save(blocking=True)
+        rr2 = models.URReviewRoute.pull(rr.id)
+        assert rr2.account_id == "1234"
+        assert rr2.country_code == "GB"
+        assert rr2.target == "4321"
+
+    def test_46_admin_alerts(self):
+        a = models.AdminAlert()
+        a.source = "test_source"
+        a.message = "This is a test message"
+        a.state = a.STATE_NEW
+
+        assert a.source == "test_source"
+        assert a.message == "This is a test message"
+        assert a.state == a.STATE_NEW
+
+        with self.assertRaises(seamless.SeamlessException):
+            a.state = "random_state"  # should raise an error for invalid state
+
+        a.save(blocking=True)
+        a2 = models.AdminAlert.pull(a.id)
+        assert a2.source == "test_source"
+        assert a2.message == "This is a test message"
+        assert a2.state == a.STATE_NEW
+
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

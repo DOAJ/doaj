@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.3.6"
+DOAJ_VERSION = "8.4.0"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -448,7 +448,8 @@ HUEY_SCHEDULE = {
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
-    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"}
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
+    "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
 }
 
 
@@ -491,6 +492,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
     "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
     "portality.models.export.Export", # ~~-> Export:Model~~
+    "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
+    "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -828,7 +831,7 @@ QUERY_ROUTE = {
         },
         # ~~->APINotificationQuery:Endpoint~~
         "notifications": {
-            "auth": False,
+            "auth": True,
             "role": "admin",
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
             "required_parameters": None
@@ -837,6 +840,18 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "admin",
             "dao": "portality.models.Export"
+        },
+        "alerts": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.AdminAlert",  # ~~->AdminAlert:Model~~
+            "required_parameters": None
+        },
+        "autoassign": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.URReviewRoute",  # ~~->AdminAlert:Model~~
+            "required_parameters": None
         }
     },
     "associate_query": {
@@ -845,7 +860,7 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "associate_editor",
             "query_validators": ["non_public_fields_validator"],
-            "query_filters": ["associate", "search_all_meta"],
+            "query_filters": ["associate", "search_all_meta", "flagged"],
             "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
@@ -907,7 +922,7 @@ QUERY_ROUTE = {
     "dashboard_query": {
         # ~~->APINotificationQuery:Endpoint~~
         "notifications": {
-            "auth": False,
+            "auth": True,
             "role": "read_notifications",
             "query_filters": ["who_current_user"],  # ~~-> WhoCurrentUser:Query
             "dao": "portality.models.Notification",  # ~~->Notification:Model~~
@@ -1143,6 +1158,9 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
+
+# Maximum number of sitemap entries per index file before splitting into chunks (50K entries, 50MB size is actual limit)
+SITEMAP_INDEX_MAX_ENTRIES = 90
 
 ##################################################
 # News feed settings
@@ -1400,6 +1418,7 @@ TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 TASK_DATA_RETENTION_DAYS = {
     "notification": 180,  # ~~-> Notifications:Feature ~~
     "background_job": 180,  # ~~-> BackgroundJobs:Feature ~~
+    "admin_alert": 180,  # ~~-> AdminAlerts:Feature ~~
 }
 
 ########################################
@@ -1600,6 +1619,15 @@ TOUR_COOKIE_PREFIX = "doaj_tour_"
 TOUR_COOKIE_MAX_AGE = 31536000
 
 TOURS = {
+    "/admin/application/*": [
+        {
+            "roles": ["admin"],
+            "selectors": [".flags__container"],
+            "content_id": "admin_flags",
+            "name": "Flags",
+            "description": "Make teamwork smoother by adding a flag to journals and applications — a note assigned to a teammate, with an optional deadline."
+        }
+    ],
     "/admin/journal/*": [
         {
             "roles": ["admin"],
@@ -1677,6 +1705,14 @@ AUTOCHECK_INCOMING = False
 
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1  # seconds between requests
+
+###################################################
+# Automatic Update Request editor group assignment
+
+AUTO_ASSIGN_UR_EDITOR_GROUP = True
+AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=0&single=true&output=csv"
+AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=1948254841&single=true&output=csv"
+AUTO_ASSIGN_EDITOR_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1EDvesL3si4zRj97RCUjTcqglin_XJ5OLGAR8xifoTr0/edit"
 
 ##################################################
 # Background jobs Management settings

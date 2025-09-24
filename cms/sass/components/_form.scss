@@ -3,7 +3,7 @@
 
 .form {
   textarea {
-    height: 20vh;
+    height: max-content;
   }
 
   button {
@@ -109,7 +109,7 @@
     margin-top: 0;
   }
 
-  fieldset {
+  fieldset, form[data-context="public"] section {
     margin: $spacing-04 0;
     padding: $spacing-03;
     background-color: $light-grey;
