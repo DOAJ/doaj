@@ -14,7 +14,7 @@
   > li {
     margin: 0 $spacing-04;
 
-    &:first-child {
+    &:nth-child(1 of :not(.mobile)) {
       margin-left: 0;
     }
 
