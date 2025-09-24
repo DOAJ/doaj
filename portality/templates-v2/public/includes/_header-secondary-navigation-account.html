@@ -5,10 +5,10 @@
 
 {% if not current_user.is_anonymous %}
     <li class="dropdown {{ extraClasses }}" role="menuitem">
-            <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="dropdown__trigger nav-bar__link label" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Dashboard
                 <span data-feather="chevron-down" aria-hidden="true"></span>
-            </a>
+            </button>
         <ul class="dropdown__menu" aria-labelledby="menu-account">
             {% if current_user.has_role("admin") %}
                 <li>
@@ -46,6 +46,7 @@
             <span data-feather="log-in" aria-hidden="true"></span>
         </a>
     {% else %}
+<!--  change to a button in a form  -->
         <a href="{{ url_for('account.logout') }}" class="nav-bar__link">
             Logout
             <span data-feather="log-out" aria-hidden="true"></span>

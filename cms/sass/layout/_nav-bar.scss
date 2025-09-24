@@ -22,6 +22,18 @@
       margin-right: 0;
     }
 
+    button.dropdown__trigger {
+      padding: 0;
+      border: none;
+      line-height: 75px;
+
+      &:hover,
+      &:active {
+        background: transparent;
+        color: $grapefruit;
+      }
+    }
+
     a {
       display: flex;
       align-items: baseline;

@@ -1,13 +1,12 @@
 <li class="dropdown {{ extraClasses }}" role="menuitem">
-    <a href="#" class="dropdown__trigger nav-bar__link label" data-toggle="dropdown" aria-haspopup="true"
+    <button class="dropdown__trigger nav-bar__link label" data-toggle="dropdown" aria-haspopup="true"
        aria-expanded="false" id="menu-{{ selected_nav.id }}">
         {% if selected_nav.feather %}
-            <span data-feather="{{ selected_nav.feather }}" aria-hidden="true" {% if selected_nav.feather == "star" %}
-                style="color: #ffd700" {% endif %}></span>
+            <span data-feather="{{ selected_nav.feather }}" aria-hidden="true"></span>
         {% endif %}
         {{ selected_nav.label }}
         <span data-feather="chevron-down" aria-hidden="true"></span>
-    </a>
+    </button>
 
     <ul class="dropdown__menu" aria-labelledby="menu-{{ selected_nav.id }}" aria-label="{{ selected_nav.label }}"
         role="menu">
