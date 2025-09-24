@@ -2460,7 +2460,6 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"],
-        FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM

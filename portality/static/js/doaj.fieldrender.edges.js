@@ -5425,7 +5425,7 @@ $.extend(true, doaj, {
         },
 
         createdDateWithTime: function (val, resultobj, renderer) {
-            return doaj.dates.humanYearMonth(resultobj['created_date']);
+            return doaj.dates.iso_datetime2date_and_time(resultobj['created_date']);
         },
 
         lastManualUpdate: function (val, resultobj, renderer) {
@@ -5433,13 +5433,13 @@ $.extend(true, doaj, {
             if (man_update === '1970-01-01T00:00:00Z') {
                 return 'Never'
             } else {
-                return doaj.dates.humanYearMonth(man_update);
+                return doaj.dates.iso_datetime2date_and_time(man_update);
             }
         },
 
         suggestedOn: function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
-                return doaj.dates.humanYearMonth(resultobj['admin']['date_applied']);
+                return doaj.dates.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
             } else {
                 return false;
             }

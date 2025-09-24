@@ -24,7 +24,7 @@ tests:
       - step: Select the random_user's id
       - step: In deadline input add an improbable date (e.g., 2025-02-31)
         results:
-          - The error Please enter a valid date in YYYY-MM-DD format.
+          - It's not possible to enter an improbable date
       - step: In deadline input add a valid date
       - step: In text area add flag's note (any text)
       - step: Save application
