@@ -73,10 +73,10 @@ def username(username):
         else:
             conf = request.values.get("delete_confirm")
             if conf is None or conf != "delete_confirm":
-                flash('Check the box to confirm you really mean it!', "error")
+                Messages.flash(Messages.ACCOUNT__CONFIRM_CHECKBOX_REQUIRED)
                 return render_template(template, account=acc, form=UserEditForm(obj=acc))
             acc.delete()
-            flash('Account ' + acc.id + ' deleted')
+            Messages.flash(Messages.ACCOUNT__DELETED.format(id=acc.id))
             return redirect(url_for('.index'))
 
     elif request.method == 'POST':
@@ -123,7 +123,7 @@ def username(username):
 
                 events_svc = DOAJ.eventsService()
                 events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id, context={"account" : acc.data}))
-                flash("Email address updated. You have been logged out for email address verification.")
+                Messages.flash(Messages.ACCOUNT__EMAIL_UPDATED_LOGGED_OUT)
 
                 logout_user()
 
@@ -134,7 +134,7 @@ def username(username):
                 return redirect(url_for('doaj.home'))
 
         acc.save()
-        flash("Record updated")
+        Messages.flash(Messages.ACCOUNT__RECORD_UPDATED)
         return render_template(template, account=acc, form=form)
 
     else:  # GET
@@ -218,7 +218,7 @@ def get_wait_period(secs: int) -> str:
     return f"{secs} seconds"
 
 
-def _handle_pwless_login(user, form, redirected: str = "", success_category: str | None = None):
+def _handle_pwless_login(user, form, redirected: str = ""):
     """ Handler for passwordless login backoff + email sending.
 
     Returns a rendered verify_code template with appropriate resend_wait.
@@ -227,23 +227,17 @@ def _handle_pwless_login(user, form, redirected: str = "", success_category: str
     allowed, wait_remaining, interval = cps.record_pwless_resend(user.email)
 
     if not allowed:
-        util.flash_with_url(
-            f"You requested a multiple times. Please wait {get_wait_period(wait_remaining)} before trying again.",
-            'error'
-        )
+        tpl = Messages.ACCOUNT__PWLESS__RESEND_RATE_LIMIT
+        Messages.flash((tpl[0].format(wait=get_wait_period(wait_remaining)), tpl[1]))
         return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form, resend_wait=wait_remaining)
 
     try:
         svc = DOAJ.accountService()
         code = svc.initiate_login_code(user)
         svc.send_login_code_email(user, code, redirected or "")
-        message = 'A login link along with login code has been sent to your email.'
-        if success_category:
-            flash(message, success_category)
-        else:
-            flash(message)
+        Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
     except bll_exc.ArgumentException:
-        flash('There was a problem generating the login email.', 'error')
+        Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_ERROR)
 
     return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form, resend_wait=interval)
 
@@ -255,15 +249,15 @@ def verify_code():
     if request.method == 'POST' and (request.form.get('action') == 'resend'):
         email = _get_param('email')
         if not email:
-            flash('Email address is required to resend the code.', 'error')
+            Messages.flash(Messages.ACCOUNT__EMAIL_REQUIRED_FOR_RESEND)
             return redirect(url_for('account.login'))
 
         user = Account.pull_by_email(email)
         if not user:
-            flash('Account not recognised.')
+            Messages.flash(Messages.ACCOUNT__NOT_RECOGNISED)
             return redirect(url_for('account.login'))
 
-        return _handle_pwless_login(user, form, _get_param('redirected') or '', 'success')
+        return _handle_pwless_login(user, form, _get_param('redirected') or '')
 
     svc = DOAJ.accountService()
 
@@ -274,13 +268,13 @@ def verify_code():
             code=_get_param('code'),
         )
     except bll_exc.ArgumentException:
-        flash("Required parameters not available.")
+        Messages.flash(Messages.ACCOUNT__REQUIRED_PARAMS_NOT_AVAILABLE)
         return redirect(url_for('account.login'))
     except bll_exc.NoSuchObjectException:
-        flash("Account not recognised.")
+        Messages.flash(Messages.ACCOUNT__NOT_RECOGNISED)
         return redirect(url_for('account.login'))
     except bll_exc.IllegalStatusException:
-        flash("Invalid or expired verification code")
+        Messages.flash(Messages.ACCOUNT__INVALID_OR_EXPIRED_CODE)
         return redirect(url_for('account.login'))
 
     # Preserve existing UI behavior for application redirect
@@ -310,14 +304,14 @@ def handle_login_code_request(user, form):
 
     svc = DOAJ.accountService()
     svc.send_login_code_email(user, code, request.args.get("redirected", ""))
-    flash('A login link along with login code has been sent to your email.')
+    Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
 
     return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
 
 def handle_password_login(user, form):
     if user.check_password(form.password.data):
         login_user(user, remember=True)
-        flash('Welcome back.', 'success')
+        Messages.flash(Messages.ACCOUNT__WELCOME_BACK)
         return redirect(get_redirect_target(form=form, acc=user))
     else:
         forgot_url = url_for(".forgot")
@@ -360,7 +354,7 @@ def login():
             elif action == 'password_login':
                 account = svc.verify_password_login(user, form.password.data)
                 login_user(account, remember=True)
-                flash('Welcome back.', 'success')
+                Messages.flash(Messages.ACCOUNT__WELCOME_BACK)
                 return redirect(get_redirect_target(form=form, acc=account))
 
             else:
@@ -381,9 +375,9 @@ def login():
                 )
             else:
                 # Generic illegal status
-                flash('Login could not be completed due to account status.', 'error')
+                Messages.flash(Messages.ACCOUNT__STATUS_LOGIN_FAILED)
         except bll_exc.ArgumentException:
-            flash('There was a problem with your request.', 'error')
+            Messages.flash(Messages.ACCOUNT__REQUEST_PROBLEM)
 
     return handle_login_template_rendering(form)
 
@@ -417,7 +411,7 @@ def forgot():
 
         events_svc = DOAJ.eventsService()
         events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, account.id, context={"account": account.data}))
-        flash('Instructions to reset your password have been sent to you. Please check your emails.')
+        Messages.flash(Messages.ACCOUNT__RESET_EMAIL_SENT)
 
         if app.config.get('DEBUG', False):
             util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(
@@ -448,14 +442,14 @@ def reset(reset_token):
         pw = request.values.get("password")
         conf = request.values.get("confirm")
         if pw != conf:
-            flash("Passwords do not match - please try again", "error")
+            Messages.flash(Messages.ACCOUNT__PASSWORDS_NOT_MATCH)
             return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
         # update the user's account
         account.set_password(pw)
         account.remove_reset_token()
         account.save()
-        flash("New password has been set and you're now logged in.", "success")
+        Messages.flash(Messages.ACCOUNT__PASSWORD_SET_AND_LOGGED_IN)
 
         # log the user in
         login_user(account, remember=True)
@@ -468,7 +462,7 @@ def reset(reset_token):
 @ssl_required
 def logout():
     logout_user()
-    flash('You are now logged out', 'success')
+    Messages.flash(Messages.ACCOUNT__LOGGED_OUT)
     return redirect('/')
 
 
@@ -527,13 +521,13 @@ def register(template=templates.REGISTER):
                 util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
                 return redirect(url_for('.index'))
             else:
-                flash('Thank you, please verify email address ' + form.sender_email.data + ' to set your password and login.',
-                      'success')
+                tpl = Messages.ACCOUNT__VERIFY_EMAIL_TO_SET_PASSWORD
+                Messages.flash((tpl[0].format(email=form.sender_email.data), tpl[1]))
 
             # We must redirect home because the user now needs to verify their email address.
             return redirect(url_for('doaj.home'))
         else:
-            flash('Please correct the errors', 'error')
+            Messages.flash(Messages.ACCOUNT__PLEASE_CORRECT_ERRORS)
 
     return render_template(template, form=form)
 
