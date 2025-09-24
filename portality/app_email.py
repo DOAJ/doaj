@@ -26,14 +26,15 @@ def send_markdown_mail(to, fro, subject, template_name=None, bcc=None, files=Non
     send_mail(to, fro, subject, template_name=template_name, bcc=bcc, files=files, msg_body=msg_body, html_body=html_body, html_body_flag=True, **template_params)
 
 # Flask-Mail version of email service from util.py
-def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, html_body=None, html_body_flag=False, **template_params):
+def send_mail(to, fro, subject, template_name=None, plaintext_template_name=None, bcc=None, files=None, msg_body=None, html_body=None, html_body_flag=False, **template_params):
     """
     ~~-> Email:ExternalService~~
     ~~-> FlaskMail:Library~~
     :param to:
     :param fro:
     :param subject:
-    :param template_name:
+    :param template_name: HTML template name (used for HTML body when html_body_flag is True and html_body not provided)
+    :param plaintext_template_name: Plain text template name (used for the plain text body if provided)
     :param bcc:
     :param files:
     :param msg_body:
@@ -78,11 +79,12 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
         if msg_body:
             plaintext_body = msg_body
         else:
+            tn = plaintext_template_name if plaintext_template_name else template_name
             try:
-                plaintext_body = render_template(template_name, **template_params)
+                plaintext_body = render_template(tn, **template_params)
             except:
                 with app.test_request_context():
-                    plaintext_body = render_template(template_name, **template_params)
+                    plaintext_body = render_template(tn, **template_params)
 
         # strip all the leading and trailing whitespace from the body, which the templates
         # leave lying around
@@ -93,9 +95,13 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     if html_body_flag and not html_body:
         try:
             html_body = render_template(template_name, **template_params)
+            # support plain text as well along with html body
+            msg_body = _msg_to_plaintext()
         except:
+            # If we can't render HTML, fall back to plaintext generation
             msg_body = _msg_to_plaintext()
     else:
+        # Always ensure we have a plaintext body for clients that don't support HTML
         msg_body = _msg_to_plaintext()
 
     # create a message

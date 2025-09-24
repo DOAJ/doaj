@@ -59,6 +59,7 @@ class AccountService:
             html_body_flag=True,
             subject="Your Login Code for DOAJ",
             template_name=templates.EMAIL_LOGIN_LINK,
+            plaintext_template_name=templates.EMAIL_LOGIN_LINK_PLAINTEXT,
             code=code,
             login_url=login_url,
             expiry_minutes=10

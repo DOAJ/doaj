@@ -113,3 +113,4 @@ EMAIL_WF_ASSED_AGE = "email/workflow_reminder_fragments/assoc_ed_age_frag.jinja2
 EMAIL_WF_EDITOR_AGE = "email/workflow_reminder_fragments/editor_age_frag.jinja2"
 EMAIL_WF_EDITOR_GROUPCOUNT = "email/workflow_reminder_fragments/editor_groupcount_frag.jinja2"
 EMAIL_LOGIN_LINK = "email/login_code.jinja2"
+EMAIL_LOGIN_LINK_PLAINTEXT = "email/login_code.txt.jinja2"
