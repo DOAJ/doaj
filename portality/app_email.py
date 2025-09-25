@@ -1,4 +1,6 @@
 # ~~Email:Library~~
+import logging
+
 from flask import render_template, flash
 from flask_mail import Mail, Message, Attachment
 from portality.core import app
@@ -95,14 +97,13 @@ def send_mail(to, fro, subject, template_name=None, plaintext_template_name=None
     if html_body_flag and not html_body:
         try:
             html_body = render_template(template_name, **template_params)
-            # support plain text as well along with html body
-            msg_body = _msg_to_plaintext()
-        except:
-            # If we can't render HTML, fall back to plaintext generation
-            msg_body = _msg_to_plaintext()
-    else:
-        # Always ensure we have a plaintext body for clients that don't support HTML
-        msg_body = _msg_to_plaintext()
+        except Exception as e:
+            logging.WARNING(f"Could not render HTML template for email: {str(e)}")
+            html_body = None  # Explicitly set to None to make the state clear
+
+    # Always ensure we have a plaintext body for clients that don't support HTML
+    # or in case HTML rendering failed
+    msg_body = _msg_to_plaintext()
 
     # create a message
     msg = Message(subject=subject,
