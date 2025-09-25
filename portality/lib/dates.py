@@ -31,11 +31,13 @@ config = {
 
     # The last_manual_update field was initialised to this value. Used to label as 'never'.
     'DEFAULT_TIMESTAMP': "1970-01-01T00:00:00Z",
+    'FAR_IN_THE_FUTURE': "9999-12-31"
 }
 
 
 FMT_DATETIME_STD = config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
 FMT_DATETIME_A = '%Y-%m-%d %H:%M:%S'
+FMT_DATETIME_NO_SECS = '%Y-%m-%d %H:%M'
 FMT_DATETIME_MS_STD = '%Y-%m-%dT%H:%M:%S.%fZ'
 FMT_DATETIME_SHORT = '%Y%m%d_%H%M'
 FMT_DATETIME_LONG = "%Y%m%d_%H%M%S_%f"
@@ -53,10 +55,11 @@ FMT_YEAR = '%Y'
 
 DEFAULT_TIMESTAMP_VAL = config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
+def far_in_the_future (out_format=FMT_DATE_STD):
+    return reformat(config.get("FAR_IN_THE_FUTURE", "9999-12-31"), FMT_DATE_STD, out_format)
 
 def parse(s, format=None, guess=True) -> datetime:
     s = s.strip()
-
     if format is not None:
         try:
             return datetime.strptime(s, format)
@@ -192,3 +195,9 @@ def is_before(mydate, comparison=None):
 
 def timestruct2datetime(ts):
     return datetime.fromtimestamp(time.mktime(ts))
+
+
+def find_earliest_date(dates_arr, dates_format, out_format=None):
+    parsed_dates = [parse(date, dates_format) for date in dates_arr]
+    earliest_date = min(parsed_dates)
+    return format(earliest_date, out_format or dates_format)

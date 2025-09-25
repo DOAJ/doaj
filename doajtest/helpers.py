@@ -24,6 +24,12 @@ from portality.tasks.redis_huey import events_queue, scheduled_short_queue, sche
 from portality.util import url_for, patch_config
 
 
+def create_random_str(n_char=10):
+    import string, random
+
+    s = string.ascii_letters + string.digits
+    return ''.join(random.choices(s, k=n_char))
+
 def with_es(_func=None, *, indices=None, warm_mappings=None):
     def with_es_decorator(func):
         @functools.wraps(func)

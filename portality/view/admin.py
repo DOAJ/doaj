@@ -241,7 +241,7 @@ def journal_page(journal_id):
         processor = fc.processor(formdata=request.form, source=journal)
         if processor.validate():
             try:
-                processor.finalise()
+                processor.finalise(current_user._get_current_object())
                 flash('Journal updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
@@ -466,7 +466,7 @@ def application(application_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
             except Exception as e:
-                flash(str(e))
+                flash("unexpected field " + str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
@@ -667,10 +667,14 @@ def editor_group(group_id=None):
 def user_autocomplete():
     q = request.values.get("q")
     s = request.values.get("s", 10)
-    ac = models.Account.autocomplete("id", q, size=s)
+    admin_only = "admin_only" in request.args
+    if admin_only:
+        ac = models.Account.admin_autocomplete("id", q, size=s)
+    else:
+        ac = models.Account.autocomplete("id", q, size=s)
 
     # return a json response
-    resp = make_response(json.dumps(ac))
+    resp = make_response(json.dumps({"suggestions": ac}))
     resp.mimetype = "application/json"
     return resp
 

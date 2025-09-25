@@ -46,6 +46,7 @@ ALLOWED_ARTICLE_IDENT_TYPES = [IDENT_TYPE_DOI, IDENT_TYPE_PISSN, IDENT_TYPE_EISS
 LINK_TYPE_FULLTEXT = "fulltext"
 
 # ~~-> Todo:Service~~
+TODO_ASSIGNED_TO_ME = "todo_assigned_to_me"
 TODO_MANED_STALLED = "todo_maned_stalled"
 TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
 TODO_MANED_READY = "todo_maned_ready"
@@ -63,6 +64,15 @@ TODO_ASSOCIATE_PROGRESS_STALLED = "todo_associate_progress_stalled"
 TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
 TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
+# TODO_URGENT_FLAGS_ALL = "todo_urgent_flags_all"
+# TODO_URGENT_FLAGS_NEW_APPLICATIONS = "todo_urgent_flags_new_applications"
+# TODO_URGENT_FLAGS_UPDATE_REQUESTS = "todo_urgent_flags_update_requests"
+# TODO_URGENT_FLAGS_ONHOLD = "todo_urgent_flags_onhold"
+# TODO_REGULAR_FLAGS_ALL = "todo_regular_flags_all"
+# TODO_REGULAR_FLAGS_NEW_APPLICATIONS = "todo_regular_flags_new_applications"
+# TODO_REGULAR_FLAGS_UPDATE_REQUESTS = "todo_regular_flags_update_requests"
+# TODO_REGULAR_FLAGS_ONHOLD = "todo_regular_flags_onhold"
+
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"

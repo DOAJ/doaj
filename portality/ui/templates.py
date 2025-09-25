@@ -76,6 +76,8 @@ AF_ENTRY_GROUP_HORIZONTAL = "_application-form/includes/_entry_group_horizontal.
 AF_FIELD = "_application-form/includes/_field.html"
 AF_GROUP = "_application-form/includes/_group.html"
 AF_LIST = "_application-form/includes/_list.html"
+FLAGS_LIST= "_application-form/includes/_flags_list.html"
+FLAG_ENTRY_GROUP = "_application-form/includes/_flag_entry.html"
 
 # Publisher area
 PUBLISHER_DRAFTS = "public/publisher/drafts.html"

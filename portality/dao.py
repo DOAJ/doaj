@@ -1133,7 +1133,7 @@ class DomainObject(UserDict, object):
                 continue
 
     @classmethod
-    def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):
+    def prefix_query(cls, field, prefix, filter_condition=None, size=5, facet_field=None, analyzed_field=True):
         # example of a prefix query
         # {
         #     "query": {"prefix" : { "bibjson.publisher" : "ope" } },
@@ -1160,7 +1160,7 @@ class DomainObject(UserDict, object):
         if not facet_field.endswith(suffix):
             facet_field = facet_field + suffix
 
-        q = PrefixAutocompleteQuery(query_field, prefix, field, facet_field, size)
+        q = PrefixAutocompleteQuery(query_field, prefix, field, facet_field, size, filter_condition)
         return cls.send_query(q.query())
 
     @classmethod
@@ -1229,7 +1229,7 @@ class DomainObject(UserDict, object):
         return result
 
     @classmethod
-    def autocomplete(cls, field, prefix, size=5):
+    def autocomplete(cls, field, prefix, filter_condition=None, size=5):
         res = None
         # if there is a space in the prefix, the prefix query won't work, so we fall back to a wildcard
         # we only do this if we have to, because the wildcard query is a little expensive
@@ -1237,7 +1237,7 @@ class DomainObject(UserDict, object):
             res = cls.wildcard_autocomplete_query(field, prefix, before=False, after=True, facet_size=size)
         else:
             prefix = prefix.lower()
-            res = cls.prefix_query(field, prefix, size=size)
+            res = cls.prefix_query(field, prefix, filter_condition, size=size)
 
         result = []
         for term in res['aggregations'][field]['buckets']:
@@ -1559,22 +1559,36 @@ class BlockQuery(object):
 
 
 class PrefixAutocompleteQuery(object):
-    def __init__(self, query_field, prefix, agg_name, agg_field, agg_size):
+    def __init__(self, query_field, prefix, agg_name, agg_field, agg_size, filter_condition=None):
         self._query_field = query_field
         self._prefix = prefix
         self._agg_name = agg_name
         self._agg_field = agg_field
         self._agg_size = agg_size
-
+        self._filter_condition = filter_condition
     def query(self):
-        return {
+        query_body = {
             "track_total_hits": True,
-            "query": {"prefix": {self._query_field: self._prefix.lower()}},
+            "query": {
+                "bool": {
+                    "must": [
+                        {"prefix": {self._query_field: self._prefix.lower()}}  # Keep the prefix query
+                    ]
+                }
+            },
             "size": 0,
             "aggs": {
                 self._agg_name: {"terms": {"field": self._agg_field, "size": self._agg_size}}
             }
         }
+
+        if self._filter_condition:
+            query_body["query"]["bool"]["filter"] = [
+                {"term": self._filter_condition}
+            ]
+
+        return query_body
+
 
 
 class WildcardAutocompleteQuery(object):

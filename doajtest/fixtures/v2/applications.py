@@ -5,10 +5,12 @@ import rstr
 
 from portality import constants, regex
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED
+from doajtest.fixtures.v2.common import build_flags_form_expanded
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.lib import dates, dicts
 from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
 from portality.models.v2.application import Application
+from portality.crosswalks.application_form import ApplicationFormXWalk
 
 class ApplicationFixtureFactory(object):
     @staticmethod
@@ -60,8 +62,8 @@ class ApplicationFixtureFactory(object):
         return application_sources
 
     @staticmethod
-    def make_application_form(role="maned"):
-        form = deepcopy(APPLICATION_FORM)
+    def make_application_form(role="maned", flag=None, **flag_kwargs):
+        form = deepcopy(APPLICATION_FORM_EXPANDED)
         if role == "assed" or role == "editor":
             del form["editor_group"]
             del form["s2o"]
@@ -70,8 +72,13 @@ class ApplicationFixtureFactory(object):
             del form["pissn"]
             del form["eissn"]
             del form["s2o"]
+        if flag:
+            flags_update = build_flags_form_expanded(**flag_kwargs)
+            form.update(deepcopy(flags_update))
 
-        return form
+        app_form = ApplicationFormXWalk.forminfo2multidict(form)
+
+        return app_form
 
     @staticmethod
     def make_application_form_info():
@@ -174,5 +181,4 @@ APPLICATION_FORM_EXPANDED.update(deepcopy(OWNER_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
-from portality.crosswalks.application_form import ApplicationFormXWalk
 APPLICATION_FORM = ApplicationFormXWalk.forminfo2multidict(APPLICATION_FORM_EXPANDED)
