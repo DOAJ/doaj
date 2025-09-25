@@ -50,11 +50,16 @@ class ConcurrencyPreventionService:
         if record:
             next_allowed_at = int(record.get("next_allowed_at", 0))
             count = int(record.get("count", 0))
-            current_interval = int(record.get("current_interval", min_interval))
-            if now < next_allowed_at:
-                return False, next_allowed_at - now, current_interval
-            # allowed: back off interval for next time
-            new_interval = int(min(max_interval, max(min_interval, current_interval * factor)))
+            if count > 2: # allow resend code for 3 times
+                current_interval = int(record.get("current_interval", min_interval))
+                if now < next_allowed_at:
+                    return False, next_allowed_at - now, current_interval
+                # allowed: back off interval for next time
+                new_interval = int(min(max_interval, max(min_interval, current_interval * factor)))
+            else:
+                # set a minimum interval for 3 times
+                new_interval = min_interval
+
             new_count = count + 1
         else:
             new_interval = min_interval
