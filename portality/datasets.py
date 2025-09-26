@@ -15,6 +15,11 @@ def _generate_country_options():
     """
     country_options_ = [('', '')]
 
+    # add Kosovo
+    pycountry.countries.add_entry(
+        alpha_2="XK", alpha_3="XXK", name="Kosovo", numeric="926"
+    )
+
     for co in sorted(pycountry.countries, key=lambda x: x.name):
         try:
             country_options_.append((co.alpha_2.upper(), co.name))
