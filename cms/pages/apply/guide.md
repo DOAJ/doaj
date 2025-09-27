@@ -308,6 +308,7 @@ Our criteria are available in:
 - [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
 - [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
 - [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
+- [Greek](https://drive.google.com/file/d/1nHujiotWovloKQC97mwQVPMW_ierKEOt/view?usp=sharing)
 - [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
 - [Portuguese](https://drive.google.com/file/d/15ThVsQCJkYnv2Vw-A6mkgMVGVoO9oBB7/view?usp=sharing)
