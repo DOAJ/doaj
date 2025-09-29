@@ -1,12 +1,18 @@
+import json
+
 from doajtest import helpers
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, ApplicationFixtureFactory
 from flask_login import current_user
 
 from portality import models, constants
+from portality.background import BackgroundApi
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask, change_in_doaj
 
 import time
+
+from portality.ui.messages import Messages
+
 
 class TestWithdrawReinstate(DoajTestCase):
 
@@ -78,13 +84,55 @@ class TestWithdrawReinstate(DoajTestCase):
             a.save()
             articles.append(a.id)
 
+        # add one journal in doaj
+
+        with_match = ids[9]
+        j = models.Journal.pull(with_match)
+        pissn = j.bibjson().pissn
+        eissn = j.bibjson().eissn
+        source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        j_indoaj = models.Journal(**source)
+        j_indoaj.bibjson().pissn = pissn
+        j_indoaj.bibjson().eissn = eissn
+        j_indoaj.set_in_doaj(True)
+        j_indoaj.save(blocking=True)
+
         time.sleep(1)
 
         job = SetInDOAJBackgroundTask.prepare("testuser", journal_ids=ids, in_doaj=True)
-        SetInDOAJBackgroundTask.submit(job)
+        task = SetInDOAJBackgroundTask(job)
+        BackgroundApi.execute(task)
 
         time.sleep(1)
 
+        # job failed
+        bjob = task.background_job
+        assert bjob.status == "error"
+        assert any(audit["message"] == Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids = [with_match]) for audit in bjob["audit"])
+        # no status changed
+        for id in ids:
+            j = models.Journal.pull(id)
+            assert j.is_in_doaj() is False
+
+        for id in articles:
+            a = models.Article.pull(id)
+            assert a.is_in_doaj() is False
+
+        j_indoaj.set_in_doaj(False)
+        j_indoaj.save(blocking=True)
+
+        time.sleep(1)
+
+        # now the job can be completed
+        job2 = SetInDOAJBackgroundTask.prepare("testuser", journal_ids=ids, in_doaj=True)
+        task2 = SetInDOAJBackgroundTask(job2)
+        BackgroundApi.execute(task2)
+
+        time.sleep(2)
+
+        # job succeeded
+        bjob2 = task2.background_job
+        assert bjob2.outcome_status == "success"
         for id in ids:
             j = models.Journal.pull(id)
             assert j.is_in_doaj() is True
