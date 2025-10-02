@@ -34,14 +34,6 @@ board:
   coi:
     2024: https://docs.google.com/document/d/1EH5xRa3Zxee8k8LGwSMDK3UPbKSHjVHdqgVAy8KCyWs/edit?usp=drive_link
 
-- name: Lars Bjørnshauge
-  institution: DOAJ
-  country: Denmark
-  photo: "Lars-Bjørnshauge.jpg"
-  bio: "Lars is the Director of Infrastructure Services for Open Access C.I.C (www.is4oa.org) and Founder of DOAJ. He was the Managing Director of DOAJ until 2022, when he retired. Previously, he was the Deputy Director and Acting Director for the Technical Information Centre of Denmark at the Technical University of Denmark. He was the Director of Libraries at Lund University in Sweden and the Director of SPARC Europe. In addition to founding DOAJ, he has co-founded OpenDOAR (Directory of Open Access Repositories), DOAB (Directory of Open Access Books), and Think.Check.Submit."
-  coi:
-    2024: https://docs.google.com/document/d/1U1hoHCXRrstCj4_wJgm54RSChxkHVPLVcqn38oMlheY/edit?usp=drive_link
-
 - name: Susan Veldsman
   institution: Academy of Sciences in South Africa
   country: South Africa
@@ -145,7 +137,7 @@ council:
   country: Spain
 
 - name: Sandra F. Gomes
-  institution: Faculty of Medicine, University of Porto (FMUP)
+  institution: Rectorate of the University of Porto
   country: Portugal
 
 - name: Santosh C Hulagabali
