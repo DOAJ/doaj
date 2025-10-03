@@ -10,8 +10,70 @@
 {%- block meta_twitter_description -%}{% include "public/includes/_journal_meta_description.html" %}{%- endblock -%}
 
 {% block public_content %}
+<style>
+    .drawer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 2rem 1.5rem;
+        width: 30%;
+        height: 100%;
+        min-height: 100%;
+        overflow-y: scroll;
+        z-index: 1000;
+        background: #FAF9FA;
+    }
+    .drawer h2 {
+        line-height: 1.4;
+        margin-bottom: 2rem;
+    }
+    .drawer h3 {
+        line-height: 1.2;
+    }
+    .drawer h2 svg {
+        margin-right: 1rem;
+    }
+    .form__question {
+        margin: 0;
+    }
+    .see-you {
+        font-size: 20px;
+        margin-top: 1.5rem;
+    }
 
-<div class="container page-content">
+</style>
+<div class="drawer card">
+            <h2 class="label--underlined"><span>Keep your journal record accurate and visible!</span></h2>
+            <p> Help readers, authors, and indexers by keeping your journal’s information up to date. You can do this
+                by submitting an update request.</p>
+            {% from "includes/_formhelpers.html" import render_field %}
+
+            <h3 class="sr-only">Login to continue</h3>
+            <form method="post" action="">
+                <div class="form__question">
+                    <label for="email">Login with the email address linked to your DOAJ account to continue.</label>
+                    <input id="email" type="text" placeholder="email@example.com">
+                </div>
+                <input type="submit" class="button button--primary" value="Log in"/>
+            </form>
+
+            <h3>No access to the email associated with the account? We can help!</h3>
+            <p>Contact us at <span style="text-decoration: underline">helpdesk [at] doaj.com</span><span
+                    data-feather="copy" aria-hidden="true"></span>
+                with the following information:
+            <ul>
+                <li>Journal title: <b>Marine Ornithology</b>&nbsp;<span data-feather="copy" aria-hidden="true"></span></li>
+                <li>Journal ISSNs: <b>1018-3337, 2074-1235</b>&nbsp;<span data-feather="copy" aria-hidden="true"></span></li>
+                <li>DOAJ account ID (if you know it)</li>
+                <li>Your name, email address, current organisation or affiliation</li>
+                <li>Your organisation's website</li>
+                <li>Confirmation of your relation to the journal and your authority to request access</li>
+            </ul>
+            </p>
+            <a href="#">Copy this list to the clipboard <span data-feather="copy" aria-hidden="true"></span></a>
+            <p class="see-you">We are looking forward to hearing from you!</p>
+    </div>
+<div class="container page-content" style="position: relative">
     <header>
         {% if not current_user.is_anonymous and current_user.has_role("admin") %}
         <a class="button button--tertiary" href="{{ url_for('admin.journal_page', journal_id=journal.id) }}">Edit
@@ -36,8 +98,9 @@
             <div class="col-xs-3 col-md-4 badges badges--toc">
                 {%- if s2o -%}
                 <a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank">
-                    <img id="s20-logo" src="/assets/img/labels/s2o.svg" alt="Subscribe to Open" title="Subscribe to Open">
-                     <p class="sr-only">This journal is part of the Subscribe to Open program.</p>
+                    <img id="s20-logo" src="/assets/img/labels/s2o.svg" alt="Subscribe to Open"
+                         title="Subscribe to Open">
+                    <p class="sr-only">This journal is part of the Subscribe to Open program.</p>
                 </a>
                 {%- endif %}
             </div>
