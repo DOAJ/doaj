@@ -15,7 +15,7 @@ class TestApplicationPublisherAssignedNotify(DoajTestCase):
         super(TestApplicationPublisherAssignedNotify, self).tearDown()
 
     def test_should_consume(self):
-        source = ApplicationFixtureFactory.make_application_source()
+        source = ApplicationFixtureFactory.make_update_request_source()
 
         event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : source, "old_editor": "", "new_editor" : source["admin"]["editor"]})
         assert UpdateRequestPublisherAssignedNotify.should_consume(event)
@@ -31,32 +31,32 @@ class TestApplicationPublisherAssignedNotify(DoajTestCase):
         assert not UpdateRequestPublisherAssignedNotify.should_consume(event)
 
     def test_consume_success(self):
-        self._make_and_push_test_context("/")
+        with self._make_and_push_test_context_manager("/"):
 
-        source = ApplicationFixtureFactory.make_application_source()
-        app = models.Application(**source)
-        # app.save()
+            source = ApplicationFixtureFactory.make_application_source()
+            app = models.Application(**source)
+            # app.save()
 
-        acc = models.Account()
-        acc.set_id(app.owner)
-        acc.set_email("test@example.com")
-        acc.save(blocking=True)
+            acc = models.Account()
+            acc.set_id(app.owner)
+            acc.set_email("test@example.com")
+            acc.save(blocking=True)
 
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : app.data, "old_editor": "", "new_editor": app.editor})
-        UpdateRequestPublisherAssignedNotify.consume(event)
+            event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : app.data, "old_editor": "", "new_editor": app.editor})
+            UpdateRequestPublisherAssignedNotify.consume(event)
 
-        time.sleep(1)
-        ns = models.Notification.all()
-        assert len(ns) == 1
+            time.sleep(1)
+            ns = models.Notification.all()
+            assert len(ns) == 1
 
-        n = ns[0]
-        assert n.who == app.owner
-        assert n.created_by == UpdateRequestPublisherAssignedNotify.ID
-        assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
-        assert n.long is not None
-        assert n.short is not None
-        assert n.action is None
-        assert not n.is_seen()
+            n = ns[0]
+            assert n.who == app.owner
+            assert n.created_by == UpdateRequestPublisherAssignedNotify.ID
+            assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
+            assert n.long is not None
+            assert n.short is not None
+            assert n.action is None
+            assert not n.is_seen()
 
     def test_consume_fail(self):
         event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": {"key" : "value"}})

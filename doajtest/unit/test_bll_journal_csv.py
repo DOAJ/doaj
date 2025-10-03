@@ -7,7 +7,8 @@ from parameterized import parameterized
 
 from doajtest import helpers
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase
+from portality.util import patch_config
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from doajtest.mocks.store import StoreMockFactory
 from portality import models
@@ -114,6 +115,12 @@ class TestBLLJournalCSV(DoajTestCase):
                 comparisons[issns[0]]["article_count"] = 2
                 comparisons[issns[0]]["article_latest"] = "2019-0{i}-02T00:00:00Z".format(i=i + 1)
 
+        if journals_with_articles_count == 0:
+            # make an article to initialise the mapping
+            source = ArticleFixtureFactory.make_article_source(eissn="XXXX-XXXX", pissn="XXXX-XXXX", with_id=False, in_doaj=False)
+            article = models.Article(**source)
+            articles.append(article)
+
         if journals_no_issn_count > 0:
             noissns = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journals_no_issn_count, in_doaj=True)]
             for i in range(len(noissns)):
@@ -199,8 +206,8 @@ class TestBLLJournalCSV(DoajTestCase):
                     alt_title = row[4]
                     issn = row[5]
                     eissn = row[6]
-                    article_count = int(row[52])
-                    article_latest = row[53]
+                    article_count = int(row[-2])
+                    article_latest = row[-1]
 
                     assert alt_title == "Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]

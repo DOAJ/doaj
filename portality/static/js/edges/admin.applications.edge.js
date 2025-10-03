@@ -13,11 +13,15 @@ $.extend(true, doaj, {
             var selector = params.selector || "#admin_applications";
             var search_url = current_scheme + "//" + current_domain + doaj.adminApplicationsSearchConfig.searchPath;
 
+            var countFormat = edges.numFormat({
+                thousandsSeparator: ","
+            });
+
             var components = [
                 doaj.components.searchingNotification(),
                 // filters
                 edges.newFilterSetter({
-                    id : "see_applications",
+                    id : "see_applications_no_charges",
                     category: "facet",
                     filters : [
                         doaj.filters.noCharges()
@@ -36,13 +40,110 @@ $.extend(true, doaj, {
                 doaj.facets.hasEditor(),
                 doaj.facets.editorGroup(),
                 doaj.facets.editor(),
-                doaj.facets.hasAPC(),
                 doaj.facets.classification(),
                 doaj.facets.language(),
                 doaj.facets.countryPublisher(),
                 doaj.facets.subject(),
                 doaj.facets.publisher(),
                 doaj.facets.journalLicence(),
+
+                doaj.components.newFacetDivider({
+                    id: "reporting_tools_divider",
+                    category: "facet",
+                    display: "Reporting Tools"
+                }),
+                doaj.components.newSimultaneousDateRangeEntry({
+                    id: "date_limiter",
+                    display: "Limit by Date Range",
+                    fields: [
+                        {"field": "admin.date_applied", "display": "Date Applied"},
+                        {"field": "last_manual_update", "display": "Last Updated"}
+                    ],
+                    autoLookupRange: true,
+                    category: "facet",
+                    autoLookupFilters : [
+                        es.newRangeFilter({field: "last_manual_update", gte:"2000-01-01T00:00:00Z"})
+                    ],
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet({
+                        open: true
+                    })
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "date_applied_histogram",
+                    category: "facet",
+                    field: "admin.date_applied",
+                    display: "Date Applied Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "date_applied_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "last_updated_histogram",
+                    category: "facet",
+                    field: "last_manual_update",
+                    display: "Last Update Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "last_updated_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+                doaj.components.newReportExporter({
+                    id: "report-exporter",
+                    category: "facet",
+                    model: "application",
+                    facetExports: [
+                        {component_id: "application_type", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "application_status", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "classification", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "language", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "country_publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "subject", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "journal_license", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "date_applied_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
+                    ]
+                }),
 
                 // configure the search controller
                 edges.newFullSearchController({
@@ -51,7 +152,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'}
+                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
@@ -102,6 +204,11 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                    valueFunction: doaj.fieldRender.deadline
+                                }
+                            ],
+                            [
+                                {
                                     "pre": "<strong>Date applied</strong>: ",
                                     valueFunction: doaj.fieldRender.suggestedOn
                                 }
@@ -120,7 +227,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
                                     valueFunction: doaj.fieldRender.issns
                                 }
                             ],
@@ -220,7 +326,11 @@ $.extend(true, doaj, {
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Charges?",
-                        'index.license.exact' : 'License'
+                        'index.license.exact' : 'License',
+                        'index.is_flagged': "Only Flagged Records",
+                        'index.flag_assignees.exact': "Flagged to me",
+                        "admin.date_applied": "Date Applied",
+                        "last_manual_update": "Last Updated"
                     },
                     valueMaps : {
                         "index.application_type.exact" : {
@@ -229,10 +339,18 @@ $.extend(true, doaj, {
                             "new application": "Open"
                         }
                     },
+                    rangeFunctions : {
+                        "admin.date_applied" : doaj.valueMaps.displayYearMonthPeriod,
+                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod
+                    },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         omit : [
                             "bibjson.apc.has_apc",
                             "bibjson.other_charges.has_other_charges"
+                        ],
+                        hideValues: [
+                            'index.is_flagged',
+                            'index.flag_assignees.exact'
                         ]
                     })
                 })

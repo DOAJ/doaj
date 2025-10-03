@@ -23,7 +23,8 @@ class TestKeepersRegistry(DoajTestCase):
         Resource.fetch = ResourceBundleResourceMockFactory.no_contact_resource_fetch(archive_components={
             "CLOCKSS": True,
             "LOCKSS": True,
-            "Internet Archive": False
+            "Internet Archive": False,
+            "ZBW": "broken"
         })
 
         kr = KeepersRegistry()
@@ -31,7 +32,8 @@ class TestKeepersRegistry(DoajTestCase):
         form = {
             "pissn": "1234-5678",
             "eissn": "9876-5432",
-            "preservation_service": ["LOCKSS", "Internet Archive", "PKP PN"]
+            "preservation_service": ["LOCKSS", "Internet Archive", "PKP PN", "PMC", "national_library"],
+            "preservation_service_library": "BL"
         }
 
         source = ApplicationFixtureFactory.make_application_source()
@@ -42,20 +44,54 @@ class TestKeepersRegistry(DoajTestCase):
 
         kr.check(form, app, autochecks, resources, logger=lambda x: x)
 
-        assert len(autochecks.checks) == 3
+        assert len(autochecks.checks) == 5
 
-        checks = [False, False, False]
+        checks = [False, False, False, False, False]
         for check in autochecks.checks:
+            if check["context"]["service"] == "CLOCKSS":
+                assert check["advice"] == kr.SHOULD_SELECT
+                checks[0] = True
+
             if check["context"]["service"] == "LOCKSS":
                 assert check["advice"] == kr.PRESENT
-                checks[0] = True
+                checks[1] = True
 
             if check["context"]["service"] == "Internet Archive":
                 assert check["advice"] == kr.OUTDATED
-                checks[1] = True
+                checks[2] = True
 
             if check["context"]["service"] == "PKP PN":
                 assert check["advice"] == kr.MISSING
-                checks[2] = True
+                checks[3] = True
+
+            if check["context"]["service"] == "PMC":
+                assert check["advice"] == kr.NOT_RECORDED
+                checks[4] = True
 
         assert all(checks)
+
+    def test_02_none(self):
+        Resource.fetch = ResourceBundleResourceMockFactory.no_contact_resource_fetch(archive_components={
+            "CLOCKSS": True,
+            "LOCKSS": True,
+            "Internet Archive": False
+        })
+
+        kr = KeepersRegistry()
+
+        form = {
+            "pissn": "1234-5678",
+            "eissn": "9876-5432",
+            "preservation_service": ["none"]
+        }
+
+        source = ApplicationFixtureFactory.make_application_source()
+        app = models.Application(**source)
+
+        autochecks = models.Autocheck()
+        resources = ResourceBundle()
+
+        kr.check(form, app, autochecks, resources, logger=lambda x: x)
+
+        # should just get the CLOCKSS and LOCKSS results
+        assert len(autochecks.checks) == 2

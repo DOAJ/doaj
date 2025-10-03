@@ -44,8 +44,10 @@ entries:
         route: doaj.team              # ~~->Team:WebRoute~~
       - label: Ambassadors
         route: doaj.ambassadors       # ~~->Ambassadors:WebRoute~~
-      - label: Advisory Board & Council
+      - label: Foundation and Advisory Boards
         route: doaj.abc               # ~~->AdvisoryBoardCouncil:WebRoute~~
+      - label: Editorial Policy Advisory Group
+        route: doaj.epag              # ~~->EditorialPolicyAdvisoryGroup:WebRoute~~
       - label: Volunteers
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: News
@@ -64,6 +66,8 @@ entries:
         route: doaj.publisher_supporters      # ~~->PublisherSupporters:WebRoute~~
       - label: Institutional and library supporters
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
+      - label: Funders
+        route: doaj.funders           # ~~->Funders:WebRoute~~
   - id: apply
     label: Apply
     footer: true
@@ -75,8 +79,6 @@ entries:
         route: apply.public_application   # ~~->Apply:WebRoute~~
       - label: Guide to applying
         route: doaj.guide             # ~~->ApplicationGuide:WebRoute~~
-      - label: The DOAJ Seal
-        route: doaj.seal              # ~~->Seal:WebRoute~~
       - label: Transparency & best practice
         route: doaj.transparency      # ~~->Transparency:WebRoute~~
       - label: Publisher information
@@ -87,24 +89,27 @@ entries:
     label: Stay up to date
     footer: true
     entries:
-      - label: Twitter
-        feather: twitter
-        url: https://twitter.com/DOAJplus   # ~~->Twitter:ExternalService~~
+      - label: Bluesky
+        url: https://bsky.app/profile/doaj.bsky.social   # ~~->Bluesky:ExternalService~~
       - label: Facebook
         feather: facebook
         url: https://www.facebook.com/DirectoryofOpenAccessJournals/  # ~~->Facebook:ExternalService~~
       - label: Github
         feather: github
         url: https://github.com/DOAJ    # ~~->GitHub:ExternalService~~
+      - label: Instagram
+        url: https://www.instagram.com/doajplus/   # ~~->Instagram:ExternalService~~
       - label: Linkedin
         feather: linkedin
         url: https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/  # ~~->LinkedIn:ExternalService~~
+      - label: Mastodon
+        url: https://masto.ai/@DOAJ  # ~~->Mastodon:ExternalService~~ 
       - label: WeChat
         include: "includes/svg/wechat.svg"
         url: '#'
         modal:
           id: wechat
-          include: "includes/_wechat_modal.html"
+          include: "public/includes/_wechat_modal.html"
       - label: Atom feed
         feather: rss
         route: atom.feed  # ~~->Atom:WebRoute~~
@@ -118,8 +123,10 @@ entries:
         route: doaj.contact         # ~~->Contact:WebRoute~~
       - label: T&Cs
         route: doaj.terms           # ~~->Terms:WebRoute~~
+      - label: Code of Conduct
+        route: doaj.conduct         # ~~->Conduct:WebRoute~~
       - label: Media
-        route: doaj.media           # ~~-> Media:WebRoute~~
+        route: doaj.media           # ~~->Media:WebRoute~~
   - id: companies
     entries:
       - label: IS4OA

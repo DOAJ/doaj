@@ -53,7 +53,6 @@ $.extend(true, doaj, {
                 doaj.facets.subject(),
                 doaj.facets.publisher(),
                 doaj.facets.journalLicence(),
-
                 // configure the search controller
                 edges.newFullSearchController({
                     id: "search-controller",
@@ -61,7 +60,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'}
+                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
@@ -113,6 +113,11 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                    valueFunction: doaj.fieldRender.deadline
+                                }
+                            ],
+                            [
+                                {
                                     "pre": "<strong>Date applied</strong>: ",
                                     valueFunction: doaj.fieldRender.suggestedOn
                                 }
@@ -131,7 +136,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
                                     valueFunction: doaj.fieldRender.issns
                                 }
                             ],
@@ -221,7 +225,9 @@ $.extend(true, doaj, {
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Charges?",
-                        'index.license.exact' : 'License'
+                        'index.license.exact' : 'License',
+                        'index.is_flagged': "Only Flagged Records",
+                        'index.flag_assignees.exact': "Flagged to me"
                     },
                     valueMaps : {
                         "index.application_type.exact" : {
@@ -229,7 +235,13 @@ $.extend(true, doaj, {
                             "update request": "Open",
                             "new application": "Open"
                         }
-                    }
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({
+                        hideValues: [
+                            'index.is_flagged',
+                            'index.flag_assignees.exact'
+                        ]
+                    })
                 })
             ];
 

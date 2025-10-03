@@ -1,9 +1,10 @@
 ---
 layout: no-sidenav
-include: /data/advisory-board-council.html
-title: Advisory Board & Council
+include: /public/includes/_advisory-board-council.html
+title: Foundation Board & Advisory Board
 section: About
 toc: true
 featuremap: ~~AdvisoryBoardCouncil:Fragment->AdvisoryBoardCouncilData:Template~~
+data: true
 
 ---

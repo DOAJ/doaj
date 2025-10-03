@@ -1,6 +1,6 @@
 $.extend(true, doaj, {
-    filters : {
-        noCharges : function() {
+    filters: {
+        noCharges: function () {
             return {
                 id: "no_charges",
                 display: "Without fees",
@@ -15,28 +15,55 @@ $.extend(true, doaj, {
                     })
                 ]
             }
+        },
+        isFlagged : function() {
+            return {
+                id: "is_flagged",
+                display: "Only flagged records",
+                includes: "flagged_to_me",
+                must: [
+                    es.newTermFilter({
+                        field: "index.is_flagged",
+                        value: true
+                    })
+                ]
+            }
+        },
+        flaggedToMe : function() {
+            return {
+                id: "flagged_to_me",
+                display: "Flagged to me",
+                includedIn: "is_flagged",
+                must: [
+                    es.newTermFilter({
+                        field: "index.flag_assignees.exact",
+                        value: doaj.session.currentUserId
+                    })
+                ]
+            }
         }
+
     },
-    facets : {
-        inDOAJ : function() {
+    facets: {
+        inDOAJ: function () {
             return edges.newRefiningANDTermSelector({
                 id: "in_doaj",
                 category: "facet",
                 field: "admin.in_doaj",
                 display: "In DOAJ?",
                 deactivateThreshold: 1,
-                valueMap : {
-                    1 : "Yes",
-                    0 : "No",
+                valueMap: {
+                    1: "Yes",
+                    0: "No",
                     true: "Yes",
                     false: "No"
                 },
-                parseSelectedValueString: function(val) {
+                parseSelectedValueString: function (val) {
                     // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
                     // we convert the string value of the aggregation back to a boolean
                     return val === "1"
                 },
-                filterToAggValue : function(val) {
+                filterToAggValue: function (val) {
                     return val === true ? 1 : 0;
                 },
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -49,15 +76,15 @@ $.extend(true, doaj, {
             })
         },
 
-        openOrClosed: function() {
+        openOrClosed: function () {
             return edges.newRefiningANDTermSelector({
                 id: "application_type",
                 category: "facet",
                 field: "index.application_type.exact",
                 display: "Open or closed?",
-                deactivateThreshold : 1,
+                deactivateThreshold: 1,
                 orderDir: "asc",
-                valueMap : {
+                valueMap: {
                     "finished application/update": "Closed",
                     "update request": "Open",
                     "new application": "Open"
@@ -72,7 +99,7 @@ $.extend(true, doaj, {
             })
         },
 
-        applicationStatus : function() {
+        applicationStatus: function () {
             return edges.newRefiningANDTermSelector({
                 id: "application_status",
                 category: "facet",
@@ -89,13 +116,13 @@ $.extend(true, doaj, {
                 })
             })
         },
-        hasEditorGroup : function() {
+        hasEditorGroup: function () {
             return edges.newRefiningANDTermSelector({
                 id: "has_editor_group",
                 category: "facet",
                 field: "index.has_editor_group.exact",
                 display: "Has editor group?",
-                deactivateThreshold : 1,
+                deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: false,
@@ -105,7 +132,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        hasEditor : function() {
+        hasEditor: function () {
             return edges.newRefiningANDTermSelector({
                 id: "has_editor",
                 category: "facet",
@@ -121,7 +148,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        editorGroup : function() {
+        editorGroup: function () {
             return edges.newRefiningANDTermSelector({
                 id: "editor_group",
                 category: "facet",
@@ -137,7 +164,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        editor : function() {
+        editor: function () {
             return edges.newRefiningANDTermSelector({
                 id: "editor",
                 category: "facet",
@@ -153,12 +180,12 @@ $.extend(true, doaj, {
                 })
             })
         },
-        hasAPC : function() {
+        hasAPC: function () {
             return edges.newRefiningANDTermSelector({
                 id: "author_pays",
                 category: "facet",
                 field: "index.has_apc.exact",
-                display: "Publication charges?",
+                display: "Has APC?",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -169,7 +196,51 @@ $.extend(true, doaj, {
                 })
             })
         },
-        classification : function() {
+        adminHasAPC: function() {
+            return doaj.facets.booleanFacet({
+                id: "admin_has_apc",
+                field: "bibjson.apc.has_apc",
+                display: "Has APC?",
+            })
+        },
+        adminHasOtherCharges: function() {
+            return doaj.facets.booleanFacet({
+                id: "admin_has_other_charges",
+                field: "bibjson.other_charges.has_other_charges",
+                display: "Has Other Charges?",
+            })
+        },
+        booleanFacet : function(params) {
+            return edges.newRefiningANDTermSelector({
+                id: params.id,
+                category: "facet",
+                field: params.field,
+                display: params.display,
+                deactivateThreshold: 1,
+                valueMap: {
+                    0: "No",
+                    1: "Yes"
+                },
+                parseSelectedValueString: function(value) {
+                    return value === "1"
+                },
+                filterToAggValue: function(value) {
+                    if (value) {
+                        return 1
+                    } else {
+                        return 0
+                    }
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        classification: function () {
             return edges.newRefiningANDTermSelector({
                 id: "classification",
                 category: "facet",
@@ -185,7 +256,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        language : function() {
+        language: function () {
             return edges.newRefiningANDTermSelector({
                 id: "language",
                 category: "facet",
@@ -201,7 +272,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        countryPublisher : function() {
+        countryPublisher: function () {
             return edges.newRefiningANDTermSelector({
                 id: "country_publisher",
                 category: "facet",
@@ -217,7 +288,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        subject : function() {
+        subject: function () {
             return edges.newRefiningANDTermSelector({
                 id: "subject",
                 category: "facet",
@@ -233,7 +304,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        publisher : function() {
+        publisher: function () {
             return edges.newRefiningANDTermSelector({
                 id: "publisher",
                 category: "facet",
@@ -249,7 +320,7 @@ $.extend(true, doaj, {
                 })
             })
         },
-        journalLicence : function() {
+        journalLicence: function () {
             return edges.newRefiningANDTermSelector({
                 id: "journal_license",
                 category: "facet",
@@ -267,48 +338,71 @@ $.extend(true, doaj, {
         }
     },
 
-    valueMaps : {
+    valueMaps: {
         // This must be updated in line with the list in formcontext/choices.py
-        applicationStatus : {
-            'update_request' : 'Update Request',
-            'revisions_required' : 'Revisions Required',
-            'pending' : 'Pending',
-            'in progress' : 'In Progress',
-            'completed' : 'Completed',
-            'on hold' : 'On Hold',
-            'ready' : 'Ready',
-            'rejected' : 'Rejected',
-            'accepted' : 'Accepted',
+        applicationStatus: {
+            'update_request': 'Update Request',
+            'revisions_required': 'Revisions Required',
+            'pending': 'Pending',
+            'in progress': 'In Progress',
+            'completed': 'Completed',
+            'on hold': 'On Hold',
+            'ready': 'Ready',
+            'rejected': 'Rejected',
+            'accepted': 'Accepted',
             'post_submission_review': "Autochecking",
         },
 
-        adminStatusMap: function(value) {
+        adminStatusMap: function (value) {
             if (doaj.valueMaps.applicationStatus.hasOwnProperty(value)) {
                 return doaj.valueMaps.applicationStatus[value];
             }
             return value;
         },
 
-        displayYearPeriod : function(params) {
+        displayYearPeriod: function (params) {
             var from = params.from;
             var to = params.to;
             var field = params.field;
-            var display = (new Date(parseInt(from))).getUTCFullYear();
+            var frdisplay = (new Date(parseInt(from))).getUTCFullYear();
+            let todisplay = (new Date(parseInt(to - 1))).getUTCFullYear();
+
+            let display = frdisplay;
+            if (frdisplay !== todisplay) {
+                display = frdisplay + " to " + todisplay;
+            }
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
-        displayYearMonthPeriod : function(params) {
+        displayYearMonthPeriod: function (params) {
             var from = params.from;
             var to = params.to;
-            var field = params.field;
 
-            let d = new Date(parseInt(from))
-            let display = d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
-            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+            let frdisplay = false;
+            if (from) {
+                frdisplay = new Date(parseInt(from)).toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+            }
+
+            let todisplay = false;
+            if (to) {
+                todisplay = new Date(parseInt(to - 1)).toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+            }
+
+            let range = frdisplay;
+            if (to) {
+                if (todisplay !== frdisplay) {
+                    range += ` to ${todisplay}`;
+                }
+            } else {
+                range += "+";
+            }
+
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: range}
         },
 
-        schemaCodeToNameClosure : function(tree) {
+        schemaCodeToNameClosure: function (tree) {
             var nameMap = {};
+
             function recurse(ctx) {
                 for (var i = 0; i < ctx.length; i++) {
                     var child = ctx[i];
@@ -319,9 +413,10 @@ $.extend(true, doaj, {
                     }
                 }
             }
+
             recurse(tree);
 
-            return function(code) {
+            return function (code) {
                 var name = nameMap[code];
                 if (name) {
                     return name;
@@ -330,16 +425,24 @@ $.extend(true, doaj, {
             }
         },
 
-        countFormat : edges.numFormat({
+        countFormat: edges.numFormat({
             thousandsSeparator: ","
         }),
 
         monthPadding: edges.numFormat({
             zeroPadding: 2
-        })
+        }),
+
+        refiningANDTermSelectorExporter: function(component) {
+            return component.values;
+        },
+
+        dateHistogramSelectorExporter: function(component) {
+            return component.values;
+        }
     },
-    components : {
-        pager : function(id, category) {
+    components: {
+        pager: function (id, category) {
             return edges.newPager({
                 id: id,
                 category: category,
@@ -351,26 +454,28 @@ $.extend(true, doaj, {
             })
         },
 
-        searchingNotification : function() {
+        searchingNotification: function () {
             return edges.newSearchingNotification({
                 id: "searching-notification",
                 category: "searching-notification",
                 finishedEvent: "edges:post-render",
-                renderer : doaj.renderers.newSearchingNotificationRenderer({
+                renderer: doaj.renderers.newSearchingNotificationRenderer({
                     scrollOnSearch: true
                 })
             })
         },
 
-        subjectBrowser : function(params) {
+        subjectBrowser: function (params) {
             var tree = params.tree;
             var hideEmpty = edges.getParam(params.hideEmpty, false);
+            var id = edges.getParam(params.id, "subject");
+            var category = edges.getParam(params.category, "facet");
 
             return edges.newTreeBrowser({
-                id: "subject",
-                category: "facet",
+                id: id,
+                category: category,
                 field: "index.schema_codes_tree.exact",
-                tree: function(tree) {
+                tree: function (tree) {
                     function recurse(ctx) {
                         var displayTree = [];
                         for (var i = 0; i < ctx.length; i++) {
@@ -386,11 +491,12 @@ $.extend(true, doaj, {
                         displayTree.sort((a, b) => a.display > b.display ? 1 : -1);
                         return displayTree;
                     }
+
                     return recurse(tree);
                 }(tree),
                 pruneTree: true,
                 size: 9999,
-                nodeMatch: function(node, match_list) {
+                nodeMatch: function (node, match_list) {
                     for (var i = 0; i < match_list.length; i++) {
                         var m = match_list[i];
                         if (node.value === m.key) {
@@ -399,23 +505,698 @@ $.extend(true, doaj, {
                     }
                     return -1;
                 },
-                filterMatch: function(node, selected) {
+                filterMatch: function (node, selected) {
                     return $.inArray(node.value, selected) > -1;
                 },
-                nodeIndex : function(node) {
+                nodeIndex: function (node) {
                     return node.display.toLowerCase();
                 },
-                renderer: doaj.renderers.newSubjectBrowser({
+                renderer: doaj.renderers.newSubjectBrowserRenderer({
                     title: "Subjects",
                     open: true,
                     hideEmpty: hideEmpty,
                     showCounts: false
                 })
             })
+        },
+
+        newDateHistogramSelector : function(params) {
+            if (!params) { params = {} }
+            doaj.components.DateHistogramSelector.prototype = edges.newSelector(params);
+            return new doaj.components.DateHistogramSelector(params);
+        },
+        DateHistogramSelector : function(params) {
+            // "year, quarter, month, week, day, hour, minute ,second"
+            // period to use for date histogram
+            this.interval = params.interval || "year";
+
+            this.sortFunction = edges.getParam(params.sortFunction, false);
+
+            this.displayFormatter = edges.getParam(params.displayFormatter, false);
+
+            this.active = edges.getParam(params.active, true);
+
+            //////////////////////////////////////////////
+            // values to be rendered
+
+            this.values = [];
+            this.filters = [];
+
+            this.contrib = function(query) {
+                query.addAggregation(
+                    es.newDateHistogramAggregation({
+                        name: this.id,
+                        field: this.field,
+                        interval: this.interval
+                    })
+                );
+            };
+
+            this.synchronise = function() {
+                // reset the state of the internal variables
+                this.values = [];
+                this.filters = [];
+
+                if (this.edge.result) {
+                    var buckets = this.edge.result.buckets(this.id);
+                    for (var i = 0; i < buckets.length; i++) {
+                        var bucket = buckets[i];
+                        var key = bucket.key;
+                        if (this.displayFormatter) {
+                            key = this.displayFormatter(key);
+                        }
+                        var obj = {"display" : key, "gte": bucket.key, "count" : bucket.doc_count};
+                        if (i < buckets.length - 1) {
+                            obj["lt"] = buckets[i+1].key;
+                        }
+                        this.values.push(obj);
+                    }
+                }
+
+                if (this.sortFunction) {
+                    this.values = this.sortFunction(this.values);
+                }
+
+                // now check to see if there are any range filters set on this field
+                // this works in a very specific way: if there is a filter on this field, and it
+                // starts from the date of a filter in the result list, then we make they assumption
+                // that they are a match.  This is because a date histogram either has all the results
+                // or only one date bin, if that date range has been selected.  And once a range is selected
+                // there will be no "lt" date field to compare the top of the range to.  So, this is the best
+                // we can do, and it means that if you have both a date histogram and another range selector
+                // for the same field, they may confuse eachother.
+                if (this.edge.currentQuery) {
+                    var filters = this.edge.currentQuery.listMust(es.newRangeFilter({field: this.field}));
+                    for (var i = 0; i < filters.length; i++) {
+                        var from = filters[i].gte;
+                        for (var j = 0; j < this.values.length; j++) {
+                            var val = this.values[j];
+                            if (val.gte.toString() === from) {
+                                this.filters.push(val);
+                            }
+                        }
+                    }
+                }
+            };
+
+            this.selectRange = function(params) {
+                var from = params.gte;
+                var to = params.lt;
+
+                var nq = this.edge.cloneQuery();
+
+
+                var params = {field: this.field};
+
+                // remove any existing range filters on this field
+                nq.removeMust(es.newRangeFilter(params));
+
+                // create the new range query
+                if (from) {
+                    params["gte"] = from;
+                }
+                if (to) {
+                    params["lt"] = to;
+                }
+                params["format"] = "epoch_millis"   // Required for ES7.x date ranges against dateOptionalTime formats
+                nq.addMust(es.newRangeFilter(params));
+
+                // reset the search page to the start and then trigger the next query
+                nq.from = 0;
+                this.edge.pushQuery(nq);
+                this.edge.doQuery();
+            };
+
+            this.removeFilter = function(params) {
+                var from = params.gte;
+                var to = params.lt;
+
+                var nq = this.edge.cloneQuery();
+
+                // just add a new range filter (the query builder will ensure there are no duplicates)
+                var params = {field: this.field};
+                if (from) {
+                    params["gte"] = from;
+                }
+                if (to) {
+                    params["lt"] = to;
+                }
+                nq.removeMust(es.newRangeFilter(params));
+
+                // reset the search page to the start and then trigger the next query
+                nq.from = 0;
+                this.edge.pushQuery(nq);
+                this.edge.doQuery();
+            };
+
+            this.clearFilters = function(params) {
+                var triggerQuery = edges.getParam(params.triggerQuery, true);
+
+                var nq = this.edge.cloneQuery();
+                var qargs = {field: this.field};
+                nq.removeMust(es.newRangeFilter(qargs));
+                this.edge.pushQuery(nq);
+
+                if (triggerQuery) {
+                    this.edge.doQuery();
+                }
+            };
+
+            this.setInterval = function(params) {
+                let interval = edges.getParam(params.interval, "year");
+                this.interval = interval;
+                let q = this.edge.cloneQuery();
+                q.removeAggregation(this.id);
+                this.contrib(q);
+                this.edge.pushQuery(q);
+                this.edge.cycle();
+            }
+        },
+
+        newReportExporter: function (params) {
+            return edges.instantiate(doaj.components.ReportExporter, params, edges.newComponent);
+        },
+        ReportExporter: function(params) {
+
+            this.model = edges.getParam(params.model, "journal");
+
+            this.reportUrl = edges.getParam(params.reportUrl, "/admin/report");
+
+            // list of dictionaries of the form
+            // [{component_id: "component_id", display: "display name", exporter: function(component)}]
+            // display is optional, if not provided, will attempt to use component.display
+            this.facetExports = edges.getParam(params.facetExports, []);
+
+            this.namespace = "doajreportexporter";
+            this.component = this;
+
+            this.draw = function(edge) {
+                this.edge = edge;
+
+                let toggleClass = edges.css_classes(this.namespace, "toggle", this);
+                let controlsClass = edges.css_classes(this.namespace, "controls", this);
+                let nameClass = edges.css_classes(this.namespace, "name", this);
+                let notesClass = edges.css_classes(this.namespace, "notes", this);
+                let exportClass = edges.css_classes(this.namespace, "export", this);
+                let downloadClass = edges.css_classes(this.namespace, "download", this);
+                let facetId = edges.css_id(this.namespace, "facet", this);
+
+                let facetOptions = ``;
+                for (let facetExport of this.facetExports) {
+                    let display = this._exportDisplayName(facetExport);
+                    facetOptions += `<option value="${facetExport.component_id}">${display}</option>`;
+                }
+
+                let exportNotes = current_user && current_user.role.includes("ultra_admin_reports_with_notes")
+                let notesFrag = "";
+                if (exportNotes) {
+                    notesFrag = `<div class="checkbox">
+                              <input type="checkbox" id="include_notes" class="${notesClass}">
+                              <label for="include_notes">Include notes</label>
+                            </div>
+                            <br>`;
+                }
+                let frag = `<div class="row">
+                    <div class="col-md-12">
+                        <a href="#" class="${toggleClass}">Export Data as CSV</a>
+                        <div class="${controlsClass}" style="display:none">
+                            Search result exports will be generated in the background and you will be notified when they are ready to download.<br>
+                            <input type="text" name="name" class="${nameClass}" placeholder="Enter a name for the export"><br>
+                            ${notesFrag}
+                            <button type="button" class="btn btn-primary ${exportClass}">Generate</button><br>
+                            Or download the current facets<br>
+                            <select name="${facetId}" id="${facetId}">
+                                <option value="all">All</option>
+                                ${facetOptions}
+                            </select><br>
+                            <button type="button" class="btn btn-primary ${downloadClass}">Download</button>
+                        </div>
+                    </div>
+                </div>`;
+                this.context.html(frag);
+
+                let toggleSelector = edges.css_class_selector(this.namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleControls");
+
+                let exportSelector = edges.css_class_selector(this.namespace, "export", this);
+                edges.on(exportSelector, "click", this, "export");
+
+                let downloadSelector = edges.css_class_selector(this.namespace, "download", this);
+                edges.on(downloadSelector, "click", this, "download");
+            };
+
+            this.toggleControls = function(element) {
+                let controlsSelector = edges.css_class_selector(this.namespace, "controls", this);
+                let controls = this.jq(controlsSelector);
+                controls.toggle();
+            }
+
+            this.export = function(element) {
+                let cq = this.edge.currentQuery;
+                let query = cq.objectify({
+                    include_paging: false,
+                    include_fields: false,
+                    include_aggregations: false,
+                    include_source_filters: false
+                });
+                let qa = JSON.stringify(query);
+
+                let nameSelector = edges.css_class_selector(this.namespace, "name", this);
+                let name = this.context.find(nameSelector).val();
+
+                let notes = false;
+                let exportNotes = current_user && current_user.role.includes("ultra_admin_reports_with_notes")
+                if (exportNotes) {
+                    let includeNotesSelector = edges.css_class_selector(this.namespace, "notes", this);
+                    notes = this.context.find(includeNotesSelector).is(":checked");
+                }
+
+                $.post({
+                    url: this.reportUrl,
+                    data: {
+                        query: qa,
+                        name: name,
+                        model: this.model,
+                        notes: notes
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        alert(`Your export "${name}" is being generated! You will be notified when it is ready to download.`);
+                    }
+                });
+            }
+
+            this.download = function(element) {
+                let facetSelector = edges.css_id_selector(this.namespace, "facet", this);
+                let selection = this.context.find(facetSelector).val();
+                let selectedExports = [];
+                let filename = this.model + "_facets_" + selection + ".csv";
+
+                if (selection === "all") {
+                    selectedExports = this.facetExports;
+                } else {
+                    selectedExports = this.facetExports.filter(f => f.component_id === selection);
+                }
+
+                let data = [];
+                let columns = [];
+                for (let selectedExport of selectedExports) {
+                    let component = this.edge.getComponent({id: selectedExport.component_id});
+                    let exporter = selectedExport.exporter;
+                    let componentData = exporter(component);
+
+                    let prefix = this._exportDisplayName(selectedExport);
+                    let termKey = prefix + " Term";
+                    let countKey = prefix + " Count";
+                    for (let entry of componentData) {
+                        let obj = {}
+                        obj[termKey] = entry.display;
+                        obj[countKey] = entry.count;
+                        data.push(obj);
+                    }
+                    columns.push(termKey);
+                    columns.push(countKey);
+                }
+
+                let collapsedData = []
+                while(data.length > 0) {
+                    let rowAssembly = {}
+                    let removals = [];
+                    for (let i = 0; i < data.length; i++) {
+                        let entry = data[i];
+                        if (!(Object.keys(entry)[0] in rowAssembly)) {
+                            rowAssembly = {...rowAssembly, ...entry}
+                            removals.push(i);
+                        }
+                    }
+                    collapsedData.push(rowAssembly);
+                    data = data.filter((_, i) => !removals.includes(i));
+                }
+
+                this._deliverCSV(collapsedData, columns, filename);
+            }
+
+            this._exportDisplayName = function(facetExport) {
+                let display = facetExport.display;
+                if (!display) {
+                    let component = this.edge.getComponent({id: facetExport.component_id});
+                    display = component.display;
+                }
+                if (!display) {
+                    display = facetExport.component_id;
+                }
+                return display;
+            }
+
+            this._convertToCSV = function(data, columns) {
+                // Use the columns array as the header row
+                const array = [columns].concat(data);
+
+                return array.map((row, index) => {
+                    // If it's the header row, return it as is
+                    if (index === 0) {
+                        return row.join(',');
+                    }
+                    // Otherwise, map the row values according to the columns
+                    return columns.map(col => {
+                        const value = row[col] !== undefined ? row[col] : '';
+                        return typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value;
+                    }).join(',');
+                }).join('\n');
+            }
+
+            // Function to trigger CSV download
+            this._deliverCSV = function(data, columns, filename = 'facets.csv') {
+                let csv = this._convertToCSV(data, columns);
+
+                let dateGenerated = new Date();
+                let header = `"Date generated","${dateGenerated.toISOString()}"\n`;
+
+                let searchURL = this.component.edge.fullUrl();
+                header += `"Search URL","${searchURL}"\n"",""\n`;
+
+                csv = header + csv;
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                // document.body.removeChild(link);
+            }
+        },
+
+        newSimultaneousDateRangeEntry: function (params) {
+            if (!params) { params = {}}
+            doaj.components.SimultaneousDateRangeEntry.prototype = edges.newComponent(params);
+            return new doaj.components.SimultaneousDateRangeEntry(params);
+        },
+        SimultaneousDateRangeEntry: function (params) {
+            ///////////////////////////////////////////////
+            // fields that can be passed in, and their defaults
+
+            // free text to prefix entry boxes with
+            this.display = edges.getParam(params.display, false);
+
+            // list of field objects, which provide the field itself, and the display name.  e.g.
+            // [{field : "monitor.rioxxterms:publication_date", display: "Publication Date"}]
+            this.fields = edges.getParam(params.fields, []);
+
+            // map from field name (as in this.field[n].field) to a function which will provide
+            // the earliest allowed date for that field.  e.g.
+            // {"monitor.rioxxterms:publication_date" : earliestDate}
+            this.earliest = edges.getParam(params.earliest, {});
+
+            // map from field name (as in this.field[n].field) to a function which will provide
+            // the latest allowed date for that field.  e.g.
+            // {"monitor.rioxxterms:publication_date" : latestDate}
+            this.latest = edges.getParam(params.latest, {});
+
+            this.autoLookupRange = edges.getParam(params.autoLookupRange, false);
+
+            // category for this component, defaults to "selector"
+            this.category = edges.getParam(params.category, "selector");
+
+            // default earliest date to use in all cases (defaults to start of the unix epoch)
+            this.defaultEarliest = edges.getParam(params.defaultEarliest, new Date(0));
+
+            // default latest date to use in all cases (defaults to now)
+            this.defaultLatest = edges.getParam(params.defaultLatest, new Date());
+
+            // list of filters to apply to the autolookup secondary query
+            this.autoLookupFilters = edges.getParam(params.autoLookupFilters, false);
+
+            // default renderer from render pack to use
+            this.defaultRenderer = edges.getParam(params.defaultRenderer, "newMultiDateRangeRenderer");
+
+            ///////////////////////////////////////////////
+            // fields used to track internal state
+
+            this.lastField = false;
+            this.currentField = false;
+            this.fromDate = false;
+            this.toDate = false;
+
+            this.touched = false;
+            this.dateOptions = {};
+            this.existingFilters = {};
+
+            this.init = function(edge) {
+                Object.getPrototypeOf(this).init.call(this, edge);
+
+                // set the initial field
+                this.currentField = this.fields[0].field;
+
+                // if required, load the dates once at init
+                if (!this.autoLookupRange) {
+                    this.loadDates();
+                } else {
+                    if (edge.secondaryQueries === false) {
+                        edge.secondaryQueries = {};
+                    }
+                    edge.secondaryQueries["multidaterange_" + this.id] = this.getSecondaryQueryFunction();
+                }
+            };
+
+            this.synchronise = function() {
+                this.currentField = false;
+                this.fromDate = false;
+                this.toDate = false;
+                this.existingFilters = {};
+
+                if (this.autoLookupRange) {
+                    for (var i = 0; i < this.fields.length; i++) {
+                        var field = this.fields[i].field;
+                        var agg = this.edge.secondaryResults["multidaterange_" + this.id].aggregation(field);
+
+                        var min = this.defaultEarliest;
+                        var max = this.defaultLatest;
+                        if (agg.min !== null) {
+                            min = new Date(agg.min);
+                        }
+                        if (agg.max !== null) {
+                            max = new Date(agg.max);
+                        }
+
+                        this.dateOptions[field] = {
+                            earliest: min,
+                            latest: max
+                        }
+                    }
+                }
+
+                for (var i = 0; i < this.fields.length; i++) {
+                    var field = this.fields[i].field;
+                    var filters = this.edge.currentQuery.listMust(es.newRangeFilter({field: field}));
+                    if (filters.length > 0) {
+                        for (let filter of filters) {
+                            if (!this.currentField || (this.lastField && this.lastField === field)) {
+                                this.currentField = field;
+                                this.fromDate = parseInt(filter.gte);
+                                this.toDate = parseInt(filter.lt);
+                            }
+                            this.existingFilters[field] = {
+                                fromDate: filter.gte,
+                                toDate: filter.lt
+                            }
+                        }
+                    }
+                }
+
+                if (!this.currentField && this.lastField) {
+                    this.currentField = this.lastField;
+                }
+
+                if (!this.currentField && this.fields.length > 0) {
+                    this.currentField = this.fields[0].field;
+                }
+            };
+
+            //////////////////////////////////////////////
+            // functions that can be used to trigger state change
+
+            this.currentEarliest = function () {
+                if (!this.currentField) {
+                    return false;
+                }
+                if (this.dateOptions[this.currentField]) {
+                    return this.dateOptions[this.currentField].earliest;
+                }
+            };
+
+            this.currentLatest = function () {
+                if (!this.currentField) {
+                    return false;
+                }
+                if (this.dateOptions[this.currentField]) {
+                    return this.dateOptions[this.currentField].latest;
+                }
+            };
+
+            this.changeField = function (newField) {
+                this.lastField = this.currentField;
+                if (newField !== this.currentField) {
+                    this.touched = true;
+                    this.currentField = newField;
+                    if (this.currentField in this.existingFilters) {
+                        this.setFrom(this.existingFilters[this.currentField].fromDate);
+                        this.setTo(this.existingFilters[this.currentField].toDate);
+                    } else {
+                        this.setFrom(false);
+                        this.setTo(false);
+                    }
+                }
+            };
+
+            this.setFrom = function (from) {
+                if (from !== this.fromDate) {
+                    this.touched = true;
+                    this.fromDate = from;
+                }
+            };
+
+            this.setTo = function (to) {
+                if (to !== this.toDate) {
+                    this.touched = true;
+                    this.toDate = to;
+                }
+            };
+
+            this.triggerSearch = function () {
+                if (this.touched) {
+                    this.touched = false;
+                    var nq = this.edge.cloneQuery();
+
+                    // remove any old filters for this field
+                    var removeCount = nq.removeMust(es.newRangeFilter({field: this.currentField}));
+
+                    // in order to avoid unnecessary searching, check the state of the data and determine
+                    // if we need to.
+                    // - we need to add a new filter to the query if there is a current field and one/both of from and to dates
+                    // - we need to do a search if we removed filters before, or are about to add one
+                    var addFilter = this.currentField && (this.toDate || this.fromDate);
+                    var doSearch = removeCount > 0 || addFilter;
+
+                    // if we're not going to do a search, return
+                    if (!doSearch) {
+                        return false;
+                    }
+
+                    // if there's a filter to be added, do that here
+                    if (addFilter) {
+                        var range = {field: this.currentField};
+                        if (this.toDate) {
+                            range["lt"] = this.toDate;
+                        }
+                        if (this.fromDate) {
+                            range["gte"] = this.fromDate;
+                        }
+                        range["format"] = "epoch_millis"   // Required for ES7.x date ranges against dateOptionalTime formats
+                        nq.addMust(es.newRangeFilter(range));
+                    }
+
+                    // push the new query and trigger the search
+                    this.edge.pushQuery(nq);
+                    this.edge.doQuery();
+
+                    return true;
+                }
+                return false;
+            };
+
+            this.loadDates = function () {
+                for (var i = 0; i < this.fields.length; i++) {
+                    var field = this.fields[i].field;
+
+                    // start with the default earliest and latest
+                    var early = this.defaultEarliest;
+                    var late = this.defaultLatest;
+
+                    // if specific functions are provided for getting the dates, run them
+                    var earlyFn = this.earliest[field];
+                    var lateFn = this.latest[field];
+                    if (earlyFn) {
+                        early = earlyFn();
+                    }
+                    if (lateFn) {
+                        late = lateFn();
+                    }
+
+                    this.dateOptions[field] = {
+                        earliest: early,
+                        latest: late
+                    }
+                }
+            };
+
+            this.getSecondaryQueryFunction = function() {
+                var that = this;
+                return function(edge) {
+                    // clone the current query, which will be the basis for the averages query
+                    var query = edge.cloneQuery();
+
+                    // remove any range constraints
+                    for (var i = 0; i < that.fields.length; i++) {
+                        var field = that.fields[i];
+                        query.removeMust(es.newRangeFilter({field: field.field}));
+                    }
+
+                    // add the filters that are required for the secondary query
+                    if (that.autoLookupFilters) {
+                        for (let filter of that.autoLookupFilters) {
+                            query.addMust(filter);
+                        }
+                    }
+
+                    // remove any existing aggregations, we don't need them
+                    query.clearAggregations();
+
+                    // add the new aggregation(s) which will actually get the data
+                    for (var i = 0; i < that.fields.length; i++) {
+                        var field = that.fields[i].field;
+                        query.addAggregation(
+                            es.newStatsAggregation({
+                                name: field,
+                                field : field
+                            })
+                        );
+                    }
+
+                    // finally set the size and from parameters
+                    query.size = 0;
+                    query.from = 0;
+
+                    // return the secondary query
+                    return query;
+                }
+            }
+        },
+
+        newFacetDivider: function (params) {
+            return edges.instantiate(doaj.components.FacetDivider, params, edges.newComponent);
+        },
+        FacetDivider: function(params) {
+            this.display = edges.getParam(params.display, "");
+            this.namespace = "doajfacetdivider";
+
+            this.drawn = false;
+
+            this.draw = function() {
+                if (this.drawn) {
+                    return
+                }
+
+                let frag = `<hr><strong>${this.display}</strong><br>`;
+                this.context.html(frag);
+                this.drawn = true;
+            };
         }
     },
 
-    templates : {
+    templates: {
         newPublicSearch: function (params) {
             return edges.instantiate(doaj.templates.PublicSearch, params, edges.newTemplate);
         },
@@ -543,7 +1324,655 @@ $.extend(true, doaj, {
         }
     },
 
-    renderers : {
+    renderers: {
+        newBSMultiDateRangeFacet: function (params) {
+            if (!params) {params = {}}
+            doaj.renderers.BSMultiDateRangeFacet.prototype = edges.newRenderer(params);
+            return new doaj.renderers.BSMultiDateRangeFacet(params);
+        },
+        BSMultiDateRangeFacet: function (params) {
+            ///////////////////////////////////////////////////
+            // parameters that can be passed in
+
+            // whether the facet should be open or closed
+            // can be initialised and is then used to track internal state
+            this.open = edges.getParam(params.open, false);
+
+            this.togglable = edges.getParam(params.togglable, true);
+
+            this.openIcon = edges.getParam(params.openIcon, "glyphicon glyphicon-plus");
+
+            this.closeIcon = edges.getParam(params.closeIcon, "glyphicon glyphicon-minus");
+
+            this.layout = edges.getParam(params.layout, "left");
+
+            this.dateFormat = edges.getParam(params.dateFormat, "MMMM D, YYYY");
+
+            this.ranges = edges.getParam(params.ranges, false);
+
+            this.prefix = edges.getParam(params.prefix, "");
+
+            ///////////////////////////////////////////////////
+            // parameters for tracking internal state
+
+            this.dre = false;
+
+            this.selectId = false;
+            this.fromId = false;
+            this.toId = false;
+
+            this.selectJq = false;
+            this.fromJq = false;
+            this.toJq = false;
+
+            this.drp = false;
+            this.months = doaj.listMonthsInLocale();
+
+            this.namespace = "doaj-multidaterange";
+
+            this.draw = function () {
+                var dre = this.component;
+
+                var selectClass = edges.css_classes(this.namespace, "select", this);
+                var facetClass = edges.css_classes(this.namespace, "facet", this);
+                var headerClass = edges.css_classes(this.namespace, "header", this);
+                var bodyClass = edges.css_classes(this.namespace, "body", this);
+
+                var toggleId = edges.css_id(this.namespace, "toggle", this);
+                var formId = edges.css_id(this.namespace, "form", this);
+
+                this.selectId = edges.css_id(this.namespace, "date-type", this);
+                let fromMonthId = edges.css_id(this.namespace, "from-month", this);
+                let fromYearId = edges.css_id(this.namespace, "from-year", this);
+                let toMonthId = edges.css_id(this.namespace, "to-month", this);
+                let toYearId = edges.css_id(this.namespace, "to-year", this);
+                let applyClass = edges.css_classes(this.namespace, "apply", this);
+
+                let header = this.headerLayout({toggleId: toggleId});
+
+                var options = "";
+                for (var i = 0; i < dre.fields.length; i++) {
+                    var field = dre.fields[i];
+                    var selected = dre.currentField === field.field ? ' selected="selected" ' : "";
+                    options += '<option value="' + field.field + '"' + selected + '>' + field.display + '</option>';
+                }
+
+                // create the controls
+                let toFromFrags = this.dateOptionsFrags();
+
+                let frag = `<div class="form-inline">
+                                        <div class="form-group">
+                                            Type: <select class="${selectClass} form-control input-sm" name="${this.selectId}" id="${this.selectId}">
+                                                ${options}
+                                            </select><br>
+                                            From:
+                                            <select class="form-control input-sm" id="${fromMonthId}">
+                                                ${toFromFrags.fromMonths}
+                                            </select>
+                                            <select class="form-control input-sm" id="${fromYearId}">
+                                                ${toFromFrags.fromYears}
+                                            </select><br>
+                                            To: 
+                                            <select class="form-control input-sm" id="${toMonthId}">
+                                                ${toFromFrags.toMonths}
+                                            </select>
+                                            <select class="form-control input-sm" id="${toYearId}">
+                                                ${toFromFrags.toYears}
+                                            </select><br>
+                                            <button type="button" class="btn btn-primary ${applyClass}" id="">Apply</button>
+                                        </div>
+                                    </div>`;
+
+                let filterRemoveClass = edges.css_classes(this.namespace, "filter-remove", this);
+                let existing = ``;
+                for (let field in dre.existingFilters) {
+                    for (let fd of dre.fields) {
+                        if (fd.field === field) {
+                            let map = doaj.valueMaps.displayYearMonthPeriod({
+                                from: dre.existingFilters[field].fromDate,
+                                to: dre.existingFilters[field].toDate
+                            });
+                            let range = map.display;
+
+                            existing += `<strong>${fd.display}</strong>: 
+                                            ${range}<a href="#" class="${filterRemoveClass}" data-field="${field}"><i class="glyphicon glyphicon-black glyphicon-remove"></i></a><br>`;
+                        }
+                    }
+                }
+
+                let facet = `<div class="${facetClass}">
+                    <div class="${headerClass}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                ${header}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="${bodyClass}">
+                        <div class="row" style="display:none" id="${formId}">
+                            <div class="col-md-12">
+                                ${frag}
+                            </div>
+                            <div class="col-md-12">
+                                ${existing}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                dre.context.html(facet);
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                // sort out the selectors we're going to be needing
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+
+                let selectIdSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                edges.on(selectIdSelector, "change", this, "typeChanged");
+
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                edges.on(fromMonthSelector, "change", this, "checkDateRange");
+                edges.on(fromYearSelector, "change", this, "checkDateRange");
+                edges.on(toMonthSelector, "change", this, "checkDateRange");
+                edges.on(toYearSelector, "change", this, "checkDateRange");
+
+                let applySelector = edges.css_class_selector(this.namespace, "apply", this);
+                edges.on(applySelector, "click", this, "updateDateRange");
+
+                let filterRemoveSelector = edges.css_class_selector(this.namespace, "filter-remove", this);
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
+            };
+
+            this.dateOptionsFrags = function (params) {
+                let dre = this.component;
+
+                let fromMonths = "";
+                let toMonths = "";
+                let fromYears = "";
+                let toYears = "";
+
+                let earliest = dre.currentEarliest();
+                let latest = dre.currentLatest();
+                if (earliest && latest) {
+
+                    let startYear = earliest.getUTCFullYear();
+                    let endYear = latest.getUTCFullYear();
+                    let years = [];
+                    for (let year = startYear; year <= endYear; year++) {
+                        years.push(year);
+                    }
+
+                    let selectedFromYear = 0;
+                    let selectedToYear = 0;
+
+                    let fromDate = dre.fromDate ? new Date(parseInt(dre.fromDate)): false;
+                    let toDate = dre.toDate ? new Date(parseInt(dre.toDate - 1)) : false;
+
+                    for (let i = 0; i < years.length; i++) {
+                        let year = years[i];
+                        let fromSelected = "";
+                        if ((!fromDate && i === 0) || (fromDate && year === fromDate.getUTCFullYear())) {
+                            fromSelected = "selected"
+                            selectedFromYear = year;
+                        }
+                        let toSelected = "";
+                        if ((!toDate && i === years.length - 1) || (toDate && year === toDate.getUTCFullYear())) {
+                            toSelected = "selected"
+                            selectedToYear = year;
+                        }
+                        fromYears += `<option value="${year}" ${fromSelected}>${year}</option>`;
+                        toYears += `<option value="${year}" ${toSelected}>${year}</option>`;
+                    }
+
+                    for (let i = 0; i < this.months.length; i++) {
+                        let month = this.months[i];
+
+                        let fromSelected = "";
+                        if (fromDate) {
+                            if (i === fromDate.getUTCMonth() && selectedFromYear === fromDate.getUTCFullYear()) {
+                                fromSelected = "selected"
+                            }
+                        } else {
+                            if (i === earliest.getUTCMonth()) {
+                                fromSelected = "selected"
+                            }
+                        }
+
+                        let toSelected = "";
+                        if (toDate) {
+                            if (i === toDate.getUTCMonth() && selectedToYear === toDate.getUTCFullYear()) {
+                                toSelected = "selected"
+                            }
+                        } else {
+                            if (i === latest.getUTCMonth()) {
+                                toSelected = "selected"
+                            }
+                        }
+
+                        fromMonths += `<option value="${i}" ${fromSelected}>${month}</option>`;
+                        toMonths += `<option value="${i}" ${toSelected}>${month}</option>`;
+                    }
+                }
+
+                return {fromMonths: fromMonths, toMonths: toMonths, fromYears: fromYears, toYears: toYears};
+            };
+
+            this.headerLayout = function (params) {
+                var toggleId = params.toggleId;
+                var iconClass = edges.css_classes(this.namespace, "icon", this);
+
+                if (this.layout === "left") {
+                    var tog = this.component.display;
+                    if (this.togglable) {
+                        tog = '<a href="#" id="' + toggleId + '"><i class="' + this.openIcon + '"></i>&nbsp;' + tog + "</a>";
+                    }
+                    return tog;
+                } else if (this.layout === "right") {
+                    var tog = "";
+                    if (this.togglable) {
+                        tog = '<a href="#" id="' + toggleId + '">' + this.component.display + '&nbsp;<i class="' + this.openIcon + ' ' + iconClass + '"></i></a>';
+                    } else {
+                        tog = this.component.display;
+                    }
+
+                    return tog;
+                }
+            };
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var formSelector = edges.css_id_selector(this.namespace, "form", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var form = this.component.jq(formSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                var openBits = this.openIcon.split(" ");
+                var closeBits = this.closeIcon.split(" ");
+
+                if (this.open) {
+                    var i = toggle.find("i");
+                    for (var j = 0; j < openBits.length; j++) {
+                        i.removeClass(openBits[j]);
+                    }
+                    for (var j = 0; j < closeBits.length; j++) {
+                        i.addClass(closeBits[j]);
+                    }
+                    form.show();
+                } else {
+                    var i = toggle.find("i");
+                    for (var j = 0; j < closeBits.length; j++) {
+                        i.removeClass(closeBits[j]);
+                    }
+                    for (var j = 0; j < openBits.length; j++) {
+                        i.addClass(openBits[j]);
+                    }
+                    form.hide();
+                }
+            };
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
+            };
+
+            this.dateRangeDisplay = function() {
+                let frags = this.dateOptionsFrags();
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                this.component.jq(fromMonthSelector).html(frags.fromMonths);
+                this.component.jq(fromYearSelector).html(frags.fromYears);
+                this.component.jq(toMonthSelector).html(frags.toMonths);
+                this.component.jq(toYearSelector).html(frags.toYears);
+            };
+
+            this.updateDateRange = function () {
+                // ensure that the correct field is set (it may initially be not set)
+                let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                let date_type = this.component.jq(typeSelector).val();
+
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                let fromMonth = this.component.jq(fromMonthSelector).val()
+                let fromYear = this.component.jq(fromYearSelector).val()
+                let toMonth = this.component.jq(toMonthSelector).val()
+                let toYear = this.component.jq(toYearSelector).val()
+
+                let start = new Date(Date.UTC(fromYear, fromMonth, 1, 0, 0, 0));
+
+                toMonth = parseInt(toMonth);
+                toMonth += 1;
+                if (toMonth > 11) {
+                    toMonth = 0;
+                    toYear = parseInt(toYear) + 1;
+                }
+                let end = new Date(Date.UTC(toYear, toMonth, 1, 0, 0, 0));
+
+                if (end < start) {
+                    alert("You must choose a 'to' date that is after the 'from' date");
+                    return;
+                }
+
+                this.component.changeField(date_type);
+                this.component.setFrom(start.getTime());
+                this.component.setTo(end.getTime());
+
+                // this action should trigger a search (the parent object will
+                // decide if that's required)
+                this.component.triggerSearch();
+            };
+
+            this.checkDateRange = function(element) {
+                let fromMonthSelector = edges.css_id_selector(this.namespace, "from-month", this);
+                let fromYearSelector = edges.css_id_selector(this.namespace, "from-year", this);
+                let toMonthSelector = edges.css_id_selector(this.namespace, "to-month", this);
+                let toYearSelector = edges.css_id_selector(this.namespace, "to-year", this);
+                let fromMonth = this.component.jq(fromMonthSelector).val()
+                let fromYear = this.component.jq(fromYearSelector).val()
+                let toMonth = this.component.jq(toMonthSelector).val()
+                let toYear = this.component.jq(toYearSelector).val()
+
+                let start = new Date(Date.UTC(fromYear, fromMonth, 1, 0, 0, 0));
+
+                toMonth = parseInt(toMonth);
+                toMonth += 1;
+                if (toMonth > 11) {
+                    toMonth = 0;
+                    toYear = parseInt(toYear) + 1;
+                }
+                let end = new Date(Date.UTC(toYear, toMonth, 1, 0, 0, 0));
+
+                let applySelector = edges.css_class_selector(this.namespace, "apply", this);
+                if (end <= start) {
+                    this.component.jq(applySelector).prop("disabled", true);
+                } else {
+                    this.component.jq(applySelector).prop("disabled", false);
+                }
+            }
+
+            this.typeChanged = function(element) {
+                // ensure that the correct field is set (it may initially be not set)
+                let typeSelector = edges.css_id_selector(this.namespace, "date-type", this);
+                let date_type = this.component.jq(typeSelector).val();
+                this.component.changeField(date_type);
+                this.dateRangeDisplay();
+                this.checkDateRange();
+            };
+
+            this.removeFilter = function(element) {
+                let field = $(element).attr("data-field");
+                this.component.changeField(field);
+                this.component.setFrom(false);
+                this.component.setTo(false);
+                this.component.triggerSearch();
+            }
+        },
+
+        newFlexibleDateHistogramSelectorRenderer: function (params) {
+            if (!params) { params = {} }
+            doaj.renderers.FlexibleDateHistogramSelectorRenderer.prototype = edges.newRenderer(params);
+            return new doaj.renderers.FlexibleDateHistogramSelectorRenderer(params);
+        },
+        FlexibleDateHistogramSelectorRenderer: function (params) {
+
+            ///////////////////////////////////////
+            // parameters that can be passed in
+
+            // whether to hide or just disable the facet if not active
+            this.hideInactive = edges.getParam(params.hideInactive, false);
+
+            // whether the facet should be open or closed
+            // can be initialised and is then used to track internal state
+            this.open = edges.getParam(params.open, false);
+
+            this.togglable = edges.getParam(params.togglable, true);
+
+            // whether to display selected filters
+            this.showSelected = edges.getParam(params.showSelected, true);
+
+            // formatter for count display
+            this.countFormat = edges.getParam(params.countFormat, false);
+
+            // a short tooltip and a fuller explanation
+            this.tooltipText = edges.getParam(params.tooltipText, false);
+            this.tooltip = edges.getParam(params.tooltip, false);
+            this.tooltipState = "closed";
+
+            // whether to suppress display of date range with no values
+            this.hideEmptyDateBin = params.hideEmptyDateBin || true;
+
+            // how many of the values to display initially, with a "show all" option for the rest
+            this.shortDisplay = edges.getParam(params.shortDisplay, false);
+
+            // namespace to use in the page
+            this.namespace = "edges-bs3-datehistogram-selector";
+
+            this.draw = function () {
+                // for convenient short references ...
+                var ts = this.component;
+                var namespace = this.namespace;
+
+                if (!ts.active && this.hideInactive) {
+                    ts.context.html("");
+                    return;
+                }
+
+                // sort out all the classes that we're going to be using
+                var resultsListClass = edges.css_classes(namespace, "results-list", this);
+                var resultClass = edges.css_classes(namespace, "result", this);
+                var valClass = edges.css_classes(namespace, "value", this);
+                var filterRemoveClass = edges.css_classes(namespace, "filter-remove", this);
+                var facetClass = edges.css_classes(namespace, "facet", this);
+                var headerClass = edges.css_classes(namespace, "header", this);
+                var selectedClass = edges.css_classes(namespace, "selected", this);
+
+                var toggleId = edges.css_id(namespace, "toggle", this);
+                var resultsId = edges.css_id(namespace, "results", this);
+
+                // this is what's displayed in the body if there are no results
+                var results = "Loading...";
+                if (ts.values !== false) {
+                    results = "No data available";
+                }
+
+                // render a list of the values
+                if (ts.values && ts.values.length > 0) {
+                    results = "";
+
+                    // get the terms of the filters that have already been set
+                    var filterTerms = [];
+                    for (var i = 0; i < ts.filters.length; i++) {
+                        filterTerms.push(ts.filters[i].display);
+                    }
+
+                    // render each value, if it is not also a filter that has been set
+                    var longClass = edges.css_classes(namespace, "long", this);
+                    var short = true;
+                    for (var i = 0; i < ts.values.length; i++) {
+                        var val = ts.values[i];
+                        if (val.count === 0 && this.hideEmptyDateBin) {
+                            continue;
+                        }
+                        //if ($.inArray(val.display, filterTerms) === -1) {
+                            var myLongClass = "";
+                            var styles = "";
+                            if (this.shortDisplay && this.shortDisplay <= i) {
+                                myLongClass = longClass;
+                                styles = 'style="display:none"';
+                                short = false;
+                            }
+
+                            var count = val.count;
+                            if (this.countFormat) {
+                                count = this.countFormat(count)
+                            }
+                            var ltData = "";
+                            if (val.lt) {
+                                ltData = ' data-lt="' + edges.escapeHtml(val.lt) + '" ';
+                            }
+                            results += '<div class="' + resultClass + ' ' + myLongClass + '" '  + styles +  '><a href="#" class="' + valClass + '" data-gte="' + edges.escapeHtml(val.gte) + '"' + ltData + '>' +
+                                edges.escapeHtml(val.display) + "</a> (" + count + ")</div>";
+
+                        //}
+                    }
+                    if (!short) {
+                        var showClass = edges.css_classes(namespace, "show-link", this);
+                        var showId = edges.css_id(namespace, "show-link", this);
+                        var slToggleId = edges.css_id(namespace, "sl-toggle", this);
+                        results += '<div class="' + showClass + '" id="' + showId + '">\
+                            <a href="#" id="' + slToggleId + '"><span class="all">show all</span><span class="less" style="display:none">show less</span></a> \
+                        </div>';
+                    }
+
+                }
+
+                // if we want the active filters, render them
+                var filterFrag = "";
+                if (ts.filters.length > 0 && this.showSelected) {
+                    for (var i = 0; i < ts.filters.length; i++) {
+                        var filt = ts.filters[i];
+                        var ltData = "";
+                        if (filt.lt) {
+                            ltData = ' data-lt="' + edges.escapeHtml(filt.lt) + '" ';
+                        }
+                        filterFrag += '<div class="' + resultClass + '"><strong>' + edges.escapeHtml(filt.display) + "&nbsp;";
+                        filterFrag += '<a href="#" class="' + filterRemoveClass + '" data-gte="' + edges.escapeHtml(filt.gte) + '"' + ltData + '>';
+                        filterFrag += '<i class="glyphicon glyphicon-black glyphicon-remove"></i></a>';
+                        filterFrag += "</strong></a></div>";
+                    }
+                }
+
+                // render the toggle capability
+                var tog = ts.display;
+                if (this.togglable) {
+                    tog = '<a href="#" id="' + toggleId + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + tog + "</a>";
+                }
+
+                // create the controls
+                let intervalClass = edges.css_classes(namespace, "interval", this);
+                let yearSelected = this.component.interval === "year" ? "selected" : "";
+                let monthSelected = this.component.interval === "month" ? "selected" : "";
+
+                let controls = `Granularity <select name="interval" class="${intervalClass}">
+                                            <option value="year" ${yearSelected}>Year</option>
+                                            <option value="month" ${monthSelected}>Month</option>
+                                        </select>`;
+
+                // render the overall facet
+                var frag = `<div class=${facetClass}>
+                        <div class=${headerClass}"><div class="row">
+                            <div class="col-md-12">${tog}</div>
+                        </div></div>
+                        <div class="row" style="display:none" id="${resultsId}">
+                            <div class="col-md-12">
+                                <div class="">${controls}</div>
+                                <div class="${selectedClass}">{{SELECTED}}</div>
+                                <div class="${resultsListClass}">{{RESULTS}}</div>
+                            </div>
+                        </div></div>`;
+
+                // substitute in the component parts
+                frag = frag.replace(/{{RESULTS}}/g, results)
+                    .replace(/{{SELECTED}}/g, filterFrag);
+
+                // now render it into the page
+                ts.context.html(frag);
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                // sort out the selectors we're going to be needing
+                var valueSelector = edges.css_class_selector(namespace, "value", this);
+                var filterRemoveSelector = edges.css_class_selector(namespace, "filter-remove", this);
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                var tooltipSelector = edges.css_id_selector(namespace, "tooltip-toggle", this);
+                var shortLongToggleSelector = edges.css_id_selector(namespace, "sl-toggle", this);
+                let fromSelector = edges.css_class_selector(namespace, "from", this);
+                let toSelector = edges.css_class_selector(namespace, "to", this);
+                let intervalSelector = edges.css_class_selector(namespace, "interval", this);
+                let resetSelector = edges.css_class_selector(namespace, "reset", this);
+
+                // for when a value in the facet is selected
+                edges.on(valueSelector, "click", this, "termSelected");
+                // for when the open button is clicked
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+                // for when a filter remove button is clicked
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
+
+                edges.on(intervalSelector, "change", this, "intervalChanged");
+                edges.on(fromSelector, "change", this, "rangeChanged");
+                edges.on(toSelector, "change", this, "rangeChanged");
+                edges.on(resetSelector, "click", this, "removeFilter");
+            };
+
+            /////////////////////////////////////////////////////
+            // UI behaviour functions
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var resultsSelector = edges.css_id_selector(this.namespace, "results", this);
+                var tooltipSelector = edges.css_id_selector(this.namespace, "tooltip", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var results = this.component.jq(resultsSelector);
+                var tooltip = this.component.jq(tooltipSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                if (this.open) {
+                    toggle.find("i").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+                    results.show();
+                    tooltip.show();
+                } else {
+                    toggle.find("i").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+                    results.hide();
+                    tooltip.hide();
+                }
+            };
+
+            /////////////////////////////////////////////////////
+            // event handlers
+
+            this.termSelected = function (element) {
+                var gte = this.component.jq(element).attr("data-gte");
+                var lt = this.component.jq(element).attr("data-lt");
+                this.component.selectRange({gte: gte, lt: lt});
+            };
+
+            this.removeFilter = function (element) {
+                var gte = this.component.jq(element).attr("data-gte");
+                var lt = this.component.jq(element).attr("data-lt");
+                this.component.removeFilter({gte: gte, lt: lt});
+            };
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
+            };
+
+            this.intervalChanged = function(element) {
+                let interval = $(element).val();
+                this.component.setInterval({interval: interval});
+            }
+
+            this.rangeChanged = function(element) {
+                let fromSelector = edges.css_class_selector(this.namespace, "from", this);
+                let toSelector = edges.css_class_selector(this.namespace, "to", this);
+
+                let from = this.component.jq(fromSelector).val();
+                let to = this.component.jq(toSelector).val();
+
+                this.component.selectRange({gte: from, lt: to});
+            }
+        },
         newSearchingNotificationRenderer: function (params) {
             return edges.instantiate(doaj.renderers.SearchingNotificationRenderer, params, edges.newRenderer);
         },
@@ -584,7 +2013,7 @@ $.extend(true, doaj, {
                         },
                         {
                             duration: 1000,
-                            always: function() {
+                            always: function () {
                                 $(idSelector).remove();
                             }
                         }
@@ -592,11 +2021,10 @@ $.extend(true, doaj, {
                 }
             }
         },
-
-        newSubjectBrowser : function(params) {
-            return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
+        newSubjectBrowserRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SubjectBrowserRenderer, params, edges.newRenderer);
         },
-        SubjectBrowser : function(params) {
+        SubjectBrowserRenderer: function (params) {
             this.title = edges.getParam(params.title, "");
 
             this.selectMode = edges.getParam(params.selectMode, "multiple");
@@ -611,9 +2039,17 @@ $.extend(true, doaj, {
 
             this.namespace = "doaj-subject-browser";
 
+            this.viewWindowScrollOffset = 0;
             this.lastScroll = 0;
+            this.lastSearch = edges.getParam(params.lastSearch, null);
+            this.lastClickedEl = edges.getParam(params.lastClickedEl, null);
 
-            this.draw = function() {
+            this.init = function(component) {
+                edges.newRenderer().init.call(this, component);
+                component.edge.context.on("edges:pre-reset", edges.eventClosure(this, "reset"));
+            }
+
+            this.draw = function () {
                 // for convenient short references ...
                 var st = this.component.syncTree;
                 var namespace = this.namespace;
@@ -643,7 +2079,12 @@ $.extend(true, doaj, {
                 var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
                     <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
-                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
+                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '"';
+                if (this.lastSearch) {
+                    frag += 'value="' + this.lastSearch + '"';
+                }
+
+                frag += '>\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
                     </div></div>';
@@ -655,23 +2096,40 @@ $.extend(true, doaj, {
                 this.component.context.html(frag);
                 feather.replace();
 
+                if (this.lastSearch) {
+                    var searchSelector = edges.css_id_selector(namespace, "search", this);
+                    this.filterSubjects($(searchSelector));
+                }
+
+
                 // trigger all the post-render set-up functions
                 this.setUIOpen();
 
                 var mainListSelector = edges.css_id_selector(namespace, "main", this);
-                this.component.jq(mainListSelector).scrollTop(this.lastScroll);
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                var selector = this.lastSearch ? filterSelector : mainListSelector;
+                this.component.jq(selector).scrollTop(this.lastScroll);
 
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
 
-                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
-                edges.on(toggleSelector, "click", this, "toggleOpen");
+                if (this.togglable) {
+                    var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                    edges.on(toggleSelector, "click", this, "toggleOpen");
+                }
 
                 var searchSelector = edges.css_id_selector(namespace, "search", this);
                 edges.on(searchSelector, "keyup", this, "filterSubjects");
             };
 
-            this._renderTree = function(params) {
+            this.reset = function(edge) {
+                this.lastSearch = null;
+                this.viewWindowScrollOffset = 0;
+                this.lastClickedEl = null;
+                this.lastScroll = 0;
+            }
+
+            this._renderTree = function (params) {
                 var st = edges.getParam(params.tree, []);
                 var selectedPathOnly = edges.getParam(params.selectedPathOnly, true);
                 var showOneLevel = edges.getParam(params.showOneLevel, true);
@@ -759,7 +2217,7 @@ $.extend(true, doaj, {
                         rFrag += entryFrag;
                         rFrag += '</li>';
                     }
-                    return {frag : rFrag, anySelected: anySelected};
+                    return {frag: rFrag, anySelected: anySelected};
                 }
 
                 return recurse(st);
@@ -777,17 +2235,20 @@ $.extend(true, doaj, {
                     results.addClass("in").attr("aria-expanded", "true").css({"height": ""});
                     toggle.removeClass("collapsed").attr("aria-expanded", "true");
                 } else {
-                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height": "0px"});
                     toggle.addClass("collapsed").attr("aria-expanded", "false");
                 }
             };
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
-                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                this.lastScroll = this.lastSearch ? this.component.jq(filterSelector).scrollTop() : this.component.jq(mainListSelector).scrollTop();
                 var el = this.component.jq(element);
-                // var filter_id = this.component.jq(element).attr("id");
                 var checked = el.is(":checked");
+                this.lastClickedEl = el[0].id;
+                let offset = this.lastSearch ? this.component.jq(filterSelector).offset().top : this.component.jq(mainListSelector).offset().top;
+                this.viewWindowScrollOffset = el.offset().top - offset;
                 var value = el.attr("data-value");
                 if (checked) {
                     this.component.addFilter({value: value});
@@ -801,7 +2262,56 @@ $.extend(true, doaj, {
                 this.setUIOpen();
             };
 
-            this.filterSubjects = function(element) {
+            this._findParentObject = function(st, value) {
+                // Iterate through the array to find the object with children containing the lastClickedEl value
+                for (const obj of st) {
+                    if (obj.children && obj.children.some(child => child.value === value)) {
+                        return obj;
+                    }
+                }
+                return null; // If no parent object is found
+            }
+
+            this._findRenderedElement = function(st, value) {
+                let label = this.component.jq("label[for='" + value + "']");
+                if (label.length > 0) {
+                    return label[0];
+                }
+
+                // Step 1: Find HTML element with id=lastClickedEl
+                const element = document.getElementById(value);
+
+                // Step 2: If it exists, return the element
+                if (element) {
+                    return element;
+                }
+
+                // Step 3: If it doesn't exist, find the parent in the st array
+                const parentObject = this._findParentObject(st, value);
+
+                // Step 4: If no more parents (no elements found), return null
+                if (!parentObject) {
+                    return null;
+                }
+
+                // Step 5: Repeat this algorithm for the value of the found parent
+                return this._findRenderedElement(st, parentObject.value);
+            }
+
+            this.scrollView = function (view) {
+                var browser = view[0];
+                var st = this.component.syncTree;
+                var elemToScroll = this._findRenderedElement(st, this.lastClickedEl);
+                if (elemToScroll) {
+                    elemToScroll.scrollIntoView();
+                    if (browser.clientHeight > 0) {
+                        browser.scrollBy(0, -1 * browser.clientHeight / 2);
+                    }
+                    // browser.scrollTop = elemToScroll.offsetTop - browser.offsetTop - this.viewWindowScrollOffset;
+                }
+            }
+
+            this.filterSubjects = function (element) {
                 var st = this.component.syncTree;
                 var term = $(element).val();
                 var that = this;
@@ -815,6 +2325,10 @@ $.extend(true, doaj, {
                     filterEl.html("");
                     filterEl.hide();
                     mainEl.show();
+                    this.lastSearch = null;
+                    if (this.lastClickedEl) {
+                        this.scrollView(mainEl);
+                    }
                     return;
                 }
                 if (term.length < 3) {
@@ -823,6 +2337,7 @@ $.extend(true, doaj, {
                     mainEl.hide();
                     return;
                 }
+                this.lastSearch = term;
                 term = term.toLowerCase();
 
                 function entryMatch(entry) {
@@ -831,7 +2346,7 @@ $.extend(true, doaj, {
                     }
 
                     var matchTerm = entry.index;
-                    var includes =  matchTerm.includes(term);
+                    var includes = matchTerm.includes(term);
                     if (includes) {
                         var idx = matchTerm.indexOf(term);
                         var display = entry.display;
@@ -866,11 +2381,19 @@ $.extend(true, doaj, {
                 var filtered = recurse(st);
 
                 if (filtered.length > 0) {
-                    var displayReport = this._renderTree({tree: filtered, selectedPathOnly: false, showOneLevel: false});
+                    var displayReport = this._renderTree({
+                        tree: filtered,
+                        selectedPathOnly: false,
+                        showOneLevel: false
+                    });
 
                     filterEl.html(displayReport.frag);
                     mainEl.hide();
                     filterEl.show();
+
+                    if (this.lastClickedEl) {
+                        this.scrollView(filterEl);
+                    }
 
                     var checkboxSelector = edges.css_class_selector(this.namespace, "selector", this);
                     edges.on(checkboxSelector, "change", this, "filterToggle");
@@ -1289,6 +2812,15 @@ $.extend(true, doaj, {
             this.showShortened = false;
 
             this.namespace = "doaj-share-embed";
+            this.copyLinkBtnId = edges.css_id(this.namespace, "btn--copy-link", this);
+            this.copyEmbedBtnId = edges.css_id(this.namespace, "btn--copy-embed", this);
+            this.clickToCopyBtnClass = edges.css_classes(this.namespace, "btn--click-to-copy", this);
+
+            this.generateButton = function(id, cssClass, text) {
+                return '<div class="button-wrapper" style="display: flex; justify-content: flex-end;"><button type="button" class="' + cssClass + '" id="' + id + '">' +
+                    '<span data-feather="copy" aria-hidden="true"></span>&nbsp;&nbsp;  ' + text + '</button>' +
+                    '<span id="' + id +'--copy-status" class="sr-only" aria-live="polite"></span></div>'
+            }
 
             this.draw = function () {
                 // reset these on each draw
@@ -1303,15 +2835,25 @@ $.extend(true, doaj, {
 
                 let shorten = "";
                 if (this.component.urlShortener) {
-                    var shortenClass = edges.css_classes(this.namespace, "shorten", this);
                     var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this)
                     shorten = '<p><button class="' + shortenButtonClass + '">shorten url</button></p>';
                 }
+
                 var embed = "";
+
+                // The following code is rendered only after the modal is open:
+                // None of the code in this draw function is rendered only after the modal is open.
+                // All modal content (including share link, embed, copy buttons, etc.) is rendered
+                // immediately as part of the modal HTML, even before the modal is opened.
+                // The only thing that happens after the modal is opened is that event handlers
+                // (like click handlers) may be triggered, or values in the textareas may be set
+                // by the toggleShare function, but the HTML itself is rendered up front.
+
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
-                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>' +
+                            this.generateButton(this.copyEmbedBtnId, this.clickToCopyBtnClass, "Copy this script");
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -1319,9 +2861,10 @@ $.extend(true, doaj, {
                 var shareFrag = '<div class="' + shareBoxClass + '">\
                     <p>Share a link to this search</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
+                    '+ this.generateButton(this.copyLinkBtnId, this.clickToCopyBtnClass, "Copy this link") + '\
                     ' + shorten + '\
                     ' + embed + '\
-                </div>';
+                    </div>'
 
                 var modal = '<section class="modal" id="' + modalId + '" tabindex="-1" role="dialog">\
                     <div class="modal__dialog" role="document">\
@@ -1347,12 +2890,36 @@ $.extend(true, doaj, {
                     var shortenSelector = edges.css_class_selector(this.namespace, "shorten-url", this);
                     edges.on(shortenSelector, "click", this, "toggleShorten");
                 }
-            };
+
+                edges.on("#"+this.copyLinkBtnId, "click", this, "clickToCopy");
+                edges.on("#"+this.copyEmbedBtnId, "click", this, "clickToCopy");
+            }
 
             //////////////////////////////////////////////////////
             // functions for setting UI values
 
-            this.toggleShare = function(element) {
+            this.clickToCopy = function(e) {
+                var value = $(e).parent().prevAll("textarea").val()
+                navigator.clipboard.writeText(value).then(() => {
+                    const originalText = $(e).html();
+                    $(e).html('<span data-feather="check" aria-hidden="true"></span>&nbsp;&nbsp;Value copied!');
+                    feather.replace();
+                    setTimeout(() => {
+                        $(e).html(originalText);
+                    }, 1500);
+                });
+                if (e.id == this.copyEmbedBtnId) {
+                    console.log("Copying embed snippet");
+                }
+                else if (e.id == this.copyLinkBtnId) {
+                    console.log("Copying share link");
+                } else {
+                    console.error("Unknown button clicked: " + e.id);
+                    return;
+                }
+            }
+
+            this.toggleShare = function (element) {
                 var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
                 var textarea = this.component.jq(shareUrlSelector);
 
@@ -1368,7 +2935,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.toggleShorten = function(element) {
+            this.toggleShorten = function (element) {
                 if (!this.component.shortUrl) {
                     var callback = edges.objClosure(this, "updateShortUrl");
                     this.component.generateShortUrl(callback);
@@ -1377,7 +2944,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.updateShortUrl = function() {
+            this.updateShortUrl = function () {
                 var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
                 var shortenSelector = edges.css_class_selector(this.namespace, "shorten-url", this);
                 var textarea = this.component.jq(shareUrlSelector);
@@ -1583,6 +3150,8 @@ $.extend(true, doaj, {
             // whether the facet should be open or closed
             // can be initialised and is then used to track internal state
             this.open = edges.getParam(params.open, false);
+            this.isIncludedIn = edges.getParam(params.isIncludedIn, null);
+            this.includes = edges.getParam(params.includes, null);
 
             // whether the facet can be opened and closed
             this.togglable = edges.getParam(params.togglable, true);
@@ -1678,13 +3247,21 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var filter_id = this.component.jq(element).attr("id");
+                var filter = this.component.filters.find(obj => obj.id === filter_id)
                 var checked = this.component.jq(element).is(":checked");
                 if (checked) {
                     this.component.addFilter(filter_id);
+                    // to do: these filters should be synched but it this doesn't work
+                    // if (filter.includedIn) {
+                    //     this.component.addFilter(filter.includedIn)
+                    // }
                 } else {
                     this.component.removeFilter(filter_id);
+                    // if (filter.includes) {
+                    //     this.component.removeFilter(filter.includes);
+                    // }
                 }
             };
 
@@ -1892,12 +3469,12 @@ $.extend(true, doaj, {
                     //}
                     //results.hide();
 
-                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height": "0px"});
                     toggle.addClass("collapsed").attr("aria-expanded", "false");
                 }
             };
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var term = this.component.jq(element).attr("data-key");
                 var checked = this.component.jq(element).is(":checked");
                 if (checked) {
@@ -2154,7 +3731,7 @@ $.extend(true, doaj, {
                     //}
                     //results.hide();
 
-                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height": "0px"});
                     toggle.addClass("collapsed").attr("aria-expanded", "false");
                 }
             };
@@ -2162,7 +3739,7 @@ $.extend(true, doaj, {
             /////////////////////////////////////////////////////
             // event handlers
 
-            this.filterToggle = function(element) {
+            this.filterToggle = function (element) {
                 var gte = this.component.jq(element).attr("data-gte");
                 var lt = this.component.jq(element).attr("data-lt");
                 var checked = this.component.jq(element).is(":checked");
@@ -2375,7 +3952,7 @@ $.extend(true, doaj, {
                 this.component.removeFilter(bool, ft, field, value);
             };
 
-            this.clearFilters = function() {
+            this.clearFilters = function () {
                 this.component.clearSearch();
             }
         },
@@ -2455,16 +4032,15 @@ $.extend(true, doaj, {
             };
         },
 
-        newPublicSearchResultRenderer : function(params) {
+        newPublicSearchResultRenderer: function (params) {
             return edges.instantiate(doaj.renderers.PublicSearchResultRenderer, params, edges.newRenderer);
         },
-        PublicSearchResultRenderer : function(params) {
+        PublicSearchResultRenderer: function (params) {
 
             this.widget = params.widget;
             if (params.doaj_url) {
                 this.doaj_url = params.doaj_url;
-            }
-            else {
+            } else {
                 this.doaj_url = ""
             }
 
@@ -2473,11 +4049,11 @@ $.extend(true, doaj, {
             this.namespace = "doaj-public-search";
 
             this.selector = edges.getParam(params.selector, null)
-            this.currentQueryString  = "";
+            this.currentQueryString = "";
 
 
             this.draw = function () {
-                if (this.component.edge.currentQuery){
+                if (this.component.edge.currentQuery) {
                     let qs = this.component.edge.currentQuery.getQueryString();
                     if (qs) {
                         this.currentQueryString = qs.queryString || "";
@@ -2515,7 +4091,7 @@ $.extend(true, doaj, {
                 edges.on(abstractAction, "click", this, "toggleAbstract");
             };
 
-            this.toggleAbstract = function(element) {
+            this.toggleAbstract = function (element) {
                 var el = $(element);
                 var abstractText = edges.css_class_selector(this.namespace, "abstracttext", this);
                 var at = this.component.jq(abstractText).filter('[rel="' + el.attr("rel") + '"]');
@@ -2529,7 +4105,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this._renderResult = function(resultobj) {
+            this._renderResult = function (resultobj) {
                 if (resultobj.bibjson && resultobj.bibjson.journal) {
                     // it is an article
                     return this._renderPublicArticle(resultobj);
@@ -2539,25 +4115,8 @@ $.extend(true, doaj, {
                 }
             };
 
-            this._renderPublicJournal = function(resultobj) {
+            this._renderPublicJournal = function (resultobj) {
 
-                var seal = "";
-                if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="' + this.doaj_url + '/apply/seal" target="_blank">'
-                    if (this.widget){
-                        seal += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/check-circle.svg"> DOAJ Seal</a>'
-                    }
-                    else {
-                        seal += '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;">\
-                                  <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
-                                  <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
-                                  <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
-                                  <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
-                          </svg>\
-                          <p class="sr-only">DOAJ Seal</p>\
-                      </a>';
-                    }
-                }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
@@ -2594,37 +4153,39 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
                 // at search time
                 var articles = "";
 
-                var apcs = '<li>';
+                let apc_frag = "<strong>No</strong> APC";
+                let other_charges_frag = "<strong>No</strong> other charges";
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
-                    apcs += "APCs: ";
+                    apc_frag = "APCs: ";
                     let length = resultobj.bibjson.apc.max.length;
                     for (var i = 0; i < length; i++) {
-                        apcs += "<strong>";
+                        apc_frag += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
-                            apcs += edges.escapeHtml(apcRecord.price);
+                            apc_frag += edges.escapeHtml(apcRecord.price);
                         }
                         if (apcRecord.currency) {
-                            apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                            apc_frag += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
                         }
                         if (i < length - 1) {
-                            apcs += ', ';
+                            apc_frag += ', ';
                         }
-                        apcs += "</strong>";
+                        apc_frag += "</strong>";
                     }
-                } else {
-                    apcs += "<strong>No</strong> charges";
                 }
-                apcs += '</li>';
+                if (edges.hasProp(resultobj,"bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
+                    other_charges_frag = "Has other charges";
+                }
+                let charges = `<li>${apc_frag}; ${other_charges_frag}</li>`;
 
                 var rights = "";
                 if (resultobj.bibjson.copyright) {
@@ -2642,7 +4203,7 @@ $.extend(true, doaj, {
                         var lic = resultobj.bibjson.license[i];
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
-                        if (i !== (resultobj.bibjson.license.length-1)) {
+                        if (i !== (resultobj.bibjson.license.length - 1)) {
                             licenses += ', ';
                         }
                     }
@@ -2666,7 +4227,7 @@ $.extend(true, doaj, {
                             let data = "";
                             if (actSettings.data) {
                                 let dataAttrs = Object.keys(actSettings.data);
-                                for(let j = 0; j < dataAttrs.length; j++) {
+                                for (let j = 0; j < dataAttrs.length; j++) {
                                     data += " data-" + dataAttrs[j] + "=" + actSettings.data[dataAttrs[j]];
                                 }
                             }
@@ -2689,10 +4250,9 @@ $.extend(true, doaj, {
                             <a href="' + this.doaj_url + '/toc/' + issn + '" target="_blank">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
                               <sup>'
-                if (this.widget){
+                if (this.widget) {
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/link.svg" alt="link icon">'
-                }
-                else {
+                } else {
                     frag += '<i data-feather="link" aria-hidden="true"></i>'
                 }
 
@@ -2701,63 +4261,72 @@ $.extend(true, doaj, {
                 if (resultobj.bibjson.ref && resultobj.bibjson.ref.journal) {
                     externalLink = '<li><a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website ';
 
-                    if (this.widget){
+                    if (this.widget) {
                         externalLink += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                    }
-                    else {
+                    } else {
                         externalLink += '<i data-feather="external-link" aria-hidden="true"></i>'
                     }
 
                     externalLink += '</a></li>';
                 }
 
-                frag +='</sup>\
-                            </a>\
-                            ' + subtitle + '\
-                          </h3>\
-                        </header>\
-                        <div class="search-results__body">\
-                          <ul class="inlined-list">\
-                            <li>\
-                              ' + published + '\
-                            </li>\
-                            ' + language + '\
-                          </ul>\
-                          ' + subjects + '\
-                        </div>\
-                      </div>\
-                      <aside class="col-sm-4 search-results__aside">\
-                        ' + seal + '\
-                        <ul>\
-                          <li>\
-                            ' + update_or_added + '\
-                          </li>\
-                          ' + articles + '\
-                          ' + externalLink + '\
-                        <li>\
-                            ' + apcs + '\
-                          </li>\
-                          <li>\
-                            ' + rights + '\
-                          </li>\
-                          <li>\
-                            ' + licenses + '\
-                          </li>\
-                        </ul>\
-                        ' + actions + modals + '\
-                      </aside>\
-                    </article>\
-                  </li>';
+                let s2o = "";
+                if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
+                    s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank">' +
+                        '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
+                        '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
+                        '</a>';
+                }
+
+                frag +=`</sup>
+                            </a>
+                            ` + subtitle + `
+                          </h3>
+                        </header>
+                        <div class="search-results__body">
+                          <ul class="inlined-list">
+                            <li>
+                              ` + published + `
+                            </li>
+                            ` + language + `
+                          </ul>
+                          ` + subjects + `
+                        </div>
+                      </div>
+                      <aside class="col-sm-4 search-results__aside">
+                        <ul>
+                          <li>
+                            ` + update_or_added + `
+                          </li>
+                          ` + articles + `
+                          ` + externalLink + `
+                        <li>
+                            ` + charges + `
+                          </li>
+                          <li>
+                            ` + rights + `
+                          </li>
+                          <li>
+                            ` + licenses + `
+                          </li>
+                          <li class="badges badges--search-result badges--search-result--public">
+                          ${s2o}
+                          </li>
+                        </ul>
+                        ` + actions + modals + `
+                      </aside>
+                    </article>
+                  </li>`;
 
                 return frag;
             };
 
-            this._renderPublicArticle = function(resultobj) {
+            this._renderPublicArticle = function (resultobj) {
                 var journal = resultobj.bibjson.journal ? resultobj.bibjson.journal.title : "";
 
                 var date = "";
                 if (resultobj.index.date) {
-                    let humanised = doaj.humanYearMonth(resultobj.index.date);
+                    let humanised = doaj.dates.humanYearMonth(resultobj.index.date);
                     if (humanised) {
                         date = "(" + humanised + ")";
                     }
@@ -2789,7 +4358,7 @@ $.extend(true, doaj, {
                 var keywords = "";
                 if (edges.hasProp(resultobj, "bibjson.keywords") && resultobj.bibjson.keywords.length > 0) {
                     keywords = '<h4>Article keywords</h4><ul class="inlined-list">';
-                    keywords+= '<li>' + resultobj.bibjson.keywords.join(",&nbsp;</li><li>") + '</li>';
+                    keywords += '<li>' + resultobj.bibjson.keywords.join(",&nbsp;</li><li>") + '</li>';
                     keywords += '</ul>';
                 }
 
@@ -2809,10 +4378,9 @@ $.extend(true, doaj, {
 
                     abstract = '<h4 class="' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
                             Abstract'
-                    if (this.widget){
+                    if (this.widget) {
                         abstract += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/plus.svg" alt="external-link icon">'
-                    }
-                    else {
+                    } else {
                         abstract += '<i data-feather="plus" aria-hidden="true"></i>'
                     }
                     abstract += '</h4>\
@@ -2872,6 +4440,8 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
+                const export_url = this.doaj_url + '/service/export/article/' + resultobj.id + '/ris';
+
                 var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
@@ -2895,13 +4465,22 @@ $.extend(true, doaj, {
                         <ul>\
                           <li>\
                             <a href="' + ftl + '" target="_blank" rel="noopener"> Read online '
-                if (this.widget){
+                if (this.widget) {
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
+                } else {
                     frag += '<i data-feather="external-link" aria-hidden="true"></i>'
                 }
                 frag += '</a></li>\
+                         <li>\
+                            <a href="' + export_url + '" target="_blank">\
+                            Export citation (RIS) '
+                if (this.widget){
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/download.svg" alt="external-link icon">'
+                } else {
+                    frag += '<i data-feather="download" aria-hidden="true"></i>'
+                }
+                            frag += '</a>\
+                          </li>\
                           <li>\
                             <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
@@ -2921,26 +4500,26 @@ $.extend(true, doaj, {
             };
         },
 
-        newPublisherApplicationRenderer : function(params) {
+        newPublisherApplicationRenderer: function (params) {
             return edges.instantiate(doaj.renderers.PublisherApplicationRenderer, params, edges.newRenderer);
         },
-        PublisherApplicationRenderer : function(params) {
+        PublisherApplicationRenderer: function (params) {
 
             this.actions = edges.getParam(params.actions, []);
 
             this.namespace = "doaj-publisher-application";
 
             this.statusMap = {
-                "draft" : "Not yet submitted",
-                "accepted" : "Accepted to DOAJ",
-                "rejected" : "Application rejected",
-                "update_request" : "Pending",
-                "revisions_required" : "Revisions Required",
-                "pending" : "Pending",
-                "in progress" : "Under review by an editor",
-                "completed" : "Under review by an editor",
-                "on hold" : "Under review by an editor",
-                "ready" : "Under review by an editor"
+                "draft": "Not yet submitted",
+                "accepted": "Accepted to DOAJ",
+                "rejected": "Application rejected",
+                "update_request": "Pending",
+                "revisions_required": "Revisions Required",
+                "pending": "Pending",
+                "in progress": "Under review by an editor",
+                "completed": "Under review by an editor",
+                "on hold": "Under review by an editor",
+                "ready": "Under review by an editor"
             };
 
             this.draw = function () {
@@ -2980,7 +4559,7 @@ $.extend(true, doaj, {
                 edges.on(deleteSelector, "click", this, "deleteLinkClicked");
             };
 
-            this.deleteLinkClicked = function(element) {
+            this.deleteLinkClicked = function (element) {
                 var deleteTitleSelector = edges.css_class_selector(this.namespace, "delete-title", this);
                 var deleteLinkSelector = edges.css_class_selector(this.namespace, "delete-link", this);
 
@@ -2992,7 +4571,7 @@ $.extend(true, doaj, {
                 this.component.jq(deleteLinkSelector).attr("href", href);
             };
 
-            this._accessLink = function(resultobj) {
+            this._accessLink = function (resultobj) {
                 if (resultobj.es_type === "draft_application") {
                     // if it's a draft, just link to the draft edit page
                     return [doaj.publisherApplicationsSearchConfig.applyUrl + resultobj['id'], "Edit"];
@@ -3016,7 +4595,7 @@ $.extend(true, doaj, {
                 }
             };
 
-            this._renderResult = function(resultobj) {
+            this._renderResult = function (resultobj) {
 
                 var accessLink = this._accessLink(resultobj);
 
@@ -3050,7 +4629,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.humanDate(resultobj.last_updated);
+                last_updated += doaj.dates.humanDate(resultobj.last_updated);
 
                 var icon = "edit-3";
                 if (accessLink[1] === "View") {
@@ -3114,25 +4693,25 @@ $.extend(true, doaj, {
             };
         },
 
-        newPublisherUpdateRequestRenderer : function(params) {
+        newPublisherUpdateRequestRenderer: function (params) {
             return edges.instantiate(doaj.renderers.PublisherUpdateRequestRenderer, params, edges.newRenderer);
         },
-        PublisherUpdateRequestRenderer : function(params) {
+        PublisherUpdateRequestRenderer: function (params) {
 
             this.actions = edges.getParam(params.actions, []);
 
             this.namespace = "doaj-publisher-update-request";
 
             this.statusMap = {
-                "accepted" : "Accepted to DOAJ",
-                "rejected" : "Application rejected",
-                "update_request" : "Pending",
-                "revisions_required" : "Revisions Required",
-                "pending" : "Pending",
-                "in progress" : "Under review by an editor",
-                "completed" : "Under review by an editor",
-                "on hold" : "Under review by an editor",
-                "ready" : "Under review by an editor",
+                "accepted": "Accepted to DOAJ",
+                "rejected": "Application rejected",
+                "update_request": "Pending",
+                "revisions_required": "Revisions Required",
+                "pending": "Pending",
+                "in progress": "Under review by an editor",
+                "completed": "Under review by an editor",
+                "on hold": "Under review by an editor",
+                "ready": "Under review by an editor",
                 "post_submission_review": "Pending"
             };
 
@@ -3173,7 +4752,7 @@ $.extend(true, doaj, {
                 edges.on(deleteSelector, "click", this, "deleteLinkClicked");
             };
 
-            this._renderResult = function(resultobj) {
+            this._renderResult = function (resultobj) {
                 var accessLink = this._accessLink(resultobj);
 
                 var titleText = "Untitled";
@@ -3206,7 +4785,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.humanDate(resultobj.last_manual_update);
+                last_updated += doaj.dates.humanDate(resultobj.last_manual_update);
 
                 var deleteLink = "";
                 var deleteLinkTemplate = doaj.publisherUpdatesSearchConfig.deleteLinkTemplate;
@@ -3241,7 +4820,6 @@ $.extend(true, doaj, {
                 }
 
 
-
                 var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-4 search-results__main">\
@@ -3273,7 +4851,7 @@ $.extend(true, doaj, {
                 return frag;
             };
 
-            this.deleteLinkClicked = function(element) {
+            this.deleteLinkClicked = function (element) {
                 var deleteTitleSelector = edges.css_class_selector(this.namespace, "delete-title", this);
                 var deleteLinkSelector = edges.css_class_selector(this.namespace, "delete-link", this);
 
@@ -3285,7 +4863,7 @@ $.extend(true, doaj, {
                 this.component.jq(deleteLinkSelector).attr("href", href);
             };
 
-            this._accessLink = function(resultobj) {
+            this._accessLink = function (resultobj) {
                 var status = resultobj.admin.application_status;
 
                 // if it's an accepted application, link to the ToC
@@ -3305,13 +4883,6 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicJournal = function(resultobj) {
-                var seal = "";
-                if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" target="_blank">\
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;"><path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/> <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/> <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/> <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/></svg>\
-                              <span class="sr-only">DOAJ Seal</span>\
-                          </a>';
-                }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
@@ -3348,9 +4919,9 @@ $.extend(true, doaj, {
 
                 var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
                 } else {
-                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
+                    update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
                 }
 
                 // FIXME: this is to present the number of articles indexed, which is not information we currently possess
@@ -3436,7 +5007,6 @@ $.extend(true, doaj, {
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
-                        ' + seal + '\
                         <ul>\
                           <li>\
                             ' + update_or_added + '\
@@ -3607,37 +5177,82 @@ $.extend(true, doaj, {
     },
 
     fieldRender: {
-        titleField : function (val, resultobj, renderer) {
-            var field = '<div class="flex-space-between"><h3 class="type-01 font-serif">';
+        fragment:
+            {
+                fullFlagHTML: `<span class="flag flag--full" title="Record flagged to me"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_137_201)">
+                    <path d="M1.875 0.9375C1.875 0.417969 1.45703 0 0.9375 0C0.417969 0 0 0.417969 0 0.9375V2.5V13.6914V15.625V19.0625C0 19.582 0.417969 20 0.9375 20C1.45703 20 1.875 19.582 1.875 19.0625V15.1562L5.01172 14.3711C6.61719 13.9688 8.31641 14.1562 9.79688 14.8945C11.5234 15.7578 13.5273 15.8633 15.332 15.1836L16.6875 14.6758C17.1758 14.4922 17.5 14.0273 17.5 13.5039V2.57812C17.5 1.67969 16.5547 1.09375 15.75 1.49609L15.375 1.68359C13.5664 2.58984 11.4375 2.58984 9.62891 1.68359C8.25781 0.996094 6.68359 0.824219 5.19531 1.19531L1.875 2.03125V0.9375ZM1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#282624"/>
+                    <path d="M1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#982E0A"/>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_137_201">
+                    <rect width="17.5" height="20" fill="white"/>
+                    </clipPath>
+                    </defs>
+                    </svg>
+                    </span>
+                `,
+                emptyFlagHTML: `<span class="flag flag--empty" title="Record flagged"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_137_174)">
+                    <path d="M1.875 0.9375C1.875 0.417969 1.45703 0 0.9375 0C0.417969 0 0 0.417969 0 0.9375V2.5V13.6914V15.625V19.0625C0 19.582 0.417969 20 0.9375 20C1.45703 20 1.875 19.582 1.875 19.0625V15.1562L5.01172 14.3711C6.61719 13.9688 8.31641 14.1562 9.79688 14.8945C11.5234 15.7578 13.5273 15.8633 15.332 15.1836L16.6875 14.6758C17.1758 14.4922 17.5 14.0273 17.5 13.5039V2.57812C17.5 1.67969 16.5547 1.09375 15.75 1.49609L15.375 1.68359C13.5664 2.58984 11.4375 2.58984 9.62891 1.68359C8.25781 0.996094 6.68359 0.824219 5.19531 1.19531L1.875 2.03125V0.9375ZM1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="black"/>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_137_174">
+                    <rect width="17.5" height="20" fill="white"/>
+                    </clipPath>
+                    </defs>
+                    </svg>
+                    </span>
+                `
+            },
+        titleField: function (val, resultobj, renderer) {
+            let field = '<div class="flex-start flex-space-between flex-wrap"><h3 class="type-01 font-serif" >';
+            let display = '';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
-                    var display = edges.escapeHtml(resultobj.bibjson.title);
+                    display += edges.escapeHtml(resultobj.bibjson.title);
                     if (resultobj.admin.in_doaj) {
-                        display =  "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
+                        display = "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
                     }
                     field += display;
                 } else {
+                    field += display;
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 field += "</h3>";
-                if (resultobj.admin && resultobj.admin.seal) {
-                    field += '<div><a href="/apply/seal" target="_blank">\
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1rem; width: auto; margin-left: .5em;">\
-                              <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
-                              <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
-                              <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
-                              <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
-                              </svg>\
-                            <span class="sr-only">DOAJ Seal</span>\
-                          </a></div>';
+                var s2o = '';
+                if (resultobj.bibjson.labels && resultobj.bibjson.labels.includes("s2o")) {
+                    s2o = s2o = '<a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank" style="padding: .25rem;"> ' +
+                        '<img src="/assets/img/labels/s2o-minimalistic.svg" width="50" alt="Subscribe to Open" title="Subscribe to Open">' +
+                        '<p class="sr-only">This journal is part of the Subscribe to Open program.</p>' +
+                        '</a>';
+                }
+                if (resultobj.index.is_flagged  || s2o) {
+                    field += '<div class="badges badges--search-result badges--search-result--maned flex-start">'
+                    if (resultobj.index.is_flagged) {
+                        if (resultobj.index.flag_assignees.includes(doaj.session.currentUserId)) {
+                            field += doaj.fieldRender.fragment.fullFlagHTML;
+                        } else {
+                            field += doaj.fieldRender.fragment.emptyFlagHTML;
+                        }
+                    }
+                    if (s2o) {
+                        field += s2o;
+                    }
+                    field += '</div>';
                 }
                 return field + "</div>";
-            } else {
+            }
+            else {
                 return false;
             }
         },
-
-        authorPays : function(val, resultobj, renderer) {
+        deadline: function(val, resultobj, renderer) {
+            if ((typeof resultobj.index.most_urgent_flag_deadline != 'undefined' ) && resultobj.index.most_urgent_flag_deadline !== "9999-12-31") {
+                return "<strong>Flag's deadline: </strong>" + resultobj.index.most_urgent_flag_deadline;
+            }
+        },
+        authorPays: function (val, resultobj, renderer) {
             if (resultobj.es_type === "journal") {
                 var field = "";
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
@@ -3666,13 +5281,12 @@ $.extend(true, doaj, {
                 }
 
                 return field ? field : false;
-            }
-            else {
+            } else {
                 return false;
             }
         },
 
-        abstract : function (val, resultobj, renderer) {
+        abstract: function (val, resultobj, renderer) {
             if (resultobj['bibjson']['abstract']) {
                 var result = '<a class="abstract_action" href="#" rel="';
                 result += resultobj['id'];
@@ -3686,15 +5300,18 @@ $.extend(true, doaj, {
             return false;
         },
 
-        journalLicense : function (val, resultobj, renderer) {
+        journalLicense: function (val, resultobj, renderer) {
             var titles = [];
             if (resultobj.bibjson && resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
                 var lics = resultobj["bibjson"]["journal"]["license"];
-                var titles = lics.map(function(x) { return x.type });
-            }
-            else if (resultobj.bibjson && resultobj.bibjson.license) {
+                var titles = lics.map(function (x) {
+                    return x.type
+                });
+            } else if (resultobj.bibjson && resultobj.bibjson.license) {
                 var lics = resultobj["bibjson"]["license"];
-                titles = lics.map(function(x) { return x.type });
+                titles = lics.map(function (x) {
+                    return x.type
+                });
             }
 
             var links = [];
@@ -3715,7 +5332,7 @@ $.extend(true, doaj, {
             return false;
         },
 
-        doiLink : function (val, resultobj, renderer) {
+        doiLink: function (val, resultobj, renderer) {
             if (resultobj.bibjson && resultobj.bibjson.identifier) {
                 var ids = resultobj.bibjson.identifier;
                 for (var i = 0; i < ids.length; i++) {
@@ -3730,7 +5347,7 @@ $.extend(true, doaj, {
             return false
         },
 
-        links : function (val, resultobj, renderer) {
+        links: function (val, resultobj, renderer) {
             if (resultobj.bibjson && resultobj.bibjson.ref) {
                 var urls = [];
                 var ls = Object.keys(resultobj.bibjson.ref);
@@ -3758,37 +5375,32 @@ $.extend(true, doaj, {
             return false;
         },
 
-        issns : function (val, resultobj, renderer) {
-            if (resultobj.bibjson && (resultobj.bibjson.pissn || resultobj.bibjson.eissn)) {
-                var issn = resultobj.bibjson.pissn;
-                var eissn = resultobj.bibjson.eissn;
-                var issns = [];
-                if (issn) {
-                    issns.push(edges.escapeHtml(issn));
+        issns: function (val, resultobj, renderer) {
+            let issns = []
+            for (let variant of ["pissn", "eissn"]) {
+                let x_issn = resultobj.bibjson?.[variant] ?? false;
+                if (x_issn) {
+                    issns.push(`<strong>${variant.toUpperCase()}:</strong> ${x_issn}`)
                 }
-                if (eissn) {
-                    issns.push(edges.escapeHtml(eissn));
-                }
-                return issns.join(", ")
             }
-            return false
+            return issns.length ? issns.join(', ') : false;
         },
 
-        countryName : function (val, resultobj, renderer) {
+        countryName: function (val, resultobj, renderer) {
             if (resultobj.index && resultobj.index.country) {
                 return edges.escapeHtml(resultobj.index.country);
             }
             return false
         },
 
-        inDoaj : function(val, resultobj, renderer) {
+        inDoaj: function (val, resultobj, renderer) {
             var mapping = {
                 "false": {"text": "No", "class": "red"},
                 "true": {"text": "Yes", "class": "green"}
             };
             var field = "";
             if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
-                if(mapping[resultobj['admin']['in_doaj']]) {
+                if (mapping[resultobj['admin']['in_doaj']]) {
                     var result = '<span class=' + mapping[resultobj['admin']['in_doaj']]['class'] + '>';
                     result += mapping[resultobj['admin']['in_doaj']]['text'];
                     result += '</span>';
@@ -3804,7 +5416,7 @@ $.extend(true, doaj, {
             return false;
         },
 
-        owner : function (val, resultobj, renderer) {
+        owner: function (val, resultobj, renderer) {
             if (resultobj.admin && resultobj.admin.owner !== undefined && resultobj.admin.owner !== "") {
                 var own = resultobj.admin.owner;
                 return '<a href="/account/' + own + '">' + edges.escapeHtml(own) + '</a>'
@@ -3812,33 +5424,32 @@ $.extend(true, doaj, {
             return false
         },
 
-        createdDateWithTime : function (val, resultobj, renderer) {
-            return doaj.iso_datetime2date_and_time(resultobj['created_date']);
+        createdDateWithTime: function (val, resultobj, renderer) {
+            return doaj.dates.iso_datetime2date_and_time(resultobj['created_date']);
         },
 
-        lastManualUpdate : function (val, resultobj, renderer) {
+        lastManualUpdate: function (val, resultobj, renderer) {
             var man_update = resultobj['last_manual_update'];
-            if (man_update === '1970-01-01T00:00:00Z')
-            {
+            if (man_update === '1970-01-01T00:00:00Z') {
                 return 'Never'
             } else {
-                return doaj.iso_datetime2date_and_time(man_update);
+                return doaj.dates.iso_datetime2date_and_time(man_update);
             }
         },
 
-        suggestedOn : function (val, resultobj, renderer) {
+        suggestedOn: function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
-                return doaj.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
+                return doaj.dates.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
             } else {
                 return false;
             }
         },
 
-        applicationStatus : function(val, resultobj, renderer) {
+        applicationStatus: function (val, resultobj, renderer) {
             return doaj.valueMaps.applicationStatus[resultobj['admin']['application_status']];
         },
 
-        editSuggestion : function(params) {
+        editSuggestion: function (params) {
             return function (val, resultobj, renderer) {
                 if (resultobj.es_type === "application") {
                     // determine the link name
@@ -3868,7 +5479,7 @@ $.extend(true, doaj, {
             }
         },
 
-        readOnlyJournal : function(params) {
+        readOnlyJournal: function (params) {
             return function (val, resultobj, renderer) {
                 if (resultobj.admin && resultobj.admin.current_journal) {
                     var result = '<br/><p><a class="readonly_journal_link button" href="';
@@ -3882,7 +5493,7 @@ $.extend(true, doaj, {
             }
         },
 
-        editJournal : function(params) {
+        editJournal: function (params) {
             return function (val, resultobj, renderer) {
                 if (!resultobj.suggestion && !resultobj.bibjson.journal) {
                     // if it's not a suggestion or an article .. (it's a
@@ -3900,32 +5511,32 @@ $.extend(true, doaj, {
         },
     },
 
-    bulk : {
-        applicationMultiFormBox : function(edge_instance, doaj_type) {
+    bulk: {
+        applicationMultiFormBox: function (edge_instance, doaj_type) {
             return doaj.multiFormBox.newMultiFormBox({
-                edge : edge_instance,
+                edge: edge_instance,
                 selector: "#admin-bulk-box",
-                bindings : {
-                    editor_group : function(context) {
+                bindings: {
+                    editor_group: function (context) {
                         autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
                     }
                 },
-                validators : {
-                    application_status : function(context) {
+                validators: {
+                    application_status: function (context) {
                         var val = context.find("#application_status").val();
                         if (val === "") {
                             return {valid: false};
                         }
                         return {valid: true};
                     },
-                    editor_group : function(context) {
+                    editor_group: function (context) {
                         var val = context.find("#editor_group").val();
                         if (val === "") {
                             return {valid: false};
                         }
                         return {valid: true};
                     },
-                    note : function(context) {
+                    note: function (context) {
                         var val = context.find("#note").val();
                         if (val === "") {
                             return {valid: false};
@@ -3933,33 +5544,33 @@ $.extend(true, doaj, {
                         return {valid: true};
                     }
                 },
-                submit : {
-                    note : {
-                        data: function(context) {
+                submit: {
+                    note: {
+                        data: function (context) {
                             return {
                                 note: $('#note', context).val()
                             };
                         }
                     },
-                    editor_group : {
-                        data : function(context) {
+                    editor_group: {
+                        data: function (context) {
                             return {
                                 editor_group: $('#editor_group', context).val()
                             };
                         }
                     },
-                    application_status : {
-                        data : function(context) {
+                    application_status: {
+                        data: function (context) {
                             return {
                                 application_status: $('#application_status', context).val()
                             };
                         }
                     }
                 },
-                urls : {
-                    note : "/admin/" + doaj_type + "/bulk/add_note",
-                    editor_group : "/admin/" + doaj_type + "/bulk/assign_editor_group",
-                    application_status : "/admin/" + doaj_type + "/bulk/change_status"
+                urls: {
+                    note: "/admin/" + doaj_type + "/bulk/add_note",
+                    editor_group: "/admin/" + doaj_type + "/bulk/assign_editor_group",
+                    application_status: "/admin/" + doaj_type + "/bulk/change_status"
                 }
             });
         }

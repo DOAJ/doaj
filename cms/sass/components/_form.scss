@@ -3,7 +3,7 @@
 
 .form {
   textarea {
-    height: 20vh;
+    height: max-content;
   }
 
   button {
@@ -46,6 +46,10 @@
     margin-bottom: $spacing-03;
   }
 
+  label {
+      display: inline-block;
+  }
+
   input, select, textarea, .select2-container {
     margin-bottom: $spacing-03;
     width: 75%;
@@ -56,10 +60,6 @@
     &[type="radio"], &[type="checkbox"] {
       width: 0.8rem;
     }
-  }
-
-  input[type="checkbox"] + label {
-    display: unset;
   }
 
   input[type="checkbox"] + label,
@@ -109,7 +109,7 @@
     margin-top: 0;
   }
 
-  fieldset {
+  fieldset, form[data-context="public"] section {
     margin: $spacing-04 0;
     padding: $spacing-03;
     background-color: $light-grey;

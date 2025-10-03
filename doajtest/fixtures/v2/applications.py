@@ -4,23 +4,43 @@ from datetime import datetime
 import rstr
 
 from portality import constants, regex
-from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
+from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED
+from doajtest.fixtures.v2.common import build_flags_form_expanded
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
-from portality.lib import dates
+from portality.lib import dates, dicts
 from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
 from portality.models.v2.application import Application
+from portality.crosswalks.application_form import ApplicationFormXWalk
 
 class ApplicationFixtureFactory(object):
     @staticmethod
-    def make_update_request_source():
+    def make_update_request_source(overlay=None):
         template = deepcopy(APPLICATION_SOURCE)
         template["admin"]["current_journal"] = '123456789987654321'
+        if overlay is not None:
+            template = dicts.deep_merge(template, overlay, overlay=True)
         return template
 
     @staticmethod
-    def make_application_source():
-        return deepcopy(APPLICATION_SOURCE)
-    
+    def make_application_source(overlay=None):
+        result = deepcopy(APPLICATION_SOURCE)
+        result["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
+        del result["admin"]["current_journal"]
+        if overlay is not None:
+            result = dicts.deep_merge(result, overlay, overlay=True)
+        return result
+
+    @staticmethod
+    def make_application_with_data(title=None, publisher_name=None, country=None):
+        application = deepcopy(APPLICATION_SOURCE)
+        if title:
+            application["bibjson"]["title"] = title
+        if publisher_name:
+            application["bibjson"]["publisher"]["name"] = publisher_name
+        if country:
+            application["bibjson"]["publisher"]["country"] = country
+        return application
+
     @staticmethod
     def make_many_application_sources(count=2, in_doaj=False):
         application_sources = []
@@ -42,16 +62,23 @@ class ApplicationFixtureFactory(object):
         return application_sources
 
     @staticmethod
-    def make_application_form(role="maned"):
-        form = deepcopy(APPLICATION_FORM)
+    def make_application_form(role="maned", flag=None, **flag_kwargs):
+        form = deepcopy(APPLICATION_FORM_EXPANDED)
         if role == "assed" or role == "editor":
             del form["editor_group"]
+            del form["s2o"]
         elif role == "publisher":
             form = deepcopy(JOURNAL_FORM)
             del form["pissn"]
             del form["eissn"]
+            del form["s2o"]
+        if flag:
+            flags_update = build_flags_form_expanded(**flag_kwargs)
+            form.update(deepcopy(flags_update))
 
-        return form
+        app_form = ApplicationFormXWalk.forminfo2multidict(form)
+
+        return app_form
 
     @staticmethod
     def make_application_form_info():
@@ -121,7 +148,6 @@ APPLICATION_SOURCE = {
         ],
         "owner" : "publisher",
         "related_journal" : "987654321123456789",
-        "seal": False,
         "date_applied" : "2003-01-01T00:00:00Z"
     },
     "bibjson" : JOURNAL_LIKE_BIBJSON
@@ -153,8 +179,6 @@ APPLICATION_FORM_EXPANDED.update(deepcopy(NOTES_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(SUBJECT_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(OWNER_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
-APPLICATION_FORM_EXPANDED.update(deepcopy(SEAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
-from portality.crosswalks.application_form import ApplicationFormXWalk
 APPLICATION_FORM = ApplicationFormXWalk.forminfo2multidict(APPLICATION_FORM_EXPANDED)

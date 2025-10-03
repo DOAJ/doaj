@@ -168,6 +168,8 @@ Each static Markdown page includes YAML front matter at the top of the document 
   - if `false` you can omit this
 - `meta_description`:
   - A description for the page that will appear in the header metadata in the resulting HTML
+- `data`:
+  - set to true if `.yml` file with data exists to add the `db` icon to the page for admins
 
   
 ### Including other templates into the text
@@ -177,11 +179,11 @@ frontmatter directives, then you can also import the template directly at any po
 
 This is done by wrapping a template import directive in an HTML `<div>` tag (to prevent the markdown
 interpreter from touching it).  This is done as follows.  Ensure that the import directive is formatted
-exactly as specified here.  You should just change the path to the template file (`data/sponsors.html`)
+exactly as specified here.  You should just change the path to the template file (`public/includes/_sponsors.html`)
 to the appropriate path for the template you wish to include:
 
 ```
-<div>{% include "data/sponsors.html" %}</div>
+<div>{% include "public/includes/_sponsors.html" %}</div>
 ```
 
 For example, to import a data template in the middle of some text:
@@ -189,7 +191,7 @@ For example, to import a data template in the middle of some text:
 ```
 Here is some introductory text about the following data...
 
-<div>{% include "data/sponsors.html" %}</div>
+<div>{% include "public/includes/_sponsors.html" %}</div>
 
 Wasn't that data interesting?
 ```

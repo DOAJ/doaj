@@ -8,6 +8,10 @@
 - name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
+  
+- name: AIP Publishing
+  url: https://publishing.aip.org/
+  logo: AIP_Logo.png
 
 - name: AOSIS
   url: https://aosis.co.za/
@@ -73,6 +77,10 @@
   url: https://www.frontiersin.org/
   logo: frontiers.svg
 
+- name: Gruppo Italiano Frattura
+  url: https://www.gruppofrattura.eu/
+  logo: igf.png  
+
 - name: Iași University of Life Sciences
   url: https://iuls.ro/en/
   logo: Lasi.png 
@@ -84,6 +92,10 @@
 - name: IET
   url: https://www.theiet.org/
   logo: iet.svg
+
+- name: INCAS - National Institute for Aerospace Research “Elie Carafoli”
+  url: https://www.incas.ro/
+  logo: Logo1.png
 
 - name: Institute of Physics
   url: https://www.iop.org/
@@ -127,16 +139,24 @@
 
 - name: Pensoft Publishers
   url: https://pensoft.net/media
-  logo: Pensoft.png
+  logo: pensoftlogo.jpg
 
 - name: PLOS
   url: https://plos.org/
   logo: plos.svg
-  
+
+- name: Publishers Licensing Services
+  url: https://www.pls.org.uk/
+  logo: PLS-logo-RGB.png
+
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
 
+- name: Scandinavian University Press
+  url: https://www.universitetsforlaget.no/en/
+  logo: SCUP-logo.png
+  
 - name: SciFree
   url: https://scifree.se/
   logo: scifree.svg
@@ -149,14 +169,29 @@
   url: https://www.springernature.com/gp
   logo: SN_stack_logo.png
 
+- name: Sobiad
+  url: https://atif.sobiad.com/
+  logo: logo.png  
+
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
+  
+- name: Tsinghua University Press
+  url: https://www.tsinghua.edu.cn/en/
+  logo: TSPlogo.jpg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg 
 
+- name: University of Johannesburg
+  url: https://www.uj.ac.za/
+  logo: uj.png
+
+- name: Zhejiang University Press ‌Co.
+  url: 
+  logo: Zhejiang.jpg
 - name: John Wiley and Sons LTD
   url: https://www.wiley.com/en-us 
   logo: Wiley_Wordmark_black.png

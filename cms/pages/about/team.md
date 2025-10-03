@@ -1,10 +1,12 @@
 ---
 layout: no-sidenav
-include: /data/team.html
+include: /public/includes/_team.html
 title: DOAJ team
 section: About
 toc: true
 featuremap: ~~Team:Fragment->TeamData:Template~~
+data: true
 
 ---
+
 

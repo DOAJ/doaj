@@ -51,6 +51,11 @@ def to_unicode_upper(val):
     val = ufn(val)
     return val.upper()
 
+def to_unicode_lower(val):
+    ufn = to_unicode()
+    val = ufn(val)
+    return val.lower()
+
 def to_int():
     def intify(val):
         # strip any characters that are outside the ascii range - they won't make up the int anyway
@@ -259,6 +264,7 @@ class DataObj(object):
         # extend the coerce map.
         "unicode": to_unicode(),
         "unicode_upper" : to_unicode_upper,
+        "unicode_lower": to_unicode_lower,
         "utcdatetime": date_str(),
         "utcdatetimemicros" : date_str(out_format=FMT_DATETIME_MS_STD),
         "bigenddate" : date_str(out_format=FMT_DATE_STD),
@@ -273,7 +279,7 @@ class DataObj(object):
         "license": string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True),
         "persistent_identifier_scheme": string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True),
         "format": string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True),
-        "deposit_policy": string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Diadorim", "Mir@bel"], allow_fail=True),
+        "deposit_policy": string_canonicalise(["None", "Open Policy Finder", "Dulcinea", "OAKlist", "Diadorim", "Mir@bel"], allow_fail=True),
     }
 
     def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, construct_silent_prune=False, construct_maintain_reference=False, *args, **kwargs):

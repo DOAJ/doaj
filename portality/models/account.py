@@ -56,7 +56,7 @@ class Account(DomainObject, UserMixin):
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             acc = cls(**res['hits']['hits'][0]['_source'])
-            if acc.email == email:  # Only return the account if it was an exact match with supplied email
+            if acc.email.lower() == email.lower():  # allow case insensitive login
                 return acc
         return None
 
@@ -85,6 +85,17 @@ class Account(DomainObject, UserMixin):
                 return None
         return cls(**obs[0])
 
+    # @classmethod
+    # def autocomplete(cls, field, prefix, admin_only=False, size=5):
+    #
+    #     return {"suggestions": super().autocomplete(field, prefix, filter_condition=filter_condition, size=size)}
+
+    @classmethod
+    def admin_autocomplete(cls, field, prefix, size=5):
+        """Autocomplete for admin users only."""
+        filter_condition = {"role.exact": "admin"}
+        return cls.autocomplete(field, prefix, filter_condition=filter_condition, size=size)
+
     @property
     def marketing_consent(self):
         return self.data.get("marketing_consent")
@@ -108,6 +119,9 @@ class Account(DomainObject, UserMixin):
 
     def set_password(self, password):
         self.data['password'] = generate_password_hash(password)
+
+    def set_password_hash(self, hash):
+        self.data['password'] = hash
 
     def clear_password(self):
         if self.data.get('password'):

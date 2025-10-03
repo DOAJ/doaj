@@ -1,4 +1,5 @@
 import json
+import os.path
 import re
 import urllib.error
 import urllib.parse
@@ -12,12 +13,14 @@ from portality import constants
 from portality import dao
 from portality import models
 from portality import store
+from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
+from portality.ui import templates
 
 # ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
@@ -27,7 +30,7 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
+    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals)
 
 
 @blueprint.route('/login/')
@@ -39,11 +42,17 @@ def login():
 def cookie_consent():
     cont = request.values.get("continue")
     if cont is not None:
-        resp = redirect(cont)
+        # Only permit relative path redirects, to prevent phishing by supplying a full URI to a different domain
+        parsed_redirect = urllib.parse.urlparse(cont)
+        if parsed_redirect.netloc != '':
+            abort(400)
+        else:
+            resp = redirect(cont)
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
+    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"),
+                    Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
     return resp
 
 
@@ -55,12 +64,14 @@ def dismiss_site_note():
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"), max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
+    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"),
+                    max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
     return resp
 
 
-@blueprint.route("/news")
+@blueprint.route("/news/")
 def news():
+    # NOTE: On live this is also handled by the nginx redirect map, but this will strip those with parameters supplied
     return redirect("https://blog.doaj.org")
 
 
@@ -78,12 +89,12 @@ def fqw_hit():
 
 @blueprint.route("/search/journals", methods=["GET"])
 def journals_search():
-    return render_template("doaj/journals_search.html", lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_JOURNAL_SEARCH, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search/articles", methods=["GET"])
 def articles_search():
-    return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_ARTICLE_SEARCH, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search", methods=['GET'])
@@ -100,7 +111,7 @@ def search():
 def search_post():
     """ Redirect a query from the box on the index page to the search page. """
     if request.form.get('origin') != 'ui':
-        abort(400)                                              # bad request - we must receive searches from our own UI
+        abort(400)  # bad request - we must receive searches from our own UI
 
     ref = request.form.get("ref")
     if ref is None:
@@ -115,14 +126,14 @@ def search_post():
 
     # lhs for journals, rhs for articles
     field_map = {
-        "all" : (None, None),
-        "title" : ("bibjson.title", "bibjson.title"),
-        "abstract" : (None, "bibjson.abstract"),
-        "subject" : ("index.classification", "index.classification"),
-        "author" : (None, "bibjson.author.name"),
-        "issn" : ("index.issn.exact", None),
-        "publisher" : ("bibjson.publisher.name", None),
-        "country" : ("index.country", None)
+        "all": (None, None),
+        "title": ("bibjson.title", "bibjson.title"),
+        "abstract": (None, "bibjson.abstract"),
+        "subject": ("index.classification", "index.classification"),
+        "author": (None, "bibjson.author.name"),
+        "issn": ("index.issn.exact", None),
+        "publisher": ("bibjson.publisher.name", None),
+        "country": ("index.country", None)
     }
     default_field_opts = field_map.get(field, None)
     default_field = None
@@ -143,28 +154,8 @@ def search_post():
 
     return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
 
+
 #############################################
-
-# FIXME: this should really live somewhere else more appropirate to who can access it
-@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
-@login_required
-@ssl_required
-def journal_readonly(journal_id):
-    if (
-        not current_user.has_role("admin")
-        or not current_user.has_role("editor")
-        or not current_user.has_role("associate_editor")
-    ):
-        abort(401)
-
-    j = models.Journal.pull(journal_id)
-    if j is None:
-        abort(404)
-
-    fc = JournalFormFactory.context("readonly")
-    fc.processor(source=j)
-    return fc.render_template(obj=j, lcc_tree=lcc_jstree)
-
 
 @blueprint.route("/csv")
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_JOURNALCSV', 'JournalCSV'),
@@ -182,13 +173,31 @@ def csv_data():
 
 
 @blueprint.route("/sitemap.xml")
-def sitemap():
-    sitemap_url = models.Cache.get_latest_sitemap()
-    if sitemap_url is None:
+def sitemap_legacy():
+    return redirect(url_for('doaj.sitemap', suffix="0"), 301)
+
+@blueprint.route("/sitemap_index.xml")
+def sitemap_index_legacy():
+    return redirect(url_for('doaj.sitemap', suffix="_index_0"), 301)
+
+@blueprint.route("/sitemap<suffix>.xml")
+def sitemap(suffix):
+    """
+    This route handles both sitemaps, of the form /sitemapN.xml, and sitemap indexes, of the form /sitemap_index_N.xml
+    :param suffix:
+    :return:
+    """
+    url = None
+    if suffix.startswith("_index_"):
+        n = suffix[len("_index_"):]
+        url = models.Cache.get_sitemap_index(n)
+    else:
+        url = models.Cache.get_sitemap(suffix)
+    if url is None:
         abort(404)
-    if sitemap_url.startswith("/"):
-        sitemap_url = "/store" + sitemap_url
-    return redirect(sitemap_url, code=307)
+    if url.startswith("/"):
+        url = "/store" + url
+    return redirect(url, code=307)
 
 
 @blueprint.route("/public-data-dump/<record_type>")
@@ -218,6 +227,10 @@ def public_data_dump_redirect(record_type):
 
     return redirect(store_url, code=307)
 
+@blueprint.route("/store/<container>/<dir>/<filename>")
+def get_from_local_store_dir(container, dir, filename):
+    file = os.path.join(dir, filename)
+    return get_from_local_store(container, file)
 
 @blueprint.route("/store/<container>/<filename>")
 def get_from_local_store(container, filename):
@@ -227,18 +240,21 @@ def get_from_local_store(container, filename):
     from portality import store
     localStore = store.StoreFactory.get(None)
     file_handle = localStore.get(container, filename)
-    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True,
+                     download_name=os.path.basename(filename))
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q', '')
     if not prefix:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "",
+                                         "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
 
     m = models.lookup_model(doc_type)
     if not m:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "",
+                                         "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
 
@@ -286,6 +302,7 @@ def find_toc_journal_by_identifier(identifier):
 def is_issn_by_identifier(identifier):
     return len(identifier) == 9
 
+
 def find_correct_redirect_identifier(identifier, bibjson) -> str:
     """
     return None if identifier is correct and no redirect is needed
@@ -326,6 +343,7 @@ def find_correct_redirect_identifier(identifier, bibjson) -> str:
         # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
         # and the user is referring to the toc page via that ID
 
+
 @blueprint.route("/toc/<identifier>")
 def toc(identifier=None):
     """ Table of Contents page for a journal. identifier may be the journal id or an issn """
@@ -338,26 +356,27 @@ def toc(identifier=None):
         return redirect(url_for('doaj.toc', identifier=real_identifier), 301)
     else:
         # now render all that information
-        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson )
+        return render_template(templates.PUBLIC_TOC_MAIN, journal=journal, bibjson=bibjson, tab="main")
 
 
 @blueprint.route("/toc/articles/<identifier>")
 def toc_articles_legacy(identifier=None):
     return redirect(url_for('doaj.toc_articles', identifier=identifier, volume=1, issue=1), 301)
 
+
 @blueprint.route("/toc/<identifier>/articles")
 def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
+    articles_no = journal.article_stats()["total"]
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
-        return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson )
+        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, articles_no=articles_no, tab="articles")
 
 
-
-#~~->Article:Page~~
+# ~~->Article:Page~~
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
@@ -375,38 +394,7 @@ def article_page(identifier=None):
         if len(journals) > 0:
             journal = journals[0]
 
-    return render_template('doaj/article.html', article=article, journal=journal, page={"highlight" : True})
-
-# Not using this form for now but we might bring it back later
-# @blueprint.route("/contact/", methods=["GET", "POST"])
-# def contact():
-#     if request.method == "GET":
-#         form = ContactUs()
-#         if current_user.is_authenticated:
-#             form.email.data = current_user.email
-#         return render_template("doaj/contact.html", form=form)
-#     elif request.method == "POST":
-#         prepop = request.values.get("ref")
-#         form = ContactUs(request.form)
-#
-#         if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
-#             form.email.data = current_user.email
-#
-#         if prepop is not None:
-#             return render_template("doaj/contact.html", form=form)
-#
-#         if not form.validate():
-#             return render_template("doaj/contact.html", form=form)
-#
-#         data = _verify_recaptcha(form.recaptcha_value.data)
-#         if data["success"]:
-#             send_contact_form(form)
-#             flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-#             form = ContactUs()
-#             return render_template("doaj/contact.html", form=form)
-#         else:
-#             flash("Your form could not be submitted,", "error")
-#             return render_template("doaj/contact.html", form=form)
+    return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 
 
 ###############################################################
@@ -420,22 +408,30 @@ def google_webmaster_tools():
 
 @blueprint.route("/accessibility/")
 def accessibility():
-    return render_template("layouts/static_page.html", page_frag="/legal/accessibility.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/accessibility.html")
 
 
 @blueprint.route("/privacy/")
 def privacy():
-    return render_template("layouts/static_page.html", page_frag="/legal/privacy.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/privacy.html")
 
 
 @blueprint.route("/contact/")
 def contact():
-    return render_template("layouts/static_page.html", page_frag="/legal/contact.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/contact.html")
 
 
 @blueprint.route("/terms/")
 def terms():
-    return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/terms.html")
+
+
+@blueprint.route("/code-of-conduct/")
+def conduct():
+    """
+    ~~Conduct:WebRoute~~
+    """
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/code-of-conduct.html")
 
 
 @blueprint.route("/media/")
@@ -443,67 +439,67 @@ def media():
     """
     ~~Media:WebRoute~~
     """
-    return render_template("layouts/static_page.html", page_frag="/legal/media.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/media.html")
 
 
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="/support/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/index.html")
 
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="/support/sponsors.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/sponsors.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
 def publisher_supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/publisher-supporters.html")
 
 
 @blueprint.route("/support/supporters/")
 def supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/supporters.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/supporters.html")
+
+
+@blueprint.route("/support/funders/")
+def funders():
+    return render_template(templates.STATIC_PAGE, page_frag="/support/funders.html")
 
 
 @blueprint.route("/support/thank-you/")
 def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/support/thank-you.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/thank-you.html")
 
 
 @blueprint.route("/apply/guide/")
 def guide():
-    return render_template("layouts/static_page.html", page_frag="/apply/guide.html")
-
-
-@blueprint.route("/apply/seal/")
-def seal():
-    return render_template("layouts/static_page.html", page_frag="/apply/seal.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/guide.html")
 
 
 @blueprint.route("/apply/transparency/")
 def transparency():
-    return render_template("layouts/static_page.html", page_frag="/apply/transparency.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/transparency.html")
 
 
 @blueprint.route("/apply/why-index/")
 def why_index():
-    return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/why-index.html")
 
 
 @blueprint.route("/apply/publisher-responsibilities/")
 def publisher_responsibilities():
-    return render_template("layouts/static_page.html", page_frag="/apply/publisher-responsibilities.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/publisher-responsibilities.html")
 
 
 @blueprint.route("/apply/copyright-and-licensing/")
 def copyright_and_licensing():
-    return render_template("layouts/static_page.html", page_frag="/apply/copyright-and-licensing.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/copyright-and-licensing.html")
 
 
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
-    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/oai-pmh.html")
 
 
 @blueprint.route('/docs/api/')
@@ -514,60 +510,70 @@ def docs():
 
 @blueprint.route("/docs/xml/")
 def xml():
-    return render_template("layouts/static_page.html", page_frag="/docs/xml.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/xml.html")
 
 
 @blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html", base_url=app.config.get('BASE_URL'))
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/widgets.html", base_url=app.config.get('BASE_URL'))
 
 
 @blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/public-data-dump.html")
 
 
 @blueprint.route("/docs/openurl/")
 def openurl():
-    return render_template("layouts/static_page.html", page_frag="/docs/openurl.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/openurl.html")
 
 
 @blueprint.route("/docs/faq/")
 def faq():
-    return render_template("layouts/static_page.html", page_frag="/docs/faq.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/faq.html")
 
 
 @blueprint.route("/about/")
 def about():
-    return render_template("layouts/static_page.html", page_frag="/about/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/index.html")
+
+
 
 @blueprint.route("/at-20/")
 def at_20():
-    return render_template("layouts/static_page.html", page_frag="/about/at-20.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/at-20.html")
+
+
+
 
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
-    return render_template("layouts/static_page.html", page_frag="/about/ambassadors.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/ambassadors.html")
 
 
 @blueprint.route("/about/advisory-board-council/")
 def abc():
-    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/advisory-board-council.html")
+
+
+@blueprint.route("/about/editorial-policy-advisory-group/")
+def epag():
+    return render_template(templates.STATIC_PAGE, page_frag="/about/editorial-policy-advisory-group.html")
 
 
 @blueprint.route("/about/volunteers/")
 def volunteers():
-    return render_template("layouts/static_page.html", page_frag="/about/volunteers.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/volunteers.html")
 
 
 @blueprint.route("/about/team/")
 def team():
-    return render_template("layouts/static_page.html", page_frag="/about/team.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/team.html")
 
 
 @blueprint.route("/preservation/")
 def preservation():
-    return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/preservation/index.html")
 
 
 # LEGACY ROUTES
@@ -641,3 +647,15 @@ def publishers():
 @blueprint.route("/password-reset/")
 def new_password_reset():
     return redirect(url_for('account.forgot'), code=301)
+
+
+@blueprint.route("/u/<alias>")
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
+                    action=app.config.get('ANALYTICS_ACTION_URLSHORT_REDIRECT', 'Redirect'))
+def shortened_url(alias):
+    short = DOAJ.shortUrlService().find_url_by_alias(alias)
+    if short:
+        return redirect(short.url)
+
+    app.logger.debug(f"Shortened URL not found: [{alias}]")
+    abort(404)

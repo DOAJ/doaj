@@ -45,7 +45,7 @@ $.extend(true, doaj, {
         },
 
         lastUpdated : function (val, resultobj, renderer) {
-            return doaj.iso_datetime2date_and_time(resultobj['last_updated']);
+            return doaj.dates.humanYearMonth(resultobj['last_updated']);
         },
 
         deleteArticle : function (val, resultobj, renderer) {
@@ -436,7 +436,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
                                     "valueFunction" : doaj.fieldRender.issns
                                 }
                             ],
@@ -600,7 +599,7 @@ $.extend(true, doaj, {
 
                         // now check that at least one field has been completed
                         var found = false;
-                        var fields = ["#publisher_name", "#publisher_country", "#owner", "#doaj_seal"];
+                        var fields = ["#publisher_name", "#publisher_country", "#owner"];
                         for (var i = 0; i < fields.length; i++) {
                             var val = context.find(fields[i]).val();
                             if (val !== "") {
@@ -634,18 +633,11 @@ $.extend(true, doaj, {
                     },
                     edit_metadata : {
                         data : function(context) {
-                            var seal = $('#change_doaj_seal', context).val();
-                            if (seal === "True") {
-                                seal = true;
-                            } else if (seal === "False") {
-                                seal = false;
-                            }
                             var data = {
                                 metadata : {
                                     publisher_name: $('#publisher_name', context).select2("val"),
                                     publisher_country: $('#publisher_country', context).select2("val"),
-                                    owner: $('#owner', context).select2("val"),
-                                    change_doaj_seal: seal
+                                    owner: $('#owner', context).select2("val")
                                 }
                             };
                             return data;

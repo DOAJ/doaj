@@ -257,6 +257,7 @@ class DraftApplication(Application):
 
     __SEAMLESS_APPLY_STRUCT_ON_INIT__ = False
     __SEAMLESS_CHECK_REQUIRED_ON_INIT__ = False
+    __SEAMLESS_SILENT_PRUNE__ = True
 
 
 class AllPublisherApplications(DomainObject):
@@ -266,7 +267,7 @@ class AllPublisherApplications(DomainObject):
 MAPPING_OPTS = {
     "dynamic": None,
     "coerces": Journal.add_mapping_extensions(app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]),
-    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"],
+    "exceptions": {**app.config["ADMIN_NOTES_SEARCH_MAPPING"], **app.config["JOURNAL_EXCEPTION_MAPPING"]},
     "additional_mappings": app.config["ADMIN_NOTES_INDEX_ONLY_FIELDS"]
 }
 
@@ -366,7 +367,7 @@ class CurrentJournalQuery(object):
                 }
             },
             "sort": [
-                {"created_date": {"order": "desc"}}
+                {"admin.date_applied": {"order": "desc"}}
             ],
             "size": self.size
         }
@@ -389,7 +390,7 @@ class RelatedJournalQuery(object):
                 }
             },
             "sort": [
-                {"created_date": {"order": "asc"}}
+                {"admin.date_applied": {"order": "asc"}}
             ],
             "size": self.size
         }

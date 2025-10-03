@@ -1,19 +1,15 @@
-import uuid
+from flask import url_for, has_request_context
+from flask_login import current_user
+from wtforms import FormField, FieldList
 
-from portality.core import app
 from portality import models, constants, app_email
+from portality.bll import DOAJ, exceptions
+from portality.core import app
+from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.lib import dates
 from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
-from portality.crosswalks.application_form import ApplicationFormXWalk
-from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.bll import exceptions
-from portality.bll.doaj import DOAJ
-
-from flask import url_for, has_request_context
-from flask_login import current_user
-
-from wtforms import FormField, FieldList
 
 
 class ApplicationProcessor(FormProcessor):
@@ -204,6 +200,30 @@ class ApplicationProcessor(FormProcessor):
                         # Skip if we don't have a current_user
                         pass
 
+    def _resolve_flags(self, account):
+        # handle flag resolution
+
+        # check that this form knows about flags
+        if getattr(self.form, "flags", None) is None:
+            return
+
+        resolved_flags = []
+        for flag in self.form.flags.data:
+            if flag["flag_resolved"] == "true":
+                # Note: new notes do not necessarily have ids, but flags that are being
+                # resolved must have an id because they must exist already to be resolved
+                resolved_flags.append(flag["flag_note_id"])
+
+        for flag_id in resolved_flags:
+            acc_id = account.id if account else "unknown user"
+            flag = self.target.get_note_by_id(flag_id)
+            new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                date=dates.today(),
+                username=acc_id,
+                note=flag.get("note", "")
+            )
+            self.target.resolve_flag(flag_id, new_note_text)
+
 
 class NewApplication(ApplicationProcessor):
     """
@@ -306,10 +326,12 @@ class AdminApplication(ApplicationProcessor):
         # to bypass WTForms insistence that choices on a select field match the value, outside of the actual validation
         # chain
         super(AdminApplication, self).pre_validate()
-        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
+        self.form.editor.validate_choice = False
+        # self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
 
         # TODO: Should quick_reject be set through this form at all?
-        self.form.quick_reject.choices = [(self.form.quick_reject.data, self.form.quick_reject.data)]
+        self.form.quick_reject.validate_choice = False
+        # self.form.quick_reject.choices = [(self.form.quick_reject.data, self.form.quick_reject.data)]
 
     def patch_target(self):
         super(AdminApplication, self).patch_target()
@@ -341,10 +363,11 @@ class AdminApplication(ApplicationProcessor):
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
 
         # if we are allowed to finalise, kick this up to the superclass
+        # here I can do something before the crosswalk is called - to do, move the resovled note conversion here
         super(AdminApplication, self).finalise()
 
-        # instance of the events service to pick up any events we need to send
-        eventsSvc = DOAJ.eventsService()
+        # resolve any flags that were resolved in the form
+        # self._resolve_flags(account)
 
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
@@ -456,11 +479,6 @@ class AdminApplication(ApplicationProcessor):
                 #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
                 #     app.logger.exception("Email to associate failed.")
 
-            # If this is the first time this application has been assigned to an editor, notify the publisher.
-            old_ed = self.source.editor
-            if (old_ed is None or old_ed == '') and self.target.editor is not None:
-                self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
-
             # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
             if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
                 # First, the editor
@@ -537,6 +555,7 @@ class EditorApplication(ApplicationProcessor):
 
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:
@@ -585,11 +604,6 @@ class EditorApplication(ApplicationProcessor):
             # except app_email.EmailException:
             #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
             #     app.logger.exception('Error sending associate assigned email')
-
-        # If this is the first time this application has been assigned to an editor, notify the publisher.
-        old_ed = self.source.editor
-        if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
         if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
@@ -644,7 +658,7 @@ class AssociateApplication(ApplicationProcessor):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
-        self.target.set_seal(self.source.has_seal())
+        self.target.bibjson().labels = self.source.bibjson().labels
         self._carry_continuations()
 
     def finalise(self):
@@ -696,13 +710,14 @@ class PublisherUpdateRequest(ApplicationProcessor):
             raise Exception("You cannot patch a target from a non-existent source")
 
         super().patch_target()
-        self._carry_subjects_and_seal()
+        self._carry_subjects()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
@@ -722,6 +737,9 @@ class PublisherUpdateRequest(ApplicationProcessor):
         else:
             self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
+        # automatically assign the Editorial group (turn this off in configuration if needed)
+        DOAJ.applicationService().auto_assign_ur_editor_group(self.target)
+
         # Save the target
         self.target.set_last_manual_update()
         if save_target:
@@ -732,7 +750,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
         # obtain the related journal, and attach the current application id to it
         # ~~-> Journal:Service~~
         journal_id = self.target.current_journal
-        from portality.bll.doaj import DOAJ
         journalService = DOAJ.journalService()
         if journal_id is not None:
             journal, _ = journalService.journal(journal_id)
@@ -764,13 +781,10 @@ class PublisherUpdateRequest(ApplicationProcessor):
                 }
             ))
 
-    def _carry_subjects_and_seal(self):
+    def _carry_subjects(self):
         # carry over the subjects
         source_subjects = self.source.bibjson().subject
         self.target.bibjson().subject = source_subjects
-
-        # carry over the seal
-        self.target.set_seal(self.source.has_seal())
 
 
 class PublisherUpdateRequestReadOnly(ApplicationProcessor):
@@ -808,7 +822,7 @@ class ManEdJournalReview(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
-    def finalise(self):
+    def finalise(self, account=None):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
 
@@ -817,6 +831,9 @@ class ManEdJournalReview(ApplicationProcessor):
 
         # if we are allowed to finalise, kick this up to the superclass
         super(ManEdJournalReview, self).finalise()
+
+        # resolve any flags that were resolved in the form
+        self._resolve_flags(account)
 
         # If we have changed the editors assinged to this application, let them know.
         # ~~-> JournalForm:Crosswalk~~
@@ -881,6 +898,7 @@ class EditorJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self._merge_notes_forward()
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def pre_validate(self):
         # call to super handles all the basic disabled field
@@ -940,6 +958,7 @@ class AssEdJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self.target.bibjson().labels = self.source.bibjson().labels
 
     def finalise(self):
         if self.source is None:

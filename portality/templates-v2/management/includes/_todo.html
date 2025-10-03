@@ -1,0 +1,246 @@
+{#{% set FLAG_CONST = [#}
+{#        constants.TODO_REGULAR_FLAGS_ALL,#}
+{#        constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS,#}
+{#        constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS,#}
+{#        constants.TODO_REGULAR_FLAGS_ONHOLD,#}
+{#        constants.TODO_URGENT_FLAGS_ALL,#}
+{#        constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS,#}
+{#        constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS,#}
+{#        constants.TODO_URGENT_FLAGS_ONHOLD ]#}
+{#%}#}
+{##}
+{#{% set URGENT_FLAG_ATTRS = {#}
+{#        "text" : "<strong>Flagged to you (Urgent Deadline)</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",#}
+{#        "show_status": false,#}
+{#        "colour" : "var(--sanguine)",#}
+{#        "feather": "flag",#}
+{#        "link" : ""#}
+{#    }#}
+{#%}#}
+{#{% set REGULAR_FLAG_ATTRS = {#}
+{#        "text" : "<strong>Flagged to you</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",#}
+{#        "no_deadline_text": "<strong>Flagged to you</strong> <span class='todo-list__status'>No deadline</span>",#}
+{#        "show_status": false,#}
+{#        "colour" : "var(--grapefruit)",#}
+{#        "feather": "flag",#}
+{#        "link" : ""#}
+{#    }#}
+{#%}#}
+{% set TODOS = {
+        constants.TODO_MANED_STALLED: {
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Editor</span>",
+            "show_status": true,
+            "colour" : "var(--salmon)",
+            "feather": "coffee"
+        },
+        constants.TODO_MANED_FOLLOW_UP_OLD: {
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Chase Editor</span>",
+            "show_status": true,
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
+        },
+        constants.TODO_MANED_READY: {
+            "text" : "<strong>Ready</strong> <span class='todo-list__status'>Make decision</span>",
+            "colour" : "var(--dark-green)",
+            "feather": "check-circle",
+            "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"ready"}])
+        },
+        constants.TODO_MANED_COMPLETED: {
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Chase Editor</span>",
+            "colour" : "var(--mid-green)",
+            "feather": "user-check",
+            "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
+        },
+        constants.TODO_MANED_ASSIGN_PENDING: {
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Chase Editor</span>",
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+            "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
+        },
+        constants.TODO_MANED_LAST_MONTH_UPDATE_REQUEST: {
+            "text" : "<strong>Last month's Update Request</strong> <span class='todo-list__status'>Process Update</span>",
+            "colour" : "var(--grapefruit)",
+            "feather": "edit",
+            "show_status": true
+        },
+        constants.TODO_MANED_NEW_UPDATE_REQUEST: {
+            "text" : "<strong>Recent Update Request</strong> <span class='todo-list__status'>Process Update</span>",
+            "colour" : "var(--grapefruit)",
+            "feather": "edit",
+            "show_status": true
+        },
+        constants.TODO_MANED_ON_HOLD: {
+            "text" : "<strong>On Hold Application</strong> <span class='todo-list__status'>Review status</span>",
+            "colour" : "var(--sanguine)",
+            "feather": "x-circle"
+        },
+        constants.TODO_EDITOR_STALLED: {
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Associate Editor</span>",
+            "show_status": true,
+            "colour" : "var(--salmon)",
+            "feather": "inbox",
+        },
+        constants.TODO_EDITOR_FOLLOW_UP_OLD: {
+            "text" : "<strong>Old</strong> <span class='todo-list__status'>Chase Associate Editor</span>",
+            "show_status": true,
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
+        },
+        constants.TODO_EDITOR_COMPLETED: {
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Review and set to Ready</span>",
+            "colour" : "var(--mid-green)",
+            "feather": "inbox",
+            "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
+        },
+        constants.TODO_EDITOR_ASSIGN_PENDING: {
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Assign to Associate Editor</span>",
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+            "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
+        },
+        constants.TODO_EDITOR_ASSIGN_PENDING_LOW_PRIORITY: {
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Assign to Associate Editor</span>",
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+            "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
+        },
+        constants.TODO_ASSOCIATE_PROGRESS_STALLED: {
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Complete as soon as possible</span>",
+            "show_status": true,
+            "colour" : "var(--salmon)",
+            "feather": "inbox",
+        },
+        constants.TODO_ASSOCIATE_FOLLOW_UP_OLD: {
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Complete as soon as possible</span>",
+            "show_status": true,
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
+        },
+        constants.TODO_ASSOCIATE_START_PENDING: {
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Start your review</span>",
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+            "link" : url_for('editor.associate_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
+        },
+        constants.TODO_ASSOCIATE_ALL_APPLICATIONS: {
+            "text" : "<strong>Application</strong> <span class='todo-list__status'>Continue review</span>",
+            "show_status": true,
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+            "link" : url_for('editor.associate_suggestions')
+        }
+    }
+%}
+
+{#        constants.TODO_REGULAR_FLAGS_ALL: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_REGULAR_FLAGS_ONHOLD: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_ALL: URGENT_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS: URGENT_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS: URGENT_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_ONHOLD: URGENT_FLAG_ATTRS#}
+
+<section>
+
+    {% if todos|length == 0 %}
+        <div class="flex-center">
+            <p class="card col-md-6">
+                <span class="type-03">
+
+                  {% if current_user.has_role("admin") %}
+                      {% set source = search_query_source(
+                        term=[
+                            {"admin.editor.exact" : current_user.id},
+                            {"index.application_type.exact" : "new application"}
+                        ],
+                        sort=[{"admin.date_applied": {"order": "asc"}}]
+                     )
+                              %}
+                      All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">queue</a> for more open applications
+                  {% elif current_user.has_role("editor") %}
+                      {% set source = search_query_source(
+                        term=[
+                            {"index.application_type.exact" : "new application"}
+                        ],
+                        sort=[{"admin.date_applied": {"order": "asc"}}]
+                     )
+                              %}
+                      All priority tasks have been done. Check your <a href="{{ url_for('editor.group_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more applications to be assigned to your group, contact your Managing Editor.
+                  {% elif current_user.has_role("associate_editor") %}
+                      {% set source = search_query_source(
+                        term=[
+                            {"index.application_type.exact" : "new application"}
+                        ],
+                        sort=[{"admin.date_applied": {"order": "asc"}}]
+                     )
+                              %}
+                      All priority tasks have been done. Check your <a href="{{ url_for('editor.associate_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more to be assigned to you, contact your Editor or Managing Editor.
+                  {% endif %}
+              </span>
+            </p>
+        </div>
+    {% endif %}
+    <ol class="todo-list">
+        {% for todo in todos %}
+            {% set action = TODOS[todo.action_id[0]] %}
+            {% set app_route = "admin.application" if current_user.has_role("admin") else "editor.application" %}
+            {% set app_url =  url_for(app_route, application_id=todo.object_id) %}
+            {% set app_date = todo.object.date_applied_timestamp %}
+            {% set is_flagged = todo.object.is_flagged and current_user.has_role("admin") %}
+{#            {% set deadline = todo.object.most_urgent_flag_deadline %}#}
+            <li class="todo-list__item" data-app-url="{{ app_url }}" data-action-ids="{{ todo.action_id|join(",") }}">
+                <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
+                    <div class="flex">
+                        <div class="flex-col">
+                            <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+                                <time datetime="{{ app_date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="First submitted {{ app_date.strftime('%A, %-d %B %Y') }}">
+                                    <span style="font-size: 22px;">{{ app_date.strftime('%d') }}</span><br>
+                                    <span style="font-size: 13.55px;">{{ app_date.strftime('%b') }}</span><br>
+                                    <span style="font-size: 9.35px;">{{ app_date.strftime('%Y') }}</span>
+                                    {# TODO link to search results for this kind of task, across all editor groups #}
+                                </time>
+                            </a>
+                        </div>
+                        <div style="margin-left: 1em;" class="flex-space-between">
+                            <header>
+                                <p class="label label--secondary">
+                                    <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+                                        {% set main_action = todo.action_id[0] %}
+                                        {% if action.show_status %}[{{ todo.object.application_status }}]{% endif %}
+{#                                        {% if not main_action in FLAG_CONST %}#}
+                                            {{ action.text | safe }}
+{#                                        {% else %}#}
+{#                                            {% if deadline == "9999-12-31" %} {{ action.no_deadline_text | safe }} {% else %} {{ action.text | replace('{DEADLINE}', deadline) | safe }} {% endif %}#}
+{#                                        {% endif %}#}
+                                    </a>
+                                </p>
+                                <h3>
+                                    <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(25, True) }}</a>
+                                </h3>
+                            </header>
+                            <div>
+                 <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
+                    <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
+                     {% if is_flagged %}
+                        <span data-feather="flag" aria-hidden="true"></span>
+                     {% endif %}
+                 </span>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="unstyled-list tags">
+                        {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
+                        <li><small><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary"><span data-feather="users" aria-hidden="true"></span> {{ todo.object.editor_group }}</a></small></li>
+                        {% set editor = todo.object.editor %}
+                        {%- if editor %}
+                            <li><small><a href="{{ url_for('account.username', username=editor) }}" class="label tag tag--tertiary"><span data-feather="user" aria-hidden="true"></span>
+                                {% if editor == current_user.id %}Assigned to you{% else %}{{ editor }}{% endif %}
+                            </a></small></li>
+                        {% endif -%}
+                    </ul>
+                </article>
+            </li>
+        {% endfor %}
+    </ol>
+</section>

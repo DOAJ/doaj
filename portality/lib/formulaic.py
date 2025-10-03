@@ -47,8 +47,7 @@ EXAMPLE = {
                 "placeholder" : "[input field placeholder text]",
                 "description" : "[description]",
                 "tooltip" : "[tooltip/long description]",
-                "doaj_criteria" : "[doaj compliance criteria]",
-                "seal_criteria" : "[doaj compliance criteria]"
+                "doaj_criteria" : "[doaj compliance criteria]"
             },
             "validate" : {
                 "[validate function]",
@@ -754,6 +753,8 @@ class FormulaicField(object):
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
+        if "warning_message" in self._definition.get("help", {}):
+            kwargs["warning_message"] = self._definition["help"]["warning_message"]
 
         render_functions = self.function_map.get("validate", {}).get("render", {})
         for validator, settings in self.validators():

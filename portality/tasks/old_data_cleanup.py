@@ -6,9 +6,9 @@ from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import dates
 from portality.lib.es_queries import ES_DATETIME_FMT
-from portality.models import Notification, BackgroundJob
+from portality.models import Notification, BackgroundJob, AdminAlert
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 class RetentionQuery:
@@ -56,7 +56,7 @@ def clean_all_old_data(logger_fn=None):
     if logger_fn is None:
         logger_fn = print
 
-    for klazz in [Notification, BackgroundJob]:
+    for klazz in [Notification, BackgroundJob, AdminAlert]:
         _clean_old_data(klazz, logger_fn=logger_fn)
     logger_fn("old data cleanup completed")
 
@@ -83,7 +83,7 @@ class OldDataCleanupBackgroundTask(BackgroundTask):
         )
 
 
-huey_helper = OldDataCleanupBackgroundTask.create_huey_helper(long_running)
+huey_helper = OldDataCleanupBackgroundTask.create_huey_helper(queue)
 
 
 @huey_helper.register_schedule

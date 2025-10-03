@@ -1,27 +1,151 @@
-import logging
 import csv
 import json
+import logging
 import re
+from io import StringIO
 
-from portality.lib.argvalidate import argvalidate
-from portality.lib import dates
-from portality import models
-from portality.bll import exceptions
+from portality import constants, lock, models
+from portality.bll import DOAJ, exceptions
 from portality.core import app
-from portality import constants
-from portality import lock
-from portality.bll.doaj import DOAJ
-from portality.ui.messages import Messages
-from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.bll.exceptions import AuthoriseException
+from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.lib import dates, httputil
+from portality.lib.argvalidate import argvalidate
+from portality.ui.messages import Messages
+from portality import datasets
 
 
 class ApplicationService(object):
     """
     ~~Application:Service->DOAJ:Service~~
     """
+
+    def auto_assign_ur_editor_group(self, ur: models.Application):
+        """
+        Auto assign editor group to the update request
+        :param ur:
+        :return:
+        """
+        if not app.config.get("AUTO_ASSIGN_UR_EDITOR_GROUP", False):
+            return ur
+
+        target = None
+        reason = ""
+
+        by_owner = models.URReviewRoute.by_account(ur.owner)
+        if by_owner is not None:
+            reason = Messages.AUTOASSIGN__OWNER_MAPPED.format(owner=ur.owner, target=by_owner.target)
+            target = by_owner.target
+
+        if target is None:
+            by_country = models.URReviewRoute.by_country(ur.bibjson().publisher_country)
+            if by_country is not None:
+                reason = Messages.AUTOASSIGN__COUNTRY_MAPPED.format(country=by_country.country_name, country_code=by_country.country_code, target=by_country.target)
+                target = by_country.target
+
+        if target is None:
+            return ur
+
+        if ur.editor_group == target:
+            # UR is already assigned to the correct editor group
+            return ur
+
+        id = models.EditorGroup.group_exists_by_name(target)
+        if id is None:
+            ur.add_note(Messages.AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING.format(target=target))
+            return ur
+
+        ur.set_editor_group(target)
+        ur.remove_editor()
+        ur.add_note(Messages.AUTOASSIGN__NOTE__ASSIGN.format(target=target, reason=reason))
+        return ur
+
+    def retrieve_ur_editor_group_sheets(self, keep_history=1):
+        start = dates.now()
+
+        publisher_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET")
+        country_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET")
+
+        presp = httputil.get(publisher_sheet)
+        if presp.status_code != 200:
+            raise exceptions.RemoteServiceException("Failed to retrieve publisher sheet from {x}".format(x=publisher_sheet))
+
+        cresp = httputil.get(country_sheet)
+        if cresp.status_code != 200:
+            raise exceptions.RemoteServiceException("Failed to retrieve country sheet from {x}".format(x=country_sheet))
+
+        presp.encoding = "utf-8"
+        pdata = presp.text
+        if pdata is None or pdata == "":
+            raise ValueError("Publisher sheet is empty at {x}".format(x=publisher_sheet))
+
+        cresp.encoding = "utf-8"
+        cdata = cresp.text
+        if cdata is None or cdata == "":
+            raise ValueError("Country sheet is empty at {x}".format(x=country_sheet))
+
+        preader = csv.reader(StringIO(pdata))
+        creader = csv.reader(StringIO(cdata))
+
+        preader.__next__()
+        creader.__next__()
+
+        routers = []
+
+        for i, row in enumerate(preader):
+            account = row[1].strip()
+            group = row[2].strip()
+
+            if account is None or account == "":
+                raise ValueError(f"Publisher Sheet: Account is empty on row {i+2}")
+            if group is None or group == "":
+                raise ValueError(f"Publisher Sheet: Group is empty on row {i+2}")
+
+            acc = models.Account.pull(account)
+            if acc is None:
+                raise ValueError(f"Publisher Sheet: Account `{account}` not found in DOAJ; row {i+2}")
+            if models.EditorGroup.group_exists_by_name(group) is None:
+                raise ValueError(f"Publisher Sheet: Group `{group}` not found in DOAJ; row {i+2}")
+
+            router = models.URReviewRoute()
+            router.account_id = acc.id
+            router.target = group
+            router.pre_save_prep()
+            routers.append(router)
+
+        for i, row in enumerate(creader):
+            country = row[0].strip()
+            group = row[1].strip()
+
+            if country is None or country == "":
+                raise ValueError(f"Country Sheet: Country is empty on row {i+2}")
+            if group is None or group == "":
+                raise ValueError(f"Country Sheet: Group is empty on row {i+2}")
+
+            if models.EditorGroup.group_exists_by_name(group) is None:
+                raise ValueError(f"Country Sheet: Group `{group}` not found in DOAJ; row {i+2}")
+
+            cc = datasets.get_country_code(country, fail_if_not_found=True)
+            if cc is None:
+                raise ValueError(f"Country Sheet: Country `{country}` does not match an existing ISO country name; row {i+2}")
+
+            router = models.URReviewRoute()
+            router.country_code = cc
+            router.country_name = country
+            router.target = group
+            router.pre_save_prep()
+            routers.append(router)
+
+        # if we get to here we have two valid sheets, so we can update
+        # the local data using an index rollover technique
+        if len(routers) > 0:
+            mapping = routers[0].mappings()
+            docs = [router.data for router in routers]
+            models.URReviewRoute.create_and_seed_index_and_rollover_alias(docs, mapping, keep_history)
+
+        return routers
+
 
     @staticmethod
     def prevent_concurrent_ur_submission(ur: models.Application, record_if_not_concurrent=True):
@@ -52,6 +176,7 @@ class ApplicationService(object):
         :param application:
         :param account:
         :param provenance:
+        :param note:
         :param manual_update:
         :return:
         """
@@ -413,7 +538,6 @@ class ApplicationService(object):
         # * editor
         # * editor_group
         # * owner
-        # * seal
         notes = application.notes
 
         if application.editor is not None:
@@ -424,7 +548,6 @@ class ApplicationService(object):
             journal.add_note_by_dict(note)
         if application.owner is not None:
             journal.set_owner(application.owner)
-        journal.set_seal(application.has_seal())
 
         b = application.bibjson()
         if b.pissn == "":
@@ -558,7 +681,7 @@ class ApplicationService(object):
         if application.related_journal is not None:
             try:
                 related_journal, rjlock = journalService.journal(application.related_journal, lock_journal=True, lock_account=account)
-            except lock.Locked as e:
+            except lock.Locked:
                 # if the resource is locked, we have to back out
                 if alock is not None: alock.delete()
                 if cjlock is not None: cjlock.delete()
@@ -636,7 +759,7 @@ class ApplicationService(object):
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("pissn")),
                     row.get(Journal2PublisherUploadQuestionsXwalk.q("eissn"))
                 ]
-                issns = [issn for issn in issns if issn is not None and issn is not ""]
+                issns = [issn for issn in issns if issn is not None and issn != ""]
 
                 try:
                     j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)
@@ -667,14 +790,11 @@ class ApplicationService(object):
                                      was=journal_value, now=e.value)
                     continue
 
-
-
                 if len(updates) == 0:
                     validation.row(validation.WARN, row_ix, Messages.JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE)
                     continue
 
                 # if we get to here, then there are updates
-
                 [validation.log(upd) for upd in updates]
 
                 # If a field is disabled in the UR Form Context, then we must confirm that the form data from the
@@ -702,8 +822,8 @@ class ApplicationService(object):
                 alock = None
                 try:
                     # ~~ ^->UpdateRequest:Feature ~~
-                    update_req, jlock, alock = self.update_request_for_journal(j.id, account=j.owner_account, lock_records=False)
-                except AuthoriseException as e:
+                    update_req, jlock, alock = self.update_request_for_journal(j.id, account=account, lock_records=False)
+                except exceptions.AuthoriseException as e:
                     validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR.format(reason=e.reason))
                     continue
 
@@ -724,7 +844,7 @@ class ApplicationService(object):
                         question = Journal2PublisherUploadQuestionsXwalk.q(k)
                         try:
                             pos = header_row.index(question)
-                        except:
+                        except ValueError:
                             # this is because the validation is on a field which is not in the csv, so it must
                             # be due to an existing validation error in the data, and not something the publisher
                             # can do anything about
@@ -733,10 +853,14 @@ class ApplicationService(object):
                         was = [v for q, v in journal_questions if q == question][0]
                         if isinstance(v[0], dict):
                             for sk, sv in v[0].items():
-                                validation.value(validation.ERROR, row_ix, pos, ". ".join(sv),
+                                validation.value(validation.ERROR, row_ix, pos, ". ".join([str(x) for x in sv]),
+                                             was=was, now=now)
+                        elif isinstance(v[0], list):
+                            # If we have a list, we must go a level deeper
+                            validation.value(validation.ERROR, row_ix, pos, ". ".join([str(x) for x in v[0]]),
                                              was=was, now=now)
                         else:
-                            validation.value(validation.ERROR, row_ix, pos, ". ".join(v),
+                            validation.value(validation.ERROR, row_ix, pos, ". ".join([str(x) for x in v]),
                                              was=was, now=now)
 
         return validation
@@ -824,7 +948,7 @@ class CSVValidationReport:
         return cleantext
 
     def json(self, indent=None):
-        repr = {
+        _repr = {
             "has_errors": self._errors,
             "has_warnings": self._warnings,
             "general": self._general,
@@ -833,4 +957,4 @@ class CSVValidationReport:
             "values": self._values,
             "log": self._log
         }
-        return json.dumps(repr, indent=indent)
+        return json.dumps(_repr, indent=indent)

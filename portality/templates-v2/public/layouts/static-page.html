@@ -1,0 +1,36 @@
+{% extends "public/base.html" %}
+{% set page = data.frontmatter[page_frag] %}
+
+{% block page_title %}{{ page.title }}{% endblock %}
+{% block meta_og_title %}{{ page.title }}{% endblock %}
+{% block meta_twitter_title %}{{ page.title }}{% endblock %}
+
+{% if page.meta_description %}
+    {% block meta_description %}{{ page.meta_description }}{% endblock %}
+    {% block meta_og_description %}{{ page.meta_description }}{% endblock %}
+    {% block meta_twitter_description %}{{ page.meta_description }}{% endblock %}
+{% endif %}
+
+{% block public_content %}
+    {# content editing buttons for admins #}
+    {% if not current_user.is_anonymous and current_user.has_role("admin") %}
+        <a class="admin-edit" href="{{ config.get("CMS_EDIT_BASE_URL") }}/pages{{ page.frag.split(".")|first }}.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+
+        {# FIXME: this is not the nicest way to detect if a page uses data, but I don't have an alternative right now #}
+        {% if page.include and page.data %}
+            <a class="admin-edit" href="{{ config.get("CMS_EDIT_BASE_URL") }}/data/{{  page.include.split('/')[-1].replace('.html', '').lstrip('_') }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
+        {% endif %}
+
+        {% if page.preface and page.preface.data %}
+            <a class="admin-edit" href="{{ config.get("CMS_EDIT_BASE_URL") }}/data/{{  page.preface.split('/')[-1].replace('.html', '').lstrip('_') }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
+        {% endif %}
+    {% endif %}
+
+    {% if page.layout %}
+        {% set inc = templates.STATIC_PAGE_LAYOUT.format(layout=page.layout) %}
+        {% include inc %}
+    {% else %}
+        {% include page.frag %}
+    {% endif %}
+
+{% endblock %}

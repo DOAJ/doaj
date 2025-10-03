@@ -1,0 +1,154 @@
+{% extends "public/base.html" %}
+
+{% block body_class %}journal-details{% endblock %}
+
+{% block page_title %}{% include "public/includes/_journal_meta_title.html" %}{% endblock %}
+{% block meta_og_title %}{% include "public/includes/_journal_meta_title.html" %}{% endblock %}
+{% block meta_twitter_title %}{% include "public/includes/_journal_meta_title.html" %}{% endblock %}
+{%- block meta_description -%}{% include "public/includes/_journal_meta_description.html" %}{%- endblock -%}
+{%- block meta_og_description -%}{% include "public/includes/_journal_meta_description.html" %}{%- endblock -%}
+{%- block meta_twitter_description -%}{% include "public/includes/_journal_meta_description.html" %}{%- endblock -%}
+
+{% block public_content %}
+
+<div class="container page-content">
+    <header>
+        {% if not current_user.is_anonymous and current_user.has_role("admin") %}
+        <a class="button button--tertiary" href="{{ url_for('admin.journal_page', journal_id=journal.id) }}">Edit
+            this journal</a>
+        {% endif %}
+        {% if journal.last_manually_updated_since(days=30) %}
+        <span class="label label--secondary">
+                    <span data-feather="clock" aria-hidden="true"></span>
+                    <span title="Updated {{ journal.last_manual_update_timestamp.strftime(" %e %B %Y") }}">Updated recently</span>
+        </span>
+        {% endif %}
+
+        <h1 class="row flex flex-wrap-reverse">
+                <span class="col-xs-9 col-md-8">
+                {{ bibjson.title }}
+                    {% if bibjson.alternative_title %}
+                        <span aria-hidden="true"
+                              class="journal-details__alt-title">{{ bibjson.alternative_title }}</span>
+                    {% endif %}
+                </span>
+            {%- set s2o = "s2o" in bibjson.labels -%}
+            <div class="col-xs-3 col-md-4 badges badges--toc">
+                {%- if s2o -%}
+                <a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank">
+                    <img id="s20-logo" src="/assets/img/labels/s2o.svg" alt="Subscribe to Open" title="Subscribe to Open">
+                     <p class="sr-only">This journal is part of the Subscribe to Open program.</p>
+                </a>
+                {%- endif %}
+            </div>
+        </h1>
+        <p>
+                <span class="label">
+                <span data-feather="book-open" aria-hidden="true"></span>
+                {# this next bit has to be all on one line so that the spacing is correct #}
+                {% if bibjson.pissn %}{{ bibjson.pissn }} (Print){% endif %}{% if bibjson.eissn %}
+                    {% if bibjson.pissn %}&nbsp;/ {% endif %}{{ bibjson.eissn }} (Online){% endif %}
+                </span>
+        </p>
+
+        {% if bibjson.discontinued_date is not none and bibjson.discontinued_date | is_in_the_past %}
+        <p>Ceased publication on <strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</strong></p>
+        {% endif %}
+
+        {% set past = journal.get_past_continuations() %}
+        {% if past %}
+        <p>Continues
+            {% for p in past %}
+            {% set bibjson = p.bibjson() %}
+            {% if bibjson.issns()|length > 0 %}
+            {% if p.is_in_doaj() %}
+            <em><a href="{{ url_for('doaj.toc', identifier=bibjson.get_preferred_issn()) }}">{{ bibjson.title
+                }}</a></em>
+            {% else %}
+            <em>{{ bibjson.title }}</em>, ISSN: {{ bibjson.get_preferred_issn() }} (not available in
+            DOAJ)
+            {% endif %}
+            {% endif %}
+            {% if not loop.last %}; {% endif %}
+            {% endfor %}
+        </p>
+        {% endif %}
+
+        {% set future = journal.get_future_continuations() %}
+        {% if future %}
+        <p>Continued by
+            {% for f in future %}
+            {% set bibjson = f.bibjson() %}
+            {% if bibjson.issns()|length > 0 %}
+            {% if f.is_in_doaj() %}
+            <em><a href="{{ url_for('doaj.toc', identifier=bibjson.get_preferred_issn()) }}">{{ bibjson.title
+                }}</a></em>
+            {% else %}
+            <em>{{ bibjson.title }}</em>, ISSN: {{ bibjson.get_preferred_issn() }} (not available in
+            DOAJ)
+            {% endif %}
+            {% endif %}
+            {% if not loop.last %}; {% endif %}
+            {% endfor %}
+        </p>
+        {% endif %}
+
+        <ul class="tags">
+            {% if bibjson.journal_url %}
+            <li class="tag">
+                <a href="{{ bibjson.journal_url }}" target="_blank" rel="noopener">
+                    <span data-feather="external-link" aria-hidden="true"></span>
+                    Website
+                </a>
+            </li>
+            {% endif %}
+
+            <li class="tag">
+                <a href="https://portal.issn.org/resource/ISSN/{{ bibjson.get_preferred_issn() }}"
+                   target="_blank" rel="noopener">
+                    <span data-feather="external-link" aria-hidden="true"></span>
+                    ISSN Portal
+                </a>
+            </li>
+        </ul>
+    </header>
+
+    <div class="tabs">
+        <nav class="tabs__menu">
+            <ul class="tabs__list">
+                <li class="tabs__item">
+                    {% set _url =url_for('doaj.toc', identifier=journal.toc_id) %}
+                    <a href="{{ _url }}"
+                       aria-selected="{{ 'true' if  tab==" main" else 'false' }}">
+                    About
+                    </a>
+                </li>
+                <li class="tabs__item">
+                    {% set _url =url_for('doaj.toc_articles', identifier=journal.toc_id) %}
+                    <a href="{{ _url }}"
+                       aria-selected="{{ 'true' if tab==" articles" else 'false' }}">
+                    Articles
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="tabs__content">
+            {% block toc_content %} {% endblock %}
+        </div>
+    </div>
+
+    <footer id="updated" class="page-content__footer">
+        <p>
+            Added {{ journal.created_timestamp.strftime("%e %B %Y") }}
+            {% if journal.last_manual_update_timestamp and dates.format(journal.last_manual_update_timestamp) !=
+            dates.DEFAULT_TIMESTAMP_VAL %}
+            &bull; Updated {{ journal.last_manual_update_timestamp.strftime("%e %B %Y") }}
+            {% endif %}
+        </p>
+    </footer>
+
+</div>
+{% include "includes/_hotjar.html" %}
+
+{% endblock %}

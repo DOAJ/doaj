@@ -9,7 +9,7 @@ featuremap: ~~Accessibility:Fragment~~
 
 This accessibility statement applies to [doaj.org](https://doaj.org) exclusively.
 
-Its subdomain [blog.doaj.org](https://blog.doaj.org) and sister site [doajbestpracticeguide.org](https://www.doajbestpracticeguide.org) are WordPress sites and **are not covered by this statement**.
+Its subdomain [blog.doaj.org](https://blog.doaj.org) is a WordPress site and **is not covered by this statement**.
 
 This website is run by DOAJ on behalf of IS4OA. We want as many people as possible to be able to use this website. For example, that means you should be able to:
 
@@ -27,13 +27,30 @@ This website is run by DOAJ on behalf of IS4OA. We want as many people as possib
 We know some parts of this website may not be fully accessible:
 
 - The Publisher, Editor, and Admin dashboards (accessible via log-in only) are not responsive and accessible.
-- You cannot use the journal or article search function with Javascript disabled.
+- You cannot use the journal or article search function with JavaScript disabled.
   - However, if you are using a device that renders JavaScript, the HTML output will be accessible.
 - You cannot modify the line height or spacing of the text.
-- Some blog posts contain links to older PDF documents which are not fully accessible to screen reader software.
-- The [_Supporters_](/support/supporters) page contains an embedded map and a spreadsheet which may not be accessible to screen reader software.
 
-We are continuing to update this document as we find accessibility issues or as we fix them.
+We have recently fixed:
+
+- Made sure all navbars are accessible for keyboard-only users
+- Radio buttons in the application form are now focusable
+- Search facets are configured for screenreaders to indicate their state
+- All pages have a "Skip Links" button so the user can jump to the main content
+- In search results, the facets are operable with a keyboard
+- Removed ReCAPTCHA from our login process
+- Radio buttons on search (and throughout the website) are now focusable
+
+Fixes that are in progress now after a review of the changes laid out in WCAG 2.2:
+
+- on our forms, start using 'aria-describedby' for hint/help text
+- allow the user to change the default font size in their browser settings
+
+We are continuing to update this document as we find and fix accessibility issues.
+
+## VPAT Accessibility Conformance Report
+
+A [VPAT statement for this website](https://docs.google.com/document/d/1oJOBP7cGNMzq7x2SXyVuAtgwoL2at9t5zlNBUY73mzA/edit?usp=sharing) is available.
 
 ## Feedback and contact information
 
@@ -42,8 +59,6 @@ If you need information on this website in a different format like accessible PD
 - **Email** [helpdesk@doaj.org](mailto:helpdesk@doaj.org)  
 
 We'll consider your request and reply in 5 working days. Unfortunately, DOAJ doesn't have an organisational telephone number. 
-
-If you cannot view the embedded spreadsheet on our [_Supporters_](/support/supporters) page and have a specific question about either, please email us.
 
 ## Reporting accessibility problems with this website
 
@@ -57,11 +72,11 @@ The Equality and Human Rights Commission (EHRC) is responsible for enforcing the
 
 ## Technical information about this website's accessibility
 
-DOAJ is committed to making its website accessible in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
+DOAJ is committed to making its website accessible per the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
 
 ### Compliance status
 
-This website is partially compliant with the [Web Content Accessibility Guidelines version 2.1 AA standard](https://www.w3.org/TR/WCAG21/) subject to the non-compliances listed below.
+This website is partially compliant with the [Web Content Accessibility Guidelines version 2.2 AA standard](https://www.w3.org/TR/WCAG22/), subject to the non-compliances listed below.
 
 ## Non-accessible content
 
@@ -70,26 +85,25 @@ The content listed below is non-accessible for the following reasons.
 ### Non-compliance with the accessibility regulations
 
 - Some images may not have a text alternative, so people using a screen reader cannot access the information. This fails WCAG 2.1 Success Criterion 1.1.1 (Non-text content).
-- Some form fields may be missing a label identifying the purpose of its corresponding field. This fails WCAG Success Criterion 1.3.5 (Identify Input Purpose).
-
-We plan to fix these issues to meet accessibility standards by January 2021.
+- Some form fields may be missing a label identifying the purpose of their corresponding field. This fails WCAG Success Criterion 1.3.5 (Identify Input Purpose).
+- We make users solve, recall, or transcribe something to log in. This fails WCAG Success Criterion 3.3.8 (Accessible Authentication)
+- We use ReCAPTCHA. This fails WCAG Success Criterion 3.3.8 (Accessible Authentication)
 
 ### Disproportionate burden
 
 - Navigation and accessing information: it's not always possible to change the device orientation from horizontal to vertical without making it more difficult to view the content. This fails WCAG Success Criterion 1.3.4 (Orientation).
 - Navigation and accessing information: there's no way to skip the repeated content in the page header (for example, a 'skip to main content' option).
 
-### Content that’s not within the scope of the accessibility regulations
-
-- PDFs and other documents: we have PDFs that were published in older blog posts but are not essential to our services (searching the index and applying to the index). The accessibility regulations [do not require us to fix PDFs or other documents published before 23 September 2018](https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made) if they're not essential to providing our services. Any new PDFs or Word documents we publish will meet accessibility standards.
-
-
 ### Preparation of this accessibility statement
 
-This statement was prepared on **28 May 2020**. It was last reviewed on **20 December 2021**.
+This statement was prepared on **28 May 2020**. It was last reviewed on **06 September 2024** with the WCAG 2.2 accessibility guidelines.
 
-This website was last tested on **24 November 2020**. Testing was carried out by the DOAJ team.
+This website was last tested on **14 April 2025**. An independent organisation, Torchbox, did the testing for us and helped us write the VPAT.
 
-#### Changes to this document 
+## Changes to this document 
 
-- 20 Dec 2021: updated target date to meet accessibility standards to Jan 2021. 
+- 11 September 2025: made radio buttons on search focusable
+- 4 August 2025: added the VPAT statement and updated the last tested date
+- 28 September 2024: moved the ReCAPTCHA work to completed and added a problem with radio buttons in search to the in progress list
+- 06 September 2024: added details on things we have fixed; removed references to the PDFs and the blog, which are not covered by this statement; added the last point to the Non-compliance section; updated compliance status
+- 20 December 2021: updated target date to meet accessibility standards to January 2021. 

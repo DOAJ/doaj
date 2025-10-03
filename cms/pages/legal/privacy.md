@@ -18,11 +18,11 @@ The Directory of Open Access Journals ("DOAJ"), managed independently by [IS4OA]
 
 ### Who to contact at DOAJ about protecting your privacy
 
-The DOAJ Operations Manager, Dominic Mitchell, has assumed responsibility for the DOAJ data policy and implementing the changes required by the GDPR, which came into effect on 25th May 2018. If you have any questions or concerns about the information in this Notice or any other question about how DOAJ protects or uses your data, please [email Dominic](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
+The DOAJ Deputy Director, Dominic Mitchell, has assumed responsibility for the DOAJ data policy and implementing the changes required by the GDPR, which came into effect on 25th May 2018. If you have any questions or concerns about the information in this Notice or any other question about how DOAJ protects or uses your data, please [email Dominic](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
 
 ### The policy
 
-This is the website for Directory of Open Access Journals, which is managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [News Service](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and its operations only.
+This is the website for Directory of Open Access Journals, which is managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [DOAJ Blog](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and the DOAJ blog only.
 
 ### 1) The information we collect and how we use it
 
@@ -30,9 +30,9 @@ This is the website for Directory of Open Access Journals, which is managed by [
 
 Before you submit an application, you must register an account or sign into your account. Your account stores:
 
-Your name
-Your email address
-Your password
+- Your name
+- Your email address
+- Your password
 
 An account is created and stored in our User database. We need these details to process your application. You are the **Account holder**. We will use the email address you provided to contact you:
 
@@ -112,7 +112,6 @@ When you use DOAJ, cookies are set on your machine. The cookies we set are:
 *   doaj.org - a small number of required cookies for the application to function, for example, when you log in and click away the cookie consent banner.
 *   schema - if you upload article metadata to us via the Upload Article XML tab, we place a cookie on your machine which allows us to remember which XSD schema you used the last time you uploaded XML to us: doaj or Crossref
 *   hotjar - we sometimes use Hotjar to do unmoderated monitoring of user journeys through our site. We look at where they click on a page and where they stop in a process. This is only occasional. We always use a Hotjar widget to collect feedback on individual journal pages.
-*   twitter - on our homepage is an embedded X (Twitter) feed. This app comes with cookies to make X (Twitter) work, such as checking to see if you are logged in or whether you have specific advertising preferences.
 
 You can disable these cookies at any time by using the privacy settings in your browser. However, the performance and some functions of the site may be affected.
 
@@ -161,13 +160,24 @@ Users may request at any time that we delete all their personal data from our sy
 
 #### 6c Volunteer applications
 
-DOAJ stores the personal data of applicants in a Google Sheet until we assess if a person is a suitable candidate. Old applications are struck through and archived in a secure Google Drive folder only accessible by the Operations Manager. Old applications are deleted after seven years. Volunteer applicants may request at any time that we delete all their personal data from Google Drive by submitting a Subject Access Request (SAR) to us\*\*.
+DOAJ stores the personal data of applicants in a Google Sheet until we have finished assessing the candidates. Old applications are struck through and archived in a secure Google Drive folder only accessible by the Executive Team. Old applications are deleted after two months. Volunteer applicants may request at any time that we delete all their personal data from Google Drive by submitting a Subject Access Request (SAR) to us\*\*.
 
 \*\*see section 9 below.
 
 ### 7) Who do we share data with
 
 DOAJ does not share personal data with any organisation or individual outside the immediate DOAJ organisation, nor will it grant requests from industry organisations for access to user data.
+
+#### 7a Data transfer to another organisation
+
+If the current incarnation of DOAJ must wind down, the whole operation will be transferred to another organisation. This is described in full in our POSI statement. The transfer of your user data will be necessary in order for you to continue to use the site. Before any transfer occurs, all email addresses in our user database will receive an email from us that describes: 
+
+- the reason for the transfer
+- the data being transferred
+- the recipient of the data
+- the recipients commitment to store user data securely and under the conditions laid out by GDPR
+- what to do if you do not want your data transferred and what it will mean for your use of the site
+- details on how to contact someone with questions or concerns
 
 ### 8) How to delete your account and request that personal data be deleted
 
@@ -177,7 +187,7 @@ Individuals may request that DOAJ delete their user account from the DOAJ Admin 
 
 #### 8b How to request that all personal data be deleted
 
-To request that DOAJ delete all of the personal data we hold about you, please email the Operations Manager, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org).
+To request that DOAJ delete all of the personal data we hold about you, please email the Deputy Director, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org).
 
 ### 9) Subject access request (SAR)
 
@@ -187,7 +197,7 @@ An SAR is the name given to the process by which a user can request to know deta
 
 #### 9b How to make a SAR to DOAJ
 
-You may submit a SAR to DOAJ by contacting the Operations Manager, Dominic Mitchell, directly: [dominic@doaj.org](mailto:dominic@doaj.org). Any request in writing will be considered valid, whatever the format.
+You may submit a SAR to DOAJ by contacting the Deputy Director, Dominic Mitchell, directly: [dominic@doaj.org](mailto:dominic@doaj.org). Any request in writing will be considered valid, whatever the format.
 
 ### 10) Withdrawing consent
 
@@ -197,4 +207,4 @@ You may also explicitly indicate that you do not want DOAJ to use your email add
 
 ### 11) How to complain
 
-If you need to complain about how DOAJ has handled an SAR or your request to withdraw consent, or any other aspect related to the information detailed in this Privacy Information Notice, please send an email to the DOAJ Operations Manager, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org)
+If you need to complain about how DOAJ has handled an SAR or your request to withdraw consent, or any other aspect related to the information detailed in this Privacy Information Notice, please send an email to the DOAJ Deputy Director, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org)

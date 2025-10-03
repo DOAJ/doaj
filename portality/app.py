@@ -9,7 +9,7 @@ new ones as required too.
 
 ~~DOAJ:WebApp~~
 """
-
+import logging
 import os, sys
 
 import elasticsearch.exceptions
@@ -26,6 +26,7 @@ from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
+from portality.ui import templates
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -67,16 +68,13 @@ if 'api2' in app.config['FEATURES']:
 if 'api3' in app.config['FEATURES']:
     from portality.view.api_v3 import blueprint as api_v3
     app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
-    # Remove this when we move to API v4
     if app.config.get("CURRENT_API_MAJOR_VERSION") == "3":
         app.register_blueprint(api_v3, name='api', url_prefix='/api')
 if 'api4' in app.config['FEATURES']:
     from portality.view.api_v4 import blueprint as api_v4
     app.register_blueprint(api_v4, name='api_v4', url_prefix='/api/v4') # ~~-> APIv4:Blueprint~~
-    # uncomment this when we want API v4 to become the current API
     if app.config.get("CURRENT_API_MAJOR_VERSION", "4") == "4":
-        app.register_blueprint(api_v3, name='api', url_prefix='/api')
-    # app.register_blueprint(api_v4, name='api', url_prefix='/api')  # ~~-> APIv4:Blueprint~~
+        app.register_blueprint(api_v4, name='api', url_prefix='/api')
 
 app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, name='_status', url_prefix='/_status')
@@ -156,7 +154,7 @@ def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
     return send_file(
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
-            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+            mimetype="application/xml", as_attachment=True, download_name=schema_fn
             )
 
 
@@ -215,7 +213,7 @@ def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
     :return: the string formatted datetime
     """
-    local = tzlocal.get_localzone()
+    local = pytz.timezone(str(tzlocal.get_localzone()))
     ld = local.localize(stamp)
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
@@ -415,38 +413,47 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
             )
         return jsonify({'api_versions': vers})
 
-
-# Make the reCAPTCHA key available to the js
-# ~~-> ReCAPTCHA:ExternalService~~
-@app.route('/get_recaptcha_site_key')
-def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY', '')
-
-
 @app.errorhandler(400)
 def page_not_found(e):
-    return render_template('400.html'), 400
+    return render_template(templates.ERROR_400), 400
 
 
 @app.errorhandler(401)
 def page_not_found(e):
-    return render_template('401.html'), 401
+    return render_template(templates.ERROR_401), 401
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template(templates.ERROR_404), 404
 
 
 @app.errorhandler(500)
 def page_not_found(e):
-    return render_template('500.html'), 500
+    return render_template(templates.ERROR_500), 500
 
 
 @app.errorhandler(elasticsearch.exceptions.RequestError)
 def handle_es_request_error(e):
     app.logger.exception(e)
     return render_template('400.html'), 400
+
+
+is_dev_log_setup_completed = False
+
+
+def setup_dev_log():
+    global is_dev_log_setup_completed
+    if not is_dev_log_setup_completed:
+        is_dev_log_setup_completed = True
+        app.logger.handlers = []
+        log = logging.getLogger()
+        log.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        ch.setFormatter(logging.Formatter('%(asctime)s %(levelname).4s %(processName)s%(threadName)s - '
+                                          '%(message)s --- [%(name)s][%(funcName)s:%(lineno)d]'))
+        log.addHandler(ch)
 
 
 def run_server(host=None, port=None, fake_https=False):
@@ -458,6 +465,10 @@ def run_server(host=None, port=None, fake_https=False):
         that can help for debugging Plausible
     :return:
     """
+
+    if app.config.get('DEBUG_DEV_LOG', False):
+        setup_dev_log()
+
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
     if len(sys.argv) > 1:
         if sys.argv[1] == '-d':

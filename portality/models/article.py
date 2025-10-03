@@ -6,11 +6,16 @@ from copy import deepcopy
 from datetime import datetime
 
 from portality import datasets, constants
+from portality.core import app
 from portality.dao import DomainObject
+from portality.lib import es_data_mapping
+from portality.lib.coerce import COERCE_MAP
 from portality.lib.dates import FMT_DATETIME_STD
+from portality.lib.seamless import SeamlessMixin
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
+from portality.models.v2.shared_structs import ARTICLE_STRUCT
 from portality.lib import normalise, dates
 
 
@@ -21,8 +26,74 @@ class NoValidOwnerException(Exception):
     pass
 
 
-class Article(DomainObject):
+ARTICLE_BIBJSON_EXTENSION = {
+    "objects" : ["bibjson"],
+    "structs" : {
+        "bibjson" : {
+            "fields" : {
+                "year" : {"coerce" : "unicode"},
+                "month" : {"coerce" : "unicode"},
+                "start_page" : {"coerce" : "unicode"},
+                "end_page" : {"coerce" : "unicode"},
+                "abstract" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "author" : {"contains" : "object"}
+            },
+            "objects" : [
+                "journal"
+            ],
+
+            "structs" : {
+                "author" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "affiliation" : {"coerce" : "unicode"},
+                        "email" : {"coerce": "unicode"},
+                        "orcid_id" : {"coerce" : "unicode"}
+                    }
+                },
+
+                "journal" : {
+                    "fields" : {
+                        "volume" : {"coerce" : "unicode"},
+                        "number" : {"coerce" : "unicode"},
+                        "publisher" : {"coerce" : "unicode"},
+                        "title" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "unicode"}
+                    },
+                    "lists" : {
+                        "language" : {"contains" : "field", "coerce" : "unicode"},
+                        "issns" : {"contains" : "field", "coerce" : "unicode"}
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": app.config["ARTICLE_EXCEPTION_MAPPING"],
+    "additional_mappings": {}
+}
+
+
+class Article(SeamlessMixin, DomainObject):
     __type__ = "article"
+
+    __SEAMLESS_STRUCT__ = [
+        ARTICLE_STRUCT,
+        shared_structs.SHARED_BIBJSON,
+        ARTICLE_BIBJSON_EXTENSION
+    ]
+
+    __SEAMLESS_COERCE__ = COERCE_MAP
+
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
 
     @classmethod
     def duplicates(cls, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
@@ -85,8 +156,8 @@ class Article(DomainObject):
         return articles
 
     @classmethod
-    def count_by_issns(cls, issns):
-        q = ArticleQuery(issns=issns)
+    def count_by_issns(cls, issns, in_doaj=None):
+        q = ArticleQuery(issns=issns, in_doaj=in_doaj)
         return cls.hit_count(q.query())
 
     @classmethod
@@ -95,18 +166,25 @@ class Article(DomainObject):
         cls.delete_selected(query=q.query(), snapshot=snapshot)
 
     @classmethod
-    def delete_selected(cls, query=None, owner=None, snapshot=True):
+    def delete_selected(cls, query=None, owner=None, snapshot=True, tombstone=True):
         if owner is not None:
             from portality.models import Journal
             issns = Journal.issns_by_owner(owner)
             q = ArticleQuery(issns=issns)
             query = q.query()
 
-        if snapshot:
+        if snapshot or tombstone:
             articles = cls.iterate(query, page_size=1000)
             for article in articles:
-                article.snapshot()
+                if snapshot:
+                    article.snapshot()
+                if tombstone:
+                    article._tombstone()
         return cls.delete_by_query(query)
+
+    def delete(self):
+        self._tombstone()
+        super(Article, self).delete()
 
     def bibjson(self, **kwargs):
         if "bibjson" not in self.data:
@@ -142,6 +220,18 @@ class Article(DomainObject):
         hist.save()
         return hist.id
 
+    def _tombstone(self):
+        stone = ArticleTombstone()
+        stone.set_id(self.id)
+        sbj = stone.bibjson()
+
+        subs = self.bibjson().subjects()
+        for s in subs:
+            sbj.add_subject(s.get("scheme"), s.get("term"), s.get("code"))
+
+        stone.save()
+        return stone
+
     def add_history(self, bibjson, date=None):
         """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
@@ -163,18 +253,6 @@ class Article(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["in_doaj"] = value
-
-    def has_seal(self):
-        try:
-            return self.data['admin'].get("seal", False)
-        except KeyError:
-            # If we have no admin section, return None instead
-            return None
-
-    def set_seal(self, value):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        self.data["admin"]["seal"] = value
 
     def publisher_record_id(self):
         return self.data.get("admin", {}).get("publisher_record_id")
@@ -306,16 +384,11 @@ class Article(DomainObject):
                 trip = True
             rbj.publisher = jbib.publisher
 
-        # Copy the seal info, in_doaj status and the journal's ISSNs
+        # Copy the in_doaj status and the journal's ISSNs
         if journal.is_in_doaj() != self.is_in_doaj():
             self.set_in_doaj(journal.is_in_doaj())
             trip = True
         reg.set_in_doaj(journal.is_in_doaj())
-
-        if journal.has_seal() != self.has_seal():
-            self.set_seal(journal.has_seal())
-            trip = True
-        reg.set_seal(journal.has_seal())
 
         try:
             aissns = bibjson.journal_issns
@@ -471,16 +544,13 @@ class Article(DomainObject):
             except:
                 asciiunpunctitle = unpunctitle
 
-        # determine if the seal is applied
-        has_seal = "Yes" if self.has_seal() else "No"
-
         # create a normalised version of the DOI for deduplication
         source_doi = cbib.get_one_identifier(constants.IDENT_TYPE_DOI)
         try:
             doi = normalise.normalise_doi(source_doi)
         except ValueError as e:
-            # if we can't normalise the DOI, just store it as-is.
-            doi = source_doi
+            # if we can't normalise the DOI, just store it cast to lower case.
+            doi = source_doi.lower()
 
         # create a normalised version of the fulltext URL for deduplication
         fulltexts = cbib.get_urls(constants.LINK_TYPE_FULLTEXT)
@@ -519,8 +589,6 @@ class Article(DomainObject):
             self.data["index"]["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
             self.data["index"]["asciiunpunctitle"] = unpunctitle
-        if has_seal:
-            self.data["index"]["has_seal"] = has_seal
         if doi is not None:
             self.data["index"]["doi"] = doi
         if fulltext is not None:
@@ -564,6 +632,23 @@ class Article(DomainObject):
             return NoValidOwnerException
 
         return owners[0]
+
+
+class ArticleTombstone(Article):
+    __type__ = "article_tombstone"
+
+    def snapshot(self):
+        return None
+
+    def is_in_doaj(self):
+        return False
+
+    def prep(self):
+        self.data['last_updated'] = dates.now_str()
+
+    def save(self, *args, **kwargs):
+        return super(ArticleTombstone, self).save(*args, **kwargs)
+
 
 class ArticleBibJSON(GenericBibJSON):
 
@@ -804,52 +889,6 @@ class ArticleBibJSON(GenericBibJSON):
 
         return ["LCC:" + x for x in full_list if x is not None]
 
-ARTICLE_BIBJSON_EXTENSION = {
-    "objects" : ["bibjson"],
-    "structs" : {
-        "bibjson" : {
-            "fields" : {
-                "year" : {"coerce" : "unicode"},
-                "month" : {"coerce" : "unicode"},
-                "start_page" : {"coerce" : "unicode"},
-                "end_page" : {"coerce" : "unicode"},
-                "abstract" : {"coerce" : "unicode"}
-            },
-            "lists" : {
-                "author" : {"contains" : "object"}
-            },
-            "objects" : [
-                "journal"
-            ],
-
-            "structs" : {
-                "author" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "unicode"},
-                        "orcid_id" : {"coerce" : "unicode"}
-                    }
-                },
-
-                "journal" : {
-                    "fields" : {
-                        "volume" : {"coerce" : "unicode"},
-                        "number" : {"coerce" : "unicode"},
-                        "publisher" : {"coerce" : "unicode"},
-                        "title" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "unicode"}
-                    },
-                    "lists" : {
-                        "language" : {"contains" : "field", "coerce" : "unicode"},
-                        "issns" : {"contains" : "field", "coerce" : "unicode"}
-                    }
-                }
-            }
-
-        }
-    }
-}
 
 ##################################################
 
@@ -866,9 +905,10 @@ class ArticleQuery(object):
     _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} }
     _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
 
-    def __init__(self, issns=None, volume=None):
+    def __init__(self, issns=None, volume=None, in_doaj=None):
         self.issns = issns
         self.volume = volume
+        self.in_doaj = in_doaj
 
     def query(self):
         q = deepcopy(self.base_query)
@@ -882,6 +922,9 @@ class ArticleQuery(object):
             vq = deepcopy(self._volume_term)
             vq["term"]["bibjson.journal.volume.exact"] = self.volume
             q["query"]["bool"]["must"].append(vq)
+
+        if self.in_doaj is not None:
+            q["query"]["bool"]["must"].append({"term": {"admin.in_doaj": self.in_doaj}})
 
         return q
     

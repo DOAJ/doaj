@@ -44,11 +44,12 @@ tests:
   - step: Close the ISSN.org window/tab and return to the application form
   - step: Scroll to the "Best Practice" section of the application form, and look at the "Long-term preservation services" question
     results:
-      - "4 checks are visible attached to this question, for: CLOCKSS, LOCKSS, PMC and PKP PN"
-      - CLOCKSS is annotated with a green tick, saying it is archived
-      - LOCKSS is annotated with a red cross, saying it is not current
-      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
+      - "5 checks are visible attached to this question, for: CLOCKSS, LOCKSS, Internet Archive, PMC and PKP PN"
+      - CLOCKSS is annotated with a red exclamation, saying it is archived but not selected in the form
+      - LOCKSS is annotated with a green tick, saying it is currently archived
+      - Internet Archiive is annotated with a red cross, saying it is archived but not current
       - PKP PN is annotated with a red cross, saying it is not archived
+      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
   - step: Click on one of the "see record" links in the annotation
     results:
       - The link is opened in a new window/tab
@@ -98,11 +99,12 @@ tests:
   - step: Close the ISSN.org window/tab and return to the journal form
   - step: Scroll to the "Best Practice" section of the application form, and look at the "Long-term preservation services" question
     results:
-      - "4 checks are visible attached to this question, for: CLOCKSS, LOCKSS, PMC and PKP PN"
-      - CLOCKSS is annotated with a green tick, saying it is archived
-      - LOCKSS is annotated with a red cross, saying it is not current
-      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
+      - "5 checks are visible attached to this question, for: CLOCKSS, LOCKSS, Internet Archive, PMC and PKP PN"
+      - CLOCKSS is annotated with a red exclamation, saying it is archived but not selected in the form
+      - LOCKSS is annotated with a green tick, saying it is currently archived
+      - Internet Archiive is annotated with a red cross, saying it is archived but not current
       - PKP PN is annotated with a red cross, saying it is not archived
+      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
   - step: Click on one of the "see record" links in the annotation
     results:
       - The link is opened in a new window/tab

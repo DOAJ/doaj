@@ -1,0 +1,150 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "in_queue",
+      "type": "generated",
+      "values": {
+        "0": {
+          "constraints": {
+            "oldest_queued": {
+              "or": [
+                "young"
+              ]
+            }
+          }
+        },
+        "1": {},
+        "2": {}
+      }
+    },
+    {
+      "name": "oldest_queued",
+      "type": "generated",
+      "values": {
+        "old": {},
+        "young": {}
+      }
+    },
+    {
+      "name": "error_count",
+      "type": "generated",
+      "values": {
+        "0": {
+          "constraints": {
+            "error_age": {
+              "or": [
+                "out_of_period"
+              ]
+            }
+          }
+        },
+        "1": {
+          "constraints": {
+            "lrs_success_or_error": {
+              "nor": [
+                "empty"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "error_age",
+      "type": "generated",
+      "values": {
+        "in_period": {},
+        "out_of_period": {}
+      }
+    },
+    {
+      "name": "lrs_success_or_error",
+      "type": "generated",
+      "values": {
+        "complete": {},
+        "error": {},
+        "empty": {}
+      }
+    },
+    {
+      "name": "queued",
+      "type": "conditional",
+      "default": "stable",
+      "values": {
+        "stable": {},
+        "unstable": {
+          "conditions": [
+            {
+              "in_queue": {
+                "or": [
+                  "2"
+                ]
+              }
+            },
+            {
+              "oldest_queued": {
+                "or": [
+                  "old"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "errors",
+      "type": "conditional",
+      "default": "stable",
+      "values": {
+        "stable": {},
+        "unstable": {
+          "conditions": [
+            {
+              "error_count": {
+                "or": [
+                  "1"
+                ]
+              },
+              "error_age": {
+                "or": [
+                  "in_period"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "lrs",
+      "type": "conditional",
+      "default": "stable",
+      "values": {
+        "stable": {},
+        "unstable": {
+          "conditions": [
+            {
+              "lrs_success_or_error": {
+                "or": [
+                  "error"
+                ]
+              }
+            },
+            {
+              "lrs_success_or_error": {
+                "or": [
+                  "empty"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

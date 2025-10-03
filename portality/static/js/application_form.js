@@ -35,7 +35,9 @@ doaj.af.journalFormFactory = (params) => {
             return doaj.af.newEditorJournalForm(params);
         case "associate_editor":
             return doaj.af.newAssociateJournalForm(params);
-        case "readonly":
+        case "admin_readonly":
+            return doaj.af.newReadOnlyJournalForm(params);
+        case "editor_readonly":
             return doaj.af.newReadOnlyJournalForm(params);
         default:
             throw "Could not extract a context from the form";
@@ -985,6 +987,30 @@ window.Parsley.addValidator("year", {
     },
     priority: 22
 });
+
+window.Parsley.addValidator("validdate", {
+    validateString : function(value) {
+        // Check if the value matches the YYYY-MM-DD format
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!regex.test(value)) {
+          return false; // Invalid format
+        }
+
+        // Parse the date components
+        const [year, month, day] = value.split('-').map(Number);
+
+        // Check if the date is valid using JavaScript's Date object
+        const date = new Date(year, month - 1, day); // Month is zero-based in JS Date
+        return (
+            date.getFullYear() === year &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day
+        );
+      },
+      messages: {
+          en: 'Please enter a valid date in YYYY-MM-DD format.'
+      }
+})
 
 
 ///////////////////////////////////////////////////////////////

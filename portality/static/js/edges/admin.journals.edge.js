@@ -72,21 +72,23 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
-                doaj.facets.inDOAJ(),
-                edges.newRefiningANDTermSelector({
-                    id: "has_seal",
+                edges.newFilterSetter({
+                    id : "flagged",
                     category: "facet",
-                    field: "index.has_seal.exact",
-                    display: "DOAJ Seal",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
+                    showCount: true,
+                    filters : [
+                        doaj.filters.isFlagged(),
+                        doaj.filters.flaggedToMe()
+                    ],
+                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle : "",
+                        open: true,
+                        togglable: false,
+                        showCount: true,
+                        countFormat: doaj.valueMaps.countFormat
                     })
                 }),
+                doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "owner",
                     category: "facet",
@@ -157,21 +159,8 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-
-                edges.newRefiningANDTermSelector({
-                    id: "author_pays",
-                    category: "facet",
-                    field: "index.has_apc.exact",
-                    display: "Publication charges?",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                doaj.facets.adminHasAPC(),
+                doaj.facets.adminHasOtherCharges(),
 
                 edges.newRefiningANDTermSelector({
                     id: "journal_license",
@@ -289,6 +278,110 @@ $.extend(true, doaj, {
                     })
                 }),
 
+                doaj.components.newFacetDivider({
+                    id: "reporting_tools_divider",
+                    category: "facet",
+                    display: "Reporting Tools"
+                }),
+                doaj.components.newSimultaneousDateRangeEntry({
+                    id: "date_limiter",
+                    display: "Limit by Date Range",
+                    fields: [
+                        {"field": "created_date", "display": "Created Date"},
+                        {"field": "last_manual_update", "display": "Last Updated"}
+                    ],
+                    autoLookupRange: true,
+                    autoLookupFilters : [
+                        es.newRangeFilter({field: "last_manual_update", gte:"2000-01-01T00:00:00Z"})
+                    ],
+                    category: "facet",
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet({
+                        open: true
+                    })
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "created_date_histogram",
+                    category: "facet",
+                    field: "created_date",
+                    display: "Date Added Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminJournalsSearch.activeEdges[selector].getComponent({id: "created_date_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "last_updated_histogram",
+                    category: "facet",
+                    field: "last_manual_update",
+                    display: "Last Update Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminJournalsSearch.activeEdges[selector].getComponent({id: "last_updated_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
+                doaj.components.newReportExporter({
+                    id: "report-exporter",
+                    category: "facet",
+                    model: "journal",
+                    facetExports: [
+                        {component_id: "in_doaj", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_seal", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "owner", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_associate_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "associate_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "admin_has_apc", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "admin_has_other_charges", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "journal_license", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "classification", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "subject", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "journal_language", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "country_publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "continued", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "discontinued_date", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "created_date_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
+                    ]
+                }),
+
                 // configure the search controller
                 edges.newFullSearchController({
                     id: "search-controller",
@@ -296,7 +389,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Date added to DOAJ','field':'created_date'},
                         {'display':'Last updated','field':'last_manual_update'}, // Note: last updated on UI points to when last updated by a person (via form)
-                        {'display':'Title','field':'index.unpunctitle.exact'}
+                        {'display':'Title','field':'index.unpunctitle.exact'},
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
                     ],
                     fieldOptions: [
                         {'display':'Owner','field':'admin.owner'},
@@ -363,6 +457,11 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                    valueFunction: doaj.fieldRender.deadline
+                                }
+                            ],
+                            [
+                                {
                                     "pre" : "<strong>In DOAJ?</strong>: ",
                                     valueFunction: doaj.fieldRender.inDoaj
                                 }
@@ -381,7 +480,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
                                     valueFunction : doaj.fieldRender.issns
                                 }
                             ],
@@ -470,7 +568,6 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         "admin.in_doaj" : "In DOAJ?",
-                        "index.has_seal.exact" : "Seal?",
                         "admin.owner.exact" : "Owner",
                         "index.has_editor_group.exact" : "Editor group?",
                         "index.has_editor.exact" : "Associate Editor?",
@@ -484,16 +581,37 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Country",
                         "index.continued.exact" : "Continued",
                         "bibjson.discontinued_date" : "Discontinued Year",
-                        "index.has_apc.exact" : "Charges?"
+                        "bibjson.apc.has_apc": "Has APC?",
+                        "bibjson.other_charges.has_other_charges": "Has other charges?",
+                        'index.is_flagged': "Only Flagged Records",
+                        'index.flag_assignees.exact': "Flagged to me",
+                        "created_date": "Created Date",
+                        "last_manual_update": "Last Updated"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
                             true : "Yes",
                             false : "No"
+                        },
+                        "bibjson.apc.has_apc" : {
+                            true : "Yes",
+                            false : "No"
+                        },
+                        "bibjson.other_charges.has_other_charges" : {
+                            true : "Yes",
+                            false : "No"
                         }
                     },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({
+                        hideValues: [
+                            'index.is_flagged',
+                            'index.flag_assignees.exact'
+                        ]
+                    }),
                     rangeFunctions : {
-                        "bibjson.discontinued_date" : doaj.valueMaps.displayYearPeriod
+                        "bibjson.discontinued_date" : doaj.valueMaps.displayYearPeriod,
+                        "created_date" : doaj.valueMaps.displayYearMonthPeriod,
+                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod
                     }
                 })
             ];

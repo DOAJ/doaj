@@ -46,6 +46,7 @@ from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext,
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
 from portality.ui.messages import Messages
+from portality.ui import templates
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -123,7 +124,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Here is an example of a suitable Open Access "
                           "statement that meets our criteria: <blockquote>This"
-                          " is an open access journal which means that all "
+                          " is an open access journal, which means that all "
                           "content is freely available without charge to the "
                           "user or his/her institution. Users are allowed to "
                           "read, download, copy, distribute, print, search, or"
@@ -272,7 +273,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                           "Use the link under the ISSN you provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 2049-3630",
@@ -280,7 +281,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
-                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
                                                            "online)'"}}  # ~~^-> DifferetTo:FormValidator~~
@@ -294,7 +295,7 @@ class FieldDefinitions:
             "public": {
                 "validate": [
                     {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "eissn",
                                       "message": "This field must contain a different value to 'ISSN ("
@@ -305,7 +306,7 @@ class FieldDefinitions:
             "admin": {
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -320,7 +321,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -330,7 +331,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -349,15 +350,15 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
-                          "Use the link under the ISSN your provided to check it.",
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
+                          "Use the link under the ISSN you provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 0378-5955",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
             {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "pissn",
                               "message": "This field must contain a different value to 'ISSN (print)'"}}
@@ -372,7 +373,7 @@ class FieldDefinitions:
             "public": {
                 "validate": [
                     {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "pissn",
                                       "message": "This field must contain a different value to 'ISSN (print)'"}},
@@ -383,7 +384,7 @@ class FieldDefinitions:
             "admin": {
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -398,7 +399,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -408,7 +409,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -418,7 +419,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "validate": [
                     {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "pissn",  # ~~^-> DifferetTo:FormValidator~~
                                       "message": "This field must contain a different value to 'ISSN (print)'"}}
@@ -515,14 +516,20 @@ class FieldDefinitions:
                 ]
             },
             "public": {
-                "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
+                "validate": [
+                    {"required": {"message": "Enter the name of the journal's publisher"}},
+                    {"different_to": {"field": "institution_name",
+                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                ]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
             "update_request": {
-                "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
+                "validate": [
+                    {"required": {"message": "Enter the name of the journal's publisher"}},
+                    {"different_to": {"field": "institution_name",
+                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                ]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
@@ -721,8 +728,7 @@ class FieldDefinitions:
                           "ic_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' "
                           "rel='noopener'>What is the difference between CC0 "
                           "and the Public Domain Mark (\"PDM\")?</a>"],
-            "doaj_criteria": "Content must be licensed",
-            "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
+            "doaj_criteria": "Content must be licensed"
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> type of license"}}
@@ -783,8 +789,7 @@ class FieldDefinitions:
             "long_help": ["It is recommended that licensing information is included in full-text articles "
                           "but it is not required for inclusion. "
                           "Answer <strong>Yes</strong> if licensing is displayed or "
-                          "embedded in all versions of each article."],
-            "seal_criteria": "If the answer is Embed"
+                          "embedded in all versions of each article."]
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
@@ -837,8 +842,7 @@ class FieldDefinitions:
                           " (including commercial rights). <br/><br/> Answer "
                           "<strong>Yes</strong> only if authors publishing "
                           "under any license allowed by the journal "
-                          "retain all rights."],
-            "seal_criteria": "The author must retain the copyright"
+                          "retain all rights."]
         }
     }
 
@@ -963,7 +967,7 @@ class FieldDefinitions:
             {"required": {"message": "Enter the Year (YYYY)."}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {
-                "message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be greater than {}".format(
+                "message": "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}".format(
                     app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
@@ -1129,7 +1133,7 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": [" If the journal charges a range of fees for "
-                          "publication of an article, enter the highest fee. "
+                          "the publication of an article, enter the highest fee. "
                           "If the fee can be paid in more than one currency, "
                           "you may list them here."]
         },
@@ -1137,8 +1141,8 @@ class FieldDefinitions:
             "apc_currency",
             "apc_max"
         ],
-        "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group_horizontal.html",
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GROUP_HORIZONTAL,
         "widgets": [
             "multiple_field"
         ]
@@ -1339,7 +1343,7 @@ class FieldDefinitions:
              "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": "Other", "value": "other",
              "subfields": ["preservation_service_other", "preservation_service_url"]},
-            {"display": "<em>The journal content isn’t archived with a long-term preservation service</em>",
+            {"display": HTMLString("<em>The journal content isn’t archived with a long-term preservation service</em>"),
              "value": "none", "exclusive": True}
         ],
         "help": {
@@ -1352,7 +1356,7 @@ class FieldDefinitions:
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
         ],
-        "contexts" : {
+        "contexts": {
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
@@ -1488,21 +1492,20 @@ class FieldDefinitions:
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Mir@bel", "value": "Mir@bel", "subfields": ["deposit_policy_url"]},
-            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
+            {"display": "Open Policy Finder", "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
-            {"display": "<em>The journal has no repository policy</em>", "value": "none", "exclusive": True}
+            {"display": HTMLString("<em>The journal has no repository policy</em>"), "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
                           "of their choice. What is the journal’s policy for this?",
-                          "You should state your policy with regard to the different versions of the paper:"
+                          "You should state your policy about the different versions of the paper:"
                           "<ul style='list-style-type: none;'>"
                           "<li>Submitted version</li>"
                           "<li>Accepted version (Author Accepted Manuscript)</li>"
                           "<li>Published version (Version of Record)</li>"
-                          "</ul>",
-                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author’s choice without embargo."
+                          "</ul>"
                           ]},
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
@@ -1548,7 +1551,7 @@ class FieldDefinitions:
         "conditional": [{"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
                         {"field": "deposit_policy", "value": "Mir@bel"},
-                        {"field": "deposit_policy", "value": "Sherpa/Romeo"},
+                        {"field": "deposit_policy", "value": "Open Policy Finder"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -1572,7 +1575,7 @@ class FieldDefinitions:
                                 "Diadorim",
                                 "Dulcinea",
                                 "Mir@bel",
-                                "Sherpa/Romeo",
+                                "Open Policy Finder",
                                 "other"
                             ]
                         }
@@ -1589,7 +1592,7 @@ class FieldDefinitions:
                                 "Diadorim",
                                 "Dulcinea",
                                 "Mir@bel",
-                                "Sherpa/Romeo",
+                                "Open Policy Finder",
                                 "other"
                             ]
                         }
@@ -1613,7 +1616,7 @@ class FieldDefinitions:
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
             {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]},
-            {"display": "<em>The journal does not use persistent article identifiers</em>", "value": "none",
+            {"display": HTMLString("<em>The journal does not use persistent article identifiers</em>"), "value": "none",
              "exclusive": True}
         ],
         "help": {
@@ -1656,93 +1659,18 @@ class FieldDefinitions:
         },
     }
 
-    # ~~->$ Orcids:FormField~~
-    ORCID_IDS = {
-        "name": "orcid_ids",
-        "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "An <a href='https://orcid.org/' target='_blank' rel='noopener'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
-                "authors."],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
-    # ~~->$ OpenCitations:FormField~~
-    OPEN_CITATIONS = {
-        "name": "open_citations",
-        "label": "Does the journal comply with I4OC standards for open citations?",
-        "input": "radio",
-        "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
-        ],
-        "default": "",
-        "help": {
-            "long_help": [
-                "The <a href='https://i4oc.org/#goals' target='_blank' rel='noopener'>I4OC standards</a> ask that citations are structured, separable, and open. "],
-        },
-        "contexts": {
-            "public": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {"required": {"message": "Select Yes or No"}}
-                ]
-            }
-        }
-    }
-
     #######################################
     ## Editorial fields
 
-    # ~~->$ DOAJSeal:FormField~~
-    DOAJ_SEAL = {
-        "name": "doaj_seal",
-        "label": "The journal may have fulfilled all the criteria for the Seal. Award the Seal?",
+    S2O = {
+        "name": "s2o",
+        "label": "Subscribe to Open",
         "input": "checkbox",
-        "validate": [
-            {
-                "only_if": {
-                    "fields": [
-                        {"field": "license_display", "value": "y"},
-                        {"field": "copyright_author_retains", "value": "y"},
-                        {"field": "preservation_service", "not": "none"},
-                        {"field": "preservation_service_url", "not": ""},
-                        {"field": "deposit_policy", "not": "none"},
-                        {"field": "persistent_identifiers", "not": "none"},
-                        {"field": "license", "or": ["CC BY", "CC BY-SA", "CC BY-NC", "CC BY-NC-SA"]}
-                    ],
-                    "message": "In order to award the query: the license must be CC BY, CC BY-SA, CC BY-NC, or CC BY-NC-SA; "
-                               "the license must be displayed or embedded; "
-                               "the author must retain their copyright; "
-                               "the journal must make use of a preservation service; "
-                               "a url for the preservation service must be provided; "
-                               "the journal must have a deposit policy; "
-                               "the journal must use a persistent identifier"
-                }
-            }
-        ]
+        "help": {
+            "long_help": [
+                "Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
+                "Subscribe to Open</a> initiative?"],
+        }
     }
 
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
@@ -1915,6 +1843,7 @@ class FieldDefinitions:
             "tagentry"  # ~~-> TagEntry:FormWidget~~
         ],
         "help": {
+            "short_help": "Enter the ISSN(s) of the previous title(s) of this journal.",
             "render_error_box": False
         }
     }
@@ -1937,6 +1866,7 @@ class FieldDefinitions:
             }
         ],
         "help": {
+            "short_help": "Enter the ISSN(s) of the later title(s) that continue this publication.",
             "render_error_box": False
         },
         "widgets": [
@@ -1999,11 +1929,11 @@ class FieldDefinitions:
             "note_id",
             "note_author_id",
         ],
-        "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group.html",
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat": {"enable_on_repeat": ["textarea"]}},
-            "note_modal"
+            "note_modal",
         ],
         "merge_disabled": "merge_disabled_notes",
     }
@@ -2051,6 +1981,110 @@ class FieldDefinitions:
         "input": "hidden"
     }
 
+    FLAGS = {
+        "name": "flags",
+        "input": "group",
+        "label": "Flags",
+        "repeatable": {
+            "initial": 2,
+            "add_button_placement": "top",
+            "add_field_permission": ["admin"]
+        },
+        "subfields": [
+            "flag_setter",
+            "flag_created_date",
+            "flag_assignee",
+            "flag_deadline",
+            "flag_note",
+            "flag_note_id",
+            "flag_resolved"
+        ],
+        "template": templates.FLAGS_LIST,
+        "entry_template": templates.FLAG_ENTRY_GROUP,
+        "widgets": [
+            "multiple_field",
+            "flag_manager"
+        ],
+        "merge_disabled": "merge_disabled_notes"
+    }
+
+    FLAG_RESOLVED = {
+        "subfield": True,
+        "name": "flag_resolved",
+        "group": "flags",
+        "input": "hidden",
+    }
+
+    # ~~->$ NoteAuthor:FormField~~
+    FLAG_SETTER = {
+        "subfield": True,
+        "name": "flag_setter",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    # ~~->$ NoteDate:FormField~~
+    FLAG_CREATED_DATE = {
+        "subfield": True,
+        "name": "flag_created_date",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    FLAG_DEADLINE = {
+        "subfield": True,
+        "optional": True,
+        "label": "Deadline",
+        "name": "flag_deadline",
+        "validate": [
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
+        ],
+        "help": {
+            "placeholder": "deadline (YYYY-MM-DD)",
+            "render_error_box": True,
+            "warning_message": Messages.FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING
+        },
+        "group": "flags",
+        "input": "text",
+    }
+
+    FLAG_NOTE = {
+        "subfield": True,
+        "name": "flag_note",
+        "group": "flags",
+        "input": "textarea",
+    }
+
+    # ~~->$ NoteID:FormField~~
+    FLAG_NOTE_ID = {
+        "subfield": True,
+        "name": "flag_note_id",
+        "group": "flags",
+        "input": "hidden"
+    }
+
+    FLAG_ASSIGNEE = {
+        "subfield": True,
+        "name": "flag_assignee",
+        "label": "Assign a user",
+        "help": {
+            "placeholder": "assigned_to",
+            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+        },
+        "group": "flags",
+        "validate": [
+            "reserved_usernames",
+            "owner_exists"
+        ],
+        "widgets": [
+            {"autocomplete": {"type": "admin", "include": False, "allow_clear_input": False}},
+            # ~~^-> Autocomplete:FormWidget~~
+        ],
+        "input": "text",
+    }
+
     # ~~->$ OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name": "make_all_fields_optional",
@@ -2059,20 +2093,6 @@ class FieldDefinitions:
         "widget": {
             "optional_validation"
         }
-    }
-
-    # Bulk Edit fields (that couldn't be overriden in the normal way)
-    # ~~->$ BulkDOAJSeal:FormField~~
-    BULK_DOAJ_SEAL = {
-        "name": "change_doaj_seal",
-        "label": 'Award the Seal',
-        "input": "select",
-        "default": "",
-        "options": [
-            {"value": "", "display": "Leave unchanged"},
-            {"value": "True", "display": "Yes"},
-            {"value": "False", "display": "No"}
-        ],
     }
 
 
@@ -2253,18 +2273,16 @@ class FieldSetDefinitions:
         "label": "Unique identifiers & structured data",
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
-            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
-            FieldDefinitions.ORCID_IDS["name"],
-            FieldDefinitions.OPEN_CITATIONS["name"]
+            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]
         ]
     }
 
-    # ~~->$ Seal:FieldSet~~
-    SEAL = {
-        "name": "seal",
-        "label": "Award the seal",
+
+    LABELS = {
+        "name": "labels",
+        "label": "Specify labels for this journal",
         "fields": [
-            FieldDefinitions.DOAJ_SEAL["name"]
+            FieldDefinitions.S2O["name"]
         ]
     }
 
@@ -2338,7 +2356,22 @@ class FieldSetDefinitions:
             FieldDefinitions.NOTE_AUTHOR["name"],
             FieldDefinitions.NOTE_DATE["name"],
             FieldDefinitions.NOTE_ID["name"],
-            FieldDefinitions.NOTE_AUTHOR_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"]
+        ]
+    }
+
+    FLAGS = {
+        "name": "flags",
+        "label": "Flag",
+        "fields": [
+            FieldDefinitions.FLAGS["name"],
+            FieldDefinitions.FLAG_SETTER["name"],
+            FieldDefinitions.FLAG_CREATED_DATE["name"],
+            FieldDefinitions.FLAG_DEADLINE["name"],
+            FieldDefinitions.FLAG_NOTE["name"],
+            FieldDefinitions.FLAG_NOTE_ID["name"],
+            FieldDefinitions.FLAG_ASSIGNEE["name"],
+            FieldDefinitions.FLAG_RESOLVED["name"],
         ]
     }
 
@@ -2358,7 +2391,6 @@ class FieldSetDefinitions:
         "label": "Bulk edit",
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
-            FieldDefinitions.BULK_DOAJ_SEAL["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
             FieldDefinitions.OWNER["name"]
         ]
@@ -2394,9 +2426,9 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "templates": {
-            "form": "application_form/public_application.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html"
+            "form": templates.PUBLIC_APPLICATION_FORM,
+            "default_field": templates.AF_FIELD,
+            "default_group": templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": ApplicationFormXWalk.obj2form,
@@ -2411,14 +2443,14 @@ class ApplicationContextDefinitions:
     UPDATE = deepcopy(PUBLIC)
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
-    UPDATE["templates"]["form"] = "application_form/publisher_update_request.html"
+    UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
 
     # ~~->$ ReadOnlyApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
     READ_ONLY = deepcopy(PUBLIC)
     READ_ONLY["name"] = "application_read_only"
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
-    READ_ONLY["templates"]["form"] = "application_form/readonly_application.html"
+    READ_ONLY["templates"]["form"] = templates.PUBLISHER_READ_ONLY_APPLICATION
 
     # ~~->$ AssociateEditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2431,7 +2463,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
-    ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
+    ASSOCIATE["templates"]["form"] = templates.ASSED_APPLICATION_FORM
 
     # ~~->$ EditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2445,7 +2477,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
-    EDITOR["templates"]["form"] = "application_form/editor_application.html"
+    EDITOR["templates"]["form"] = templates.EDITOR_APPLICATION_FORM
 
     # ~~->$ ManEdApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2453,25 +2485,25 @@ class ApplicationContextDefinitions:
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
-        FieldSetDefinitions.SEAL["name"],
+        FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
-    MANED["templates"]["form"] = "application_form/maned_application.html"
+    MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
 
 class JournalContextDefinitions:
     # ~~->$ ReadOnlyJournal:FormContext~~
     # ~~^-> JournalForm:Crosswalk~~
     # ~~^-> ReadOnlyJournal:FormProcessor~~
-    READ_ONLY = {
-        "name": "readonly",
+    ADMIN_READ_ONLY = {
+        "name": "admin_readonly",
         "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
@@ -2491,9 +2523,9 @@ class JournalContextDefinitions:
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "templates": {
-            "form": "application_form/readonly_journal.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html"
+            "form": templates.MANED_READ_ONLY_JOURNAL,
+            "default_field": templates.AF_FIELD,
+            "default_group": templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,
@@ -2502,17 +2534,22 @@ class JournalContextDefinitions:
         "processor": application_processors.ReadOnlyJournal
     }
 
+    # identical context for editors, mostly to support the different view contexts
+    EDITOR_READ_ONLY = deepcopy(ADMIN_READ_ONLY)
+    EDITOR_READ_ONLY["name"] = "editor_readonly"
+    EDITOR_READ_ONLY["templates"]["form"] = templates.EDITOR_READ_ONLY_JOURNAL
+
     # ~~->$ AssEditorJournal:FormContext~~
     # ~~^-> ReadOnlyJournal:FormContext~~
     # ~~^-> AssEdJournal:FormProcessor~~
-    ASSOCIATE = deepcopy(READ_ONLY)
+    ASSOCIATE = deepcopy(ADMIN_READ_ONLY)
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["processor"] = application_processors.AssEdJournalReview
-    ASSOCIATE["templates"]["form"] = "application_form/assed_journal.html"
+    ASSOCIATE["templates"]["form"] = templates.ASSED_JOURNAL_FORM
 
     # ~~->$ EditorJournal:FormContext~~
     # ~~^-> AssEdJournal:FormContext~~
@@ -2523,7 +2560,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"]
     ]
     EDITOR["processor"] = application_processors.EditorJournalReview
-    EDITOR["templates"]["form"] = "application_form/editor_journal.html"
+    EDITOR["templates"]["form"] = templates.EDITOR_JOURNAL_FORM
 
     # ~~->$ ManEdJournal:FormContext~~
     # ~~^-> EditorJournal:FormContext~~
@@ -2533,11 +2570,12 @@ class JournalContextDefinitions:
     MANED["fieldsets"] += [
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
-        FieldSetDefinitions.SEAL["name"],
-        FieldSetDefinitions.CONTINUATIONS["name"]
+        FieldSetDefinitions.LABELS["name"],
+        FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
-    MANED["templates"]["form"] = "application_form/maned_journal.html"
+    MANED["templates"]["form"] = templates.MANED_JOURNAL_FORM
 
     # ~~->$ BulkEditJournal:FormContext~~
     # ~~^-> JournalForm:Crosswalk~~
@@ -2548,9 +2586,9 @@ class JournalContextDefinitions:
             FieldSetDefinitions.BULK_EDIT["name"]
         ],
         "templates": {
-            "form": "application_form/maned_journal_bulk_edit.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html"
+            "form": templates.MANED_JOURNAL_BULK_EDIT,
+            "default_field": templates.AF_FIELD,
+            "default_group": templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,
@@ -2579,7 +2617,8 @@ APPLICATION_FORMS = {
 
 JOURNAL_FORMS = {
     "contexts": {
-        JournalContextDefinitions.READ_ONLY["name"]: JournalContextDefinitions.READ_ONLY,
+        JournalContextDefinitions.ADMIN_READ_ONLY["name"]: JournalContextDefinitions.ADMIN_READ_ONLY,
+        JournalContextDefinitions.EDITOR_READ_ONLY["name"]: JournalContextDefinitions.EDITOR_READ_ONLY,
         JournalContextDefinitions.BULK_EDIT["name"]: JournalContextDefinitions.BULK_EDIT,
         JournalContextDefinitions.ASSOCIATE["name"]: JournalContextDefinitions.ASSOCIATE,
         JournalContextDefinitions.EDITOR["name"]: JournalContextDefinitions.EDITOR,
@@ -2644,7 +2683,8 @@ def application_statuses(field, formulaic_context):
     # It would be nice to be able to somehow disable it being changed, perhaps we can do that
     # via a widget
     _application_status_admin = _application_status_base + [
-        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
+        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW,
+         Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
         (constants.APPLICATION_STATUS_UPDATE_REQUEST, Messages.FORMS__APPLICATION_STATUS__UPDATE_REQUEST),
         (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, Messages.FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED),
         (constants.APPLICATION_STATUS_ON_HOLD, Messages.FORMS__APPLICATION_STATUS__ON_HOLD),
@@ -2667,7 +2707,8 @@ def application_statuses(field, formulaic_context):
     elif formulaic_context_name == "editor":
         status_list = _application_status_editor
     elif formulaic_context_name == "accepted":
-        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
+        status_list = [(constants.APPLICATION_STATUS_ACCEPTED,
+                        Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
     else:
         status_list = _application_status_base
 
@@ -2727,6 +2768,32 @@ def disable_edit_note_except_editing_user(field: FormulaicField,
     if form_field is None:
         return True
     return cur_user_id != form_field.data.get('note_author_id')
+
+
+def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
+                                                   formulaic_context: FormulaicContext):
+    # This is currently not used but will be needed again when the flags feature will be made available for non-admin users
+
+    """
+    Only allow the current user to edit this field if current user is an author, assignee or admin
+
+    :param field:
+    :param formulaic_context:
+    :return:
+        False is editable, True is disabled
+    """
+
+    # ~~->Notes:Feature~~
+    editing_user = formulaic_context.extra_param.get('editing_user')
+    cur_user_id = editing_user and editing_user.id
+    cur_user_is_admin = editing_user and editing_user.is_super
+    form_field: FormField = field.find_related_form_field('notes', formulaic_context)
+    if form_field is None:
+        return True
+
+    return (cur_user_id != form_field.data.get('flag_assignee') and
+            cur_user_id != form_field.data.get('flag_setter') and
+            not cur_user_is_admin)
 
 
 #######################################################
@@ -3014,7 +3081,8 @@ class OnlyIfBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True),
+                      message=settings.get('message'))
 
 
 class OnlyIfExistsBuilder:
@@ -3026,7 +3094,8 @@ class OnlyIfExistsBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIfExists(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIfExists(other_fields=settings.get('fields') or fields,
+                            ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
 
 
 class NotIfBuildier:
@@ -3069,7 +3138,7 @@ class BigEndDateBuilder:
     # ~~->$ BigEndDate:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-pattern"] = "\d{4}-\d{2}-\d{2}"
+        html_attrs["data-parsley-validdate"] = ""
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
@@ -3124,6 +3193,7 @@ PYTHON_FUNCTIONS = {
     "disabled": {
         "application_status_disabled": application_status_disabled,
         "disable_edit_note_except_editing_user": disable_edit_note_except_editing_user,
+        "disable_edit_flag_except_author_admin_assignee": disable_edit_flag_except_author_admin_assignee
     },
     "merge_disabled": {
         "merge_disabled_notes": merge_disabled_notes
@@ -3193,8 +3263,11 @@ JAVASCRIPT_FUNCTIONS = {
     "load_editors": "formulaic.widgets.newLoadEditors",  # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace": "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
-    "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
-    "issn_link": "formulaic.widgets.newIssnLink"  # ~~-> IssnLink:FormWidget~~,
+    "autocheck": "formulaic.widgets.newAutocheck",  # ~~-> Autocheck:FormWidget~~
+    "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
+    "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
+    "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+
 }
 
 
@@ -3204,6 +3277,31 @@ JAVASCRIPT_FUNCTIONS = {
 
 class NumberWidget(widgets.Input):
     input_type = 'number'
+
+class FieldsetWidget(object):
+    """
+       Renders a fieldset with a legend
+       if legend_display is true the question is displayed
+       if legend_display is false it is for screen readers only
+    """
+    def __init__(self, legend, sr_only_label = True, prefix_label=False):
+        self.sr_only = sr_only_label
+        self.prefix_label = prefix_label
+
+        self.legend = f'<legend '
+        if self.sr_only:
+            self.legend += f'class="sr-only"'
+        self.legend += f'>{legend}</legend>'
+
+        self.html_wrapper = f"<fieldset> {self.legend} [BODY]</fieldset>"
+
+    def __call__(self, field, **kwargs):
+        fields = ''
+        for subfield in field:
+            fields += f'{subfield.label}{subfield(**kwargs)}' if self.prefix_label else f'{subfield(**kwargs)}{subfield.label}'
+
+        html = self.html_wrapper.replace("[BODY]", fields)
+        return HTMLString(''.join(html))
 
 
 class ListWidgetWithSubfields(object):
@@ -3232,7 +3330,8 @@ class ListWidgetWithSubfields(object):
             if self.prefix_label:
                 html.append('<li tabindex=0>%s %s' % (subfield.label, subfield(**kwargs)))
             else:
-                html.append('<li tabindex=0>%s %s' % (subfield(**kwargs), subfield.label))
+                label = str(subfield.label)
+                html.append('<li tabindex=0>%s %s' % (subfield(**kwargs), label))
 
             html.append("</li>")
 
@@ -3251,7 +3350,8 @@ class RadioBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        wtfargs["widget"] = ListWidgetWithSubfields()
+        # wtfargs["widget"] = ListWidgetWithSubfields()
+        wtfargs["widget"] = FieldsetWidget(legend=field.get("label"), sr_only_label=True)
         return UnconstrainedRadioField(**wtfargs)
 
 

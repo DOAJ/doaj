@@ -27,7 +27,7 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Unable to construct Journal from supplied source - data structure validation error, {x}".format(x=e))
 
         if not journal.editor_group:
-            return
+            return None
 
         editor_group = models.EditorGroup.pull_by_key("name", journal.editor_group)
 
@@ -48,6 +48,9 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
         notification.short = svc.short_notification(cls.ID).format(
             issns=journal.bibjson().issns_as_text()
         )
-        notification.action = url_for("editor.journal_page", journal_id=journal.id)
+
+        # No action possible due to page removed (see portality.view.editor.journal_page(journal_id))
+        # notification.action = url_for("editor.journal_page", journal_id=journal.id)
 
         svc.notify(notification)
+        return notification

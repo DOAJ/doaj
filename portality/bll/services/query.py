@@ -4,9 +4,6 @@ from portality.bll import exceptions
 from portality.lib import plugin
 from copy import deepcopy
 
-import esprit
-
-
 class QueryService(object):
     """
     ~~Query:Service~~
@@ -154,6 +151,10 @@ class QueryService(object):
             res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 
+    def make_actionable_query(self, domain, index_type, account, raw_query):
+        cfg = self._get_config_for_search(domain, index_type, account)
+        query = self._get_query(cfg, raw_query)
+        return query
 
 class Query(object):
     """
@@ -272,12 +273,17 @@ class Query(object):
             try:
                 return int(self.q["size"])
             except ValueError:
-                return 10
+                app.logger.warn("Invalid size parameter in query: [{x}], "
+                                "expected integer value".format(x=self.q["size"]))
         return 10
 
     def from_result(self):
         if "from" in self.q:
-            return int(self.q["from"])
+            try:
+                return int(self.q["from"])
+            except ValueError:
+                app.logger.warn("Invalid from parameter in query: [{x}], "
+                                "expected integer value".format(x=self.q["from"]))
         return 0
 
     def as_dict(self):

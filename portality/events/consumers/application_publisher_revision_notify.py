@@ -28,7 +28,7 @@ class ApplicationPublisherRevisionNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
 
         if application.owner is None:
-            return
+            return None
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -48,3 +48,4 @@ class ApplicationPublisherRevisionNotify(EventConsumer):
         )
 
         svc.notify(notification)
+        return notification
