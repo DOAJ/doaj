@@ -28,7 +28,7 @@ doaj.autocheckers.ISSNActive = class {
         let message = this.MESSAGES[autocheck.advice];
         message = message.replace("{{ISSN}}", autocheck.original_value);
 
-        const frag = drawIconMessage(
+        const frag = doaj.autocheckers.drawIconMessage(
             autocheck, message,
             this.ICONS[autocheck.advice],
             this.STYLE[autocheck.advice]);
@@ -68,7 +68,7 @@ doaj.autocheckers.KeepersRegistry = class {
         let context = JSON.parse(autocheck.context);
         message = message.replace("{service}", context.service);
 
-        const frag = drawIconMessage(
+        const frag = doaj.autocheckers.drawIconMessage(
             autocheck, message,
             this.ICONS[autocheck.advice],
             this.STYLE[autocheck.advice]);
@@ -93,7 +93,7 @@ doaj.autocheckers.NoNoneValue = class {
     draw(autocheck) {
         let message = this.MESSAGES[autocheck.advice];
 
-        const frag = drawIconMessage(
+        const frag = doaj.autocheckers.drawIconMessage(
             autocheck, message,
             this.ICONS[autocheck.advice],
             this.STYLE[autocheck.advice]);
