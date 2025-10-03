@@ -5,6 +5,12 @@
   text-transform: uppercase;
   font-weight: 600;
   height: 150px;
+
+  .label {
+    font-size: unset;
+    color: $warm-black;
+    margin-bottom: 0;
+  }
 }
 
 .secondary-nav--precedes-highlight {

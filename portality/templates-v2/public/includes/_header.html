@@ -46,18 +46,21 @@
         <h2 class="sr-only">Secondary actions</h2>
         <div class="flex-space-between">
             <ul class="nav-bar secondary-nav__menu" role="menu">
-
-                {% set columns = data.nav.entries|selectattr("secondary")|list %}
-                {% for column in columns %}
-                    {% set section_id=column.id %}
-                    {% include "public/includes/_header-secondary-navigation.html" %}
-                {% endfor %}
                 {% set columns = data.nav.entries|selectattr("secondary_mobile")|list %}
                 {% set mobile=True %}
                 {% for column in columns %}
                     {% set section_id=column.id %}
                     {% include "public/includes/_header-secondary-navigation.html" %}
                 {% endfor %}
+
+                {% set columns = data.nav.entries|selectattr("secondary")|list %}
+                {% set mobile=False %}
+                {% for column in columns %}
+                    {% set section_id=column.id %}
+                    {% include "public/includes/_header-secondary-navigation.html" %}
+                {% endfor %}
+
+                {% set mobile=True %}
                 {% include "public/includes/_header-secondary-navigation-account.html" %}
             </ul>
             <ul class="nav-bar secondary-nav__menu" role="menu">
