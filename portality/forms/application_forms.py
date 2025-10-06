@@ -1358,7 +1358,7 @@ class FieldDefinitions:
         "validate": [
             {"required": {"message": lazy_gettext("Select <strong>at least one</strong> option")}}
         ],
-        "contexts" : {
+        "contexts": {
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
@@ -1950,6 +1950,110 @@ class FieldDefinitions:
         "input": "hidden"
     }
 
+    FLAGS = {
+        "name": "flags",
+        "input": "group",
+        "label": "Flags",
+        "repeatable": {
+            "initial": 2,
+            "add_button_placement": "top",
+            "add_field_permission": ["admin"]
+        },
+        "subfields": [
+            "flag_setter",
+            "flag_created_date",
+            "flag_assignee",
+            "flag_deadline",
+            "flag_note",
+            "flag_note_id",
+            "flag_resolved"
+        ],
+        "template": templates.FLAGS_LIST,
+        "entry_template": templates.FLAG_ENTRY_GROUP,
+        "widgets": [
+            "multiple_field",
+            "flag_manager"
+        ],
+        "merge_disabled": "merge_disabled_notes"
+    }
+
+    FLAG_RESOLVED = {
+        "subfield": True,
+        "name": "flag_resolved",
+        "group": "flags",
+        "input": "hidden",
+    }
+
+    # ~~->$ NoteAuthor:FormField~~
+    FLAG_SETTER = {
+        "subfield": True,
+        "name": "flag_setter",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    # ~~->$ NoteDate:FormField~~
+    FLAG_CREATED_DATE = {
+        "subfield": True,
+        "name": "flag_created_date",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    FLAG_DEADLINE = {
+        "subfield": True,
+        "optional": True,
+        "label": "Deadline",
+        "name": "flag_deadline",
+        "validate": [
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
+        ],
+        "help": {
+            "placeholder": "deadline (YYYY-MM-DD)",
+            "render_error_box": True,
+            "warning_message": Messages.FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING
+        },
+        "group": "flags",
+        "input": "text",
+    }
+
+    FLAG_NOTE = {
+        "subfield": True,
+        "name": "flag_note",
+        "group": "flags",
+        "input": "textarea",
+    }
+
+    # ~~->$ NoteID:FormField~~
+    FLAG_NOTE_ID = {
+        "subfield": True,
+        "name": "flag_note_id",
+        "group": "flags",
+        "input": "hidden"
+    }
+
+    FLAG_ASSIGNEE = {
+        "subfield": True,
+        "name": "flag_assignee",
+        "label": "Assign a user",
+        "help": {
+            "placeholder": "assigned_to",
+            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+        },
+        "group": "flags",
+        "validate": [
+            "reserved_usernames",
+            "owner_exists"
+        ],
+        "widgets": [
+            {"autocomplete": {"type": "admin", "include": False, "allow_clear_input": False}},
+            # ~~^-> Autocomplete:FormWidget~~
+        ],
+        "input": "text",
+    }
+
     # ~~->$ OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name": "make_all_fields_optional",
@@ -2221,7 +2325,22 @@ class FieldSetDefinitions:
             FieldDefinitions.NOTE_AUTHOR["name"],
             FieldDefinitions.NOTE_DATE["name"],
             FieldDefinitions.NOTE_ID["name"],
-            FieldDefinitions.NOTE_AUTHOR_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"]
+        ]
+    }
+
+    FLAGS = {
+        "name": "flags",
+        "label": "Flag",
+        "fields": [
+            FieldDefinitions.FLAGS["name"],
+            FieldDefinitions.FLAG_SETTER["name"],
+            FieldDefinitions.FLAG_CREATED_DATE["name"],
+            FieldDefinitions.FLAG_DEADLINE["name"],
+            FieldDefinitions.FLAG_NOTE["name"],
+            FieldDefinitions.FLAG_NOTE_ID["name"],
+            FieldDefinitions.FLAG_ASSIGNEE["name"],
+            FieldDefinitions.FLAG_RESOLVED["name"],
         ]
     }
 
@@ -2342,7 +2461,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
@@ -2421,7 +2540,8 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.LABELS["name"],
-        FieldSetDefinitions.CONTINUATIONS["name"]
+        FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
     MANED["templates"]["form"] = templates.MANED_JOURNAL_FORM
@@ -2532,7 +2652,8 @@ def application_statuses(field, formulaic_context):
     # It would be nice to be able to somehow disable it being changed, perhaps we can do that
     # via a widget
     _application_status_admin = _application_status_base + [
-        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
+        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW,
+         Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
         (constants.APPLICATION_STATUS_UPDATE_REQUEST, Messages.FORMS__APPLICATION_STATUS__UPDATE_REQUEST),
         (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, Messages.FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED),
         (constants.APPLICATION_STATUS_ON_HOLD, Messages.FORMS__APPLICATION_STATUS__ON_HOLD),
@@ -2555,7 +2676,8 @@ def application_statuses(field, formulaic_context):
     elif formulaic_context_name == "editor":
         status_list = _application_status_editor
     elif formulaic_context_name == "accepted":
-        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
+        status_list = [(constants.APPLICATION_STATUS_ACCEPTED,
+                        Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
     else:
         status_list = _application_status_base
 
@@ -2615,6 +2737,32 @@ def disable_edit_note_except_editing_user(field: FormulaicField,
     if form_field is None:
         return True
     return cur_user_id != form_field.data.get('note_author_id')
+
+
+def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
+                                                   formulaic_context: FormulaicContext):
+    # This is currently not used but will be needed again when the flags feature will be made available for non-admin users
+
+    """
+    Only allow the current user to edit this field if current user is an author, assignee or admin
+
+    :param field:
+    :param formulaic_context:
+    :return:
+        False is editable, True is disabled
+    """
+
+    # ~~->Notes:Feature~~
+    editing_user = formulaic_context.extra_param.get('editing_user')
+    cur_user_id = editing_user and editing_user.id
+    cur_user_is_admin = editing_user and editing_user.is_super
+    form_field: FormField = field.find_related_form_field('notes', formulaic_context)
+    if form_field is None:
+        return True
+
+    return (cur_user_id != form_field.data.get('flag_assignee') and
+            cur_user_id != form_field.data.get('flag_setter') and
+            not cur_user_is_admin)
 
 
 #######################################################
@@ -2902,7 +3050,8 @@ class OnlyIfBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True),
+                      message=settings.get('message'))
 
 
 class OnlyIfExistsBuilder:
@@ -2914,7 +3063,8 @@ class OnlyIfExistsBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIfExists(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIfExists(other_fields=settings.get('fields') or fields,
+                            ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
 
 
 class NotIfBuildier:
@@ -2957,7 +3107,7 @@ class BigEndDateBuilder:
     # ~~->$ BigEndDate:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-pattern"] = "\d{4}-\d{2}-\d{2}"
+        html_attrs["data-parsley-validdate"] = ""
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
@@ -3012,6 +3162,7 @@ PYTHON_FUNCTIONS = {
     "disabled": {
         "application_status_disabled": application_status_disabled,
         "disable_edit_note_except_editing_user": disable_edit_note_except_editing_user,
+        "disable_edit_flag_except_author_admin_assignee": disable_edit_flag_except_author_admin_assignee
     },
     "merge_disabled": {
         "merge_disabled_notes": merge_disabled_notes
@@ -3081,9 +3232,11 @@ JAVASCRIPT_FUNCTIONS = {
     "load_editors": "formulaic.widgets.newLoadEditors",  # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace": "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
-    "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
-    "issn_link" : "formulaic.widgets.newIssnLink", # ~~-> IssnLink:FormWidget~~,
-    "article_info": "formulaic.widgets.newArticleInfo", # ~~-> ArticleInfo:FormWidget~~
+    "autocheck": "formulaic.widgets.newAutocheck",  # ~~-> Autocheck:FormWidget~~
+    "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
+    "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
+    "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+
 }
 
 
@@ -3318,8 +3471,10 @@ WTFORMS_BUILDERS = [
     HiddenFieldBuilder
 ]
 
-ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
-JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
+                                   javascript_functions=JAVASCRIPT_FUNCTIONS)
+JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
+                               javascript_functions=JAVASCRIPT_FUNCTIONS)
 
 if __name__ == "__main__":
     """
