@@ -20,7 +20,8 @@ tests:
   steps:
   - step: Make sure you are logged out of the application
   - step: Go to the `Apply` -> `Application Form`
-    results: You will be redirected to login page
+    results: 
+      - You will be redirected to login page
   - step: Click the dropdown which shows `English`, `Français`. the dropdown box is located on the right side above the `Application Progress` menu
   - step: Select `Français` if you are in English language.
     results:
