@@ -68,7 +68,7 @@ JOURNAL_STRUCT = {
 class ContinuationException(Exception):
     pass
 
-class JournalLikeObject(SeamlessMixin):
+class JournalLikeObject(SeamlessMixin, DomainObject):
 
     # During migration from the old data model to the new data model for journal-like objects, this allows
     # the front-end to continue to work, even if the object sees data which is not in the struct.
