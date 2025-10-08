@@ -22,7 +22,7 @@ JOURNAL_BIBJSON = {
                 "replaces" : {"contains" : "field", "coerce" : "issn", "set__allow_coerce_failure" : True},
                 "subject" : {"contains" : "object"},
                 "labels": {"contains": "field", "coerce": "unicode", "allowed_values": ["s2o"]},
-                "linked_journals": {"contains": "object"}
+                "language_editions": {"contains": "object"}
             },
             "objects" : [
                 "apc",
@@ -164,14 +164,14 @@ JOURNAL_BIBJSON = {
                         "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     }
                 },
-                "linked_journals": {
+                "language_editions": {
                     "fields": {
                         "id": {"coerce": "unicode", "set__allow_coerce_failure" : True},
                         "eissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True},
                         "pissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True}
                     },
                     "lists": {
-                        "languages": {"contains" : "field", "coerce": "unicode"}
+                        "languages": {"contains" : "field", "coerce": "unicode", "set__allow_coerce_failure" : True}
                     }
                 }
             }

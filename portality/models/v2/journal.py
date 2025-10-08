@@ -4,11 +4,14 @@ import string
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import Callable, Iterable
+from typing import Callable, Iterable, TypedDict
+from typing_extensions import NotRequired
 
+from selenium.common import InvalidArgumentException
 from unidecode import unidecode
 
 import portality.lib.dates
+from portality.bll.exceptions import ArgumentException
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
@@ -20,6 +23,7 @@ from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
 
 from portality.lib.dates import FMT_DATE_STD
+from portality.ui.messages import Messages
 
 JOURNAL_STRUCT = {
     "objects": [
@@ -64,8 +68,14 @@ JOURNAL_STRUCT = {
 class ContinuationException(Exception):
     pass
 
+class LanguageEditions(TypedDict):
+    pissn: str
+    eissn: str
+    language: str
+    id: NotRequired[str]
 
-class JournalLikeObject(SeamlessMixin, DomainObject):
+
+class JournalLikeObject(SeamlessMixin):
 
     # During migration from the old data model to the new data model for journal-like objects, this allows
     # the front-end to continue to work, even if the object sees data which is not in the struct.
@@ -280,7 +290,38 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    #### Notes methods
+    @property
+    def language_editions(self):
+        return self.__seamless__.get_list("bibjson.linked_journals")
+
+    @language_editions.setter
+    def language_editions(self, journals):
+        self.__seamless__.set_list("bibjson.language_editions", journals)
+
+    def add_language_edition(self, journal):
+        match_in_doaj = None
+        if journal.id == "":
+            match_in_doaj = self.find_by_issn_exact([journal.pissn, journal.eissn], in_doaj=True)
+        if len(match_in_doaj) > 1:
+            raise ArgumentException(Messages.EXCEPTION_INVALID_ISSNS)
+
+        if len(match_in_doaj) == 1:
+            journal.id = match_in_doaj[0].id
+
+        self.__seamless__.add_to_list_with_struct("bibjson.language_editions", journal)
+
+    def remove_language_edition(self, pissn, eissn):
+        match_on_list = next((le for le in self.language_editions if le.eissn == eissn and le.pissn == pissn), None)
+        if match_on_list:
+            self.__seamless__.delete_from_list("bibjson.language_editions", match_on_list)
+        else:
+            raise ValueError
+
+    def clear_language_editions(self):
+        for le in self.language_editions:
+            self.__seamless__.delete_from_list("bibjson.language_editions", le)
+
+     #### Notes methods
 
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
