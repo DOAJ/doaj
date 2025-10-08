@@ -106,12 +106,12 @@ class TestModels(DoajTestCase):
         j.clear_language_editions()
         assert len(j.language_editions) == 0
 
-        jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
-        jsource["bibjson"]["eissn"] = "LANG-6666"
-        jsource["bibjson"]["pissn"] = "LANG-5555"
-        jsource["id"] = "originaljournalrecord"
-        original = models.Journal(**jsource)
-        original.save(blocking=True)
+        original = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        # original.bibjson().eissn = "LANG-6666"
+        # original.bibjson().pissn = "LANG-5555"
+        # original.set_id("originaljournalrecord")
+        # original.remove_current_application()
+        original.save(blocking=True, sync_owner=False)
 
         j.add_language_edition({"pissn": "000x-000x", "eissn": "111x-1111x", "language": "fr"})
         assert len(j.language_editions) == 1

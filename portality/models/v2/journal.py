@@ -68,13 +68,6 @@ JOURNAL_STRUCT = {
 class ContinuationException(Exception):
     pass
 
-class LanguageEditions(TypedDict):
-    pissn: str
-    eissn: str
-    language: str
-    id: NotRequired[str]
-
-
 class JournalLikeObject(SeamlessMixin):
 
     # During migration from the old data model to the new data model for journal-like objects, this allows
