@@ -167,11 +167,9 @@ JOURNAL_BIBJSON = {
                 "language_editions": {
                     "fields": {
                         "id": {"coerce": "unicode", "set__allow_coerce_failure" : True},
-                        "eissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True},
-                        "pissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True}
-                    },
-                    "lists": {
-                        "languages": {"contains" : "field", "coerce": "unicode", "set__allow_coerce_failure" : True}
+                        "eissn" : {"coerce" : "issn"},
+                        "pissn" : {"coerce" : "issn"},
+                        "language": {"coerce": "unicode"}
                     }
                 }
             }

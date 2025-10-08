@@ -292,7 +292,7 @@ class JournalLikeObject(SeamlessMixin):
 
     @property
     def language_editions(self):
-        return self.__seamless__.get_list("bibjson.linked_journals")
+        return self.__seamless__.get_list("bibjson.language_editions")
 
     @language_editions.setter
     def language_editions(self, journals):
@@ -311,15 +311,14 @@ class JournalLikeObject(SeamlessMixin):
         self.__seamless__.add_to_list_with_struct("bibjson.language_editions", journal)
 
     def remove_language_edition(self, pissn, eissn):
-        match_on_list = next((le for le in self.language_editions if le.eissn == eissn and le.pissn == pissn), None)
+        match_on_list = next((le for le in self.language_editions if le["eissn"] == eissn and le["pissn"] == pissn), None)
         if match_on_list:
             self.__seamless__.delete_from_list("bibjson.language_editions", match_on_list)
         else:
             raise ValueError
 
     def clear_language_editions(self):
-        for le in self.language_editions:
-            self.__seamless__.delete_from_list("bibjson.language_editions", le)
+        self.__seamless__.set_list("bibjson.language_editions", [])
 
      #### Notes methods
 

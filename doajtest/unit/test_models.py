@@ -71,6 +71,9 @@ class TestModels(DoajTestCase):
         j.add_contact("richard", "richard@email.com")
         j.add_note("testing", "2005-01-01T00:00:00Z")
         j.set_bibjson({"title": "test"})
+        j.language_editions = [{"pissn": "LANG-0000", "eissn": "LANG-1111", "language": "pl"},
+                             {"pissn": "LANG-2222", "eissn": "LANG-4444", "language": "en"},
+                             {"pissn": "LANG-5555", "eissn": "LANG-6666", "language": "de"}]
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
@@ -88,11 +91,31 @@ class TestModels(DoajTestCase):
         assert j.get_latest_contact_email() == "richard@email.com"
         assert len(j.notes) == 1
         assert j.bibjson().title == "test"
+        assert len(j.language_editions) == 3
 
         j.remove_owner()
         j.remove_editor_group()
         j.remove_editor()
         j.remove_contact()
+        with self.assertRaises(ValueError):
+            j.remove_language_edition(pissn="LANG-0000", eissn="LANG-6666")
+
+        j.remove_language_edition(pissn="LANG-0000", eissn="LANG-1111")
+        assert len(j.language_editions) == 2
+
+        j.clear_language_editions()
+        assert len(j.language_editions) == 0
+
+        jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        jsource["bibjson"]["eissn"] = "LANG-6666"
+        jsource["bibjson"]["pissn"] = "LANG-5555"
+        jsource["id"] = "originaljournalrecord"
+        original = models.Journal(**jsource)
+        original.save(blocking=True)
+
+        j.add_language_edition({"pissn": "000x-000x", "eissn": "111x-1111x", "language": "fr"})
+        assert len(j.language_editions) == 1
+        assert j.language_editions[0]["id"] == "originaljournalrecord"
 
         assert j.owner is None
         assert j.editor_group is None
