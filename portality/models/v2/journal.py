@@ -4,13 +4,10 @@ import string
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import Callable, Iterable, TypedDict
-from typing_extensions import NotRequired
+from typing import Callable, Iterable
 
-from selenium.common import InvalidArgumentException
 from unidecode import unidecode
 
-import portality.lib.dates
 from portality.bll.exceptions import ArgumentException
 from portality.core import app
 from portality.dao import DomainObject
@@ -288,20 +285,21 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.__seamless__.get_list("bibjson.language_editions")
 
     @language_editions.setter
-    def language_editions(self, journals):
-        self.__seamless__.set_list("bibjson.language_editions", journals)
+    def language_editions(self, language_editions):
+        self.__seamless__.set_list("bibjson.language_editions", language_editions)
 
-    def add_language_edition(self, journal):
+    def add_language_edition(self, language_edition):
         match_in_doaj = None
-        if journal.id == "":
-            match_in_doaj = self.find_by_issn_exact([journal.pissn, journal.eissn], in_doaj=True)
+        if not "id" in language_edition or language_edition["id"] == "":
+            from portality.models import Journal
+            match_in_doaj = Journal.find_by_issn_exact([language_edition["pissn"], language_edition["eissn"]], in_doaj=True)
         if len(match_in_doaj) > 1:
             raise ArgumentException(Messages.EXCEPTION_INVALID_ISSNS)
 
         if len(match_in_doaj) == 1:
-            journal.id = match_in_doaj[0].id
+            language_edition["id"] = match_in_doaj[0]["id"]
 
-        self.__seamless__.add_to_list_with_struct("bibjson.language_editions", journal)
+        self.__seamless__.add_to_list_with_struct("bibjson.language_editions", language_edition)
 
     def remove_language_edition(self, pissn, eissn):
         match_on_list = next((le for le in self.language_editions if le["eissn"] == eissn and le["pissn"] == pissn), None)
