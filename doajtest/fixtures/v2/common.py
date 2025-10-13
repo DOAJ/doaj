@@ -89,6 +89,7 @@ JOURNAL_LIKE_BIBJSON = {
     "keywords": ["word", "key"],
     "labels": ["s2o"],
     "language": ["EN", "FR"],
+    "language_editions": [{"pissn": "000X-000X", "eissn": "111X-111X", "language": "fr", "id": "frlanguageedition"}],
     "license": [
         {
             "type": "Publisher's own license",
