@@ -486,6 +486,25 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->$ Langugage_editions:FormField~~
+    LANGUAGE_EDITIONS = {
+        "name": "language_editions",
+        "label": "Language Editions",
+        "input": "taglist",
+        "validate": [
+            {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+        ],
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents",  # ~~^->FullContents:FormWidget~~
+            "tagentry"  # ~~-> TagEntry:FormWidget~~
+        ],
+        "help": {
+            "short_help": "Enter the ISSN(s) of language edition(s) of this journal",
+            "render_error_box": False
+        }
+    }
+
     # ~~->$ PublisherName:FormField~~
     PUBLISHER_NAME = {
         "name": "publisher_name",
@@ -2300,7 +2319,18 @@ class FieldSetDefinitions:
         "fields": [
             FieldDefinitions.CONTINUES["name"],
             FieldDefinitions.CONTINUED_BY["name"],
-            FieldDefinitions.DISCONTINUED_DATE["name"]
+            FieldDefinitions.DISCONTINUED_DATE["name"],
+        ]
+    }
+
+    RELATED_JORUNALS = {
+        "name": "related_journals",
+        "label": "Related journals",
+        "fields": [
+            FieldDefinitions.CONTINUES["name"],
+            FieldDefinitions.CONTINUED_BY["name"],
+            FieldDefinitions.DISCONTINUED_DATE["name"],
+            FieldDefinitions.LANGUAGE_EDITIONS["name"],
         ]
     }
 
@@ -2538,7 +2568,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.LABELS["name"],
-        FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.RELATED_JORUNALS["name"],
         FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
