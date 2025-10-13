@@ -175,7 +175,7 @@ The best practices in this section are about publishing standards based on finda
 
 {:.tabular-list}
 - ### Arts and humanities journals
-   - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
+   - For these disciplines ([pages 10-16 only](https://www.uis.unesco.org/sites/default/files/medias/fichiers/2025/04/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 - ### Clinical Case report journals
    - For DOAJ to include case report journal they must have:
     - A policy on [consent to publication](https://publicationethics.org/guidance/guideline/ensuring-consent-publishing-medical-case-reports) of case details and participant images, and articles must state whether or not this consent was given
