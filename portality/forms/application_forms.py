@@ -43,7 +43,7 @@ from portality.forms.validate import (
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
-from portality.models import EditorGroup
+from portality.models import EditorGroup, Account, Journal
 from portality.regex import ISSN, ISSN_COMPILED
 from portality.ui.messages import Messages
 from portality.ui import templates
@@ -490,17 +490,55 @@ class FieldDefinitions:
     LANGUAGE_EDITIONS = {
         "name": "language_editions",
         "label": "Language Editions",
-        "input": "taglist",
-        "validate": [
-            {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
-        ],
+        "input": "group",
         "widgets": [
-            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-            "full_contents",  # ~~^->FullContents:FormWidget~~
-            "tagentry"  # ~~-> TagEntry:FormWidget~~
+            "record_found",  # ~~^-> ClickToCopy:FormWidget~~
         ],
+        "repeatable": {
+            "minimum": 0,
+            "initial": 5
+        },
         "help": {
             "short_help": "Enter the ISSN(s) of language edition(s) of this journal",
+            "render_error_box": False
+        }
+    }
+
+    LANG_EDITIONS_LANGUAGE = {
+        "name": "lang_edition_language",
+        "subfield": True,
+        "group": "language_editions",
+        "label": "Language",
+        "input": "text",
+        "options_fn": "iso_language_list",
+        "validate": [
+            "current_iso_language"
+        ],
+        "widgets": [
+            {"select": {}},
+            "record_found"
+        ],
+        "help": {
+            "render_error_box": False
+        }
+    }
+
+    LANG_EDITIONS_ISSNS = {
+        "name": "lang_edition_issns",
+        "subfield": True,
+        "group": "language_editions",
+        "label": "PISSN",
+        "input": "text",
+        "options_fn": "issns_by_owner",
+        "validate": [
+            {"is_issn": {"message": "This is not a valid ISSN"}}
+        ],
+        "widgets": [
+            {"select": {}},
+            "record_found",
+            {"autocomplete_issn": {"this_field": "pissn", "another_field": "lang_edition_eissn"}}
+        ],
+        "help": {
             "render_error_box": False
         }
     }
@@ -2323,14 +2361,13 @@ class FieldSetDefinitions:
         ]
     }
 
-    RELATED_JORUNALS = {
+    RELATED_JOURNALS = {
         "name": "related_journals",
         "label": "Related journals",
         "fields": [
-            FieldDefinitions.CONTINUES["name"],
-            FieldDefinitions.CONTINUED_BY["name"],
-            FieldDefinitions.DISCONTINUED_DATE["name"],
             FieldDefinitions.LANGUAGE_EDITIONS["name"],
+            FieldDefinitions.LANG_EDITIONS_ISSNS["name"],
+            FieldDefinitions.LANG_EDITIONS_LANGUAGE["name"],
         ]
     }
 
@@ -2568,7 +2605,8 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.LABELS["name"],
-        FieldSetDefinitions.RELATED_JORUNALS["name"],
+        FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.RELATED_JOURNALS["name"],
         FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
@@ -2629,6 +2667,31 @@ JOURNAL_FORMS = {
 #######################################################
 # Options lists
 #######################################################
+def issns_by_owner(field, formulaic_context):
+    """
+    Set the pissn field choices from a given owner name
+    ~~->EditorGroup:Model~~
+    """
+    egf = formulaic_context.get("owner")
+    wtf = egf.wtfield
+    if wtf is None:
+        return [{"display": "", "value": ""}]
+
+    owner_name = wtf.data
+    if owner_name is None:
+        return [{"display": "", "value": ""}]
+    else:
+        journals = Journal.pull_by_key("owner", owner_name)
+        if journals is not None:
+            for j in journals:
+                title = j.title
+                pissn = j.bibjson().pissn # TODO: in the model let's store the ID!
+            return [{"value": j.id, "display": "No editor assigned"}] + [{"value": editor, "display": editor} for editor
+                                                                       in editors]
+        else:
+            return [{"display": "", "value": ""}]
+    p = [{"display": " ", "value": ""}]
+    return p
 
 def iso_country_list(field, formualic_context_name):
     # ~~-> Countries:Data~~
@@ -3185,7 +3248,8 @@ PYTHON_FUNCTIONS = {
         "iso_currency_list": iso_currency_list,
         "quick_reject": quick_reject,
         "application_statuses": application_statuses,
-        "editor_choices": editor_choices
+        "editor_choices": editor_choices,
+        "issns_by_owner": issns_by_owner
     },
     "disabled": {
         "application_status_disabled": application_status_disabled,

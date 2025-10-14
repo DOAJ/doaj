@@ -6,6 +6,7 @@ from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, 
 from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
+from portality.bll.exceptions import NoSuchObjectException, ArgumentException
 from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
@@ -71,9 +72,9 @@ class TestModels(DoajTestCase):
         j.add_contact("richard", "richard@email.com")
         j.add_note("testing", "2005-01-01T00:00:00Z")
         j.set_bibjson({"title": "test"})
-        j.language_editions = [{"pissn": "LANG-0000", "eissn": "LANG-1111", "language": "pl"},
-                             {"pissn": "LANG-2222", "eissn": "LANG-4444", "language": "en"},
-                             {"pissn": "LANG-5555", "eissn": "LANG-6666", "language": "de"}]
+        j.language_editions = [{"id": "polishedition", "language": "pl"},
+                             {"id": "englishedition", "language": "en"},
+                             {"id": "germanedition", "language": "de"}]
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
@@ -98,24 +99,27 @@ class TestModels(DoajTestCase):
         j.remove_editor()
         j.remove_contact()
         with self.assertRaises(ValueError):
-            j.remove_language_edition(pissn="LANG-0000", eissn="LANG-6666")
+            j.remove_language_edition("frenchedition")
 
-        j.remove_language_edition(pissn="LANG-0000", eissn="LANG-1111")
+        j.remove_language_edition("polishedition")
         assert len(j.language_editions) == 2
 
         j.clear_language_editions()
         assert len(j.language_editions) == 0
 
         original = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        original.bibjson().eissn = "111X-111X"
-        original.bibjson().pissn = "000X-000X"
         original.set_id("originaljournalrecord")
-        original.remove_current_application()
         original.save(blocking=True)
 
-        j.add_language_edition({"pissn": "000X-000X", "eissn": "111X-111X", "language": "fr"})
+        with self.assertRaises(ArgumentException):
+            j.add_language_edition({"id": "frenchedition", "language": "fr"})
+        assert len(j.language_editions) == 0
+
+
+        j.add_language_edition({"id": "originaljournalrecord", "language": "fr"})
         assert len(j.language_editions) == 1
         assert j.language_editions[0]["id"] == "originaljournalrecord"
+        assert j.language_editions[0]["language"] == "fr"
 
         assert j.owner is None
         assert j.editor_group is None
