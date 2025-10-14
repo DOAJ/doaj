@@ -127,8 +127,8 @@ class TestTOC(DoajTestCase):
         # To build ToCs we need a volume, an issue, a year and a month.
         assert a.data['bibjson']['journal']['volume'] == '1'
         assert a.data['bibjson']['journal']['number'] == '99'
-        assert a.data['index']['date'] == "1991-01-01T00:00:00Z"
-        assert a.data['index']['date_toc_fv_month'] == a.data['index']['date'] == "1991-01-01T00:00:00Z"
+        assert a.data['index']['date'] == "2015-01-01T00:00:00Z"
+        assert a.data['index']['date_toc_fv_month'] == a.data['index']['date'] == "2015-01-01T00:00:00Z"
 
     def test_03_toc_uses_both_issns_when_available(self):
         _test_toc_uses_both_issns_when_available(self.app_test, 'doaj.toc')
