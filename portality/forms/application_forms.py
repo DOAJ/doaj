@@ -492,8 +492,8 @@ class FieldDefinitions:
         "label": "Language Editions",
         "input": "group",
         "subfields": [
-            "lang_edition_language",
-            "lang_edition_id"
+            "lang_edition_id",
+            "lang_edition_language"
         ],
         "template": templates.AF_LIST,
         "entry_template": templates.AF_ENTRY_GROUP_HORIZONTAL,
@@ -506,8 +506,29 @@ class FieldDefinitions:
             "initial": 5
         },
         "help": {
-            "short_help": "Enter the ISSN(s) of language edition(s) of this journal",
+            "short_help": "Add language edition(s) of this journal.",
+            "long_help": ["To link a language edition, enter the language details and choose the corresponding DOAJ record. "
+                          "Only records owned by the same publisher as the original journal can be linked. "
+                          "You can filter the records by title or ISSN(s)."
+                          ],
             "render_error_box": False
+        }
+    }
+
+    LANG_EDITIONS_ID = {
+        "name": "lang_edition_id",
+        "subfield": True,
+        "group": "language_editions",
+        "label": "Linked record",
+        "input": "select",
+        "options_fn": "journals_by_owner",
+        "widgets": [
+            {"select": {}},
+            "record_found",
+        ],
+        "help": {
+            "render_error_box": False,
+            "placeholder": "Linked record - search by title, id or issns"
         }
     }
 
@@ -526,25 +547,8 @@ class FieldDefinitions:
             "record_found"
         ],
         "help": {
-            "render_error_box": False
-        }
-    }
-
-    LANG_EDITIONS_ID = {
-        "name": "lang_edition_id",
-        "subfield": True,
-        "group": "language_editions",
-        "label": "Linked record",
-        "input": "select",
-        "options_fn": "journals_by_owner",
-        "widgets": [
-            {"select": {}},
-            "record_found",
-            "autocomplete"
-        ],
-        "help": {
             "render_error_box": False,
-            "short_help": "Linked record - search by title, id or issns"
+            "placeholder": "Language"
         }
     }
 
@@ -1646,7 +1650,6 @@ class FieldDefinitions:
         "label": "Persistent article identifiers used by the journal",
         "input": "checkbox",
         "multiple": True,
-        "hint": "Select at least one",
         "options": [
             {"display": "DOIs", "value": "DOI"},
             {"display": "ARKs", "value": "ARK"},
@@ -1657,6 +1660,7 @@ class FieldDefinitions:
              "exclusive": True}
         ],
         "help": {
+            "short_help": "Select at least one",
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
                           "located. The most common type of PID is the digital object identifier (DOI). ",
                           "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
@@ -2690,17 +2694,19 @@ def journals_by_owner(field, formulaic_context):
         journals = Journal.search_by_key("admin.owner", owner_name)
         for j in journals:
             title = j.bibjson().title
-            pissn = j.bibjson().pissn
-            eissn = j.bibjson().eissn
+            this_title = formulaic_context.get("title").wtfield.data
+            if title != this_title:
+                pissn = j.bibjson().pissn
+                eissn = j.bibjson().eissn
 
-            parts = []
-            if pissn:
-                parts.append(f"P: {pissn}")
-            if eissn:
-                parts.append(f"E: {eissn}")
+                parts = []
+                if pissn:
+                    parts.append(f"P: {pissn}")
+                if eissn:
+                    parts.append(f"E: {eissn}")
 
-            display_value = ", ".join(parts) + f" ( {title} )"
-            options = options + [{"value": j.id, "display": display_value}]
+                display_value = ", ".join(parts) + f" ( {title} )"
+                options = options + [{"value": j.id, "display": display_value}]
     return options
 
 def iso_country_list(field, formualic_context_name):
