@@ -491,8 +491,15 @@ class FieldDefinitions:
         "name": "language_editions",
         "label": "Language Editions",
         "input": "group",
+        "subfields": [
+            "lang_edition_language",
+            "lang_edition_id"
+        ],
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GROUP_HORIZONTAL,
         "widgets": [
-            "record_found",  # ~~^-> ClickToCopy:FormWidget~~
+            # "record_found",  # ~~^-> Record:FormWidget~~
+            "multiple_field",
         ],
         "repeatable": {
             "minimum": 0,
@@ -509,7 +516,7 @@ class FieldDefinitions:
         "subfield": True,
         "group": "language_editions",
         "label": "Language",
-        "input": "text",
+        "input": "select",
         "options_fn": "iso_language_list",
         "validate": [
             "current_iso_language"
@@ -523,23 +530,21 @@ class FieldDefinitions:
         }
     }
 
-    LANG_EDITIONS_ISSNS = {
-        "name": "lang_edition_issns",
+    LANG_EDITIONS_ID = {
+        "name": "lang_edition_id",
         "subfield": True,
         "group": "language_editions",
-        "label": "PISSN",
-        "input": "text",
-        "options_fn": "issns_by_owner",
-        "validate": [
-            {"is_issn": {"message": "This is not a valid ISSN"}}
-        ],
+        "label": "Linked record",
+        "input": "select",
+        "options_fn": "journals_by_owner",
         "widgets": [
             {"select": {}},
             "record_found",
-            {"autocomplete_issn": {"this_field": "pissn", "another_field": "lang_edition_eissn"}}
+            "autocomplete"
         ],
         "help": {
-            "render_error_box": False
+            "render_error_box": False,
+            "short_help": "Linked record - search by title, id or issns"
         }
     }
 
@@ -2366,7 +2371,7 @@ class FieldSetDefinitions:
         "label": "Related journals",
         "fields": [
             FieldDefinitions.LANGUAGE_EDITIONS["name"],
-            FieldDefinitions.LANG_EDITIONS_ISSNS["name"],
+            FieldDefinitions.LANG_EDITIONS_ID["name"],
             FieldDefinitions.LANG_EDITIONS_LANGUAGE["name"],
         ]
     }
@@ -2667,31 +2672,36 @@ JOURNAL_FORMS = {
 #######################################################
 # Options lists
 #######################################################
-def issns_by_owner(field, formulaic_context):
+def journals_by_owner(field, formulaic_context):
     """
-    Set the pissn field choices from a given owner name
+    Set the journal choices from a given owner name
     ~~->EditorGroup:Model~~
     """
     egf = formulaic_context.get("owner")
     wtf = egf.wtfield
+    options = [{"display": "", "value": ""}]
     if wtf is None:
-        return [{"display": "", "value": ""}]
+        return options
 
     owner_name = wtf.data
     if owner_name is None:
-        return [{"display": "", "value": ""}]
+        return options
     else:
-        journals = Journal.pull_by_key("owner", owner_name)
-        if journals is not None:
-            for j in journals:
-                title = j.title
-                pissn = j.bibjson().pissn # TODO: in the model let's store the ID!
-            return [{"value": j.id, "display": "No editor assigned"}] + [{"value": editor, "display": editor} for editor
-                                                                       in editors]
-        else:
-            return [{"display": "", "value": ""}]
-    p = [{"display": " ", "value": ""}]
-    return p
+        journals = Journal.search_by_key("admin.owner", owner_name)
+        for j in journals:
+            title = j.bibjson().title
+            pissn = j.bibjson().pissn
+            eissn = j.bibjson().eissn
+
+            parts = []
+            if pissn:
+                parts.append(f"P: {pissn}")
+            if eissn:
+                parts.append(f"E: {eissn}")
+
+            display_value = ", ".join(parts) + f" ( {title} )"
+            options = options + [{"value": j.id, "display": display_value}]
+    return options
 
 def iso_country_list(field, formualic_context_name):
     # ~~-> Countries:Data~~
@@ -3249,7 +3259,7 @@ PYTHON_FUNCTIONS = {
         "quick_reject": quick_reject,
         "application_statuses": application_statuses,
         "editor_choices": editor_choices,
-        "issns_by_owner": issns_by_owner
+        "journals_by_owner": journals_by_owner
     },
     "disabled": {
         "application_status_disabled": application_status_disabled,
