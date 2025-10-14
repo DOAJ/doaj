@@ -42,7 +42,9 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.  The DOAJ Foundation has adopted [a patent non-assertion policy](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing).
 3. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in IS4OA or other third parties.
 
+### Patent non-assertion pledge
 
+A [copy of our patent non-assertion pledge](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing) is available as a Google Document.
 
 ---
 
