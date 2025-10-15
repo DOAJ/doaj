@@ -121,24 +121,24 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def language_editions(self):
-        return self.__seamless__.get_list("bibjson.language_editions")
+        return self.__seamless__.get_list("language_editions")
 
     @language_editions.setter
     def language_editions(self, language_editions):
-        self.__seamless__.set_list("bibjson.language_editions", language_editions)
+        self.__seamless__.set_list("language_editions", language_editions)
 
     def add_language_edition(self, language_edition):
-        self.__seamless__.add_to_list_with_struct("bibjson.language_editions", language_edition)
+        self.__seamless__.add_to_list_with_struct("language_editions", language_edition)
 
     def remove_language_edition(self, id):
         match_on_list = next((le for le in self.language_editions if le["id"] == id), None)
         if match_on_list:
-            self.__seamless__.delete_from_list("bibjson.language_editions", match_on_list)
+            self.__seamless__.delete_from_list("language_editions", match_on_list)
         else:
             raise ValueError
 
     def clear_language_editions(self):
-        self.__seamless__.set_list("bibjson.language_editions", [])
+        self.__seamless__.set_list("language_editions", [])
 
     @property
     def keywords(self):
