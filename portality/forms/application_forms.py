@@ -2719,7 +2719,6 @@ def journals_by_owner(field, formulaic_context):
 
                 display_value = ", ".join(parts) + f" ( {title} )"
                 options.append({"display": display_value, "value": j.id})
-    print(f"{options}=")
     return options
 
 def iso_country_list(field, formualic_context_name):
