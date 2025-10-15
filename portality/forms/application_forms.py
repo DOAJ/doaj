@@ -492,14 +492,14 @@ class FieldDefinitions:
         "label": "Language Editions",
         "input": "group",
         "subfields": [
-            "lang_edition_id",
-            "lang_edition_language"
+            "lang_edition_language",
+            "lang_edition_id"
         ],
         "template": templates.AF_LIST,
         "entry_template": templates.AF_ENTRY_GROUP_HORIZONTAL,
         "widgets": [
-            # "record_found",  # ~~^-> Record:FormWidget~~
             "multiple_field",
+            {"clickable_journal": {"val_field": "lang_edition_id"}}
         ],
         "repeatable": {
             "minimum": 0,
@@ -543,8 +543,7 @@ class FieldDefinitions:
             "current_iso_language"
         ],
         "widgets": [
-            {"select": {}},
-            "record_found"
+            {"select": {}}
         ],
         "help": {
             "render_error_box": False,
@@ -2672,6 +2671,14 @@ JOURNAL_FORMS = {
     "fields": APPLICATION_FORMS["fields"]
 }
 
+#######################################################
+# helpers
+#######################################################
+
+def get_journal_id(field, formulaic_context):
+    egf = formulaic_context.get("title")
+    title = egf.wtfield.data
+    return Journal.find_by_title(title).id
 
 #######################################################
 # Options lists
@@ -3322,6 +3329,9 @@ PYTHON_FUNCTIONS = {
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
             "current_iso_language": CurrentISOLanguageBuilder.wtforms
         }
+    },
+    "additional_data": {
+        "get_journal_id": get_journal_id
     }
 }
 
@@ -3344,6 +3354,7 @@ JAVASCRIPT_FUNCTIONS = {
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+    "clickable_journal": "formulaic.widgets.newClickableJournal" # ~~-> RecordLink:FormWidget~~
 
 }
 

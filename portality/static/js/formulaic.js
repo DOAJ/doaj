@@ -1368,6 +1368,54 @@ var formulaic = {
 
             this.init();
         },
+        newClickableJournal: function (params) {
+            return edges.instantiate(formulaic.widgets.ClickableJournal, params)
+        },
+        ClickableJournal: function (params) {
+            this.fieldDef = params.fieldDef;
+            this.valueField = params.args.val_field;
+            this.form = params.formulaic;
+            this.ns = "formulaic-clickablejournal";
+            const max = "repeatable" in this.fieldDef ? this.fieldDef["repeatable"]["initial"] : 1 ;
+            this.$link = new Array(max);
+
+            this.linkPath = "/toc/"
+
+            this.namespace = "formulaic-clickablejournal";
+
+            this.init = function () {
+                const elements = $("select[id$='" + this.valueField + "']")
+                edges.on(elements, "change", this, "updateJournal");
+                for (let i = 0; i < elements.length; i++) {
+                    this.updateJournal(elements[i]);
+                }
+            };
+
+            this.updateJournal = function (element) {
+                const $that = $(element);
+                const val = $that.val();
+                const classes = edges.css_classes(this.ns, "visit");
+                const id = edges.css_id(this.ns, $(element).attr("id")+"--clickable-link");
+                if (val) {
+                    if ($that.attr("id") in this.$link && this.$link[$that.attr("id")]) {
+                        $('#'+ id).attr("href", this.linkPath + val)
+                    }
+                    else {
+                        $that.after('<a style="line-height: 1.4rem; margin-left: .375rem;" id="' + id + '" class="' + classes + ' remove_field__button button" rel="noopener noreferrer" target="_blank" title="Open Journal landing page in a new tab" href="' + this.linkPath + val + '">\
+                                        <span data-feather="link-2" aria-hidden="true"></span> </a>');
+                    }
+                    this.$link[$that.attr("id")] = true;
+                } else {
+                    if ($that.attr("id") in this.$link && this.$link[$that.attr("id")]) {
+                        $('#' + id).parent().remove();
+                    }
+                    this.$link[$that.attr("id")] = false;
+                }
+                feather.replace();
+            };
+
+            this.init();
+        },
         newClickToCopy: function (params) {
             return edges.instantiate(formulaic.widgets.ClickToCopy, params)
         },
@@ -1421,7 +1469,6 @@ var formulaic = {
 
             this.init();
         },
-
         newClickableUrl: function (params) {
             return edges.instantiate(formulaic.widgets.ClickableUrl, params)
         },
@@ -1623,7 +1670,7 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove<span data-feather="x" aria-hidden="true"/></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;"><span data-feather="x" aria-hidden="true"></span></button>'));
                     feather.replace();
                 }
 
@@ -1750,7 +1797,7 @@ var formulaic = {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
                     $(f).on("focus", formulaic.widgets._select2_shift_focus);
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/></button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
                         s2_input.attr("data-parsley-validate-if-empty", "true");
@@ -1809,7 +1856,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let jqf = $(f);
-                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/></button>'));
                     if (idx !== 0) {
                         jqf.attr("required", false);
                         jqf.attr("data-parsley-validate-if-empty", "true");
@@ -1886,7 +1933,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button" aria-label="Remove"><span data-feather="x" aria-hidden="true"/></button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");
