@@ -280,32 +280,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    @property
-    def language_editions(self):
-        return self.__seamless__.get_list("bibjson.language_editions")
-
-    @language_editions.setter
-    def language_editions(self, language_editions):
-        self.__seamless__.set_list("bibjson.language_editions", language_editions)
-
-    def add_language_edition(self, language_edition):
-        match_in_doaj = Journal.pull(language_edition["id"])
-        if not match_in_doaj:
-            raise ArgumentException(Messages.EXCEPTION_RECORD_NOT_FOUND)
-        self.__seamless__.add_to_list_with_struct("bibjson.language_editions", language_edition)
-
-    def remove_language_edition(self, id):
-        match_on_list = next((le for le in self.language_editions if le["id"] == id), None)
-        if match_on_list:
-            self.__seamless__.delete_from_list("bibjson.language_editions", match_on_list)
-        else:
-            raise ValueError
-
-    def clear_language_editions(self):
-        self.__seamless__.set_list("bibjson.language_editions", [])
-
      #### Notes methods
-
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()

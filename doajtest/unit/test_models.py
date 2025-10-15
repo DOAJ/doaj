@@ -107,15 +107,6 @@ class TestModels(DoajTestCase):
         j.clear_language_editions()
         assert len(j.language_editions) == 0
 
-        original = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        original.set_id("originaljournalrecord")
-        original.save(blocking=True)
-
-        with self.assertRaises(ArgumentException):
-            j.add_language_edition({"id": "frenchedition", "language": "fr"})
-        assert len(j.language_editions) == 0
-
-
         j.add_language_edition({"id": "originaljournalrecord", "language": "fr"})
         assert len(j.language_editions) == 1
         assert j.language_editions[0]["id"] == "originaljournalrecord"
