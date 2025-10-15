@@ -39,7 +39,8 @@ from portality.forms.validate import (
     NoScriptTag,
     Year,
     CurrentISOCurrency,
-    CurrentISOLanguage
+    CurrentISOLanguage,
+    JournalsByOwner
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -491,6 +492,7 @@ class FieldDefinitions:
         "name": "language_editions",
         "label": "Language Editions",
         "input": "group",
+        "optional": True,
         "subfields": [
             "lang_edition_language",
             "lang_edition_id"
@@ -521,10 +523,17 @@ class FieldDefinitions:
         "group": "language_editions",
         "label": "Linked record",
         "input": "select",
+        "default": "",
         "options_fn": "journals_by_owner",
+        "validate": [
+            "journals_by_owner",
+            {"required_if": {
+                "field": "lang_edition_language",
+                "message": "Choose the DOAJ record from the list to link a language edition"
+            }},
+        ],
         "widgets": [
             {"select": {}},
-            "record_found",
         ],
         "help": {
             "render_error_box": False,
@@ -540,7 +549,11 @@ class FieldDefinitions:
         "input": "select",
         "options_fn": "iso_language_list",
         "validate": [
-            "current_iso_language"
+            "current_iso_language",
+            {"required_if": {
+                "field": "lang_edition_id",
+                "message": "Language is required to link a language edition"
+            }},
         ],
         "widgets": [
             {"select": {}}
@@ -2672,15 +2685,6 @@ JOURNAL_FORMS = {
 }
 
 #######################################################
-# helpers
-#######################################################
-
-def get_journal_id(field, formulaic_context):
-    egf = formulaic_context.get("title")
-    title = egf.wtfield.data
-    return Journal.find_by_title(title).id
-
-#######################################################
 # Options lists
 #######################################################
 def journals_by_owner(field, formulaic_context):
@@ -2690,7 +2694,7 @@ def journals_by_owner(field, formulaic_context):
     """
     egf = formulaic_context.get("owner")
     wtf = egf.wtfield
-    options = [{"display": "", "value": ""}]
+    options = [{"display":"", "value":""}]
     if wtf is None:
         return options
 
@@ -2698,6 +2702,7 @@ def journals_by_owner(field, formulaic_context):
     if owner_name is None:
         return options
     else:
+        options.append({"display": "", "value": ""})
         journals = Journal.search_by_key("admin.owner", owner_name)
         for j in journals:
             title = j.bibjson().title
@@ -2713,7 +2718,8 @@ def journals_by_owner(field, formulaic_context):
                     parts.append(f"E: {eissn}")
 
                 display_value = ", ".join(parts) + f" ( {title} )"
-                options = options + [{"value": j.id, "display": display_value}]
+                options.append({"display": display_value, "value": j.id})
+    print(f"{options}=")
     return options
 
 def iso_country_list(field, formualic_context_name):
@@ -3259,6 +3265,15 @@ class CurrentISOLanguageBuilder:
     def wtforms(field, settings):
         return CurrentISOLanguage(settings.get("message"))
 
+class JournalsByOwnerBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return JournalsByOwner(settings.get("message"))
+
 
 #########################################################
 # Crosswalks
@@ -3327,11 +3342,9 @@ PYTHON_FUNCTIONS = {
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
-            "current_iso_language": CurrentISOLanguageBuilder.wtforms
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms,
+            "journals_by_owner": JournalsByOwnerBuilder.wtforms
         }
-    },
-    "additional_data": {
-        "get_journal_id": get_journal_id
     }
 }
 
@@ -3474,7 +3487,7 @@ class SelectBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        sf = SelectField(**wtfargs)
+        sf = SelectField(validate_choice=False, **wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
 
