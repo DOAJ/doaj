@@ -512,8 +512,7 @@ class FieldDefinitions:
             "long_help": ["To link a language edition, enter the language details and choose the corresponding DOAJ record. "
                           "Only records owned by the same publisher as the original journal can be linked. "
                           "You can filter the records by title or ISSN(s)."
-                          ],
-            "render_error_box": False
+                          ]
         }
     }
 
@@ -536,7 +535,6 @@ class FieldDefinitions:
             {"select": {}},
         ],
         "help": {
-            "render_error_box": False,
             "placeholder": "Linked record - search by title, id or issns"
         }
     }
@@ -559,7 +557,6 @@ class FieldDefinitions:
             {"select": {}}
         ],
         "help": {
-            "render_error_box": False,
             "placeholder": "Language"
         }
     }

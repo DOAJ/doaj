@@ -31,8 +31,7 @@
         <div class="removable-fields">
           {% for entry in f.wtfield %}
               {% set entry_template = f.entry_template %}
-                {% set index = loop.index %}
-              {% include entry_template with context %}
+              {% include entry_template %}
           {% endfor %}
         </div>
 
