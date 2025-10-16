@@ -8,7 +8,6 @@ from typing import Callable, Iterable
 
 from unidecode import unidecode
 
-from portality.bll.exceptions import ArgumentException
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
@@ -20,7 +19,6 @@ from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
 
 from portality.lib.dates import FMT_DATE_STD
-from portality.ui.messages import Messages
 
 JOURNAL_STRUCT = {
     "objects": [

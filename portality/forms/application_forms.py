@@ -44,7 +44,7 @@ from portality.forms.validate import (
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
-from portality.models import EditorGroup, Account, Journal
+from portality.models import EditorGroup, Journal
 from portality.regex import ISSN, ISSN_COMPILED
 from portality.ui.messages import Messages
 from portality.ui import templates
