@@ -7,11 +7,9 @@ featuremap: ~~Accessibility:Fragment~~
 
 ---
 
-This accessibility statement applies to [doaj.org](https://doaj.org) exclusively.
+This accessibility statement applies to [doaj.org](https://doaj.org) exclusively. Its subdomain [blog.doaj.org](https://blog.doaj.org) is a WordPress site and **is not covered by this statement**.
 
-Its subdomain [blog.doaj.org](https://blog.doaj.org) is a WordPress site and **is not covered by this statement**.
-
-This website is run by DOAJ on behalf of IS4OA. We want as many people as possible to be able to use this website. For example, that means you should be able to:
+This website is run by DOAJ on behalf of DOAJ Fonden, a non-proft foundation, registered in Denmark. We want as many people as possible to be able to use this website. For example, that means you should be able to:
 
 - Change colours, contrast levels and fonts.
 - Zoom in up to 300% without the text spilling off the screen.
@@ -40,11 +38,11 @@ We have recently fixed:
 - In search results, the facets are operable with a keyboard
 - Removed ReCAPTCHA from our login process
 - Radio buttons on search (and throughout the website) are now focusable
+- Font-size zooming via browser settings is now enabled.
 
 Fixes that are in progress now after a review of the changes laid out in WCAG 2.2:
 
 - on our forms, start using 'aria-describedby' for hint/help text
-- allow the user to change the default font size in their browser settings
 
 We are continuing to update this document as we find and fix accessibility issues.
 
@@ -102,6 +100,7 @@ This website was last tested on **14 April 2025**. An independent organisation, 
 
 ## Changes to this document 
 
+- 16 October 2025: fixed the CSS so that font-size zooming via browser settings is now possible across the whole site.
 - 11 September 2025: made radio buttons on search focusable
 - 4 August 2025: added the VPAT statement and updated the last tested date
 - 28 September 2024: moved the ReCAPTCHA work to completed and added a problem with radio buttons in search to the in progress list
