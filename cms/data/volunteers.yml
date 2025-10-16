@@ -206,14 +206,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "ARBAIN.jpg"
-  
-- name: Azhar Aziz Lubis
-  area: Social Sciences
-  year_since:
-  city: Bengkulu
-  country: Indonesia
-  language: Indonesian, English
-  photo: "azhar.jpg"
 
 - name: Ben Catt
   area: Library Science, Research Support
@@ -222,6 +214,14 @@ ass_ed:
   country: United Kingdom
   language: English
   photo: "Ben Catt.jpg"
+
+- name: Bianca Savegnago de Mira
+  area: Information Science, Economics
+  year_since:
+  city: Marília - SP
+  country: Brazil
+  language: Portuguese, English, Spanish
+  photo: "Bianca.jpeg"
   
 - name: Busro Busro
   area: Humanities
@@ -543,13 +543,6 @@ ass_ed:
   country: Germany
   language: German, English
 
-- name: Maria Manuel Borges
-  area: Social Sciences
-  year_since:
-  city: V.N Gaia
-  country: Portugal
-  language: Portuguese, Spanish, English
-
 - name: Mariano Hernán Corujo
   area: Library Science
   year_since:
@@ -640,6 +633,14 @@ ass_ed:
   country: Ethiopia
   language: English, Arabic, Amharic
   photo: "Musa_Ali.jpg"
+  
+- name: Natalia Mikołajczak
+  area: Food Science, Publication Ethics
+  year_since:
+  city: Warsaw
+  country: Poland
+  language: Polish, English
+  photo: "Mikołajczak, photo.jpg"
   
 - name: Natalia Popova
   area: Sociology
@@ -771,13 +772,6 @@ ass_ed:
   city: Shanghai
   country: China
   language: Chinese
-
-- name: Stewart C Baker
-  area: Humanities, Library Science
-  year_since:
-  city: Monmouth, OR
-  country: USA
-  language: English, Japanese
 
 - name: Souleymane Sogoba
   area: Information and Communication Sciences
