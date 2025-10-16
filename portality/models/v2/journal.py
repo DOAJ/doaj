@@ -8,7 +8,6 @@ from typing import Callable, Iterable
 
 from unidecode import unidecode
 
-import portality.lib.dates
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
@@ -63,7 +62,6 @@ JOURNAL_STRUCT = {
 
 class ContinuationException(Exception):
     pass
-
 
 class JournalLikeObject(SeamlessMixin, DomainObject):
 
@@ -280,8 +278,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    #### Notes methods
-
+     #### Notes methods
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()

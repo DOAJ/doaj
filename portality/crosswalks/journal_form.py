@@ -242,6 +242,13 @@ class JournalGenericXWalk(object):
         if getattr(form, "discontinued_date", None):
             bibjson.discontinued_date = form.discontinued_date.data
 
+        # language editions
+        if form.language_editions.data:
+            editions = []
+            for le in form.language_editions.data:
+                editions.append({"id":le["lang_edition_id"], "language":le["lang_edition_language"]})
+            bibjson.language_editions = editions
+
         # subject information
         if getattr(form, "subject", None):
             new_subjects = []
@@ -259,6 +266,7 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def form2admin(cls, form, obj):
+
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
                 if formnote["note"]:
@@ -439,6 +447,14 @@ class JournalGenericXWalk(object):
         forminfo["continues"] = bibjson.replaces
         forminfo["continued_by"] = bibjson.is_replaced_by
         forminfo["discontinued_date"] = bibjson.discontinued_date
+
+        # language editions information
+        forminfo["language_editions"] = []
+        for le in bibjson.language_editions:
+            forminfo["language_editions"].append({
+                "lang_edition_id": le.get("id"),
+                "lang_edition_language": le.get("language")
+            })
 
         # subject classifications
         forminfo['subject'] = []
