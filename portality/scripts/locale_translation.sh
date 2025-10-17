@@ -53,7 +53,7 @@ extract_messages() {
     fi
 
     echo "Updating translations..."
-    pybabel update -i messages.pot -d translations
+    pybabel update -i messages.pot -d ui/translations
     if [ $? -eq 0 ]; then
         echo "Messages successfully extracted and updated"
     else
@@ -67,21 +67,21 @@ show_statistics() {
     echo "Attempting to show statistics..."
 
     # Check if the messages.po file exists
-    if [ ! -f "translations/fr/LC_MESSAGES/messages.po" ]; then
-        echo "Error: messages.po file not found at translations/fr/LC_MESSAGES/messages.po"
+    if [ ! -f "ui/translations/fr/LC_MESSAGES/messages.po" ]; then
+        echo "Error: messages.po file not found at ui/translations/fr/LC_MESSAGES/messages.po"
         echo "Current directory: $(pwd)"
-        echo "Available files in translations directory:"
-        ls -R translations/
+        echo "Available files in ui/translations directory:"
+        ls -R ui/translations/
         return 1
     fi
 
     # Try to run statistics with full error output
     echo "Running msgfmt statistics..."
-    if ! msgfmt --statistics translations/fr/LC_MESSAGES/messages.po 2>&1; then
+    if ! msgfmt --statistics ui/translations/fr/LC_MESSAGES/messages.po 2>&1; then
         echo "Error running msgfmt. Exit code: $?"
         echo "Trying with absolute path..."
         if [ -f /usr/bin/msgfmt ]; then
-            /usr/bin/msgfmt --statistics translations/fr/LC_MESSAGES/messages.po 2>&1
+            /usr/bin/msgfmt --statistics ui/translations/fr/LC_MESSAGES/messages.po 2>&1
         fi
     fi
 
@@ -90,7 +90,7 @@ show_statistics() {
 # Function to compile messages
 compile_messages() {
     echo "Compiling messages..."
-    pybabel compile -d translations
+    pybabel compile -d ui/translations
     if [ $? -eq 0 ]; then
         echo "Messages successfully compiled"
     else

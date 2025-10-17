@@ -1454,7 +1454,7 @@ var formulaic = {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
                         that.after('<p><a id="' + id + '" class="' + classes + ' button" style="margin: 0; height: 100%" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">\
-                                        Open link\
+                                        ' + doaj.i18n.get("Open link") +'\
                                         <span data-feather="external-link" aria-hidden="true"></span>\
                                     </a></p>');
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
@@ -1504,12 +1504,12 @@ var formulaic = {
 
                 if (val) {
                     if (this.container) {
-                        this.container.html('<small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small>');
+                        this.container.html('<small><strong>' +doaj.i18n.get("Full contents")+': ' + edges.escapeHtml(val) + '</strong></small>');
                     } else {
                         let cont = formulaic.widgets._make_empty_container(this.ns, "clickable_url", this.form, this.fieldDef);
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        cont.html('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
+                        cont.html('<p id="' + id + '" class="' + classes + '"><small><strong>'+doaj.i18n.get("Full contents")+': ' + edges.escapeHtml(val) + '</strong></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);

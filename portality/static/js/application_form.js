@@ -268,7 +268,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         } else {
             let nextBtn = this.jq(".nextBtn");
             nextBtn.show();
-            nextBtn.html("Next");
+            nextBtn.html(doaj.i18n.get("Next"));
             submitButton.hide();
             draftButton.show();
         }

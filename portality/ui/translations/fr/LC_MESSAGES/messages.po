@@ -443,7 +443,7 @@ msgstr "https://www.my-journal.com/about#licensing"
 msgid ""
 "Does the journal embed and/or display licensing information in its "
 "articles?"
-msgstr "La revue intègre-t-elle ou affiche-t-elle ses licences ou conditions d’utilisation dans ses articles?"
+msgstr "La revue intègre-t-elle ou affiche-t-elle ses licences ou les conditions d’utilisation dans ses articles?"
 
 #: forms/application_forms.py:791
 msgid ""
@@ -486,7 +486,7 @@ msgstr ""
 
 #: forms/application_forms.py:856
 msgid "Copyright terms"
-msgstr "Droit d’auteur"
+msgstr "Les droits d'auteur"
 
 #: forms/application_forms.py:858
 msgid "Link to the journal’s copyright terms"
@@ -1333,7 +1333,7 @@ msgstr "Pourquoi indexer votre revue dans DOAJ ?"
 
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:2
 msgid "Application progress"
-msgstr "Frais de publication"
+msgstr "Progression du formulaire"
 
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:8
 msgid "About"

@@ -94,5 +94,11 @@
 <script type="text/javascript" src="/static/js/change_language_alert.js"></script>
 <script>
     doaj.lang_change.init({containerSelector: "#new_form", submitSelector: "#language_form", warningModal: "#warningModal"});
+    // Initialize translations
+    doaj.i18n.init({
+        "Next": "{{ _('Next') }}",
+        "Open link": "{{ _('Open link') }}",
+        "Full contents": "{{ _('Full contents') }}",
+    });
 </script>
 {% endblock %}
