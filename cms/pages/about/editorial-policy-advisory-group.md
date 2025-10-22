@@ -26,7 +26,7 @@ To contribute expertise and advice on:
 
 The Editorial Policy Advisory Group is:
 
-### Budianto Hamuddin (Asia region)
+### Budianto Hamuddin (Southeast Asia)
 
 Budianto is a senior lecturer in the Faculty of Education and Vocational Studies at [Universitas Lancang Kuning](https://www.unilak.ac.id/), Indonesia, where he also leads the Research Department at LPPM Unilak. An active member of [RJI](https://relawanjurnal.id/), he currently serves as the coordinator for Tim Panji RJI to support and develop scientific journals in Indonesia. Budianto earned his Master's degree from the Universiti Malaya in Malaysia and his Doctorate from Universitas Hasanuddin in Indonesia, specializing in Applied Linguistics with a focus on cyberbullying on online platforms. 
 
@@ -44,19 +44,19 @@ Joey is a retired Professor of Otolaryngology at U.P. College of Medicine, forme
 
 He is Editor-in-Chief of the *[Philippine Journal of Otolaryngology Head and Neck Surgery](https://doaj.org/toc/1908-4889)*, and chairs the Philippine National Journal Selection Committee for the Western Pacific Region Index Medicus of the World Health Organization.
 
-### Jose Octavio Alonso Gamboa (Latin American region)
+### Jose Octavio Alonso Gamboa (Latin America)
 
 Octavio is a founding member of [Latindex](https://www.latindex.org/latindex/), an information system comprising 24 countries, of which he has been the general coordinator since 2005. He is a tenured academic at the General Directorate of Libraries of the [National Autonomous University of Mexico](https://www.unaminternacional.unam.mx/) (UNAM) and holds a Master's degree in Library and Information Studies.
 
 His experience includes topics such as the quality and visibility of scientific journals and the transformation of academic journals to the digital culture. His professional career focuses on regional science communication and open access, reflecting his interest in the promotion of open science and the democratization of knowledge.
 
-### Kazuki Ide (Asia-Pacific region)
+### Kazuki Ide (Asia-Pacific)
 
 Kazuki is a Specially-Appointed Associate Professor at [Osaka University](https://www.osaka-u.ac.jp/). His broad research interests include scholarly communication/publication ethics, public health/health informatics, and ELSI/RRI. He has performed peer reviews over 500 times and received the Top Peer Reviewer Award in 2019 for Cross-Field (Top 1% in the World, Web of Science). 
 
 He led the translation of the following educational materials into Japanese: [Combatting Predatory Academic Journals and Conferences](https://www.interacademies.org/project/predatorypublishing) (IAP, 2023) and [Think.Check.Submit.](https://thinkchecksubmit.org/journals/) (2024).
 
-### Kylie van Zyl (African region)
+### Kylie van Zyl (Africa)
 
 Kylie is one of the small, dedicated team at [African Journals Online](https://www.ajol.info/index.php/ajol), a South Africa-based NPO dedicated to quality African-published scholarly journals, where she handles JPPS assessments of new applicant journals. 
 
