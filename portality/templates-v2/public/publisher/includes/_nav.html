@@ -28,7 +28,7 @@
                     {% continue %}
                 {% endif %}
                 {% set selected = url == request.path %}
-                <li class="type-06 tabs__item" {% if not selected %}role="presentation"{% endif %}>
+                <li class="type-05 tabs__item" {% if not selected %}role="presentation"{% endif %}>
                     <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
                 </li>
             {% endfor %}
