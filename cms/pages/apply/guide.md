@@ -126,11 +126,11 @@ Journals that publish special issues or other content curated by guest editors m
 
 When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the quality team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
 
-- Presence of clear and reliable key information on the journal's website
-- Composition of the journal's editorial board
-- Signs of poor peer review processess
-- Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
-- Journal management and operation
+  - Presence of clear and reliable key information on the journal's website
+  - Composition of the journal's editorial board
+  - Signs of poor peer review processess
+  - Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
+  - Journal management and operation
 
 We may also refer to the [Prinicples of Transparency and Best Practice in Scholarly Publishing](https://doaj.org/apply/transparency/)
 
