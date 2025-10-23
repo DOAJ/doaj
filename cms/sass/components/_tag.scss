@@ -16,7 +16,7 @@
   background: $warm-black;
   color: $white;
   text-decoration: none;
-  font-size: $typescale-07;
+  @include typescale-06;
 
   a {
     text-decoration: none;
