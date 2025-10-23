@@ -171,6 +171,23 @@ The best practices in this section are about publishing standards based on finda
 
 ---
 
+### Artificial Intelligence(AI) and automated tools
+
+Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence(AI) such as large-language models(LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
+- For authors:
+  - Authors should disclose the use of generatve AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/)
+  - Authors are responsible for checking the validity of the output of any automated tools used in their research and preparing their manuscript
+  - Automated tools cannot be [credited as authors](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools)
+  - Generative AI cannot be cited as a source
+
+-  For journals:
+    - Peer reviewers and editors should not use generative AI to create their assessments, [due to risks](https://journals.sagepub.com/doi/full/10.1177/17470161231224552) such as breaches of confidentiality, superficial and non-specific feedback, bias, [hidden prompts](https://asia.nikkei.com/business/technology/artificial-intelligence/positive-review-only-researchers-hide-ai-prompts-in-papers), and false information such as fake references; editing and rewriting may be acceptable if disclosed
+    - Any routine use of automated tools by the journal or publisher should be disclosed. The tool should have been appropriately tested
+    - Use of automated tools should be overseen by humans (human in the loop). Journals should ensure that an editor or other staff will verify the automated detection of integrity issues such as text similarity, figure manipulation or duplication, or undeclared generative AI use, or automated peer reviewer suggestions
+
+---
+
+
 ## Additional criteria for some journal types
 
 {:.tabular-list}
