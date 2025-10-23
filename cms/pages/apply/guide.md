@@ -134,6 +134,17 @@ Journals that publish special issues or other content curated by guest editors m
 
 ---
 
+### Quality Criteria
+
+When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the quality team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
+- Presence of clear and reliable key information on the journal's website
+- Composition of the journal's editorial board
+- Signs of poor peer review processess
+- Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
+- Journal management and operation
+We may also refer to the [Prinicples of Transparency and Best Practice in Scholarly Publishing](https://doaj.org/apply/transparency/)
+---
+
 ## Best practices
 
 The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We recommend journals to adopt these best practices but they are not mandatory for DOAJ indexing.
@@ -282,7 +293,7 @@ We undertake periodic re-evaluation of journals accepted into DOAJ, particularly
 - They have not been updated by the publisher for several years 
 - Reports are received of website unavailability or questionable practices
 
-Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
+Reports of questionable practice will be invetigated by the [quality team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
 
 ---
 
