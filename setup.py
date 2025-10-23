@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='8.3.9',
+    version='8.4.1',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
@@ -42,7 +42,7 @@ setup(
         "parameterized~=0.9.0",
         "psutil==5.9.8",
         "pycountry==24.6.1",  # TODO: pycountry can get behind debian lists, so we may flip back to our fork later
-        #"pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
+        #"pycountry @ git+https://github.com/DOAJ/pycountry.git@caf24adc255bccc968a16d44702e8cd6a115dd50#egg=pycountry",
         "python-dateutil",  # something else already installs this; note we need it without an explicit version freeze
         "pytz==2024.2",
         "redis==3.3.11",
@@ -61,6 +61,9 @@ setup(
         'pandas~=2.0.1',  # pandas lets us generate URLs for linkcheck
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
+
+        # generate dependency tree of packages
+        'pipdeptree==2.28.0',
 
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={

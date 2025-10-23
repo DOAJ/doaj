@@ -175,7 +175,7 @@ The best practices in this section are about publishing standards based on finda
 
 {:.tabular-list}
 - ### Arts and humanities journals
-   - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
+   - For these disciplines ([pages 10-16 only](https://www.uis.unesco.org/sites/default/files/medias/fichiers/2025/04/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 - ### Clinical Case report journals
    - For DOAJ to include case report journal they must have:
     - A policy on [consent to publication](https://publicationethics.org/guidance/guideline/ensuring-consent-publishing-medical-case-reports) of case details and participant images, and articles must state whether or not this consent was given
@@ -308,6 +308,7 @@ Our criteria are available in:
 - [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
 - [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
 - [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
+- [Greek](https://drive.google.com/file/d/1nHujiotWovloKQC97mwQVPMW_ierKEOt/view?usp=sharing)
 - [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
 - [Portuguese](https://drive.google.com/file/d/15ThVsQCJkYnv2Vw-A6mkgMVGVoO9oBB7/view?usp=sharing)
