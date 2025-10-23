@@ -115,10 +115,6 @@
     background-color: $light-grey;
   }
 
-  small {
-    font-size: $typescale-07;
-  }
-
   button {
     margin: $spacing-02 0;
   }
@@ -158,7 +154,6 @@
   }
 
   small {
-    font-size: $typescale-07;
     color: $sanguine;
 
     &:before {
