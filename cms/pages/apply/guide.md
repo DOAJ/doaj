@@ -34,6 +34,11 @@ Open access journals published in any language may apply. Journals should adhere
   - No embargo period
   - No requirement for users to register to read content
   - A charge for the print version of a journal is permitted
+- Publishing non Open Access content within an article
+  - Text and figures may be used with permission or under fair use. All non-OA content must be clearly indicated and attributed
+  - Journals may publish a small amount of non-OA, free-to-read content relevant to the journal's scope provided it is not scholarly articles and is clearly attributed and copyright status is clear
+  - More details on our [licensing&copyright page](https://doaj.org/apply/copyright-and-licensing/)
+
 
 ### Journal website
 
@@ -127,6 +132,7 @@ When concerns regarding a journal or publisher's quality and publishing practice
   - Journal management and operation
 
 We may also refer to the [Prinicples of Transparency and Best Practice in Scholarly Publishing](https://doaj.org/apply/transparency/)
+
 
 ## Additional criteria for some journal types
 
