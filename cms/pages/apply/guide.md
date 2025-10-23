@@ -23,7 +23,7 @@ Open access journals published in any language may apply. Journals should adhere
   - Primary target audience of researchers or practitioners
 
 - Newly launched journals
-  - Before applying to DOAJ, a new or flipped journal must demonstrate a publishing history of more than one year or have published at least ten open access research articles.
+  - Before applying to DOAJ, a new journal must demonstrate a publishing history of more than one year or have published at least ten open access research articles.
 
 ---
 
@@ -196,7 +196,7 @@ The best practices in this section are about publishing standards based on finda
     - The availability of the archive material (open access, free, or paywalled)
     - Reuse rights of the archive material (all rights reserved or open license)
    - All content published after the flipped date must be completely open access.
-   - DOAJ will consider flipped journals for inclusion after they have published at least ten research articles as a fully Open Access journal.
+   - DOAJ will consider flipped journals for inclusion if they have a publishing history of more than a year or after they have published at least ten research articles as a fully Open Access journal.
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 - ### Subscribe to Open journals (S2O)
