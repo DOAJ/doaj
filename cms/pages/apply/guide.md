@@ -295,7 +295,7 @@ We undertake periodic re-evaluation of journals accepted into DOAJ, particularly
 - They have not been updated by the publisher for several years 
 - Reports are received of website unavailability or questionable practices
 
-Reports of questionable practice will be invetigated by the [quality team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
+Reports of questionable practice will be investigated by the [quality team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
 
 ---
 
