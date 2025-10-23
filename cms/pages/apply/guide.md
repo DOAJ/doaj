@@ -122,7 +122,7 @@ Journals that publish special issues or other content curated by guest editors m
   - “All rights reserved” is never appropriate for open access content.
 - [More about copyright](/apply/copyright-and-licensing/)
 
-### Quality Criteria
+### Quality criteria
 
 When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the quality team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
 
