@@ -66,8 +66,7 @@ Further reading and more examples are [available as a downloadable presentation]
 
 ## Version history
 
-This is Version 2 of our Licensing and copyright page.
+This is Version 2 of Licensing and copyright page.
 
-Version History
-V2.0 2025 Added information on publishing non-open access content
-V1.0 2022 Separate page for extra information on Copyright & Licensing
+- V2.0 2025 Added information on publishing non-open access content
+- V1.0 2022 Separate page for extra information on Copyright & Licensing
