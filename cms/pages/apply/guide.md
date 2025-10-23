@@ -168,6 +168,7 @@ We may also refer to the [Prinicples of Transparency and Best Practice in Schola
    - Journals consisting only of book reviews will not be accepted. 
 
 ---
+---
 
 ## Best practices
 
