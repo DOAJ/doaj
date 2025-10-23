@@ -27,7 +27,7 @@
   }
 
   .secondary-nav {
-    margin-bottom: 1.5625rem;
+    margin-bottom: 25px;
   }
 
   a {
@@ -121,7 +121,7 @@
 
   &__blog {
     h3 {
-      font-size: $typescale-05;
+      @include typescale-05;
       line-height: 1.25;
     }
 

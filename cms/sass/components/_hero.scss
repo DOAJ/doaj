@@ -24,16 +24,16 @@
   }
 
   input[type="checkbox"]+label, input[type="radio"]+label {
-    font-size: $typescale-06;
+    font-size: 1em;
   }
 
   select {
-    padding: $spacing-02 $spacing-04 $spacing-02 $spacing-02;
+    padding: $spacing-02 30px $spacing-02 $spacing-02;
   }
 
   input, select, textarea, button {
     margin-bottom: $spacing-03;
     max-width: 100%;
-    font-size: $typescale-05;
+    font-size: 1em;
   }
 }

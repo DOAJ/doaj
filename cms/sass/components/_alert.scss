@@ -6,7 +6,7 @@
   margin: $spacing-02 0 $spacing-03 0;
   background-color: $light-grey;
   border: 1px solid $warm-black;
-  font-size: $typescale-06;
+  @include typescale-06;
 
   &__close {
     float: right;

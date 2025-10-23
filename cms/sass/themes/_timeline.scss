@@ -1,13 +1,13 @@
 .at-twenty {
-  font-size: $typescale-05;
+  font-size: 20px; 
   h1 {
-    font-size: 3.75rem;
+    font-size: 3em;
     text-transform: uppercase;
     font-weight: 900;
   }
 
   h2 {
-    font-size: $typescale-05;
+    @include typescale-05;
     font-weight: 900;
     text-transform: uppercase;
     text-align: center;
@@ -30,7 +30,7 @@
     > li:first-child {
       list-style: none;
       margin-left: 0;
-      font-size: $typescale-02;
+      @include typescale-02;
     }
   }
 }

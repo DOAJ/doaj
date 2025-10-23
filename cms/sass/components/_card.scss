@@ -5,22 +5,18 @@
   margin-bottom: $spacing-04;
   background-color: $white;
   border-radius: $spacing-02;
-  font-size: $typescale-06;
+  @include typescale-06;
   @include box-shadow;
 
   @media screen and (min-width: 768px) {
     margin-bottom: $spacing-05;
-  }
-
-  .tag {
-    font-size: 0.75rem;
   }
 }
 
 .card--compact {
   margin-bottom: $spacing-04;
   border-radius: $spacing-01;
-  font-size: $typescale-07;
+  font-size: smaller;
 }
 
 .card__header {
@@ -40,7 +36,7 @@
   > svg {
     margin: $spacing-01 $spacing-03 0 0;
     flex-shrink: 0;
-    height: 1.25rem;
+    height: 20px;
     width: auto;
   }
 }
