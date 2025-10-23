@@ -45,7 +45,7 @@
 .label--large {
   margin: $spacing-01 0 $spacing-02 0;
   color: $warm-black;
-  font-size: $typescale-04;
+  @include typescale-04;
 
   a {
     color: $warm-black;
