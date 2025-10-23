@@ -4,20 +4,20 @@
 
   @media screen and (max-width: 768px) {
     width: auto;
-    padding-left: $spacing-03a;
-    padding-right: $spacing-03a;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   @media screen and (max-width: 1279px) and (min-width: 769px) {
     width: auto;
-    padding-left: $spacing-04;
-    padding-right: $spacing-04;
+    padding-left: 30px;
+    padding-right: 30px;
   }
 
   @media screen and (max-width: 1479px) and (min-width: 1280px) {
     width: auto;
-    padding-left: $spacing-04a;
-    padding-right: $spacing-04a;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 
   @media screen and (min-width: 1480px) {
@@ -32,17 +32,17 @@
 }
 
 .row {
-  margin-left: -$spacing-03a;
-  margin-right: -$spacing-03a;
+  margin-left: -20px;
+  margin-right: -20px;
 
   @media screen and (max-width: 1279px) and (min-width: 768px) {
-    margin-left: -$spacing-04;
-    margin-right: -$spacing-04;
+    margin-left: -30px;
+    margin-right: -30px;
   }
 
   @media screen and (min-width: 1280px) {
-    margin-left: -$spacing-04a;
-    margin-right: -$spacing-04a;
+    margin-left: -40px;
+    margin-right: -40px;
   }
 }
 
@@ -65,17 +65,17 @@
 }
 
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
-  padding-left: $spacing-03a;
-  padding-right: $spacing-03a;
+  padding-left: 20px;
+  padding-right: 20px;
 
   @media screen and (max-width: 1279px) and (min-width: 768px) {
-    padding-left: $spacing-04;
-    padding-right: $spacing-04;
+    padding-left: 30px;
+    padding-right: 30px;
   }
 
   @media screen and (min-width: 1280px) {
-    padding-left: $spacing-04a;
-    padding-right: $spacing-04a;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 }
 

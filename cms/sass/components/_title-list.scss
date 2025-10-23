@@ -4,7 +4,7 @@
 .title-list {
   padding-left: 0;
   list-style: none;
-  font-size: $typescale-06;
+  @include typescale-06;
 }
 
 .title-list__link,
@@ -41,9 +41,9 @@
   margin-bottom: $spacing-03;
   font-weight: 400;
   line-height: 1.35;
-  font-size: $typescale-04;
+  @include typescale-04;
 }
 
 .title-list--large {
-  font-size: $typescale-05;
+  @include typescale-05;
 }

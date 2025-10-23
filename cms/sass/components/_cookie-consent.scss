@@ -8,7 +8,7 @@
   width: 100%;
   z-index: 2001;
   background-color: $warm-black;
-  font-size: $typescale-06;
+  @include typescale-06;
 
   p, a {
     margin: 0;
