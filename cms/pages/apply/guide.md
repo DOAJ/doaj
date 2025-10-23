@@ -182,9 +182,9 @@ At a minimum the policy should include:
   - Generative AI cannot be cited as a source
 
 -  For journals:
-  - Peer reviewers and editors should not use generative AI to create their assessments, [due to risks](https://journals.sagepub.com/doi/full/10.1177/17470161231224552) such as breaches of confidentiality, superficial and non-specific feedback, bias, [hidden prompts](https://asia.nikkei.com/business/technology/artificial-intelligence/positive-review-only-researchers-hide-ai-prompts-in-papers), and false information such as fake references; editing and rewriting may be acceptable if disclosed
-  - Any routine use of automated tools by the journal or publisher should be disclosed. The tool should have been appropriately tested
-  - Use of automated tools should be overseen by humans (human in the loop). Journals should ensure that an editor or other staff will verify the automated detection of integrity issues such as text similarity, figure manipulation or duplication, or undeclared generative AI use, or automated peer reviewer suggestions
+   - Peer reviewers and editors should not use generative AI to create their assessments, [due to risks](https://journals.sagepub.com/doi/full/10.1177/17470161231224552) such as breaches of confidentiality, superficial and non-specific feedback, bias, [hidden prompts](https://asia.nikkei.com/business/technology/artificial-intelligence/positive-review-only-researchers-hide-ai-prompts-in-papers), and false information such as fake references; editing and rewriting may be acceptable if disclosed
+   - Any routine use of automated tools by the journal or publisher should be disclosed. The tool should have been appropriately tested
+   - Use of automated tools should be overseen by humans (human in the loop). Journals should ensure that an editor or other staff will verify the automated detection of integrity issues such as text similarity, figure manipulation or duplication, or undeclared generative AI use, or automated peer reviewer suggestions
 
 
 ---
