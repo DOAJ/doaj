@@ -26,7 +26,7 @@
 .search-results__heading {
   margin: 0 0 $spacing-03 0;
   font-weight: 600;
-  font-size: $typescale-05;
+  font-size: $typescale-06--bigger;
   line-height: 1.45;
 
   svg {
@@ -57,7 +57,7 @@
 
   h4 {
     margin: $spacing-03 0 $spacing-02 0;
-    font-size: $typescale-05;
+    font-size: $typescale-06;
     font-weight: 600;
 
     .feather {
