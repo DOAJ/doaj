@@ -142,7 +142,9 @@ When concerns regarding a journal or publisher's quality and publishing practice
 - Signs of poor peer review processess
 - Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
 - Journal management and operation
+
 We may also refer to the [Prinicples of Transparency and Best Practice in Scholarly Publishing](https://doaj.org/apply/transparency/)
+
 ---
 
 ## Best practices
