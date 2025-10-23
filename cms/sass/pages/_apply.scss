@@ -11,12 +11,12 @@
     .application-nav {
       margin: $spacing-05 0 0 0;
       width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
-      font-size: $typescale-06;
+      font-size: $typescale-06--bigger;
     }
 
     .application-nav__heading {
       margin: 0;
-      font-size: $typescale-05;
+      font-size: $typescale-06--bigger;
       text-transform: uppercase;
       @include font-sans;
     }

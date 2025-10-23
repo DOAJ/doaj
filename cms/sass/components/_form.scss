@@ -39,7 +39,7 @@
 
   p, label {
     margin-bottom: $spacing-03;
-    font-size: $typescale-06;
+    font-size: $typescale-04--smaller;
   }
 
   button {
@@ -64,7 +64,7 @@
 
   input[type="checkbox"] + label,
   input[type="radio"] + label {
-    font-size: $typescale-06;
+    font-size: $typescale-05;
   }
 
   textarea:disabled {
@@ -77,7 +77,7 @@
 
 .form__question--optional {
   color: rgba($dark-grey, 0.5);
-  font-size: $typescale-05;
+  font-size: $typescale-06--bigger;
 }
 
 .form__hint {
