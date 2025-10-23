@@ -333,7 +333,7 @@ Our criteria are available in:
 
 ## Version history
 
-This is Version 2.5 of the DOAJ Guide to applying.
+This is Version 2.6 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 
