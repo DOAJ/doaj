@@ -23,7 +23,7 @@
 }
 
 @mixin box-shadow {
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 0.2rem 0.5rem;
 }
 
 /// Make element visible or focussable to screen readers only
@@ -50,7 +50,7 @@
 
 // Default style for all Creative Commons icons
 .cc-icon {
-  height: 1rem;
+  height: 1.25rem;
   width: auto;
 
   circle {
@@ -103,27 +103,27 @@
 }
 
 .type-01 {
-  @include typescale-01;
+  font-size: $typescale-01;
 }
 
 .type-02 {
-  @include typescale-02;
+  font-size: $typescale-02;
 }
 
 .type-03 {
-  @include typescale-03;
+  font-size: $typescale-03;
 }
 
 .type-04 {
-  @include typescale-04;
+  font-size: $typescale-04;
 }
 
 .type-05 {
-  @include typescale-05;
+  font-size: $typescale-05;
 }
 
 .type-06 {
-  @include typescale-06;
+  font-size: $typescale-06;
 }
 
 .stroke-gold {
@@ -239,21 +239,21 @@
   position: fixed;
   z-index: 2000;
   align-items: center;
-  width: 50px;
-  height: 50px;
-  top: 100px;
+  width: 3.125rem;
+  height: 3.125rem;
+  top: 6.25rem;
   right: 0;
   background-color: $warm-black;
 
   svg {
     display: block;
-    margin: 10px auto;
-    height: 30px;
+    margin: 0.625rem auto;
+    height: $spacing-04;
     stroke: $white;
   }
 
   + .admin-edit {
-    top: 150px;
+    top: 9.375rem;
   }
 
   &:hover {

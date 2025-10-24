@@ -8,14 +8,14 @@
     counter-increment: row-number;
 
     td {
-      @include typescale-06;
+      font-size: $typescale-06;
 
       &:first-child::before {
         padding-right: $spacing-03;
         content: counter(row-number);
         vertical-align: baseline;
         font-weight: 400;
-        @include typescale-05;
+        font-size: $typescale-05;
         @include font-serif;
       }
 
@@ -29,7 +29,7 @@
 .numbered-table--labels {
   td {
     &:nth-child(2) {
-      @include typescale-05;
+      font-size: $typescale-05;
       @include font-serif;
     }
   }
