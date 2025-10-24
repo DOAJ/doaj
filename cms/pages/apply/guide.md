@@ -207,7 +207,7 @@ The best practices in this section are about publishing standards based on finda
 
 ### Artificial Intelligence (AI) and automated tools
 
-Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence (AI) such as large-language models(LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
+Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence (AI) such as large-language models (LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
 
 -  For authors:  
   - Authors should disclose the use of generatve AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/).
