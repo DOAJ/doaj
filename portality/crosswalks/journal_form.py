@@ -302,6 +302,12 @@ class JournalGenericXWalk(object):
                 editor = editor.strip()
                 obj.set_editor(editor)
 
+        if getattr(form, "last_full_review", None):
+            lfr = form.last_full_review.data
+            if lfr:
+                lfr = lfr.strip()
+                obj.last_full_review = lfr
+
     @classmethod
     def bibjson2form(cls, bibjson, forminfo):
         from portality.models import JournalLikeBibJSON
@@ -482,6 +488,9 @@ class JournalGenericXWalk(object):
             forminfo['editor_group'] = obj.editor_group
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
+
+        if getattr(obj, "last_full_review", None):
+            forminfo["last_full_review"] = obj.last_full_review
 
 
 class JournalFormXWalk(JournalGenericXWalk):

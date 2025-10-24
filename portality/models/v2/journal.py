@@ -31,7 +31,11 @@ JOURNAL_STRUCT = {
             "fields": {
                 "in_doaj": {"coerce": "bool"},
                 "ticked": {"coerce": "bool"},
-                "current_application": {"coerce": "unicode"}
+                "current_application": {"coerce": "unicode"},
+                "last_full_review": {"coerce": "utcdatetime"},
+                "last_withdrawn": {"coerce": "utcdatetime"},
+                "last_reinstated": {"coerce": "utcdatetime"},
+                "last_owner_transfer": {"coerce": "utcdatetime"}
             },
             "lists": {
                 "related_applications": {"contains": "object"}
@@ -213,6 +217,23 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if lmut is None:
             return False
         return lmut > datetime.utcfromtimestamp(0)
+
+    def set_date_applied(self, date=None):
+        if date is None:
+            date = dates.now_str()
+        self.__seamless__.set_with_struct("admin.date_applied", date)
+
+    @property
+    def date_applied(self):
+        return self.__seamless__.get_single("admin.date_applied")
+
+    @property
+    def date_applied_timestamp(self):
+        return self.__seamless__.get_single("admin.date_applied", coerce=coerce.to_datestamp())
+
+    @date_applied.setter
+    def date_applied(self, val):
+        self.__seamless__.set_with_struct("admin.date_applied", val)
 
     def has_oa_start_date(self):
         return self.__seamless__.get_single("bibjson.oa_start", default=False)
@@ -864,6 +885,54 @@ class Journal(JournalLikeObject):
             return related[0].get("application_id")
         sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
         return related[0].get("application_id")
+
+    @property
+    def last_full_review(self):
+        return self.__seamless__.get_single("admin.last_full_review")
+
+    @property
+    def last_full_review_timestamp(self):
+        return self.__seamless__.get_single("admin.last_full_review", coerce=coerce.to_datestamp())
+
+    @last_full_review.setter
+    def last_full_review(self, value):
+        self.__seamless__.set_with_struct("admin.last_full_review", value)
+
+    @property
+    def last_withdrawn(self):
+        return self.__seamless__.get_single("admin.last_withdrawn")
+
+    @property
+    def last_withdrawn_timestamp(self):
+        return self.__seamless__.get_single("admin.last_withdrawn", coerce=coerce.to_datestamp())
+
+    @last_withdrawn.setter
+    def last_withdrawn(self, value):
+        self.__seamless__.set_with_struct("admin.last_withdrawn", value)
+
+    @property
+    def last_reinstated(self):
+        return self.__seamless__.get_single("admin.last_reinstated")
+
+    @property
+    def last_reinstated_timestamp(self):
+        return self.__seamless__.get_single("admin.last_reinstated", coerce=coerce.to_datestamp())
+
+    @last_reinstated.setter
+    def last_reinstated(self, value):
+        self.__seamless__.set_with_struct("admin.last_reinstated", value)
+
+    @property
+    def last_owner_transfer(self):
+        return self.__seamless__.get_single("admin.last_owner_transfer")
+
+    @property
+    def last_owner_transfer_timestamp(self):
+        return self.__seamless__.get_single("admin.last_owner_transfer", coerce=coerce.to_datestamp())
+
+    @last_owner_transfer.setter
+    def last_owner_transfer(self, value):
+        self.__seamless__.set_with_struct("admin.last_owner_transfer", value)
 
     ########################################################################
     ## Functions for handling continuations

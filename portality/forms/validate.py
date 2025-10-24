@@ -562,6 +562,22 @@ class BigEndDate(object):
         except Exception:
             raise validators.ValidationError(self.message)
 
+
+class DateInThePast(object):
+    def __init__(self, message=None):
+        self.message = message or "Date must be in the past"
+
+    def __call__(self, form, field):
+        if not field.data:
+            return
+        try:
+            d = datetime.strptime(field.data, FMT_DATE_STD)
+        except Exception:
+            raise validators.ValidationError(self.message)
+
+        if d > dates.now():
+            raise validators.ValidationError(self.message)
+
 class Year(object):
     def __init__(self, value, message=None):
         self.value = value
