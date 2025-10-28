@@ -212,7 +212,7 @@ class SeamlessMixin(object):
     __SEAMLESS_APPLY_STRUCT_ON_INIT__ = True
     __SEAMLESS_CHECK_REQUIRED_ON_INIT__ = True
     __SEAMLESS_SILENT_PRUNE__ = False
-    __SEAMLESS_ALLOW_OTHER_FIELDS__ = False
+    __SEAMLESS_ALLOW_OTHER_FIELDS__ = True
 
     def __init__(self,
                     raw=None,    # The raw data

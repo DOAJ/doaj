@@ -17,3 +17,17 @@
         {% set field_template = f.template %}
         {%  include field_template %}
     {% endfor %}
+
+{% set ns = namespace(fs=None) %}
+{% if formulaic_context.fieldset("keywords") %}
+    {% set ns.fs = formulaic_context.fieldset("keywords") %}
+{% elif formulaic_context.fieldset("subject_and_keywords") %}
+    {% set ns.fs = formulaic_context.fieldset("subject_and_keywords") %}
+{% endif %}
+
+{% set fs = ns.fs %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+{% for f in fs.fields() %}
+    {% set field_template = f.template %}
+    {%  include field_template %}
+{% endfor %}
