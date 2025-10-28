@@ -30,4 +30,8 @@
 {% for f in fs.fields() %}
     {% set field_template = f.template %}
     {%  include field_template %}
+    {% if f.name == "subject" %}
+        <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
+    {% endif %}
 {% endfor %}
+<div id="subject_checkbox-errors"></div>
