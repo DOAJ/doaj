@@ -22,7 +22,7 @@ APPLICATION_STRUCT = {
                 "current_journal": {"coerce": "unicode"},
                 "related_journal": {"coerce": "unicode"},
                 "application_status": {"coerce": "unicode"},
-                "date_rejected": {"coerce": "unicode"},
+                "date_rejected": {"coerce": "utcdatetime"},
                 "application_type": {
                     "coerce": "unicode",
                     "allowed_values": [
@@ -152,6 +152,18 @@ class Application(JournalLikeObject):
 
     def set_application_status(self, val):
         self.__seamless__.set_with_struct("admin.application_status", val)
+
+    @property
+    def date_rejected(self):
+        return self.__seamless__.get_single("admin.date_rejected")
+
+    @property
+    def date_rejected_timestamp(self):
+        return self.__seamless__.get_single("admin.date_rejected", coerce=coerce.to_datestamp())
+
+    @date_rejected.setter
+    def date_rejected(self, value):
+        self.__seamless__.set_with_struct("admin.date_rejected", value)
 
     def _sync_owner_to_journal(self):
         if self.current_journal is None:

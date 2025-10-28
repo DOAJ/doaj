@@ -97,7 +97,8 @@ class ExportService(object):
             kvs = [
                 ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
                 ("Added on Date", journal.created_date if isinstance(journal, models.Journal) else journal.date_applied),
-                ("Last updated Date", journal.last_manual_update)
+                ("Last updated Date", journal.last_manual_update),
+                ("Last Full Review Date", journal.last_full_review)
             ]
             return kvs
 

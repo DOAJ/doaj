@@ -43,7 +43,6 @@ from portality.forms.validate import (
     DateInThePast
 )
 from portality.lib import dates
-from portality.lib.dates import FMT_DATE_STD
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED

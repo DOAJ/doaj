@@ -193,7 +193,7 @@ def public_result_filter(results, unpacked=False):
     if unpacked:
         if "admin" in results:
             for k in list(results["admin"]):
-                if k not in ["ticked"]:
+                if k not in ["ticked", "last_full_review"]:
                     del results["admin"][k]
         return results
 
@@ -207,7 +207,7 @@ def public_result_filter(results, unpacked=False):
         if "_source" in hit:
             if "admin" in hit["_source"]:
                 for k in list(hit["_source"]["admin"]):
-                    if k not in ["ticked"]:
+                    if k not in ["ticked", "last_full_review"]:
                         del hit["_source"]["admin"][k]
 
     return results

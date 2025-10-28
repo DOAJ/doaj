@@ -36,12 +36,9 @@ class ApplicationProcessor(FormProcessor):
         if "id" in self.source.data:
             self.target.data['id'] = self.source.data['id']
 
-        try:
-            if self.source.date_applied is not None:
-                self.target.date_applied = self.source.date_applied
-        except AttributeError:
-            # fixme: should there always be a date_applied? Only true for applications
-            pass
+        # date_applied is now a property of both applications and journals
+        if self.source.date_applied is not None:
+            self.target.date_applied = self.source.date_applied
 
         try:
             if self.source.current_application:
@@ -76,6 +73,41 @@ class ApplicationProcessor(FormProcessor):
         try:
             if self.source.application_type:
                 self.target.application_type = self.source.application_type
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
+        try:
+            if self.source.last_widthdrawn:
+                self.target.last_withdrawn = self.source.last_widthdrawn
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
+        try:
+            if self.source.last_reinstated:
+                self.target.last_reinstated = self.source.last_reinstated
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
+        try:
+            if self.source.last_owner_transfer:
+                self.target.last_owner_transfer = self.source.last_owner_transfer
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
+        try:
+            if self.source.last_widthdrawn:
+                self.target.last_withdrawn = self.source.last_widthdrawn
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
+        try:
+            if self.source.date_rejected:
+                self.target.date_rejected = self.source.date_rejected
         except AttributeError:
             # this means that the source doesn't know about related_journals, which is fine
             pass
@@ -840,6 +872,20 @@ class ManEdJournalReview(ApplicationProcessor):
         is_editor_group_changed = JournalFormXWalk.is_new_editor_group(self.form, self.source)
         is_associate_editor_changed = JournalFormXWalk.is_new_editor(self.form, self.source)
 
+        # has a full review been done
+        if self.source.last_full_review != self.target.last_full_review:
+            n = Messages.LAST_FULL_REVIEW_NOTE.format(date=dates.now_str(), username=account.id)
+            self.target.add_note(n, date=dates.now_str(), author_id=account.id)
+
+        # has the owner changed?
+        if self.source.owner != self.target.owner:
+            self.target.last_owner_transfer = dates.now_str()
+            n = Messages.OWNER_CHANGED_NOTE.format(date=dates.now_str(),
+                                                  old_owner=self.source.owner,
+                                                  new_owner=self.target.owner,
+                                                  changed_by=account.id)
+            self.target.add_note(n, date=dates.now_str(), author_id=account.id)
+
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
@@ -899,6 +945,7 @@ class EditorJournalReview(ApplicationProcessor):
         self._merge_notes_forward()
         self._carry_continuations()
         self.target.bibjson().labels = self.source.bibjson().labels
+        self.target.last_full_review = self.source.last_full_review
 
     def pre_validate(self):
         # call to super handles all the basic disabled field
@@ -959,6 +1006,7 @@ class AssEdJournalReview(ApplicationProcessor):
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
         self.target.bibjson().labels = self.source.bibjson().labels
+        self.target.last_full_review = self.source.last_full_review
 
     def finalise(self):
         if self.source is None:
