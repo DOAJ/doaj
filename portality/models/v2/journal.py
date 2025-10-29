@@ -734,14 +734,6 @@ class Journal(JournalLikeObject):
             id_ = self.id
         return id_
 
-    @property
-    def last_update_request(self):
-        related = self.related_applications
-        if len(related) == 0:
-            return None
-        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
-        return related[0].get("date_accepted", DEFAULT_TIMESTAMP_VAL)
-
     ############################################################
     ## revision history methods
 
@@ -858,6 +850,9 @@ class Journal(JournalLikeObject):
     def remove_current_application(self):
         self.__seamless__.delete("admin.current_application")
 
+    # Related Applications Functions
+    ###########
+
     @property
     def related_applications(self):
         return self.__seamless__.get_list("admin.related_applications")
@@ -895,6 +890,23 @@ class Journal(JournalLikeObject):
             return related[0].get("application_id")
         sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
         return related[0].get("application_id")
+
+    @property
+    def last_update_request(self):
+        related = self.related_applications_ordered
+        if related is None:
+            return None
+        return related[0].get("date_accepted", DEFAULT_TIMESTAMP_VAL)
+
+    @property
+    def related_applications_ordered(self):
+        related = self.related_applications
+        if len(related) == 0:
+            return None
+        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
+        return related
+
+    ########
 
     @property
     def last_full_review(self):

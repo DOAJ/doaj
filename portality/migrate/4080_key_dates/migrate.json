@@ -1,0 +1,29 @@
+{
+	"batch": 10000,
+	"types": [
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"functions" : [
+				"portality.migrate.4080_key_dates.functions.set_date_applied",
+				"portality.migrate.4080_key_dates.functions.set_last_withdrawn"
+			]
+		},
+		{
+			"type": "application",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"functions" : [
+				"portality.migrate.4080_key_dates.functions.set_date_rejected"
+			],
+			"query": {
+				"query": {
+					"term": {
+						"admin.application_status.exact": "rejected"
+					}
+				}
+			}
+		}
+	]
+}

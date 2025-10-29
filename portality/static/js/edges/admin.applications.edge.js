@@ -191,6 +191,7 @@ $.extend(true, doaj, {
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
                         {'display':'Keywords','field':'bibjson.keywords'},
+                        {'display':'Keywords','field':'bibjson.keywords'},
                         {'display':'Classification','field':'index.classification'},
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
@@ -299,6 +300,12 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                    "pre" : "<strong>Owner</strong>: ",
+                                    valueFunction: doaj.fieldRender.owner
+                                }
+                            ],
+                            [
+                                {
                                     "pre" : "<strong>Editor group</strong>: ",
                                     "field" : "admin.editor_group"
                                 }
@@ -322,10 +329,11 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Owner</strong>: ",
-                                    valueFunction: doaj.fieldRender.owner
+                                    "pre" : "<strong>Date Rejected</strong>: ",
+                                    valueFunction: doaj.fieldRender.dateRejected
                                 }
                             ],
+
                         ]
                     })
                 }),

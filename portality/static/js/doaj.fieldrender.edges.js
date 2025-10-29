@@ -5611,7 +5611,7 @@ $.extend(true, doaj, {
                 let lfr = resultobj.admin.last_reinstated;
                 return doaj.dates.iso_datetime2date_and_time(lfr);
             } else {
-                return 'Never';
+                return false;
             }
         },
 
@@ -5620,7 +5620,7 @@ $.extend(true, doaj, {
                 let lfr = resultobj.admin.last_withdrawn;
                 return doaj.dates.iso_datetime2date_and_time(lfr);
             } else {
-                return 'Never';
+                return false;
             }
         },
 
@@ -5636,6 +5636,14 @@ $.extend(true, doaj, {
         suggestedOn: function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
                 return doaj.dates.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
+            } else {
+                return false;
+            }
+        },
+
+        dateRejected: function (val, resultobj, renderer) {
+            if (resultobj && resultobj['admin'] && resultobj['admin']['date_rejected']) {
+                return doaj.dates.iso_datetime2date_and_time(resultobj['admin']['date_rejected']);
             } else {
                 return false;
             }
