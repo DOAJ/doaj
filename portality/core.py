@@ -216,13 +216,16 @@ def put_mappings(conn, mappings, force_mappings=False):
             except elasticsearch.exceptions.RequestError as e:
                 print('Could not create index: ' + str(e))
 
-            import time
-            for _ in range(300):  # try for up to ~3 seconds
-                if es_connection.indices.exists(index=idx_name):
-                    break
-                time.sleep(0.1)
-            else:
-                raise RuntimeError(f"Index {idx_name} was not found after waiting.")
+            # This can be used to throttle the alias creation until the index is definitely there
+            # but seems to be unnecessary most of the time
+            #
+            # import time
+            # for _ in range(300):  # try for up to ~3 seconds
+            #     if es_connection.indices.exists(index=idx_name):
+            #         break
+            #     time.sleep(0.1)
+            # else:
+            #     raise RuntimeError(f"Index {idx_name} was not found after waiting.")
 
             resp2 = es_connection.indices.put_alias(index=idx_name, name=altered_key)
             print("Created alias:     {:<25} -> {},  status {}".format(idx_name, altered_key, resp2))
