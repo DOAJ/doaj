@@ -32,7 +32,7 @@ JOURNAL_STRUCT = {
                 "in_doaj": {"coerce": "bool"},
                 "ticked": {"coerce": "bool"},
                 "current_application": {"coerce": "unicode"},
-                "last_full_review": {"coerce": "utcdatetime"},
+                "last_full_review": {"coerce": "bigenddate"},
                 "last_withdrawn": {"coerce": "utcdatetime"},
                 "last_reinstated": {"coerce": "utcdatetime"},
                 "last_owner_transfer": {"coerce": "utcdatetime"}
@@ -306,9 +306,19 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()
-        obj = {"date": date, "note": note, "id": id, "author_id": author_id, "flag":  {"assigned_to": assigned_to, "deadline": deadline}}
+        obj = {"date": date, "note": note}
+        if id is not None:
+            obj["id"] = id
+        if author_id is not None:
+            obj["author_id"] = author_id
+        if assigned_to is not None or deadline is not None:
+            obj["flag"] = {}
+            if assigned_to is not None:
+                obj["flag"]["assigned_to"] = assigned_to
+            if deadline is not None:
+                obj["flag"]["deadline"] = deadline
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
-        if not id:
+        if id is None:
             obj["id"] = uuid.uuid4()
         self.__seamless__.add_to_list_with_struct("admin.notes", obj)
 

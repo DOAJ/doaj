@@ -109,7 +109,8 @@ class TestAssedAppReview(DoajTestCase):
 
             # now construct it from form data (with a known source)
             formulaic_context = ApplicationFormFactory.context("associate_editor")
-            fc = formulaic_context.processor(source=models.Application(**make_application_source()),
+            app = models.Application(**make_application_source())
+            fc = formulaic_context.processor(source=app,
                                              formdata=MultiDict(make_application_form()))
 
             assert isinstance(fc, AssociateApplication)
@@ -145,6 +146,9 @@ class TestAssedAppReview(DoajTestCase):
             assert fc.target.bibjson().labels == ["s2o"]
             assert fc.target.current_journal == "123456789987654321"
             assert fc.target.related_journal == "987654321123456789"
+
+            assert fc.target.date_applied == app.date_applied
+            assert fc.target.date_rejected == app.date_rejected
 
             # now do finalise (which will also re-run all of the steps above)
             fc.finalise()

@@ -78,8 +78,8 @@ class ApplicationProcessor(FormProcessor):
             pass
 
         try:
-            if self.source.last_widthdrawn:
-                self.target.last_withdrawn = self.source.last_widthdrawn
+            if self.source.last_withdrawn:
+                self.target.last_withdrawn = self.source.last_withdrawn
         except AttributeError:
             # this means that the source doesn't know about related_journals, which is fine
             pass
@@ -94,13 +94,6 @@ class ApplicationProcessor(FormProcessor):
         try:
             if self.source.last_owner_transfer:
                 self.target.last_owner_transfer = self.source.last_owner_transfer
-        except AttributeError:
-            # this means that the source doesn't know about related_journals, which is fine
-            pass
-
-        try:
-            if self.source.last_widthdrawn:
-                self.target.last_withdrawn = self.source.last_widthdrawn
         except AttributeError:
             # this means that the source doesn't know about related_journals, which is fine
             pass
@@ -880,11 +873,14 @@ class ManEdJournalReview(ApplicationProcessor):
         # has the owner changed?
         if self.source.owner != self.target.owner:
             self.target.last_owner_transfer = dates.now_str()
+            changed_by = "unknown user"
+            if account is not None:
+                changed_by = account.id
             n = Messages.OWNER_CHANGED_NOTE.format(date=dates.now_str(),
                                                   old_owner=self.source.owner,
                                                   new_owner=self.target.owner,
-                                                  changed_by=account.id)
-            self.target.add_note(n, date=dates.now_str(), author_id=account.id)
+                                                  changed_by=changed_by)
+            self.target.add_note(n, date=dates.now_str(), author_id=changed_by)
 
         # Save the target
         self.target.set_last_manual_update()
