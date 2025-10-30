@@ -1991,7 +1991,7 @@ var formulaic = {
                 this.elements.select2({
                     allowClear: allow_clear,
                     newOption: true,
-                    placeholder: "Start typing…"
+                    placeholder: doaj.i18n.get("Start typing…")
                 });
                 $(this.elements).on("focus", formulaic.widgets._select2_shift_focus);
             };
@@ -2051,7 +2051,7 @@ var formulaic = {
                     ajax: ajax,
                     createSearchChoice: csc,
                     initSelection: initSel,
-                    placeholder: "Start typing…",
+                    placeholder: doaj.i18n.get("Start typing…"),
                     allowClear: false,
                     tags: true,
                     tokenSeparators: [',', ";"],
