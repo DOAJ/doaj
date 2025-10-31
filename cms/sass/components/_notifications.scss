@@ -1,8 +1,8 @@
 .notifications {
   overflow-y: scroll;
   height: fit-content;
-  width: 18.75rem;
-  font-size: $typescale-06;
+  width: 300px;
+  @include typescale-06;
 }
 
 .notifications__item {

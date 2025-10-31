@@ -1,8 +1,8 @@
 // Select2 overrides
 
 // Variables specific to this sheet
-$s2-space: $spacing-02;
-$s2-size:  $spacing-01;
+$s2-space: 0.5em;
+$s2-size:  20px;
 
 .select2 {
   height: 100% !important;
@@ -22,7 +22,7 @@ $s2-size:  $spacing-01;
     appearance: none;
     display: block;
     padding: $s2-space $s2-space 0 $s2-space;
-    min-height: 2.875rem;
+    min-height: 46px;
     background: $white;
     border: 1px solid $warm-black;
     @include font-sans;
@@ -36,7 +36,7 @@ $s2-size:  $spacing-01;
       text-decoration: none;
       border: 0;
       box-shadow: none;
-      height: $spacing-04;
+      height: 30px;
 
       div {
         margin-left: $s2-size;
@@ -64,9 +64,9 @@ $s2-size:  $spacing-01;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FEFBF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") !important;
       background-repeat: no-repeat;
       background-size: $s2-size !important;
-      right: $spacing-04 !important;
-      left: 0.625rem;
-      top: 0.3125rem;
+      right: 30px !important;
+      left: 10px;
+      top: 5px;
       height: $s2-size;
       width: $s2-size;
 
@@ -81,7 +81,7 @@ $s2-size:  $spacing-01;
 
       + .select2-search-choice-close {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") !important;
-        top: 0.6875rem;
+        top: 11px;
         left: auto;
       }
     }

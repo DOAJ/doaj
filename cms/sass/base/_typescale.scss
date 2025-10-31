@@ -1,9 +1,27 @@
-/* Variables for typescale */
+/* Mixins for typescale in minor second
+   Use with headings and text only
+   Base unit: 16px */
 
-$typescale-01: 2.25rem;
-$typescale-02: 2rem;
-$typescale-03: 1.75rem;
-$typescale-04: 1.5rem;
-$typescale-05: 1.25rem;
-$typescale-06: 1rem;
-$typescale-07: 0.9rem;
+@mixin typescale-01 {
+  font-size: 1.802em;
+}
+
+@mixin typescale-02 {
+  font-size: 1.602em;
+}
+
+@mixin typescale-03 {
+  font-size: 1.424em;
+}
+
+@mixin typescale-04 {
+  font-size: 1.266em;
+}
+
+@mixin typescale-05 {
+  font-size: 1.125em;
+}
+
+@mixin typescale-06 {
+  font-size: .889em;
+}

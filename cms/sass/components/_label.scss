@@ -8,7 +8,7 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  font-size: $typescale-07;
+  font-size: smaller;
   color: $sanguine;
 
   a {
@@ -45,7 +45,7 @@
 .label--large {
   margin: $spacing-01 0 $spacing-02 0;
   color: $warm-black;
-  font-size: $typescale-04;
+  @include typescale-04;
 
   a {
     color: $warm-black;

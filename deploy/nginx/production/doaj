@@ -12,8 +12,10 @@ limit_req_zone $http_cf_connecting_ip zone=api:100m rate=12r/s;
 limit_req_zone $http_cf_connecting_ip zone=oai:100m rate=1r/s;
 limit_req_status 429;
 
+# A map for the frontend that prevents machine use
 map $http_user_agent $block_ua {
     default             0;
+    ~*UptimeRobot       0;
     ~*bot               1;
     ~*spider            1;
     ~*Go-http-client    1;
@@ -21,6 +23,13 @@ map $http_user_agent $block_ua {
     ~*mechanize         1;
     ~*wget              1;
     ~*curl              1;
+}
+
+# A map for the machine interfaces that prevents crawling
+map $http_user_agent $block_bots {
+    default 0;
+    ~*UptimeRobot 0;
+    ~*(bot|spider) 1;
 }
 
 # For public site components, try all servers
@@ -123,9 +132,7 @@ server {
 
     # Use the background server for bulk API requests, since that's where the event consumer runs
     location ~ /api(.*)/bulk {
-        if ($http_user_agent ~* (bot|spider) ) {
-            return 403;
-        }
+        if ($block_bots) {return 403;}
         limit_req zone=api burst=8 nodelay;
         proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
@@ -138,9 +145,7 @@ server {
 
     # OAI has been badly affecting our latency so impose a draconian rate limit (omitting nodelay is intentional)
     location /oai {
-        if ($http_user_agent ~* (bot|spider) ) {
-            return 403;
-        }
+        if ($block_bots) {return 403;}
         limit_req zone=oai burst=5;
         proxy_pass http://doaj_oai_failover;
         proxy_redirect off;
@@ -152,9 +157,7 @@ server {
     }
 
     location /api {
-        if ($http_user_agent ~* (bot|spider) ) {
-            return 403;
-        }
+        if ($block_bots) {return 403;}
         limit_req zone=api burst=8 nodelay;
         proxy_pass http://doaj_apps_failover;
         proxy_redirect off;

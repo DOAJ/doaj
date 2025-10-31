@@ -12,12 +12,12 @@
     padding-left: $spacing-03;
     width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
     border-left: 1px solid $grapefruit;
-    font-size: $typescale-06;
+    @include typescale-06;
   }
 
   .page-nav__heading {
     margin: 0 0 $spacing-03 0;
-    font-size: $typescale-05;
+    font-size: 1em;
     text-transform: uppercase;
     @include font-sans;
   }

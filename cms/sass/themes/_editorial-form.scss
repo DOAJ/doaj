@@ -32,7 +32,7 @@
   .form__legend {
     margin: 0;
     width: 100%;
-    font-size: $typescale-06;
+    @include typescale-06;
 
     div {
       margin: 0 (-$spacing-04) $spacing-04 (-$spacing-04);
@@ -106,7 +106,7 @@
 
   .form__short-help {
     margin-bottom: $spacing-02;
-    font-size: $typescale-07;
+    font-size: smaller;
   }
 
   .icon-container {
