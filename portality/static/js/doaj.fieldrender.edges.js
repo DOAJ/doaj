@@ -802,6 +802,9 @@ $.extend(true, doaj, {
                 let columns = [];
                 for (let selectedExport of selectedExports) {
                     let component = this.edge.getComponent({id: selectedExport.component_id});
+                    if (!component) {
+                        continue;
+                    }
                     let exporter = selectedExport.exporter;
                     let componentData = exporter(component);
 

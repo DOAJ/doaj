@@ -395,7 +395,6 @@ $.extend(true, doaj, {
                     model: "journal",
                     facetExports: [
                         {component_id: "in_doaj", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                        {component_id: "has_seal", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "owner", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "has_associate_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
@@ -572,26 +571,14 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Discontinued Date</strong>: ",
-                                    "field": "bibjson.discontinued_date"
-                                }
-                            ],
-                            [
-                                {
                                     "pre": "<strong>Date of Application</strong>: ",
                                     valueFunction: doaj.fieldRender.suggestedOn
                                 }
                             ],
                             [
                                 {
-                                    "pre": "<strong>Date added to DOAJ</strong>: ",
+                                    "pre": "<strong>Date published in DOAJ</strong>: ",
                                     valueFunction: doaj.fieldRender.createdDateWithTime
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Last updated</strong>: ",
-                                    valueFunction: doaj.fieldRender.lastManualUpdate
                                 }
                             ],
                             [
@@ -602,20 +589,32 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Last Reinstated</strong>: ",
-                                    valueFunction: doaj.fieldRender.lastReinstated
-                                }
-                            ],
-                            [
-                                {
                                     "pre": "<strong>Last Withdrawn</strong>: ",
                                     valueFunction: doaj.fieldRender.lastWithdrawn
                                 }
                             ],
                             [
                                 {
+                                    "pre": "<strong>Last Reinstated</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastReinstated
+                                }
+                            ],
+                            [
+                                {
                                     "pre": "<strong>Last Owner Transfer</strong>: ",
                                     valueFunction: doaj.fieldRender.lastOwnerTransfer
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Discontinued Date</strong>: ",
+                                    "field": "bibjson.discontinued_date"
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Last updated</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastManualUpdate
                                 }
                             ]
                         ],

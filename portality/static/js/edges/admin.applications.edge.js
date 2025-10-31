@@ -323,14 +323,14 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Last updated</strong>: ",
-                                    valueFunction: doaj.fieldRender.lastManualUpdate
+                                    "pre" : "<strong>Date Rejected</strong>: ",
+                                    valueFunction: doaj.fieldRender.dateRejected
                                 }
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Date Rejected</strong>: ",
-                                    valueFunction: doaj.fieldRender.dateRejected
+                                    "pre": "<strong>Last updated</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastManualUpdate
                                 }
                             ],
 

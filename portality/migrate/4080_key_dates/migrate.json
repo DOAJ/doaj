@@ -6,7 +6,7 @@
 			"init_with_model": true,
 			"keepalive": "20m",
 			"functions" : [
-				"portality.migrate.4080_key_dates.functions.set_date_applied",
+				"portality.migrate.4080_key_dates.functions.set_date_applied_and_last_full_review",
 				"portality.migrate.4080_key_dates.functions.set_last_withdrawn"
 			]
 		},

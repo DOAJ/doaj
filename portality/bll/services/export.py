@@ -88,7 +88,7 @@ class ExportService(object):
         YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
         unmap = {}
 
-        def _get_doaj_meta_kvs(journal):
+        def _get_doaj_meta_kvs(journal: models.JournalLikeObject):
             """
             Get key, value pairs for some meta information we want from the journal object
             :param journal: a models.Journal
@@ -98,8 +98,11 @@ class ExportService(object):
                 ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
                 ("Added on Date", journal.created_date if isinstance(journal, models.Journal) else journal.date_applied),
                 ("Last updated Date", journal.last_manual_update),
-                ("Last Full Review Date", journal.last_full_review)
             ]
+
+            if isinstance(journal, models.Journal):
+                kvs.append(("Last Full Review Date", journal.last_full_review))
+
             return kvs
 
         def _get_doaj_toc_kv(journal):
@@ -132,12 +135,23 @@ class ExportService(object):
         def _acc_name(j):
             o = j.owner
             a = models.Account.pull(o)
-            return [("Account Name", a.name)] if a is not None else ""
+            return [("Account Name", a.name)] if a is not None else [("Account Name", "")]
 
         def _acc_email(j):
             o = j.owner
             a = models.Account.pull(o)
-            return [("Account Email", a.email)] if a is not None else ""
+            return [("Account Email", a.email)] if a is not None else [("Account Email", "")]
+
+        def _admin_dates(a: models.JournalLikeObject):
+            if isinstance(a, models.Application):
+                return [("Date Rejected", a.date_rejected)]
+
+            return [
+                ("Date Applied", a.date_applied),
+                ("Last Withdrawn Date", a.last_withdrawn),
+                ("Last Reinstated Date", a.last_reinstated),
+                ("Last Owner Transfer", a.last_owner_transfer),
+            ]
 
         biblio_kvs = []
         meta_kvs = []
@@ -158,6 +172,7 @@ class ExportService(object):
             admin_kvs = _usernames(obj)
             if add_sensitive_account_info:
                 admin_kvs += _acc_name(obj) + _acc_email(obj)
+            admin_kvs += _admin_dates(obj)
         if custom_columns is not None:
             for cc in custom_columns:
                 custom_kvs.append(cc(obj))
