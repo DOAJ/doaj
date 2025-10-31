@@ -1,28 +1,51 @@
 /* Input groups */
 
 .input-group {
+  width: 100%;
   margin: 0 0 1rem 0;
   position: relative;
   display: flex;
   flex-direction: row;
-  border-collapse: separate;
-  width: 100%;
+  align-items: stretch;
+  flex-wrap: wrap;
 
-  input, select, button, .select2-container {
+  input, select, .select2-container {
+    flex: 1 1 0;
+    min-width: 37.5%;
     margin-top: 0;
     margin-bottom: $spacing-02;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+  button, a.button {
+    flex: 0 1 auto;
+    min-width: 10%;
+    margin-top: 0;
+    margin-bottom: $spacing-02;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
     &:not(:first-child) {
       margin-left: -1px;
     }
   }
 
-  input, select, .select2-container {
-    width: 50%;
-  }
-
   &:last-of-type {
     margin: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .container input,
+  .container button {
+    flex: 1 1 auto;
+    width: 100%;
   }
 }
 

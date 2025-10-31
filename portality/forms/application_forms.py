@@ -39,11 +39,12 @@ from portality.forms.validate import (
     NoScriptTag,
     Year,
     CurrentISOCurrency,
-    CurrentISOLanguage
+    CurrentISOLanguage,
+    JournalsByOwner
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
-from portality.models import EditorGroup
+from portality.models import EditorGroup, Journal
 from portality.regex import ISSN, ISSN_COMPILED
 from portality.ui.messages import Messages
 from portality.ui import templates
@@ -483,6 +484,80 @@ class FieldDefinitions:
         },
         "attr": {
             "class": "input-xlarge unstyled-list"
+        }
+    }
+
+    # ~~->$ Langugage_editions:FormField~~
+    LANGUAGE_EDITIONS = {
+        "name": "language_editions",
+        "label": "Language Editions",
+        "input": "group",
+        "optional": True,
+        "subfields": [
+            "lang_edition_language",
+            "lang_edition_id"
+        ],
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GROUP_HORIZONTAL,
+        "widgets": [
+            "multiple_field",
+            {"clickable_journal": {"val_field": "lang_edition_id"}}
+        ],
+        "repeatable": {
+            "minimum": 0,
+            "initial": 5
+        },
+        "help": {
+            "short_help": "Add language edition(s) of this journal.",
+            "long_help": ["To link a language edition, enter the language details and choose the corresponding DOAJ record. "
+                          "Only records owned by the same publisher as the original journal can be linked. "
+                          "You can filter the records by title or ISSN(s)."
+                          ]
+        }
+    }
+
+    LANG_EDITIONS_ID = {
+        "name": "lang_edition_id",
+        "subfield": True,
+        "group": "language_editions",
+        "label": "Linked record",
+        "input": "select",
+        "default": "",
+        "options_fn": "journals_by_owner",
+        "validate": [
+            "journals_by_owner",
+            {"required_if": {
+                "field": "lang_edition_language",
+                "message": "Choose the DOAJ record from the list to link a language edition"
+            }},
+        ],
+        "widgets": [
+            {"select": {}},
+        ],
+        "help": {
+            "placeholder": "Linked record - search by title, id or issns"
+        }
+    }
+
+    LANG_EDITIONS_LANGUAGE = {
+        "name": "lang_edition_language",
+        "subfield": True,
+        "group": "language_editions",
+        "label": "Language",
+        "input": "select",
+        "options_fn": "iso_language_list",
+        "validate": [
+            "current_iso_language",
+            {"required_if": {
+                "field": "lang_edition_id",
+                "message": "Language is required to link a language edition"
+            }},
+        ],
+        "widgets": [
+            {"select": {}}
+        ],
+        "help": {
+            "placeholder": "Language"
         }
     }
 
@@ -1584,7 +1659,6 @@ class FieldDefinitions:
         "label": "Persistent article identifiers used by the journal",
         "input": "checkbox",
         "multiple": True,
-        "hint": "Select at least one",
         "options": [
             {"display": "DOIs", "value": "DOI"},
             {"display": "ARKs", "value": "ARK"},
@@ -1595,6 +1669,7 @@ class FieldDefinitions:
              "exclusive": True}
         ],
         "help": {
+            "short_help": "Select at least one",
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
                           "located. The most common type of PID is the digital object identifier (DOI). ",
                           "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
@@ -2300,7 +2375,17 @@ class FieldSetDefinitions:
         "fields": [
             FieldDefinitions.CONTINUES["name"],
             FieldDefinitions.CONTINUED_BY["name"],
-            FieldDefinitions.DISCONTINUED_DATE["name"]
+            FieldDefinitions.DISCONTINUED_DATE["name"],
+        ]
+    }
+
+    RELATED_JOURNALS = {
+        "name": "related_journals",
+        "label": "Related journals",
+        "fields": [
+            FieldDefinitions.LANGUAGE_EDITIONS["name"],
+            FieldDefinitions.LANG_EDITIONS_ID["name"],
+            FieldDefinitions.LANG_EDITIONS_LANGUAGE["name"],
         ]
     }
 
@@ -2539,6 +2624,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.RELATED_JOURNALS["name"],
         FieldSetDefinitions.FLAGS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
@@ -2595,10 +2681,42 @@ JOURNAL_FORMS = {
     "fields": APPLICATION_FORMS["fields"]
 }
 
-
 #######################################################
 # Options lists
 #######################################################
+def journals_by_owner(field, formulaic_context):
+    """
+    Set the journal choices from a given owner name
+    ~~->EditorGroup:Model~~
+    """
+    egf = formulaic_context.get("owner")
+    wtf = egf.wtfield
+    options = [{"display":"", "value":""}]
+    if wtf is None:
+        return options
+
+    owner_name = wtf.data
+    if owner_name is None:
+        return options
+    else:
+        options.append({"display": "", "value": ""})
+        journals = Journal.search_by_key("admin.owner", owner_name)
+        for j in journals:
+            title = j.bibjson().title
+            this_title = formulaic_context.get("title").wtfield.data
+            if title != this_title:
+                pissn = j.bibjson().pissn
+                eissn = j.bibjson().eissn
+
+                parts = []
+                if pissn:
+                    parts.append(f"P: {pissn}")
+                if eissn:
+                    parts.append(f"E: {eissn}")
+
+                display_value = ", ".join(parts) + f" ( {title} )"
+                options.append({"display": display_value, "value": j.id})
+    return options
 
 def iso_country_list(field, formualic_context_name):
     # ~~-> Countries:Data~~
@@ -3143,6 +3261,15 @@ class CurrentISOLanguageBuilder:
     def wtforms(field, settings):
         return CurrentISOLanguage(settings.get("message"))
 
+class JournalsByOwnerBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return JournalsByOwner(settings.get("message"))
+
 
 #########################################################
 # Crosswalks
@@ -3155,7 +3282,8 @@ PYTHON_FUNCTIONS = {
         "iso_currency_list": iso_currency_list,
         "quick_reject": quick_reject,
         "application_statuses": application_statuses,
-        "editor_choices": editor_choices
+        "editor_choices": editor_choices,
+        "journals_by_owner": journals_by_owner
     },
     "disabled": {
         "application_status_disabled": application_status_disabled,
@@ -3210,7 +3338,8 @@ PYTHON_FUNCTIONS = {
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
-            "current_iso_language": CurrentISOLanguageBuilder.wtforms
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms,
+            "journals_by_owner": JournalsByOwnerBuilder.wtforms
         }
     }
 }
@@ -3234,6 +3363,7 @@ JAVASCRIPT_FUNCTIONS = {
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+    "clickable_journal": "formulaic.widgets.newClickableJournal" # ~~-> RecordLink:FormWidget~~
 
 }
 
@@ -3353,7 +3483,7 @@ class SelectBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        sf = SelectField(**wtfargs)
+        sf = SelectField(validate_choice=False, **wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
 
