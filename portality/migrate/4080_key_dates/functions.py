@@ -17,12 +17,16 @@ def set_date_applied_and_last_full_review(journal: Journal):
     """
     related_applications = journal.related_applications_ordered
     if related_applications is None or len(related_applications) == 0:
+        journal.last_full_review = journal.created_date
+        journal.date_applied = journal.created_date
         return journal
 
     oldest_app = related_applications[-1]
     first_acceptance = oldest_app.get("date_accepted")
     if first_acceptance:
         journal.last_full_review = first_acceptance
+    else:
+        journal.last_full_review = journal.created_date
 
     app_id = oldest_app.get("application_id")
     app = Application.pull(app_id)
@@ -30,8 +34,8 @@ def set_date_applied_and_last_full_review(journal: Journal):
     applied_date = journal.created_date
     if app is not None:
         applied_date = app.date_applied
-
     journal.date_applied = applied_date
+
     return journal
 
 
