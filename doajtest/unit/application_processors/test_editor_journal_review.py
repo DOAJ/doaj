@@ -61,7 +61,8 @@ class TestEditorJournalReview(DoajTestCase):
 
         # we start by constructing it from source
         formulaic_context = JournalFormFactory.context("editor")
-        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        journal = models.Journal(**JOURNAL_SOURCE)
+        fc = formulaic_context.processor(source=journal)
         # fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Journal(**JOURNAL_SOURCE))
         assert isinstance(fc, EditorJournalReview)
         assert fc.form is not None
@@ -112,6 +113,12 @@ class TestEditorJournalReview(DoajTestCase):
         assert related[0].get("date_accepted") == "2018-01-01T00:00:00Z"
         assert related[1].get("application_id") == "zxcvbnm"
         assert related[1].get("date_accepted") is None
+
+        assert fc.target.date_applied == journal.date_applied
+        assert fc.target.last_withdrawn == journal.last_withdrawn
+        assert fc.target.last_reinstated == journal.last_reinstated
+        assert fc.target.last_owner_transfer == journal.last_owner_transfer
+        assert fc.target.last_full_review == journal.last_full_review
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
