@@ -55,3 +55,10 @@ def configure(action):
             "No task configuration for action '{x}'.  Define this in HUEY_TASKS first then try again."
             .format(x=action))
     return action_cfg
+
+
+def run_bgjobs_immediately():
+    main_queue.always_eager = True
+    long_running.always_eager = True
+    main_queue.immediate = True
+    long_running.immediate = True
