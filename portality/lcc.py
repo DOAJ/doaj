@@ -138,9 +138,31 @@ def lcc2flat_code_index(thelcc):
         return {thelcc['code']: thelcc['name']}
 
 
+def loadCRDC(source=None):
+    # use delayed imports, as this code will only be run rarely
+    import os
+    import json
+
+    if source is None:
+        source = paths.rel2abs(__file__, "..", "cms", "classification", "compiled", "crdc.json")
+
+    with open(source) as f:
+        data = json.load(f)
+
+    lcc = LCC(**data)
+
+    # Initialise the LCC index correctly if it doesn't exist - otherwise it'll be created badly on save
+    prepare_type(lcc.__type__)
+    lcc.save()
+
 lcc = LCC.pull('lcc')
 if not lcc:
-    loadLCC()
+    # NOTE: we are hot-switching from LCC to CRDC as the main classification scheme
+    # this is for demonstration purposes only, for the real thing we'll do a proper
+    # job of migrating data and removing LCC entirely
+
+    # loadLCC()
+    loadCRDC()
 lcc = LCC.pull('lcc')
 lcc_choices = []
 lcc_jstree = []
