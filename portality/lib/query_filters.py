@@ -122,7 +122,7 @@ def private_source(q):
 
 
 def public_source(q):
-    q.add_include(["admin.ticked", "last_updated",
+    q.add_include(["admin.ticked", "admin.last_full_review", "last_updated",
         "created_date", "id", "bibjson"])
     return q
 
