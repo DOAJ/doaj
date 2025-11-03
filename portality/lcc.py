@@ -69,7 +69,7 @@ def lcc2choices(thelcc, level=-2):
     level_indicator = '--'
     if 'children' in thelcc:
         results = []
-        if thelcc['name'] != 'LCC':
+        if thelcc['name'] not in ['LCC', "CRDC"]:
             # don't want the root + it doesn't have a code
             results += [(thelcc['code'], level_indicator * level + thelcc['name'])]
         for child in thelcc['children']:
@@ -88,7 +88,7 @@ def lcc2choices(thelcc, level=-2):
 def lcc2jstree(thelcc):
     if 'children' in thelcc:
         results = []
-        if thelcc['name'] == 'LCC':
+        if thelcc['name'] in ['LCC', "CRDC"]:
             for child in thelcc['children']:
                 results += lcc2jstree(child)
         else:
@@ -122,7 +122,7 @@ def lcc2jstree(thelcc):
 def lcc2flat_code_index(thelcc):
     if 'children' in thelcc:
         results = {}
-        if thelcc['name'] != 'LCC':
+        if thelcc['name'] not in ['LCC', "CRDC"]:
             # don't want the root + it doesn't have a code
             results.update({thelcc['code']: thelcc['name']})
         for child in thelcc['children']:
