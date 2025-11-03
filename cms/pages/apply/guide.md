@@ -34,10 +34,10 @@ Open access journals published in any language may apply. Journals should adhere
   - No embargo period
   - No requirement for users to register to read content
   - A charge for the print version of a journal is permitted
-- Publishing non Open Access content within an article
-  - Text and figures may be used with permission or under fair use. All non-OA content must be clearly indicated and attributed
-  - Journals may publish a small amount of non-OA, free-to-read content relevant to the journal's scope provided it is not scholarly articles and is clearly attributed and copyright status is clear
-  - More details on our [licensing&copyright page](https://doaj.org/apply/copyright-and-licensing/)
+- Publishing non-open access content:
+  - Within an article, text and figures may be used with permission or under fair use. All non-open access content must be clearly indicated and attributed.
+  - Journals may publish a small amount of non-open access, free-to-read content relevant to the journal's scope provided it is not scholarly articles and is clearly attributed and copyright status is clear.
+  - More details on our [licensing&copyright page](/apply/copyright-and-licensing/).
 
 
 ### Journal website
@@ -122,16 +122,17 @@ Journals that publish special issues or other content curated by guest editors m
   - “All rights reserved” is never appropriate for open access content.
 - [More about copyright](/apply/copyright-and-licensing/)
 
-### Quality Criteria
+## Quality criteria
 
 When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the quality team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
-  - Presence of clear and reliable key information on the journal's website
-  - Composition of the journal's editorial board
-  - Signs of poor peer review processess
-  - Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
-  - Journal management and operation
 
-We may also refer to the [Prinicples of Transparency and Best Practice in Scholarly Publishing](https://doaj.org/apply/transparency/)
+- Presence of clear and reliable key information on the journal's website
+- Composition of the journal's editorial board
+- Signs of poor peer review processess
+- Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
+- Journal management and operation
+
+We may also refer to the [Principles of Transparency and Best Practice in Scholarly Publishing](https://doaj.org/apply/transparency/)
 
 
 ## Additional criteria for some journal types
@@ -204,20 +205,20 @@ The best practices in this section are about publishing standards based on finda
 
 - Article metadata should be uploaded to DOAJ regularly. [Uploading article metadata](https://doaj.org/docs/faq/#uploading-article-metadata) increases the visibility and impact of published research.
 
-### Artificial Intelligence(AI) and automated tools
+### Artificial Intelligence (AI) and automated tools
 
-Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence(AI) such as large-language models(LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
+Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence (AI) such as large-language models (LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
 
 -  For authors:  
-  - Authors should disclose the use of generatve AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/)
-  - Authors are responsible for checking the validity of the output of any automated tools used in their research and preparing their manuscript
-  - Automated tools cannot be [credited as authors](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools)
-  - Generative AI cannot be cited as a source
+  - Authors should disclose the use of generatve AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/).
+  - Authors are responsible for checking the validity of the output of any automated tools used in their research and preparing their manuscript.
+  - Automated tools cannot be [credited as authors](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools).
+  - Generative AI cannot be cited as a source.
 
 -  For journals:
-   - Peer reviewers and editors should not use generative AI to create their assessments, [due to risks](https://journals.sagepub.com/doi/full/10.1177/17470161231224552) such as breaches of confidentiality, superficial and non-specific feedback, bias, [hidden prompts](https://asia.nikkei.com/business/technology/artificial-intelligence/positive-review-only-researchers-hide-ai-prompts-in-papers), and false information such as fake references; editing and rewriting may be acceptable if disclosed
-   - Any routine use of automated tools by the journal or publisher should be disclosed. The tool should have been appropriately tested
-   - Use of automated tools should be overseen by humans (human in the loop). Journals should ensure that an editor or other staff will verify the automated detection of integrity issues such as text similarity, figure manipulation or duplication, or undeclared generative AI use, or automated peer reviewer suggestions
+   - Peer reviewers and editors should not use generative AI to create their assessments, [due to risks](https://journals.sagepub.com/doi/full/10.1177/17470161231224552) such as breaches of confidentiality, superficial and non-specific feedback, bias, [hidden prompts](https://asia.nikkei.com/business/technology/artificial-intelligence/positive-review-only-researchers-hide-ai-prompts-in-papers), and false information such as fake references; editing and rewriting may be acceptable if disclosed.
+   - Any routine use of automated tools by the journal or publisher should be disclosed. The tool should have been appropriately tested.
+   - Use of automated tools should be overseen by humans (human in the loop). Journals should ensure that an editor or other staff will verify the automated detection of integrity issues such as text similarity, figure manipulation or duplication, or undeclared generative AI use, or automated peer reviewer suggestions.
 
 
 ---
@@ -332,7 +333,7 @@ Our criteria are available in:
 
 ## Version history
 
-This is Version 2.5 of the DOAJ Guide to applying.
+This is Version 2.6 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 
