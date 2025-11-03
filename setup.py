@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='8.4.0',
+    version='8.4.1',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
@@ -61,6 +61,9 @@ setup(
         'pandas~=2.0.1',  # pandas lets us generate URLs for linkcheck
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
+
+        # generate dependency tree of packages
+        'pipdeptree==2.28.0',
 
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={

@@ -7,20 +7,20 @@
   flex-direction: row;
   align-items: center;
   min-width: min-content;
-  padding: 5px;
-  top: 10px;
-  left: 10px;
+  padding: 0.3125rem;
+  top: 0.625rem;
+  left: 0.625rem;
   background-color: $grapefruit;
 
   svg {
     display: block;
     margin: 0 auto;
     stroke: $warm-black;
-    margin-rigth: 10px;
+    margin-rigth: 0.625rem;
   }
   &:hover, &:focus {
     svg {
-      margin-right: 10px;
+      margin-right: 0.625rem;
     }
   }
   &:hover:after, &:focus:after {
