@@ -322,7 +322,7 @@ function setCookieConsent(event) {
     try {
         const element = $(event.currentTarget);
         const name = element.attr("data-key");
-        const value = "true";
+        const value = "By using our website, you have agreed to our cookie policy.";
         const maxAge = 31536000; // 1 year in seconds
         const cookie = name + "=" + encodeURIComponent(value) + ";Max-Age=" + maxAge + ";Path=/;Secure";
         document.cookie = cookie;
