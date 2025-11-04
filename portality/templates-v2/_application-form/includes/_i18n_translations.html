@@ -1,15 +1,24 @@
-<script src="/static/vendor/select2-3.5.4/select2_locale_fr.js"></script>
-<script src="/static/vendor/parsley-2.9.2/i18n/fr.js"></script>
+<script src="/static/vendor/select2-3.5.4/select2_locale_fr.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script src="/static/vendor/parsley-2.9.2/i18n/fr.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/js/change_language_alert.js"></script>
 <script type="text/javascript">
-    selected_lang = '{{ session.get("lang") | default("en") }}'
-    $.extend($.fn.select2.defaults, $.fn.select2.locales[selected_lang]);
-    window.ParsleyValidator.setLocale(selected_lang);
-    doaj.lang_change.init({containerSelector: "#new_form", submitSelector: "#language_form", warningModal: "#warningModal"});
     // Initialize translations
     doaj.i18n.init({
         "Next": "{{ _('Next') }}",
         "Open link": "{{ _('Open link') }}",
         "Full contents": "{{ _('Full contents') }}",
-        "Start typing…" : "{{ _('Start typing…') }}",
+        "Start typing…": "{{ _('Start typing…') }}",
+        "Open access compliance": "{{ _('Open access compliance') }}",
+        "About the Journal": "{{ _('About the Journal') }}",
+        "Copyright & licensing": "{{ _('Copyright & licensing') }}",
+        "Editorial": "{{ _('Editorial') }}",
+        "Business model": "{{ _('Business model') }}",
+        "Best practice": "{{ _('Best practice') }}",
+        "Edit this section":"{{ _('Edit this section') }}",
+        "Open URL in a new tab": "{{ _('Open URL in a new tab') }}",
     });
+    selected_lang = '{{ session.get("lang") | default("en") }}'
+    $.extend($.fn.select2.defaults, $.fn.select2.locales[selected_lang]);
+    window.ParsleyValidator.setLocale(selected_lang);
+    doaj.lang_change.init({containerSelector: "#new_form", submitSelector: "#language_form", warningModal: "#warningModal"});
 </script>

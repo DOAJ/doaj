@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-21 19:33+0530\n"
+"POT-Creation-Date: 2025-11-04 11:56+0530\n"
 "PO-Revision-Date: 2025-05-05 11:30+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -450,6 +450,10 @@ msgstr ""
 msgid "Recent article displaying or embedding a license in the full text"
 msgstr ""
 
+#: forms/application_forms.py:810
+msgid "Link to an example article"
+msgstr ""
+
 #: forms/application_forms.py:817
 msgid "Enter the URL for any recent article that displays or embeds a license"
 msgstr ""
@@ -490,7 +494,7 @@ msgstr ""
 msgid "Editorial review"
 msgstr ""
 
-#: forms/application_forms.py:893 forms/application_forms.py:2049
+#: forms/application_forms.py:893 forms/application_forms.py:2153
 msgid "Peer review"
 msgstr ""
 
@@ -511,7 +515,7 @@ msgid "Open peer review"
 msgstr ""
 
 #: forms/application_forms.py:898 forms/application_forms.py:1346
-#: forms/application_forms.py:1595 forms/application_forms.py:2516
+#: forms/application_forms.py:1595 forms/application_forms.py:2636
 msgid "Other"
 msgstr ""
 
@@ -693,7 +697,7 @@ msgstr ""
 msgid "Enter the value of the highest publishing fee the journal has charged"
 msgstr ""
 
-#: forms/application_forms.py:1210 forms/application_forms.py:2082
+#: forms/application_forms.py:1210 forms/application_forms.py:2186
 msgid "Publication fees"
 msgstr ""
 
@@ -750,7 +754,7 @@ msgstr ""
 msgid "You must declare any other charges if they exist"
 msgstr ""
 
-#: forms/application_forms.py:1307 forms/application_forms.py:2105
+#: forms/application_forms.py:1307 forms/application_forms.py:2209
 msgid "Other fees"
 msgstr ""
 
@@ -870,10 +874,6 @@ msgstr ""
 msgid "Other (including publisher’s own site)"
 msgstr ""
 
-#: forms/application_forms.py:1483
-msgid "<em>The journal has no repository policy</em>"
-msgstr ""
-
 #: forms/application_forms.py:1486
 msgid ""
 "Many authors wish to deposit a copy of their paper in an institutional or"
@@ -881,19 +881,14 @@ msgid ""
 msgstr ""
 
 #: forms/application_forms.py:1488
-msgid "You should state your policy about the different versions of the paper:"
-msgstr ""
-
-#: forms/application_forms.py:1490
-msgid "Submitted version"
-msgstr ""
-
-#: forms/application_forms.py:1491
-msgid "Accepted version (Author Accepted Manuscript)"
-msgstr ""
-
-#: forms/application_forms.py:1492
-msgid "Published version (Version of Record)"
+msgid ""
+"You should state your policy about the different versions of the paper:\n"
+"                          <ul style='list-style-type: none;'>\n"
+"                          <li>Submitted version</li>\n"
+"                          <li>Accepted version (Author Accepted "
+"Manuscript)</li>\n"
+"                          <li>Published version (Version of Record)</li>\n"
+"                          </ul>"
 msgstr ""
 
 #: forms/application_forms.py:1503
@@ -914,6 +909,10 @@ msgstr ""
 msgid "Persistent article identifiers used by the journal"
 msgstr ""
 
+#: forms/application_forms.py:1589
+msgid "Select at least one"
+msgstr ""
+
 #: forms/application_forms.py:1591
 msgid "DOIs"
 msgstr ""
@@ -928,10 +927,6 @@ msgstr ""
 
 #: forms/application_forms.py:1594
 msgid "PURLs"
-msgstr ""
-
-#: forms/application_forms.py:1596
-msgid "<em>The journal does not use persistent article identifiers</em>"
 msgstr ""
 
 #: forms/application_forms.py:1600
@@ -1075,107 +1070,124 @@ msgid ""
 "%(z)s or %(a)s"
 msgstr ""
 
-#: forms/application_forms.py:1889 forms/application_forms.py:2217
+#: forms/application_forms.py:1889 forms/application_forms.py:2321
 msgid "Notes"
 msgstr ""
 
-#: forms/application_forms.py:1956 forms/application_forms.py:2231
+#: forms/application_forms.py:2060 forms/application_forms.py:2350
 msgid "Allow save without validation"
 msgstr ""
 
-#: forms/application_forms.py:1972
+#: forms/application_forms.py:2076
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:3
+#: templates-v2/_application-form/includes/_i18n_translations.html:10
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:5
 #: templates-v2/public/public_application.html:15
 msgid "Open access compliance"
 msgstr ""
 
-#: forms/application_forms.py:1983
+#: forms/application_forms.py:2087
 #: templates-v2/_application-form/includes/_fieldset_about.html:6
 msgid "About the journal"
 msgstr ""
 
-#: forms/application_forms.py:1998
+#: forms/application_forms.py:2102
 msgid "Publisher"
 msgstr ""
 
-#: forms/application_forms.py:2008
+#: forms/application_forms.py:2112
 msgid "Other organisation, if applicable"
 msgstr ""
 
-#: forms/application_forms.py:2018
+#: forms/application_forms.py:2122
 msgid "Licensing"
 msgstr ""
 
-#: forms/application_forms.py:2029
+#: forms/application_forms.py:2133
 msgid "Embedded licenses"
 msgstr ""
 
-#: forms/application_forms.py:2039
+#: forms/application_forms.py:2143
 msgid "Copyright"
 msgstr ""
 
-#: forms/application_forms.py:2060
+#: forms/application_forms.py:2164
 msgid "Plagiarism"
 msgstr ""
 
-#: forms/application_forms.py:2070
+#: forms/application_forms.py:2174
 #: templates-v2/_application-form/includes/_fieldset_editorial.html:6
+#: templates-v2/_application-form/includes/_i18n_translations.html:13
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:14
 #: templates-v2/public/public_application.html:18
 msgid "Editorial"
 msgstr ""
 
-#: forms/application_forms.py:2095
+#: forms/application_forms.py:2199
 msgid "Publication fee waivers"
 msgstr ""
 
-#: forms/application_forms.py:2115
+#: forms/application_forms.py:2219
 msgid "Archiving policy"
 msgstr ""
 
-#: forms/application_forms.py:2127
+#: forms/application_forms.py:2231
 msgid "Repository policy"
 msgstr ""
 
-#: forms/application_forms.py:2138
+#: forms/application_forms.py:2242
 msgid "Unique identifiers & structured data"
 msgstr ""
 
-#: forms/application_forms.py:2148
+#: forms/application_forms.py:2252
 msgid "Specify labels for this journal"
 msgstr ""
 
-#: forms/application_forms.py:2158
+#: forms/application_forms.py:2262
 msgid "Quick reject"
 msgstr ""
 
-#: forms/application_forms.py:2168
+#: forms/application_forms.py:2272
 msgid "Re-assign publisher account"
 msgstr ""
 
-#: forms/application_forms.py:2177
+#: forms/application_forms.py:2281
 msgid "Status"
 msgstr ""
 
-#: forms/application_forms.py:2186
+#: forms/application_forms.py:2290
 msgid "Assign for review"
 msgstr ""
 
-#: forms/application_forms.py:2197
+#: forms/application_forms.py:2301
 msgid "Continuations"
 msgstr ""
 
-#: forms/application_forms.py:2208
+#: forms/application_forms.py:2312
 msgid "Subject classification"
 msgstr ""
 
-#: forms/application_forms.py:2241
+#: forms/application_forms.py:2360
 msgid "Bulk edit"
 msgstr ""
 
-#: forms/application_forms.py:2584
+#: forms/application_forms.py:2706
 msgid "No editor assigned"
+msgstr ""
+
+#: forms/application_forms.py:2878
+#, python-brace-format
+msgid "This value should be between {min} and {max}"
+msgstr ""
+
+#: forms/application_forms.py:2883
+#, python-brace-format
+msgid "This value should be bigger than {gte}"
+msgstr ""
+
+#: forms/application_forms.py:2887
+#, python-brace-format
+msgid "This value should be smaller than {lte}"
 msgstr ""
 
 #: forms/validate.py:141
@@ -1191,29 +1203,57 @@ msgid "This field is required."
 msgstr ""
 
 #: templates-v2/_application-form/includes/_field.html:8
+#: templates-v2/_application-form/includes/_list.html:14
 msgid "Optional"
 msgstr ""
 
 #: templates-v2/_application-form/includes/_field.html:12
+#: templates-v2/_application-form/includes/_list.html:8
 msgid "More help"
 msgstr ""
 
 #: templates-v2/_application-form/includes/_field.html:15
+#: templates-v2/_application-form/includes/_list.html:11
 msgid "Copy value"
 msgstr ""
 
 #: templates-v2/_application-form/includes/_field.html:16
+#: templates-v2/_application-form/includes/_list.html:12
 msgid "Copied!"
 msgstr ""
 
 #: templates-v2/_application-form/includes/_field.html:33
+#: templates-v2/_application-form/includes/_list.html:20
 msgid "Add"
 msgstr ""
 
+#: templates-v2/_application-form/includes/_fieldset_about.html:3
+#: templates-v2/_application-form/includes/_fieldset_best-practice.html:3
+#: templates-v2/_application-form/includes/_fieldset_business-model.html:3
+#: templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:3
+#: templates-v2/_application-form/includes/_fieldset_editorial.html:3
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:2
+msgid "of"
+msgstr ""
+
 #: templates-v2/_application-form/includes/_fieldset_best-practice.html:6
+#: templates-v2/_application-form/includes/_i18n_translations.html:15
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:20
 #: templates-v2/public/public_application.html:20
 msgid "Best practice"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_best-practice.html:8
+msgid ""
+"The best practices in this section adhere to publishing standards based "
+"around findability, preserving the content and ethical publishing "
+"practices."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_best-practice.html:9
+msgid ""
+"We encourage journals to adopt these best practices but they are "
+"<strong>not</strong> mandatory for DOAJ indexing."
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_business-model.html:6
@@ -1221,6 +1261,7 @@ msgid "Business Model"
 msgstr ""
 
 #: templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:6
+#: templates-v2/_application-form/includes/_i18n_translations.html:12
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:11
 #: templates-v2/public/public_application.html:17
 msgid "Copyright & licensing"
@@ -1268,11 +1309,21 @@ msgstr ""
 msgid "You must apply online."
 msgstr ""
 
-#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:18
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:15
+msgid ""
+"We reject the majority of all applications submitted because they do not "
+"meet <a href=\"/apply/guide/#basic-criteria-for-inclusion\" "
+"target=\"_blank\">our basic criteria</a>. Once rejected, an embargo "
+"period of anywhere between 6 months and 3 years is applied. Make sure "
+"your application complies fully to our basic criteria to avoid being "
+"rejected and embargoed."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:19
 msgid "DOAJ only accepts fully open access journals"
 msgstr ""
 
-#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:20
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:21
 msgid ""
 "Open Access is the condition where the copyright holder of a scholarly "
 "work grants usage rights to others using an\n"
@@ -1284,13 +1335,40 @@ msgid ""
 "purpose."
 msgstr ""
 
+#: templates-v2/_application-form/includes/_i18n_translations.html:6
+#: templates-v2/public/_application-form/includes/_buttons.html:5
+msgid "Next"
+msgstr "Next"
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:7
+msgid "Open link"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:8
+msgid "Full contents"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:9
+msgid "Start typing…"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:11
 #: templates-v2/public/public_application.html:16
 msgid "About the Journal"
 msgstr ""
 
+#: templates-v2/_application-form/includes/_i18n_translations.html:14
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:17
 #: templates-v2/public/public_application.html:19
 msgid "Business model"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:16
+msgid "Edit this section"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:17
+msgid "Open URL in a new tab"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:2
@@ -1299,8 +1377,16 @@ msgid "Related help"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:5
+msgid "/apply/guide/"
+msgstr ""
+
+#: templates-v2/public/_application-form/includes/_aside_menu.html:5
 #: templates-v2/public/account/login_to_apply.html:43
 msgid "Guide to applying"
+msgstr ""
+
+#: templates-v2/public/_application-form/includes/_aside_menu.html:8
+msgid "/apply/publisher-responsibilities/"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:8
@@ -1309,14 +1395,34 @@ msgid "Information for publishers"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:11
+msgid "/apply/transparency/"
+msgstr ""
+
+#: templates-v2/public/_application-form/includes/_aside_menu.html:11
 #: templates-v2/public/account/login_to_apply.html:49
 msgid "Transparency & best practice"
+msgstr ""
+
+#: templates-v2/public/_application-form/includes/_aside_menu.html:14
+msgid "/apply/why-index/"
 msgstr ""
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:14
 #: templates-v2/public/account/login_to_apply.html:52
 msgid "Why index your journal in DOAJ?"
 msgstr ""
+
+#: templates-v2/public/_application-form/includes/_buttons.html:4
+msgid "Back"
+msgstr "Back"
+
+#: templates-v2/public/_application-form/includes/_buttons.html:9
+msgid "Submit"
+msgstr "Submit"
+
+#: templates-v2/public/_application-form/includes/_buttons.html:12
+msgid "Save the draft"
+msgstr "Save the draft"
 
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:2
 msgid "Application progress"
@@ -1333,8 +1439,9 @@ msgstr ""
 
 #: templates-v2/public/_application-form/includes/_review.html:21
 msgid ""
-"I’ve reviewed the answers to my application and confirm that the "
-"information provided is accurate and true."
+"I've reviewed the answers in this application and confirm that the "
+"journal meets DOAJ's basic criteria. I understand that if the application"
+" is rejected, it may be embargoed anywhere between 6 months and 3 years."
 msgstr ""
 
 #: templates-v2/public/account/login_to_apply.html:3
@@ -1370,24 +1477,25 @@ msgid ""
 "us</a>."
 msgstr ""
 
+#: templates-v2/public/public_application.html:44
+msgid ""
+"You cannot submit the application because it contains some invalid fields. "
+"Please review your answers and try again."
+msgstr ""
+""
+
 #: templates-v2/public/public_application.html:84
 msgid "You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this "
       "message and click the \"Save Draft\" button at the bottom of the page."
-msgstr "You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this "
-      "message and click the \"Save Draft\" button at the bottom of the page."
-#: templates-v2/public/_application_form/includes/buttons.html:4
-msgid "Back"
-msgstr "Back"
-#: templates-v2/public/_application_form/includes/buttons.html:5
-msgid "Next"
-msgstr "Next"
-#: templates-v2/public/_application_form/includes/buttons.html:9
-msgid "Submit"
-msgstr "Submit"
-#: templates-v2/public/_application_form/includes/buttons.html:12
-msgid "Save the draft"
-msgstr "Save the draft"
+msgstr ""
 
+#: templates-v2/public/public_application.html:83
+msgid "Cancel"
+msgstr ""
+
+#: templates-v2/public/public_application.html:84
+msgid "Submit Anyway"
+msgstr ""
 
 #~ msgid ""
 #~ "<a "
@@ -1988,4 +2096,38 @@ msgstr "Save the draft"
 #~ "If you still cannot login,%(contact_link)s "
 #~ "contact us%(contact_link_end)s."
 #~ msgstr ""
+
+#~ msgid "You should state your policy about the different versions of the paper:"
+#~ msgstr ""
+
+#~ msgid "Submitted version"
+#~ msgstr ""
+
+#~ msgid "Accepted version (Author Accepted Manuscript)"
+#~ msgstr ""
+
+#~ msgid "Published version (Version of Record)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "I’ve reviewed the answers to my "
+#~ "application and confirm that the "
+#~ "information provided is accurate and "
+#~ "true."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You are about to change the form"
+#~ " language. Any unsaved changes may be"
+#~ " lost. To keep your changes, close"
+#~ " this message and click the \"Save"
+#~ " Draft\" button at the bottom of "
+#~ "the page."
+#~ msgstr ""
+#~ "You are about to change the form"
+#~ " language. Any unsaved changes may be"
+#~ " lost. To keep your changes, close"
+#~ " this message and click the \"Save"
+#~ " Draft\" button at the bottom of "
+#~ "the page."
 

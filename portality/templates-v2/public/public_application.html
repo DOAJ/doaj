@@ -41,8 +41,7 @@
                         {% include "public/_application-form/includes/_review.html" %}
                     </div>
                     <p class="alert alert--danger" id="cannot-submit-invalid-fields" style="display: none">
-                        You cannot submit the application because it contains some invalid fields. Please review your
-                        answers and try again.
+                        {{ _("You cannot submit the application because it contains some invalid fields. Please review your answers and try again.") }}
                     </p>
                     {% include "public/_application-form/includes/_buttons.html" %}
 
@@ -79,18 +78,17 @@
 
 <div id="warningModal" class="modal" style="display: none;" role="dialog">
     <div class="modal__dialog" style="height: max-content">
-        <p>You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this
-            message and click the "Save Draft" button at the bottom of the page.
+        <p>{{ _("You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this message and click the \"Save Draft\" button at the bottom of the page.") }}
         </p>
-        <button id="stayBtn" style="margin-right:10px;">Cancel</button>
-        <button id="leaveBtn">Submit Anyway</button>
+        <button id="stayBtn" style="margin-right:10px;">{{ _("Cancel") }}</button>
+        <button id="leaveBtn">{{ _("Submit Anyway") }}</button>
     </div>
 </div>
 
 {% endblock %}
 
 {% block public_js scoped %}
+<!--The order matters. Do not change the order of the html files-->
 {% include "_application-form/includes/_form_js.html" %}
 {% include "_application-form/includes/_i18n_translations.html" %}
-<script type="text/javascript" src="/static/js/change_language_alert.js"></script>
 {% endblock %}

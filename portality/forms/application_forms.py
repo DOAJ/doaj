@@ -807,7 +807,7 @@ class FieldDefinitions:
             {"field": "license_display", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to an example article",
+            "short_help": lazy_gettext("Link to an example article"),
             "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
@@ -1345,7 +1345,7 @@ class FieldDefinitions:
              "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": lazy_gettext("Other"), "value": "other",
              "subfields": ["preservation_service_other", "preservation_service_url"]},
-            {"display": HTMLString(lazy_gettext("<em>The journal content isn’t archived with a long-term preservation service</em>")),
+            {"display": lazy_gettext(HTMLString("<em>The journal content isn’t archived with a long-term preservation service</em>")),
              "value": "none", "exclusive": True}
         ],
         "help": {
@@ -1480,17 +1480,17 @@ class FieldDefinitions:
             {"display": lazy_gettext("Open Policy Finder"), "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
             {"display": lazy_gettext("Other (including publisher’s own site)"), "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
-            {"display": HTMLString(lazy_gettext("<em>The journal has no repository policy</em>")), "value": "none", "exclusive": True}
+            {"display": lazy_gettext(HTMLString("<em>The journal has no repository policy</em>")), "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": [lazy_gettext("Many authors wish to deposit a copy of their paper in an institutional or other repository "
                           "of their choice. What is the journal’s policy for this?"),
-                          lazy_gettext("You should state your policy about the different versions of the paper:")+
-                          "<ul style='list-style-type: none;'>"
-                          "<li>"+lazy_gettext("Submitted version")+"</li>"
-                          "<li>"+lazy_gettext("Accepted version (Author Accepted Manuscript)")+"</li>"
-                          "<li>"+lazy_gettext("Published version (Version of Record)")+"</li>"
-                          "</ul>"
+                          lazy_gettext("""You should state your policy about the different versions of the paper:
+                          <ul style='list-style-type: none;'>
+                          <li>Submitted version</li>
+                          <li>Accepted version (Author Accepted Manuscript)</li>
+                          <li>Published version (Version of Record)</li>
+                          </ul>""")
                           ]},
         "validate": [
             {"required": {"message": lazy_gettext("Select <strong>at least one</strong> option")}}
@@ -1586,14 +1586,14 @@ class FieldDefinitions:
         "label": lazy_gettext("Persistent article identifiers used by the journal"),
         "input": "checkbox",
         "multiple": True,
-        "hint": "Select at least one",
+        "hint": lazy_gettext("Select at least one"),
         "options": [
             {"display": lazy_gettext("DOIs"), "value": "DOI"},
             {"display": lazy_gettext("ARKs"), "value": "ARK"},
             {"display": lazy_gettext("Handles"), "value": "Handles"},
             {"display": lazy_gettext("PURLs"), "value": "PURL"},
             {"display": lazy_gettext("Other"), "value": "other", "subfields": ["persistent_identifiers_other"]},
-            {"display": HTMLString(lazy_gettext("<em>The journal does not use persistent article identifiers</em>")), "value": "none",
+            {"display": lazy_gettext(HTMLString("<em>The journal does not use persistent article identifiers</em>")), "value": "none",
              "exclusive": True}
         ],
         "help": {
@@ -2875,15 +2875,17 @@ class IntRangeBuilder:
         default_msg = ""
         if "gte" in settings and "lte" in settings:
             html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
-            default_msg = "This value should be between " + str(settings.get("gte")) + " and " + str(
-                settings.get("lte"))
+            default_msg = lazy_gettext("This value should be between {min} and {max}").format(
+                min=str(settings.get("gte")), max=str(settings.get("lte")))
         else:
             if "gte" in settings:
                 html_attrs["data-parsley-min"] = settings.get("gte")
-                default_msg = "This value should be bigger than " + str(settings.get("gte"))
+                default_msg = lazy_gettext("This value should be bigger than {gte}").format(
+                    gte=str(settings.get("gte")))
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
-                default_msg = "This value should be smaller than " + str(settings.get("gte"))
+                default_msg = lazy_gettext("This value should be smaller than {lte}").format(
+                    lte=str(settings.get("lte")))
         html_attrs["data-parsley-range-message"] = "<p><small>" + settings.get("message", default_msg) + "</p></small>"
 
     @staticmethod
