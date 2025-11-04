@@ -418,27 +418,27 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
         return jsonify({'api_versions': vers})
 
 @app.errorhandler(400)
-def page_not_found(e):
+def handle_400(e):
     return render_template(templates.ERROR_400), 400
 
 @app.errorhandler(401)
-def page_not_found(e):
+def handle_401(e):
     return render_template(templates.ERROR_401), 401
 
 @app.errorhandler(404)
-def page_not_found(e):
+def handle_404(e):
     return render_template(templates.ERROR_PAGE, error_code=404), 404
 
 @app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
-def article_withdrawn(e):
+def handle_article_from_withdrawn_journal(e):
     return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.WITHDRAWN, error_code=410), 410
 
 @app.errorhandler(exceptions.TombstoneArticle)
-def article_withdrawn(e):
+def handle_tombstone_article(e):
     return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.TOMBSTONE, error_code=410), 410
 
 @app.errorhandler(exceptions.JournalWithdrawn)
-def journal_withdrawn(e):
+def handle_journal_withdrawn(e):
     return render_template(templates.ERROR_PAGE, record=constants.JOURNAL, context=constants.WITHDRAWN, error_code=410), 410
 
 @app.errorhandler(ValueError)
