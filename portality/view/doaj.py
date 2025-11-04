@@ -38,22 +38,22 @@ def login():
     return redirect(url_for('account.login'))
 
 
-@blueprint.route("/cookie_consent")
-def cookie_consent():
-    cont = request.values.get("continue")
-    if cont is not None:
-        # Only permit relative path redirects, to prevent phishing by supplying a full URI to a different domain
-        parsed_redirect = urllib.parse.urlparse(cont)
-        if parsed_redirect.netloc != '':
-            abort(400)
-        else:
-            resp = redirect(cont)
-    else:
-        resp = make_response()
-    # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"),
-                    Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
-    return resp
+# @blueprint.route("/cookie_consent")
+# def cookie_consent():
+#     cont = request.values.get("continue")
+#     if cont is not None:
+#         # Only permit relative path redirects, to prevent phishing by supplying a full URI to a different domain
+#         parsed_redirect = urllib.parse.urlparse(cont)
+#         if parsed_redirect.netloc != '':
+#             abort(400)
+#         else:
+#             resp = redirect(cont)
+#     else:
+#         resp = make_response()
+#     # set a cookie that lasts for one year
+#     resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"),
+#                     Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
+#     return resp
 
 
 @blueprint.route("/dismiss_site_note")
