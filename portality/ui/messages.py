@@ -148,6 +148,16 @@ class Messages(object):
     FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username};\n Original note: {note}"
     FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING = "Provided deadline is in the past. Is it correct?"
 
+    ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS = "Article found that belongs to more than 1 journal. Article's id: {article_id}"
+    ARTICLE_ABANDONED_LOG = """An article was found that doesn't seem to match any journal articles\'s id: {article.id}"""
+    ARTICLE_ABANDONED_PUBLIC = """This article doesn't seem to match any journal in our database. If you think this is wrong, contact us quoting 'Abandoned article: {article.id}'"""
+    ARTICLE_NOT_FOUND = "We couldn't find this article"
+
+    TOO_MANY_JOURNALS = """This identifier seems to match more than one journal. Please contact us quoting 'More than one journal found with identifier: {identifier}'"""
+    TOO_MANY_JOURNALS_LOG = """More than one journal found with identifier: {identifier}'"""
+
+    DEFAULT_500_DESCRIPTION = "An error has occurred. It looks like something has gone wrong."
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
