@@ -7,11 +7,9 @@ featuremap: ~~Accessibility:Fragment~~
 
 ---
 
-This accessibility statement applies to [doaj.org](https://doaj.org) exclusively.
+This accessibility statement applies to [doaj.org](https://doaj.org) exclusively. Its subdomain [blog.doaj.org](https://blog.doaj.org) is a WordPress site and **is not covered by this statement**.
 
-Its subdomain [blog.doaj.org](https://blog.doaj.org) is a WordPress site and **is not covered by this statement**.
-
-This website is run by DOAJ on behalf of IS4OA. We want as many people as possible to be able to use this website. For example, that means you should be able to:
+This website is run by DOAJ on behalf of DOAJ Fonden, a non-proft foundation, registered in Denmark. We want as many people as possible to be able to use this website. For example, that means you should be able to:
 
 - Change colours, contrast levels and fonts.
 - Zoom in up to 300% without the text spilling off the screen.
@@ -44,7 +42,7 @@ We have recently fixed:
 Fixes that are in progress now after a review of the changes laid out in WCAG 2.2:
 
 - on our forms, start using 'aria-describedby' for hint/help text
-- allow the user to change the default font size in their browser settings
+- Font-size zooming via browser settings is now enabled.
 
 We are continuing to update this document as we find and fix accessibility issues.
 
