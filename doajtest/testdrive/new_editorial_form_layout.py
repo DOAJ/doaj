@@ -74,7 +74,8 @@ class NewEditorialFormLayout(TestDrive):
                  "password": publisher_pw},
             },
             "journals": {j.bibjson().title: j.id},
-            "applications": {a.bibjson().title: a.id, ur.bibjson().title :ur.id}
+            "applications": {a.bibjson().title: a.id},
+            "update_requests": {ur.bibjson().title :ur.id}
         }
 
     def teardown(self, params) -> dict:
@@ -83,5 +84,7 @@ class NewEditorialFormLayout(TestDrive):
         for title, id in params["journals"].items():
             models.Journal.remove_by_id(id)
         for title, id in params["applications"].items():
+            models.Application.remove_by_id(id)
+        for title, id in params["update_requests"].items():
             models.Application.remove_by_id(id)
         return {"status": "success"}
