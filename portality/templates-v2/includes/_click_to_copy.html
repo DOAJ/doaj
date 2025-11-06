@@ -1,0 +1,67 @@
+<style>
+    .click-to-copy {
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+        width: 1.5em;
+        height: 1.5em;
+        display: inline-flex;
+        justify-content: center;
+        border: none;
+    }
+    .click-to-copy:hover,
+    .click-to-copy:focus,
+    .click-to-copy:active {
+        background-color: transparent;
+    }
+
+    .click-to-copy:hover .feather,
+    .click-to-copy:focus .feather,
+    .click-to-copy:active .feather {
+        stroke: #FD5A3B;
+    }
+    .click-to-copy--confirmation {
+        font-size: 0.75em;
+        display: inline;
+        position: relative;
+        bottom: .25rem;
+        left: 0;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: normal;
+        color: #5c5956;
+    }
+</style>
+
+<button type="button" class="click-to-copy" id="click-to-copy--{{ value_elem_id }}" aria-label="Copy {{ value_elem_id }} to clipboard">
+    <i data-feather="copy" aria-hidden="true"></i><span id="click-to-copy--confirmation" style="display: none">Value copied!</span>
+</button>
+
+<script type="text/javascript">
+    (function waitForJQuery() {
+        if (window.jQuery) {
+            $(function() {
+                var $copySpan = $('#click-to-copy--{{ value_elem_id }}');
+                var $valueElem = $('#{{ value_elem_id }}');
+
+                $copySpan.on('click', function() {
+                    if (!$valueElem.length) return;
+
+                    var textToCopy = $valueElem.val() || $valueElem.text();
+
+                    navigator.clipboard.writeText(textToCopy).then(function() {
+                        var $msg = $('<span class="click-to-copy--confirmation">Value copied!</span>');
+                        $copySpan.after($msg);
+
+                        setTimeout(function() {
+                            $msg.remove();
+                        }, 3000);
+                    }).catch(function(err) {
+                        console.error('Failed to copy:', err);
+                    });
+                });
+            });
+        } else {
+            setTimeout(waitForJQuery, 50); // check again in 50ms
+        }
+    })();
+</script>

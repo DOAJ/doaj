@@ -12,8 +12,11 @@
 {% endblock %}
 
 {% block base_stylesheets %}
-    {% block management_stylesheets %}{% endblock %}
+    {% block management_stylesheets %}
+    {% endblock %}
 {% endblock %}
+
+{% block fixed_header %}{% endblock %}
 
 {% block body_class %}dashboard{% endblock %}
 
@@ -71,12 +74,10 @@
         </nav>
         {% block nav %}{% endblock %}
     </header>
-
-
     <main>
-        <header class="main-header">
+        <header class="main-header {{ self.fixed_header() }}">
             <div class="row">
-                <header class="col-md-6 col-lg-4">
+                <header class="col-md-6 col-lg-6">
                     <p class="label tag">
                         <small>
                             <a href="{{ url_for('account.username', username=current_user.id) }}" title="Manage my profile & settings">
@@ -92,13 +93,8 @@
                             </a>
                         </small>
                     </p>
-                    <h1>
-                        {% block page_header %}
-                            {{ self.page_title() }}
-                        {% endblock %}
-                    </h1>
                 </header>
-                <nav class="col-md-6 col-lg-8 align-right">
+                <nav class="col-md-6 col-lg-6 align-right">
                     <dl>
                         {% if current_user.has_role("admin") %}
                             {% if managed_groups and managed_groups|length > 0 %}
@@ -166,6 +162,15 @@
                         {% endif %}
                     </dl>
                 </nav>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    {% block page_header %}
+                    <h1>
+                        {{ self.page_title() }}
+                    </h1>
+                    {% endblock %}
+                </div>
             </div>
         </header>
         {% include "includes/_flash_notification.html" %}
