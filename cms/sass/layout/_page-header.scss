@@ -51,8 +51,13 @@
 @media (min-height: calc((10rem + 105px) * 2.5)) {
     main:has(> .main-header.fixed) {
         margin-top: 10rem;
-        &:has(.button.button--tertiary.see_in_doaj){
-            margin-top: 13rem;
+        @media (max-width: 1279px) and (min-width: 768px) {
+            &:has(.button.button--tertiary.see_in_doaj){
+                margin-top: 13rem;
+            }
+            .button.button--tertiary.see_in_doaj {
+                margin-top: 1rem;
+            }
         }
         .button.button--tertiary.see_in_doaj {
             margin-top: 1rem;

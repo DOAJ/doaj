@@ -33,11 +33,12 @@ class NewEditorialFormLayout(TestDrive):
         j = models.Journal(**source)
         j.remove_current_application()
         j.set_id(j.makeid())
-        j.title = "Annals of Interspecies Etiquette"
         j.set_owner(publisher_acc.id)
         j.bibjson().eissn = "1987-0007"
         j.bibjson().pissn = "3141-5926"
-        j.save()
+        j.bibjson().title = "Annals of Interspecies Etiquette"
+        j.bibjson().journal_url = "https://mind-your-penguin-manners.com"
+        j.save(blocking=True)
 
         source = ApplicationFixtureFactory.make_application_source()
         a = models.Application(**source)
@@ -45,26 +46,23 @@ class NewEditorialFormLayout(TestDrive):
         a.remove_related_journal()
         a.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
         a.set_id(a.makeid())
-        a.title = "Journal of Hypothetical Entomology"
         a.set_editor(editor_acc.id)
         a.set_owner(publisher_acc.id)
         a.bibjson().eissn = "2718-2818"
+        a.bibjson().title = "Journal of Hypothetical Entomology"
+        a.bibjson().journal_url = "https://does-it-bite.com"
         a.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-        a.save()
+        a.save(blocking=True)
 
-        source = ApplicationFixtureFactory.make_application_source()
+        source = ApplicationFixtureFactory.make_update_request_source()
         ur = models.Application(**source)
-        ur.remove_current_journal()
-        ur.remove_related_journal()
-        ur.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
-        ur.set_id(a.makeid())
-        ur.title = "Annals of Temporal Mechanics"
+        ur.set_id(ur.makeid())
         ur.set_editor(editor_acc.id)
         ur.set_owner(publisher_acc.id)
         ur.bibjson().pissn = "0042-2718"
-        ur.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-        ur.save()
-
+        ur.bibjson().title = "Annals of Temporal Mechanics"
+        ur.bibjson().journal_url = "https://time-loops-and-tea.com"
+        ur.save(blocking=True)
 
         return {
             "accounts": {
@@ -75,8 +73,8 @@ class NewEditorialFormLayout(TestDrive):
                 "publisher": {"username": publisher_acc.id,
                  "password": publisher_pw},
             },
-            "journals": {j.title: j.id},
-            "applications": {a.title: a.id, ur.title :ur.id}
+            "journals": {j.bibjson().title: j.id},
+            "applications": {a.bibjson().title: a.id, ur.bibjson().title :ur.id}
         }
 
     def teardown(self, params) -> dict:
