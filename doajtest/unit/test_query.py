@@ -403,7 +403,7 @@ class TestQuery(DoajTestCase):
                     ]
                 }
             },
-            '_source': {'includes': ['last_updated', 'admin.ticked', 'created_date', 'id', 'bibjson']},
+            '_source': {'includes': ["admin.last_full_review", 'last_updated', 'admin.ticked', 'created_date', 'id', 'bibjson']},
             'from': 0, 'size': 100
         }
         q_but_source = without_keys(query.as_dict(), ['_source'])
