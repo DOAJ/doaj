@@ -366,7 +366,11 @@ def find_correct_redirect_identifier(identifier, bibjson) -> str:
 def toc(identifier=None):
     """ Table of Contents page for a journal. identifier may be the journal id or an issn """
     # If this route is changed, update JOURNAL_TOC_URL_FRAG in settings.py (partial ToC page link for journal CSV)
+    if identifier is None:
+        abort(404)
 
+    journalSvc = DOAJ.journalService()
+    journal = journalSvc.find(identifier)
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
