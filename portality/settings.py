@@ -97,7 +97,7 @@ ELASTIC_APM = {
 # Event handler
 
 # Process events immediately/synchronously
-EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+EVENT_SEND_FUNCTION = "portality.events.background.send_event"
 
 ###########################################
 # Read Only Mode
