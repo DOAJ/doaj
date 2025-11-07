@@ -867,7 +867,7 @@ class ManEdJournalReview(ApplicationProcessor):
 
         # has a full review been done
         if self.source.last_full_review != self.target.last_full_review:
-            n = Messages.LAST_FULL_REVIEW_NOTE.format(date=dates.now_str(), username=account.id)
+            n = Messages.LAST_FULL_REVIEW_NOTE.format(date=self.target.last_full_review, username=account.id)
             self.target.add_note(n, date=dates.now_str(), author_id=account.id)
 
         # has the owner changed?

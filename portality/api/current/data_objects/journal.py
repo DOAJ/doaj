@@ -19,7 +19,7 @@ JOURNAL_STRUCT = {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
-                "last_full_review": {"coerce": "utcdatetime"},
+                "last_full_review": {"coerce": "bigenddate"},
             }
         }
     }

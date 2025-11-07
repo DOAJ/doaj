@@ -191,7 +191,6 @@ $.extend(true, doaj, {
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
                         {'display':'Keywords','field':'bibjson.keywords'},
-                        {'display':'Keywords','field':'bibjson.keywords'},
                         {'display':'Classification','field':'index.classification'},
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
