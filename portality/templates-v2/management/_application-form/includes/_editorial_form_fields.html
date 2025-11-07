@@ -13,6 +13,19 @@
         </div>
     {% endif %}
 
+    {% set fs = formulaic_context.fieldset("last_full_review") %}
+    {% if fs %}
+        <h2 class="form__header">{{ fs.label }}</h2>
+        <div class="row">
+            {% for f in fs.fields() %}
+                <div class="col-md-12">
+                {% set field_template = f.template %}
+                {%  include field_template %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     {% if formulaic_context.fieldset("reassign") or formulaic_context.fieldset("status") %}
         {% set fs = formulaic_context.fieldset("reassign") %}
         {% if fs %}

@@ -2,10 +2,11 @@ from contextlib import contextmanager
 from werkzeug.datastructures import MultiDict
 
 from doajtest.helpers import DoajTestCase, create_random_str
-from doajtest.unit.application_processors.test_application_processor_emails import UPDATE_REQUEST_SOURCE_TEST_1
+# from doajtest.unit.application_processors.test_application_processor_emails import UPDATE_REQUEST_SOURCE_TEST_1
 from portality import constants
 from portality.crosswalks.application_form import ApplicationFormXWalk
-from portality.forms.application_forms import ApplicationFormFactory
+from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
 from portality.lib import dates
 from portality.models import Account, Journal, Application
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, ApplicationFixtureFactory
@@ -19,10 +20,13 @@ RESOLVED_NOTE = "This used to be a flag"
 
 short_deadline = dates.format(dates.days_after_now(2), dates.FMT_DATE_STD)
 
-APPLICATION_FORM = ApplicationFixtureFactory.make_application_form
-APPLICATION_FORMINFO = ApplicationFixtureFactory.make_application_form_info()
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
+# APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
+# APPLICATION_FORMINFO = ApplicationFixtureFactory.make_application_form_info()
+# APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 
+JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
+JOURNAL_FORMINFO = JournalFixtureFactory.make_journal_form_info()
+JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 
 def _create_note_object(author_id=None, assignee_id=None, note=DEFAULT_NOTE_TEXT, deadline=None,
                         id=create_random_str()):
@@ -76,7 +80,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
         self.journal.remove_notes()
         self.journal.save()
 
-        self.pc = ApplicationFormFactory.context("admin")
+        self.pc = JournalFormFactory.context("admin")
 
     def tearDown(self):
         super(TestJournalLikeFlagsModel, self).tearDown()
@@ -128,9 +132,9 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
     def test_setFlagWithCorrectDeadline(self):
         with self._make_and_push_test_context_manager(acc=self.admin):
-            fsource = ApplicationFixtureFactory.make_application_form(flag=True, assignee=self.admin.id, setter=self.admin.id, deadline=short_deadline, note="Flag with a correct deadline")
+            fsource = JournalFixtureFactory.make_journal_form(flag=True, assignee=self.admin.id, setter=self.admin.id, deadline=short_deadline, note="Flag with a correct deadline")
             form = self.pc.wtform(MultiDict(fsource))
-            app = ApplicationFormXWalk.form2obj(form)
+            app = JournalFormXWalk.form2obj(form)
             app.save()
             assert app.is_flagged == True, "Flag not set"
             assert len(app.flags) == 1
@@ -141,7 +145,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
     def setFlagWithIncorrectDeadline(self):
         with self._make_and_push_test_context_manager(acc=self.admin):
-            fsource = ApplicationFixtureFactory.make_application_form(flag=True, assignee=self.admin.id,
+            fsource = JournalFixtureFactory.make_journal_form(flag=True, assignee=self.admin.id,
                                                                       note="Flag without deadline")
             form = self.pc.wtform(MultiDict(fsource))
             with self.assertRaises(ValueError):
@@ -150,10 +154,10 @@ class TestJournalLikeFlagsModel(DoajTestCase):
     def test_setFlagWithoutDeadline(self):
         ftext = "Flag without deadline"
         with self._make_and_push_test_context_manager(acc=self.admin):
-            fsource = ApplicationFixtureFactory.make_application_form(flag=True, assignee=self.admin.id,
+            fsource = JournalFixtureFactory.make_journal_form(flag=True, assignee=self.admin.id,
                                                                       note=ftext)
             form = self.pc.wtform(MultiDict(fsource))
-            app = ApplicationFormXWalk.form2obj(form)
+            app = JournalFormXWalk.form2obj(form)
             app.save()
             assert app.is_flagged == True, "Flag not set"
             assert len(app.flags) == 1
@@ -163,9 +167,9 @@ class TestJournalLikeFlagsModel(DoajTestCase):
     def test_setFlagWithoutAssignee(self):
         ftext = "Flag without an assignee"
         with self._make_and_push_test_context_manager(acc=self.admin):
-            fsource = ApplicationFixtureFactory.make_application_form(flag=True, note=ftext, deadline=short_deadline)
+            fsource = JournalFixtureFactory.make_journal_form(flag=True, note=ftext, deadline=short_deadline)
             form = self.pc.wtform(MultiDict(fsource))
-            app = ApplicationFormXWalk.form2obj(form)
+            app = JournalFormXWalk.form2obj(form)
             app.save()
             assert app.is_flagged == False, "Flag without an assignee should be automatically converted to a note"
             assert ftext in [note["note"] for note in app.notes]
@@ -173,14 +177,15 @@ class TestJournalLikeFlagsModel(DoajTestCase):
     def test_resolveFlag(self):
         ftext = "Resolved flag"
         with self._make_and_push_test_context_manager(acc=self.admin):
-            ready_application = Application(**UPDATE_REQUEST_SOURCE_TEST_1)
-            ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
-            ready_application.set_current_journal(self.journal.id)
-            ready_application.remove_notes()
+            journal = Journal(**JOURNAL_SOURCE)
+            # ready_application = Application(**UPDATE_REQUEST_SOURCE_TEST_1)
+            # ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
+            # ready_application.set_current_journal(self.journal.id)
+            journal.remove_notes()
 
             # Construct an application form
-            fc = ApplicationFormFactory.context("admin")
-            processor = fc.processor(source=ready_application)
+            fc = JournalFormFactory.context("admin")
+            processor = fc.processor(source=journal)
             processor.form.flags.entries.clear()
             # Make changes to the application status via the form
             processor.form.flags.append_entry(
