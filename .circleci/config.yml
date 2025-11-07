@@ -30,6 +30,7 @@ jobs:
           name: Prepare doaj env for unittests
           command: |
             echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
+            echo "DEFAULT_INDEX_SETTINGS = { 'number_of_shards': 1, 'number_of_replicas': 0, 'analysis': { 'analyzer': { 'ascii_folded': { 'tokenizer': 'standard', 'filter': ['lowercase', 'asciifolding'] } } } }" >> test.cfg
             python portality/cms/build_fragments.py
             python portality/cms/build_sass.py
 
