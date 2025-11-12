@@ -15,7 +15,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 
 1. The DOAJ index consists of journal-level metadata and article-level metadata.
 
-2. The *journal-level metadata* is licensed with a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/). Collecting, using and reusing part or all of the journal-level metadata must be done in accordance with the terms of the CC BY-SA license. The journal-level metadata is available:
+2. The *journal-level metadata* is available with a [CC0 waiver](https://creativecommons.org/publicdomain/zero/1.0/). Collecting, using and reusing part or all of the article-level metadata must be done under the terms of the CC0 waiver. The journal-level metadata is available:
 
   + On individual journal pages in DOAJ, for example: [https://doaj.org/toc/2300-357X](/toc/2300-357X)
   + Via our [API](/docs/api/)
@@ -42,7 +42,9 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.  The DOAJ Foundation has adopted [a patent non-assertion policy](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing).
 3. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in IS4OA or other third parties.
 
+### Patent non-assertion pledge
 
+A [copy of our patent non-assertion pledge](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing) is available as a Google Document.
 
 ---
 

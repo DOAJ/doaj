@@ -145,6 +145,9 @@ class Messages(object):
     AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING = "Autoassign: Editor group '{target}' does not exist, cannot auto assign"
     AUTOASSIGN__NOTE__ASSIGN = "Autoassign: Editor group auto assigned to '{target}' because {reason}"
 
+    FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username};\n Original note: {note}"
+    FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING = "Provided deadline is in the past. Is it correct?"
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
