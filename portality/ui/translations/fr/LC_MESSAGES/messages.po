@@ -1232,12 +1232,12 @@ msgstr "Cette valeur doit être comprise entre {min} et {max}"
 #: forms/application_forms.py:2883
 #, python-brace-format
 msgid "This value should be bigger than {gte}"
-msgstr ""
+msgstr "Cette valeur doit être supérieure à {gte}"
 
 #: forms/application_forms.py:2887
 #, python-brace-format
 msgid "This value should be smaller than {lte}"
-msgstr ""
+msgstr "Cette valeur doit être inférieure à {lte}"
 
 #: forms/validate.py:141
 msgid "Invalid URL."
