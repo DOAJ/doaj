@@ -26,7 +26,8 @@ In addition, we can develop specific service agreements for funders, such as tho
 
 [French National Open Science Fund](https://www.ouvrirlascience.fr/le-fonds-national-pour-la-science-ouverte/) (FNSO)
 
-[Federation of Finnish Learned Societies](https://www.tsv.fi/) (TSV)
+[German Research Foundation (DFG)](https://www.dfg.de/en)
+
 
 [Norwegian Directorate for Higher Education and Skills](https://hkdir.no/) (HK-dir)
 

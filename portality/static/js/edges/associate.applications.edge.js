@@ -25,7 +25,6 @@ $.extend(true, doaj, {
 
             var components = [
                 doaj.components.searchingNotification(),
-
                 // facets
                 doaj.facets.openOrClosed(),
 
@@ -224,7 +223,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
                                     valueFunction: doaj.fieldRender.issns
                                 }
                             ],

@@ -160,6 +160,22 @@ class ArticleFixtureFactory(object):
     def make_article_apido_struct():
         return deepcopy(ARTICLE_STRUCT)
 
+    @staticmethod
+    def make_article_with_data(title=None, publisher_name=None, abstract=None, country=None, author=None):
+        source = deepcopy(ARTICLE_SOURCE)
+        if title:
+            source["bibjson"]["title"] = title
+        if publisher_name:
+            source["bibjson"]["journal"]["publisher"] = publisher_name
+        if abstract:
+            source["bibjson"]["abstract"] = abstract
+        if country:
+            source["bibjson"]["journal"]["country"] = country
+        if author:
+            source["bibjson"]["author"][0]["name"] = author
+
+        return source
+
 
 ARTICLE_SOURCE = {
     "id": "abcdefghijk_article",

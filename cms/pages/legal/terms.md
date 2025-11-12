@@ -15,7 +15,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 
 1. The DOAJ index consists of journal-level metadata and article-level metadata.
 
-2. The *journal-level metadata* is licensed with a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/). Collecting, using and reusing part or all of the journal-level metadata must be done in accordance with the terms of the CC BY-SA license. The journal-level metadata is available:
+2. The *journal-level metadata* is available with a [CC0 waiver](https://creativecommons.org/publicdomain/zero/1.0/). Collecting, using and reusing part or all of the article-level metadata must be done under the terms of the CC0 waiver. The journal-level metadata is available:
 
   + On individual journal pages in DOAJ, for example: [https://doaj.org/toc/2300-357X](/toc/2300-357X)
   + Via our [API](/docs/api/)
@@ -25,7 +25,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
   + In the [full data dump of all journal metadata](/docs/public-data-dump/)
   + As the [list of journals which say they are in DOAJ but are not](https://docs.google.com/spreadsheets/d/1Y_Sza4rPDkf-NNX9kwiErGrKeNTM75md9B63A_gVpaQ/edit?usp=sharing)
 
-3. The *article metadata* provided to us by publishers or that we collect from EuropePMC, which we then process and display, is available with a [CC0 waiver](https://creativecommons.org/share-your-work/public-domain/cc0/). Collecting, using and reusing part or all of the article-level metadata must be done under the terms of the CC0 waiver. The article-level metadata is available:
+3. The *article metadata* provided to us by publishers or that we collect from EuropePMC, which we then process and display, is available with a [CC0 waiver](https://creativecommons.org/publicdomain/zero/1.0/). Collecting, using and reusing part or all of the article-level metadata must be done under the terms of the CC0 waiver. The article-level metadata is available:
 
   + On individual journal pages in DOAJ, for example [https://doaj.org/toc/1932-6203](/toc/1932-6203)
   + Via our API
@@ -37,11 +37,14 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Copyright
-5. Copyright of this site and the intellectual property contained in it is owned by Infrastructure Services for Open Access C.I.C. ("IS4OA"), 2 Clyst Works, Clyst Road, Topsham, Devon EX3 0EP, United Kingdom and defaults to all rights reserved unless otherwise specified. [Contact IS4OA here](https://is4oa.org/contact-us/) or email helpdesk@doaj.org.
 
-6. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by IS4OA.
+1. Copyright of this site and the intellectual property contained in it is owned by Infrastructure Services for Open Access C.I.C. ("IS4OA"), 2 Clyst Works, Clyst Road, Topsham, Devon EX3 0EP, United Kingdom and defaults to all rights reserved unless otherwise specified. [Contact IS4OA here](https://is4oa.org/contact-us/) or email helpdesk@doaj.org.
+2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.  The DOAJ Foundation has adopted [a patent non-assertion policy](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing).
+3. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in IS4OA or other third parties.
 
-7. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in IS4OA or other third parties.
+### Patent non-assertion pledge
+
+A [copy of our patent non-assertion pledge](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing) is available as a Google Document.
 
 ---
 
@@ -70,8 +73,9 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Version history
-1. **Version 1.4** (03 July 2023) - added details about the way we license content on our blog, DOAJ News Service.
-2. **Version 1.3** (20 April 2023) - address and contact details added to Copyright (1). 'Other than as permitted in law...' added to Copyright (2). Notice period added to Conditions of using this website (3). Conditions of using this website (4) rewritten completely to make it clearer that the name and website are protected.
-3. **Version 1.2** (20 January 2022) - corrected ownership from DOAJ to IS4OA in Copyright (1). Simplified the language of Copyright (3). Corrected ownership from DOAJ to IS4OA in Conditions of using this website (4)
-4. **Version 1** (March 2021)
+1. **Version 1.5** (14 August 2025) - added a link to our patent non-assertion policy under the 'Copyright' section.
+2. **Version 1.4** (03 July 2023) - added details about the way we license content on our blog, DOAJ News Service.
+3. **Version 1.3** (20 April 2023) - address and contact details added to Copyright (1). 'Other than as permitted in law...' added to Copyright (2). Notice period added to Conditions of using this website (3). Conditions of using this website (4) rewritten completely to make it clearer that the name and website are protected.
+4. **Version 1.2** (20 January 2022) - corrected ownership from DOAJ to IS4OA in Copyright (1). Simplified the language of Copyright (3). Corrected ownership from DOAJ to IS4OA in Conditions of using this website (4)
+5. **Version 1** (March 2021)
 

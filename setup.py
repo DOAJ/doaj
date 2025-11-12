@@ -5,14 +5,14 @@ import sys
 
 setup(
     name='doaj',
-    version='8.3.3',
+    version='8.4.0',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
         "bagit==1.8.1",
         "beautifulsoup4",
         "boto3==1.35.25",
-        "elastic-apm==5.2.2",
+        "elastic-apm==6.24.0",
         "elasticsearch==7.13.0",
         "Faker==2.0.3",
         "feedparser==6.0.11",
@@ -42,7 +42,7 @@ setup(
         "parameterized~=0.9.0",
         "psutil==5.9.8",
         "pycountry==24.6.1",  # TODO: pycountry can get behind debian lists, so we may flip back to our fork later
-        #"pycountry @ git+https://github.com/DOAJ/pycountry.git@8d757042f62abe971625da9e5b312c2d6797a3b2#egg=pycountry",
+        #"pycountry @ git+https://github.com/DOAJ/pycountry.git@caf24adc255bccc968a16d44702e8cd6a115dd50#egg=pycountry",
         "python-dateutil",  # something else already installs this; note we need it without an explicit version freeze
         "pytz==2024.2",
         "redis==3.3.11",

@@ -153,3 +153,9 @@ class SetEncoder(json.JSONEncoder):
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
+
+class RemoteServiceException(Exception):
+    """
+    Exception to raise when a remote service call fails
+    """
+    pass

@@ -191,14 +191,6 @@ ass_ed:
   country: USA
   language: Hungarian, English
   photo: "imre.jpg"
-
-- name: Andrea Marchitelli
-  area: Library Science
-  year_since:
-  city: Rome
-  country: Italy
-  language: Italian, English
-  photo: "Marchitelli.jpg"
   
 - name: Annarita Barbaro
   area: Humanities
@@ -214,14 +206,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "ARBAIN.jpg"
-  
-- name: Azhar Aziz Lubis
-  area: Social Sciences
-  year_since:
-  city: Bengkulu
-  country: Indonesia
-  language: Indonesian, English
-  photo: "azhar.jpg"
 
 - name: Ben Catt
   area: Library Science, Research Support
@@ -230,6 +214,14 @@ ass_ed:
   country: United Kingdom
   language: English
   photo: "Ben Catt.jpg"
+
+- name: Bianca Savegnago de Mira
+  area: Information Science, Economics
+  year_since:
+  city: Marília - SP
+  country: Brazil
+  language: Portuguese, English, Spanish
+  photo: "Bianca.jpeg"
   
 - name: Busro Busro
   area: Humanities
@@ -246,14 +238,6 @@ ass_ed:
   country: Argentina
   language: Spanish, English
   photo: "CarlosAlegre.jpg"
-  
-- name: Carla Longo
-  area: Humanities
-  year_since:
-  city: St Andrews
-  country: Scotland
-  language: Italian, English, Latin, Ancient Greek
-  photo: "Longo.jpg"
 
 - name: Carla Marques
   area: Information and Library Sciences
@@ -354,7 +338,7 @@ ass_ed:
 - name: Flavius-Cristian Marcau 
   area: Social Sciences
   year_since:
-  city: Târgu jiu
+  city: Târgu Jiu
   country: Romania
   language: Romanian, English
   photo: "Flavius.jpg"
@@ -436,7 +420,7 @@ ass_ed:
 - name: Juliana Soares Lima
   area: Librarianship and information science
   year_since:
-  city:
+  city: Fortaleza
   country: Brazil
   language: Portuguese, English
   photo: "jlima.jpg"
@@ -559,13 +543,6 @@ ass_ed:
   country: Germany
   language: German, English
 
-- name: Maria Manuel Borges
-  area: Social Sciences
-  year_since:
-  city: V.N Gaia
-  country: Portugal
-  language: Portuguese, Spanish, English
-
 - name: Mariano Hernán Corujo
   area: Library Science
   year_since:
@@ -610,7 +587,7 @@ ass_ed:
   city: Moscow
   country: Russian Federation
   language: Russian, English
-  photo: "max.png"
+  photo:
   
 - name: Melih Sever
   area: Social Sciences
@@ -656,6 +633,14 @@ ass_ed:
   country: Ethiopia
   language: English, Arabic, Amharic
   photo: "Musa_Ali.jpg"
+  
+- name: Natalia Mikołajczak
+  area: Food Science, Publication Ethics
+  year_since:
+  city: Warsaw
+  country: Poland
+  language: Polish, English
+  photo: "Mikołajczak, photo.jpg"
   
 - name: Natalia Popova
   area: Sociology
@@ -787,13 +772,6 @@ ass_ed:
   city: Shanghai
   country: China
   language: Chinese
-
-- name: Stewart C Baker
-  area: Humanities, Library Science
-  year_since:
-  city: Monmouth, OR
-  country: USA
-  language: English, Japanese
 
 - name: Souleymane Sogoba
   area: Information and Communication Sciences

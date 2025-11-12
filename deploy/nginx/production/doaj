@@ -1,20 +1,6 @@
-# Metrics for metricsbeat
-server {
-    listen [::]:80;
-    listen 80;
-    server_name 127.0.0.1;
-    location /server-status {
-        stub_status on;
-        access_log off;
-        allow ::1;
-        allow 127.0.0.1;
-        deny all;
-    }
-}
-
 log_format ip_cloudflare '$remote_addr - $remote_user [$time_local] "$request" '
                          '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
-                         '$http_cf_connecting_ip';
+                         '$http_cf_connecting_ip $ssl_protocol $ssl_cipher';
 
 #ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK';
 #ssl_ciphers 'HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES';
@@ -23,10 +9,13 @@ log_format ip_cloudflare '$remote_addr - $remote_user [$time_local] "$request" '
 # NOTE: change back to $binary_remote_addr if the app is no longer being served through cloudflare.
 limit_req_zone $http_cf_connecting_ip zone=general:100m rate=8r/s;
 limit_req_zone $http_cf_connecting_ip zone=api:100m rate=12r/s;
+limit_req_zone $http_cf_connecting_ip zone=oai:100m rate=1r/s;
 limit_req_status 429;
 
+# A map for the frontend that prevents machine use
 map $http_user_agent $block_ua {
     default             0;
+    ~*UptimeRobot       0;
     ~*bot               1;
     ~*spider            1;
     ~*Go-http-client    1;
@@ -35,22 +24,49 @@ map $http_user_agent $block_ua {
     ~*wget              1;
     ~*curl              1;
 }
+
+# A map for the machine interfaces that prevents crawling
+map $http_user_agent $block_bots {
+    default 0;
+    ~*UptimeRobot 0;
+    ~*(bot|spider) 1;
+}
+
 # For public site components, try all servers
 upstream doaj_apps_failover {
-    server 10.131.191.147:5050;        #doaj-public-1
-    server 10.131.191.148:5050 backup;   #doaj-background-1
-    server 10.131.191.149:5050 backup;  #doaj-editor-1
+    least_conn;
+    server 10.131.191.147:5050 weight=3 max_fails=3 fail_timeout=30s;        #doaj-public-1
+    server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;                 #doaj-public-2
+    server 10.131.191.148:5050 backup;          #doaj-background-1
+    server 10.131.191.149:5050 backup;          #doaj-editor-1
+    keepalive 32;
+    keepalive_timeout 60s;
+    keepalive_requests 100;
+}
+
+# For OAI we try routing to the public-2 server first to keep that traffic off main public-1
+upstream doaj_oai_failover {
+    server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;              #doaj-public-2
+    server 10.131.191.147:5050 backup;       #doaj-public-1
+    server 10.131.191.148:5050 backup;       #doaj-background-1
+    server 10.131.191.149:5050 backup;       #doaj-editor-1
+    keepalive 16;
+    keepalive_timeout 60s;
 }
 
 # Background server runs async tasks
 upstream doaj_bg_apps {
-    server 10.131.191.148:5050;     #doaj-background-app-1
+    server 10.131.191.148:5050 max_fails=3 fail_timeout=30s;     #doaj-background-app-1
+    keepalive 16;
+    keepalive_timeout 60s;
 }
 
 # Editor and admin site components
 upstream doaj_ed_failover {
-    server 10.131.191.149:5050;    #doaj-editor-app-1
+    server 10.131.191.149:5050 max_fails=3 fail_timeout=30s;            #doaj-editor-app-1
     server 10.131.191.148:5050 backup;     #doaj-background-app-1
+    keepalive 16;
+    keepalive_timeout 60s;
 }
 
 upstream doaj_index {
@@ -116,6 +132,10 @@ server {
     proxy_read_timeout 600s;
     client_max_body_size 50M;
 
+    # Enable HTTP/1.1 keepalive to upstreams for connection reuse
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+
     access_log /var/log/nginx/doaj.access.log ip_cloudflare;
     error_log /var/log/nginx/doaj.error.log;
 
@@ -125,9 +145,7 @@ server {
 
     # Use the background server for bulk API requests, since that's where the event consumer runs
     location ~ /api(.*)/bulk {
-        if ($http_user_agent ~* (bot|spider) ) {
-            return 403;
-        }
+        if ($block_bots) {return 403;}
         limit_req zone=api burst=8 nodelay;
         proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
@@ -138,11 +156,28 @@ server {
         proxy_buffering off;
     }
 
+    # OAI has been badly affecting our latency so impose a draconian rate limit (omitting nodelay is intentional)
+    location /oai {
+        if ($block_bots) {return 403;}
+        limit_req zone=oai burst=5;
+        proxy_pass http://doaj_oai_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
     location /api {
-        if ($http_user_agent ~* (bot|spider) ) {
-            return 403;
-        }
+        if ($block_bots) {return 403;}
         limit_req zone=api burst=8 nodelay;
+
+        # API endpoints should respond quickly - use shorter timeout
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
+
         proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
@@ -287,6 +322,12 @@ server {
         alias /home/cloo/doaj/portality/static/;
         autoindex off;
         expires max;
+
+        # Static files should serve quickly - short timeout to prevent slow clients tying up connections
+        send_timeout 10s;
+        tcp_nopush on;
+        tcp_nodelay on;
+
         add_header 'Access-Control-Allow-Origin' '*';              # CORS settings since we don't get these from the app
         add_header 'Access-Control-Allow-Credentials' 'true';
         add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
@@ -297,6 +338,12 @@ server {
         alias /home/cloo/doaj/cms/assets/;
         autoindex off;
         expires max;
+
+        # Static files should serve quickly - short timeout to prevent slow clients tying up connections
+        send_timeout 10s;
+        tcp_nopush on;
+        tcp_nodelay on;
+
         add_header 'Access-Control-Allow-Origin' '*';              # CORS settings since we don't get these from the app
         add_header 'Access-Control-Allow-Credentials' 'true';
         add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';

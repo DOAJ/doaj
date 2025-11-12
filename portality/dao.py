@@ -73,11 +73,17 @@ class DomainObject(UserDict, object):
         # super(DomainObject, self).__init__()
 
     @classmethod
-    def index_name(cls):
+    def index_name(cls, override_index_name=None, **kwargs):
         if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
-            name = ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')])
+            if override_index_name is not None:
+                name = app.config['ELASTIC_SEARCH_DB_PREFIX'] + override_index_name
+            else:
+                name = ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')])
         else:
-            name = app.config['ELASTIC_SEARCH_DB']
+            if override_index_name is not None:
+                name = override_index_name
+            else:
+                name = app.config['ELASTIC_SEARCH_DB']
         return name
 
     @classmethod
@@ -134,6 +140,26 @@ class DomainObject(UserDict, object):
     def last_updated_timestamp(self):
         return dates.parse(self.last_updated)
 
+    def pre_save_prep(self, blocking=False, differentiate=False):
+        if 'id' not in self.data:
+            self.data['id'] = self.makeid()
+
+        self.data['es_type'] = self.__type__
+
+        now = dates.now_str()
+        if (blocking or differentiate) and "last_updated" in self.data:
+            diff = dates.now() - dates.parse(self.data["last_updated"])
+
+            # we need the new last_updated time to be later than the new one
+            if diff.total_seconds() < 1:
+                soon = dates.now() + timedelta(seconds=1)
+                now = soon.strftime(FMT_DATETIME_STD)
+
+        self.data['last_updated'] = now
+
+        if 'created_date' not in self.data:
+            self.data['created_date'] = now
+
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
         """
         ~~->ReadOnlyMode:Feature~~
@@ -153,24 +179,8 @@ class DomainObject(UserDict, object):
         if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
             block_wait = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
-        if 'id' not in self.data:
-            self.data['id'] = self.makeid()
-
-        self.data['es_type'] = self.__type__
-
-        now = dates.now_str()
-        if (blocking or differentiate) and "last_updated" in self.data:
-            diff = dates.now() - dates.parse(self.data["last_updated"])
-
-            # we need the new last_updated time to be later than the new one
-            if diff.total_seconds() < 1:
-                soon = dates.now() + timedelta(seconds=1)
-                now = soon.strftime(FMT_DATETIME_STD)
-
-        self.data['last_updated'] = now
-
-        if 'created_date' not in self.data:
-            self.data['created_date'] = now
+        self.pre_save_prep(blocking=blocking, differentiate=differentiate)
+        now = self.data.get("last_updated", dates.now_str())
 
         attempt = 0
         d = json.dumps(self.data)
@@ -314,7 +324,7 @@ class DomainObject(UserDict, object):
         return cls.bulk(documents=[{'id': i} for i in id_list], idkey=idkey, refresh=refresh, action='delete')
 
     @classmethod
-    def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', req_timeout=10, **kwargs):
+    def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', req_timeout=10, override_index_name=None, **kwargs):
         """
         :param documents: a list of objects to perform bulk actions on (list of dicts)
         :param idkey: The path to extract an ID from the object, e.g. 'id', 'identifiers.id'
@@ -333,7 +343,7 @@ class DomainObject(UserDict, object):
         data = ''
         for d in documents:
             data += cls.to_bulk_single_rec(d, idkey=idkey, action=action, **kwargs)
-        resp = ES.bulk(body=data, index=cls.index_name(), doc_type=cls.doc_type(), refresh=refresh,
+        resp = ES.bulk(body=data, index=cls.index_name(override_index_name), doc_type=cls.doc_type(), refresh=refresh,
                        request_timeout=req_timeout)
         return resp
 
@@ -1123,7 +1133,7 @@ class DomainObject(UserDict, object):
                 continue
 
     @classmethod
-    def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):
+    def prefix_query(cls, field, prefix, filter_condition=None, size=5, facet_field=None, analyzed_field=True):
         # example of a prefix query
         # {
         #     "query": {"prefix" : { "bibjson.publisher" : "ope" } },
@@ -1150,7 +1160,7 @@ class DomainObject(UserDict, object):
         if not facet_field.endswith(suffix):
             facet_field = facet_field + suffix
 
-        q = PrefixAutocompleteQuery(query_field, prefix, field, facet_field, size)
+        q = PrefixAutocompleteQuery(query_field, prefix, field, facet_field, size, filter_condition)
         return cls.send_query(q.query())
 
     @classmethod
@@ -1219,7 +1229,7 @@ class DomainObject(UserDict, object):
         return result
 
     @classmethod
-    def autocomplete(cls, field, prefix, size=5):
+    def autocomplete(cls, field, prefix, filter_condition=None, size=5):
         res = None
         # if there is a space in the prefix, the prefix query won't work, so we fall back to a wildcard
         # we only do this if we have to, because the wildcard query is a little expensive
@@ -1227,7 +1237,7 @@ class DomainObject(UserDict, object):
             res = cls.wildcard_autocomplete_query(field, prefix, before=False, after=True, facet_size=size)
         else:
             prefix = prefix.lower()
-            res = cls.prefix_query(field, prefix, size=size)
+            res = cls.prefix_query(field, prefix, filter_condition, size=size)
 
         result = []
         for term in res['aggregations'][field]['buckets']:
@@ -1355,6 +1365,90 @@ class DomainObject(UserDict, object):
         if blocking:
             cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
 
+    @classmethod
+    def create_and_seed_index_and_rollover_alias(cls, documents: List[dict], mapping=None, keep_history=0):
+        """
+        Create a new index based on this object's type, put the mapping if provided, and seed it with the documents.
+        The indexes alias is then repointed to the new index.
+        If a keep_history value is provided, the previous indexes with the same prefix as the alias will be deleted,
+
+        :param documents:
+        :param mapping:
+        :param keep_history: supply -1 to keep all history, 0 to keep no history, or a positive integer to keep that many previous indexes.
+        :return:
+        """
+        full_alias = cls.index_name()
+        new_name = cls.__type__ + "-" + dates.now_str(dates.FMT_DATETIME_LONG)
+        if mapping is not None:
+            cls.put_mapping(mapping, override_index_name=new_name)
+        resp = cls.bulk(documents, refresh=True, override_index_name=new_name)
+        if resp.get('errors', False):
+            raise ESError("Error creating index {}: {}".format(new_name, resp))
+        cls.move_alias(full_alias, new_name)
+
+        if keep_history > -1:
+            # Find all indexes with the same prefix as full_alias
+            all_indexes = find_indexes_by_prefix(full_alias)
+            all_indexes.sort()
+            keep_history += 1
+            for idx in all_indexes[:-keep_history]:
+                try:
+                    ES.indices.delete(index=idx)
+                except elasticsearch.exceptions.NotFoundError:
+                    pass
+                except elasticsearch.exceptions.RequestError as e:
+                    raise ESError(e)
+
+
+    @classmethod
+    def put_mapping(cls, mapping: dict, override_index_name: str = None):
+        """
+        Put a mapping for the index
+        :param mapping: The mapping to put.  If None then use cls.mapping()
+        """
+        try:
+            if "mappings" not in mapping:
+                mapping = {"mappings": mapping}
+            return ES.indices.create(index=cls.index_name(override_index_name),
+                            body=mapping,
+                            request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
+        except elasticsearch.exceptions.RequestError as e:
+            raise ESError(e)
+
+    @classmethod
+    def move_alias(cls, alias_name: str, target_index: str):
+        """
+        Create or update an alias for the index
+        :param alias_name: The name of the alias to create or update
+        :param target_index: The name of the index to point the alias to
+        """
+
+        try:
+            alias_info = ES.indices.get_alias(name=alias_name)
+            old_index_name = list(alias_info.keys())[0]
+            full_index_name = cls.index_name(target_index)
+            body = {
+                "actions": [
+                    {
+                        "add": {
+                            "index": full_index_name,
+                            "alias": alias_name
+                        }
+                    },
+                    {
+                        "remove": {
+                            "index": old_index_name,
+                            "alias": alias_name
+                        }
+                    }
+                ]
+            }
+            ES.indices.update_aliases(body=body)
+        except elasticsearch.exceptions.RequestError as e:
+            raise ESError(e)
+
+
+
 
 def any_pending_tasks():
     """ Check if there are any pending tasks in the elasticsearch task queue """
@@ -1465,22 +1559,36 @@ class BlockQuery(object):
 
 
 class PrefixAutocompleteQuery(object):
-    def __init__(self, query_field, prefix, agg_name, agg_field, agg_size):
+    def __init__(self, query_field, prefix, agg_name, agg_field, agg_size, filter_condition=None):
         self._query_field = query_field
         self._prefix = prefix
         self._agg_name = agg_name
         self._agg_field = agg_field
         self._agg_size = agg_size
-
+        self._filter_condition = filter_condition
     def query(self):
-        return {
+        query_body = {
             "track_total_hits": True,
-            "query": {"prefix": {self._query_field: self._prefix.lower()}},
+            "query": {
+                "bool": {
+                    "must": [
+                        {"prefix": {self._query_field: self._prefix.lower()}}  # Keep the prefix query
+                    ]
+                }
+            },
             "size": 0,
             "aggs": {
                 self._agg_name: {"terms": {"field": self._agg_field, "size": self._agg_size}}
             }
         }
+
+        if self._filter_condition:
+            query_body["query"]["bool"]["filter"] = [
+                {"term": self._filter_condition}
+            ]
+
+        return query_body
+
 
 
 class WildcardAutocompleteQuery(object):
@@ -1514,12 +1622,11 @@ class WildcardAutocompleteQuery(object):
 class Facetview2(object):
     """
     ~~SearchURLGenerator:Feature->Elasticsearch:Technology~~
-    """
 
     # Examples of queries
     # {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"article"}}]}},"query":{"query_string":{"query":"richard","default_operator":"OR"}}}},"from":0,"size":10}
     # {"query":{"query_string":{"query":"richard","default_operator":"OR"}},"from":0,"size":10}
-
+    """
     @staticmethod
     def make_term_filter(term, value):
         return {"term": {term: value}}

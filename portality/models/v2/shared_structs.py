@@ -205,7 +205,18 @@ SHARED_JOURNAL_LIKE = {
                         "id" : {"coerce" : "unicode"},
                         "note" : {"coerce" : "unicode"},
                         "date" : {"coerce" : "utcdatetime"},
-                        "author_id" : {"coerce" : "unicode"},  # account_id of the note's author
+                        "author_id" : {"coerce" : "unicode"}  # account_id of the note's author
+                    },
+                    "objects": [
+                        "flag"
+                    ],
+                    "structs": {
+                        "flag": {
+                            "fields": {
+                                "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
+                                "deadline": {"coerce" : "bigenddate"}
+                            }
+                        }
                     }
                 },
             }
@@ -214,6 +225,8 @@ SHARED_JOURNAL_LIKE = {
             "fields" : {
                 "country" : {"coerce" : "unicode"},
                 "has_apc" : {"coerce" : "unicode"},
+                "is_flagged" : {"coerce" : "bool"},
+                "most_urgent_flag_deadline": {"coerce" : "bigenddate"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},
@@ -230,7 +243,51 @@ SHARED_JOURNAL_LIKE = {
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
                 "schema_code" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_codes_tree" : {"contains" : "field", "coerce" : "unicode"}
+                "schema_codes_tree" : {"contains" : "field", "coerce" : "unicode"},
+                "flag_assignees" : {"contains" : "field", "coerce" : "unicode"}
+            }
+        }
+    }
+}
+
+ARTICLE_STRUCT = {
+    "fields" : {
+        "created_date": {"coerce": "utcdatetime"},
+        "es_type": {"coerce": "unicode"},
+        "id": {"coerce": "unicode"},
+        "last_updated": {"coerce": "utcdatetime"},
+    },
+    "objects": [
+        "admin", "index"
+    ],
+    "structs": {
+        "admin": {
+            "fields": {
+                "in_doaj": {"coerce": "bool"},
+                "publisher_record_id": {"coerce": "unicode"},
+                "seal": {"coerce": "bool"},
+                "upload_id": {"coerce": "unicode"}
+            }
+        },
+        "index": {
+            "fields": {
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "classification" : {"coerce" : "unicode"},
+                "classification_paths": {"coerce" : "unicode"},
+                "country" : {"coerce" : "unicode"},
+                "date" : {"coerce" : "utcdatetime"},
+                "date_toc_fv_month": {"coerce" : "utcdatetime"},
+                "doi": {"coerce" : "unicode"},
+                "fulltext": {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "issn": {"coerce" : "unicode"},
+                "language": {"coerce" : "unicode"},
+                "publisher": {"coerce" : "unicode"},
+                "schema_code": {"coerce" : "unicode"},
+                "schema_codes_tree": {"coerce" : "unicode"},
+                "schema_subject": {"coerce" : "unicode"},
+                "subject": {"coerce" : "unicode"},
+                "unpunctitle": {"coerce" : "unicode"}
             }
         }
     }
