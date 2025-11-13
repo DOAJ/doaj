@@ -1503,6 +1503,10 @@ BG_MONITOR_ERRORS_CONFIG = {
     'public_data_dump': {
         'check_sec': 2 * _HOUR,
         'allowed_num_err': 0
+    },
+    'process_event': {
+        'check_sec': 2 * _HOUR,
+        'allowed_num_err': 0
     }
 }
 
@@ -1544,6 +1548,10 @@ BG_MONITOR_QUEUED_CONFIG = {
     'suggestion_bulk_edit': {
         'total': 2,
         'oldest': 10 * _MIN
+    },
+    'process_event': {
+        'total': 500,
+        'oldest': 6 * _HOUR
     }
 }
 
