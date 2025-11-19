@@ -5,6 +5,7 @@ import string
 import os
 
 from portality.core import app
+from portality.crosswalks.article_ris import ArticleRisXWalk
 from portality.store import StoreFactory, StoreException
 from portality.util import no_op
 from portality import models
@@ -197,3 +198,35 @@ class ExportService(object):
         container_id = app.config.get("STORE_EXPORT_CONTAINER")
         fh = mainStore.get(container_id, report.filename)
         return report, fh
+
+    def ris(self, article, save=True):
+        if isinstance(article, str):
+            article = models.Article.pull(article)
+
+        if article is None:
+            return None
+
+        ris = ArticleRisXWalk.article2ris(article)
+        obj = models.RISExport()
+        obj.set_id(article.id)
+        obj.ris_raw = ris
+        if save:
+            obj.save()
+        else:
+            obj.pre_save_prep()
+        return obj
+
+    def has_stale_ris(self, article, ris=None):
+        if isinstance(article, str):
+            article = models.Article.pull(article)
+
+        if ris is None:
+            ris = models.RISExport.pull(article.id)
+
+        if ris is None:
+            return True
+
+        if ris.last_updated is None:
+            return True
+
+        return ris.last_updated_timestamp < article.last_updated_timestamp
