@@ -380,5 +380,5 @@ tests:
       page until the status changes.
     results:
     - Your file is shown in the "History of uploads" with status "processing failed"
-      and a entry in the "Notes" and reads as 'Article(s) cannot be uploaded before OA start date of the Journal'.  Check that the explanation link goes to
+      and a entry in the "Notes" and reads as 'One or more rticles cannot be uploaded, as they have a publication date before the 'OA start date' of the Journal'.  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
