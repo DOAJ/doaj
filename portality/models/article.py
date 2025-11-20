@@ -307,15 +307,27 @@ class Article(SeamlessMixin, DomainObject):
         allissns = list(set(pissns + eissns))
 
         # find a matching journal record from the index
-        journal = None
+        best_match = None
+
         for issn in allissns:
             journals = Journal.find_by_issn(issn)
             if len(journals) > 0:
-                # there should only ever be one, so take the first one
-                journal = journals[0]
-                break
+                # Get the best journal match:
+                # 1. Prefer the most recently updated journal that is in DOAJ.
+                # 2. If none are in DOAJ, fall back to the most recently updated journal outside DOAJ.
 
-        return journal
+                matches = [j for j in journals if j.is_in_doaj()]
+
+                if len(matches) == 0:
+                    matches = journals
+
+                best_match = max(
+                    matches,
+                    key=lambda j: j.last_updated,
+                    default=None
+                )
+
+        return best_match
 
     def get_associated_journals(self):
         # find all matching journal record from the index
