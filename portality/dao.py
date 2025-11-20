@@ -138,6 +138,9 @@ class DomainObject(UserDict, object):
 
     @property
     def last_updated_timestamp(self):
+        lu = self.last_updated
+        if lu is None:
+            return None
         return dates.parse(self.last_updated)
 
     def pre_save_prep(self, blocking=False, differentiate=False):
