@@ -4,8 +4,21 @@ from portality.bll.doaj import DOAJ
 from portality.core import app
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_long_queue as queue
+from portality.bll.services.export import RISExportReporter
 
-BATCH_SIZE = 1000
+class RISExportBackgroundTaskReporter(RISExportReporter):
+    def __init__(self, job):
+        super().__init__()
+        self._job = job
+
+    def processed(self, total_so_far):
+        super().processed(total_so_far)
+        if self._processed % 10000 == 0:
+            self.msg(f"Processed {self._processed} articles so far; {self._loaded} RIS exports generated.")
+
+    def msg(self, message):
+        self._job.add_audit_message(message)
+
 
 class RISExportBackgroundTask(BackgroundTask):
 
@@ -21,38 +34,8 @@ class RISExportBackgroundTask(BackgroundTask):
 
         exportSvc = DOAJ.exportService()
 
-        def flush_batch(batch, force=False):
-            if len(batch) == 0:
-                return batch
-
-            if len(batch) < BATCH_SIZE and not force:
-                return batch
-
-            models.RISExport.bulk(batch, action="index", req_timeout=120)
-            job.add_audit_message("Writing {x} RIS exports".format(x=len(batch)))
-            return []
-
         job.add_audit_message("Starting RIS Update")
-
-        batch = []
-        count = 0
-        loaded = 0
-        for article in models.Article.iterall_unstable():
-            count += 1
-            if count % 10000 == 0:
-                job.add_audit_message("{x} articles processed; {y} regenerated (loaded + queued)".format(x=count, y=loaded))
-            existing = models.RISExport.pull(article.id)
-            if force_update or exportSvc.has_stale_ris(article, existing):
-                updated = exportSvc.ris(article, save=False)
-                if existing is not None and updated.ris_raw == existing.ris_raw:
-                    continue
-
-                batch.append(updated.data)
-                batch = flush_batch(batch)
-                loaded += 1
-
-        flush_batch(batch, True)
-
+        exportSvc.bulk_generate_ris(force_update=force_update, reporter=RISExportBackgroundTaskReporter(job))
         job.add_audit_message("RIS Entries updated")
 
     def cleanup(self):

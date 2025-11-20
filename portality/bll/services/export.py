@@ -6,11 +6,30 @@ import os
 
 from portality.core import app
 from portality.crosswalks.article_ris import ArticleRisXWalk
+from portality.models import RISExport
 from portality.store import StoreFactory, StoreException
 from portality.util import no_op
 from portality import models
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 from portality.lib import dates
+
+class RISExportReporter(object):
+    def __init__(self):
+        self._loaded = 0
+        self._processed = 0
+
+    def loaded(self, n):
+        self._loaded = n
+
+    def processed(self, n):
+        self._processed = n
+
+    def msg(self, m):
+        pass
+
+    def counts(self):
+        return self._processed, self._loaded
+
 
 class ExportService(object):
     def csv(self, model: models.JournalLikeObject, query=None, logger=None, out_file=None,
@@ -230,3 +249,55 @@ class ExportService(object):
             return True
 
         return ris.last_updated_timestamp < article.last_updated_timestamp
+
+    def remove_ris(self, ris):
+        if isinstance(ris, str):
+            ris = RISExport.pull(ris)
+
+        if ris is None:
+            return
+
+        ris.delete()
+
+
+    def bulk_generate_ris(self, force_update=False, batch_size=1000, reporter:RISExportReporter=None):
+
+        if reporter is None:
+            reporter = RISExportReporter()
+
+        def flush_batch(batch, force=False):
+            if len(batch) == 0:
+                return batch
+
+            if len(batch) < batch_size and not force:
+                return batch
+
+            models.RISExport.bulk(batch, action="index", req_timeout=120)
+            reporter.msg("Writing {x} RIS exports".format(x=len(batch)))
+            return []
+
+        batch = []
+        count = 0
+        loaded = 0
+        for article in models.Article.iterall_unstable():
+            count += 1
+            existing = models.RISExport.pull(article.id)
+            if force_update or self.has_stale_ris(article, existing):
+                updated = self.ris(article, save=False)
+                if not force_update:
+                    # if we're not forcing an update, then don't update if the content
+                    # is the same
+                    if existing is not None and updated.ris_raw == existing.ris_raw:
+                        reporter.processed(count)
+                        continue
+
+                batch.append(updated.data)
+                batch = flush_batch(batch)
+                loaded += 1
+                reporter.loaded(loaded)
+
+            reporter.processed(count)
+
+        flush_batch(batch, True)
+
+        return reporter

@@ -32,7 +32,7 @@ RIS_ARTICLE_MAPPING = {
 class ArticleRisXWalk:
 
     @classmethod
-    def article2ris(cls, article: Union[models.Article, dict]) -> RisEntry:
+    def article2ris(cls, article: models.Article) -> RisEntry:
         entry = {}
         bj = article.bibjson()
         for tag, query in RIS_ARTICLE_MAPPING.items():
@@ -44,6 +44,6 @@ class ArticleRisXWalk:
                 if tag not in entry:
                     entry[tag] = []
                 entry[tag].append(v)
-        ris = RisEntry(type_of_reference='JOUR')
-        ris.data = entry
+        ris = RisEntry.from_dict(entry)
+        ris.type='JOUR'
         return ris

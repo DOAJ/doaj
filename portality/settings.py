@@ -854,6 +854,12 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.URReviewRoute",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        "ris": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.RISExport",  # ~~->AdminAlert:Model~~
+            "required_parameters": None
         }
     },
     "associate_query": {

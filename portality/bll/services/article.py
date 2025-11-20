@@ -243,7 +243,7 @@ class ArticleService(object):
             article.save()
             eventsSvc = DOAJ.eventsService()
             eventsSvc.trigger(models.Event(constants.EVENT_ARTICLE_SAVE, account.id, {
-                "article_id": article.id
+                "article": article.data
             }))
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
