@@ -6,6 +6,7 @@ from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, 
 from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
+from portality.bll.exceptions import NoSuchObjectException, ArgumentException
 from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
@@ -71,6 +72,10 @@ class TestModels(DoajTestCase):
         j.add_contact("richard", "richard@email.com")
         j.add_note("testing", "2005-01-01T00:00:00Z")
         j.set_bibjson({"title": "test"})
+        jbib = j.bibjson()
+        jbib.language_editions = [{"id": "polishedition", "language": "pl"},
+                             {"id": "englishedition", "language": "en"},
+                             {"id": "germanedition", "language": "de"}]
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
@@ -88,11 +93,25 @@ class TestModels(DoajTestCase):
         assert j.get_latest_contact_email() == "richard@email.com"
         assert len(j.notes) == 1
         assert j.bibjson().title == "test"
+        assert len(jbib.language_editions) == 3
 
         j.remove_owner()
         j.remove_editor_group()
         j.remove_editor()
         j.remove_contact()
+        with self.assertRaises(ValueError):
+            jbib.remove_language_edition("frenchedition")
+
+        jbib.remove_language_edition("polishedition")
+        assert len(jbib.language_editions) == 2
+
+        jbib.clear_language_editions()
+        assert len(jbib.language_editions) == 0
+
+        jbib.add_language_edition({"id": "originaljournalrecord", "language": "fr"})
+        assert len(jbib.language_editions) == 1
+        assert jbib.language_editions[0]["id"] == "originaljournalrecord"
+        assert jbib.language_editions[0]["language"] == "fr"
 
         assert j.owner is None
         assert j.editor_group is None
