@@ -283,6 +283,6 @@ class TestQueryFilters(DoajTestCase):
 
     def test_13_public_source(self):
         newq = query_filters.public_source(self.q)
-        fields = ["admin.ticked", "last_updated", "created_date", "id", "bibjson"]
+        fields = ["admin.ticked", "admin.last_full_review", "last_updated", "created_date", "id", "bibjson"]
         assert len(newq.as_dict()["_source"]["includes"]) == len(fields), newq.as_dict()
         assert sorted(newq.as_dict()["_source"]["includes"]) == sorted(fields), newq.as_dict()
