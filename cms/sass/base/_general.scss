@@ -2,10 +2,13 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 20px;
+  font-size: 100%;
+}
 
+body {
+  font-size: $typescale-05;
   @media (max-width: 768px) {
-    font-size: 18px;
+    font-size: $typescale-06;
   }
 }
 
@@ -17,7 +20,7 @@ h2, h3, h4, h5, h6 {
   margin: $spacing-04 0 $spacing-03 0;
   line-height: 1.05;
   font-weight: 400;
-  scroll-margin-top: 60px;
+  scroll-margin-top: $spacing-05;
 
   &:first-child {
     margin-top: 0;
@@ -28,29 +31,32 @@ h1 {
   margin: $spacing-04 0;
   font-weight: 700;
   line-height: 1.05;
-  scroll-margin-top: 600px;
-  @include typescale-01;
+  scroll-margin-top: 37.5rem;
+  font-size: $typescale-03;
   @include font-serif;
 }
 
 h2 {
-  @include typescale-02;
+  font-size: $typescale-03;
 }
 
 h3 {
-  @include typescale-03;
+  font-size: $typescale-05;
+  .tag {
+    font-size: $typescale-06 !important;
+  }
 }
 
 h4 {
-  @include typescale-04;
+  font-size: $typescale-06;
 }
 
 h5 {
-  @include typescale-05;
+  font-size: $typescale-06;
 }
 
 h6 {
-  @include typescale-06;
+  font-size: $typescale-06;
 }
 
 ul, ol {
@@ -70,7 +76,7 @@ dl {
 
   dt {
     color: $dark-grey;
-    @include typescale-06;
+    font-size: $typescale-06;
 
     &:not(:first-child) {
       margin-top: $spacing-03;
@@ -92,7 +98,7 @@ p, blockquote, ul, ol {
 
 pre, code {
   @include font-monospace;
-  @include typescale-06;
+  font-size: $typescale-06;
   background: $light-grey;
 }
 
@@ -123,7 +129,7 @@ section {
 }
 
 blockquote {
-  padding-left: 1.5em;
+  padding-left: $spacing-04;
   border-left: 1px solid $sanguine;
   font-style: italic;
 
@@ -159,7 +165,7 @@ table {
   thead {
     text-align: left;
     color: $dark-grey;
-    @include typescale-06;
+    font-size: $typescale-06;
   }
 
   tr {
@@ -202,11 +208,11 @@ table {
 
 aside {
   h2 {
-    @include typescale-03;
+    font-size: $typescale-03;
   }
 
   h2 {
-    @include typescale-04;
+    font-size: $typescale-04;
   }
 
   form {
@@ -235,10 +241,10 @@ input, select, button, textarea {
   border-radius: 0;
 
   display: inline-block;
-  padding: 0.5em;
+  padding: $spacing-02;
   background-color: $white;
   border: 1px solid $warm-black;
-  font-size: smaller;
+  font-size: $typescale-06;
   @include font-sans;
 }
 
@@ -247,7 +253,7 @@ textarea {
 }
 
 select {
-  padding-right: 30px;
+  padding-right: $spacing-04;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -270,6 +276,8 @@ input[type="radio"] {
   height: 0.8em;
   pointer-events: none;
   //margin-left: -0.8rem;
+  width: $spacing-03;
+  height: $spacing-03;
 
   &:focus  + label {
     outline: solid 2px $warm-black;
@@ -285,16 +293,16 @@ input[type="radio"] {
     margin: 0 0 $spacing-03 0;
     line-height: 1;
     color: $dark-grey;
-    font-size: 1rem;
+    font-size: $typescale-05;
   }
 
   + label::before {
     content: '\a0';
     display: inline-block;
     margin: 0 $spacing-02 0 0;
-    width: 0.8em;
-    height: 0.8em;
-    line-height: 0.75em;
+    width: $spacing-03;
+    height: $spacing-03;
+    line-height: 0.75;
     transition: all 0.35s;
     border: 1px solid $warm-black;
   }

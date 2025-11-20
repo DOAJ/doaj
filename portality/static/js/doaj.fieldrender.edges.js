@@ -5206,7 +5206,7 @@ $.extend(true, doaj, {
                 `
             },
         titleField: function (val, resultobj, renderer) {
-            let field = '<div class="flex-start flex-space-between flex-wrap"><h3 class="type-01 font-serif" >';
+            let field = '<div class="flex-start flex-space-between flex-wrap"><h3 class="type-03 font-serif" >';
             let display = '';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {

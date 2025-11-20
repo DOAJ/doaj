@@ -41,7 +41,7 @@
   }
 
   .color-legend {
-    font-size: 18px;
+    font-size: $typescale-06--bigger;
 
     li:not(:first-child) {
       margin-left: $spacing-01;

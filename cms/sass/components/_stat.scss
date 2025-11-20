@@ -17,12 +17,12 @@
   display: block;
   font-weight: 600;
   @include font-serif;
-  @include typescale-03;
+  font-size: $typescale-03;
 }
 
 .stat__description {
   display: block;
   text-transform: uppercase;
   line-height: 1.35;
-  @include typescale-06;
+  font-size: $typescale-06--bigger;
 }
