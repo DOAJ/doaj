@@ -4,7 +4,6 @@
 
 {% if obj and (obj.es_type == 'journal' and obj.is_in_doaj()) %}
     {{ _msg.build_journal_withdrawn_deleted_msg(obj) }}
-    <a class="button button--tertiary" href="{{ url_for('doaj.toc', identifier=obj.id) }}" target="_blank">See this journal in DOAJ</a>
 {% endif %}
 
 
