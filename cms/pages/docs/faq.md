@@ -173,29 +173,34 @@ You can download your article metadata by [using our API](https://doaj.org/docs/
 
 ## Using a spreadsheet to update your journal metadata
 
-If you received a spreadsheet from us, please complete it as soon as possible. The file sent to you contains a cover sheet with instructions, and more help is below. Once you have validated your file, you may email it back to us.
+If you received a spreadsheet from us--a 'Journal Update File'--please complete it by the deadline sent to you. You will have received some instructions as well. Read them carefully as they will help you with your updates.  
 
-Before you send us the file, you must do two things:
+Before you return the spreadsheet to us, you must do two things:
 
-1. Convert the spreadsheet to a CSV. To do this, you will need to first delete the instructions tab and then Save as CSV. (Save in the Unicode UTF-8 format.)
+1. Convert it to a CSV using the 'Save as' function. (If asked, save it in the Unicode UTF-8 format.)
 2. [Validate it](/publisher/journal-csv).
 
-Here are some tips on how to ensure that your CSV file will pass validation:
+Here are some tips to ensure that your CSV file will pass validation:
 
-- make sure CSV is in UTF-8 format
-- don't change an ISSN or Title of a journal. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
+- make sure the CSV is in UTF-8 format
+- don't change any ISSNs or journal Titles. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
 - don't add a new journal to the file. To do this, [submit a new application](/apply/).
-- don't change the title of a column
-- don't include anything in the column other than what is asked for on the instructions tab
-- ensure no spaces are accidentally added before or after the information in each cell. This can cause the validation to fail.
+- don't change the title of any columns
+- don't include anything in the column other than what is asked for in the instructions
+- make sure no spaces are accidentally added before or after the information in each cell
 
-Deleting a journal from the file will mean no update happens; it will not remove a journal from your account. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
+Deleting a journal (a row) from the spreadsheet means that no update happens; it will not remove a journal from your account or withdraw it from DOAJ. To do this, you must contact [Help Desk](mailto:helpdesk@doaj.org).
 
-### Validating your file
+### Validating your CSV
 
-Before emailing the CSV to us, you must validate it. Do this in your Publisher Dashboard on the 'Validate your CSV' tab. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
+To validate your CSV, go to the '[Validate your CSV](https://doaj.org/publisher/journal-csv)' tab on your Publisher Dashboard. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
 
-The following warnings may be seen after validating your CSV:
+If the CSV validates correctly, you will see one of these two messages: 
+
+'File validated successfully and emailed to us. You can now close this tab.'
+'File validated successfully but with warnings. It has been emailed to us. Please check the warnings below and contact us with any queries.'
+
+If the CSV cannot be validated, one or several warnings will be displayed:
 
 | Warning                                                                                                                | Explanation                                                                                                                                                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -212,9 +217,10 @@ From time to time, other validation errors might be seen if one of the cells con
 
 ## Version history
 
-This is Version 3.1 of our Metadata help page.
+This is Version 3.2 of our Metadata help page.
 
-*Version 3.1 (October 2025 - small corrections and updates)*<br>
-<S>Version 3.0 (January 2025 - added a new section: 'Correcting or updating article metadata')</s><br>
+*Version 3.2 (November 2025 - updates to the CSV validation text)*<br>
+<s>Version 3.1 (October 2025 - small corrections and updates)</s><br>
+<s>Version 3.0 (January 2025 - added a new section: 'Correcting or updating article metadata')</s><br>
 <s>Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)</s><br>
 <s>Version 1.0 (November 2023 - created this whole page with new content)</s><br>
