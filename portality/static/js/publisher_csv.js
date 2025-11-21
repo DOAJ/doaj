@@ -84,9 +84,9 @@ doaj.publisher_csvs.render_validation_results = function(response) {
     let successFrag = "";
     if (!response.has_errors) {
         if (response.has_warnings) {
-            successFrag = "<h3>File validated with warnings!</h3>You can now go ahead and send this file to us for processing, but please check the warnings below.";
+            successFrag = "<h3>File validated successfully but with warnings.</h3>It has been emailed to us. Please check the warnings below and contact us with queries.";
         } else {
-            successFrag = "<h3>File validated successfully!</h3>You can now go ahead and send this file to us for processing.";
+            successFrag = "<h3>File validated successfully and emailed to us.</h3>You can now close this tab.";
         }
     }
 
