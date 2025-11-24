@@ -22,6 +22,7 @@ from flask_login import login_user, current_user
 from datetime import datetime
 
 import portality.models as models
+import portality.ui.exceptions
 from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
@@ -29,8 +30,8 @@ from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
 from portality.ui import templates
 from portality import constants
 
-from portality.bll import exceptions
 from portality.ui.messages import Messages
+from portality.ui import exceptions
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -431,15 +432,15 @@ def handle_404(e):
 
 @app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
 def handle_article_from_withdrawn_journal(e):
-    return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.WITHDRAWN, error_code=410), 410
+    return render_template(templates.ERROR_PAGE, record=constants.ERROR_RECORD_ARTICLE, context=constants.ERROR_410_WITHDRAWN, error_code=410), 410
 
 @app.errorhandler(exceptions.TombstoneArticle)
 def handle_tombstone_article(e):
-    return render_template(templates.ERROR_PAGE, record=constants.ARTICLE, context=constants.TOMBSTONE, error_code=410), 410
+    return render_template(templates.ERROR_PAGE, record=constants.ERROR_RECORD_ARTICLE, context=constants.ERROR_410_TOMBSTONE, error_code=410), 410
 
 @app.errorhandler(exceptions.JournalWithdrawn)
 def handle_journal_withdrawn(e):
-    return render_template(templates.ERROR_PAGE, record=constants.JOURNAL, context=constants.WITHDRAWN, error_code=410), 410
+    return render_template(templates.ERROR_PAGE, record=constants.ERROR_RECORD_JOURNAL, context=constants.ERROR_410_WITHDRAWN, error_code=410), 410
 
 @app.errorhandler(ValueError)
 @app.errorhandler(500)

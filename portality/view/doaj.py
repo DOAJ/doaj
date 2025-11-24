@@ -9,13 +9,14 @@ from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 
+from portality.ui import exceptions as ui_exceptions
+from portality.bll import exceptions, exceptions as bll_exceptions
 from portality import constants
 from portality import dao
 from portality import models
 from portality import store
 from portality.bll import DOAJ
 from portality.core import app
-from portality.bll import exceptions
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
@@ -272,51 +273,6 @@ def autocomplete(doc_type, field_name):
     # http://flask.pocoo.org/docs/security/#json-security
 
 
-def find_toc_journal_by_identifier(identifier):
-    """
-    Find a journal based on its identifier. If:
-    no journals - return 404,
-    withdrawn journals - raise JournalWithdrawn exception
-    more than 1 journal in doaj - raise 500
-    exactly 1 journal in doaj - return found journal
-
-    :param identifier:
-    :return:
-    """
-
-    if identifier is None:
-        abort(404)
-
-    if len(identifier) == 9:
-        # search both in doaj and withdrawn to know whether to return 404 (not found) or 410 (gone)
-        js = models.Journal.find_by_issn(identifier)
-
-        if len(js) == 0:
-            abort(404)
-
-        try:
-            # Can raise BadRequest (400), TooManyJournals (500), JournalWithdrawn (410), ValueError, see error handlers.
-            journal = models.Journal.get_active_journal(js)
-        except exceptions.TooManyJournals:
-            app.logger.exception(Messages.TOO_MANY_JOURNALS_LOG.format(identifier=identifier))
-            abort(500, description=Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
-
-        return journal
-
-    elif len(identifier) == 32:
-        # Pull by ES identifier
-        j = models.Journal.pull(identifier)  # Returns None on fail
-
-        if j is None:
-            abort(404)
-
-        if j.is_in_doaj() is False:
-            raise exceptions.JournalWithdrawn
-        return j
-
-    abort(400)
-
-
 def is_issn_by_identifier(identifier):
     return len(identifier) == 9
 
@@ -367,11 +323,23 @@ def toc(identifier=None):
     """ Table of Contents page for a journal. identifier may be the journal id or an issn """
     # If this route is changed, update JOURNAL_TOC_URL_FRAG in settings.py (partial ToC page link for journal CSV)
     if identifier is None:
-        abort(404)
+        abort(400)
 
     journalSvc = DOAJ.journalService()
-    journal = journalSvc.find(identifier)
-    journal = find_toc_journal_by_identifier(identifier)
+    try:
+        journal = journalSvc.find_best(identifier)
+    except bll_exceptions.ArgumentException:
+        abort(400)
+    except bll_exceptions.TooManyJournals:
+        abort(500)
+
+    if journal is None:
+        abort(404)
+
+    if journal.is_in_doaj() is False:
+        raise ui_exceptions.JournalWithdrawn()
+
+    # journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
@@ -388,7 +356,23 @@ def toc_articles_legacy(identifier=None):
 
 @blueprint.route("/toc/<identifier>/articles")
 def toc_articles(identifier=None):
-    journal = find_toc_journal_by_identifier(identifier)
+    if identifier is None:
+        abort(400)
+
+    journalSvc = DOAJ.journalService()
+    try:
+        journal = journalSvc.find_best(identifier)
+    except bll_exceptions.ArgumentException:
+        abort(400)
+    except bll_exceptions.TooManyJournals:
+        abort(500)
+
+    if journal is None:
+        abort(404)
+
+    if journal.is_in_doaj() is False:
+        raise ui_exceptions.JournalWithdrawn()
+
     bibjson = journal.bibjson()
     articles_no = journal.article_stats()["total"]
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
@@ -407,29 +391,35 @@ def article_page(identifier=None):
     if article is None:
         article = models.ArticleTombstone.pull(identifier)
         if article:
-            raise exceptions.TombstoneArticle
+            raise ui_exceptions.TombstoneArticle()
         else:
             abort(404, description=Messages.ARTICLE_NOT_FOUND)
 
     if not article.is_in_doaj():
-        raise exceptions.ArticleFromWithdrawnJournal
+        raise ui_exceptions.ArticleFromWithdrawnJournal()
 
     # find the related journal record
-    journal = None
-    issns = article.bibjson().issns()
-    more_issns = article.bibjson().journal_issns
-    for issn in issns + more_issns:
-        journals = models.Journal.find_by_issn(issn)
-        if len(journals) == 0:
-            app.logger.exception(Messages.ARTICLE_ABANDONED_LOG.format(article_id=article.id))
-            abort(500, description=Messages.ARTICLE_ABANDONED_PUBLIC)
-        try:
-            journal = models.Journal.get_active_journal(journals)
-        except exceptions.TooManyJournals:
-            app.logger.exception(Messages.TOO_MANY_JOURNALS_LOG.format(identifier=identifier))
-            abort(500, description=Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
-        except exceptions.JournalWithdrawn:
-            raise exceptions.ArticleFromWithdrawnJournal
+    journal = article.get_journal()
+    if journal is None:
+        app.logger.exception(Messages.ARTICLE_ABANDONED_LOG.format(article_id=article.id))
+        abort(500, description=Messages.ARTICLE_ABANDONED_PUBLIC)
+    if journal.is_in_doaj() is False:
+        raise ui_exceptions.ArticleFromWithdrawnJournal()
+
+    # issns = article.bibjson().issns()
+    # more_issns = article.bibjson().journal_issns
+    # for issn in issns + more_issns:
+    #     journals = models.Journal.find_by_issn(issn)
+    #     if len(journals) == 0:
+    #         app.logger.exception(Messages.ARTICLE_ABANDONED_LOG.format(article_id=article.id))
+    #         abort(500, description=Messages.ARTICLE_ABANDONED_PUBLIC)
+    #     try:
+    #         journal = models.Journal.get_active_journal(journals)
+    #     except exceptions.TooManyJournals:
+    #         app.logger.exception(Messages.TOO_MANY_JOURNALS_LOG.format(identifier=identifier))
+    #         abort(500, description=Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
+    #     except exceptions.JournalWithdrawn:
+    #         raise exceptions.ArticleFromWithdrawnJournal
 
     return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 

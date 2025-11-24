@@ -122,7 +122,7 @@ class JournalService(object):
 
         return journal, the_lock
 
-    def find(self, identifier):
+    def find_best(self, identifier):
         if len(identifier) == 9:
             # search both in doaj and withdrawn to know whether to return 404 (not found) or 410 (gone)
             js = models.Journal.find_by_issn(identifier)
@@ -134,19 +134,20 @@ class JournalService(object):
             if len(active_journals) > 1:
                 raise exceptions.TooManyJournals(Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
 
-            return active_journals[0] if len(active_journals) == 1 else None
+            if len(active_journals) == 0:
+                js.sort(key=lambda x: x.created_date, reverse=True)
+                return js[0]  # return the most recently created withdrawn journal
+
+            return active_journals[0]
 
         elif len(identifier) == 32:
             # Pull by ES identifier
             j = models.Journal.pull(identifier)  # Returns None on fail
             if j is None:
                 return None
-
-            if j.is_in_doaj() is False:
-                raise exceptions.JournalWithdrawn
             return j
 
-        return None
+        raise exceptions.ArgumentException("Identifier must be either an ISSN (9 chars) or an internal ID (32 chars)")
 
     def csv(self, prune=True, logger=None):
         """
