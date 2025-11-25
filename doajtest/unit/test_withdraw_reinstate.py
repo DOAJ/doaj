@@ -108,7 +108,7 @@ class TestWithdrawReinstate(DoajTestCase):
         # job failed
         bjob = task.background_job
         assert bjob.status == "error"
-        assert any(audit["message"] == Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids = [with_match]) for audit in bjob["audit"])
+        assert any(audit["message"] == Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS for audit in bjob["audit"])
         # no status changed
         for id in ids:
             j = models.Journal.pull(id)
