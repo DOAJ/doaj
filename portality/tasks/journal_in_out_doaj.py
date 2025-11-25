@@ -36,6 +36,16 @@ def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
     SetInDOAJBackgroundTask.submit(job)
     return job
 
+def find_matching_issns_in_doaj(journal_ids):
+    if not isinstance(journal_ids, list):
+        journal_ids = [journal_ids]
+    with_matches = []
+    for journal_id in journal_ids:
+        j = models.Journal.pull(journal_id)
+        other_with_the_same_issns = models.Journal.find_by_issn(j.bibjson().issns())
+        if len([j for j in other_with_the_same_issns if j.is_in_doaj()]) > 0:
+            with_matches.append(journal_id)
+    return with_matches
 
 class SetInDOAJBackgroundTask(BackgroundTask):
     # ~~SetInDOAJBackgroundTask:Process->BackgroundTask:Process~~
@@ -57,18 +67,11 @@ class SetInDOAJBackgroundTask(BackgroundTask):
 
         # preliminary check to see whether we can change the status of all requested journals
         if in_doaj:
-            with_matches = []
-            for journal_id in journal_ids:
-                j = models.Journal.pull(journal_id)
-                other_with_the_same_issns = models.Journal.find_by_issn(j.bibjson().issns())
-                if len([j for j in other_with_the_same_issns if j.is_in_doaj()]) > 0:
-                    with_matches.append(journal_id)
-
-            if len(with_matches) > 0:
+            matching_issns = find_matching_issns_in_doaj(journal_ids)
+            if matching_issns:
                 job.add_audit_message(
-                    Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids=with_matches))
-                raise RuntimeError(
-                    Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids=with_matches))
+                    Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids=matching_issns))
+                job.outcome_fail()
 
         for journal_id in journal_ids:
             job.add_audit_message("Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))

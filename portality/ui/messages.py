@@ -100,7 +100,7 @@ class Messages(object):
 
     ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
 
-    CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS = "The status couldn't be changed. For the following journals, other with matching ISSN(s) already exists in doaj: {ids}"
+    CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS = "The status couldn't be changed. Other journals with matching ISSN(s) already exists in doaj: {ids}"
 
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID = "Update request {urid} automatically rejected"
