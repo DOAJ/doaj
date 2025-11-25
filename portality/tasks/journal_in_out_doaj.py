@@ -70,8 +70,9 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             matching_issns = find_matching_issns_in_doaj(journal_ids)
             if matching_issns:
                 job.add_audit_message(
-                    Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids=matching_issns))
+                    Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS)
                 job.outcome_fail()
+                return job
 
         for journal_id in journal_ids:
             job.add_audit_message("Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
