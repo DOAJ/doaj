@@ -304,8 +304,6 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 ## In other languages
 
-We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
-
 Please note that these translations may not include the latest changes made to the Guide.
 
 Our criteria are available in:
