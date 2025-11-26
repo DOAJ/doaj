@@ -14,6 +14,7 @@ Options:
   --exclude PATTERN    Index patterns to exclude from deletion (can be specified multiple times)
                        Default excludes: .kibana, .security, .monitoring, .apm, .tasks
   --include-system     Include system indices (those starting with '.')
+  --keep-latest        Keep the latest empty index for each prefix (based on timestamp in name)
 
 Notes:
 - Requires DOAJ config to connect to ES (ELASTICSEARCH_HOSTS, ELASTIC_SEARCH_VERIFY_CERTS)
@@ -24,6 +25,7 @@ Notes:
 import argparse
 import sys
 from typing import List, Dict
+from collections import defaultdict
 
 from portality.core import app, es_connection
 
@@ -42,7 +44,33 @@ def get_all_indices() -> List[Dict]:
         sys.exit(1)
 
 
-def find_empty_indices(indices: List[Dict], exclude_patterns: List[str], include_system: bool) -> List[Dict]:
+def extract_index_prefix(index_name: str) -> str:
+    """
+    Extract the prefix from an index name, removing the timestamp suffix.
+
+    For example: 'doaj-ur_review_route-20251126_172410_000655' -> 'doaj-ur_review_route'
+
+    Args:
+        index_name: Full index name with timestamp
+
+    Returns:
+        Index prefix without timestamp
+    """
+    # Split by hyphen and look for the timestamp pattern (YYYYMMDD_HHMMSS_microseconds)
+    parts = index_name.split('-')
+    if len(parts) < 2:
+        return index_name
+
+    # Check if the last part looks like a timestamp (starts with 8 digits)
+    last_part = parts[-1]
+    if len(last_part) >= 8 and last_part[:8].isdigit():
+        # Return everything except the last part (timestamp)
+        return '-'.join(parts[:-1])
+
+    return index_name
+
+
+def find_empty_indices(indices: List[Dict], exclude_patterns: List[str], include_system: bool, keep_latest: bool) -> List[Dict]:
     """
     Filter indices that have 0 documents.
 
@@ -50,6 +78,7 @@ def find_empty_indices(indices: List[Dict], exclude_patterns: List[str], include
         indices: List of index dicts from ES
         exclude_patterns: Patterns to exclude from results
         include_system: Whether to include system indices (starting with '.')
+        keep_latest: Whether to keep the latest empty index for each prefix
 
     Returns:
         List of empty index dicts with name, size, status, and health
@@ -83,6 +112,24 @@ def find_empty_indices(indices: List[Dict], exclude_patterns: List[str], include
                 'health': idx.get('health', 'unknown'),
                 'docs_deleted': idx.get('docs.deleted', '0')
             })
+
+    # If keep_latest is enabled, filter out all but the latest index for each prefix
+    if keep_latest and empty_indices:
+        # Group indices by prefix
+        prefix_groups = defaultdict(list)
+        for idx in empty_indices:
+            prefix = extract_index_prefix(idx['name'])
+            prefix_groups[prefix].append(idx)
+
+        # For each prefix, keep only the latest (sorted by name, which includes timestamp)
+        indices_to_delete = []
+        for prefix, group in prefix_groups.items():
+            # Sort by name (descending) - latest timestamp will be first
+            sorted_group = sorted(group, key=lambda x: x['name'], reverse=True)
+            # Keep the first (latest), add the rest to delete list
+            indices_to_delete.extend(sorted_group[1:])
+
+        return indices_to_delete
 
     return empty_indices
 
@@ -128,6 +175,11 @@ def main():
         action='store_true',
         help='Skip confirmation prompt and proceed with deletion'
     )
+    parser.add_argument(
+        '--keep-latest',
+        action='store_true',
+        help='Keep the latest empty index for each prefix (based on timestamp in name)'
+    )
 
     args = parser.parse_args()
 
@@ -149,13 +201,19 @@ def main():
     print(f'Total indices found: {len(all_indices)}')
 
     # Find empty indices
-    empty_indices = find_empty_indices(all_indices, exclude_patterns, args.include_system)
+    empty_indices = find_empty_indices(all_indices, exclude_patterns, args.include_system, args.keep_latest)
 
     if not empty_indices:
-        print('\nNo empty indices found.')
+        if args.keep_latest:
+            print('\nNo empty indices to delete (keeping latest for each prefix).')
+        else:
+            print('\nNo empty indices found.')
         return
 
-    print(f'\nFound {len(empty_indices)} empty indices:')
+    if args.keep_latest:
+        print(f'\nFound {len(empty_indices)} empty indices to delete (keeping latest for each prefix):')
+    else:
+        print(f'\nFound {len(empty_indices)} empty indices:')
     print(f'{"Index Name":<60} {"Size":<10} {"Health":<10} {"Status":<10}')
     print('-' * 90)
     for idx in empty_indices:
@@ -163,12 +221,16 @@ def main():
 
     if args.dry_run:
         print('\n[DRY RUN] No indices were deleted.')
+        if args.keep_latest:
+            print('Note: With --keep-latest flag, the latest empty index for each prefix would be kept.')
         print(f'\nTo delete these indices, run without --dry-run flag.')
         return
 
     # Confirm deletion
     print(f'\nAbout to delete {len(empty_indices)} empty indices.')
     print(f'Excluded patterns: {", ".join(exclude_patterns)}')
+    if args.keep_latest:
+        print('Keep latest: Enabled (will preserve the most recent empty index for each prefix)')
 
     if not args.yes:
         confirmation = input('\nContinue with deletion? (yes/no): ')
