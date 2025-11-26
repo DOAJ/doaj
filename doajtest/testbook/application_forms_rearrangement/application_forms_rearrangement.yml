@@ -4,7 +4,7 @@ testset: Editorial Form Field Placement Changes
 tests:
   - title: Admin – Updated Form Layout and Field Behaviour
     setup:
-      - Go to /testdrive/forms_rearrangement
+      - Go to /testdrive/form_rearrangement
     context:
       role: admin
     steps:
@@ -45,7 +45,7 @@ tests:
 
   - title: Editor – Updated Form Layout and Field Behaviour
     setup:
-      - Go to /testdrive/forms_rearrangement
+      - Go to /testdrive/form_rearrangement
     context:
       role: editor
     steps:
@@ -76,7 +76,7 @@ tests:
 
   - title: Publisher – Fields Remain in Existing Sections
     setup:
-      - Go to /testdrive/forms_rearrangement
+      - Go to /testdrive/form_rearrangement
     context:
       role: publisher
     steps:
