@@ -2481,7 +2481,7 @@ class ApplicationContextDefinitions:
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
     # now we can update the Public Context with the correct "About" fieldset
-    PUBLIC["fieldsets"].append(FieldSetDefinitions.KEYWORDS["name"])
+    PUBLIC["fieldsets"] += [FieldSetDefinitions.KEYWORDS["name"]]
 
 
 class JournalContextDefinitions:
