@@ -4312,11 +4312,8 @@ $.extend(true, doaj, {
                 }
 
                 var update_or_added = "";
-                if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    update_or_added = 'Last updated on ' + doaj.dates.humanDate(resultobj.last_manual_update);
-                    if (resultobj.admin && resultobj.admin.last_full_review) {
-                        update_or_added += ' (Last full review on ' + doaj.dates.humanDate(resultobj.admin.last_full_review) + ')';
-                    }
+                if (resultobj.admin && resultobj.admin.last_full_review && resultobj.admin.last_full_review !== '1970-01-01T00:00:00Z') {
+                    update_or_added = 'Last full review on ' + doaj.dates.humanDate(resultobj.admin.last_full_review);
                 } else {
                     update_or_added = 'Added on ' + doaj.dates.humanDate(resultobj.created_date);
                 }
