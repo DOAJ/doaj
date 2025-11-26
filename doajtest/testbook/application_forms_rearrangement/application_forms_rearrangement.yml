@@ -10,7 +10,7 @@ tests:
     steps:
       - step: Log in as DukeDingleberry, the admin
 
-      - step: Access the journal form at /admin/<journal_id>
+      - step: Access the journal form at /admin/journal_id
         results:
           - The plagiarism questions appear in the Best Practice section
           - The keywords field is positioned at the end of the Editorial section
@@ -31,12 +31,12 @@ tests:
           - The new subject is saved correctly
       - step: Click "Unlock & Close"
 
-      - step: Access the application form at /application/<application_id>
+      - step: Access the application form at /application/application_id
         results:
           - Same checks as above
       - step: Click "Unlock & Close"
 
-      - step: Access the update request form at /application/<update_request_id>
+      - step: Access the update request form at /application/update_request_id
         results:
           - Same checks as above
       - step: Click "Unlock & Close"
@@ -51,7 +51,7 @@ tests:
     steps:
       - step: Log in as CountessCrumblewhisk, the editor
 
-      - step: Access the application form at /editor/application/<application_id>
+      - step: Access the application form at /editor/application/application_id
         results:
           - The plagiarism questions appear in the Best Practice section
           - The keywords field is positioned at the end of the Editorial section
@@ -82,7 +82,7 @@ tests:
     steps:
       - step: Log in as LordSniffleton, the publisher
 
-      - step: Access the update request form at /publisher/update_request/<journal_id>
+      - step: Access the update request form at /publisher/update_request/journal_id
         results:
           - The keywords question remains in the About section (not moved to the Editorial section)
           - The plagiarism questions appear in the Best Practice section
