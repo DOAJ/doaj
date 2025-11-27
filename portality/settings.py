@@ -66,7 +66,7 @@ INDEX_PER_TYPE_SUBSTITUTE = '_doc'  # Migrated from esprit
 ELASTIC_SEARCH_DB_PREFIX = "doaj-"  # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
-INITIALISE_INDEX = True  # whether or not to try creating the index and required index types on startup
+INITIALISE_INDEX = False  # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
