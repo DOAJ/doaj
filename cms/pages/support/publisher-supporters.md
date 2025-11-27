@@ -23,25 +23,25 @@ We only accept support through our publisher supporter model from publishers wit
 
 | Band | Number of journals in DOAJ | GBPs (£)* |
 |------|----------------------------|-----------|
-| A    | 600+                       | 26,000    |
-| B    | 400-599                    | 21,000    |
-| C    | 150-399                    | 18,000    |
-| D    | 100-149                    | 15,000    |
-| E    | 50-99                      | 8500      |
-| F    | 30-49                      | 6400      |
-| G    | 10-29                      | 5200      |
-| H    | 1-9                        | 3700      |
+| A    | 600+                       | 27,000    |
+| B    | 400-599                    | 22,000    |
+| C    | 150-399                    | 19,000    |
+| D    | 100-149                    | 16,000    |
+| E    | 50-99                      | 9000      |
+| F    | 30-49                      | 6700      |
+| G    | 10-29                      | 5400      |
+| H    | 1-9                        | 3800      |
 
-### Non-commercial / institutional publishers
+### Community-led / institutional publishers
 
 | Band | Number of journals in DOAJ | GBPs (£)* |
 |------|----------------------------|-----------|
-| C    | 150-399                    | 3600      |
-| D    | 100-149                    | 3100      |
-| E    | 50-99                      | 2600      |
-| F    | 30-49                      | 2100      |
-| G    | 10-29                      | 1550      |
-| H    | 1-9                        | 1050      |
+| C    | 150-399                    | 3700      |
+| D    | 100-149                    | 3200      |
+| E    | 50-99                      | 2700      |
+| F    | 30-49                      | 2200      |
+| G    | 10-29                      | 1600      |
+| H    | 1-9                        | 1100      |
 
 *A 50% discount is available for supporters in Low- and Middle-Income Countries according to the World Bank classification.
 

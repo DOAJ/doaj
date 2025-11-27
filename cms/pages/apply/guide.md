@@ -23,9 +23,7 @@ Open access journals published in any language may apply. Journals should adhere
   - Primary target audience of researchers or practitioners
 
 - Newly launched journals
-  - Before applying to DOAJ, a new or flipped journal must demonstrate a publishing history of more than one year or have published at least ten open access research articles.
-
----
+  - Before applying to DOAJ, a new journal must demonstrate a publishing history of more than one year or have published at least ten open access research articles.
 
 ### The type of open access
 
@@ -36,8 +34,11 @@ Open access journals published in any language may apply. Journals should adhere
   - No embargo period
   - No requirement for users to register to read content
   - A charge for the print version of a journal is permitted
+- Publishing non-open access content:
+  - Within an article, text and figures may be used with permission or under fair use. All non-open access content must be clearly indicated and attributed.
+  - Journals may publish a small amount of non-open access, free-to-read content relevant to the journal's scope provided it is not scholarly articles and is clearly attributed and copyright status is clear.
+  - More details on our [licensing&copyright page](/apply/copyright-and-licensing/).
 
----
 
 ### Journal website
 
@@ -73,16 +74,12 @@ The following information must be available online and easily accessible from th
   - Include the name of a contact person and the journal's dedicated email address.
   - The country given in the application and on the journal website must be where the publisher is registered and carries out its business activities.
 
----
-
 ### ISSN
 
 - A journal must have at least one ISSN (International Standard Serial Number) that is registered and confirmed at [issn.org](https://portal.issn.org/).
 - The ISSN(s) must be displayed on the website.
 - The journal's name in the application and on the website must match what is shown at [issn.org](https://portal.issn.org/).
-
----
-
+  
 ### Quality control process
 
 - A journal must have an editor and an editorial board.
@@ -99,9 +96,6 @@ The following information must be available online and easily accessible from th
   - Where content is not divided into issues, for example in a continuous publication model, endogeny must not exceed 25% in the last calendar year (minimum 5 articles per year).
 - It is strongly recommended that articles should display submitted/accepted/published dates.
 
-  
----
-
 ### Special issues
 
 Journals that publish special issues or other content curated by guest editors must adhere to these additional criteria:
@@ -112,8 +106,6 @@ Journals that publish special issues or other content curated by guest editors m
 - The Editor-in-Chief or dedicated board members must oversee the guest editors
 - Papers submitted to a special issue by the guest editor(s) must be handled under an independent review process and make up no more than 25% of the issue's total
 
----
-
 ### Licensing
 
 - The licensing terms for use and re-use of the published content must be clearly stated on the website.
@@ -123,8 +115,6 @@ Journals that publish special issues or other content curated by guest editors m
 - It is recommended that licensing information is displayed or embedded in full-text articles, but this is not required for inclusion in DOAJ.
 - [More about licensing](/apply/copyright-and-licensing/)
 
----
-
 ### Copyright
 
 - The copyright terms applied to the published content must be clearly stated and separate from those applied to the website.
@@ -132,50 +122,24 @@ Journals that publish special issues or other content curated by guest editors m
   - “All rights reserved” is never appropriate for open access content.
 - [More about copyright](/apply/copyright-and-licensing/)
 
----
+## Quality criteria
 
-## Best practices
+When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the quality team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
 
-The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We recommend journals to adopt these best practices but they are not mandatory for DOAJ indexing.
+- Presence of clear and reliable key information on the journal's website
+- Composition of the journal's editorial board
+- Signs of poor peer review processess
+- Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
+- Journal management and operation
 
-### Archiving policy
+We may also refer to the [Principles of Transparency and Best Practice in Scholarly Publishing](https://doaj.org/apply/transparency/)
 
-- The journal content should be continuously deposited in a long-term digital archiving system. Deposits should be into one of these archives:
-  - any archiving agency included in Keepers Registry 
-  - Internet Archive
-  - PubMed Central
-
----
-
-### Repository policy
-
-- This is also known as self-archiving. Does the journal have a policy allowing authors to deposit versions of their work in an institutional or other repository of their choice?
-- Authors should be permitted to deposit all versions of their paper in an institutional or subject repository:
-  - Preprint
-  - Author's Accepted Manuscript
-  - Published article (Version of Record)
-- An embargo should not be applied.
-
----
-
-### Persistent article identifiers
-
-- Articles should use persistent article identifiers. DOI, ARK or Handle are the most commonly used.
-- All persistent links should resolve correctly.
-
----
-
-### Metadata supply to DOAJ	
-
-- Article metadata should be uploaded to DOAJ regularly. [Uploading article metadata](https://doaj.org/docs/faq/#uploading-article-metadata) increases the visibility and impact of published research.
-
----
 
 ## Additional criteria for some journal types
 
 {:.tabular-list}
 - ### Arts and humanities journals
-   - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
+   - For these disciplines ([pages 10-16 only](https://www.uis.unesco.org/sites/default/files/medias/fichiers/2025/04/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 - ### Clinical Case report journals
    - For DOAJ to include case report journal they must have:
     - A policy on [consent to publication](https://publicationethics.org/guidance/guideline/ensuring-consent-publishing-medical-case-reports) of case details and participant images, and articles must state whether or not this consent was given
@@ -196,7 +160,7 @@ The best practices in this section are about publishing standards based on finda
     - The availability of the archive material (open access, free, or paywalled)
     - Reuse rights of the archive material (all rights reserved or open license)
    - All content published after the flipped date must be completely open access.
-   - DOAJ will consider flipped journals for inclusion after they have published at least ten research articles as a fully Open Access journal.
+   - DOAJ will consider flipped journals for inclusion if they have a publishing history of more than a year or after they have published at least ten research articles as a fully Open Access journal.
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 - ### Subscribe to Open journals (S2O)
@@ -211,6 +175,54 @@ The best practices in this section are about publishing standards based on finda
    - Journals consisting only of book reviews will not be accepted. 
 
 ---
+
+## Best practices
+
+The best practices in this section are about publishing standards based on findability, preserving the content, and ethical publishing practices. We recommend journals to adopt these best practices but they are not mandatory for DOAJ indexing.
+
+### Archiving policy
+
+- The journal content should be continuously deposited in a long-term digital archiving system. Deposits should be into one of these archives:
+  - any archiving agency included in Keepers Registry 
+  - Internet Archive
+  - PubMed Central
+
+### Repository policy
+
+- This is also known as self-archiving. Does the journal have a policy allowing authors to deposit versions of their work in an institutional or other repository of their choice?
+- Authors should be permitted to deposit all versions of their paper in an institutional or subject repository:
+  - Preprint
+  - Author's Accepted Manuscript
+  - Published article (Version of Record)
+- An embargo should not be applied.
+
+### Persistent article identifiers
+
+- Articles should use persistent article identifiers. DOI, ARK or Handle are the most commonly used.
+- All persistent links should resolve correctly.
+
+### Metadata supply to DOAJ	
+
+- Article metadata should be uploaded to DOAJ regularly. [Uploading article metadata](https://doaj.org/docs/faq/#uploading-article-metadata) increases the visibility and impact of published research.
+
+### Artificial Intelligence (AI) and automated tools
+
+Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence (AI) such as large-language models (LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
+
+-  For authors:  
+  - Authors should disclose the use of generatve AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/).
+  - Authors are responsible for checking the validity of the output of any automated tools used in their research and preparing their manuscript.
+  - Automated tools cannot be [credited as authors](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools).
+  - Generative AI cannot be cited as a source.
+
+-  For journals:
+   - Peer reviewers and editors should not use generative AI to create their assessments, [due to risks](https://journals.sagepub.com/doi/full/10.1177/17470161231224552) such as breaches of confidentiality, superficial and non-specific feedback, bias, [hidden prompts](https://asia.nikkei.com/business/technology/artificial-intelligence/positive-review-only-researchers-hide-ai-prompts-in-papers), and false information such as fake references; editing and rewriting may be acceptable if disclosed.
+   - Any routine use of automated tools by the journal or publisher should be disclosed. The tool should have been appropriately tested.
+   - Use of automated tools should be overseen by humans (human in the loop). Journals should ensure that an editor or other staff will verify the automated detection of integrity issues such as text similarity, figure manipulation or duplication, or undeclared generative AI use, or automated peer reviewer suggestions.
+
+
+---
+
 
 ## The application process
 
@@ -263,7 +275,7 @@ We undertake periodic re-evaluation of journals accepted into DOAJ, particularly
 - They have not been updated by the publisher for several years 
 - Reports are received of website unavailability or questionable practices
 
-Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
+Reports of questionable practice will be investigated by the [quality team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
 
 ---
 
@@ -300,7 +312,7 @@ Our criteria are available in:
 
 - [Afrikaans](https://docs.google.com/document/d/1CePOCIpIRMmXQZGV_oSqagTlmpb7YG9vG9CShry7Okw/edit?usp=sharing)
 - [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
-- [Bahasa Indonesia](https://docs.google.com/document/d/1cONA_31Hq8_nvFKQ2_vu0LZ5c4ipdRtE/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
 - [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
 - [Chinese (application form)](https://zenodo.org/record/4350096)
 - [Chinese](https://zenodo.org/record/4633341)
@@ -321,7 +333,7 @@ Our criteria are available in:
 
 ## Version history
 
-This is Version 2.5 of the DOAJ Guide to applying.
+This is Version 2.6 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 
