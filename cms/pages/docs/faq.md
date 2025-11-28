@@ -55,7 +55,7 @@ You can upload article metadata to us in three ways.
   - The API key from [your DOAJ account](/account/login)
   - do not send us author email addresses
 - **Help available?** Yes, via one of our API groups; search for 'Google Group DOAJ API' in your browser.
-- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Testing available**: not currently available
 - **Documentation** [Yes](/docs/api/)
 - **FAQS** [Yes](/api/v3/docs#api-faq)
 - **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin).
@@ -78,7 +78,7 @@ You can upload article metadata to us in three ways.
   - A way to generate structured XML and validate it against the required XSD file.
   - The XSD files: [DOAJ](/static/doaj/doajArticles.xsd), [Crossref 5.3.1](/static/crossref/crossref5.3.1.xsd), [Crossref 4.4.2](/static/crossref/crossref4.4.2.xsd)
   - do not send us author email addresses
-- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Testing available**: not currently available
 - **Documentation** [DOAJ XML](/docs/xml/), [Crossref 5.3.1 XML](https://www.crossref.org/documentation/schema-library/metadata-deposit-schema-5-3-1/), [Crossref 4.4.2 XML](https://www.crossref.org/documentation/schema-library/resource-only-deposit-schema-4-4-2/)
 - **FAQS** No
 - **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin).
@@ -108,7 +108,7 @@ You can upload article metadata to us in three ways.
   - No HTML formatting, no author email addresses
   - The abstract metadata for the article: title, full-text URL, DOI (if applicable), author names, ORCiD (if applicable), affiliations, publication date, ISSN(s), Volume/Issue/Page (if applicable), abstract 
 - **Help available?** Yes. [Contact our Help Desk](mailto:helpdesk@doaj.org).
-- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Testing available**: not currently available
 - **Documentation** No
 - **Troubleshooting**: make sure you enter the Print ISSN and Electronic ISSN in the right ISSN field.
 
