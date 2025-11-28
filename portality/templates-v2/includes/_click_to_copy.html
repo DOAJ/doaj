@@ -37,31 +37,25 @@
 </button>
 
 <script type="text/javascript">
-    (function waitForJQuery() {
-        if (window.jQuery) {
-            $(function() {
-                var $copySpan = $('#click-to-copy--{{ value_elem_id }}');
-                var $valueElem = $('#{{ value_elem_id }}');
+$(function () {
+    const $copySpan = $('#click-to-copy--{{ value_elem_id }}');
+    const $valueElem = $('#{{ value_elem_id }}');
 
-                $copySpan.on('click', function() {
-                    if (!$valueElem.length) return;
-
-                    var textToCopy = $valueElem.val() || $valueElem.text();
-
-                    navigator.clipboard.writeText(textToCopy).then(function() {
-                        var $msg = $('<span class="click-to-copy--confirmation">Value copied!</span>');
-                        $copySpan.after($msg);
-
-                        setTimeout(function() {
-                            $msg.remove();
-                        }, 3000);
-                    }).catch(function(err) {
-                        console.error('Failed to copy:', err);
-                    });
-                });
-            });
-        } else {
-            setTimeout(waitForJQuery, 50); // check again in 50ms
-        }
-    })();
+    $copySpan.on('click', () => {
+        if (!$valueElem.length) return;
+        const textToCopy = $valueElem.val() || $valueElem.text();
+        navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+            const $msg = $('<span class="click-to-copy--confirmation">Value copied!</span>');
+            $copySpan.after($msg);
+            setTimeout(() => {
+                $msg.remove();
+            }, 3000);
+        })
+        .catch(err => {
+            console.error('Failed to copy:', err);
+        });
+    });
+});
 </script>
+
