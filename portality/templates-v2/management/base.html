@@ -16,7 +16,7 @@
     {% endblock %}
 {% endblock %}
 
-{% block fixed_header %}{% endblock %}
+{%- block management_main_header_classes -%}{%- endblock -%}
 
 {% block body_class %}dashboard{% endblock %}
 
@@ -75,7 +75,7 @@
         {% block nav %}{% endblock %}
     </header>
     <main>
-        <header class="main-header {{ self.fixed_header() }}">
+        <header class="main-header {{ self.management_main_header_classes() }}">
             <div class="row">
                 <header class="col-md-6 col-lg-6">
                     <p class="label tag">

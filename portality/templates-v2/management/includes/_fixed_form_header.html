@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-8 above_the_fold">
-        <h1 class="above_the_fold--title">{% if obj.es_type == constants.LOCK_JOURNAL %}Journal{% elif obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: <span id="above_the_fold__title">{{ obj.bibjson().title }}</span> {% set value_elem_id="above_the_fold__title" %}{% include 'includes/_click_to_copy.html' with context%}</h1>
+        <h1 class="above_the_fold--title">{% if obj.es_type == constants.ES_TYPE_JOURNAL %}Journal{% elif obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: <span id="above_the_fold__title">{{ obj.bibjson().title }}</span> {% set value_elem_id="above_the_fold__title" %}{% include 'includes/_click_to_copy.html' with context%}</h1>
         <h2><a class="text-muted above_the_fold--url" id="above_the_fold__url" href='{{ obj.bibjson().journal_url }}' target="_blank">{{ obj.bibjson().journal_url }}</a>{% set value_elem_id="above_the_fold__url" %}{% include 'includes/_click_to_copy.html' with context %}</h2>
         <p class="above_the_fold--issns">
             <span data-feather="book-open"></span>
