@@ -13,7 +13,7 @@ but we are leaving it in place in case that changes #}
 {% set quick_reject = false %}
 {% set withdrawable = false %}
 
-{% block management_main_header_classes %}fixed{% endblock %}
+{% set header_style = "fixed" %}
 {% block page_header %}
 {% include "management/_application-form/includes/_fixed_header.html" with context %}
 {% endblock %}
