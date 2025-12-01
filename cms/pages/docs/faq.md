@@ -34,7 +34,7 @@ Our metadata is collected and incorporated into commercial discovery systems, li
 
 ## What happens to metadata after you upload it to DOAJ
 
-As soon as you upload your metadata to us, we ingest it and discard the original XML or JSON files. We process the metadata to our own XML and JSON requirements. This metadata is then openly available across all of our endpoints. This process allows us to claim rights on the metadata, however we waive all rights under a CC0 waiver. The openness of our platform and the fact that we waive all rights means that anyone can collect the metadata and ingest it into their systems without any attribution to DOAJ. This includes AI-supported solutions, such as ChatGPT. One thing that isn't affected by this process is any copyright assigned to the work the metadata describes.
+As soon as you upload your metadata to us, we ingest it and discard the original XML or JSON files. We process the metadata to our own XML and JSON requirements. This metadata is then openly available across all of our endpoints. This process allows us to claim rights on the metadata, however we waive all rights under a CC0 waiver. The openness of our platform and the fact that we waive all rights means that anyone can collect the metadata and ingest it into their systems without any attribution to DOAJ. This includes AI-supported solutions, such as ChatGPT, Gemini, and Perplexity. One thing that isn't affected by this process is any copyright assigned to the work the metadata describes.
 
 Any questions about this process or what happens to metadata after you upload it to DOAJ, can be sent to [our Help Desk](https://doaj.org/contact/).
 
