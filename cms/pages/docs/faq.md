@@ -177,7 +177,7 @@ If you received a spreadsheet from us--a 'Journal Update File'--please complete 
 
 Before you return the spreadsheet to us, you must do two things:
 
-1. Convert it to a CSV using the 'Save as' function. (If asked, save it in the Unicode UTF-8 format.)
+1. Convert it to a CSV using the 'Save as' function. If asked, save it in the Unicode UTF-8 format. Delete the Instructions tab first.
 2. [Validate it](/publisher/journal-csv).
 
 Here are some tips to ensure that your CSV file will pass validation:
@@ -189,7 +189,7 @@ Here are some tips to ensure that your CSV file will pass validation:
 - don't include anything in the column other than what is asked for in the instructions
 - make sure no spaces are accidentally added before or after the information in each cell
 
-Deleting a journal (a row) from the spreadsheet means that no update happens; it will not remove a journal from your account or withdraw it from DOAJ. To do this, you must contact [Help Desk](mailto:helpdesk@doaj.org).
+Deleting a journal (a row) from the spreadsheet means that no update will be applied to that journal. It will not remove the journal from your account or withdraw it from DOAJ. To do this, you must contact [Help Desk](mailto:helpdesk@doaj.org).
 
 ### Validating your CSV
 
@@ -197,8 +197,8 @@ To validate your CSV, go to the '[Validate your CSV](https://doaj.org/publisher/
 
 If the CSV validates correctly, you will see one of these two messages: 
 
-'File validated successfully and emailed to us. You can now close this tab.'
-'File validated successfully but with warnings. It has been emailed to us. Please check the warnings below and contact us with any queries.'
+'File validated successfully.</h3>You can now send us the file.'
+'File validated successfully but with warnings. Please check the warnings below and contact us with queries. If all looks good, please send us the file.'
 
 If the CSV cannot be validated, one or several warnings will be displayed:
 
