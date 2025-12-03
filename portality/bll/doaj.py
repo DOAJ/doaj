@@ -174,3 +174,12 @@ class DOAJ(object):
         """
         from portality.bll.services import admin_alerts
         return admin_alerts.AdminAlertsService()
+
+    @classmethod
+    def accountService(cls):
+        """
+        Obtain an instance of the AccountSrvice ~~->AccountService:Service~~
+        :return: AccountService
+        """
+        from portality.bll.services import account
+        return account.AccountService()
