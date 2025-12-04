@@ -42,6 +42,15 @@
     {% endfor %}
     {% endif %}
 
+    {% set fs = formulaic_context.fieldset("related_journals") %}
+    {% if fs %}
+    <h2 class="form__header">{{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {% include field_template %}
+    {% endfor %}
+    {% endif %}
+
     {% set fs = formulaic_context.fieldset("subject") %}
     {% if fs %}
         <h2 class="form__header">{{ fs.label }}</h2>

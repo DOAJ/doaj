@@ -355,14 +355,15 @@ class DifferentTo(MultiFieldValidator):
 
 class RequiredIfOtherValue(MultiFieldValidator):
     """
-    Makes a field required, if the user has selected a specific value in another field
+    Makes a field required, if the user has selected a specific value (or any value if "value" is not provided)
+    in another field
 
     ~~RequiredIfOtherValue:FormValidator~~
     """
 
-    def __init__(self, other_field_name, other_value, message=None, *args, **kwargs):
-        self.other_value = other_value
-        self.message = message if message is not None else "This field is required when {x} is {y}".format(x=other_field_name, y=other_value)
+    def __init__(self, other_field_name, other_value=None, message=None, *args, **kwargs):
+        self.other_value = other_value if other_value else None
+        self.message = message if message is not None else "This field is required when {x} is {y}".format(x=other_field_name, y=other_value if other_value else "provided")
         super(RequiredIfOtherValue, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
@@ -378,6 +379,10 @@ class RequiredIfOtherValue(MultiFieldValidator):
             self._match_single(form, field, other_field)
 
     def _match_single(self, form, field, other_field):
+        if self.other_value is None:
+            if other_field.data:
+                dr = validators.DataRequired(self.message)
+                dr(form, field)
         if isinstance(other_field.data, list):
             match = self.other_value in other_field.data
         else:
@@ -669,4 +674,22 @@ class CurrentISOLanguage(object):
         if field.data is not None and field.data != '':
             check = isolang.find(field.data)
             if check is None:
+                raise validators.ValidationError(self.message)
+
+class JournalsByOwner(MultiFieldValidator):
+    """
+    A field is valid if it contains an id of another journal of the same owner as the current one.
+    """
+    def __init__(self, message=None):
+        super(JournalsByOwner, self).__init__(other_field="owner")
+        if not message:
+            message = "Only journals of the same owner as the current record can be linked."
+        self.message = message
+
+    def __call__(self, form, field):
+        owner = self.get_other_field(self.other_field_name, form).data
+        if field.data is not None and field.data != '':
+            j = Journal.pull(field.data)
+            check = j.owner == owner
+            if not check:
                 raise validators.ValidationError(self.message)
