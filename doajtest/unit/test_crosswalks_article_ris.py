@@ -29,13 +29,15 @@ AB  - abstract
 KW  - word
 KW  - key
 DO  - 10.0000/SOME.IDENTIFIER
+SN  - 1234-5678
+SN  - 9876-5432
 LA  - EN
 LA  - FR
 ER  - 
         """.split()
 
     def test_article2ris__only_title(self):
-        ris = ArticleRisXWalk.article2ris({"bibjson": {"title": "Article Title"}})
+        ris = ArticleRisXWalk.article2ris(models.Article(**{"bibjson": {"title": "Article Title"}}))
         assert ris.to_text().split() == """
 TY  - JOUR
 T1  - Article Title
