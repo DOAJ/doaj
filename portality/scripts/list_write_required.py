@@ -1,5 +1,6 @@
 from portality.app import app
 import csv
+from portality.lib.paths import rel2abs
 
 def list_write_required_routes(app):
     """Return a list of dicts for all URL rules whose view is marked by write_required."""
@@ -18,7 +19,8 @@ def list_write_required_routes(app):
     return routes
 
 routes = list_write_required_routes(app)
-with open("write_required_routes.csv", "w", newline='') as csvfile:
+out = rel2abs(__file__, "..", "..", "deploy", "write_required_routes.csv")
+with open(out, "w", newline='') as csvfile:
     fieldnames = ["rule", "endpoint", "methods"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
