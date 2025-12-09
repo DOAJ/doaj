@@ -518,7 +518,9 @@ class DomainObject(UserDict, object):
         # else:
         #     return esprit.raw.delete_index(es_connection)
         print('Destroying indexes with prefix ' + app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*', **es_kwargs)
+        resp = ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*', **es_kwargs)
+        print("Destroyed indexes with prefix " + app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
+        return resp
 
     @classmethod
     def check_es_raw_response(cls, res, extra_trace_info=''):
