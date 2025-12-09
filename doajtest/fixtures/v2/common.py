@@ -87,7 +87,7 @@ JOURNAL_LIKE_BIBJSON = {
         "country": "US"
     },
     "keywords": ["word", "key"],
-    "labels": ["s2o"],
+    "labels": ["s2o", "mirror"],
     "language": ["EN", "FR"],
     "license": [
         {
@@ -173,6 +173,8 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "institution_country" : "US",
     "keywords": ["word", "key"],
     "s2o": True,
+    "mirror": True,
+    "ojc": False,
     "language": ["EN", "FR"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",

@@ -648,7 +648,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
         assert bj.language == ["EN", "FR"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "mirror"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 3, bj.subject
@@ -778,6 +778,7 @@ class TestModels(DoajTestCase):
         bj.add_keyword("keyword")
         bj.add_language("CZ")
         bj.add_label("s2o")
+        bj.add_label("ojc")
         bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
         bj.add_replaces("1234-1234")
         bj.add_subject("SCH", "TERM", "CDE")
@@ -790,7 +791,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
         assert bj.language == ["IT", "CZ"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "ojc"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
