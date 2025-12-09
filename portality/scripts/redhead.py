@@ -418,6 +418,7 @@ def _expand_block_tree_node(record, records):
             all_block_definitions.append(r)
 
     node["files"] += [x["file"] for x in all_block_definitions]
+    node["files"] = sorted(list(set(node["files"])))
 
     blocklist = []
     for entry in all_block_definitions:
