@@ -8,8 +8,10 @@ log_format ip_cloudflare '$remote_addr - $remote_user [$time_local] "$request" '
 
 # NOTE: change back to $binary_remote_addr if the app is no longer being served through cloudflare.
 limit_req_zone $http_cf_connecting_ip zone=general:100m rate=8r/s;
+limit_req_zone $http_cf_connecting_ip zone=query:100m rate=5r/s;
 limit_req_zone $http_cf_connecting_ip zone=api:100m rate=12r/s;
 limit_req_zone $http_cf_connecting_ip zone=oai:100m rate=1r/s;
+limit_req_zone $http_cf_connecting_ip zone=export:100m rate=1r/s;
 limit_req_status 429;
 
 # A map for the frontend that prevents machine use
@@ -72,6 +74,7 @@ upstream doaj_ed_failover {
 upstream doaj_index {
     server 10.131.191.132:9200;
     server 10.131.191.133:9200;
+    server 10.131.191.139:9200;
 }
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
@@ -200,7 +203,7 @@ server {
     }
     location /query {
         if ($block_ua) {return 403;}
-        limit_req zone=general burst=10 nodelay;
+        limit_req zone=query burst=10 nodelay;
         proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
@@ -270,6 +273,19 @@ server {
     location /publisher {   # only /publisher/uploadfile MUST go to background
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    location /service/export {    # DISABLED Export RIS - send this only to 1 machine while we figure out high load
+        limit_req zone=export burst=5;
+        return 503;
+        # Send to public-2 ONLY for now
+        #proxy_pass http://10.131.191.161:5050;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
