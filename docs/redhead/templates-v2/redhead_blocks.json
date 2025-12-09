@@ -17,25 +17,57 @@
             "name": "admin_content",
             "blocks": [],
             "files": [
-              "management/admin/base.html",
-              "management/admin/admin_site_search.html",
-              "management/admin/account/users.html",
               "management/admin/account/create.html",
-              "management/admin/account/edit.html"
+              "management/admin/account/edit.html",
+              "management/admin/account/users.html",
+              "management/admin/admin_site_search.html",
+              "management/admin/alerts_search.html",
+              "management/admin/application_locked.html",
+              "management/admin/applications.html",
+              "management/admin/article_metadata.html",
+              "management/admin/autoassign_search.html",
+              "management/admin/background_jobs_search.html",
+              "management/admin/base.html",
+              "management/admin/continuation.html",
+              "management/admin/dashboard.html",
+              "management/admin/editor_group.html",
+              "management/admin/editor_group_search.html",
+              "management/admin/global_notifications_search.html",
+              "management/admin/journal_locked.html",
+              "management/admin/journals_search.html",
+              "management/admin/maned_application.html",
+              "management/admin/maned_journal.html",
+              "management/admin/notifications.html",
+              "management/admin/readonly_journal.html",
+              "management/admin/reports_search.html",
+              "management/admin/ris_search.html",
+              "management/admin/unlocked.html",
+              "management/admin/update_requests.html"
             ]
           },
           {
             "name": "editor_content",
             "blocks": [],
             "files": [
+              "management/editor/account/edit.html",
+              "management/editor/application_locked.html",
+              "management/editor/assed_application.html",
+              "management/editor/assed_journal.html",
               "management/editor/base.html",
-              "management/editor/account/edit.html"
+              "management/editor/dashboard.html",
+              "management/editor/editor_application.html",
+              "management/editor/editor_journal.html",
+              "management/editor/group_applications.html",
+              "management/editor/journal_locked.html",
+              "management/editor/readonly_journal.html",
+              "management/editor/unlocked.html",
+              "management/editor/your_applications.html"
             ]
           }
         ],
         "files": [
-          "management/base.html",
           "management/admin/base.html",
+          "management/base.html",
           "management/editor/base.html"
         ]
       },
@@ -43,51 +75,111 @@
         "name": "nav",
         "blocks": [],
         "files": [
-          "management/base.html",
           "management/admin/base.html",
+          "management/base.html",
           "management/editor/base.html"
         ]
       },
       {
-        "name": "page_title",
+        "name": "page_header",
         "blocks": [],
         "files": [
+          "management/admin/dashboard.html",
           "management/base.html",
-          "base.html",
-          "public/layouts/static-page.html",
-          "public/account/reset.html",
-          "public/account/login.html",
-          "public/account/register.html",
-          "public/account/login_to_apply.html",
-          "public/account/forgot.html",
-          "public/account/edit.html",
-          "management/admin/admin_site_search.html",
-          "management/admin/account/users.html",
-          "management/admin/account/create.html",
-          "management/admin/account/edit.html",
-          "management/editor/account/edit.html"
+          "management/editor/dashboard.html"
         ]
       },
       {
         "name": "public_content",
-        "blocks": [],
+        "blocks": [
+          {
+            "name": "publisher_content",
+            "blocks": [
+              {
+                "name": "single_col_content",
+                "blocks": [],
+                "files": [
+                  "public/400.html",
+                  "public/401.html",
+                  "public/404.html",
+                  "public/500.html",
+                  "public/layouts/single_col_page.html",
+                  "public/publisher/application_deleted.html",
+                  "public/publisher/layouts/single_col_page.html",
+                  "public/readonly_mode.html"
+                ]
+              }
+            ],
+            "files": [
+              "public/publisher/application_already_submitted.html",
+              "public/publisher/article_metadata.html",
+              "public/publisher/base.html",
+              "public/publisher/drafts.html",
+              "public/publisher/journal_csv.html",
+              "public/publisher/journals.html",
+              "public/publisher/layouts/single_col_page.html",
+              "public/publisher/locked.html",
+              "public/publisher/preservation.html",
+              "public/publisher/publisher_update_request.html",
+              "public/publisher/readonly_application.html",
+              "public/publisher/readonly_preservation.html",
+              "public/publisher/update_requests.html",
+              "public/publisher/xml_help.html",
+              "public/publisher/xml_upload.html"
+            ]
+          },
+          {
+            "name": "single_col_content",
+            "blocks": [],
+            "files": [
+              "public/400.html",
+              "public/401.html",
+              "public/404.html",
+              "public/500.html",
+              "public/layouts/single_col_page.html",
+              "public/publisher/application_deleted.html",
+              "public/publisher/layouts/single_col_page.html",
+              "public/readonly_mode.html"
+            ]
+          },
+          {
+            "name": "toc_content",
+            "blocks": [],
+            "files": [
+              "public/layouts/toc.html",
+              "public/toc_articles.html",
+              "public/toc_main.html"
+            ]
+          }
+        ],
         "files": [
+          "public/account/edit.html",
+          "public/account/forgot.html",
+          "public/account/login.html",
+          "public/account/login_to_apply.html",
+          "public/account/register.html",
+          "public/account/reset.html",
+          "public/api/v3/api_docs.html",
+          "public/api/v4/api_docs.html",
+          "public/article.html",
+          "public/articles_search.html",
           "public/base.html",
           "public/index.html",
+          "public/journals_search.html",
+          "public/layouts/single_col_page.html",
           "public/layouts/static-page.html",
-          "public/account/reset.html",
-          "public/account/login.html",
-          "public/account/register.html",
-          "public/account/login_to_apply.html",
-          "public/account/forgot.html",
-          "public/account/edit.html"
+          "public/layouts/toc.html",
+          "public/openurl/404.html",
+          "public/openurl/help.html",
+          "public/public_application.html",
+          "public/publisher/base.html"
         ]
       }
     ],
     "files": [
       "base.html",
-      "public/base.html",
-      "management/base.html"
+      "management/base.html",
+      "public/base.html"
     ]
   },
   {
@@ -100,41 +192,91 @@
             "name": "admin_js",
             "blocks": [],
             "files": [
-              "management/admin/base.html",
-              "management/admin/account/users.html",
               "management/admin/account/create.html",
-              "management/admin/account/edit.html"
+              "management/admin/account/edit.html",
+              "management/admin/account/users.html",
+              "management/admin/admin_site_search.html",
+              "management/admin/alerts_search.html",
+              "management/admin/applications.html",
+              "management/admin/article_metadata.html",
+              "management/admin/autoassign_search.html",
+              "management/admin/background_jobs_search.html",
+              "management/admin/base.html",
+              "management/admin/dashboard.html",
+              "management/admin/editor_group.html",
+              "management/admin/editor_group_search.html",
+              "management/admin/global_notifications_search.html",
+              "management/admin/journals_search.html",
+              "management/admin/maned_application.html",
+              "management/admin/maned_journal.html",
+              "management/admin/notifications.html",
+              "management/admin/readonly_journal.html",
+              "management/admin/reports_search.html",
+              "management/admin/ris_search.html",
+              "management/admin/update_requests.html"
             ]
           },
           {
             "name": "editor_js",
             "blocks": [],
             "files": [
+              "management/editor/account/edit.html",
+              "management/editor/assed_application.html",
+              "management/editor/assed_journal.html",
               "management/editor/base.html",
-              "management/editor/account/edit.html"
+              "management/editor/dashboard.html",
+              "management/editor/editor_application.html",
+              "management/editor/editor_journal.html",
+              "management/editor/group_applications.html",
+              "management/editor/readonly_journal.html",
+              "management/editor/your_applications.html"
             ]
           }
         ],
         "files": [
-          "management/base.html",
           "management/admin/base.html",
+          "management/base.html",
           "management/editor/base.html"
         ]
       },
       {
         "name": "public_js",
-        "blocks": [],
+        "blocks": [
+          {
+            "name": "publisher_js",
+            "blocks": [],
+            "files": [
+              "public/publisher/article_metadata.html",
+              "public/publisher/base.html",
+              "public/publisher/drafts.html",
+              "public/publisher/journal_csv.html",
+              "public/publisher/journals.html",
+              "public/publisher/preservation.html",
+              "public/publisher/publisher_update_request.html",
+              "public/publisher/readonly_application.html",
+              "public/publisher/update_requests.html",
+              "public/publisher/xml_upload.html"
+            ]
+          }
+        ],
         "files": [
-          "public/base.html",
+          "public/account/edit.html",
           "public/account/register.html",
-          "public/account/edit.html"
+          "public/api/v3/api_docs.html",
+          "public/api/v4/api_docs.html",
+          "public/articles_search.html",
+          "public/base.html",
+          "public/journals_search.html",
+          "public/public_application.html",
+          "public/publisher/base.html",
+          "public/toc_articles.html"
         ]
       }
     ],
     "files": [
       "base.html",
-      "public/base.html",
-      "management/base.html"
+      "management/base.html",
+      "public/base.html"
     ]
   },
   {
@@ -151,54 +293,84 @@
         "name": "meta_description",
         "blocks": [],
         "files": [
+          "public/article.html",
+          "public/articles_search.html",
           "public/base.html",
-          "public/layouts/static-page.html"
+          "public/journals_search.html",
+          "public/layouts/static-page.html",
+          "public/layouts/toc.html"
         ]
       },
       {
         "name": "meta_og_description",
         "blocks": [],
         "files": [
+          "public/article.html",
+          "public/articles_search.html",
           "public/base.html",
-          "public/layouts/static-page.html"
+          "public/journals_search.html",
+          "public/layouts/static-page.html",
+          "public/layouts/toc.html"
         ]
       },
       {
         "name": "meta_og_title",
         "blocks": [],
         "files": [
+          "public/article.html",
+          "public/articles_search.html",
           "public/base.html",
-          "public/layouts/static-page.html"
+          "public/journals_search.html",
+          "public/layouts/static-page.html",
+          "public/layouts/toc.html"
         ]
       },
       {
         "name": "meta_twitter_description",
         "blocks": [],
         "files": [
+          "public/article.html",
+          "public/articles_search.html",
           "public/base.html",
-          "public/layouts/static-page.html"
+          "public/journals_search.html",
+          "public/layouts/static-page.html",
+          "public/layouts/toc.html"
         ]
       },
       {
         "name": "meta_twitter_title",
         "blocks": [],
         "files": [
+          "public/article.html",
+          "public/articles_search.html",
           "public/base.html",
-          "public/layouts/static-page.html"
+          "public/journals_search.html",
+          "public/layouts/static-page.html",
+          "public/layouts/toc.html"
         ]
       },
       {
         "name": "public_meta",
-        "blocks": [],
+        "blocks": [
+          {
+            "name": "publisher_meta",
+            "blocks": [],
+            "files": [
+              "public/publisher/base.html"
+            ]
+          }
+        ],
         "files": [
-          "public/base.html"
+          "public/article.html",
+          "public/base.html",
+          "public/publisher/base.html"
         ]
       }
     ],
     "files": [
       "base.html",
-      "public/base.html",
-      "management/base.html"
+      "management/base.html",
+      "public/base.html"
     ]
   },
   {
@@ -211,37 +383,64 @@
             "name": "admin_stylesheets",
             "blocks": [],
             "files": [
+              "management/admin/account/create.html",
+              "management/admin/account/users.html",
+              "management/admin/admin_site_search.html",
+              "management/admin/alerts_search.html",
+              "management/admin/applications.html",
+              "management/admin/autoassign_search.html",
+              "management/admin/background_jobs_search.html",
               "management/admin/base.html",
-              "management/admin/account/create.html"
+              "management/admin/editor_group_search.html",
+              "management/admin/global_notifications_search.html",
+              "management/admin/journals_search.html",
+              "management/admin/notifications.html",
+              "management/admin/reports_search.html",
+              "management/admin/ris_search.html",
+              "management/admin/update_requests.html"
             ]
           },
           {
             "name": "editor_stylesheets",
             "blocks": [],
             "files": [
-              "management/editor/base.html"
+              "management/editor/base.html",
+              "management/editor/group_applications.html",
+              "management/editor/your_applications.html"
             ]
           }
         ],
         "files": [
-          "management/base.html",
           "management/admin/base.html",
+          "management/base.html",
           "management/editor/base.html"
         ]
       },
       {
         "name": "public_stylesheets",
-        "blocks": [],
+        "blocks": [
+          {
+            "name": "publisher_stylesheets",
+            "blocks": [],
+            "files": [
+              "public/publisher/base.html",
+              "public/publisher/publisher_update_request.html"
+            ]
+          }
+        ],
         "files": [
+          "public/account/register.html",
+          "public/api/v3/api_docs.html",
+          "public/api/v4/api_docs.html",
           "public/base.html",
-          "public/account/register.html"
+          "public/publisher/base.html"
         ]
       }
     ],
     "files": [
       "base.html",
-      "public/base.html",
-      "management/base.html"
+      "management/base.html",
+      "public/base.html"
     ]
   },
   {
@@ -256,15 +455,32 @@
     "blocks": [],
     "files": [
       "base.html",
+      "management/base.html",
+      "public/400.html",
+      "public/401.html",
+      "public/404.html",
+      "public/500.html",
+      "public/article.html",
       "public/index.html",
-      "management/base.html"
+      "public/layouts/toc.html"
     ]
   },
   {
     "name": "body_id",
     "blocks": [],
     "files": [
-      "base.html"
+      "base.html",
+      "management/admin/maned_application.html",
+      "management/admin/maned_journal.html",
+      "management/admin/readonly_journal.html",
+      "management/editor/assed_application.html",
+      "management/editor/assed_journal.html",
+      "management/editor/editor_application.html",
+      "management/editor/editor_journal.html",
+      "management/editor/readonly_journal.html",
+      "public/public_application.html",
+      "public/publisher/publisher_update_request.html",
+      "public/publisher/readonly_application.html"
     ]
   },
   {
@@ -272,19 +488,74 @@
     "blocks": [],
     "files": [
       "base.html",
-      "public/layouts/static-page.html",
-      "public/account/reset.html",
-      "public/account/login.html",
-      "public/account/register.html",
-      "public/account/login_to_apply.html",
-      "public/account/forgot.html",
-      "public/account/edit.html",
-      "management/base.html",
-      "management/admin/admin_site_search.html",
-      "management/admin/account/users.html",
       "management/admin/account/create.html",
       "management/admin/account/edit.html",
-      "management/editor/account/edit.html"
+      "management/admin/account/users.html",
+      "management/admin/admin_site_search.html",
+      "management/admin/application_locked.html",
+      "management/admin/applications.html",
+      "management/admin/article_metadata.html",
+      "management/admin/autoassign_search.html",
+      "management/admin/background_jobs_search.html",
+      "management/admin/continuation.html",
+      "management/admin/dashboard.html",
+      "management/admin/editor_group.html",
+      "management/admin/editor_group_search.html",
+      "management/admin/global_notifications_search.html",
+      "management/admin/journal_locked.html",
+      "management/admin/journals_search.html",
+      "management/admin/maned_application.html",
+      "management/admin/maned_journal.html",
+      "management/admin/readonly_journal.html",
+      "management/admin/reports_search.html",
+      "management/admin/ris_search.html",
+      "management/admin/unlocked.html",
+      "management/admin/update_requests.html",
+      "management/editor/account/edit.html",
+      "management/editor/application_locked.html",
+      "management/editor/assed_application.html",
+      "management/editor/assed_journal.html",
+      "management/editor/dashboard.html",
+      "management/editor/editor_application.html",
+      "management/editor/editor_journal.html",
+      "management/editor/group_applications.html",
+      "management/editor/journal_locked.html",
+      "management/editor/readonly_journal.html",
+      "management/editor/unlocked.html",
+      "management/editor/your_applications.html",
+      "public/400.html",
+      "public/401.html",
+      "public/404.html",
+      "public/500.html",
+      "public/account/edit.html",
+      "public/account/forgot.html",
+      "public/account/login.html",
+      "public/account/login_to_apply.html",
+      "public/account/register.html",
+      "public/account/reset.html",
+      "public/api/v3/api_docs.html",
+      "public/api/v4/api_docs.html",
+      "public/article.html",
+      "public/articles_search.html",
+      "public/journals_search.html",
+      "public/layouts/static-page.html",
+      "public/layouts/toc.html",
+      "public/public_application.html",
+      "public/publisher/application_deleted.html",
+      "public/publisher/article_metadata.html",
+      "public/publisher/base.html",
+      "public/publisher/drafts.html",
+      "public/publisher/journal_csv.html",
+      "public/publisher/journals.html",
+      "public/publisher/locked.html",
+      "public/publisher/preservation.html",
+      "public/publisher/publisher_update_request.html",
+      "public/publisher/readonly_application.html",
+      "public/publisher/readonly_preservation.html",
+      "public/publisher/update_requests.html",
+      "public/publisher/xml_help.html",
+      "public/publisher/xml_upload.html",
+      "public/readonly_mode.html"
     ]
   }
 ]

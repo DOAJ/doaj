@@ -19,6 +19,7 @@ tmp/*
 scratch.py
 .coverage
 htmlcov/*
+dependencies_analysis/
 
 # PyCharm and other IntelliJ-based IDE-s and editors' folder:
 .idea
