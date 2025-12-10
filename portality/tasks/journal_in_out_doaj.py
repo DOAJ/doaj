@@ -72,7 +72,6 @@ class SetInDOAJBackgroundTask(BackgroundTask):
                 job.add_audit_message(
                     Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS)
                 job.outcome_fail()
-                job.fail()
                 return job
 
         for journal_id in journal_ids:
