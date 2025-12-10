@@ -130,24 +130,27 @@ def undismiss_autocheck(autocheck_set_id, autocheck_id):
 @blueprint.route('/export/article/<article_id>/<fmt>')
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_RIS', 'RIS'),
                     action=app.config.get('ANALYTICS_ACTION_RISEXPORT', 'Export'), record_value_of_which_arg='article_id')
-def export_article_ris(article_id, fmt):
-    article = models.Article.pull(article_id)
-    if not article:
-        abort(404)
-
+def export_article(article_id, fmt):
     if fmt != 'ris':
         # only support ris for now
         abort(404)
 
-    byte_stream = BytesIO()
-    ris = ArticleRisXWalk.article2ris(article)
-    byte_stream.write(ris.to_text().encode('utf-8', errors='ignore'))
-    byte_stream.seek(0)
+    ris = models.RISExport.pull(article_id)
+    if ris is not None:
+        filename = f'article-{article_id[:10]}.ris'
+        resp = make_response(send_file(ris.byte_stream, as_attachment=True, download_name=filename))
+        return resp
 
+    article = models.Article.pull(article_id)
+    if not article:
+        abort(404)
+
+    exportSvc = DOAJ.exportService()
+    ris = exportSvc.ris(article)
     filename = f'article-{article_id[:10]}.ris'
-
-    resp = make_response(send_file(byte_stream, as_attachment=True, download_name=filename))
+    resp = make_response(send_file(ris.byte_stream, as_attachment=True, download_name=filename))
     return resp
+
 
 @blueprint.route("/alerts/<alert_id>/<action>", methods=["POST"])
 def manage_alert(alert_id, action):
