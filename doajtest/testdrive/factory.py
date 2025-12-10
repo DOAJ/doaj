@@ -8,6 +8,12 @@ class TestDrive():
         s = string.ascii_letters + string.digits
         return ''.join(random.choices(s, k=n_char))
 
+    def create_random_issn(self):
+        chars = "0123456789X"
+        part1 = "".join(random.choice(chars) for _ in range(4))
+        part2 = "".join(random.choice(chars) for _ in range(4))
+        return f"{part1}-{part2}"
+
     def setup(self) -> dict:
         return {"status": "not implemented"}
 
