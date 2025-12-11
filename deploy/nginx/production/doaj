@@ -281,11 +281,9 @@ server {
         proxy_buffering off;
     }
 
-    location /service/export {    # DISABLED Export RIS - send this only to 1 machine while we figure out high load
+    location /service/export {    # Export RIS - send this to any public machine
         limit_req zone=export burst=5;
-        return 503;
-        # Send to public-2 ONLY for now
-        #proxy_pass http://10.131.191.161:5050;
+        proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

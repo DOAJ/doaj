@@ -32,6 +32,7 @@ from portality.models.export import Export
 from portality.models.ur_review_route import URReviewRoute
 from portality.models.admin_alert import AdminAlert
 from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
+from portality.models.ris_export import RISExport
 
 import sys
 

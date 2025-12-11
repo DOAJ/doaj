@@ -12,13 +12,6 @@ ed:
   language: Indonesian, English
   photo: "Andista.jpg"
   
-- name: Christine Davidian
-  area: Technology
-  year_since:
-  city: Glassboro, NJ
-  country: USA
-  language: English, French
-
 - name: Eko Pramudya Laksana
   area: Social Sciences
   year_since:
@@ -34,14 +27,6 @@ ed:
   country: Australia
   language: Chinese, English
   featured: true
-
-- name: Handoko
-  area: Humanities, Social Sciences
-  year_since:
-  city: Padang
-  country: Indonesia
-  language: Bahasa Indonesian, English
-  photo: "handoko.jpg"
   
 - name: Jiayi Xu
   area: Academic Publishing
@@ -183,14 +168,6 @@ ass_ed:
   country: Colombia
   language: Spanish, English, Portuguese
   photo: "Ana Melisa Fernandes.jpg"
-
-- name: Andrea Imre
-  area: Library Science, Music
-  year_since:
-  city: Carbondale, IL
-  country: USA
-  language: Hungarian, English
-  photo: "imre.jpg"
   
 - name: Annarita Barbaro
   area: Humanities
@@ -294,14 +271,6 @@ ass_ed:
   city: Valencia
   country: Spain
   language: Spanish, English
-
-- name: Dedi Rahman Nur
-  area: Social Sciences
-  year_since:
-  city: Samarinda
-  country: Indonesia
-  language: Indonesian, English
-  photo: "DEDI.jpg"
   
 - name: Dessy Harisanty
   area: Library and Information Science
@@ -488,14 +457,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "Khoirul.jpg"
-
-- name: Kristen Totleben
-  area: Library Science, Humanities, Social Sciences
-  year_since:
-  city: Rochester, New York
-  country: USA
-  language: English, Spanish
-  photo: "Kristen.jpg"
   
 - name: Leila Yang
   area: Scholarly Publishing
@@ -820,14 +781,6 @@ ass_ed:
   country: Türkiye
   language: Turkish, English
   photo: "yalcin.jpg"
-
-- name: Yulingga Nanda Hanief
-  area: Sports Science
-  year_since:
-  city: Malang
-  country: Indonesia
-  language: Bahasa Indonesia, English
-  photo: "hanief.jpg"
  
 - name: Zakariya Algamal
   area: Statistics

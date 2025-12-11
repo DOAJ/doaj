@@ -1907,6 +1907,17 @@ class TestModels(DoajTestCase):
         assert a2.message == "This is a test message"
         assert a2.state == a.STATE_NEW
 
+    def test_47_ris_export(self):
+        r = models.RISExport()
+        raw = "TY  - JOUR\nTI  - Test Article\nAU  - Doe, John\nPY  - 2024\nJO  - Journal of Testing\nVL  - 1\nIS  - 1\nSP  - 1\nEP  - 10\nER  - \n"
+        r.ris_raw = raw
+        r.save(blocking=True)
+
+        r2 = models.RISExport.pull(r.id)
+        assert r2 is not None
+        assert r2.ris_raw == raw
+        bs = r2.byte_stream
+        assert bs.read().decode('utf-8') == raw
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
