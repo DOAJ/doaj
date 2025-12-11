@@ -101,6 +101,14 @@ class DuplicateUpdateRequest(Exception):
     def __init__(self, message=None):
         super(DuplicateUpdateRequest, self).__init__(message)
 
+class TooManyJournals(Exception):
+    """
+        Raised when too many journals in DOAJ and with the same issns is found
+    """
+
+    def __init__(self, message=None, context=None):
+        super(TooManyJournals, self).__init__(message)
+
 
 class IngestException(Exception):
     """

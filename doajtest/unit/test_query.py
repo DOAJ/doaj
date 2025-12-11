@@ -234,6 +234,21 @@ class TestQuery(DoajTestCase):
             #     response = t_client.get('/admin_query/journal')
             #     assert response.status_code == 200, response.status_code
 
+    def test_01b_query_400_errors(self):
+        """Test that query endpoint returns proper 400 errors with correct template"""
+        with self.app_test.test_client() as t_client:
+            # Test with invalid JSON in source parameter (triggers abort(400) on line 37 of query.py)
+            # This simulates the user's reported issue with malformed query strings
+            response = t_client.get('/query/journal/_search?source=invalid_json_here')
+            assert response.status_code == 400, response.status_code
+            # Verify it renders the 400 template, not a template error
+            assert b'400' in response.data and b'bad request' in response.data.lower()
+
+            # Test with another invalid JSON example (like the user's URL with asterisks)
+            response = t_client.get('/query/journal/_search?source={"query":{"query_string":{"query":"Darwin,*%20Bonaparte*"}}}INVALID')
+            assert response.status_code == 400, response.status_code
+            assert b'400' in response.data and b'bad request' in response.data.lower()
+
     def test_02_query_gen(self):
         q = Query()
         q.add_must({"term": {"admin.in_doaj": True}})

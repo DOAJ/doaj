@@ -130,6 +130,11 @@ BGJOB_QUEUE_ID_SCHEDULED_LONG = "scheduled_long"
 BG_STATUS_STABLE = 'stable'
 BG_STATUS_UNSTABLE = 'unstable'
 
+ERROR_RECORD_ARTICLE = "article"
+ERROR_RECORD_JOURNAL = "journal"
+ERROR_410_WITHDRAWN = "withdrawn"
+ERROR_410_TOMBSTONE = "tombstone"
+
 
 class ConstantList:
     @classmethod
