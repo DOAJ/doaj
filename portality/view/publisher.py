@@ -47,7 +47,9 @@ def journals():
 
 
 @blueprint.route("/application/<application_id>/delete", methods=["GET"])
+@write_required()
 def delete_application(application_id):
+    # FIXME: this should be a POST or DELETE request
     # if this is a draft application, we can just remove it
     draft_application = DraftApplication.pull(application_id)
     if draft_application is not None:
@@ -148,7 +150,6 @@ def update_request(journal_id):
 @blueprint.route("/view_application/<application_id>", methods=["GET"])
 @login_required
 @ssl_required
-@write_required()
 def application_readonly(application_id):
     # DOAJ BLL for this request
     applicationService = DOAJ.applicationService()
@@ -170,7 +171,6 @@ def application_readonly(application_id):
 @blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
 def update_request_readonly(application_id):
     return redirect(url_for("publisher.application_readonly", application_id=application_id))
 

@@ -66,6 +66,7 @@ def unlocked():
 @blueprint.route("/shorten", methods=["POST"])
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
                     action=app.config.get('ANALYTICS_ACTION_URLSHORT_ADD', 'Find or create shortener url'))
+@write_required()
 def shorten():
     """ create shortener url """
     url = json.loads(request.data)['url']
@@ -101,46 +102,11 @@ def group_status(group_id):
     return make_response(json.dumps(stats))
 
 
-@blueprint.route("/autocheck/dismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
-@jsonp
-@login_required
-def dismiss_autocheck(autocheck_set_id, autocheck_id):
-    if not current_user.has_role("admin"):
-        abort(404)
-    svc = DOAJ.autochecksService()
-    done = svc.dismiss(autocheck_set_id, autocheck_id)
-    if not done:
-        abort(404)
-    return make_response(json.dumps({"status": "success"}))
-
-
-@blueprint.route("/autocheck/undismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
-@jsonp
-@login_required
-def undismiss_autocheck(autocheck_set_id, autocheck_id):
-    if not current_user.has_role("admin"):
-        abort(404)
-    svc = DOAJ.autochecksService()
-    done = svc.undismiss(autocheck_set_id, autocheck_id)
-    if not done:
-        abort(404)
-    return make_response(json.dumps({"status": "success"}))
-
-
 @blueprint.route('/export/article/<article_id>/<fmt>')
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_RIS', 'RIS'),
                     action=app.config.get('ANALYTICS_ACTION_RISEXPORT', 'Export'), record_value_of_which_arg='article_id')
-def export_article(article_id, fmt):
-    if fmt != 'ris':
-        # only support ris for now
-        abort(404)
-
-    ris = models.RISExport.pull(article_id)
-    if ris is not None:
-        filename = f'article-{article_id[:10]}.ris'
-        resp = make_response(send_file(ris.byte_stream, as_attachment=True, download_name=filename))
-        return resp
-
+@write_required()
+def export_article_ris(article_id, fmt):
     article = models.Article.pull(article_id)
     if not article:
         abort(404)
@@ -153,6 +119,7 @@ def export_article(article_id, fmt):
 
 
 @blueprint.route("/alerts/<alert_id>/<action>", methods=["POST"])
+@write_required()
 def manage_alert(alert_id, action):
     """
     Manage user alerts
