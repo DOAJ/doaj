@@ -898,7 +898,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Enter all types of review used by the journal for "
                           "research articles. Note that editorial review is "
-                          "only accepted for arts and humanities journals."],
+                          "only accepted for <a href='https://doaj.org/apply/guide/#additional-criteria-for-some-journal-types' target='_blank' rel='nofollow'>arts and humanities journals</a>."],
             "doaj_criteria": "Peer review must be carried out"
         },
         "validate": [
