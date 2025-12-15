@@ -11,7 +11,17 @@ featuremap:
 
 ---
 
-Full data-dumps of the entire journal and article metadata are generated daily for premium users and monthly for free users. The files are in JSON format and are in the same form as those retrieved via the API.
+## All users
+For all users, full data-dumps of the journal and article metadata are generated monthly.
+
+## Premium metadata service users
+Full data-dumps of the entire journal and article metadata are generated daily for premium metadata service users. To access Premium metadata services, you must be logged into your DOAJ account and have an active Premium metadata services subscription. 
+
+If you would like access to more up-to-date metadata and to know more about our Premium Metadata Services, please see the [Premium Metadata Services](https://github.com/DOAJ/doaj/blob/feature/4008_premium/docs/premium) page.
+
+## About the files
+
+The files are in JSON format and are in the same form as those retrieved via [the API](/docs/api/).
 
 The data dumps are structured as follows:
 
