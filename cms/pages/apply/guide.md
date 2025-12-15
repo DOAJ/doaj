@@ -304,15 +304,13 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 ## In other languages
 
-We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
-
 Please note that these translations may not include the latest changes made to the Guide.
 
 Our criteria are available in:
 
 - [Afrikaans](https://docs.google.com/document/d/1CePOCIpIRMmXQZGV_oSqagTlmpb7YG9vG9CShry7Okw/edit?usp=sharing)
 - [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
-- [Bahasa Indonesia](https://docs.google.com/document/d/1cONA_31Hq8_nvFKQ2_vu0LZ5c4ipdRtE/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
 - [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
 - [Chinese (application form)](https://zenodo.org/record/4350096)
 - [Chinese](https://zenodo.org/record/4633341)
