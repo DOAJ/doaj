@@ -1,0 +1,24 @@
+{% set url = selected_nav.url %}
+{% set urlAttrs = 'rel="noopener" target="_blank"' %}
+{% if selected_nav.route %}
+    {% set url = url_for(selected_nav.route) %}
+    {% set urlAttrs = "" %}
+{% endif %}
+<li class="{{ extraClasses }}" role="menuitem">
+    <a href="{{ url }}"
+       class="nav-bar__link label"
+       role="menuitem"
+       id="menu-{{ selected_nav.id }}">
+        {% if selected_nav.feather %}
+            <span data-feather="{{ selected_nav.feather }}" aria-hidden="true" {% if selected_nav.feather == "star" %}
+                style="color: #ffd700" {% endif %}></span>
+        {% endif %}
+            {% if selected_nav.id == "premium" and not current_user.is_anonymous and current_user.is_premium %}
+                Premium
+            {% elif selected_nav.id == "premium" %}
+                Get Premium
+            {% else %}
+                {{ selected_nav.label }}
+            {% endif %}
+    </a>
+</li>

@@ -171,7 +171,8 @@ class DoajTestCase(TestCase):
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
             "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
-            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1']
+            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1'],
+            'PREMIUM_MODE': False
         }
 
     @classmethod
@@ -217,7 +218,11 @@ class DoajTestCase(TestCase):
                 os.remove(f)
             except FileNotFoundError:
                 pass  # could be removed by other thread / process
-        shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
+
+        tmp = paths.rel2abs(__file__, "..", "tmp")
+        shutil.rmtree(tmp, ignore_errors=True)
+        while os.path.exists(tmp):
+            time.sleep(0.1)
 
         self.reset_db_record()
 
