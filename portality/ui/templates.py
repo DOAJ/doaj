@@ -43,6 +43,7 @@ ADMIN_ARTICLE_FORM = "management/admin/article_metadata.html"
 ADMIN_REPORTS_SEARCH = "management/admin/reports_search.html"
 ADMIN_ALERTS_SEARCH = "management/admin/alerts_search.html"
 ADMIN_AUTOASSIGN_SEARCH = "management/admin/autoassign_search.html"
+ADMIN_RIS_SEARCH = "management/admin/ris_search.html"
 BACKGROUND_JOBS_SEARCH = "management/admin/background_jobs_search.html"
 CONTINUATION = "management/admin/continuation.html"
 EDITOR_GROUP = "management/admin/editor_group.html"
@@ -77,6 +78,8 @@ AF_ENTRY_GROUP_HORIZONTAL = "_application-form/includes/_entry_group_horizontal.
 AF_FIELD = "_application-form/includes/_field.html"
 AF_GROUP = "_application-form/includes/_group.html"
 AF_LIST = "_application-form/includes/_list.html"
+FLAGS_LIST= "_application-form/includes/_flags_list.html"
+FLAG_ENTRY_GROUP = "_application-form/includes/_flag_entry.html"
 
 # Publisher area
 PUBLISHER_DRAFTS = "public/publisher/drafts.html"

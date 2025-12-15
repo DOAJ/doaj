@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.3.9"
+DOAJ_VERSION = "8.4.4"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -98,7 +98,7 @@ ELASTIC_APM = {
 # Event handler
 
 # Process events immediately/synchronously
-EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+EVENT_SEND_FUNCTION = "portality.events.background.send_event"
 
 ###########################################
 # Read Only Mode
@@ -463,6 +463,7 @@ HUEY_SCHEDULE = {
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
+    "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
 }
 
 
@@ -509,7 +510,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.JournalCSV", # ~~-> JournalCSV:Model~~
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
-
+    "portality.models.ris_export.RISExport",
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -878,6 +879,12 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.URReviewRoute",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        "ris": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.RISExport",  # ~~->AdminAlert:Model~~
+            "required_parameters": None
         }
     },
     "associate_query": {
@@ -886,7 +893,7 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "associate_editor",
             "query_validators": ["non_public_fields_validator"],
-            "query_filters": ["associate", "search_all_meta"],
+            "query_filters": ["associate", "search_all_meta", "flagged"],
             "dao": "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
@@ -1529,6 +1536,10 @@ BG_MONITOR_ERRORS_CONFIG = {
     'public_data_dump': {
         'check_sec': 2 * _HOUR,
         'allowed_num_err': 0
+    },
+    'process_event': {
+        'check_sec': 2 * _HOUR,
+        'allowed_num_err': 0
     }
 }
 
@@ -1570,6 +1581,10 @@ BG_MONITOR_QUEUED_CONFIG = {
     'suggestion_bulk_edit': {
         'total': 2,
         'oldest': 10 * _MIN
+    },
+    'process_event': {
+        'total': 500,
+        'oldest': 6 * _HOUR
     }
 }
 
@@ -1651,6 +1666,15 @@ TOUR_COOKIE_PREFIX = "doaj_tour_"
 TOUR_COOKIE_MAX_AGE = 31536000
 
 TOURS = {
+    "/admin/application/*": [
+        {
+            "roles": ["admin"],
+            "selectors": [".flags__container"],
+            "content_id": "admin_flags",
+            "name": "Flags",
+            "description": "Make teamwork smoother by adding a flag to journals and applications — a note assigned to a teammate, with an optional deadline."
+        }
+    ],
     "/admin/journal/*": [
         {
             "roles": ["admin"],

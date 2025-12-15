@@ -205,7 +205,18 @@ SHARED_JOURNAL_LIKE = {
                         "id" : {"coerce" : "unicode"},
                         "note" : {"coerce" : "unicode"},
                         "date" : {"coerce" : "utcdatetime"},
-                        "author_id" : {"coerce" : "unicode"},  # account_id of the note's author
+                        "author_id" : {"coerce" : "unicode"}  # account_id of the note's author
+                    },
+                    "objects": [
+                        "flag"
+                    ],
+                    "structs": {
+                        "flag": {
+                            "fields": {
+                                "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
+                                "deadline": {"coerce" : "bigenddate"}
+                            }
+                        }
                     }
                 },
             }
@@ -214,6 +225,8 @@ SHARED_JOURNAL_LIKE = {
             "fields" : {
                 "country" : {"coerce" : "unicode"},
                 "has_apc" : {"coerce" : "unicode"},
+                "is_flagged" : {"coerce" : "bool"},
+                "most_urgent_flag_deadline": {"coerce" : "bigenddate"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},
@@ -230,7 +243,8 @@ SHARED_JOURNAL_LIKE = {
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
                 "schema_code" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_codes_tree" : {"contains" : "field", "coerce" : "unicode"}
+                "schema_codes_tree" : {"contains" : "field", "coerce" : "unicode"},
+                "flag_assignees" : {"contains" : "field", "coerce" : "unicode"}
             }
         }
     }

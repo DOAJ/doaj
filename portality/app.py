@@ -436,7 +436,7 @@ def page_not_found(e):
 @app.errorhandler(elasticsearch.exceptions.RequestError)
 def handle_es_request_error(e):
     app.logger.exception(e)
-    return render_template('400.html'), 400
+    return render_template(templates.ERROR_400), 400
 
 
 is_dev_log_setup_completed = False

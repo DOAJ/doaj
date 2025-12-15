@@ -347,16 +347,17 @@ var doaj = {
 
 function setCookieConsent(event) {
     event.preventDefault();
-    $.ajax({
-        type: "GET",
-        url: "/cookie_consent",
-        success: function() {
-            $("#cookie-consent").remove();
-        },
-        error : function() {
-            alert("We weren't able to set your cookie consent preferences, please try again later.");
-        }
-    })
+    try {
+        const element = $(event.currentTarget);
+        const name = element.attr("data-key");
+        const value = "By using our website, you have agreed to our cookie policy.";
+        const maxAge = 31536000; // 1 year in seconds
+        const cookie = name + "=" + encodeURIComponent(value) + ";Max-Age=" + maxAge + ";Path=/;Secure";
+        document.cookie = cookie;
+        $("#cookie-consent").remove();
+    } catch (e) {
+        alert("We weren't able to set your cookie consent preferences, please try again later.");
+    }
 }
 
 function dissmissSiteNote(event) {

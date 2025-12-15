@@ -200,6 +200,30 @@ class ApplicationProcessor(FormProcessor):
                         # Skip if we don't have a current_user
                         pass
 
+    def _resolve_flags(self, account):
+        # handle flag resolution
+
+        # check that this form knows about flags
+        if getattr(self.form, "flags", None) is None:
+            return
+
+        resolved_flags = []
+        for flag in self.form.flags.data:
+            if flag["flag_resolved"] == "true":
+                # Note: new notes do not necessarily have ids, but flags that are being
+                # resolved must have an id because they must exist already to be resolved
+                resolved_flags.append(flag["flag_note_id"])
+
+        for flag_id in resolved_flags:
+            acc_id = account.id if account else "unknown user"
+            flag = self.target.get_note_by_id(flag_id)
+            new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                date=dates.today(),
+                username=acc_id,
+                note=flag.get("note", "")
+            )
+            self.target.resolve_flag(flag_id, new_note_text)
+
 
 class NewApplication(ApplicationProcessor):
     """
@@ -339,10 +363,11 @@ class AdminApplication(ApplicationProcessor):
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
 
         # if we are allowed to finalise, kick this up to the superclass
+        # here I can do something before the crosswalk is called - to do, move the resovled note conversion here
         super(AdminApplication, self).finalise()
 
-        # instance of the events service to pick up any events we need to send
-        eventsSvc = DOAJ.eventsService()
+        # resolve any flags that were resolved in the form
+        # self._resolve_flags(account)
 
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
@@ -797,7 +822,7 @@ class ManEdJournalReview(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
-    def finalise(self):
+    def finalise(self, account=None):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
 
@@ -806,6 +831,9 @@ class ManEdJournalReview(ApplicationProcessor):
 
         # if we are allowed to finalise, kick this up to the superclass
         super(ManEdJournalReview, self).finalise()
+
+        # resolve any flags that were resolved in the form
+        self._resolve_flags(account)
 
         # If we have changed the editors assinged to this application, let them know.
         # ~~-> JournalForm:Crosswalk~~

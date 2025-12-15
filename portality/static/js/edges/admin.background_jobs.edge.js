@@ -44,10 +44,10 @@ $.extend(true, doaj, {
 
                     // add the date added to doaj
                     if (resultobj.created_date) {
-                        dateRow += "Job Created: " + doaj.humanDateTime(resultobj.created_date) + "<br>";
+                        dateRow += "Job Created: " + doaj.dates.humanYearMonth(resultobj.created_date) + "<br>";
                     }
                     if (resultobj.last_updated) {
-                        dateRow += "Job Last Updated: " + doaj.humanDateTime(resultobj.last_updated) + "<br>";
+                        dateRow += "Job Last Updated: " + doaj.dates.humanYearMonth(resultobj.last_updated) + "<br>";
                     }
 
                     var paramsBlock = "";
@@ -94,7 +94,7 @@ $.extend(true, doaj, {
                     expandBlock += "</div>";
 
                     // start off the string to be rendered
-                    var result = '<div class="' + containerClass + '">';
+                    var result = '<div class="edges-bs3-results-fields-by-row-record ' + containerClass + '">';
 
                     // start the main box that all the details go in
                     result += "<div class='row-fluid'><div class='span12'>";

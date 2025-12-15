@@ -34,6 +34,7 @@ from portality.models.admin_alert import AdminAlert
 from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
 from portality.models.data_dump import DataDump
 from portality.models.journal_csv import JournalCSV
+from portality.models.ris_export import RISExport
 
 import sys
 

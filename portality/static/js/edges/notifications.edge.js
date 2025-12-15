@@ -209,7 +209,7 @@ $.extend(true, doaj, {
                       </div>
                         <aside class="col-sm-2 search-results__aside">
                             <ul class="inlined-list">
-                            <li>${doaj.humanDate(notification.created_date)}</li>
+                            <li>${doaj.dates.humanDate(notification.created_date)}</li>
                           </ul>
                           <ul class="inlined-list">
                             <li>${actionFrag}</li>
@@ -223,7 +223,7 @@ $.extend(true, doaj, {
 
             this._seenIcon = function(seen_date) {
                 let seenIcon = seen_date ? doaj.notificationsSearch.icons.seen : doaj.notificationsSearch.icons.unseen;
-                let seenTitle = seen_date ? `Read on ${doaj.humanDate(seen_date)}` : "Unread"
+                let seenTitle = seen_date ? `Read on ${doaj.dates.humanDate(seen_date)}` : "Unread"
                 let frag = `<span title="${seenTitle}">${seenIcon}</span>`;
                 return frag;
             }
