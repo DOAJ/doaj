@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.4.2"
+DOAJ_VERSION = "8.4.4"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -97,7 +97,7 @@ ELASTIC_APM = {
 # Event handler
 
 # Process events immediately/synchronously
-EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+EVENT_SEND_FUNCTION = "portality.events.background.send_event"
 
 ###########################################
 # Read Only Mode
@@ -1511,6 +1511,10 @@ BG_MONITOR_ERRORS_CONFIG = {
     'public_data_dump': {
         'check_sec': 2 * _HOUR,
         'allowed_num_err': 0
+    },
+    'process_event': {
+        'check_sec': 2 * _HOUR,
+        'allowed_num_err': 0
     }
 }
 
@@ -1552,6 +1556,10 @@ BG_MONITOR_QUEUED_CONFIG = {
     'suggestion_bulk_edit': {
         'total': 2,
         'oldest': 10 * _MIN
+    },
+    'process_event': {
+        'total': 500,
+        'oldest': 6 * _HOUR
     }
 }
 
