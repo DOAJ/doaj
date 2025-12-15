@@ -1,4 +1,4 @@
-from portality import models
+from portality import models, constants
 import csv
 
 registry = {}
@@ -17,11 +17,19 @@ for journal in models.Journal.iterall_unstable():
         if code not in registry:
             registry[code] = {
                 "term": term,
-                "journals": 0,
-                "applications": 0
+                "journals": {
+                    "in_doaj": 0,
+                    "not_in_doaj": 0
+                },
+                "applications": {
+                    status: 0 for status in constants.APPLICATION_STATUSES_ALL
+                }
             }
 
-        registry[code]["journals"] += 1
+        if journal.is_in_doaj():
+            registry[code]["journals"]["in_doaj"] += 1
+        else:
+            registry[code]["journals"]["not_in_doaj"] += 1
 
 for application in models.Application.iterall_unstable():
     bj = application.bibjson()
@@ -37,22 +45,35 @@ for application in models.Application.iterall_unstable():
         if code not in registry:
             registry[code] = {
                 "term": term,
-                "journals": 0,
-                "applications": 0
+                "journals": {
+                    "in_doaj": 0,
+                    "not_in_doaj": 0
+                },
+                "applications": {
+                    status: 0 for status in constants.APPLICATION_STATUSES_ALL
+                }
             }
 
-        registry[code]["applications"] += 1
+        status = application.application_status
+        if status not in registry[code]["applications"]:
+            print(f"Application {application.id} has unknown status '{status}'")
+            continue
+
+        registry[code]["applications"][status] += 1
 
 with open("subject_classifications.csv", "w", newline='', encoding='utf-8') as csvfile:
-    fieldnames = ["code", "term", "journals", "applications"]
+    fieldnames = ["code", "term", "journals_in_doaj", "journals_not_in_doaj"] + ["application: " + status for status in list(constants.APPLICATION_STATUSES_ALL)]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
     writer.writeheader()
     for code in sorted(registry.keys()):
         entry = registry[code]
-        writer.writerow({
+        obj = {
             "code": code,
             "term": entry["term"],
-            "journals": entry["journals"],
-            "applications": entry["applications"]
-        })
+            "journals_in_doaj": entry["journals"]["in_doaj"],
+            "journals_not_in_doaj": entry["journals"]["not_in_doaj"]
+        }
+        for status in constants.APPLICATION_STATUSES_ALL:
+            obj["application: " + status] = entry["applications"][status]
+        writer.writerow(obj)
