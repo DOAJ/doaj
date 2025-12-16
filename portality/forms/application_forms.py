@@ -2002,11 +2002,16 @@ class FieldDefinitions:
 
     FLAG_DEADLINE = {
         "subfield": True,
-        "optional": True,
         "label": "Deadline",
         "name": "flag_deadline",
         "validate": [
-            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)", "ignore_empty": True}},
+            {"required_if": {
+                "field": "flag_note",
+                "value": "yes",
+                "message": "The flag must have a deadline",
+                "skip_disabled": True
+            }}
         ],
         "help": {
             "placeholder": "deadline (YYYY-MM-DD)",
@@ -3039,6 +3044,9 @@ class RequiredIfBuilder:
         if isinstance(val, list):
             val = ",".join(val)
 
+        if settings.get("skip_disabled"):
+            html_attrs["data-parsley-validate-if-disabled"] = "false"
+
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = val
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
@@ -3126,6 +3134,8 @@ class BigEndDateBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-validdate"] = ""
+        ignore_empty = settings.get("ignore_empty", False)
+        html_attrs["data-parsley-validdate-ignore_empty"] = "true" if ignore_empty else "false"
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
