@@ -2008,7 +2008,6 @@ class FieldDefinitions:
             {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)", "ignore_empty": True}},
             {"required_if": {
                 "field": "flag_note",
-                "value": "yes",
                 "message": "The flag must have a deadline",
                 "skip_disabled": True
             }}
@@ -3040,7 +3039,7 @@ class RequiredIfBuilder:
     # ~~->$ RequiredIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        val = settings.get("value")
+        val = settings.get("value", constants.DUMMY_STRING)
         if isinstance(val, list):
             val = ",".join(val)
 

@@ -793,24 +793,38 @@ doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
 
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
+        let thisElementId = parsleyInstance.$element[0].id;
+        console.log(thisElementId)
+
+        const getGroupWithIndexFromInputId = (inputId) => {
+          const match = inputId.match(/^([^-]+)-(\d+)-/);
+          return match ? `${match[1]}-${match[2]}` : null;
+        }
+
+        let skipIfDisabled  = parsleyInstance.$element.attr("data-parsley-validate-if-disabled") === "false";
+        if (skipIfDisabled && parsleyInstance.$element[0].disabled) {
+            return true;
+        }
+
         let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+
         if (typeof requirement !== "string") {
             requirement = requirement.toString();
         }
 
         let requirements = requirement.split(",");
 
-        let other = $("[name='" + field + "']");
+        let prefix = getGroupWithIndexFromInputId(thisElementId)
+        let other = $("[name='" + (prefix ? (prefix + "-") : "") + field + "']");
         let type = other.attr("type");
-        if (type === "checkbox" || type === "radio") {
-            let otherVal = other.filter(":checked").val();
-            if ($.inArray(otherVal, requirements) > -1) {
-                return !!value;
-            }
-        } else {
-            if ($.inArray(other.val(), requirements) > -1) {
-                return !!value;
-            }
+        const otherVal = (type === "checkbox" || type === "radio")
+            ? other.filter(":checked").val()
+            : other.val();
+        const isRequired = requirement !== doaj.constants.DUMMY_STRING
+            ? $.inArray(otherVal, requirements) > -1
+            : !!otherVal;
+        if (isRequired) {
+            return !!value;
         }
         return true;
     },
@@ -989,8 +1003,12 @@ window.Parsley.addValidator("year", {
 });
 
 window.Parsley.addValidator("validdate", {
-    validateString : function(value) {
+    validateString : function(value, requirements, parsleyInstance) {
         // Check if the value matches the YYYY-MM-DD format
+        const ignore_empty = parsleyInstance.$element.attr("data-parsley-validdate-ignore_empty");
+        if (ignore_empty && !value) {
+            return true;
+        }
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!regex.test(value)) {
           return false; // Invalid format

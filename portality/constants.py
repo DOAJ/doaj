@@ -163,3 +163,5 @@ SUBJECTS_SCHEMA = "LCC:"
 
 # Extra params
 EXPARAM_EDITING_USER = 'editing_user'
+
+DUMMY_STRING = "thisisadummystringthathasverylittlechanceofappearingintheuilegitimetly"
