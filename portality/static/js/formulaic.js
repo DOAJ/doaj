@@ -1070,12 +1070,18 @@ var formulaic = {
 
             this.markFlagAsResolved = function() {
                 $(this.flagInputsContainer[this.existingFlagIdx]).addClass("flag--resolved");
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("input")
+                    .prop("disabled", true);
                 this.getResolveBtn(this.existingFlagIdx).hide();
                 this.getUnresolveBtn(this.existingFlagIdx).show();
             }
 
             this.markFlagAsUnresolved = function() {
                 $(this.flagInputsContainer[this.existingFlagIdx]).removeClass("flag--resolved");
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("input")
+                    .prop("disabled", false);
                 this.getResolveBtn(this.existingFlagIdx).show();
                 this.getUnresolveBtn(this.existingFlagIdx).hide();
             }
