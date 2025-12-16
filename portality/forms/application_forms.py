@@ -2041,8 +2041,7 @@ class FieldDefinitions:
         "name": "flag_assignee",
         "label": "Assign a user",
         "help": {
-            "placeholder": "assigned_to",
-            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+            "placeholder": "assigned_to"
         },
         "group": "flags",
         "validate": [
