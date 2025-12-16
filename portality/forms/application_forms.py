@@ -2047,7 +2047,12 @@ class FieldDefinitions:
         "group": "flags",
         "validate": [
             "reserved_usernames",
-            "owner_exists"
+            "owner_exists",
+            {"required_if": {
+                "field": "flag_note",
+                "message": "The flag must be assigned to someone",
+                "skip_disabled": True
+            }}
         ],
         "widgets": [
             {"autocomplete": {"type": "admin", "include": False, "allow_clear_input": False}},
