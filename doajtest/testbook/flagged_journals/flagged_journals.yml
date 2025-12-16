@@ -138,3 +138,43 @@ tests:
         results:
           - There is no information about any flags
           - Only Flagged Records and Flagged to you" facets are **not** displayed
+
+  - title: Flag Validation
+    setup:
+      - Open any journal form without a flag
+    context:
+      role: admin
+    steps:
+      - step: Click "Add flag"
+      - step: Enter a note only (leave assignee and deadline empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the assignee input
+          - An error message is displayed under the deadline input
+      - step: Enter a deadline
+      - step: Click "Save"
+        results:
+          - The error under the deadline input is cleared
+          - The error under the assignee input is still displayed
+      - step: Enter an assignee
+      - step: Click "Save"
+        results:
+          - The flag is saved successfully
+          - The flag is displayed correctly with note, assignee, and deadline
+      - step: Edit the flag and remove the deadline value
+      - step: Click "Resolve flag"
+        results:
+          - The flag is marked as resolved
+      - step: Click "Add flag"
+      - step: Enter a note only (leave assignee and deadline empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the assignee input of the new flag
+          - An error message is displayed under the deadline input of the new flag
+          - No validation errors are shown on the resolved flag fields
+      - step: Enter a deadline and an assignee for the new flag
+      - step: Click "Save"
+        results:
+          - The resolved flag is converted to a note
+          - The new flag is saved successfully
+          - The new flag is displayed with note, assignee, and deadline
