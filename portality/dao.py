@@ -417,11 +417,25 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def pull_by_key(cls, key, value):
+        """
+        attr: key, value
+        returns:
+        - if 1 result: the record;
+        - if <1 or >1 results: None
+        """
         res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
             return None
+
+    @classmethod
+    def search_by_key(cls, key: str, value: str) -> list:
+        """
+        returns: [ids] of the found records
+        """
+        res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
+        return [cls(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
 
     @classmethod
     def object_query(cls, q=None, **kwargs):

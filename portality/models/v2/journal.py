@@ -63,7 +63,6 @@ JOURNAL_STRUCT = {
 class ContinuationException(Exception):
     pass
 
-
 class JournalLikeObject(SeamlessMixin, DomainObject):
 
     # During migration from the old data model to the new data model for journal-like objects, this allows
@@ -279,8 +278,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    #### Notes methods
-
+     #### Notes methods
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()

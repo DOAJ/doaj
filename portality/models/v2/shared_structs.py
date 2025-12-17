@@ -22,6 +22,7 @@ JOURNAL_BIBJSON = {
                 "replaces" : {"contains" : "field", "coerce" : "issn", "set__allow_coerce_failure" : True},
                 "subject" : {"contains" : "object"},
                 "labels": {"contains": "field", "coerce": "unicode", "allowed_values": ["s2o"]},
+                "language_editions": {"contains": "object"}
             },
             "objects" : [
                 "apc",
@@ -161,6 +162,12 @@ JOURNAL_BIBJSON = {
                     "fields" : {
                         "has_waiver" : {"coerce" : "bool"},
                         "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+                    }
+                },
+                "language_editions": {
+                    "fields": {
+                        "id": {"coerce": "unicode"},
+                        "language": {"coerce": "unicode"}
                     }
                 }
             }

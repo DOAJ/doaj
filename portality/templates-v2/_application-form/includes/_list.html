@@ -13,7 +13,10 @@
         {% endif %}
         {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
     </label>
-    {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
+
+    {% if f.help("short_help") %}
+       <p class="form__short-help"><small>{{ f.help("short_help") | safe }}</small></p>
+    {% endif %}
     {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
         {% set add_button %}
             <p class="add_field__button_div">
@@ -53,10 +56,6 @@
           </em>
         </p>
         {% endif %}
-    {% endif %}
-
-    {% if f.help("short_help") %}
-       <p><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
 
     {% include "_application-form/includes/_modal.html" %}
