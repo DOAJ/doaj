@@ -1,35 +1,5 @@
 <style>
-    .click-to-copy {
-        cursor: pointer;
-        margin: 0;
-        padding: 0;
-        width: 1.5em;
-        height: 1.5em;
-        display: inline-flex;
-        justify-content: center;
-        border: none;
-    }
-    .click-to-copy:hover,
-    .click-to-copy:focus,
-    .click-to-copy:active {
-        background-color: transparent;
-    }
 
-    .click-to-copy:hover .feather,
-    .click-to-copy:focus .feather,
-    .click-to-copy:active .feather {
-        stroke: #FD5A3B;
-    }
-    .click-to-copy--confirmation {
-        font-size: 0.75em;
-        display: inline;
-        position: relative;
-        bottom: .25rem;
-        left: 0;
-        font-family: 'Source Sans Pro', sans-serif;
-        font-weight: normal;
-        color: #5c5956;
-    }
 </style>
 
 <button type="button" class="click-to-copy" id="click-to-copy--{{ value_elem_id }}" aria-label="Copy {{ value_elem_id }} to clipboard">

@@ -333,3 +333,36 @@ fieldset {
   height: 1em;
   width: auto;
 }
+
+.click-to-copy {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-flex;
+    justify-content: center;
+    border: none;
+
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: transparent;
+
+        [data-feather] {
+            stroke: #FD5A3B;
+        }
+    }
+
+    &--confirmation {
+        font-size: 0.75em;
+        display: inline;
+        position: relative;
+        bottom: .25rem;
+        left: 0;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: normal;
+        color: #5c5956;
+    }
+}
+

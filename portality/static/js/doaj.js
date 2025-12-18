@@ -67,6 +67,7 @@ var doaj = {
         });
 
         doaj.bindMiniSearch();
+
     },
 
     doajUrlShortener : function(query, success_callback, error_callback) {

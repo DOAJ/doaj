@@ -48,8 +48,6 @@
     <!-- Glyphicons -->
     <link rel="stylesheet" href="/static/doaj/css/glyphicons.css?v={{config.get('DOAJ_VERSION')}}">
 
-    {% include 'includes/_js_includes.html' %}
-
 </head>
 
 <body class="{% block body_class %}{% endblock %}"
@@ -61,6 +59,8 @@
 {% endif %}
 
 {% block base_content %}{% endblock %}
+
+{% include 'includes/_js_includes.html' %}
 
 {% if not request.cookies.get("doaj-consent") %}
     <script type="text/javascript">
