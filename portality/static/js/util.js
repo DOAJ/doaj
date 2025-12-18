@@ -4,7 +4,8 @@ $.extend(true, doaj, {
             const copyBtn = `
             <button type="button" class="click-to-copy" aria-label="Copy value to clipboard">
                 <i data-feather="copy" aria-hidden="true"></i>
-                <span class="click-to-copy--confirmation" style="display: none;">Value copied!</span>
+                <i data-feather="check" aria-hidden="true" style="display: none;"></i>
+                <span class="click-to-copy--confirmation" style="display: none;">copied</span>
             </button>
         `;
 
@@ -13,11 +14,21 @@ $.extend(true, doaj, {
                 const textToCopy = $valueElem.val() || $valueElem.text();
                 const $btn = $(event.currentTarget);
                 const $msg = $btn.find('.click-to-copy--confirmation');
+                const $copyIcon = $btn.find('.feather-copy');
+                const $copiedIcon = $btn.find('.feather-check');
 
                 navigator.clipboard.writeText(textToCopy)
                     .then(() => {
-                        $msg.text('Value copied!').show();
-                        setTimeout(() => $msg.hide(), 3000);
+                        $btn.addClass('click-to-copy--clicked');
+                        $msg.show();
+                        $copyIcon.hide();
+                        $copiedIcon.show();
+                        setTimeout(() => {
+                            $btn.removeClass('click-to-copy--clicked');
+                            $msg.hide();
+                            $copiedIcon.hide();
+                            $copyIcon.show();
+                        }, 3000);
                     })
                     .catch(err => console.error('Failed to copy:', err));
             };
