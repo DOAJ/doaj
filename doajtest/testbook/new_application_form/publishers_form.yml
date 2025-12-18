@@ -8,6 +8,9 @@ tests:
     role: publisher
   steps:
   - step: Go to the application form
+    results:
+    - The top section displays only the journal title
+    - There is no fixed/sticky section
   - step: Click the question mark next to the questions.
     results:
     - A pop-up help box appears 'You can click the link in the help box'
