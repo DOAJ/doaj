@@ -43,22 +43,6 @@ ed:
   language: Turkish, English, Russian
   photo: "Khayala.jpg"
 
-- name: Lut Tamam
-  area: Medicine
-  year_since:
-  city: Adana
-  country: Türkiye
-  language: Turkish, English
-  featured: true
-  
-- name: Muhamad Ratodi
-  area: Public Health
-  year_since:
-  city: Surabaya
-  country: Indonesia
-  language: Indonesian, English
-  photo: "Ratodi.jpg"
-
 - name: Natalia Pamuła
   area: Humanities, Social Sciences
   year_since:
@@ -295,14 +279,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "Dwi saptura.jpeg"
-  
-- name: Emrah Kaya
-  area: Social Sciences, Humanities
-  year_since:
-  city: Sakarya
-  country: Turkey
-  language: English
-  photo: "Emrah Kaya.jpg"
 
 - name: Flavius-Cristian Marcau 
   area: Social Sciences
@@ -408,23 +384,6 @@ ass_ed:
   city: Seoul
   country: Korea
   language: Korean, English
-
-- name: Kadri Kıran
-  area: Systematic Entomology
-  year_since:
-  city: Edirne
-  country: Türkiye
-  language: English, Turkish, German
-  featured: true
-  photo: "Kadri Kiran.jpg"
-
-- name: Kâmil B. Varınca
-  area: Science
-  year_since:
-  city: Adiyaman
-  country: Türkiye
-  language: Turkish, English
-  photo: "kamil.jpg"
 
 - name: Kamila Kokot-Kanikuła
   area: Library Science
@@ -549,13 +508,6 @@ ass_ed:
   country: Russian Federation
   language: Russian, English
   photo:
-  
-- name: Melih Sever
-  area: Social Sciences
-  year_since:
-  city:
-  country: Türkiye
-  language: English
 
 - name: Michaela Voigt 
   area: Library and Information Science, Scandinavian Studies
@@ -627,14 +579,6 @@ ass_ed:
   country: Georgia
   language: Georgian, English
   photo: "NatiaGabedava.jpg"
-  
-- name: Nizameddin Koca
-  area: Internal Medicine
-  year_since:
-  city: Bursa
-  country: Turkey
-  language: English, Turkish
-  photo: "Nizameddin.jpg"
 
 - name: Nour El Houda Belhamel
   area: Science, Technology, Medicine
@@ -773,14 +717,6 @@ ass_ed:
   country: USA
   language: Spanish, English, Portuguese
   photo: "Wileidys.jpg"
-  
-- name: Yalçın Tükel 
-  area: Sports recreation
-  year_since:
-  city: Konya
-  country: Türkiye
-  language: Turkish, English
-  photo: "yalcin.jpg"
  
 - name: Zakariya Algamal
   area: Statistics
