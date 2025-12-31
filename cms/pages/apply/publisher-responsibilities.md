@@ -64,7 +64,7 @@ If you found your journal in DOAJ but didn’t get an email from us, there are [
 
 During the review process, we might correct some of the information in your application.
 
-You can [submit an update request](/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date) if something about your journal has changed since you applied.
+You can [submit an update request](/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date) if something about your journal has changed since you applied..
 
 ## Your DOAJ account
 
