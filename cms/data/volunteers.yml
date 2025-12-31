@@ -522,6 +522,7 @@ ass_ed:
   city: Bucharest
   country: Romania
   language: Romanian, English, French
+  featured: true
 
 - name: Mohammad Rizki Fadhil Pratama
   area: Medicine, Chemistry
@@ -662,6 +663,7 @@ ass_ed:
   city: Esfahan
   country: Iran
   language: Farsi, English
+  featured: true
   photo: "amini.jpg"
 
 - name: Sara Jalalzadeh Asrjadidi
