@@ -78,6 +78,9 @@ class Messages(object):
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
     EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
 
+    EXCEPTION_UNABLE_TO_CONSTRUCT_JOURNAL = "Unable to construct Journal from supplied source - data structure validation error, {x}"
+
+
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
     {data_dump_url}. You can also harvest from our OAI-PMH endpoints; articles: {oai_article_url}, journals: {oai_journal_url}"""
