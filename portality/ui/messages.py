@@ -117,6 +117,10 @@ class Messages(object):
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
     NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
 
+    JOURNALS_WITH_APPROACHING_DEADLINES_FOUND = "Journal with deadline in {delta} days found: {id}"
+    JOURNALS_WITH_APPROACHING_DEADLINES_FOUND_NOTIFICATION_SENT_LOG = "Notification with approaching deadlines sent."
+    NO_JOURNALS_WITH_APPROACHING_DEADLINES_FOUND_LOG = "No approaching deadlines found."
+
     FORMS__APPLICATION_STATUS__PENDING = "Pending"
     FORMS__APPLICATION_STATUS__IN_PROGRESS = 'In Progress'
     FORMS__APPLICATION_STATUS__COMPLETED = 'Completed'

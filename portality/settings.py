@@ -451,6 +451,7 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    "find_flags_with_approaching_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
 }
 
 
@@ -1582,6 +1583,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
     'find_discontinued_soon': {
         'last_run_successful_in': _DAY + _HOUR
     },
+    'find_flags_with_approaching_deadline': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
     'harvest': {
         'last_run_successful_in': _DAY + _HOUR
     },
@@ -1627,6 +1631,11 @@ PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 # report journals that discontinue in ... days (eg. 1 = tomorrow)
 DISCONTINUED_DATE_DELTA = 0
+
+####################################################
+
+# find approaching deadlines in ... days (eg. 1 = tomorrow)
+APPROACHING_DEADLINE_DELTA = 7
 
 ##################################################
 # Feature tours currently active
