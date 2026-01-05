@@ -33,6 +33,12 @@ class JournalGenericXWalk(object):
         return old_ed != new_ed and new_ed is not None and new_ed != ""
 
     @classmethod
+    def is_new_flag_assignee(cls, form, old):
+        old_flag_assignee = old.flag_assignee
+        new_flag_assignee = form.flag_assignee.data
+        return old_flag_assignee != new_flag_assignee
+
+    @classmethod
     def form_diff(cls, a_formdata, b_formdata):
 
         def _serialise(x):

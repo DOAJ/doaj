@@ -840,6 +840,8 @@ class ManEdJournalReview(ApplicationProcessor):
         is_editor_group_changed = JournalFormXWalk.is_new_editor_group(self.form, self.source)
         is_associate_editor_changed = JournalFormXWalk.is_new_editor(self.form, self.source)
 
+        is_new_flag_assignee = JournalFormXWalk.is_new_flag_assignee(self.form, self.source)
+
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
@@ -868,6 +870,13 @@ class ManEdJournalReview(ApplicationProcessor):
             # except app_email.EmailException:
             #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
             #     app.logger.exception('Error sending assignment email to associate.')
+
+        if is_new_flag_assignee:
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_FLAG_ASSIGNED, current_user.id, {
+                "assignee": self.target.flag_assignee,
+                "journal": self.target.data
+            }))
 
     def validate(self):
         # make use of the ability to disable validation, otherwise, let it run
