@@ -34,9 +34,15 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def is_new_flag_assignee(cls, form, old):
-        old_flag_assignee = old.flag_assignee
-        new_flag_assignee = form.flag_assignee.data
-        return old_flag_assignee != new_flag_assignee
+        # This method assumes only one flag per journal
+        old_flags = old.flags
+        old_flag_assignee = old_flags[0]["flag"]["assigned_to"] if old_flags else None
+        new_flags = form.flags.data
+        new_flag_assignee = None
+        is_resolved = form.flags.data[0]["flag_resolved"] or form.flags.data[0]["flag_resolved"] == "false"
+        if not is_resolved and new_flags:
+            new_flag_assignee = form.flags.data[0]["flag_assignee"]
+        return old_flag_assignee != new_flag_assignee if new_flag_assignee else False
 
     @classmethod
     def form_diff(cls, a_formdata, b_formdata):

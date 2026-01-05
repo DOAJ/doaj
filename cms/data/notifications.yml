@@ -195,6 +195,6 @@ journal:maned:discontinuing_soon:notify:
 
 flag:assigned:
   long: |
-    "A new flag in "{{ journal_title }}" (id: {id}) has been assigned to you"
+    "A new flag in "{journal_title}" (id: {id}) has been assigned to you"
   short:
     New flag
