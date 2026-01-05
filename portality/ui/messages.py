@@ -78,6 +78,8 @@ class Messages(object):
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
     EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
 
+    EXCEPTION_NOTIFICATION_JOURNAL_NOT_FOUND = "Journal with id {x} not found"
+
     EXCEPTION_UNABLE_TO_CONSTRUCT_JOURNAL = "Unable to construct Journal from supplied source - data structure validation error, {x}"
     EXCEPTION_UNABLE_TO_CONSTRUCT_ACCOUNT = "Unable to construct Account from supplied source - data structure validation error, {x}"
 

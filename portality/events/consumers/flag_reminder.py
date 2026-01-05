@@ -17,16 +17,14 @@ class FlagReminder(EventConsumer):
     @classmethod
     def consume(cls, event):
         assignee_id = event.context.get("assignee")
-        j_source = event.context.get("journal")
+        jid = event.context.get("journal")
 
-        try:
-            journal = models.Journal(**j_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException(
-                Messages.EXCEPTION_UNABLE_TO_CONSTRUCT_JOURNAL.format(x=e))
+        journal = models.Journal.pull(jid)
+
+        if not journal:
+            raise exceptions.NoSuchObjectException(Messages.EXCEPTION_NOTIFICATION_JOURNAL_NOT_FOUND.format(x=jid))
 
         acc = models.Account.pull(assignee_id)
-
         if not acc:
             raise exceptions.NoSuchObjectException(Messages.EXCEPTION_NOTIFICATION_NO_ACCOUNT.format(id=assignee_id))
 
