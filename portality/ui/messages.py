@@ -79,6 +79,7 @@ class Messages(object):
     EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
 
     EXCEPTION_UNABLE_TO_CONSTRUCT_JOURNAL = "Unable to construct Journal from supplied source - data structure validation error, {x}"
+    EXCEPTION_UNABLE_TO_CONSTRUCT_ACCOUNT = "Unable to construct Account from supplied source - data structure validation error, {x}"
 
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.

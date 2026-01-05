@@ -19,8 +19,7 @@ class FlagAssigned(EventConsumer):
 
     @classmethod
     def consume(cls, event):
-        context = event.context
-        acc = models.Account(**context.get("assignee"))
+        acc_source = event.context.get("assignee")
         j_source = event.context.get("journal")
 
         try:
@@ -29,24 +28,27 @@ class FlagAssigned(EventConsumer):
             raise exceptions.NoSuchObjectException(
                 Messages.EXCEPTION_UNABLE_TO_CONSTRUCT_JOURNAL.format(x=e))
 
+        try:
+            acc = models.Account(**acc_source)
+        except Exception as e:
+            raise exceptions.NoSuchObjectException(
+                Messages.EXCEPTION_UNABLE_TO_CONSTRUCT_ACCOUNT.format(x=e))
+
         if not acc.email:
             raise NoSuchPropertyException(Messages.EXCEPTION_NOTIFICATION_NO_EMAIL.format(x=acc.id))
-        cls._send_flag_assigned_email(acc, journal)
 
-    @classmethod
-    def _send_flag_assigned_email(cls, assignee: models.Account, journal: models.Journal):
-        # ~~->FlagAssigned:Email~~
+        # ~~-> Notifications:Service ~~
+        svc = DOAJ.notificationsService()
 
-        to = [assignee.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        subject = app.config.get("SERVICE_NAME", "") + " - a new flagged assigned"
+        notification = models.Notification()
+        notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
+        notification.who = acc.id
+        notification.long = svc.long_notification(cls.ID).format(
+            journal_title=journal.bibjson().title,
+            id=journal.id)
 
-        journal_url = url_root + url_for("admin/journal", source=journal.id)
+        notification.short = svc.short_notification(cls.ID)
+        notification.action = url_for("admin.journal", journal_id=journal.id)
 
-        app_email.send_mail(to=to,
-                            fro=fro,
-                            subject=subject,
-                            template_name=templates.FLAG_ASSIGNED,
-                            assignee=assignee.name if name in assignee else assignee.id,
-                            journal_title=journal.title,
-                            journal_url=journal_url)
+        svc.notify(notification)
+        return notification

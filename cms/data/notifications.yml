@@ -192,3 +192,9 @@ journal:maned:discontinuing_soon:notify:
     Journal "{title}" (id: {id}) will discontinue in {days} days.
   short:
      Journal discontinuing
+
+flag:assigned:
+  long: |
+    "A new flag in "{{ journal_title }}" (id: {id}) has been assigned to you"
+  short:
+    New flag
