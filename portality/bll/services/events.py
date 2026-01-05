@@ -28,6 +28,7 @@ from portality.events.consumers.application_editor_acceptreject_notify import Ap
 from portality.events.consumers.update_request_maned_editor_group_assigned_notify import UpdateRequestManedEditorGroupAssignedNotify
 from portality.events.consumers.article_ris_generator import ArticleRISGenerator
 from portality.events.consumers.flag_assigned import FlagAssigned
+from portality.events.consumers.flag_reminder import FlagReminder
 
 
 
@@ -57,6 +58,7 @@ class EventsService(object):
         ApplicationPublisherQuickRejectNotify,
         ArticleRISGenerator,
         FlagAssigned,
+        FlagReminder,
         BGJobFinishedNotify,
         JournalDiscontinuingSoonNotify,
         UpdateRequestManedEditorGroupAssignedNotify,

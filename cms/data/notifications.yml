@@ -198,3 +198,9 @@ flag:assigned:
     "A new flag in "{journal_title}" (id: {id}) has been assigned to you"
   short:
     New flag
+
+flag:reminder:
+  long: |
+    "The deadline for the flag in "{journal_title}" (id: {id}) is in 7 days."
+  short:
+    Deadline reminder
