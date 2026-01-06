@@ -173,7 +173,6 @@ We may also refer to the [Principles of Transparency and Best Practice in Schola
     - The reuse rights for previously published content ( "all rights reserved" or under an open license)
     - The copyright status of the previously published content 
    - When an S2O offer reaches its subscription target, the journal must make all content from that publication year fully open access within the same calendar year. When an S2O year ends, the decision on whether the content will be OA or closed/hybrid for the next year must be decided without interruption. A routine delay in deciding S2O status each year is not acceptable, because DOAJ does not allow delayed/embargoed OA.
-
 - ### Book review journals
    - Journals consisting only of book reviews will not be accepted. 
 
