@@ -1768,3 +1768,5 @@ URLSHORT_ALIAS_LENGTH = 6
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
+
+TESTDRIVE_SCRIPT_WHITELIST = ["find_approaching_deadlines"]
