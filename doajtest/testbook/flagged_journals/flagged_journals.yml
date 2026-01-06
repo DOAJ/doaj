@@ -84,9 +84,10 @@ tests:
     context:
       role: Admin
     setup:
-     - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following the steps 1-8; otherwise you may start from the step 9;
+     - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following all the steps; otherwise you may omit steps 2-9
     steps:
-      - step: Login as LordWiggleworth (admin)
+      - step: Navigate to /testdrive/flags
+      - step: In a separate tab login as LordWiggleworth (admin)
       - step: Open Feline Aerodynamics Review journal (available on your dashboard)
       - step: Click Add Flag button
       - step: Assign "ProfessorQuibbleton" (admin)
@@ -94,7 +95,7 @@ tests:
       - step: In text area add flag's note (any text)
       - step: Save application, Unlock & Close the form
       - step: Log out
-      - step: Log in as "ProfessorQuibbleton"
+      - step: In a separate tab log in as "ProfessorQuibbleton"
         results:
           - At the top navbar Notifications indicate a new notification
       - step: Hover over Notifications button
