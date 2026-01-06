@@ -83,8 +83,8 @@ tests:
   - title: Admin - Flags Notifications
     context:
       role: Admin
-    setup:
-      - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal
+    setup: If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following the steps 2.1-2.8; otherwise you may start from step 2.9;
+    steps:
       - step: Login as LordWiggleworth (admin)
       - step: Open Feline Aerodynamics Review journal (available on your dashboard)
       - step: Click Add Flag button
@@ -93,7 +93,6 @@ tests:
       - step: In text area add flag's note (any text)
       - step: Save application, Unlock & Close the form
       - step: Log out
-    steps:
       - step: Log in as "ProfessorQuibbleton"
         results:
           - At the top navbar Notifications indicate a new notification
