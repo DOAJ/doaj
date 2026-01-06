@@ -83,7 +83,8 @@ tests:
   - title: Admin - Flags Notifications
     context:
       role: Admin
-    setup: If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following the steps 1-8; otherwise you may start from the step 9;
+    setup:
+     - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following the steps 1-8; otherwise you may start from the step 9;
     steps:
       - step: Login as LordWiggleworth (admin)
       - step: Open Feline Aerodynamics Review journal (available on your dashboard)
