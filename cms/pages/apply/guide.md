@@ -38,7 +38,7 @@ Open access journals published in any language may apply. Journals should adhere
   - A charge for the print version of a journal is permitted
 - Publishing non-open access content:
   - Within an article, text and figures may be used with permission or under fair use. All non-open access content must be clearly indicated and attributed.
-  - Journals may publish a small amount of non-open access, free-to-read content relevant to the journal's scope provided it is not scholarly articles and is clearly attributed and the copyright status is clear.
+  - Journals may publish a small amount of non-open access, free-to-read content relevant to the journal's scope provided it is not scholarly articles and it is clearly attributed and the copyright status is clear.
   - More details are on our [licensing & copyright page](/apply/copyright-and-licensing/).
 
 
