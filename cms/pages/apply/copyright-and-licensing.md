@@ -32,7 +32,7 @@ DOAJ recommends that publishers do not restrict the rights of the copyright owne
 
 “All rights reserved” is never appropriate for open access content.
 
-We do not accept free-to-read journals that restrict reuse of their content to “fair use” only, also known as ‘Bronze journals’
+We do not accept free-to-read journals that restrict reuse of their content to “fair use” only, also known as ‘Bronze journals’.
 
 
 ## Author rights
