@@ -648,7 +648,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
         assert bj.language == ["EN", "FR"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "mirror"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 3, bj.subject
@@ -778,6 +778,7 @@ class TestModels(DoajTestCase):
         bj.add_keyword("keyword")
         bj.add_language("CZ")
         bj.add_label("s2o")
+        bj.add_label("ojc")
         bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
         bj.add_replaces("1234-1234")
         bj.add_subject("SCH", "TERM", "CDE")
@@ -790,7 +791,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
         assert bj.language == ["IT", "CZ"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "ojc"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
@@ -1886,6 +1887,17 @@ class TestModels(DoajTestCase):
         assert a2.message == "This is a test message"
         assert a2.state == a.STATE_NEW
 
+    def test_47_ris_export(self):
+        r = models.RISExport()
+        raw = "TY  - JOUR\nTI  - Test Article\nAU  - Doe, John\nPY  - 2024\nJO  - Journal of Testing\nVL  - 1\nIS  - 1\nSP  - 1\nEP  - 10\nER  - \n"
+        r.ris_raw = raw
+        r.save(blocking=True)
+
+        r2 = models.RISExport.pull(r.id)
+        assert r2 is not None
+        assert r2.ris_raw == raw
+        bs = r2.byte_stream
+        assert bs.read().decode('utf-8') == raw
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

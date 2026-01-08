@@ -898,7 +898,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Enter all types of review used by the journal for "
                           "research articles. Note that editorial review is "
-                          "only accepted for arts and humanities journals."],
+                          "only accepted for <a href='https://doaj.org/apply/guide/#additional-criteria-for-some-journal-types' target='_blank' rel='nofollow'>arts and humanities journals</a>."],
             "doaj_criteria": "Peer review must be carried out"
         },
         "validate": [
@@ -1640,6 +1640,26 @@ class FieldDefinitions:
         }
     }
 
+    MIRROR = {
+        "name": "mirror",
+        "label": "Mirror Journal",
+        "input": "checkbox",
+        "help": {
+            "long_help": ["Is the journal a Mirror Journal?"]
+        }
+    }
+
+    OJC = {
+        "name": "ojc",
+        "label": "Open Journals Collective",
+        "input": "checkbox",
+        "help": {
+            "long_help": [
+                "Is the journal part of the <a href='https://openjournalscollective.org/' target='_blank' rel='noopener'>"
+                "Open Journals Collective</a>?"],
+        }
+    }
+
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
     # ~~->$ QuickReject:FormField~~
     QUICK_REJECT = {
@@ -2249,7 +2269,9 @@ class FieldSetDefinitions:
         "name": "labels",
         "label": "Specify labels for this journal",
         "fields": [
-            FieldDefinitions.S2O["name"]
+            FieldDefinitions.S2O["name"],
+            FieldDefinitions.MIRROR["name"],
+            FieldDefinitions.OJC["name"]
         ]
     }
 
