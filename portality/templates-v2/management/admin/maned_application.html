@@ -14,20 +14,18 @@
 {% block body_id %}apply{% endblock %}
 
 {% block permanent_warnings %}
-<style>
-    .focus {
-        background-color: hotpink;
-    }
-</style>
     {% if obj.application_status == "rejected" and continuation_info.id %}
-        <div class="focus-overlay">
-            <div class="alert alert--danger {% if continuation_info.first_rejection %} focus {% endif %}">
+            {%- if continuation_info.first_rejection -%}
+                <div class="focus-overlay" id="focus-overlay"></div>
+            {%- endif -%}
+            <div class="alert alert--danger {%- if continuation_info.first_rejection %} focus {%- endif -%}">
                 <p>This application has been rejected. We found a related older journal record. <strong>You may want to withdraw it.</strong><br />
                     <a href="{{ url_for('admin.journal_page', journal_id=continuation_info.id) }}" target="_blank">{{ continuation_info.title }}</a>
                 </p>
-                <button class="btn btn-primary">Got it</button>
+                {%- if continuation_info.first_rejection -%}
+                    <button class="button button--cta" id="cont_confirmation" tabindex="1">Got it</button>
+                {%- endif -%}
             </div>
-        </div>
     {% endif %}
 {% endblock %}
 
