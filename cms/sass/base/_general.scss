@@ -335,7 +335,7 @@ fieldset {
 }
 
 .focus-overlay {
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 100%;
   background-color: rgba($dark-grey, 0.7);
