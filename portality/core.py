@@ -208,16 +208,41 @@ def put_mappings(conn, mappings, force_mappings=False):
             # Set up a new index and corresponding alias
             idx_name = altered_key + '-{}'.format(dates.now_str(dates.FMT_DATETIME_LONG))
 
+            index_created = False
             try:
                 resp = es_connection.indices.create(index=idx_name,
                                                     body=mapping,
                                                     request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
                 print("Initialised index: {}".format(resp['index']))
+                index_created = True
             except elasticsearch.exceptions.RequestError as e:
-                print('Could not create index: ' + str(e))
+                # Check if this is a race condition where another worker already created the index
+                if 'resource_already_exists_exception' in str(e):
+                    print('Index {} already exists (race condition with another worker), skipping...'.format(idx_name))
+                    # Check if alias was already created by the other worker
+                    if conn.indices.exists_alias(name=altered_key):
+                        print("Alias {} already created by another worker, skipping alias creation".format(altered_key))
+                        continue
+                    else:
+                        # Index exists but alias doesn't - this shouldn't happen but let's try to create the alias
+                        print("Index exists but alias doesn't, attempting to create alias...")
+                        index_created = True
+                else:
+                    print('Could not create index: ' + str(e))
+                    # Don't try to create alias if index creation failed for other reasons
+                    continue
 
-            resp2 = es_connection.indices.put_alias(index=idx_name, name=altered_key)
-            print("Created alias:     {:<25} -> {},  status {}".format(idx_name, altered_key, resp2))
+            # Only create alias if index was created successfully or already exists
+            if index_created:
+                try:
+                    resp2 = es_connection.indices.put_alias(index=idx_name, name=altered_key)
+                    print("Created alias:     {:<25} -> {},  status {}".format(idx_name, altered_key, resp2))
+                except elasticsearch.exceptions.RequestError as e:
+                    # Handle race condition where another worker created the alias first
+                    if 'invalid_alias_name_exception' in str(e) or 'resource_already_exists_exception' in str(e):
+                        print("Alias {} already exists (created by another worker)".format(altered_key))
+                    else:
+                        print('Could not create alias: ' + str(e))
 
 
 def initialise_index(app, conn, only_mappings=None, force_mappings=False):

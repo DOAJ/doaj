@@ -5,6 +5,14 @@ import os
 from portality import constants
 from portality.lib import paths
 
+
+def get_bool_env(var_name, default=False):
+    """Get a boolean value from environment variable, handling common truthy/falsy strings."""
+    val = os.getenv(var_name)
+    if val is None:
+        return default
+    return val.lower() in ('true', '1', 'yes', 'on')
+
 ###########################################
 # Application Version information
 # ~~->API:Feature~~
@@ -66,7 +74,7 @@ INDEX_PER_TYPE_SUBSTITUTE = '_doc'  # Migrated from esprit
 ELASTIC_SEARCH_DB_PREFIX = "doaj-"  # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
-INITIALISE_INDEX = True  # whether or not to try creating the index and required index types on startup
+INITIALISE_INDEX = get_bool_env('INITIALISE_INDEX', False)  # whether to try creating required index types on startup
 ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366

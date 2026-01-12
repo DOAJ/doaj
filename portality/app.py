@@ -101,7 +101,11 @@ if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False)
 # because that does not run if gunicorn is loading the app, as opposed
 # to the app being run directly by python portality/app.py
 # putting it here ensures it will run under any web server
-initialise_index(app, es_connection)
+# NOTE: With gunicorn preload_app=True, this runs once before worker forking,
+# preventing race conditions. Set INITIALISE_INDEX=False to disable automatic
+# index creation on startup (useful for production deployments).
+if app.config.get('INITIALISE_INDEX', False):
+    initialise_index(app, es_connection)
 
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
