@@ -14,7 +14,7 @@ from portality.bll import exceptions, DOAJ
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping, dates, paths
 from portality.ui.debug_toolbar import DoajDebugToolbar
-from portality.ui import templates
+from portality.ui import templates, ui_copy
 
 import elasticsearch
 
@@ -293,6 +293,8 @@ def setup_jinja(app):
     app.jinja_env.globals['type'] = type
     #~~->Constants:Config~~
     app.jinja_env.globals['constants'] = constants
+    app.jinja_env.globals['copy'] = ui_copy
+    app.jinja_env.globals['render_copy'] = ui_copy.render_copy
     app.jinja_env.globals['templates'] = templates
     #~~-> Dates:Library~~
     app.jinja_env.globals['dates'] = dates

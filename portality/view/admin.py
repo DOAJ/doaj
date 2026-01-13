@@ -448,8 +448,7 @@ def application(application_id, **kwargs):
 
     if request.method == "GET":
         fc.processor(source=ap)
-        first_rejection = request.args.get("info") == "is being rejected"
-        continuation_info = {"first_rejection": first_rejection}
+        continuation_info = {"first_rejection": request.args.get("info") == constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED}
         replaces = Journal.find_by_issn(ap.bibjson().replaces)
         if replaces:
             r = replaces[0]

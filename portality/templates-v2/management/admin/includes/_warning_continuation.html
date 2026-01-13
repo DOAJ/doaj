@@ -1,0 +1,9 @@
+{%- if continuation_info.first_rejection -%}
+    <div class="focus-overlay" id="focus-overlay"></div>
+{%- endif -%}
+<div class="alert alert--danger {%- if continuation_info.first_rejection %} focus {%- endif -%}">
+    {{ render_copy(copy.WARNING, url=url_for('admin.journal_page', journal_id=continuation_info.id), title=continuation_info.title) }}
+    {%- if continuation_info.first_rejection -%}
+        <button class="button button--cta" id="cont_confirmation" tabindex="1">Got it</button>
+    {%- endif -%}
+</div>
