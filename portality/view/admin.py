@@ -467,7 +467,6 @@ def application(application_id, **kwargs):
                 #     for f in processor.form.resettedFields:
                 #         text += "<br>field: {}, invalid value: {}, new value: {}".format(f["name"], f["data"], f["default"])
                 #     flash(text, 'info')
-                print(processor.info)
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
@@ -540,7 +539,7 @@ def application_quick_reject(application_id):
     flash(msg, "success")
 
     # redirect the user back to the edit page
-    return redirect(url_for('.application', application_id=application_id))
+    return redirect(url_for('admin.application', application_id=application_id, info=constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED))
 
 
 @blueprint.route("/admin_site_search", methods=["GET"])
