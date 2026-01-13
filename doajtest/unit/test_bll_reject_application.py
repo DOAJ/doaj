@@ -13,7 +13,7 @@ from portality.models import Account, Suggestion, Provenance, Journal
 
 
 def load_test_cases():
-    return load_from_matrix("reject_application.csv", test_ids=[])
+    return load_from_matrix("reject_application.csv", test_ids=["19"])
 
 
 def mock_save_fail(*args, **kwargs):

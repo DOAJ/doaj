@@ -148,7 +148,8 @@ APPLICATION_SOURCE = {
         ],
         "owner" : "publisher",
         "related_journal" : "987654321123456789",
-        "date_applied" : "2003-01-01T00:00:00Z"
+        "date_applied" : "2003-01-01T00:00:00Z",
+        "date_rejected" : "2004-01-01T00:00:00Z",
     },
     "bibjson" : JOURNAL_LIKE_BIBJSON
 }
