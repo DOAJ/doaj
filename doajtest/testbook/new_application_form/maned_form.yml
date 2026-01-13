@@ -102,48 +102,45 @@ tests:
 - title: Reject application that is a continuation
   steps:
     - step: go to /testdrive/reject
-    - step: login as ProfessorFrostfire (you may want to login in an incognito window)
-    - step: open "Advances in Cold Lava Mechanics" application (it is available on your dashboard)
-    - step: change status of the application to "Rejected" by setting "Rejected" status in the "Change status" input
+    - step: login as ProfessorFrostfire (you may want to log in using an incognito window)
+    - step: open "Advances in Cold Lava Mechanics" application (available on your dashboard)
+    - step: change the status to "Rejected" in the "Change status" input
     - step: save the application
       results:
         - application is saved
-        - new warning is displayed with information about an older journal and a link in the "focus" mode
-        - it is not possible to click anything outside the warning (application form is dimmed)
-        - it is not possible to Unlock & Close the application form
-        - button "Got it!" is displayed at the bottom of the warning
+        - a warning appears with information about an older journal and a link in "focus" mode
+        - the form is dimmed; interactions outside the warning are blocked
+        - the "Got it!" button is displayed at the bottom
     - step: click the link in the warning
       results:
-        - Annals of Cryovolcanic Ecology form is opened in a new tab
-    - step: Unlock & Close the journal form, close the tab, go back to the application form
-    - step: Click "Got it" button
+        - the "Annals of Cryovolcanic Ecology" form opens in a new tab
+    - step: Unlock & Close the journal form, close the tab, and return to the application form
+    - step: click the "Got it" button
       results:
-        - the warning is now displayed in the standard way
+        - the warning is now in standard mode
         - the "Got it!" button is hidden
-        - the rest of the application is active and it's possible to unlock & close it
+        - the application is active and can be unlocked & closed
     - step: Unlock & Close
-    - step: Open this application again (you can navigate to `/admin/application/<application_id>` or search for the "Advances in Cold Lava Mechanics" in the admin applications search `/admin/applications`)
+    - step: open the application again (navigate to `/admin/application/<application_id>` or search for "Advances in Cold Lava Mechanics" in `/admin/applications`)
       results:
-        - the warning about the older journal is displayed at the top of the application
-        - the application form is active and editable
-        - it is possible to Unlock & Close the application
-    - step: Change the status of the application back to "In progress" and save the application (do not close it!)
+        - the warning about the older journal is displayed at the top
+        - the application is active and editable
+        - it can be unlocked & closed
+    - step: change the status back to "In progress" and save (do not close)
       results:
-        - the warning about the older journal disappeared
-    - step: Once the application is saved click "Quick Reject" button
-    - step: Choose any rejection reason and click "Quick Reject" button
+        - the warning disappears
+    - step: once saved, click the "Quick Reject" button
+    - step: choose any rejection reason and click "Quick Reject"
       results:
         - application is saved
-        - the warning is displayed at the top with information about an older journal and a link
-        - it is not possible to click anything outside the warning (application form is dimmed)
-        - it is not possible to Unlock & Close the application form
+        - the warning appears again at the top
+        - the form is dimmed; interactions outside the warning are blocked
     - step: click "Got it"
       results:
-        - the warning about the older journal is displayed in the standard way
-        - the application form is active and editable
-        - it is possible to Unlock & Close the application
-    - step: change any information in the form (other than the status)
-    - step: save the form
+        - the warning returns to standard mode
+        - the application is active and editable
+        - it can be unlocked & closed
+    - step: change any information (except status) and save
       results:
         - the application is saved correctly
-        - the warning is still displayed in the standard way
+        - the warning remains in standard mode
