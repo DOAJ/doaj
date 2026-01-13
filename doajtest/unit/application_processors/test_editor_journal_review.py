@@ -105,7 +105,7 @@ class TestEditorJournalReview(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
-        assert fc.target.bibjson().labels == ["s2o"]
+        assert fc.target.bibjson().labels == ["s2o", "mirror"]
         assert fc.target.current_application == "qwertyuiop"
         related = fc.target.related_applications
         assert len(related) == 2

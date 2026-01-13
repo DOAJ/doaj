@@ -92,7 +92,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
-        assert fc.target.bibjson().labels == ["s2o"]
+        assert fc.target.bibjson().labels == ["s2o", "mirror"]
         assert fc.target.current_journal == "123456789987654321"
         assert fc.target.related_journal == "987654321123456789"
         assert fc.target.bibjson().subject == fc.source.bibjson().subject

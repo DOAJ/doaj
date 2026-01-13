@@ -1,0 +1,19 @@
+404:
+  header: "Hmm, we couldn’t find that page – maybe the link’s broken or it never existed."
+  text: "You can keep exploring by searching through all the journals or articles."
+
+410:
+  article:
+    withdrawn:
+      header: "This article came from a journal that’s no longer in DOAJ."
+      text: "You might find similar articles in other journals or you can search all articles."
+
+    tombstone:
+      header: "This article has been removed and isn’t available anymore."
+      text: "But you can search for other journals or articles."
+
+
+  journal:
+    withdrawn:
+      header: "This journal isn’t in DOAJ anymore."
+      text: "But you can search for other journals or articles."

@@ -257,6 +257,14 @@ class JournalGenericXWalk(object):
         if s2o is not None and (s2o.data == "y" or s2o.data is True):
             bibjson.add_label("s2o")
 
+        mirror = getattr(form, "mirror", None)
+        if mirror is not None and (mirror.data == "y" or mirror.data is True):
+            bibjson.add_label("mirror")
+
+        ojc = getattr(form, "ojc", None)
+        if ojc is not None and (ojc.data == "y" or ojc.data is True):
+            bibjson.add_label("ojc")
+
     @classmethod
     def form2admin(cls, form, obj):
         if getattr(form, "notes", None):
@@ -458,6 +466,8 @@ class JournalGenericXWalk(object):
 
         # labels
         forminfo['s2o'] = "s2o" in bibjson.labels
+        forminfo['mirror'] = "mirror" in bibjson.labels
+        forminfo['ojc'] = "ojc" in bibjson.labels
 
     @classmethod
     def admin2form(cls, obj, forminfo):

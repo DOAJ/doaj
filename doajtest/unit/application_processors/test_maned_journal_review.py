@@ -152,6 +152,8 @@ class TestManEdJournalReview(DoajTestCase):
 
         # set the s2o data to False using the form
         fc.form.s2o.data = False
+        fc.form.mirror.data = False
+        fc.form.ojc.data = False
 
         # run the crosswalk, don't test it at all in this test
         fc.form2target()

@@ -187,6 +187,8 @@ CSV_HEADERS = [
     "Continued By",
     "LCC Codes",
     "Subscribe to Open",
+    "Mirror Journal",
+    "Open Journals Collective",
     'Subjects',  # (added outside journal2questions)
     'Added on Date',  # (added outside journal2questions)
     'Last updated Date',  # (added outside journal2questions)
@@ -239,5 +241,7 @@ JOURNAL_QUESTION_ANSWERS = [
     "1111-1111",
     "2222-2222",
     "HB1-3840|H|SF600-1100",
-    "Yes"
+    "Yes",
+    "Yes",
+    "No"
 ]

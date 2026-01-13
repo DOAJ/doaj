@@ -8,7 +8,6 @@ from typing import Callable, Iterable
 
 from unidecode import unidecode
 
-import portality.lib.dates
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
