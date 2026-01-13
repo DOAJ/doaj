@@ -19,7 +19,7 @@ In some cases, we will accept a publisher's own license if it is broadly equival
 
 ## Copyright
 
-The initial copyright of a paper is held by the authors (or their employer, in some instances). When publishing that paper the copyright may continue to be held by the author, or can be licensed or transferred to the publisher.
+The initial copyright of a paper is held by the authors (or their employer, in some instances). When publishing that paper the copyright may continue to be held by the author, or can be licensed or transferred to the publisher. Copyright may also be shared by the author (and their institution) and the publisher, though this can be complicated and we do not recommend it.
 
 DOAJ recommends that journals allow authors to retain the copyright of their papers without restrictions. Authors will then grant the publisher the right of first publication, and other non-exclusive publishing rights.
 
@@ -28,11 +28,11 @@ Even when the author retains copyright, restrictions may sometimes be imposed by
  - The publisher requires exclusive publishing rights. This means that the author no longer holds copyright without restrictions.
  - The publisher requires a transfer or exclusive license of commercial rights. This means the author no longer holds copyright without restrictions.
 
-Copyright terms must not contradict the licensing terms or the terms of the open access policy.
+DOAJ recommends that publishers do not restrict the rights of the copyright owner in this way. Copyright terms must not contradict the licensing terms or the terms of the journal's or publisher's open access policy.
 
 “All rights reserved” is never appropriate for open access content.
 
-"Fair use" is not open access and we do not accept journals with these restrictions. 
+We do not accept free-to-read journals that restrict reuse of their content to “fair use” only, also known as ‘Bronze journals’.
 
 
 ## Author rights
@@ -46,6 +46,15 @@ But the license applies to the readers **and** the author when:
 - the author retains copyright, transfers or grants exclusive commercial rights to the publisher, and a non-commercial license is used
 
 
+## Non-Open Access content
+
+Reasonable exceptions to the requirement for open access within articles are allowed. This includes non-open access text excerpts and figures used with permission or under fair use. Any published source should be cited and the copyright holder, license (or “all rights reserved” in the absence of a license), and any permission or fair use rationale should be stated in the legend and/or article body as appropriate. The [Creative Commons (CC) legal code](https://creativecommons.org/licenses/by/4.0/legalcode.en) says: “Licensors should clearly mark any material not subject to the license. This includes other CC-licensed material, or material used under an exception or limitation to copyright.” Ideally, machine-readable metadata should note exceptions to the article’s open license, such as by using the <permissions> and <attrib> elements in [JATS XML](https://jats.nlm.nih.gov/).
+
+DOAJ does not index hybrid journals, i.e., journals that publish open access articles together with articles accessible only with subscription, payment, or registration. If a journal republishes scholarly articles previously published elsewhere, including translations, those articles must also be openly licensed.
+
+Journals may publish a small amount of non-open access, free-to-read content relevant to the journal’s scope – such as poetry – provided it is not scholarly articles. Journals doing this must publish a policy about the publication of this non-article, non-open access material. The copyright and licensing information must be clearly indicated on the content, including in the metadata where possible (as above).
+
+
 ## Further reading
 
 Further reading and more examples are [available as a downloadable presentation](https://drive.google.com/drive/folders/190BgMV0ImGk-gUpHu5ai_R-uvO8NDAB8?usp=sharing).
@@ -57,4 +66,8 @@ Further reading and more examples are [available as a downloadable presentation]
 
 ## Version history
 
-This is Version 1 of our Licensing and copyright page.
+This is Version 2.1 of Licensing and copyright page.
+
+- V2.1 Jan 2026 Added information on shared copyright, reworded information on journals that allow 'fair use'  
+- V2.0 2025 Added information on publishing non-open access content
+- V1.0 2022 Separate page for extra information on Copyright & Licensing
