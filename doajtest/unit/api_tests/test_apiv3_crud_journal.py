@@ -1,12 +1,11 @@
 from doajtest.helpers import DoajTestCase
-from portality.api.current.data_objects import journal
 from portality.api.current.data_objects.journal import OutgoingJournal
-from portality.api.current.crud.journals import JournalsCrudApi, Api401Error, Api404Error
+from portality.api.current.crud.journals import JournalsCrudApi, Api404Error
 from portality import models
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 import time
 
-from portality.lib.seamless import SeamlessMixin, SeamlessData, Construct
+from portality.lib.seamless import Construct
 
 
 def mock_lookup(struct, path):

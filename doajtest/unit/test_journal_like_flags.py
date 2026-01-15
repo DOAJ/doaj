@@ -1,16 +1,13 @@
-from contextlib import contextmanager
 from werkzeug.datastructures import MultiDict
 
 from doajtest.helpers import DoajTestCase, create_random_str
-# from doajtest.unit.application_processors.test_application_processor_emails import UPDATE_REQUEST_SOURCE_TEST_1
-from portality import constants
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
+from portality.forms.application_forms import JournalFormFactory
 from portality.lib import dates
-from portality.models import Account, Journal, Application
-from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, ApplicationFixtureFactory
-from flask_login import login_user, current_user
+from portality.models import Account, Journal
+from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory
+from flask_login import current_user
 
 from portality.ui.messages import Messages
 

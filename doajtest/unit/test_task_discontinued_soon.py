@@ -1,4 +1,3 @@
-import unittest
 import datetime
 
 from doajtest.helpers import DoajTestCase
