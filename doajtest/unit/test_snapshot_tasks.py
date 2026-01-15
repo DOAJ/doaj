@@ -1,8 +1,8 @@
 from doajtest.helpers import DoajTestCase
 from portality.core import app
-from portality.tasks import check_latest_es_backup, prune_es_backups
+from portality.tasks import check_latest_es_backup
 from portality.background import BackgroundApi
-import responses
+
 
 
 class TestSnapshotTasks(DoajTestCase):

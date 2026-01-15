@@ -30,7 +30,11 @@ JOURNAL_STRUCT = {
             "fields": {
                 "in_doaj": {"coerce": "bool"},
                 "ticked": {"coerce": "bool"},
-                "current_application": {"coerce": "unicode"}
+                "current_application": {"coerce": "unicode"},
+                "last_full_review": {"coerce": "bigenddate"},
+                "last_withdrawn": {"coerce": "utcdatetime"},
+                "last_reinstated": {"coerce": "utcdatetime"},
+                "last_owner_transfer": {"coerce": "utcdatetime"}
             },
             "lists": {
                 "related_applications": {"contains": "object"}
@@ -213,6 +217,23 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             return False
         return lmut > datetime.utcfromtimestamp(0)
 
+    def set_date_applied(self, date=None):
+        if date is None:
+            date = dates.now_str()
+        self.__seamless__.set_with_struct("admin.date_applied", date)
+
+    @property
+    def date_applied(self):
+        return self.__seamless__.get_single("admin.date_applied")
+
+    @property
+    def date_applied_timestamp(self):
+        return self.__seamless__.get_single("admin.date_applied", coerce=coerce.to_datestamp())
+
+    @date_applied.setter
+    def date_applied(self, val):
+        self.__seamless__.set_with_struct("admin.date_applied", val)
+
     def has_oa_start_date(self):
         return self.__seamless__.get_single("bibjson.oa_start", default=False)
 
@@ -284,9 +305,19 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()
-        obj = {"date": date, "note": note, "id": id, "author_id": author_id, "flag":  {"assigned_to": assigned_to, "deadline": deadline}}
+        obj = {"date": date, "note": note}
+        if id is not None:
+            obj["id"] = id
+        if author_id is not None:
+            obj["author_id"] = author_id
+        if assigned_to is not None or deadline is not None:
+            obj["flag"] = {}
+            if assigned_to is not None:
+                obj["flag"]["assigned_to"] = assigned_to
+            if deadline is not None:
+                obj["flag"]["deadline"] = deadline
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
-        if not id:
+        if id is None:
             obj["id"] = uuid.uuid4()
         self.__seamless__.add_to_list_with_struct("admin.notes", obj)
 
@@ -702,14 +733,6 @@ class Journal(JournalLikeObject):
             id_ = self.id
         return id_
 
-    @property
-    def last_update_request(self):
-        related = self.related_applications
-        if len(related) == 0:
-            return None
-        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
-        return related[0].get("date_accepted", DEFAULT_TIMESTAMP_VAL)
-
     ############################################################
     ## revision history methods
 
@@ -826,6 +849,9 @@ class Journal(JournalLikeObject):
     def remove_current_application(self):
         self.__seamless__.delete("admin.current_application")
 
+    # Related Applications Functions
+    ###########
+
     @property
     def related_applications(self):
         return self.__seamless__.get_list("admin.related_applications")
@@ -863,6 +889,71 @@ class Journal(JournalLikeObject):
             return related[0].get("application_id")
         sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
         return related[0].get("application_id")
+
+    @property
+    def last_update_request(self):
+        related = self.related_applications_ordered
+        if related is None:
+            return None
+        return related[0].get("date_accepted", DEFAULT_TIMESTAMP_VAL)
+
+    @property
+    def related_applications_ordered(self):
+        related = self.related_applications
+        if len(related) == 0:
+            return None
+        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
+        return related
+
+    ########
+
+    @property
+    def last_full_review(self):
+        return self.__seamless__.get_single("admin.last_full_review")
+
+    @property
+    def last_full_review_timestamp(self):
+        return self.__seamless__.get_single("admin.last_full_review", coerce=coerce.to_datestamp())
+
+    @last_full_review.setter
+    def last_full_review(self, value):
+        self.__seamless__.set_with_struct("admin.last_full_review", value)
+
+    @property
+    def last_withdrawn(self):
+        return self.__seamless__.get_single("admin.last_withdrawn")
+
+    @property
+    def last_withdrawn_timestamp(self):
+        return self.__seamless__.get_single("admin.last_withdrawn", coerce=coerce.to_datestamp())
+
+    @last_withdrawn.setter
+    def last_withdrawn(self, value):
+        self.__seamless__.set_with_struct("admin.last_withdrawn", value)
+
+    @property
+    def last_reinstated(self):
+        return self.__seamless__.get_single("admin.last_reinstated")
+
+    @property
+    def last_reinstated_timestamp(self):
+        return self.__seamless__.get_single("admin.last_reinstated", coerce=coerce.to_datestamp())
+
+    @last_reinstated.setter
+    def last_reinstated(self, value):
+        self.__seamless__.set_with_struct("admin.last_reinstated", value)
+
+    @property
+    def last_owner_transfer(self):
+        return self.__seamless__.get_single("admin.last_owner_transfer")
+
+    @property
+    def last_owner_transfer_timestamp(self):
+        return self.__seamless__.get_single("admin.last_owner_transfer", coerce=coerce.to_datestamp())
+
+    @last_owner_transfer.setter
+    def last_owner_transfer(self, value):
+        self.__seamless__.set_with_struct("admin.last_owner_transfer", value)
 
     ########################################################################
     ## Functions for handling continuations

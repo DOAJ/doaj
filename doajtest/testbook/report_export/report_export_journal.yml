@@ -44,8 +44,8 @@ tests:
         path: /admin/
         results:
           - At the bottom of the list of facets is a "Reporting Tools" section, including 3 options for working with dates
-            "limit by date range", "created date histogram" and "last update histogram"
-      - step: Click on "Created Date Histogram"
+            "limit by date range", "date added histogram", "last update histogram" and "date rejected histogram"
+      - step: Click on "Date Added Histogram"
         results:
           - A histogram of the number of journals created per day for the entire life of the DOAJ is displayed, grouped
             by year
@@ -54,14 +54,14 @@ tests:
           - The search updates, and only records created in that year are displayed
           - The search filter list at the top of the results indicates the created date range (it may indicate the start
             and end months of the year)
-      - step: Go back to the Created Date Histogram facet, and change the "Granularity" from "Year" to "Month"
+      - step: Go back to the Date Added Histogram facet, and change the "Granularity" from "Year" to "Month"
         results:
           - The histogram updates to show the number of journals created per month for the selected year
       - step: Click on one of the months
         results:
           - The search updates, and only records created in that month are displayed
           - The search filter list at the top of the results indicates the selected month
-      - step: Go back to the Created Date Histogram facet.  Above it is the "Limit by Date Range" facet, open this by clicking on it
+      - step: Go back to the Date Added Histogram facet.  Above it is the "Limit by Date Range" facet, open this by clicking on it
         results:
           - The "Limit by Date Range" facet opens, showing a date range picker
           - Beneath the date range picker the "Created Date" month you selected is also shown
@@ -79,13 +79,14 @@ tests:
         path: /admin/
         results:
           - At the bottom of the list of facets is a "Reporting Tools" section, including 3 options for working with dates
-            "limit by date range", "created date histogram" and "last update histogram"
+            "limit by date range", "date added histogram", "last update histogram" and "date rejected histogram"
       - step: Click on "Limit by Date Range"
         results:
           - A date range picker is displayed
       - step: Open the "Type" pull-down menu
         results:
-          - The options are "Created Date" and "Last Updated"
+          - The options are "Created Date", "Last Updated", "Last Full Review", "Last Reinstated", "Last Withdrawn", 
+            "Last Owner Transfer" and "Date Applied"
       - step: If not already selected, select "Created Date"
         results:
           - The From and To dates show the month and year of the earliest and latest created dates in the search results, respectively
@@ -152,7 +153,8 @@ tests:
       - step: Open the CSV in a spreadsheet program
         results:
           - The CSV contains the data that was displayed in the search results
-          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 3 columns include account information
+          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 6 columns include 
+            account information and key dates
 
   - title: Manage existing reports
     context:
@@ -179,7 +181,8 @@ tests:
       - step: Open the CSV in a spreadsheet program
         results:
           - The CSV contains the data that was displayed in the search results
-          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 3 columsn include account information
+          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 6 columns include
+            account information and key dates
       - step: Go back to the report search page
       - step: Try out the facets and the sorting and searching options on this page
         results:
