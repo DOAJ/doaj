@@ -301,6 +301,13 @@
                                 <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source={{ source }}">{{ bibjson.publisher_name }}</a>
                                 {% if bibjson.publisher_country %}, {{ bibjson.publisher_country_name() }}{% endif %}
                             </dd>
+                            <dd class="ur_nudge">
+                                <span class="ur_nudge--question"><strong>Are you associated with this journal?</strong></span><br>
+                                <span>Help us keep your record accurate!</span><br>
+                                <a href="{{ url_for('publisher.update_request', journal_id=journal.id) }}">Click here to submit an update.</a>
+                            </dd>
+
+                            </dd>
                         {% endif %}
 
                         {% if bibjson.institution_name %}
