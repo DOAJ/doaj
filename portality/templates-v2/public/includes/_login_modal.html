@@ -1,0 +1,22 @@
+<div class="modal" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="Log in to submit update request">
+    <div class="modal__dialog" role="document">
+      <header class="flex-space-between modal__heading">
+          Log In
+        <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>
+      </header>
+      {% from "includes/_formhelpers.html" import render_field %}
+        {% set ur_url = base_url + url_for('publisher.update_request', journal_id=journal.id) %}
+        <form method="post" action="{{ url_for('account.login', next=ur_url) }}" id="login-form">
+            <div class="form__question">
+                <label for="user">Email address or username</label>
+                <input id="user" type="text" name="user" placeholder="email@example.com" required>
+            </div>
+            <div class="form__question">
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="********" required id="password">
+            </div>
+          <input type="submit" class="button button--primary" value="Log in" />
+        </form>
+
+    </div>
+</div>
