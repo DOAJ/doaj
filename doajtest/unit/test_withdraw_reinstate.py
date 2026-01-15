@@ -1,7 +1,6 @@
 from doajtest import helpers
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, ApplicationFixtureFactory
-from flask_login import current_user
 
 from portality import models, constants
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask, change_in_doaj
