@@ -1,0 +1,52 @@
+.drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        max-width: 25rem;
+        height: 100vh;
+        background-color: #F6F4F4;
+        padding: calc(90px + 1.5rem) 1.5rem 1.5rem;
+
+        h1 {
+            font-family: 'Source Sans Pro', sans-serif;
+            line-height: 1.4;
+            font-weight: 400;
+            font-size: 1.2rem;
+            margin: 1rem 0 0 0;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #282624;
+        }
+
+        .drawer__close {
+            border: none;
+            position: absolute;
+            top: 5rem;
+            right: 1rem;
+        }
+
+        .drawer__content {
+            p.intro-text {
+                margin-top: 1rem;
+                font-size: .9rem;
+            }
+
+            p.closing-text {
+                margin-top: 1rem;
+                margin-bottom: 2rem;
+                font-size: 1rem;
+            }
+
+            form {
+                margin-bottom: 0;
+
+                label {
+                    margin: 0 0 .25rem 0;
+                }
+
+                input {
+                    width: 100%;
+                    margin: 0 0 1rem 0;
+                }
+            }
+        }
+    }

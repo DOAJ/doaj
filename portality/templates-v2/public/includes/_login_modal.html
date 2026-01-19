@@ -1,13 +1,15 @@
 <div class="drawer" id="drawer-login" tabindex="-1" role="dialog" aria-labelledby="Log in to submit update request"
-     style="display: none;">
+style="display: none;">
     <header class="flex-space-between drawer__heading">
         <h1>Keep your journal record accurate and visible!</h1>
-        <button data-dismiss="drawer-login" onclick="this.closest('.drawer').style.display='none'"><span
-                class="sr-only">Close</span>&times;
+        <button class="drawer__close" data-dismiss="drawer-login"
+                onclick="this.closest('.drawer').style.display='none'"><span
+                class="sr-only">Close</span><span data-feather="x"></span>
         </button>
     </header>
     <div class="drawer__content">
-        <p>Help readers, authors, and indexers by keeping your journal's information up to date. You can do this by
+        <p class="intro-text">Help readers, authors, and indexers by keeping your journal's information up to date. You
+            can do this by
             submitting an update request.</p>
         {% from "includes/_formhelpers.html" import render_field %}
         {% set ur_url = base_url + url_for('publisher.update_request', journal_id=journal.id) %}
@@ -16,25 +18,11 @@
             <input id="user" type="text" name="user" placeholder="email@example.com" required>
             <label for="password">Password</label>
             <input type="password" name="password" placeholder="********" required id="password">
-            <input type="submit" class="button button--primary" value="Log in"/>
+            <button type="submit" class="button button--primary">Log in</button>
         </form>
-        <p>We look forward to hearing from you!</p>
+        <p class="closing-text">We look forward to hearing from you!</p>
+        <button class="button button--tertiary" data-dismiss="drawer-login"
+                onclick="this.closest('.drawer').style.display='none'">Cancel</span>
+        </button>
     </div>
 </div>
-
-<style>
-    .drawer {
-        position: fixed;
-        top: 0;
-        right: 0;
-        max-width: 25rem;
-        height: 100vh;
-        background-color: #F6F4F4;
-        padding: calc(90px + 1.5rem) 1.5rem 1.5rem;
-        h1 {
-            font-family: 'Source Sans Pro', sans-serif;
-            line-height: 1.05;
-            font-weight: 400;
-        }
-    }
-</style>

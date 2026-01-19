@@ -9,24 +9,7 @@
 {%- block meta_og_description -%}{% include "public/includes/_journal_meta_description.html" %}{%- endblock -%}
 {%- block meta_twitter_description -%}{% include "public/includes/_journal_meta_description.html" %}{%- endblock -%}
 {%- block public_js -%}
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            if (!("session" in doaj) || !("currentUserId" in doaj.session)) {
-                $.extend(true, doaj, {
-                    session : {
-                        currentUserId: "{{ current_user.id }}"
-                    }
-                });
-            }
-            if (!doaj.currentSessionId) {
-                $("#ur_nudge--link").on("click", (event) => {
-                    event.preventDefault();
-                    $("#drawer-login").show()
-                    $("#user").focus()
-                });
-            }
-        })
-    </script>
+    <script type="text/javascript" src="/static/js/toc_drawer.js?v={{config.get('DOAJ_VERSION')}}"></script>
 {%- endblock -%}
 
 {% block public_content %}
