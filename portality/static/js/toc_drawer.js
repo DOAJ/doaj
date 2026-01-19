@@ -9,10 +9,14 @@ jQuery(document).ready(function ($) {
     if (!doaj.currentSessionId) {
         $("#ur_nudge--link").on("click", (event) => {
             event.preventDefault();
-            $("#drawer-login").show()
+            $("#drawer-login").addClass('is-open')
             $("#user").focus()
         });
     }
+
+    $('[data-dismiss="drawer-login"]').on('click', function () {
+        $("#drawer-login").removeClass('is-open');
+    });
 
     $(document).on('click', function (event) {
         const $drawer = $('#drawer-login');
@@ -24,7 +28,7 @@ jQuery(document).ready(function ($) {
             !$(event.target).closest('.drawer__content').length &&
             !$(event.target).closest('[data-toggle="drawer-login"]').length
         ) {
-            $drawer.hide();
+            $drawer.removeClass('is-open');
         }
     });
 
