@@ -13,7 +13,6 @@ jobs:
       - image: cimg/redis:6.2.14
       - image: opensearchproject/opensearch:1.3.20
         environment:
-          - plugins.security.enabled: false
           - transport.host: localhost
           - discovery.type: single-node
 
@@ -29,7 +28,7 @@ jobs:
       - run:
           name: Prepare doaj env for unittests
           command: |
-            echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
+            echo -e "ELASTICSEARCH_HOSTS = ['https://admin:admin@localhost:9200']\nELASTIC_SEARCH_VERIFY_CERTS = False" > test.cfg
             echo "DEFAULT_INDEX_SETTINGS = { 'number_of_shards': 1, 'number_of_replicas': 0, 'analysis': { 'analyzer': { 'ascii_folded': { 'tokenizer': 'standard', 'filter': ['lowercase', 'asciifolding'] } } } }" >> test.cfg
             python portality/cms/build_fragments.py
             python portality/cms/build_sass.py
