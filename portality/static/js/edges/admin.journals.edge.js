@@ -288,7 +288,12 @@ $.extend(true, doaj, {
                     display: "Limit by Date Range",
                     fields: [
                         {"field": "created_date", "display": "Created Date"},
-                        {"field": "last_manual_update", "display": "Last Updated"}
+                        {"field": "last_manual_update", "display": "Last Updated"},
+                        {"field": "admin.last_full_review", "display": "Last Full Review"},
+                        {"field": "admin.last_reinstated", "display": "Last Reinstated"},
+                        {"field": "admin.last_withdrawn", "display": "Last Withdrawn"},
+                        {"field": "admin.last_owner_transfer", "display": "Last Owner Transfer"},
+                        {"field": "admin.date_applied", "display": "Date Applied"},
                     ],
                     autoLookupRange: true,
                     autoLookupFilters : [
@@ -355,13 +360,41 @@ $.extend(true, doaj, {
                     })
                 }),
 
+                doaj.components.newDateHistogramSelector({
+                    id: "last_full_review_histogram",
+                    category: "facet",
+                    field: "admin.last_full_review",
+                    display: "Last Full Review Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminJournalsSearch.activeEdges[selector].getComponent({id: "last_full_review_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
                 doaj.components.newReportExporter({
                     id: "report-exporter",
                     category: "facet",
                     model: "journal",
                     facetExports: [
                         {component_id: "in_doaj", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                        {component_id: "has_seal", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "owner", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "has_associate_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
@@ -378,7 +411,8 @@ $.extend(true, doaj, {
                         {component_id: "continued", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "discontinued_date", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
                         {component_id: "created_date_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
-                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
+                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "last_full_review_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
                     ]
                 }),
 
@@ -390,7 +424,8 @@ $.extend(true, doaj, {
                         {'display':'Date added to DOAJ','field':'created_date'},
                         {'display':'Last updated','field':'last_manual_update'}, // Note: last updated on UI points to when last updated by a person (via form)
                         {'display':'Title','field':'index.unpunctitle.exact'},
-                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'},
+                        {'display': "Last Full Review", "field": "admin.last_full_review"}
                     ],
                     fieldOptions: [
                         {'display':'Owner','field':'admin.owner'},
@@ -436,8 +471,8 @@ $.extend(true, doaj, {
                 edges.newResultsDisplay({
                     id: "results",
                     category: "results",
-                    renderer: edges.bs3.newResultsFieldsByRowRenderer({
-                        rowDisplay : [
+                    renderer: doaj.renderers.newAdminBasicResultsRenderer({
+                        topRowDisplay: [
                             [
                                 {
                                     valueFunction: doaj.fieldRender.titleField
@@ -448,6 +483,8 @@ $.extend(true, doaj, {
                                    valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.adminJournalsSearchConfig.journalEditUrl})
                                 }
                             ],
+                        ],
+                        leftRowDisplay : [
                             [
                                 {
                                     "pre": '<span class="alt_title">Alternative title: ',
@@ -455,6 +492,60 @@ $.extend(true, doaj, {
                                     "post": "</span>"
                                 }
                             ],
+                            [
+                                {
+                                    valueFunction : doaj.fieldRender.issns
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: doaj.fieldRender.links
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Publisher</strong>: ",
+                                    "field": "bibjson.publisher.name"
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Country</strong>: ",
+                                    valueFunction: doaj.fieldRender.countryName
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Language</strong>: ",
+                                    "field": "bibjson.language"
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>License</strong>: ",
+                                    valueFunction: doaj.fieldRender.journalLicense
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Publication charges?</strong>: ",
+                                    valueFunction: doaj.fieldRender.authorPays
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Classification</strong>: ",
+                                    "field": "index.classification"
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Keywords</strong>: ",
+                                    "field": "bibjson.keywords"
+                                }
+                            ]
+                        ],
+                        rightRowDisplay : [
                             [
                                 {
                                     valueFunction: doaj.fieldRender.deadline
@@ -480,7 +571,38 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    valueFunction : doaj.fieldRender.issns
+                                    "pre": "<strong>Date of Application</strong>: ",
+                                    valueFunction: doaj.fieldRender.suggestedOn
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Date published in DOAJ</strong>: ",
+                                    valueFunction: doaj.fieldRender.createdDateWithTime
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Last full review</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastFullReview
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Last Withdrawn</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastWithdrawn
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Last Reinstated</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastReinstated
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Last Owner Transfer</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastOwnerTransfer
                                 }
                             ],
                             [
@@ -491,63 +613,12 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Date added to DOAJ</strong>: ",
-                                    valueFunction: doaj.fieldRender.createdDateWithTime
-                                }
-                            ],
-                            [
-                                {
                                     "pre": "<strong>Last updated</strong>: ",
                                     valueFunction: doaj.fieldRender.lastManualUpdate
                                 }
-                            ],
-                            [
-                                {
-                                    valueFunction: doaj.fieldRender.links
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>License</strong>: ",
-                                    valueFunction: doaj.fieldRender.journalLicense
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Publisher</strong>: ",
-                                    "field": "bibjson.publisher.name"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Publication charges?</strong>: ",
-                                    valueFunction: doaj.fieldRender.authorPays
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Classification</strong>: ",
-                                    "field": "index.classification"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Keywords</strong>: ",
-                                    "field": "bibjson.keywords"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Country</strong>: ",
-                                    valueFunction: doaj.fieldRender.countryName
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Language</strong>: ",
-                                    "field": "bibjson.language"
-                                }
-                            ],
+                            ]
+                        ],
+                        bottomRowDisplay: [
                             [
                                 {
                                     valueFunction: doaj.adminJournalsSearch.relatedApplications
@@ -586,7 +657,12 @@ $.extend(true, doaj, {
                         'index.is_flagged': "Only Flagged Records",
                         'index.flag_assignees.exact': "Flagged to me",
                         "created_date": "Created Date",
-                        "last_manual_update": "Last Updated"
+                        "last_manual_update": "Last Updated",
+                        "admin.last_full_review": "Last Full Review",
+                        "admin.date_applied": "Date Applied",
+                        "admin.last_withdrawn": "Last Withdrawn",
+                        "admin.last_reinstated": "Last Reinstated",
+                        "admin.last_owner_transfer": "Last Owner Transfer"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
@@ -611,7 +687,12 @@ $.extend(true, doaj, {
                     rangeFunctions : {
                         "bibjson.discontinued_date" : doaj.valueMaps.displayYearPeriod,
                         "created_date" : doaj.valueMaps.displayYearMonthPeriod,
-                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod
+                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod,
+                        "admin.last_full_review": doaj.valueMaps.displayYearMonthPeriod,
+                        "admin.date_applied": doaj.valueMaps.displayYearMonthPeriod,
+                        "admin.last_withdrawn": doaj.valueMaps.displayYearMonthPeriod,
+                        "admin.last_reinstated": doaj.valueMaps.displayYearMonthPeriod,
+                        "admin.last_owner_transfer": doaj.valueMaps.displayYearMonthPeriod
                     }
                 })
             ];
