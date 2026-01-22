@@ -24,6 +24,7 @@ import re
 import shutil
 import tempfile
 import requests
+import urllib3
 from dataclasses import dataclass
 from time import sleep
 
@@ -35,6 +36,9 @@ from portality.dao import DomainObject
 from portality.lib import dates, es_data_mapping
 from portality.store import StoreFactory
 from portality.util import ipt_prefix, patch_config
+
+# Disable SSL validation warnings for using self-signed OpenSearch since we capture these logs and don't want the bloat
+urllib3.disable_warnings()
 
 
 @dataclass
