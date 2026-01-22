@@ -31,7 +31,7 @@ from time import sleep
 import portality.dao
 from portality import models
 from portality.scripts.createuser import create_users
-from portality.core import app, es_connection
+from portality.core import app, es_connection, put_mappings
 from portality.dao import DomainObject
 from portality.lib import dates, es_data_mapping
 from portality.store import StoreFactory
@@ -44,7 +44,6 @@ urllib3.disable_warnings()
 @dataclass
 class IndexDetail:
     index_type: str
-    instance_name: str
     alias_name: str
 
 
@@ -84,6 +83,7 @@ def do_import(config):
         count = "All" if cfg.get("limit", -1) == -1 else cfg.get("limit")
         print(("{x} from {y}".format(x=count, y=import_type)))
     print("\n")
+    print("All other indexes will be unchanged.")
 
     toberemoved_index_prefixes = [ipt_prefix(import_type) for import_type in import_types.keys()]
     toberemoved_indexes = list(itertools.chain.from_iterable(
@@ -121,22 +121,15 @@ def do_import(config):
         alias_name = ipt_prefix(import_type)
         index_details[import_type] = IndexDetail(
             index_type=import_type,
-            instance_name=alias_name + '-{}'.format(dates.today(dates.FMT_DATE_SHORT)),
             alias_name=alias_name
         )
 
     # re-initialise the index (sorting out mappings, etc)
     print("==Initialising Index Mappings and alias ==")
     mappings = es_data_mapping.get_mappings(app)
-    for index_detail in index_details.values():
-        print("Initialising index: {}".format(index_detail.instance_name))
-        es_connection.indices.create(index=index_detail.instance_name,
-                                     body=mappings[index_detail.index_type],
-                                     request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
 
-        print("Creating alias:     {:<25} -> {}".format(index_detail.instance_name, index_detail.alias_name))
-        blocking_if_indices_exist(index_detail.alias_name)
-        es_connection.indices.put_alias(index=index_detail.instance_name, name=index_detail.alias_name)
+    # Non-destructive import of just the specified types requires force_mappings to be False
+    put_mappings(es_connection, mappings, force_mappings=False)
 
     mainStore = StoreFactory.get("anon_data")
     tempStore = StoreFactory.tmp()
@@ -171,11 +164,11 @@ def do_import(config):
                     shutil.copyfileobj(f_in, f_out)
                 tempStore.delete_file(container, filename + ".gz")
 
-                instance_index_name = index_details[import_type].instance_name
-                print("Importing from {x} to index[{index}]".format(x=filename, index=instance_index_name))
+                alias_name = index_details[import_type].alias_name
+                print("Importing from {x} to index alias [{index}]".format(x=filename, index=alias_name))
 
                 imported_count = dao.bulk_load_from_file(uncompressed_file,
-                                                         index=instance_index_name, limit=limit,
+                                                         index=alias_name, limit=limit,
                                                          max_content_length=config.get("max_content_length", 100000000))
                 tempStore.delete_file(container, filename)
 
