@@ -1,6 +1,8 @@
 .drawer.is-open {
-  transform: translateX(0);
-}.drawer {
+    transform: translateX(0);
+}
+
+.drawer {
     position: fixed;
     top: 0;
     right: 0;
