@@ -3,7 +3,6 @@ from unittest import TestCase
 import huey.api
 
 import portality.util
-from doajtest import helpers
 from portality import constants
 from portality.background import BackgroundTask
 from portality.core import app
