@@ -1,4 +1,3 @@
-from copy import deepcopy
 from portality.lib import paths
 
 class IssnOrgFixtureFactory(object):

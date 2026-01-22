@@ -99,17 +99,29 @@ def restrict_to_role(role):
         return redirect(url_for('doaj.home'))
 
 
-def write_required(script=False, api=False):
+def write_required(script=False, api=False, allowed_methods=None):
     """
     ~~ReadOnlyMode:Feature~~
     :param script:
     :param api:
     :return:
     """
+    if allowed_methods is None:
+        allowed_methods = {"GET", "HEAD", "OPTIONS"}
+
     def decorator(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
             if app.config.get("READ_ONLY_MODE", False):
+                # try to detect request method; if no request context, treat as non-safe unless `script` is True
+                try:
+                    method = request.method
+                except RuntimeError:
+                    method = None
+
+                if method in allowed_methods:
+                    return fn(*args, **kwargs)
+
                 # TODO remove "script" argument from decorator.
                 # Should be possible to detect if this is run in a web context or not.
                 if script:
@@ -124,6 +136,7 @@ def write_required(script=False, api=False):
 
             return fn(*args, **kwargs)
 
+        setattr(decorated_view, "_write_required", True)
         return decorated_view
     return decorator
 

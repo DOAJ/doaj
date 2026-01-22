@@ -11,6 +11,8 @@ Before you start the application process, you will be asked to log in or registe
 
 Once registered you may begin the application process. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
 
+In this guide, “must” means a requirement and “should” means a recommendation. “May”, “can”, or “permitted” means something is allowed.
+
 ## Basic criteria for inclusion
 
 ### The type of journal that can apply
@@ -36,8 +38,8 @@ Open access journals published in any language may apply. Journals should adhere
   - A charge for the print version of a journal is permitted
 - Publishing non-open access content:
   - Within an article, text and figures may be used with permission or under fair use. All non-open access content must be clearly indicated and attributed.
-  - Journals may publish a small amount of non-open access, free-to-read content relevant to the journal's scope provided it is not scholarly articles and is clearly attributed and copyright status is clear.
-  - More details on our [licensing&copyright page](/apply/copyright-and-licensing/).
+  - Journals may publish a small amount of non-open access, free-to-read content relevant to the journal's scope provided it is not scholarly articles and it is clearly attributed and the copyright status is clear.
+  - More details are on our [licensing & copyright page](/apply/copyright-and-licensing/).
 
 
 ### Journal website
@@ -91,7 +93,7 @@ The following information must be available online and easily accessible from th
   - The type and details of the peer review process must be stated clearly on the website, including the process for special issues, if applicable.
   - At least two independent reviewers should review each article.
 - Use of a plagiarism checking service is highly recommended but not required for inclusion in DOAJ.
-- Endogeny should be minimised.
+- Endogeny must be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
   - Where content is not divided into issues, for example in a continuous publication model, endogeny must not exceed 25% in the last calendar year (minimum 5 articles per year).
 - It is strongly recommended that articles should display submitted/accepted/published dates.
@@ -110,7 +112,7 @@ Journals that publish special issues or other content curated by guest editors m
 
 - The licensing terms for use and re-use of the published content must be clearly stated on the website.
 - DOAJ recommends using [Creative Commons](https://creativecommons.org/share-your-work/cclicenses/) licenses for this purpose.
-- If Creative Commons licensing is not used, similar terms and conditions should be applied.
+- If Creative Commons licensing is not used, similar terms and conditions must be applied.
   - Extra care must be taken to state these terms clearly.
 - It is recommended that licensing information is displayed or embedded in full-text articles, but this is not required for inclusion in DOAJ.
 - [More about licensing](/apply/copyright-and-licensing/)
@@ -164,13 +166,13 @@ We may also refer to the [Principles of Transparency and Best Practice in Schola
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 - ### Subscribe to Open journals (S2O)
-   - For journals that have transitioned from closed access to open access under the [S2O model](https://subscribetoopencommunity.org/), all DOAJ basic criteria, including open license and copyright terms must be clearly stated. Before applying to DOAJ, an S2O journal must demonstrate that the current year's S2O target has been met and that it has published a new issue or at least five OA research articles under the S2O model. Additionally the following must be indicated on the journal's website: 
+   - For journals that have transitioned from closed access to open access under the [S2O model](https://subscribetoopencommunity.org/), all DOAJ basic criteria, including open license and copyright terms must be clearly stated. Once made available open access, a year’s content must stay open in perpetuity. Before applying to DOAJ, an S2O journal must demonstrate that the current year's S2O target has been met and that it has published a new issue or at least five OA research articles under the S2O model. Additionally the following must be indicated on the journal's website: 
     - The year of transition to open access under the S2O model 
     - A clear indication that all content published during the current S2O year is open access
     - The availability status of previously published content (open access, free to read, or paywalled)
     - The reuse rights for previously published content ( "all rights reserved" or under an open license)
     - The copyright status of the previously published content 
-   - When an S2O offer reaches its subscription target, the journal must make all content from that publication year fully open access within the same calendar year. 
+   - When an S2O offer reaches its subscription target, the journal must make all content from that publication year fully open access within the same calendar year. When an S2O year ends, the decision on whether the content will be OA or closed/hybrid for the next year must be decided without interruption. A routine delay in deciding S2O status each year is not acceptable, because DOAJ does not allow delayed/embargoed OA.
 - ### Book review journals
    - Journals consisting only of book reviews will not be accepted. 
 
@@ -245,11 +247,12 @@ We cannot provide a status update for applications which are less than three mon
 
 You will receive an email giving the reasons for rejection of the application. Do not submit another application for the same journal until six months after the notification of rejection.
 
-New applications may only be submitted within six months if these rejection reasons have been resolved:
+Rejected applications for which the following were the only issues can be resubmitted as soon as they are resolved and do not need to wait for six months:
 
 - Unconfirmed ISSN
 - Website unavailable
 - Insufficient content published
+- The journal was transferred to a publisher not already in DOAJ
 
 Where a journal has been rejected for other reasons, a new application may be submitted after six months.
 
@@ -304,8 +307,6 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 ## In other languages
 
-We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
-
 Please note that these translations may not include the latest changes made to the Guide.
 
 Our criteria are available in:
@@ -333,7 +334,7 @@ Our criteria are available in:
 
 ## Version history
 
-This is Version 2.6 of the DOAJ Guide to applying.
+This is Version 2.7 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 

@@ -134,6 +134,8 @@ class TestManEdAppReview(DoajTestCase):
             assert fc.target.id == "abcdefghijk"
             assert fc.target.current_journal == "123456789987654321"
             assert fc.target.related_journal == "987654321123456789"
+            assert fc.target.date_applied == app.date_applied
+            assert fc.target.date_rejected == app.date_rejected
             # everything else is overridden by the form, so no need to check it has patched
 
             # now do finalise (which will also re-run all of the steps above)

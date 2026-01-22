@@ -61,6 +61,8 @@ class Journal2QuestionXwalk(object):
         ("deposit_policy_url", "URL for deposit policy"),
         ("subject", "LCC Codes"),
         ("s2o", "Subscribe to Open"),
+        ("mirror", "Mirror Journal"),
+        ("ojc", "Open Journals Collective"),
     ]
 
     DEGEN = {
@@ -222,6 +224,8 @@ class Journal2QuestionXwalk(object):
 
         kvs.append((cls.q("subject"), "|".join(forminfo.get("subject"))))
         kvs.append((cls.q("s2o"), "Yes" if forminfo.get("s2o", False) else "No"))
+        kvs.append((cls.q("mirror"), "Yes" if forminfo.get("mirror", False) else "No"))
+        kvs.append((cls.q("ojc"), "Yes" if forminfo.get("ojc", False) else "No"))
 
         return kvs
 
@@ -281,7 +285,9 @@ class Journal2QuestionXwalk(object):
             'preservation_service': _comma_to_list,
             'persistent_identifiers': _comma_to_list,
             'boai': _y_or_blank,
-            's2o': _y_n_or_blank
+            's2o': _y_n_or_blank,
+            'mirror': _y_n_or_blank,
+            'ojc': _y_n_or_blank
         }
 
         def csv2formval(key, value):
