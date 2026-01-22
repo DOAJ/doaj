@@ -54,6 +54,7 @@ DEBUG_TB_ENV_LIST_ENABLED = False
 # elasticsearch settings # TODO: changing from single host / esprit to multi host on ES & correct the default
 ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': 'localhost', 'port': 9201}]
 ELASTIC_SEARCH_VERIFY_CERTS = True  # Verify the SSL certificate of the ES host.  Set to False in dev.cfg to avoid having to configure your local certificates
+SUPPRESS_HTTPS_WARNINGS = False  # urllib3 InsecureRequestWarning due to connecting to self-signed OpenSearch
 
 # 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
 # e.g. host:port/index/type/id
