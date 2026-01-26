@@ -30,6 +30,8 @@ def process_model(model_cls, dry_run=False):
     Returns a list of tuples (record_type, record_id, note_index, new_note_id).
     """
     changes = []
+    note_dates = []
+
     for obj in model_cls.iterate():
         # obj is a model instance
         notes = obj.notes
@@ -50,6 +52,8 @@ def process_model(model_cls, dry_run=False):
             nid = note.get("id")
             if nid is None or (isinstance(nid, str) and nid.strip() == ""):
                 new_id = uuid.uuid4().hex
+                nd = note.get("date")
+                note_dates.append((model_cls.__name__, obj.id, i, new_id, nd, note.get("note")))
                 # set on the in-memory object
                 notes[i]["id"] = new_id
                 if not changed:
@@ -64,21 +68,22 @@ def process_model(model_cls, dry_run=False):
             except Exception:
                 # log to stderr, but continue
                 print(f"Failed to save {model_cls.__name__} {obj.id}", file=sys.stderr)
-    return changes
+    return changes, note_dates
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--dry-run", action="store_true", help="Do not save changes, just report")
     parser.add_argument("-o", "--out", help="CSV output file path to record changes")
+    parser.add_argument("-d", "--details", help="CSV output file path to record note details", default=None)
     args = parser.parse_args()
 
     print("Processing Journals...")
-    journal_changes = process_model(models.Journal, dry_run=args.dry_run)
+    journal_changes, note_updates = process_model(models.Journal, dry_run=args.dry_run)
     print("Journals updated: ", len(journal_changes))
 
     print("Processing Applications...")
-    app_changes = process_model(models.Application, dry_run=args.dry_run)
+    app_changes, note_updates = process_model(models.Application, dry_run=args.dry_run)
     print(f"Applications updated: {len(app_changes)}")
 
     if args.out:
@@ -94,6 +99,13 @@ def main():
         print(journal_changes)
         print(app_changes)
 
+    if args.details:
+        with open(args.details, "w", encoding="utf-8", newline="") as fh:
+            writer = csv.writer(fh)
+            writer.writerow(["record_type", "record_id", "note_index", "new_note_id", "note_date", "note_text"])
+            for rec in note_updates:
+                writer.writerow(rec)
+        print(f"Wrote note details to {args.details}")
 
 if __name__ == "__main__":
     main()
