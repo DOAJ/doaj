@@ -2025,11 +2025,15 @@ class FieldDefinitions:
 
     FLAG_DEADLINE = {
         "subfield": True,
-        "optional": True,
         "label": "Deadline",
         "name": "flag_deadline",
         "validate": [
-            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)", "ignore_empty": True}},
+            {"required_if": {
+                "field": "flag_note",
+                "message": "The flag must have a deadline",
+                "skip_disabled": True
+            }}
         ],
         "help": {
             "placeholder": "deadline (YYYY-MM-DD)",
@@ -2060,13 +2064,17 @@ class FieldDefinitions:
         "name": "flag_assignee",
         "label": "Assign a user",
         "help": {
-            "placeholder": "assigned_to",
-            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+            "placeholder": "assigned_to"
         },
         "group": "flags",
         "validate": [
             "reserved_usernames",
-            "owner_exists"
+            "owner_exists",
+            {"required_if": {
+                "field": "flag_note",
+                "message": "The flag must be assigned to someone",
+                "skip_disabled": True
+            }}
         ],
         "widgets": [
             {"autocomplete": {"type": "admin", "include": False, "allow_clear_input": False}},
@@ -2131,7 +2139,6 @@ class FieldSetDefinitions:
             FieldDefinitions.JOURNAL_URL["name"],
             FieldDefinitions.PISSN["name"],
             FieldDefinitions.EISSN["name"],
-            FieldDefinitions.KEYWORDS["name"],
             FieldDefinitions.LANGUAGE["name"]
         ]
     }
@@ -2216,7 +2223,7 @@ class FieldSetDefinitions:
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
-            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]
+            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"],
         ]
     }
 
@@ -2357,11 +2364,21 @@ class FieldSetDefinitions:
     }
 
     # ~~->$ Subject:FieldSet~~
-    SUBJECT = {
-        "name": "subject",
-        "label": "Subject classification",
+    SUBJECT_AND_KEYWORDS = {
+        "name": "subject_and_keywords",
+        "label": "Subject classification and keywords",
         "fields": [
-            FieldDefinitions.SUBJECT["name"]
+            FieldDefinitions.SUBJECT["name"],
+            FieldDefinitions.KEYWORDS["name"]
+        ]
+    }
+
+    # ~~->$ Subject:FieldSet~~
+    KEYWORDS = {
+        "name": "keywords",
+        "label": "Keywords",
+        "fields": [
+            FieldDefinitions.KEYWORDS["name"]
         ]
     }
 
@@ -2424,6 +2441,7 @@ class ApplicationContextDefinitions:
     # ~~->$ NewApplication:FormContext~~
     # ~~^-> ApplicationForm:Crosswalk~~
     # ~~^-> NewApplication:FormProcessor~~
+
     PUBLIC = {
         "name": "public",
         "fieldsets": [
@@ -2463,6 +2481,9 @@ class ApplicationContextDefinitions:
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
     UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
+    UPDATE["fieldsets"] += [
+        FieldSetDefinitions.KEYWORDS["name"],
+    ]
 
     # ~~->$ ReadOnlyApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2470,6 +2491,9 @@ class ApplicationContextDefinitions:
     READ_ONLY["name"] = "application_read_only"
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
     READ_ONLY["templates"]["form"] = templates.PUBLISHER_READ_ONLY_APPLICATION
+    READ_ONLY["fieldsets"] += [
+        FieldSetDefinitions.KEYWORDS["name"],
+    ]
 
     # ~~->$ AssociateEditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2478,7 +2502,7 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -2492,7 +2516,7 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -2510,11 +2534,14 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
         FieldSetDefinitions.NOTES["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
+
+    # now we can update the Public Context with the correct "About" fieldset
+    PUBLIC["fieldsets"] += [FieldSetDefinitions.KEYWORDS["name"]]
 
 
 class JournalContextDefinitions:
@@ -2539,7 +2566,9 @@ class JournalContextDefinitions:
             FieldSetDefinitions.OTHER_FEES["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
-            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
+            FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
+
         ],
         "templates": {
             "form": templates.MANED_READ_ONLY_JOURNAL,
@@ -2563,7 +2592,6 @@ class JournalContextDefinitions:
     # ~~^-> AssEdJournal:FormProcessor~~
     ASSOCIATE = deepcopy(ADMIN_READ_ONLY)
     ASSOCIATE["fieldsets"] += [
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["name"] = "associate_editor"
@@ -3068,9 +3096,12 @@ class RequiredIfBuilder:
     # ~~->$ RequiredIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        val = settings.get("value")
+        val = settings.get("value", constants.DUMMY_STRING)
         if isinstance(val, list):
             val = ",".join(val)
+
+        if settings.get("skip_disabled"):
+            html_attrs["data-parsley-validate-if-disabled"] = "false"
 
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = val
@@ -3159,6 +3190,8 @@ class BigEndDateBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-validdate"] = ""
+        ignore_empty = settings.get("ignore_empty", False)
+        html_attrs["data-parsley-validdate-ignore_empty"] = "true" if ignore_empty else "false"
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod

@@ -345,3 +345,7 @@ function dissmissSiteNote(event) {
         }
     })
 }
+
+doaj.constants = {
+    DUMMY_STRING: "thisisadummystringthathasverylittlechanceofappearingintheuilegitimetly"
+}
