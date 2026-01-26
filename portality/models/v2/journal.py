@@ -305,6 +305,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()
+        if id == "":
+            id = None
+
         obj = {"date": date, "note": note}
         if id is not None:
             obj["id"] = id
