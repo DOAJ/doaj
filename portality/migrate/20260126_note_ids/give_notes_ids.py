@@ -79,11 +79,11 @@ def main():
     args = parser.parse_args()
 
     print("Processing Journals...")
-    journal_changes, note_updates = process_model(models.Journal, dry_run=args.dry_run)
+    journal_changes, journal_note_updates = process_model(models.Journal, dry_run=args.dry_run)
     print("Journals updated: ", len(journal_changes))
 
     print("Processing Applications...")
-    app_changes, note_updates = process_model(models.Application, dry_run=args.dry_run)
+    app_changes, app_note_updates = process_model(models.Application, dry_run=args.dry_run)
     print(f"Applications updated: {len(app_changes)}")
 
     if args.out:
@@ -103,7 +103,9 @@ def main():
         with open(args.details, "w", encoding="utf-8", newline="") as fh:
             writer = csv.writer(fh)
             writer.writerow(["record_type", "record_id", "note_index", "new_note_id", "note_date", "note_text"])
-            for rec in note_updates:
+            for rec in journal_note_updates:
+                writer.writerow(rec)
+            for rec in app_note_updates:
                 writer.writerow(rec)
         print(f"Wrote note details to {args.details}")
 
