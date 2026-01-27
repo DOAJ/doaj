@@ -11,7 +11,7 @@ from portality.lib import dataobj
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
-from portality.models import shared_structs
+from portality.models import shared_structs, Journal, Article
 from portality.models.v1.bibjson import GenericBibJSON
 
 
@@ -226,6 +226,80 @@ class TestModels(DoajTestCase):
         assert a.data.get("admin", {}).get("publisher_record_id") == "abcdef"
         assert a.is_in_doaj()
         assert a.upload_id() == "zyxwvu"
+
+    def test_03a_article_get_journal(self):
+
+        EISSN = "1234-5678"
+        PISSN = "9876-5432"
+
+        wsource = JournalFixtureFactory.make_journal_source(in_doaj=False, overlay={
+            "last_updated": "2002-01-01T00:00:00Z",
+            "admin": {
+                "owner": "test"
+            },
+            "bibjson": {
+                "title": "Withdrawn Journal Older",
+                "pissn": PISSN,
+                "eissn": EISSN
+            }
+        })
+        older = Journal(**wsource)
+        older.set_id(older.makeid())
+        older.save(blocking=True)
+
+        wsource = JournalFixtureFactory.make_journal_source(in_doaj=False, overlay={
+            "last_updated": "2022-01-01T00:00:00Z",
+            "admin": {
+                "owner": "test"
+            },
+            "bibjson": {
+                "title": "Withdrawn Journal Newer",
+                "pissn": PISSN,
+                "eissn": EISSN
+            }
+        })
+        newer = Journal(**wsource)
+        nid = newer.makeid()
+        newer.set_id(nid)
+        newer.save(blocking=True)
+
+        asource = ArticleFixtureFactory.make_article_source(eissn=EISSN, pissn=PISSN, with_journal_info=False)
+        article = Article(**asource)
+
+        assert article.get_journal().id == nid
+
+        isource = JournalFixtureFactory.make_journal_source(in_doaj=True, overlay={
+            "last_updated": "2020-01-01T00:00:00Z",
+            "admin": {
+                "owner": "test"
+            },
+            "bibjson": {
+                "title": "Live Journal Older",
+                "pissn": PISSN,
+                "eissn": EISSN
+            }
+        })
+        in_doaj = Journal(**isource)
+        in_doaj.set_id(in_doaj.makeid())
+        in_doaj.save(blocking=True)
+
+        isource = JournalFixtureFactory.make_journal_source(in_doaj=True, overlay={
+            "last_updated": "2021-01-01T00:00:00Z",
+            "admin": {
+                "owner": "test"
+            },
+            "bibjson": {
+                "title": "Live Journal Newer",
+                "pissn": PISSN,
+                "eissn": EISSN
+            }
+        })
+        in_doaj = Journal(**isource)
+        idid = in_doaj.makeid()
+        in_doaj.set_id(idid)
+        in_doaj.save(blocking=True)
+
+        assert article.get_journal().id == idid
 
     def test_04_application_model_rw(self):
         """Read and write properties into the suggestion model"""
