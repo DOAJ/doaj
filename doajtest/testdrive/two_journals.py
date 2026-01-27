@@ -3,7 +3,6 @@ from doajtest.fixtures.v2.journals import JournalFixtureFactory
 
 from doajtest.testdrive.factory import TestDrive
 from portality import models
-from doajtest.fixtures.application_validate_csv import ApplicationValidateCSVFixtureFactory
 from portality.models import Journal
 
 atitle = "Investigating Photosynthetic Anomalies in Invisible Ferns"
@@ -18,8 +17,8 @@ class TwoJournals(TestDrive):
         api_key = acc.generate_api_key()
         acc.save()
 
-        pissn = self.create_random_issn()
-        eissn = self.create_random_issn()
+        pissn = self.generate_unique_issn()
+        eissn = self.generate_unique_issn()
 
         source = JournalFixtureFactory.make_journal_source(in_doaj=False)
         jindoaj = Journal(**source)
