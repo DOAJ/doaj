@@ -177,6 +177,11 @@ def load_crossref_schema(app):
 def create_es_connection(app):
     # ~~ElasticConnection:Framework->Elasticsearch:Technology~~
 
+    # Migrating to OpenSearch we get InsecureRequestWarning from urllib3 when accessing self-signed cluster
+    if app.config.get('SUPPRESS_HTTPS_WARNINGS') is True:
+        import urllib3
+        urllib3.disable_warnings()
+
     conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'],
                                        verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True),
                                        timeout=app.config.get('ELASTICSEARCH_REQ_TIMEOUT', 15))
