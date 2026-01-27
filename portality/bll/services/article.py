@@ -1,7 +1,7 @@
 from portality.lib import dates
 from portality.lib.argvalidate import argvalidate
-from portality import models
-from portality.bll import exceptions
+from portality import models, constants
+from portality.bll import exceptions, DOAJ
 from portality.ui.messages import Messages
 from portality.lib.dataobj import DataStructureException
 
@@ -241,6 +241,10 @@ class ArticleService(object):
         # finally, save the new article
         if not dry_run:
             article.save()
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_ARTICLE_SAVE, account.id, {
+                "article": article.data
+            }))
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
                 "unmatched": set()}

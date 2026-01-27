@@ -35,7 +35,6 @@ You should have 2 sets of output files suffixed with the differing pycountry ver
 
 import json
 from portality.datasets import country_options, currency_options, language_options
-import pycountry
 from importlib.metadata import version
 
 

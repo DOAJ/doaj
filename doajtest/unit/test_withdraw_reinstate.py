@@ -3,13 +3,13 @@ import json
 from doajtest import helpers
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, ApplicationFixtureFactory
-from flask_login import current_user
 
 from portality import models, constants
 from portality.background import BackgroundApi
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask, change_in_doaj
 
 import time
+from datetime import datetime
 
 from portality.ui.messages import Messages
 
@@ -33,6 +33,8 @@ class TestWithdrawReinstate(DoajTestCase):
         return account
 
     def test_01_withdraw_task(self):
+        start = datetime.utcnow()
+
         account = self.make_account()
         sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=True)
         ids = []
@@ -63,12 +65,15 @@ class TestWithdrawReinstate(DoajTestCase):
         for id in ids:
             j = models.Journal.pull(id)
             assert j.is_in_doaj() is False
+            assert j.last_withdrawn_timestamp > start
+
 
         for id in articles:
             a = models.Article.pull(id)
             assert a.is_in_doaj() is False
 
     def test_02_reinstate_task(self):
+        start = datetime.utcnow()
         sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=False)
         ids = []
         articles = []
@@ -136,12 +141,14 @@ class TestWithdrawReinstate(DoajTestCase):
         for id in ids:
             j = models.Journal.pull(id)
             assert j.is_in_doaj() is True
+            assert j.last_reinstated_timestamp > start
 
         for id in articles:
             a = models.Article.pull(id)
             assert a.is_in_doaj() is True
 
     def test_03_withdraw(self):
+        start = datetime.utcnow()
         self.make_account()
         acc = models.Account()
         acc.set_name("testuser")
@@ -171,6 +178,7 @@ class TestWithdrawReinstate(DoajTestCase):
             for id in ids:
                 j = models.Journal.pull(id)
                 assert j.is_in_doaj() is False
+                assert j.last_withdrawn_timestamp > start
 
             for id in articles:
                 a = models.Article.pull(id)
@@ -179,6 +187,7 @@ class TestWithdrawReinstate(DoajTestCase):
             #ctx.pop()
 
     def test_04_reinstate(self):
+        start = datetime.utcnow()
         self.make_account()
 
         acc = models.Account()
@@ -208,6 +217,7 @@ class TestWithdrawReinstate(DoajTestCase):
             for id in ids:
                 j = models.Journal.pull(id)
                 assert j.is_in_doaj() is True
+                assert j.last_reinstated_timestamp > start
 
             for id in articles:
                 a = models.Article.pull(id)

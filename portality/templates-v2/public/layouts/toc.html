@@ -36,7 +36,7 @@
             <div class="col-xs-3 col-md-4 badges badges--toc">
                 {%- if s2o -%}
                 <a href="https://subscribetoopencommunity.org/" id="s2o" target="_blank">
-                    <img id="s20-logo" src="/assets/img/labels/s2o.svg" alt="Subscribe to Open" title="Subscribe to Open">
+                    <img id="s20-logo" src="/assets/img/labels/s2o-minimalistic.svg" alt="Subscribe to Open" title="Subscribe to Open">
                      <p class="sr-only">This journal is part of the Subscribe to Open program.</p>
                 </a>
                 {%- endif %}
@@ -141,9 +141,11 @@
     <footer id="updated" class="page-content__footer">
         <p>
             Added {{ journal.created_timestamp.strftime("%e %B %Y") }}
-            {% if journal.last_manual_update_timestamp and dates.format(journal.last_manual_update_timestamp) !=
-            dates.DEFAULT_TIMESTAMP_VAL %}
+            {% if journal.last_manual_update_timestamp and dates.format(journal.last_manual_update_timestamp) != dates.DEFAULT_TIMESTAMP_VAL %}
             &bull; Updated {{ journal.last_manual_update_timestamp.strftime("%e %B %Y") }}
+            {% endif %}
+            {% if journal.last_full_review %}
+            &bull; Last full review {{ journal.last_full_review_timestamp.strftime("%e %B %Y") }}
             {% endif %}
         </p>
     </footer>

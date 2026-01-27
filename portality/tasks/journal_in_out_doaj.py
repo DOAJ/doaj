@@ -2,6 +2,7 @@ from flask_login import current_user
 from portality import models, lock
 from portality.bll import DOAJ
 from portality.core import app
+from portality.lib import dates
 
 from portality.tasks.redis_huey import events_queue as queue
 from portality.decorators import write_required
@@ -83,7 +84,17 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             account = models.Account.pull(job.user)
             if j is None:
                 raise RuntimeError("Journal with id {} does not exist".format(journal_id))
+
+            current_in_doaj = j.is_in_doaj()
+            if in_doaj and not current_in_doaj:
+                j.last_reinstated = dates.now_str()
+                j.add_note(Messages.JOURNAL_REINSTATED_NOTE.format(username=job.user, date=dates.now_str()), author_id=job.user)
+
             if not in_doaj:
+                if current_in_doaj:
+                    j.last_withdrawn = dates.now_str()
+                    j.add_note(Messages.JOURNAL_WITHDRAWN_NOTE.format(username=job.user, date=dates.now_str()), author_id=job.user)
+
                 # Rejecting associated update request
                 # ~~->Application:Service~~
                 svc = DOAJ.applicationService()

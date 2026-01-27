@@ -935,3 +935,24 @@ def admin_alerts():
 @login_required
 def autoassign_search():
     return render_template(templates.ADMIN_AUTOASSIGN_SEARCH)
+
+@blueprint.route("/ris", methods=["GET"])
+@login_required
+def ris_search():
+    return render_template(templates.ADMIN_RIS_SEARCH)
+
+@blueprint.route("/ris/<id>/<action>", methods=["POST"])
+@login_required
+def ris_manage(id, action):
+    if action not in ["delete", "regenerate"]:
+        abort(404)
+
+    svc = DOAJ.exportService()
+
+    if action == "delete":
+        svc.remove_ris(id)
+        return make_json_resp({"delete": "success"}, status_code=200)
+
+    if action == "regenerate":
+        svc.ris(id)
+        return make_json_resp({"regenerate": "success"}, status_code=200)

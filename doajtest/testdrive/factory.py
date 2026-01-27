@@ -1,6 +1,7 @@
 from portality.lib import plugin
 import random
 import string
+from portality import models
 
 
 class TestDrive():
@@ -8,7 +9,15 @@ class TestDrive():
         s = string.ascii_letters + string.digits
         return ''.join(random.choices(s, k=n_char))
 
-    def create_random_issn(self):
+    def generate_unique_issn(self):
+        while True:
+            s = self.create_random_str(n_char=8)
+            issn = s[:4] + '-' + s[4:]
+            if len(models.Journal.find_by_issn(issn)) == 0 :
+                return issn
+
+    @staticmethod
+    def create_random_issn():
         chars = "0123456789X"
         part1 = "".join(random.choice(chars) for _ in range(4))
         part2 = "".join(random.choice(chars) for _ in range(4))

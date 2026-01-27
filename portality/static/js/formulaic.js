@@ -1389,6 +1389,29 @@ var formulaic = {
             this.init();
 
         },
+
+        newDatePicker: function (params) {
+            return edges.instantiate(formulaic.widgets.DatePicker, params)
+        },
+        DatePicker: function (params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.args = params.args;
+
+            this.init = function () {
+                let elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                let opts = {
+                    allowInput: true
+                }
+                if (this.args && this.args.earlier_than_now) {
+                    opts.maxDate = new Date();
+                }
+
+                $(elements).flatpickr(opts);
+            };
+            this.init();
+        },
+
         newTrimWhitespace: function (params) {
             return edges.instantiate(formulaic.widgets.TrimWhitespace, params)
         },

@@ -82,8 +82,6 @@ class Messages(object):
     If you would like to see more results, you can download all of our data from
     {data_dump_url}. You can also harvest from our OAI-PMH endpoints; articles: {oai_article_url}, journals: {oai_journal_url}"""
 
-    CONSENT_COOKIE_VALUE = """By using our website, you have agreed to our cookie policy."""
-
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR = "We were unable to send you an email confirmation - possible problem with the email address provided"
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR = 'Error sending application received email.'
     FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT = "Could not unreject application, as a new Update Request for the journal now exists"
@@ -105,6 +103,11 @@ class Messages(object):
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID = "Update request {urid} automatically rejected"
     NO_UPDATE_REQUESTS = "No update requests found."
+
+    LAST_FULL_REVIEW_NOTE = "Last full review completed on {date} by `{username}`"
+    OWNER_CHANGED_NOTE = "Owner changed from `{old_owner}` to `{new_owner}` by `{changed_by}` on {date}"
+    JOURNAL_REINSTATED_NOTE = "Journal reinstated into DOAJ by `{username}` on {date}."
+    JOURNAL_WITHDRAWN_NOTE = "Journal withdrawn from DOAJ by `{username}` on {date}."
 
     BULK_JOURNAL_DELETE = "About to delete an estimated {journal_no} journals with {article_no} articles associated with their ISSNs. Existing update requests will be automatically rejected."
     BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
@@ -149,6 +152,16 @@ class Messages(object):
 
     FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username};\n Original note: {note}"
     FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING = "Provided deadline is in the past. Is it correct?"
+
+    ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS = "Article found that belongs to more than 1 journal. Article's id: {article_id}"
+    ARTICLE_ABANDONED_LOG = """An article was found that doesn't seem to match any journal articles\'s id: {article.id}"""
+    ARTICLE_ABANDONED_PUBLIC = """This article doesn't seem to match any journal in our database. If you think this is wrong, contact us quoting 'Abandoned article: {article.id}'"""
+    ARTICLE_NOT_FOUND = "We couldn't find this article"
+
+    TOO_MANY_JOURNALS = """This identifier seems to match more than one journal. Please contact us quoting 'More than one journal found with identifier: {identifier}'"""
+    TOO_MANY_JOURNALS_LOG = """More than one journal found with identifier: {identifier}'"""
+
+    DEFAULT_500_DESCRIPTION = "An error has occurred. It looks like something has gone wrong."
 
     @classmethod
     def flash(cls, tup):
