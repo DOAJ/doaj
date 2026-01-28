@@ -9,7 +9,7 @@ from portality.bll.doaj import DOAJ
 from portality.core import app
 from portality.lib import dates
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import scheduled_long_queue as queue
+from portality.tasks.redis_huey import scheduled_short_queue as queue
 
 
 class ArticleDeletionNotificationsBackgroundTask(BackgroundTask):

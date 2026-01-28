@@ -229,7 +229,7 @@ class Article(SeamlessMixin, DomainObject):
             sbj_src = deepcopy(self.data.get("bibjson", {}))
         except Exception:
             sbj_src = self.data.get("bibjson", {})
-        stone.set_bibjson(ArticleBibJSON(sbj_src))
+        stone.set_bibjson(sbj_src)
 
         # Ensure subjects are present (for back-compat with any consumers expecting it)
         subs = self.bibjson().subjects()

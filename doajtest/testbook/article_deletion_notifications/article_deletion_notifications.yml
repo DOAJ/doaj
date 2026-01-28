@@ -1,0 +1,27 @@
+suite: Article Deletion Notifications
+testset: Article Deletion Notifications
+
+tests:
+  - title: Article Deletion Notification Generation
+    setup:
+      - As an admin or through the API, delete one or more articles belonging to a publisher.
+      - Ensure the articles were deleted within the last 7 days.
+    context:
+      role: admin
+    steps:
+      - step: Log in as the publisher who owned the deleted articles after an hour (scheduler configured to run hourly for testing).
+      - step: Check the notifications (bell icon or /notifications).
+        results:
+          - A new notification is present with the title "Deleted articles in your journal(s) this week".
+          - The notification content lists the titles and details of the deleted articles.
+      - step: Verify that if multiple articles were deleted for the same publisher, they are grouped into a single notification.
+
+  - title: No Notifications when no articles deleted
+    setup:
+      - Ensure no articles have been deleted in the last 7 days (or for a specific set of publishers).
+    context:
+      role: admin
+    steps:
+      - step: Check notifications for publishers.
+        results:
+          - No new deletion notifications are received.
