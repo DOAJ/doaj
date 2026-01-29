@@ -180,7 +180,7 @@ tests:
     role: admin
   steps:
     - step: Go to admin journal search page at /admin/journals
-    - step: "Locate a record with the metadata value 'Last full review: Never'" and click "Edit this journal"
+    - step: "Locate a record with the metadata value 'Last full review: Never' and click 'Edit this journal'"
     - step: Locate the "Last Full Review" section of the form
     - step: Enter a date in the future in "Last Full Review" field
       results:
@@ -202,7 +202,7 @@ tests:
     role: admin
   steps:
     - step: Go to admin journal search page at /admin/journals
-    - step: "Locate a record with the metadata value 'Last Owner Transfer: Never'" and click "Edit this journal"
+    - step: "Locate a record with the metadata value 'Last Owner Transfer: Never' and click 'Edit this journal'"
     - step: Locate the "Re-assign publisher account" section of the form
     - step: Change the user to a different user account
     - step: Save the journal record
