@@ -451,6 +451,8 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    # Weekly notification to publishers about deleted articles (Article Tombstones)
+    "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
 }
 
 
