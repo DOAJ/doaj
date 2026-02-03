@@ -153,7 +153,7 @@ def process_directory(base_dir: str, out_csv: str, recursive: bool = False, reco
 
                 live_obj.set_notes(live_notes)
                 live_obj.save()
-                
+
                 diff = compute_diff(live_notes, current_notes_log)
 
                 writer.writerow([record_id,
