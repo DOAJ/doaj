@@ -2,10 +2,10 @@ version: '2.1'
 
 services:
   doaj-redis:
-    build: redis/
-    command: "redis-server /usr/local/etc/redis/redis.conf --appendonly yes --port ${REDIS_PORT:-6379}"
+    image: redis
+    command: redis-server --maxmemory 100mb --appendonly yes --port ${REDIS_PORT:-6379}
     ports:
-        - "${REDIS_BIND_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
+      - "${REDIS_BIND_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
     volumes:
       - doaj_redis_data:/data
 
