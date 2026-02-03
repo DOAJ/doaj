@@ -4,7 +4,7 @@ testset: Admin Journal and Article Actions
 tests:
   - title: Admin – Reinstate Journal and Add Article
     setup:
-      - Go to /testdrive/2journals
+      - Go to /testdrive/two_journals
       - Log in as ProfessorWobblethorpe, the admin
     context:
       role: admin
