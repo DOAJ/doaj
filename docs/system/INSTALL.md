@@ -4,17 +4,23 @@
 
 These installation instructions are written for Ubuntu, but it's possible to run in other environments with some changes.
 
-## Java
+## Docker (alternative)
 
-[comment] <>: (~~->Java:Technology~~)
+Instead of installing Elasticsearch/OpenSearch and Redis manually, you can use Docker Compose:
+
+    cd docker
+    docker compose up -d doaj-redis doaj-opensearch
+
+This starts OpenSearch 1.3.x (compatible with ES 7.10.2) and Redis. See `docker/docker-compose.yml` for configuration options.
+
+## Elasticsearch
+
+[comment] <>: (~~->Elasticsearch:Technology~~)
 
 Java is required to natively run Elasticsearch, if you're running ES directly from the archive (rather than using `apt`) you'll need a JRE such as:
 
     sudo apt install openjdk-11-jre
 
-## Elasticsearch
-
-[comment] <>: (~~->Elasticsearch:Technology~~)
 
 Elasticsearch is the datastore we use. Currently we use version 7.10.2 OSS in production, but you'll find OpenSearch might work too.
 
@@ -29,7 +35,7 @@ Alternatively, you can download and extract the `tar` or `zip` archive and run t
 
 Elasticsearch documentation can be found [here](https://www.elastic.co/guide/en/elasticsearch/reference/7.10/setup.html#setup-installation).
 
-You can check whether it's running via `curl localhost:9200` by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
+You can check whether it's running via `curl localhost:9200` or by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
 
 ## Redis
 
@@ -39,11 +45,11 @@ For background tasks, we use `redis`. Run this however you like, just make sure 
 
     sudo apt install redis-server
     # Start redis service
-    service redis start
+    systemctl redis start
     # Check redis is running and enabled
     systemctl status redis
 
-# Python and Pip
+## Python and Pip
 
 [comment] <>: (~~->Python:Technology~~)
 
@@ -65,21 +71,14 @@ For development, it's useful to have `git`, `wget`, and `curl` installed. If you
 
     sudo apt install git wget curl
 
-## virtualenv
-
-It's recommended to run the DOAJ inside a python virtual environment so it doesn't interfere with your system python packages. This can be installed via `pip` or apt:
-
-    sudo apt install python-virtualenv
-    # OR
-    sudo pip install virtualenv
-
 ## The DOAJ app
+It's recommended to run DOAJ inside a python virtual environment so it doesn't interfere with your system python packages.
 
     # system dependencies
-    sudo apt install libxml2-dev libxslt-dev python-dev lib32z1-dev
+    sudo apt install libxml2-dev libxslt-dev python3-dev zlib1g-dev
 
-    # Create a virtualenv for python 3.7 then activate it (also use this to run scripts etc)
-    virtualenv -p python3.7 doajenv
+    # Create a virtualenv for python 3.10 then activate it (also use this to run scripts etc)
+    python3.10 -m venv doajenv
     cd doajenv
     . bin/activate
 
