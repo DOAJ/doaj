@@ -7,6 +7,8 @@ services:
       - "${REDIS_BIND_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
     volumes:
       - doaj_redis_data:/data
+    networks:
+      - doaj-network
 
   doaj-opensearch:
     container_name: doaj-opensearch
@@ -20,6 +22,8 @@ services:
       - "${OPENSEARCH_BIND_HOST:-127.0.0.1}:${OPENSEARCH_PORT:-9200}:9200"
     volumes:
       - doaj_opensearch_data:/usr/share/opensearch/data
+    networks:
+      - doaj-network
 
   selenium-chrome:
     image: selenium/standalone-chrome:110.0
@@ -35,6 +39,12 @@ services:
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - SE_SESSION_REQUEST_TIMEOUT=400
       - SE_SESSION_RETRY_INTERVAL=2
+    networks:
+      - doaj-network
+
+networks:
+  doaj-network:
+    driver: bridge
 
 volumes:
     doaj_redis_data: {}
