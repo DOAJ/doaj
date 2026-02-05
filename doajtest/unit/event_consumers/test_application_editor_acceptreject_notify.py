@@ -1,5 +1,3 @@
-from lib2to3.fixes.fix_input import context
-
 from portality import models
 from portality import constants
 from portality.bll import exceptions

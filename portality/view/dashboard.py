@@ -2,7 +2,7 @@ from flask import Blueprint, make_response
 from flask import render_template, abort, request
 from flask_login import current_user, login_required
 
-from portality.decorators import ssl_required
+from portality.decorators import ssl_required, write_required
 from portality.bll import DOAJ, exceptions
 from portality.util import jsonp
 from portality.ui import templates
@@ -63,6 +63,7 @@ def top_notifications():
 
 @blueprint.route("/notifications/<notification_id>/seen", methods=["POST"])
 @login_required
+@write_required()
 @ssl_required
 @jsonp
 def notification_seen(notification_id):

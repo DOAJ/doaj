@@ -1,7 +1,6 @@
 from doajtest.fixtures import ApplicationFixtureFactory
 from portality import models
 from portality.lib import dates
-from datetime import datetime
 from portality import constants
 
 EDITOR_GROUPS = [

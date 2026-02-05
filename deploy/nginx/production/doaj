@@ -71,10 +71,22 @@ upstream doaj_ed_failover {
     keepalive_timeout 60s;
 }
 
+# OLD elasticsearch machines (pending shutdown)
 upstream doaj_index {
     server 10.131.191.132:9200;
     server 10.131.191.133:9200;
     server 10.131.191.139:9200;
+}
+
+# OpenSearch Cluster machines
+upstream doaj_opensearch_rw {
+    server 10.131.22.203:9200;       # doaj-search-rw1
+    server 10.131.99.251:9200;       # doaj-search-rw2
+}
+
+upstream doaj_opensearch_r {
+    server 10.131.100.180:9200;       # doaj-search-r1
+    server 10.131.124.133:9200;       # doaj-search-r2
 }
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
@@ -281,11 +293,9 @@ server {
         proxy_buffering off;
     }
 
-    location /service/export {    # DISABLED Export RIS - send this only to 1 machine while we figure out high load
+    location /service/export {    # Export RIS - send this to any public machine
         limit_req zone=export burst=5;
-        return 503;
-        # Send to public-2 ONLY for now
-        #proxy_pass http://10.131.191.161:5050;
+        proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -387,7 +397,7 @@ server {
     auth_basic_user_file /etc/nginx/htpasswd;
 
     location / {
-        proxy_pass http://doaj_index;
+        proxy_pass http://doaj_opensearch_rw;
     }
 
     ssl_certificate /etc/letsencrypt/live/doajes.cottagelabs.com/fullchain.pem;

@@ -1,11 +1,11 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import Article, Account, Journal
+from portality.models import Article, Account
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 

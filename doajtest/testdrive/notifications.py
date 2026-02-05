@@ -1,5 +1,4 @@
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
-from portality.bll import DOAJ
 from portality import constants
 from doajtest.testdrive.factory import TestDrive
 from portality import models

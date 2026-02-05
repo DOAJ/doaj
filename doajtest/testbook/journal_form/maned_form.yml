@@ -10,14 +10,14 @@ tests:
     role: admin
   steps:
   - step: Go to admin journal search page at /admin/journals
-  - step: From the facet "In DOAJ?" on the left choose True
-  - step: Click "Edit this journal" link at the bottom of any journal - note the id
+  - step: From the facet "In DOAJ?" on the left choose Yes
+  - step: Click "Edit this journal" link by any journal - note the id
       of the edited journal for future reference
     results:
     - Page /admin/journal/<id> is open in a new browser window/tab (<id> is id of
       the chosen journal)
     - All the field are initially filled in with correct values
-  - step: Click red "Withdraw" button at the top of the functions panel on the right
+  - step: Click "Withdraw" button at the top of the functions panel on the right
     results:
     - Message pop-up appears over the page asking you to confirm if you want to withdraw
       the journal and shows you the journal's ID.
@@ -44,12 +44,17 @@ tests:
     - Close the tab.
   - step: Go back to the admin search page
   - step: From the facet "In DOAJ?" on the left choose False
-  - step: Click "Edit this journal" link at the bottom of any journal - note the id
-      of the edited journal for future reference
+    results:
+    - The journal you just withdrew is displayed in the results
+    - It has a "Last Withdrawn" field in the metadata with the current date and time
+  - step: Click "Edit this journal" link at the bottom of the journal you witdrew
     results:
     - Page /admin/journal/<id> is open in a new browser window/tab (<id> is id of
       the chosen journal)
-  - step: Click "Reinstate" button at the top of the functions panel on the right
+    - There is a note in the form that the journal was withdrawn by you on the appropriate
+      date and time
+  - step: Click "Reinstate" button at the top of the functions panel on the right and confirm
+      in the pop-up you wish to Reinstate
     results:
     - Message banner appears at the top of the page with the confirmation
   - step: Click link to the background jobs interface in the banner
@@ -61,6 +66,11 @@ tests:
       -- true parameter is set
   - step: Close the background jobs window
   - step: Close the journal form and go back to the admin search page
+  - step: From the facet "In DOAJ?" on the left choose Yes
+    results:
+    - The journal you just reinstated is displayed in the results
+    - The journal has a "Last Reinstated" field in the metadata with the current date and time
+    - The "Last Withdrawn" field continues to be displayed with the previous date and time
   - step: Click "Edit this journal" link at the bottom of any journal - note the title
       of the edited journal for future reference
   - step: Open Editorial Area -> Editor Group dropdown and start writing the name
@@ -163,5 +173,44 @@ tests:
         - The journal is displayed in the search results with a "Subscribe to Open" label
     - step: click on the journal title
       results:
-        - You are taken to the journal ToC which displays the "Subscribe to Open" label
+        - You are taken to the journal ToC which displays the "Subscribe to Open" label#
 
+- title: Journal Full Reviews
+  context:
+    role: admin
+  steps:
+    - step: Go to admin journal search page at /admin/journals
+    - step: "Locate a record with the metadata value 'Last full review: Never'" and click "Edit this journal"
+    - step: Locate the "Last Full Review" section of the form
+    - step: Enter a date in the future in "Last Full Review" field
+      results:
+      - The date cannot be entered into the form field
+    - step: Enter a date today or in the past in the field
+      results:
+      - The date can be entered into the form
+    - step: Save the journal record
+      results:
+      - The journal record is saved successfully
+    - step: close the journal form and go back to the admin search page
+    - step: Order the results by "Last Full Review" with the most recent first
+      results:
+      - The journal you just edited is displayed at the top of the results
+      - The "Last Full Review" field displays the date you just entered
+
+- title: Journal Owner Transfer
+  context:
+    role: admin
+  steps:
+    - step: Go to admin journal search page at /admin/journals
+    - step: "Locate a record with the metadata value 'Last Owner Transfer: Never'" and click "Edit this journal"
+    - step: Locate the "Re-assign publisher account" section of the form
+    - step: Change the user to a different user account
+    - step: Save the journal record
+    - step: close the journal form and go back to the admin search page
+    - step: Refresh the search and locate the journal you just edited
+      results:
+      - The "Last Owner Transfer" field displays the current date and time
+    - step: Click "Edit this journal" and go to the admin form
+      results:
+      - There is a note attached to the record indicating the previous and new owner and the date
+        and time of the transfer
