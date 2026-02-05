@@ -202,6 +202,9 @@ class ApplicationService(object):
         if application.application_status != constants.APPLICATION_STATUS_REJECTED:
             application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
 
+        # set the rejection date
+        application.date_rejected = dates.now_str()
+
         # add the note to the application
         if note is not None:
             application.add_note(note)
@@ -538,6 +541,7 @@ class ApplicationService(object):
         # * editor
         # * editor_group
         # * owner
+        # * application date
         notes = application.notes
 
         if application.editor is not None:
@@ -548,6 +552,8 @@ class ApplicationService(object):
             journal.add_note_by_dict(note)
         if application.owner is not None:
             journal.set_owner(application.owner)
+        if application.date_applied is not None:
+            journal.set_date_applied(application.date_applied)
 
         b = application.bibjson()
         if b.pissn == "":

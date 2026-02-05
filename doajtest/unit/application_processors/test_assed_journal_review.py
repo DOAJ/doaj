@@ -61,7 +61,8 @@ class TestAssociateEditorJournalReview(DoajTestCase):
 
         # we start by constructing it from source
         formulaic_context = JournalFormFactory.context("associate_editor")
-        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        journal = models.Journal(**JOURNAL_SOURCE)
+        fc = formulaic_context.processor(source=journal)
 
         assert isinstance(fc, AssEdJournalReview)
         assert fc.form is not None
@@ -100,7 +101,7 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
-        assert fc.target.bibjson().labels == ["s2o"]
+        assert fc.target.bibjson().labels == ["s2o", "mirror"]
         assert fc.target.current_application == "qwertyuiop"
         related = fc.target.related_applications
         assert len(related) == 2
@@ -108,6 +109,12 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert related[0].get("date_accepted") == "2018-01-01T00:00:00Z"
         assert related[1].get("application_id") == "zxcvbnm"
         assert related[1].get("date_accepted") is None
+
+        assert fc.target.date_applied == journal.date_applied
+        assert fc.target.last_withdrawn == journal.last_withdrawn
+        assert fc.target.last_reinstated == journal.last_reinstated
+        assert fc.target.last_owner_transfer == journal.last_owner_transfer
+        assert fc.target.last_full_review == journal.last_full_review
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()

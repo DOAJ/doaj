@@ -94,7 +94,7 @@ $.extend(true, doaj, {
                     expandBlock += "</div>";
 
                     // start off the string to be rendered
-                    var result = '<div class="' + containerClass + '">';
+                    var result = '<div class="edges-bs3-results-fields-by-row-record ' + containerClass + '">';
 
                     // start the main box that all the details go in
                     result += "<div class='row-fluid'><div class='span12'>";
