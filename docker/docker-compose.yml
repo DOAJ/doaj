@@ -29,8 +29,6 @@ services:
     image: selenium/standalone-chrome:110.0
     logging:
       driver: none
-    volumes:
-      - /dev/shm:/dev/shm
     shm_size: 4gb
     ports:
       - '4444:4444'
@@ -47,5 +45,5 @@ networks:
     driver: bridge
 
 volumes:
-    doaj_redis_data: {}
-    doaj_opensearch_data: {}
+  doaj_redis_data: {}
+  doaj_opensearch_data: {}
