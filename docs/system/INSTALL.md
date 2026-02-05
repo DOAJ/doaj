@@ -6,12 +6,12 @@ These installation instructions are written for Ubuntu, but it's possible to run
 
 ## Docker (alternative)
 
-Instead of installing Elasticsearch/OpenSearch and Redis manually, you can use Docker Compose:
+Instead of installing Elasticsearch/OpenSearch and Redis manually, you can use Docker Compose v2:
 
     cd docker
     docker compose up -d doaj-redis doaj-opensearch
 
-This starts OpenSearch 1.3.x (compatible with ES 7.10.2) and Redis. See `docker/docker-compose.yml` for configuration options.
+This starts OpenSearch 1.3.x (compatible with ES 7.10.2) and Redis 7.2 LTS (as of early 2026). See `docker/docker-compose.yml` for configuration options.
 
 ## Elasticsearch
 
@@ -45,7 +45,7 @@ For background tasks, we use `redis`. Run this however you like, just make sure 
 
     sudo apt install redis-server
     # Start redis service
-    systemctl redis start
+    systemctl start redis
     # Check redis is running and enabled
     systemctl status redis
 
