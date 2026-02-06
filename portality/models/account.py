@@ -1,4 +1,7 @@
 import uuid
+import hashlib
+import hmac
+import re
 from flask_login import UserMixin
 from datetime import timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -128,11 +131,94 @@ class Account(DomainObject, UserMixin):
             del self.data['password']
 
     def check_password(self, password):
+        """Check the provided password against the stored hash.
+
+        Handles legacy hashes removed in Werkzeug 3 (e.g. 'sha1$...' or raw 40-hex SHA1) by verifying once
+        and upgrading them to a modern hash. This preserves behaviour for existing records while moving
+        them forward to supported hash schemes.
+        """
         try:
-            return check_password_hash(self.data['password'], password)
+            stored = self.data['password']
         except KeyError:
             app.logger.error("Problem with user '{}' account: no password field".format(self.data['id']))
             raise
+
+        # If the stored hash looks like a legacy SHA1 format, verify via compatibility shim first.
+        if self._is_legacy_sha1_hash(stored):
+            if self._verify_legacy_sha1(stored, password):
+                # Upgrade path: replace legacy hash with a modern one and persist.
+                # Note: This handles a breaking change in Werkzeug 3 (legacy verifiers removed).
+                self.set_password(password)
+                try:
+                    # DomainObject.save() is expected to exist; failure to save should not block login success.
+                    self.save()
+                except Exception as e:
+                    app.logger.warning(
+                        "Password upgraded for user '%s' but save failed: %s", self.data.get('id'), str(e)
+                    )
+                return True
+            return False
+
+        # Otherwise, use Werkzeug's checker. If Werkzeug raises due to an unsupported legacy format,
+        # fall back to the legacy verifier as a last resort.
+        try:
+            return check_password_hash(stored, password)
+        except ValueError:
+            # Fallback for unsupported legacy formats encountered at runtime.
+            if self._verify_legacy_sha1(stored, password):
+                self.set_password(password)
+                try:
+                    self.save()
+                except Exception as e:
+                    app.logger.warning(
+                        "Password upgraded for user '%s' after ValueError but save failed: %s",
+                        self.data.get('id'), str(e)
+                    )
+                return True
+            return False
+
+    # --- Legacy SHA1 compatibility (Werkzeug 3 removal) ---
+    _SHA1_HEX_RE = re.compile(r"^[a-f0-9]{40}$", re.IGNORECASE)
+
+    @classmethod
+    def _is_legacy_sha1_hash(cls, stored: str) -> bool:
+        """Detect legacy SHA1 formats that Werkzeug 3 no longer supports.
+
+        Supported legacy patterns:
+        - 'sha1$<salt>$<hexdigest>' (old Werkzeug simple salted SHA1)
+        - '<40-hex>' (unsalted plain SHA1 of password)
+        """
+        if not stored or not isinstance(stored, str):
+            return False
+        if stored.startswith('sha1$'):
+            parts = stored.split('$')
+            return len(parts) == 3 and bool(parts[1]) and bool(parts[2])
+        # plain 40 hex characters implies unsalted SHA1
+        return bool(cls._SHA1_HEX_RE.fullmatch(stored))
+
+    @classmethod
+    def _verify_legacy_sha1(cls, stored: str, password: str) -> bool:
+        """Verify a password against legacy SHA1 formats.
+
+        - 'sha1$<salt>$<hexdigest>' uses sha1(salt + password)
+        - '<40-hex>' uses sha1(password)
+        """
+        if not stored or password is None:
+            return False
+        try:
+            if stored.startswith('sha1$'):
+                # salted format: sha1$<salt>$<hexdigest>
+                _, salt, hexdigest = stored.split('$', 2)
+                digest = hashlib.sha1((salt + password).encode('utf-8')).hexdigest()
+                return hmac.compare_digest(digest, hexdigest)
+            # unsalted plain SHA1 hex
+            if cls._SHA1_HEX_RE.fullmatch(stored):
+                digest = hashlib.sha1(password.encode('utf-8')).hexdigest()
+                return hmac.compare_digest(digest, stored.lower())
+        except Exception:
+            # Any parsing/encoding issues -> treat as non-match
+            return False
+        return False
 
     @property
     def journal(self):
