@@ -169,6 +169,7 @@
                 </nav>
             </div>
         </header>
+        {% block permanent_warnings %}{% endblock %}
         {% include "includes/_flash_notification.html" %}
         {% block management_content %}{% endblock %}
 
