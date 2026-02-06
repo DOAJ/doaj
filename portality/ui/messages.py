@@ -18,6 +18,46 @@ class Messages(object):
     ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
         Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
 
+    # Account-related flash messages (from portality/view/account.py)
+    ACCOUNT__PWLESS__RESEND_RATE_LIMIT = (
+        "You requested a code recently. Please wait {wait} before trying again.",
+        "error",
+    )
+    ACCOUNT__PWLESS__EMAIL_SENT = (
+        "A login link along with login code has been sent to your email.",
+        "success",
+    )
+    ACCOUNT__PWLESS__EMAIL_ERROR = (
+        "There was a problem generating the login email.",
+        "error",
+    )
+    ACCOUNT__EMAIL_REQUIRED_FOR_RESEND = (
+        "Email address is required to resend the code.",
+        "error",
+    )
+    ACCOUNT__NOT_RECOGNISED = "Account not recognised."
+    ACCOUNT__REQUIRED_PARAMS_NOT_AVAILABLE = "Required parameters not available."
+    ACCOUNT__INVALID_OR_EXPIRED_CODE = "Invalid or expired verification code"
+    ACCOUNT__WELCOME_BACK = ("Welcome back.", "success")
+    ACCOUNT__STATUS_LOGIN_FAILED = ("Login could not be completed due to account status.", "error")
+    ACCOUNT__REQUEST_PROBLEM = ("There was a problem with your request.", "error")
+    ACCOUNT__RESET_EMAIL_SENT = "Instructions to reset your password have been sent to you. Please check your emails."
+    ACCOUNT__PASSWORDS_NOT_MATCH = ("Passwords do not match - please try again", "error")
+    ACCOUNT__PASSWORD_SET_AND_LOGGED_IN = ("New password has been set and you're now logged in.", "success")
+    ACCOUNT__LOGGED_OUT = ("You are now logged out", "success")
+    ACCOUNT__VERIFY_EMAIL_TO_SET_PASSWORD = (
+        "Thank you, please verify email address {email} to set your password and verify your account.",
+        "success",
+    )
+    ACCOUNT__PLEASE_CORRECT_ERRORS = ("Please correct the errors", "error")
+    ACCOUNT__CONFIRM_CHECKBOX_REQUIRED = ("Check the box to confirm you really mean it!", "error")
+    ACCOUNT__DELETED = "Account {id} deleted"
+    ACCOUNT__RECORD_UPDATED = "Record updated"
+    ACCOUNT__EMAIL_UPDATED_LOGGED_OUT = (
+        "Email address updated. You have been logged out for email address verification.",
+        "success",
+    )
+
     CONCURRENT_UPDATE_REQUEST = """You have submitted an Update Request for the same journal in a short period of time.  If this is in error, you don't need to do anything, your first request is being processed.  If this was intentional, please try again in a moment."""
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent notification to '{user}' to tell them that their journal was accepted."""
