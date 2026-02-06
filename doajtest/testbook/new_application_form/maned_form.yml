@@ -11,6 +11,13 @@ tests:
       and click "Review application"
     results:
     - The managing editor view application form is displayed
+    - At the top the title, url and issn(s) are displayed
+    - Each item in the header has a copy button next to it
+  - step: Click each copy button and
+  - step: Paste the value somewhere (e.g., Notepad)
+    results:
+    - correct value is copied
+    - The top section stays visible while scrolling, unless the screen is very short and the header takes more than 40% of the viewport
     - '"Unlock and Close" is available'
     - The Quick Reject feature is available
     - The ability to assign to an editor group and associate editor is available

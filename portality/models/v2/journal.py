@@ -8,6 +8,7 @@ from typing import Callable, Iterable
 
 from unidecode import unidecode
 
+from portality import constants
 from portality.core import app
 from portality.dao import DomainObject
 from portality.lib import es_data_mapping, dates, coerce
@@ -606,7 +607,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
 
 class Journal(JournalLikeObject):
-    __type__ = "journal"
+    __type__ = constants.ES_TYPE_JOURNAL
 
     __SEAMLESS_STRUCT__ = [
         shared_structs.JOURNAL_BIBJSON,
