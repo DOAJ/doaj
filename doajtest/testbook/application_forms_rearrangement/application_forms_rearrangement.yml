@@ -1,0 +1,95 @@
+suite: Editorial Form Field Placement Changes
+testset: Editorial Form Field Placement Changes
+
+tests:
+  - title: Admin – Updated Form Layout and Field Behaviour
+    setup:
+      - Go to /testdrive/form_rearrangement
+    context:
+      role: admin
+    steps:
+      - step: Log in as DukeDingleberry, the admin
+
+      - step: Access the journal form at /admin/journal_id
+        results:
+          - The plagiarism questions appear in the Best Practice section
+          - The keywords field is positioned at the end of the Editorial section
+          - The subject classification field is positioned at the end of the Editorial section
+          - There is no subject classification modal
+          - The subject classification question is now displayed directly in the main form body
+      - step: Remove the currently selected subject
+        results:
+          - The change is correctly reflected under the subject browser
+      - step: Use the search input to find any subject
+        results:
+          - The subject browser behaves correctly when searched
+      - step: Select a subject
+        results:
+          - The change is correctly reflected under the subject browser
+      - step: Save the form
+        results:
+          - The new subject is saved correctly
+      - step: Click "Unlock & Close"
+
+      - step: Access the application form at /application/application_id
+        results:
+          - Same checks as above
+      - step: Click "Unlock & Close"
+
+      - step: Access the update request form at /application/update_request_id
+        results:
+          - Same checks as above
+      - step: Click "Unlock & Close"
+      - step: Log out of the admin account
+
+
+  - title: Editor – Updated Form Layout and Field Behaviour
+    setup:
+      - Go to /testdrive/form_rearrangement
+    context:
+      role: editor
+    steps:
+      - step: Log in as CountessCrumblewhisk, the editor
+
+      - step: Access the application form at /editor/application/application_id
+        results:
+          - The plagiarism questions appear in the Best Practice section
+          - The keywords field is positioned at the end of the Editorial section
+          - The subject classification field is positioned at the end of the Editorial section
+          - There is no subject classification modal
+          - The subject classification question is now displayed directly in the main form body
+      - step: Remove the currently selected subject
+        results:
+          - The change is correctly reflected under the subject browser
+      - step: Use the search input to find any subject
+        results:
+          - The subject browser behaves correctly when searched
+      - step: Select a subject
+        results:
+          - The change is correctly reflected under the subject browser
+      - step: Save the form
+        results:
+          - The new subject is saved correctly
+      - step: Click "Unlock & Close"
+      - step: Log out of the editor account
+
+
+  - title: Publisher – Fields Remain in Existing Sections
+    setup:
+      - Go to /testdrive/form_rearrangement
+    context:
+      role: publisher
+    steps:
+      - step: Log in as LordSniffleton, the publisher
+
+      - step: Access the update request form at /publisher/update_request/journal_id
+        results:
+          - The keywords question remains in the About section (not moved to the Editorial section)
+          - The plagiarism questions appear in the Best Practice section
+      - step: Click "Unlock & Close"
+
+      - step: Access the new application form at /apply
+        results:
+          - Same checks as above
+      - step: Log out of the publisher account
+
