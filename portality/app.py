@@ -445,7 +445,7 @@ def handle_journal_withdrawn(e):
 @app.errorhandler(ValueError)
 @app.errorhandler(500)
 def handle_500(e):
-    if e.description == e.__class__.description:
+    if not hasattr(e, 'description') or e.description == e.__class__.description:
         description = Messages.DEFAULT_500_DESCRIPTION
     else:
         description = e.description
