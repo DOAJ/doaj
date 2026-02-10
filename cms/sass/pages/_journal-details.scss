@@ -31,19 +31,24 @@
         }
     }
 
-    .tabs__menu {
-        margin-bottom: $spacing-04;
+    .card {
+        dl {
+            width: 100%;
+            .ur_nudge {
+                margin-top: .75rem;
+                padding: .5rem .5rem .5rem 2.5rem;
+                background-color: $light-grey;
+                margin-left: -2.5rem;
+                width: calc(100% + 4rem);
+                .ur_nudge--question {
+                    font-style: italic;
+                }
+            }
+        }
     }
 
-    .ur_nudge {
-        margin-top: .75rem;
-        padding: .5rem .5rem .5rem 2.5rem;
-        background-color: $light-grey;
-        margin-left: -2.5rem;
-        margin-right: -1.5rem;
-        .ur_nudge--question {
-            font-style: italic;
-        }
+    .tabs__menu {
+        margin-bottom: $spacing-04;
     }
 
 }
