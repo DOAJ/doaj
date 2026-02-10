@@ -1,12 +1,5 @@
 jQuery(document).ready(function ($) {
-    if (!("session" in doaj) || !("currentUserId" in doaj.session)) {
-        $.extend(true, doaj, {
-            session: {
-                currentUserId: "{{ current_user.id }}"
-            }
-        });
-    }
-    if (!doaj.currentSessionId) {
+    if (!doaj.session.currentUserId) {
         $("#ur_nudge--link").on("click", (event) => {
             event.preventDefault();
             $("#drawer-login").addClass('is-open')

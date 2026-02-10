@@ -9,15 +9,10 @@
         <p class="intro-text">Help readers, authors, and indexers by keeping your journal's information up to date. You
             can do this by
             submitting an update request.</p>
+        <p class="intro-text">Login with the email address linked to your DOAJ account to continue.</p>
         {% from "includes/_formhelpers.html" import render_field %}
         {% set ur_url = base_url + url_for('publisher.update_request', journal_id=journal.id) %}
-        <form method="post" action="{{ url_for('account.login', next=ur_url) }}" id="login-form">
-            <label for="user">Login with the email address linked to your DOAJ account to continue.</label>
-            <input id="user" type="text" name="user" placeholder="email@example.com" required>
-            <label for="password">Password</label>
-            <input type="password" name="password" placeholder="********" required id="password">
-            <button type="submit" class="button button--primary">Log in</button>
-        </form>
+        {% include "_account/includes/_login_form.html" %}
         <p class="closing-text">We look forward to hearing from you!</p>
         <button class="button button--tertiary" data-dismiss="drawer-login">Cancel</span>
         </button>
