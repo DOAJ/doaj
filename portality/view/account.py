@@ -376,6 +376,7 @@ def register(template=templates.REGISTER):
 
     return render_template(template, form=form)
 
-@blueprint.route('/create/', methods=['GET'])
+@blueprint.route('/create/', methods=['GET', 'POST'])
+@write_required()
 def create():
     return register(template=templates.CREATE_USER)
