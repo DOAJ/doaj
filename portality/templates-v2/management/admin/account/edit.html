@@ -1,5 +1,19 @@
 {% extends "management/admin/base.html" %}
 {# ~~Account:Page~~ #}
+{% block page_header %}
+{% if current_user.is_super %}
+    <p class="label label--secondary" style="color: #5C5956">
+        <span data-feather="clock" aria-hidden="true"></span>
+        <span>Created {{ account.created_timestamp.strftime(" %e %B %Y") }} </span>
+        {% if account.created_timestamp == account.last_updated_timestamp %}
+            <span>| Never updated</span>
+        {% else %}
+            <span>| Updated {{ account.last_updated_timestamp.strftime(" %e %B %Y") }}</span>
+        {% endif %}
+    </p>
+    {% endif %}
+    {{ super() }}
+{% endblock %}
 
 {% block page_title %}{{ account.name if account.name else account.email }}’s profile{% endblock %}
 

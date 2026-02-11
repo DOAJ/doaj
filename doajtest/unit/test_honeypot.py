@@ -1,7 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import registrationForm
 from portality.view.account import RegisterForm
-from werkzeug.datastructures import ImmutableMultiDict
 
 class TestHoneypot(DoajTestCase):
 

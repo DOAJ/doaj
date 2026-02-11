@@ -88,10 +88,12 @@ tests:
     results:
     - Every result includes the text "View finished application" or "View finished
       update" at the bottom
+    - Every result includes a "Date Rejected" field in the metadata
   - step: Click on "View finished application" for one of the results
     results:
     - You are taken to the edit form for the application
     - The Quick Reject feature is not available
+    - There is a note attached to the record which indicates that the record was rejected
   - step: Click "Unlock and Close"
   - step: Clear the "Rejected" filter and select "Accepted" from the "Application
       Status" facet

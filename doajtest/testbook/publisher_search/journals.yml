@@ -69,7 +69,7 @@ tests:
     results:
     - You are taken to the DOAJ ToC page for this journal
   - step: Click back (twice) in your browser window to go back to the search results
-  - step: Click on the "Hope page" URL for a journal result
+  - step: Click on the "Home page" URL for a journal result
     results:
     - You are taken to the Journal's home page
   - step: Click back in your browser winder to go back to the search results

@@ -141,9 +141,11 @@
     <footer id="updated" class="page-content__footer">
         <p>
             Added {{ journal.created_timestamp.strftime("%e %B %Y") }}
-            {% if journal.last_manual_update_timestamp and dates.format(journal.last_manual_update_timestamp) !=
-            dates.DEFAULT_TIMESTAMP_VAL %}
+            {% if journal.last_manual_update_timestamp and dates.format(journal.last_manual_update_timestamp) != dates.DEFAULT_TIMESTAMP_VAL %}
             &bull; Updated {{ journal.last_manual_update_timestamp.strftime("%e %B %Y") }}
+            {% endif %}
+            {% if journal.last_full_review %}
+            &bull; Last full review {{ journal.last_full_review_timestamp.strftime("%e %B %Y") }}
             {% endif %}
         </p>
     </footer>

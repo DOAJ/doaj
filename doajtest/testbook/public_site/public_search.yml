@@ -154,11 +154,10 @@ tests:
   - step: Click tab
     results:
       - focus is on the list of checkboxes
-    results:
       - focus is clearly marked by the outline
-      - step: click spacebar to check the filter
-        results:
-          - filter is applied
+  - step: click spacebar to check the filter
+    results:
+      - filter is applied
 - title: 'Test Public Search Results Display: Accessibility'
   context:
     role: anonymous
@@ -175,7 +174,6 @@ tests:
   - step: click tab
     results:
       - focus is on the list of checkboxes
-    results:
       - focus is clearly marked by the outline
   - step: click spacebar to check the filter
     results:

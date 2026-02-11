@@ -76,14 +76,15 @@ tests:
     results:
     - The interface returns to the initial state as per 1.1.1
   - step: Go to the DOAJ admin journal search at /admin/
-  - step: Open the In DOAJ facet, and select "False"
+  - step: Open the In DOAJ facet, and select "No"
     results:
     - None of the journal titles in the search results are links
     - '"In DOAJ: No" metadata is present'
+    - There is a "Last Withdrawn" date associated with the record
   - step: Clear the "In DOAJ?" filter
     results:
     - All the journal titles in the search results are links
-  - step: Select "True" from that facet
+  - step: Select "Yes" from that facet
     results:
     - '"In DOAJ: Yes" metadata is present'
   - step: Click on the journal title

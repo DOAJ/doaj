@@ -34,6 +34,7 @@ class TestPaths(TestCase):
         assert paths.abs_dir_path(input) == expected
 
     def test_get_project_root(self):
-        assert paths.get_project_root().name == 'doaj'
+        # RJ removed this test line as it fails when the project is cloned with a different name
+        # assert paths.get_project_root().name == 'doaj'
         assert paths.get_project_root().joinpath('doajtest').exists()
         assert paths.get_project_root().joinpath('portality').exists()

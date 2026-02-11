@@ -1,4 +1,3 @@
-import time
 import uuid
 
 from parameterized import parameterized, param

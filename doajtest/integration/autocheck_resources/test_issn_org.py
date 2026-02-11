@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 
-from portality.autocheck.resource_bundle import Resource, ResourceBundle
+from portality.autocheck.resource_bundle import ResourceBundle
 from portality.autocheck.resources.issn_org import ISSNOrg
 
 #########################################

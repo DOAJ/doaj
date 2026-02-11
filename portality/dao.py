@@ -13,6 +13,7 @@ from datetime import timedelta
 from typing import List, Iterable, Tuple
 
 import elasticsearch
+from elasticsearch.exceptions import ConnectionTimeout
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -462,6 +463,8 @@ class DomainObject(UserDict, object):
                 r = ES.search(body=json.dumps(qobj), index=index, doc_type=cls.doc_type(),
                               headers=CONTENT_TYPE_JSON, **kwargs)
                 break
+            except ConnectionTimeout as e:
+                 continue  # retry on timeout
             except Exception as e:
                 try:
                     exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e

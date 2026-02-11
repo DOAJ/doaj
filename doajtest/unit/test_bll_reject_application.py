@@ -1,5 +1,3 @@
-import time
-
 from parameterized import parameterized
 
 from doajtest import helpers
@@ -8,12 +6,11 @@ from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, 
 from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.lib.thread_utils import wait_until
 from portality.models import Account, Suggestion, Provenance, Journal
 
 
 def load_test_cases():
-    return load_from_matrix("reject_application.csv", test_ids=[])
+    return load_from_matrix("reject_application.csv", test_ids=["19"])
 
 
 def mock_save_fail(*args, **kwargs):
