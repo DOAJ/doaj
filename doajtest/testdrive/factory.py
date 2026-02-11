@@ -18,7 +18,9 @@ class TestDrive:
             checksum = (11 - sum(v * w for v, w in zip(digits, range(8, 1, -1))) % 11) % 11
             s = ''.join(map(str, digits))
             issn = f"{s[:4]}-{s[4:]}{'X' if checksum == 10 else checksum}"
-            if len(models.JournalLikeObject.find_by_issn(issn)) == 0 :
+
+            # Look in the index to check whether this is unique.
+            if len(models.Journal.find_by_issn(issn)) == len(models.Application.find_by_issn(issn)) == 0:
                 return issn
 
     def setup(self) -> dict:
