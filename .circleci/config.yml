@@ -13,7 +13,7 @@ jobs:
       - image: cimg/redis:6.2.14
       - image: opensearchproject/opensearch:1.3.20
         environment:
-          - plugins.security.enabled: false
+          - plugins.security.disabled: true
           - transport.host: localhost
           - discovery.type: single-node
 
