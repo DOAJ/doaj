@@ -1,7 +1,7 @@
 suite: Public Site
 testset: ToC
 tests:
-- title: Test Correctly Displayed Discontinued Date
+- title: Test Correctly Displayed Discontinued  Date
   context:
     role: anonymous
   steps:
