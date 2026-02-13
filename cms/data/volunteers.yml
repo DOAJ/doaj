@@ -563,15 +563,6 @@ ass_ed:
   country: Russian Federation
   language: Russian, English
   photo: "Popova-1.jpeg"
-  
-- name: Nataliia Kaliuzhna
-  area: Library and Information Science
-  year_since:
-  city: Kyiv
-  country: Ukraine
-  language: Ukrainian, Russian, English, Polish
-  featured: true
-  photo: "Nataliia.jpg"
 
 - name: Natia Gabedava
   area: Humanities, Education
@@ -629,7 +620,7 @@ ass_ed:
   photo: "princessnwafor.jpg"
   
 - name: Priya
-  area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
+  area: Open Source Software, Library Science, Bibliometric Analysis
   year_since:
   city: Himachal Pradesh
   country: India
