@@ -2031,6 +2031,7 @@ class FieldDefinitions:
             {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)", "ignore_empty": True}},
             {"required_if": {
                 "field": "flag_note",
+                "not_empty": True,
                 "message": "The flag must have a deadline",
                 "skip_disabled": True
             }}
@@ -2072,6 +2073,7 @@ class FieldDefinitions:
             "owner_exists",
             {"required_if": {
                 "field": "flag_note",
+                "not_empty": True,
                 "message": "The flag must be assigned to someone",
                 "skip_disabled": True
             }}
@@ -3096,7 +3098,7 @@ class RequiredIfBuilder:
     # ~~->$ RequiredIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        val = settings.get("value", constants.DUMMY_STRING)
+        val = settings.get("value", "")
         if isinstance(val, list):
             val = ",".join(val)
 
@@ -3105,6 +3107,11 @@ class RequiredIfBuilder:
 
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = val
+
+        ne = settings.get("not_empty", False)
+        if ne:
+            html_attrs["data-parsley-required-if-not-empty"] = "true"
+
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
         if "message" in settings:
             html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</small></p>"
@@ -3113,7 +3120,10 @@ class RequiredIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return RequiredIfOtherValue(settings.get("field") or field, settings.get("value"), settings.get("message"))
+        set_field = settings.get("field", field)
+        val = settings.get("value")
+        ne = settings.get("not_empty", False)
+        return RequiredIfOtherValue(set_field, val, ne, settings.get("message"))
 
 
 class OnlyIfBuilder:

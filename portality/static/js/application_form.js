@@ -794,7 +794,7 @@ doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
         let thisElementId = parsleyInstance.$element[0].id;
-        console.log(thisElementId)
+        // console.log(thisElementId)
 
         const getGroupWithIndexFromInputId = (inputId) => {
           const match = inputId.match(/^([^-]+)-(\d+)-/);
@@ -808,24 +808,47 @@ window.Parsley.addValidator("requiredIf", {
 
         let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
 
+        // determine if this is the "not empty" value
+        let ne = parsleyInstance.$element.attr("data-parsley-required-if-not-empty")
+        if (ne === "true") {
+            ne = true;
+        } else {
+            ne = false;
+        }
+
         if (typeof requirement !== "string") {
             requirement = requirement.toString();
         }
-
         let requirements = requirement.split(",");
 
         let prefix = getGroupWithIndexFromInputId(thisElementId)
         let other = $("[name='" + (prefix ? (prefix + "-") : "") + field + "']");
         let type = other.attr("type");
+
+        // get the value from the other field
         const otherVal = (type === "checkbox" || type === "radio")
             ? other.filter(":checked").val()
             : other.val();
-        const isRequired = requirement !== doaj.constants.DUMMY_STRING
-            ? $.inArray(otherVal, requirements) > -1
-            : !!otherVal;
-        if (isRequired) {
-            return !!value;
+
+        if (ne) {
+            // if the other value is not empty, then this field is required
+            if (otherVal !== undefined && otherVal !== null && otherVal !== "") {
+                // other value is not empty, so this field is required, so we return true if this field is not empty
+                if (value !== undefined && value !== null && value !== "") {
+                    return true;
+                }
+                return false;
+            }
+
+            // if the other value is empty, this field is not required
+            return true;
         }
+
+        // otherwise check that the otherVal is in our requirements
+        if ($.inArray(otherVal, requirements) === -1) {
+            return false;
+        }
+
         return true;
     },
     messages: {
