@@ -462,14 +462,6 @@ ass_ed:
   city: Hannover
   country: Germany
   language: German, English
-
-- name: Mariano Hernán Corujo
-  area: Library Science
-  year_since:
-  city: Buenos Aires
-  country: Argentina
-  language: Spanish, English
-  photo: "MarianoCorujo.jpeg"
   
 - name: Marie-Eve Dugas
   area: Library Science, Social Sciences
@@ -562,7 +554,7 @@ ass_ed:
   city: Ekaterinburg
   country: Russian Federation
   language: Russian, English
-  photo: "Popova-1.jpeg"
+  photo:
 
 - name: Natia Gabedava
   area: Humanities, Education
