@@ -23,3 +23,4 @@ from portality.tasks.read_news import scheduled_read_news, read_news  # noqa
 from portality.tasks.reporting import scheduled_reports, run_reports  # noqa
 from portality.tasks.request_es_backup import scheduled_request_es_backup, request_es_backup  # noqa
 from portality.tasks.auto_assign_editor_group_data import scheduled_auto_assign_editor_group_data, auto_assign_editor_group_data
+from portality.tasks.article_deletion_notifications import scheduled_article_deletion_notifications, execute_article_deletion_notifications

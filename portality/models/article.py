@@ -223,11 +223,32 @@ class Article(SeamlessMixin, DomainObject):
     def _tombstone(self):
         stone = ArticleTombstone()
         stone.set_id(self.id)
-        sbj = stone.bibjson()
 
+        # Copy full bibjson so we retain title, authors, journal title, volume/number and pages
+        try:
+            sbj_src = deepcopy(self.data.get("bibjson", {}))
+        except Exception:
+            sbj_src = self.data.get("bibjson", {})
+        stone.set_bibjson(sbj_src)
+
+        # Ensure subjects are present (for back-compat with any consumers expecting it)
         subs = self.bibjson().subjects()
-        for s in subs:
-            sbj.add_subject(s.get("scheme"), s.get("term"), s.get("code"))
+        if subs is not None:
+            sbj = stone.bibjson()
+            for s in subs:
+                sbj.add_subject(s.get("scheme"), s.get("term"), s.get("code"))
+
+        # Add admin metadata, in particular owner
+        admin = deepcopy(self.data.get("admin", {})) if isinstance(self.data.get("admin"), dict) else {}
+        if "owner" not in admin or admin.get("owner") is None:
+            # Attempt to resolve owner via associated journals
+            try:
+                admin["owner"] = self.get_owner()
+            except Exception:
+                # If we can't determine owner, leave as-is
+                pass
+        if len(admin) > 0:
+            stone.data["admin"] = admin
 
         stone.save()
         return stone
