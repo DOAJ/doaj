@@ -1472,7 +1472,7 @@ class FieldDefinitions:
         "name": "deposit_policy",
         "label": "Does the journal have a policy allowing authors to deposit versions of their work in an "
                  "institutional or other repository of their choice? Where is this policy recorded?",
-        "input": "checkbox",
+        "input": "radio",
         "multiple": True,
         "options": [
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
@@ -1481,7 +1481,7 @@ class FieldDefinitions:
             {"display": "Open Policy Finder", "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
-            {"display": HTMLString("<em>The journal has no repository policy</em>"), "value": "none", "exclusive": True}
+            {"display": HTMLString("<em>The journal has no repository policy</em>"), "value": "none"}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
