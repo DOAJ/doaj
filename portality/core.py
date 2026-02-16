@@ -336,10 +336,20 @@ def _load_data(app):
     datadir = os.path.join(app.config["BASE_FILE_PATH"], "..", "cms", "data")
     for datafile in os.listdir(datadir):
         with open(os.path.join(datadir, datafile)) as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
-        dataname = datafile.split(".")[0]
-        dataname = dataname.replace("-", "_")
-        app.jinja_env.globals["data"][dataname] = data
+
+            dataname = datafile.split(".")[0]
+            dataname = dataname.replace("-", "_")
+
+            try:
+                data = yaml.load(f, Loader=yaml.FullLoader)
+                app.jinja_env.globals["data"][dataname] = data
+            except yaml.error.MarkedYAMLError as e:
+                app.logger.error(e)
+                if app.config.get("SHOW_ADMIN_PAGE_ERRORS", False):
+                    # Problem with loading our yaml - this should be reported to the frontend to allow admins to fix
+                    if "data_errors" not in app.jinja_env.globals:
+                        app.jinja_env.globals["data_errors"] = {}
+                    app.jinja_env.globals["data_errors"][dataname] = e
 
 
 ##################################################
