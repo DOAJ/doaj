@@ -286,6 +286,10 @@ LOGIN_VIA_ACCOUNT_ID = True
 PASSWORD_RESET_TIMEOUT = 86400
 # amount of time a reset token for a new account is valid for
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
+# amount of time a login through login-link is valid for
+LOGIN_LINK_TIMEOUT = 600
+# Encryption key for passwordless login
+PASSWORDLESS_ENCRYPTION_KEY = "Passwordless login encryption key"
 
 # "api" top-level role is added to all accounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = [

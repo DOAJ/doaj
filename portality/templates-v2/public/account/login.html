@@ -3,19 +3,43 @@
 {% block page_title %}Login to your account{% endblock %}
 
 {% block public_content %}
-<div class="page-content">
+<div class="page-content ">
     <section class="container">
+        <div class="homepage__background">
         <div class="row">
             <div class="col-md-6">
                 <h1>Login</h1>
                 <p>DOAJ is open to use without logging in.</p>
                 <p>You only need an account if you are submitting an application, if you have a journal in DOAJ or if you are a volunteer.</p>
-            </div>
-            <div class="col-md-6">
+
                 {% include "_account/includes/_login_form.html" %}
                 <p>If you cannot log in, <a href="{{ url_for('account.forgot') }}">reset your password</a>. If that doesn't work, <a href="/contact">contact us</a>.</p>
             </div>
         </div>
+        </div>
     </section>
 </div>
+{% endblock %}
+
+{% block public_js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        console.log("it's me")
+        $('#show-password').on('click', function (e) {
+            e.preventDefault();
+            console.log("click")
+            $('#password-section').slideDown();
+            $('#login-link-btn').hide();
+            $('#toggle-to-password').hide();
+        });
+
+        $('#show-login-link').on('click', function (e) {
+            e.preventDefault();
+            $('#password-section').slideUp();
+            $('#login-link-btn').show();
+            $('#toggle-to-password').show();
+            $('#password-section input[type="password"]').val('');
+        });
+    });
+</script>
 {% endblock %}
