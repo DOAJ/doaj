@@ -418,6 +418,11 @@ class AdminApplication(ApplicationProcessor):
                 self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT)
                 return
 
+        # is the application is being rejected now?
+        self.info = None
+        if self.target.application_status == constants.APPLICATION_STATUS_REJECTED and self.source.application_status != constants.APPLICATION_STATUS_REJECTED:
+            self.info = constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED
+
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             j = applicationService.accept_application(self.target, account)
