@@ -811,7 +811,6 @@ var formulaic = {
                     }
                 }
 
-
                 this.setUpEventListeners();
                 this.setUI();
             }

@@ -823,6 +823,13 @@ window.Parsley.addValidator("requiredIf", {
 
         let prefix = getGroupWithIndexFromInputId(thisElementId)
         let other = $("[name='" + (prefix ? (prefix + "-") : "") + field + "']");
+
+        // there's a chance `other` is not present in the form.  If so, we should not fail validation, as the field
+        // that triggers the requirement is not present, so we return true
+        if (other.length === 0) {
+            return true;
+        }
+
         let type = other.attr("type");
 
         // get the value from the other field
@@ -845,8 +852,8 @@ window.Parsley.addValidator("requiredIf", {
         }
 
         // otherwise check that the otherVal is in our requirements
-        if ($.inArray(otherVal, requirements) === -1) {
-            return false;
+        if ($.inArray(otherVal, requirements) > -1) {
+            return !!value;
         }
 
         return true;
