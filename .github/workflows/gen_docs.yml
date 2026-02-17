@@ -33,11 +33,11 @@ jobs:
         with:
           python-version: '3.10'
         
-      - name: install elasticsearch
-        uses: getong/elasticsearch-action@v1.2
+      - name: install opensearch
+        uses: esmarkowski/opensearch-github-action@v1.0.0
         with:
-          # for some reason 7.10.2 isn't on docker hub
-          elasticsearch version: 7.10.1
+          version: 1.3.20
+          security-disabled: true
       
       - name: install the DOAJ dependencies
         run: |
