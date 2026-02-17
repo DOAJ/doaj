@@ -35,6 +35,8 @@ jobs:
         
       - name: install opensearch
         uses: esmarkowski/opensearch-github-action@v1.0.0
+        env:
+          DOCKER_API_VERSION: 1.44
         with:
           version: 1.3.20
           security-disabled: true
