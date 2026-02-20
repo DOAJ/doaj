@@ -1071,7 +1071,10 @@ var formulaic = {
                 $(this.flagInputsContainer[this.existingFlagIdx]).addClass("flag--resolved");
                 $(this.flagInputsContainer[this.existingFlagIdx])
                     .find("input")
-                    .prop("disabled", true);
+                    .addClass("parsley-excluded")
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("textarea")
+                    .addClass("parsley-excluded")
                 this.getResolveBtn(this.existingFlagIdx).hide();
                 this.getUnresolveBtn(this.existingFlagIdx).show();
             }
@@ -1080,7 +1083,10 @@ var formulaic = {
                 $(this.flagInputsContainer[this.existingFlagIdx]).removeClass("flag--resolved");
                 $(this.flagInputsContainer[this.existingFlagIdx])
                     .find("input")
-                    .prop("disabled", false);
+                    .removeClass("parsley-excluded")
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("textarea")
+                    .removeClass("parsley-excluded")
                 this.getResolveBtn(this.existingFlagIdx).show();
                 this.getUnresolveBtn(this.existingFlagIdx).hide();
             }
