@@ -360,8 +360,9 @@ class RequiredIfOtherValue(MultiFieldValidator):
     ~~RequiredIfOtherValue:FormValidator~~
     """
 
-    def __init__(self, other_field_name, other_value, message=None, *args, **kwargs):
+    def __init__(self, other_field_name, other_value, not_empty=False, message=None, *args, **kwargs):
         self.other_value = other_value
+        self.not_empty = not_empty
         self.message = message if message is not None else "This field is required when {x} is {y}".format(x=other_field_name, y=other_value)
         super(RequiredIfOtherValue, self).__init__(other_field_name, *args, **kwargs)
 
@@ -370,6 +371,18 @@ class RequiredIfOtherValue(MultiFieldValidator):
         try:
             other_field = self.get_other_field(self.other_field_name, form)
         except:
+            return
+
+        if self.not_empty:
+            if isinstance(other_field.data, list):
+                vals = [v for v in other_field.data if v]
+                if len(vals) > 0:
+                    dr = validators.DataRequired(self.message)
+                    dr(form, field)
+            else:
+                if other_field.data:
+                    dr = validators.DataRequired(self.message)
+                    dr(form, field)
             return
 
         if isinstance(self.other_value, list):
