@@ -189,7 +189,7 @@ def set_current_context():
     '''
     return {
         'settings': settings,
-        'statistics': models.JournalArticle.site_statistics(),
+        # 'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app": app,
         "current_year": dates.now_str(FMT_YEAR),
