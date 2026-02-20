@@ -5,9 +5,11 @@ from typing import Iterable
 import rstr
 
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
-    OWNER_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
+    OWNER_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED, LAST_REVIEW_FORM_EXPANDED, \
+    FLAGS_FORM_EXPANDED
 from portality.regex import ISSN_COMPILED
 from portality.lib import dicts
+from doajtest.fixtures.v2.common import build_flags_form_expanded
 
 
 class JournalFixtureFactory(object):
@@ -40,12 +42,22 @@ class JournalFixtureFactory(object):
         return journal_sources
 
     @staticmethod
-    def make_journal_form():
-        return deepcopy(JOURNAL_FORM)
+    def make_journal_form(flag=False, **flag_kwargs):
+        form = deepcopy(JOURNAL_FORM)
+
+        if flag:
+            flags_update = build_flags_form_expanded(**flag_kwargs)
+            flags_update = JournalFormXWalk.forminfo2multidict(flags_update)
+            form.update(flags_update)
+
+        return form
 
     @staticmethod
     def make_journal_form_info():
-        return deepcopy(JOURNAL_FORM_EXPANDED)
+        jf = deepcopy(JOURNAL_FORM_EXPANDED)
+        # Last review is on the journal, but not on the journal-like
+        jf.update(deepcopy(LAST_REVIEW_FORM_EXPANDED))
+        return jf
 
     @staticmethod
     def make_journal_with_data(**data):
@@ -96,21 +108,30 @@ JOURNAL_SOURCE = {
             {"application_id": "asdfghjkl", "date_accepted": "2018-01-01T00:00:00Z"},
             {"application_id": "zxcvbnm"}
         ],
-        "ticked": True
+        "ticked": True,
+        "last_full_review": "2025-01-01",
+        "date_applied": "2019-06-15T00:00:00Z",
+        "last_withdrawn": "2020-03-10T00:00:00Z",
+        "last_reinstated": "2020-06-20T00:00:00Z",
+        "last_owner_transfer": "2021-02-11T00:00:00Z"
     },
     "bibjson": JOURNAL_LIKE_BIBJSON
 }
 
+# These form the JOURNAL-LIKE Form base.  Other form parts are added by the Journal or
+# Application fixtures as needed
 JOURNAL_FORM_EXPANDED = {}
 JOURNAL_FORM_EXPANDED.update(JOURNAL_LIKE_BIBJSON_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(EDITORIAL_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(SUBJECT_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(NOTES_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(OWNER_FORM_EXPANDED)
+JOURNAL_FORM_EXPANDED.update(FLAGS_FORM_EXPANDED)
+
 
 from portality.crosswalks.journal_form import JournalFormXWalk
 
-JOURNAL_FORM = JournalFormXWalk.forminfo2multidict(JOURNAL_FORM_EXPANDED)
+JOURNAL_FORM = JournalFormXWalk.forminfo2multidict(JournalFixtureFactory.make_journal_form_info())
 
 JOURNAL_BULK_EDIT = {
     "publisher": "Test Publisher",
@@ -171,6 +192,7 @@ CSV_HEADERS = [
     'Subjects',  # (added outside journal2questions)
     'Added on Date',  # (added outside journal2questions)
     'Last updated Date',  # (added outside journal2questions)
+    'Last Full Review Date', # (added outside journal2questions)
     # 'Tick: Accepted after March 2014', Removed 2020-12-11
     "Number of Article Records",  # (added outside journal2questions)
     "Most Recent Article Added"  # (added outside journal2questions)

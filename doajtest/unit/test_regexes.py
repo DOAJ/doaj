@@ -5,8 +5,6 @@ from doajtest.fixtures import dois, issns, urls
 
 from portality.regex import DOI_COMPILED, ISSN_COMPILED, HTTP_URL_COMPILED
 
-import re
-
 
 class TestRegexes(DoajTestCase):
 
