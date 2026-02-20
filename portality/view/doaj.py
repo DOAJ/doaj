@@ -18,7 +18,6 @@ from portality import store
 from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, api_key_required
-from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
@@ -32,7 +31,8 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals)
+    stats = DOAJ.siteService().site_statistics()
+    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals, statistics=stats)
 
 
 @blueprint.route('/login/')
