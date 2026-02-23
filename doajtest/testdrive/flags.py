@@ -19,8 +19,9 @@ class Flags(TestDrive):
         self.eg = None
 
     def setup(self) -> dict:
-        self.create_accounts()
-        self.build_journals()
+        random_str = self.create_random_str()
+        self.create_accounts(random_str)
+        self.build_journals(random_str)
         return {
             "accounts": {
                 "admin": {
@@ -40,33 +41,33 @@ class Flags(TestDrive):
                     "password": self.random_user_password
                 }
             },
-            "journals": self.build_journals,
+            "journals": self.journals,
             "non_renderable": {
                 "editor_groups": [self.eg.name, self.another_eg.name]
             },
             "script": {
-                "script_name": "find_approaching_deadlines",
+                "script_name": "approaching_flag_deadline",
                 "title": "Run background task"
             }
         }
 
-    def create_accounts(self):
+    def create_accounts(self, random_str):
 
-        admin_name = "LordWiggleworth"
+        admin_name = "LordWiggleworth_" + random_str
         self.admin_password = self.create_random_str()
         self.admin = models.Account.make_account(admin_name + "@example.com", admin_name, "FlagsManed " + admin_name,
                                                  ["admin", "editor"])
         self.admin.set_password(self.admin_password)
         self.admin.save()
 
-        anotheradmin_name = "ProfessorQuibbleton"
+        anotheradmin_name = "ProfessorQuibbleton_" + random_str
         self.anotheradmin_password = self.create_random_str()
         self.anotheradmin = models.Account.make_account(anotheradmin_name + "@example.com", anotheradmin_name, "Admin " + anotheradmin_name,
                                                  ["admin", "editor"])
         self.anotheradmin.set_password(self.anotheradmin_password)
         self.anotheradmin.save()
 
-        random_name = "BaronFeatherfall"
+        random_name = "BaronFeatherfall_" + random_str
         self.random_user_password = self.create_random_str()
         self.random_user = models.Account.make_account(random_name + "@example.com", random_name,
                                                        "Admin " + random_name,
@@ -74,7 +75,7 @@ class Flags(TestDrive):
         self.random_user.set_password(self.random_user_password)
         self.random_user.save()
 
-        editor_name = "MadamPonderleaf"
+        editor_name = "MadamPonderleaf_" + random_str
         self.editor = models.Account.make_account(editor_name + "@example.com", editor_name, "Editor " + editor_name,
                                                   ["editor"])
         self.editor_password = self.create_random_str()
@@ -97,11 +98,11 @@ class Flags(TestDrive):
         self.another_eg.set_editor(self.editor.id)
         self.another_eg.save()
 
-    def build_journals(self):
+    def build_journals(self, random_str):
         journals = [
             {
                 "type": models.Journal,
-                "title": "Journal of Quantum Homeopathy",
+                "title": "Journal of Quantum Homeopathy " + random_str,
                 "assigned_to": self.admin.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -110,7 +111,7 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "The Mars Agricultural Review",
+                "title": "The Mars Agricultural Review " + random_str,
                 "assigned_to": self.editor.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -119,7 +120,7 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "Cryptid Behavioral Studies Quarterly",
+                "title": "Cryptid Behavioral Studies Quarterly " + random_str,
                 "assigned_to": self.editor.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -127,7 +128,7 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "The Bermuda Triangle Journal of Lost and Found",
+                "title": "The Bermuda Triangle Journal of Lost and Found " + random_str,
                 "assigned_to": self.editor.id,
                 "flagged_to": self.editor.id,
                 "group": self.eg.name,
@@ -135,13 +136,13 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "Feline Aerodynamics Review",
+                "title": "Feline Aerodynamics Review " + random_str,
                 "assigned_to": self.admin.id,
                 "group": self.eg.name
             },
             {
                 "type": models.Journal,
-                "title": "Journal of Intergalactic Diplomacy",
+                "title": "Journal of Intergalactic Diplomacy " + random_str,
                 "assigned_to": self.random_user.id,
                 "flagged_to": self.admin.id,
                 "group": self.another_eg.name,
@@ -150,7 +151,7 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "Applied Alchemy & Unstable Chemistry",
+                "title": "Applied Alchemy & Unstable Chemistry " + random_str,
                 "assigned_to": self.random_user.id,
                 "flagged_to": self.editor.id,
                 "note": "Journal scope mismatch. The journal is called The International Review of Advanced Neuroscience but 90\% of its articles are about cat memes. Honestly, I’d subscribe, but should we approve it?",
@@ -181,6 +182,8 @@ class Flags(TestDrive):
                 ap.set_notes(note)
             ap.save()
             self.journals.append(ap.id)
+
+        return self.journals
 
     def teardown(self, params):
         for acc in params.get("accounts").values():

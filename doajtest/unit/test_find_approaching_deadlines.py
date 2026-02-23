@@ -3,7 +3,7 @@ import time
 from portality.constants import BgjobOutcomeStatus
 from portality.lib import dates
 from portality.core import app
-from portality.tasks import find_flags_with_approaching_deadline
+from portality.tasks import approaching_flag_deadline
 from portality.background import BackgroundApi
 from doajtest.fixtures import JournalFixtureFactory
 from portality.models import Journal
@@ -34,13 +34,13 @@ class TestFindApproachingDeadlines(DoajTestCase):
         unlikely_engineering.set_id("annalsofunlikelyengineering")
         unlikely_engineering.bibjson().title = "Annals of Unlikely Engineering"
         unlikely_engineering.add_note("This deadline is soon", date=dates.today(), author_id="ProfessorSnifflepuff",
-                                       assigned_to="DameQuacksalot", deadline=dates.format(dates.days_after_now(app.config.get('APPROACHING_DEADLINE_DELTA', 7)), dates.FMT_DATE_STD))
+                                       assigned_to="DameQuacksalot", deadline=dates.format(dates.days_after_now(app.config.get('FLAG_APPROACHING_DEADLINE_DELTA', 7)), dates.FMT_DATE_STD))
         unlikely_engineering.save(blocking=True)
 
 
         user = app.config.get("SYSTEM_USERNAME")
-        job = find_flags_with_approaching_deadline.FindFlagsWithApproachingDeadlineTask.prepare(user)
-        task = find_flags_with_approaching_deadline.FindFlagsWithApproachingDeadlineTask(job)
+        job = approaching_flag_deadline.ApproachingFlagDeadlineTask.prepare(user)
+        task = approaching_flag_deadline.ApproachingFlagDeadlineTask(job)
         BackgroundApi.execute(task)
 
         job = task.background_job

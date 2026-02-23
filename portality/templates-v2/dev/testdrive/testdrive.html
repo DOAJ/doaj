@@ -10,7 +10,7 @@
 
 <h1>{{ name }} - Testdrive setup results</h1>
 
-{% macro render_dict(d) %}
+{%- macro render_dict(d) %}
     <dl>
         {% for k, v in d.items() %}
             <dt>{{ k }}</dt>
@@ -35,9 +35,9 @@
             </dd>
         {% endfor %}
     </dl>
-{% endmacro %}
+{% endmacro -%}
 
-{% for k, v in params.items() %}
+{%- for k, v in params.items() %}
     {% if k != "teardown" and k != "non_renderable" and k!= "script" %}
     <h2>{{ k }}</h2>
     <dl>
@@ -68,7 +68,7 @@
     {% endif %}
     </dl>
     {% endif %}
-{% endfor %}
+{% endfor -%}
 
 {% if "script" in params %}
  <script>

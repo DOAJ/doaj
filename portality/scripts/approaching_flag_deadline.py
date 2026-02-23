@@ -1,5 +1,5 @@
 from portality.core import app
-from portality.tasks import find_flags_with_approaching_deadline
+from portality.tasks import approaching_flag_deadline
 from portality.background import BackgroundApi
 
 def main():
@@ -8,8 +8,8 @@ def main():
         exit()
 
     user = app.config.get("SYSTEM_USERNAME")
-    job = find_flags_with_approaching_deadline.FindFlagsWithApproachingDeadlineTask.prepare(user)
-    task = find_flags_with_approaching_deadline.FindFlagsWithApproachingDeadlineTask(job)
+    job = approaching_flag_deadline.ApproachingFlagDeadlineTask.prepare(user)
+    task = approaching_flag_deadline.ApproachingFlagDeadlineTask(job)
     BackgroundApi.execute(task)
 
 if __name__ == "__main__":

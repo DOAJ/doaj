@@ -74,7 +74,7 @@ class Messages(object):
     EXCEPTION_EDITING_DELETED_JOURNAL = "This journal has been deleted, update request cannot be accepted."
     EXCEPTION_EDITING_NON_EXISTING_APPLICATION = "You cannot edit a not-existent application"
 
-    EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
+    EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id `{x}` not found"
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
     EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
 

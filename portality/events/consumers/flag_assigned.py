@@ -8,7 +8,7 @@ from portality import models
 from portality.bll import DOAJ
 
 class FlagAssigned(EventConsumer):
-    ID = "flag:assigned"
+    ID = "flag:assigned:notify"
 
     @classmethod
     def should_consume(cls, event):
@@ -28,7 +28,7 @@ class FlagAssigned(EventConsumer):
         acc = models.Account.pull(assignee_id)
 
         if not acc:
-            raise exceptions.NoSuchObjectException(Messages.EXCEPTION_NOTIFICATION_NO_ACCOUNT.format(id=assignee_id))
+            raise exceptions.NoSuchObjectException(Messages.EXCEPTION_NOTIFICATION_NO_ACCOUNT.format(x=assignee_id))
 
         if not acc.email:
             raise exceptions.NoSuchPropertyException(Messages.EXCEPTION_NOTIFICATION_NO_EMAIL.format(x=acc.id))

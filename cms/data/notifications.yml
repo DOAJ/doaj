@@ -128,11 +128,29 @@ bg:job:admin_reports:export_available:
   short:
     Report "{name}" ready for download
 
+bg:job:approaching_flag_deadline:notify:
+  long: |
+    "The deadline for the flag in "{journal_title}" (id: {id}) is in 7 days."
+  short:
+    Deadline reminder
+
+flag:assigned:notify:
+  long: |
+    "A new flag in "{journal_title}" (id: {id}) has been assigned to you"
+  short:
+    New flag
+
 journal:assed:assigned:notify:
   long: |
     The journal **{journal_name}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.
   short:
     New journal ({issns}) assigned to you
+
+journal:maned:discontinuing_soon:notify:
+  long: |
+    Journal "{title}" (id: {id}) will discontinue in {days} days.
+  short:
+     Journal discontinuing
 
 journal:editor_group:assigned:notify:
   long: |
@@ -186,21 +204,3 @@ update_request:publisher:submitted:notify:
     **This is an automated message.**
   short:
     Your update request ({issns}) has been submitted
-
-journal:maned:discontinuing_soon:notify:
-  long: |
-    Journal "{title}" (id: {id}) will discontinue in {days} days.
-  short:
-     Journal discontinuing
-
-flag:assigned:
-  long: |
-    "A new flag in "{journal_title}" (id: {id}) has been assigned to you"
-  short:
-    New flag
-
-flag:reminder:
-  long: |
-    "The deadline for the flag in "{journal_title}" (id: {id}) is in 7 days."
-  short:
-    Deadline reminder

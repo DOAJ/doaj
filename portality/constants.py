@@ -86,7 +86,6 @@ EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
 EVENT_JOURNAL_DISCONTINUING_SOON = "journal:discontinuing_soon"
 EVENT_ARTICLE_SAVE = "article:save"
 EVENT_FLAG_ASSIGNED = "flag:assigned"
-EVENT_FLAG_REMINDER = "flag:reminder"
 
 NOTIFICATION_CLASSIFICATION_STATUS = "alert"
 NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
