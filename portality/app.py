@@ -189,7 +189,7 @@ def set_current_context():
     '''
     return {
         'settings': settings,
-        'statistics': models.JournalArticle.site_statistics(),
+        # 'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app": app,
         "current_year": dates.now_str(FMT_YEAR),
@@ -445,7 +445,7 @@ def handle_journal_withdrawn(e):
 @app.errorhandler(ValueError)
 @app.errorhandler(500)
 def handle_500(e):
-    if e.description == e.__class__.description:
+    if not hasattr(e, 'description') or e.description == e.__class__.description:
         description = Messages.DEFAULT_500_DESCRIPTION
     else:
         description = e.description
