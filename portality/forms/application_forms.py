@@ -40,7 +40,7 @@ from portality.forms.validate import (
     Year,
     CurrentISOCurrency,
     CurrentISOLanguage,
-    DateInThePast
+    DateInThePast, StopValidationOnOtherValue
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -2029,6 +2029,10 @@ class FieldDefinitions:
         "name": "flag_deadline",
         "validate": [
             {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)", "ignore_empty": True}},
+            {"stop_validation_on_other_value": {
+                "field": "flag_resolved",
+                "value": "true"
+            }},
             {"required_if": {
                 "field": "flag_note",
                 "not_empty": True,
@@ -2071,6 +2075,10 @@ class FieldDefinitions:
         "validate": [
             "reserved_usernames",
             "owner_exists",
+            {"stop_validation_on_other_value": {
+                "field": "flag_resolved",
+                "value": "true"
+            }},
             {"required_if": {
                 "field": "flag_note",
                 "not_empty": True,
@@ -3105,6 +3113,16 @@ class RequiredIfBuilder:
         ne = settings.get("not_empty", False)
         return RequiredIfOtherValue(set_field, val, ne, settings.get("message"))
 
+class StopValidationOnOtherValueBuilder:
+    # ~~->$ StopValidationOnOtherValue:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        # no action required here, this is back-end only
+        return
+
+    @staticmethod
+    def wtforms(field, settings):
+        return StopValidationOnOtherValue(settings.get("field", field), settings.get("value"))
 
 class OnlyIfBuilder:
     # ~~->$ OnlyIf:FormValidator~~
@@ -3271,7 +3289,8 @@ PYTHON_FUNCTIONS = {
             "bigenddate": BigEndDateBuilder.render,
             "no_script_tag": NoScriptTagBuilder.render,
             "year": YearBuilder.render,
-            "date_in_the_past": DateInThePastBuilder.render
+            "date_in_the_past": DateInThePastBuilder.render,
+            "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.render,
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -3298,7 +3317,8 @@ PYTHON_FUNCTIONS = {
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
             "current_iso_language": CurrentISOLanguageBuilder.wtforms,
-            "date_in_the_past": DateInThePastBuilder.wtforms
+            "date_in_the_past": DateInThePastBuilder.wtforms,
+            "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.wtforms
         }
     }
 }

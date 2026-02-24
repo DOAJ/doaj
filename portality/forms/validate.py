@@ -414,6 +414,44 @@ class RequiredIfOtherValue(MultiFieldValidator):
             if not field.data or len(field.data) == 0:
                 raise validators.StopValidation()
 
+class StopValidationOnOtherValue(MultiFieldValidator):
+    def __init__(self, other_field_name, other_value, *args, **kwargs):
+        self.other_value = other_value
+        super(StopValidationOnOtherValue, self).__init__(other_field_name, *args, **kwargs)
+
+    def __call__(self, form, field):
+        # attempt to get the other field - if it doesn't exist, just take this as valid
+        try:
+            other_field = self.get_other_field(self.other_field_name, form)
+        except:
+            return
+
+        if isinstance(self.other_value, list):
+            self._match_list(form, field, other_field)
+        else:
+            self._match_single(form, field, other_field)
+
+    def _match_single(self, form, field, other_field):
+        if isinstance(other_field.data, list):
+            match = self.other_value in other_field.data
+        else:
+            match = other_field.data == self.other_value
+        if match:
+            raise validators.StopValidation()
+        else:
+            if not field.data or (isinstance(field.data, str) and not field.data.strip()):
+                raise validators.StopValidation()
+
+    def _match_list(self, form, field, other_field):
+        if isinstance(other_field.data, list):
+            match = len(list(set(self.other_value) & set(other_field.data))) > 0
+        else:
+            match = other_field.data in self.other_value
+        if match:
+            raise validators.StopValidation()
+        else:
+            if not field.data or len(field.data) == 0:
+                raise validators.StopValidation()
 
 class OnlyIf(MultiFieldValidator):
     """
