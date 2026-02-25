@@ -19,8 +19,8 @@ setup(
         "feedparser==6.0.11",
         "jinja2~=3.1.4",
         "jsonpath-ng~=1.6",
-        "flask<3",
-        "Werkzeug<3.0",   # FIXME: we have passwords using plain sha1 that are undecodable after 3.0
+        "flask==3.1.2",
+        "Werkzeug~=3.1",
         "Flask-Cors==5.0.0",
         "Flask-DebugToolbar==0.15.1",
         "Flask-Login==0.6.3",
