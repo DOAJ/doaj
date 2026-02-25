@@ -102,6 +102,11 @@ class TestManEdJournalReview(DoajTestCase):
         assert related[0].get("date_accepted") == "2018-01-01T00:00:00Z"
         assert related[1].get("application_id") == "zxcvbnm"
         assert related[1].get("date_accepted") is None
+
+        assert fc.target.date_applied == journal.date_applied
+        assert fc.target.last_withdrawn == journal.last_withdrawn
+        assert fc.target.last_reinstated == journal.last_reinstated
+        assert fc.target.last_owner_transfer == journal.last_owner_transfer
         # everything else is overridden by the form, so no need to check it has patched
 
         # now do finalise (which will also re-run all of the steps above)
@@ -147,6 +152,8 @@ class TestManEdJournalReview(DoajTestCase):
 
         # set the s2o data to False using the form
         fc.form.s2o.data = False
+        fc.form.mirror.data = False
+        fc.form.ojc.data = False
 
         # run the crosswalk, don't test it at all in this test
         fc.form2target()

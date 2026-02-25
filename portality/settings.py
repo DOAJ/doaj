@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.4.2"
+DOAJ_VERSION = "8.5.2"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -67,7 +67,6 @@ ELASTIC_SEARCH_DB_PREFIX = "doaj-"  # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True  # whether or not to try creating the index and required index types on startup
-ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
@@ -97,7 +96,7 @@ ELASTIC_APM = {
 # Event handler
 
 # Process events immediately/synchronously
-EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+EVENT_SEND_FUNCTION = "portality.events.background.send_event"
 
 ###########################################
 # Read Only Mode
@@ -451,6 +450,7 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
 }
 
 
@@ -1511,6 +1511,10 @@ BG_MONITOR_ERRORS_CONFIG = {
     'public_data_dump': {
         'check_sec': 2 * _HOUR,
         'allowed_num_err': 0
+    },
+    'process_event': {
+        'check_sec': 2 * _HOUR,
+        'allowed_num_err': 0
     }
 }
 
@@ -1552,6 +1556,10 @@ BG_MONITOR_QUEUED_CONFIG = {
     'suggestion_bulk_edit': {
         'total': 2,
         'oldest': 10 * _MIN
+    },
+    'process_event': {
+        'total': 500,
+        'oldest': 6 * _HOUR
     }
 }
 

@@ -27,14 +27,6 @@ ed:
   country: Australia
   language: Chinese, English
   featured: true
-
-- name: Handoko
-  area: Humanities, Social Sciences
-  year_since:
-  city: Padang
-  country: Indonesia
-  language: Bahasa Indonesian, English
-  photo: "handoko.jpg"
   
 - name: Jiayi Xu
   area: Academic Publishing
@@ -50,22 +42,6 @@ ed:
   country: Azerbaijan
   language: Turkish, English, Russian
   photo: "Khayala.jpg"
-
-- name: Lut Tamam
-  area: Medicine
-  year_since:
-  city: Adana
-  country: Türkiye
-  language: Turkish, English
-  featured: true
-  
-- name: Muhamad Ratodi
-  area: Public Health
-  year_since:
-  city: Surabaya
-  country: Indonesia
-  language: Indonesian, English
-  photo: "Ratodi.jpg"
 
 - name: Natalia Pamuła
   area: Humanities, Social Sciences
@@ -176,14 +152,6 @@ ass_ed:
   country: Colombia
   language: Spanish, English, Portuguese
   photo: "Ana Melisa Fernandes.jpg"
-
-- name: Andrea Imre
-  area: Library Science, Music
-  year_since:
-  city: Carbondale, IL
-  country: USA
-  language: Hungarian, English
-  photo: "imre.jpg"
   
 - name: Annarita Barbaro
   area: Humanities
@@ -287,14 +255,6 @@ ass_ed:
   city: Valencia
   country: Spain
   language: Spanish, English
-
-- name: Dedi Rahman Nur
-  area: Social Sciences
-  year_since:
-  city: Samarinda
-  country: Indonesia
-  language: Indonesian, English
-  photo: "DEDI.jpg"
   
 - name: Dessy Harisanty
   area: Library and Information Science
@@ -319,14 +279,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "Dwi saptura.jpeg"
-  
-- name: Emrah Kaya
-  area: Social Sciences, Humanities
-  year_since:
-  city: Sakarya
-  country: Turkey
-  language: English
-  photo: "Emrah Kaya.jpg"
 
 - name: Flavius-Cristian Marcau 
   area: Social Sciences
@@ -433,23 +385,6 @@ ass_ed:
   country: Korea
   language: Korean, English
 
-- name: Kadri Kıran
-  area: Systematic Entomology
-  year_since:
-  city: Edirne
-  country: Türkiye
-  language: English, Turkish, German
-  featured: true
-  photo: "Kadri Kiran.jpg"
-
-- name: Kâmil B. Varınca
-  area: Science
-  year_since:
-  city: Adiyaman
-  country: Türkiye
-  language: Turkish, English
-  photo: "kamil.jpg"
-
 - name: Kamila Kokot-Kanikuła
   area: Library Science
   year_since:
@@ -481,14 +416,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "Khoirul.jpg"
-
-- name: Kristen Totleben
-  area: Library Science, Humanities, Social Sciences
-  year_since:
-  city: Rochester, New York
-  country: USA
-  language: English, Spanish
-  photo: "Kristen.jpg"
   
 - name: Leila Yang
   area: Scholarly Publishing
@@ -581,13 +508,6 @@ ass_ed:
   country: Russian Federation
   language: Russian, English
   photo:
-  
-- name: Melih Sever
-  area: Social Sciences
-  year_since:
-  city:
-  country: Türkiye
-  language: English
 
 - name: Michaela Voigt 
   area: Library and Information Science, Scandinavian Studies
@@ -602,6 +522,7 @@ ass_ed:
   city: Bucharest
   country: Romania
   language: Romanian, English, French
+  featured: true
 
 - name: Mohammad Rizki Fadhil Pratama
   area: Medicine, Chemistry
@@ -659,14 +580,6 @@ ass_ed:
   country: Georgia
   language: Georgian, English
   photo: "NatiaGabedava.jpg"
-  
-- name: Nizameddin Koca
-  area: Internal Medicine
-  year_since:
-  city: Bursa
-  country: Turkey
-  language: English, Turkish
-  photo: "Nizameddin.jpg"
 
 - name: Nour El Houda Belhamel
   area: Science, Technology, Medicine
@@ -750,6 +663,7 @@ ass_ed:
   city: Esfahan
   country: Iran
   language: Farsi, English
+  featured: true
   photo: "amini.jpg"
 
 - name: Sara Jalalzadeh Asrjadidi
@@ -805,22 +719,6 @@ ass_ed:
   country: USA
   language: Spanish, English, Portuguese
   photo: "Wileidys.jpg"
-  
-- name: Yalçın Tükel 
-  area: Sports recreation
-  year_since:
-  city: Konya
-  country: Türkiye
-  language: Turkish, English
-  photo: "yalcin.jpg"
-
-- name: Yulingga Nanda Hanief
-  area: Sports Science
-  year_since:
-  city: Malang
-  country: Indonesia
-  language: Bahasa Indonesia, English
-  photo: "hanief.jpg"
  
 - name: Zakariya Algamal
   area: Statistics

@@ -21,7 +21,8 @@ from portality.tasks.preservation import preserve  # noqa
 from portality.tasks.journal_in_out_doaj import set_in_doaj  # noqa
 from portality.tasks.suggestion_bulk_edit import suggestion_bulk_edit  # noqa
 from portality.tasks.admin_reports import admin_reports  # noqa
+from portality.tasks.process_event import process_event_execute
 
 # Conditionally enable new application autochecking
 if app.config.get("AUTOCHECK_INCOMING", False):
-    from portality.tasks.application_autochecks import application_autochecks
+    from portality.tasks.application_autochecks import application_autochecks # noqa
