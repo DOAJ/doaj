@@ -101,7 +101,7 @@ def update_request(journal_id):
             journal, _ = journalService.journal(journal_id)
             return render_template(templates.PUBLISHER_APPLICATION_ALREADY_SUBMITTED, journal=journal)
         elif e.reason == AuthoriseException.NOT_OWNER:
-            flash(Messages.YOUR_NOT_THE_OWNER, "info")
+            flash(Messages.JOURNAL__YOU_ARE_NOT_OWNER, "info")
             return redirect(url_for("publisher.journals"))
         else:
             abort(404)

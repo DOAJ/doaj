@@ -49,22 +49,29 @@ tests:
     role: anonymous
   path: /testdrive/ur_nudge
   steps:
-  - step: Go to the public page of "Journal of Exoplanetary Biosignatures" at /toc/9556-2777.
+  - step: Ensure you are not logged in.  You may use a private browsing window to do this if you are already logged in.
+  - step: Go to the public page of "Journal of Exoplanetary Biosignatures XXXXX".  Where XXXX is the unique
+      identifier provided on the testdrive page.  You may follow the link from the testdrive page to get to the journal's 
+      public page.
     results:
-    - In the "Journal metadata" column, in the "Publisher" tile, a message is displayed "Are you associated with this journal? Help us keep your record accurate! Click here to submit an update."
+    - In the "Journal metadata" column, in the "Publisher" tile, a message is displayed "Are you associated with this 
+      journal? Help us keep your record accurate! Click here to submit an update."
   - step: Click the "Click here to submit an update" link.
     results:
     - A right-hand drawer opens displaying a login form.
-  - step: Log in as "Celestial Frontier Press" using the credentials provided on the testdrive page.
+  - step: Log in using the admin credentials for Celestial Frontiers Press provided on the testdrive page.
     results:
     - The update request form for the journal "Journal of Exoplanetary Biosignatures" is displayed.
   - step: Without logging out, return to the public page of "Journal of Exoplanetary Biosignatures".
     results:
-    - In the "Journal metadata" column, in the "Publisher" tile, a message is displayed "This is your journal! Help us keep your record accurate. Click here to submit an update."
+    - In the "Journal metadata" column, in the "Publisher" tile, a message is displayed "This is your journal! Help us 
+      keep your record accurate. Click here to submit an update."
   - step: Click the "Click here to submit an update" link.
     results:
     - The update request form for the journal "Journal of Exoplanetary Biosignatures" is displayed.
-  - step: Without logging out, go to the public page of "Annals of Stellar Habitat Studies" at /toc/9555-2777.
+  - step: Without logging out, go to the public page of "Annals of Stellar Habitat Studies XXXXX". Where XXXXX is the 
+      unique identifier provided on the testdrive page.  You may follow the link from the testdrive page to get to the 
+      journal's public page.
     results:
     - In the "Journal metadata" column, in the "Publisher" tile, no update request link is displayed.
   - step: Log out.
@@ -77,4 +84,5 @@ tests:
   - step: Log in as "Celestial Frontier Press" using the credentials provided on the testdrive page.
     results:
     - You are redirected to the "My journals" section of the Publisher Dashboard.
-    - A message is displayed at the top of the page "You are not the owner of a journal you're trying to access. Here are the journals associated with your account."
+    - A message is displayed at the top of the page "You are not the owner of a journal you're trying to access. 
+      Here are the journals associated with your account."

@@ -161,7 +161,7 @@ class Messages(object):
 
     DEFAULT_500_DESCRIPTION = "An error has occurred. It looks like something has gone wrong."
 
-    YOUR_NOT_THE_OWNER = "You are not the owner of a journal you're trying to access. Here are the journals associated with your account."
+    JOURNAL__YOU_ARE_NOT_OWNER = "You are not the owner of a journal you're trying to access. Here are the journals associated with your account."
 
     @classmethod
     def flash(cls, tup):

@@ -1,34 +1,61 @@
-jQuery(document).ready(function ($) {
-    if (!doaj.session.currentUserId) {
-        $("#ur_nudge--link").on("click", (event) => {
-            event.preventDefault();
-            $("#drawer-login").addClass('is-open')
-            $("#user").focus()
-        });
+doaj.toc_drawer = {};
+
+doaj.toc_drawer.init = function () {
+    if (doaj.current_user) {
+        return
     }
 
-    $('[data-dismiss="drawer-login"]').on('click', function () {
-        $("#drawer-login").removeClass('is-open');
-    });
+    // the open link
+    $("#ur_nudge--link").on("click", doaj.toc_drawer.onOpen);
 
-    $(document).on('click', function (event) {
-        const $drawer = $('#drawer-login');
-        if ($drawer.css('display') !== 'block') return;
+    // the explicit close link
+    $('[data-dismiss="drawer-login"]').on('click', doaj.toc_drawer.onClose);
 
-        if (
-            !$(event.target).closest('#ur_nudge--link').length &&
-            !$(event.target).closest('.drawer').length &&
-            !$(event.target).closest('.drawer__content').length &&
-            !$(event.target).closest('[data-toggle="drawer-login"]').length
-        ) {
-            $drawer.removeClass('is-open');
-        }
-    });
+    // click anywhere else on the page
+    $(document).on('click', doaj.toc_drawer.onClickAway);
 
-    $(document).on('keydown', function (event) {
-        const $drawer = $('#drawer-login');
-        if (event.key === 'Escape' && $drawer.css('display') === 'block') {
-            $drawer.hide();
-        }
-    });
-})
+    // hit the escape key
+    $(document).on('keydown', doaj.toc_drawer.onEscape);
+}
+
+doaj.toc_drawer.open = function () {
+    $("#drawer-login").addClass('is-open')
+    $("#user").focus()
+}
+
+doaj.toc_drawer.close = function() {
+    const $drawer = $('#drawer-login');
+    if ($drawer.css('display') !== 'block') {
+        return;
+    }
+    $drawer.removeClass('is-open');
+}
+
+// event handlers
+
+doaj.toc_drawer.onEscape = function (event) {
+    if (event.key === 'Escape') {
+        doaj.toc_drawer.close();
+    }
+}
+
+doaj.toc_drawer.onOpen = function (event) {
+    event.preventDefault();
+    doaj.toc_drawer.open();
+}
+
+doaj.toc_drawer.onClose = function (event) {
+    event.preventDefault();
+    doaj.toc_drawer.close();
+}
+
+doaj.toc_drawer.onClickAway = function (event) {
+    if (
+        !$(event.target).closest('#ur_nudge--link').length &&
+        !$(event.target).closest('.drawer').length &&
+        !$(event.target).closest('.drawer__content').length &&
+        !$(event.target).closest('[data-toggle="drawer-login"]').length
+    ) {
+        doaj.toc_drawer.close();
+    }
+}

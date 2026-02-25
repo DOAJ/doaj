@@ -22,6 +22,7 @@ from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
 from portality.ui import templates
+from portality.view.account import LoginForm
 
 # ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
@@ -320,11 +321,9 @@ def toc(identifier=None):
 
     if journal.is_in_doaj() is False:
         raise ui_exceptions.JournalWithdrawn()
-
-    # journal = find_toc_journal_by_identifier(identifier)
+    
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
-    from portality.view.account import LoginForm
     current_info = {'next': url_for('publisher.update_request', journal_id=journal.id)}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if real_identifier:
