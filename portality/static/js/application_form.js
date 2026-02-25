@@ -793,25 +793,69 @@ doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
 
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
+        let thisElementId = parsleyInstance.$element[0].id;
+        // console.log(thisElementId)
+
+        const getGroupWithIndexFromInputId = (inputId) => {
+          const match = inputId.match(/^([^-]+)-(\d+)-/);
+          return match ? `${match[1]}-${match[2]}` : null;
+        }
+
+        let skipIfDisabled  = parsleyInstance.$element.attr("data-parsley-validate-if-disabled") === "false";
+        if (skipIfDisabled && parsleyInstance.$element[0].disabled) {
+            return true;
+        }
+
         let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+
+        // determine if this is the "not empty" value
+        let ne = parsleyInstance.$element.attr("data-parsley-required-if-not-empty")
+        if (ne === "true") {
+            ne = true;
+        } else {
+            ne = false;
+        }
+
         if (typeof requirement !== "string") {
             requirement = requirement.toString();
         }
-
         let requirements = requirement.split(",");
 
-        let other = $("[name='" + field + "']");
-        let type = other.attr("type");
-        if (type === "checkbox" || type === "radio") {
-            let otherVal = other.filter(":checked").val();
-            if ($.inArray(otherVal, requirements) > -1) {
-                return !!value;
-            }
-        } else {
-            if ($.inArray(other.val(), requirements) > -1) {
-                return !!value;
-            }
+        let prefix = getGroupWithIndexFromInputId(thisElementId)
+        let other = $("[name='" + (prefix ? (prefix + "-") : "") + field + "']");
+
+        // there's a chance `other` is not present in the form.  If so, we should not fail validation, as the field
+        // that triggers the requirement is not present, so we return true
+        if (other.length === 0) {
+            return true;
         }
+
+        let type = other.attr("type");
+
+        // get the value from the other field
+        const otherVal = (type === "checkbox" || type === "radio")
+            ? other.filter(":checked").val()
+            : other.val();
+
+        if (ne) {
+            // if the other value is not empty, then this field is required
+            if (otherVal !== undefined && otherVal !== null && otherVal !== "") {
+                // other value is not empty, so this field is required, so we return true if this field is not empty
+                if (value !== undefined && value !== null && value !== "") {
+                    return true;
+                }
+                return false;
+            }
+
+            // if the other value is empty, this field is not required
+            return true;
+        }
+
+        // otherwise check that the otherVal is in our requirements
+        if ($.inArray(otherVal, requirements) > -1) {
+            return !!value;
+        }
+
         return true;
     },
     messages: {
@@ -989,8 +1033,12 @@ window.Parsley.addValidator("year", {
 });
 
 window.Parsley.addValidator("validdate", {
-    validateString : function(value) {
+    validateString : function(value, requirements, parsleyInstance) {
         // Check if the value matches the YYYY-MM-DD format
+        const ignore_empty = parsleyInstance.$element.attr("data-parsley-validdate-ignore_empty");
+        if (ignore_empty && !value) {
+            return true;
+        }
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!regex.test(value)) {
           return false; // Invalid format

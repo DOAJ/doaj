@@ -40,7 +40,7 @@ from portality.forms.validate import (
     Year,
     CurrentISOCurrency,
     CurrentISOLanguage,
-    DateInThePast
+    DateInThePast, StopValidationOnOtherValue
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -2025,11 +2025,20 @@ class FieldDefinitions:
 
     FLAG_DEADLINE = {
         "subfield": True,
-        "optional": True,
         "label": "Deadline",
         "name": "flag_deadline",
         "validate": [
-            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)", "ignore_empty": True}},
+            {"stop_validation_on_other_value": {
+                "field": "flag_resolved",
+                "value": "true"
+            }},
+            {"required_if": {
+                "field": "flag_note",
+                "not_empty": True,
+                "message": "The flag must have a deadline",
+                "skip_disabled": True
+            }}
         ],
         "help": {
             "placeholder": "deadline (YYYY-MM-DD)",
@@ -2060,13 +2069,22 @@ class FieldDefinitions:
         "name": "flag_assignee",
         "label": "Assign a user",
         "help": {
-            "placeholder": "assigned_to",
-            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+            "placeholder": "assigned_to"
         },
         "group": "flags",
         "validate": [
             "reserved_usernames",
-            "owner_exists"
+            "owner_exists",
+            {"stop_validation_on_other_value": {
+                "field": "flag_resolved",
+                "value": "true"
+            }},
+            {"required_if": {
+                "field": "flag_note",
+                "not_empty": True,
+                "message": "The flag must be assigned to someone",
+                "skip_disabled": True
+            }}
         ],
         "widgets": [
             {"autocomplete": {"type": "admin", "include": False, "allow_clear_input": False}},
@@ -3068,12 +3086,20 @@ class RequiredIfBuilder:
     # ~~->$ RequiredIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        val = settings.get("value")
+        val = settings.get("value", "")
         if isinstance(val, list):
             val = ",".join(val)
 
+        if settings.get("skip_disabled"):
+            html_attrs["data-parsley-validate-if-disabled"] = "false"
+
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = val
+
+        ne = settings.get("not_empty", False)
+        if ne:
+            html_attrs["data-parsley-required-if-not-empty"] = "true"
+
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
         if "message" in settings:
             html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</small></p>"
@@ -3082,8 +3108,21 @@ class RequiredIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return RequiredIfOtherValue(settings.get("field") or field, settings.get("value"), settings.get("message"))
+        set_field = settings.get("field", field)
+        val = settings.get("value")
+        ne = settings.get("not_empty", False)
+        return RequiredIfOtherValue(set_field, val, ne, settings.get("message"))
 
+class StopValidationOnOtherValueBuilder:
+    # ~~->$ StopValidationOnOtherValue:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        # no action required here, this is back-end only
+        return
+
+    @staticmethod
+    def wtforms(field, settings):
+        return StopValidationOnOtherValue(settings.get("field", field), settings.get("value"))
 
 class OnlyIfBuilder:
     # ~~->$ OnlyIf:FormValidator~~
@@ -3159,6 +3198,8 @@ class BigEndDateBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-validdate"] = ""
+        ignore_empty = settings.get("ignore_empty", False)
+        html_attrs["data-parsley-validdate-ignore_empty"] = "true" if ignore_empty else "false"
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
@@ -3248,7 +3289,8 @@ PYTHON_FUNCTIONS = {
             "bigenddate": BigEndDateBuilder.render,
             "no_script_tag": NoScriptTagBuilder.render,
             "year": YearBuilder.render,
-            "date_in_the_past": DateInThePastBuilder.render
+            "date_in_the_past": DateInThePastBuilder.render,
+            "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.render,
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -3275,7 +3317,8 @@ PYTHON_FUNCTIONS = {
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
             "current_iso_language": CurrentISOLanguageBuilder.wtforms,
-            "date_in_the_past": DateInThePastBuilder.wtforms
+            "date_in_the_past": DateInThePastBuilder.wtforms,
+            "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.wtforms
         }
     }
 }
