@@ -213,11 +213,11 @@ ${status}</a></li>`;
         if (historicalNumbers) {
             statisticsFrag += `<section>`;
 
-            if (current_user.role.includes("admin") || historicalNumbers.associate_editors.length > 0) {
+            if (doaj.current_user.role.includes("admin") || historicalNumbers.associate_editors.length > 0) {
                 statisticsFrag += `<h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
             }
 
-            if (current_user.role.includes("admin")) {
+            if (doaj.current_user.role.includes("admin")) {
                 // Ready applications by editor
                 statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="label status status--ready" style="padding: .5em; display: unset;">Ready</span> Applications: `;
                 statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.id}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;

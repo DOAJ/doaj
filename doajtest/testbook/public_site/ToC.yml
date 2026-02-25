@@ -1,14 +1,15 @@
 suite: Public Site
 testset: ToC
 tests:
-- title: Test Correctly Displayed Discontinued Date
+- title: Test Correctly Displayed Discontinued  Date
   context:
     role: anonymous
+    setup:
+      - To prepare to do this test make sure there are 3 journals publically available in DOAJ
+      - one with discontinued date in the past
+      - one with discontinued date in the future
+      - one with discontinued date today
   steps:
-  - step: To prepare to do this test make sure there are 3 journals publically available in DOAJ 
-        one with discontinued date in the past 
-        one with discontinued date in the future
-        one with discontinued date today
   - step: Search for every journal from the list above
     results:
     - On the ToC of the journal with discontinued date in the past or today - the discontinued date is displayed
@@ -42,3 +43,46 @@ tests:
   - step: click the journal title to go to the ToC page
     results:
     - At the bottom of the ToC page is a "Last Full Review" date, showing the date set in the journal record.
+
+- title: Update Request link behaviour for publisher and non-owner
+  context:
+    role: anonymous
+  path: /testdrive/ur_nudge
+  steps:
+  - step: Ensure you are not logged in.  You may use a private browsing window to do this if you are already logged in.
+  - step: Go to the public page of "Journal of Exoplanetary Biosignatures XXXXX".  Where XXXX is the unique
+      identifier provided on the testdrive page.  You may follow the link from the testdrive page to get to the journal's 
+      public page.
+    results:
+    - In the "Journal metadata" column, in the "Publisher" tile, a message is displayed "Are you associated with this 
+      journal? Help us keep your record accurate! Click here to submit an update."
+  - step: Click the "Click here to submit an update" link.
+    results:
+    - A right-hand drawer opens displaying a login form.
+  - step: Log in using the admin credentials for Celestial Frontiers Press provided on the testdrive page.
+    results:
+    - The update request form for the journal "Journal of Exoplanetary Biosignatures" is displayed.
+  - step: Without logging out, return to the public page of "Journal of Exoplanetary Biosignatures".
+    results:
+    - In the "Journal metadata" column, in the "Publisher" tile, a message is displayed "This is your journal! Help us 
+      keep your record accurate. Click here to submit an update."
+  - step: Click the "Click here to submit an update" link.
+    results:
+    - The update request form for the journal "Journal of Exoplanetary Biosignatures" is displayed.
+  - step: Without logging out, go to the public page of "Annals of Stellar Habitat Studies XXXXX". Where XXXXX is the 
+      unique identifier provided on the testdrive page.  You may follow the link from the testdrive page to get to the 
+      journal's public page.
+    results:
+    - In the "Journal metadata" column, in the "Publisher" tile, no update request link is displayed.
+  - step: Log out.
+  - step: Go to the public page of "Annals of Stellar Habitat Studies".
+    results:
+    - In the "Journal metadata" column, in the "Publisher" tile, the update request link is displayed.
+  - step: Click the "Click here to submit an update" link.
+    results:
+    - A right-hand drawer opens displaying a login form.
+  - step: Log in as "Celestial Frontier Press" using the credentials provided on the testdrive page.
+    results:
+    - You are redirected to the "My journals" section of the Publisher Dashboard.
+    - A message is displayed at the top of the page "You are not the owner of a journal you're trying to access. 
+      Here are the journals associated with your account."

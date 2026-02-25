@@ -100,6 +100,9 @@ def update_request(journal_id):
         if e.reason == AuthoriseException.WRONG_STATUS:
             journal, _ = journalService.journal(journal_id)
             return render_template(templates.PUBLISHER_APPLICATION_ALREADY_SUBMITTED, journal=journal)
+        elif e.reason == AuthoriseException.NOT_OWNER:
+            flash(Messages.JOURNAL__YOU_ARE_NOT_OWNER, "info")
+            return redirect(url_for("publisher.journals"))
         else:
             abort(404)
     except lock.Locked as e:

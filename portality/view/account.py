@@ -226,7 +226,6 @@ def login():
         return render_template(templates.LOGIN_TO_APPLY, form=form)
     return render_template(templates.GLOBAL_LOGIN, form=form)
 
-
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
 @write_required()
