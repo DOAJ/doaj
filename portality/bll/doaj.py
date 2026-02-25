@@ -167,6 +167,11 @@ class DOAJ(object):
         return huey_job.HueyJobService()
 
     @classmethod
+    def publicDataDumpService(cls, *args, **kwargs):
+        from portality.bll.services import public_data_dump
+        return public_data_dump.PublicDataDumpService(*args, **kwargs)
+
+    @classmethod
     def adminAlertsService(cls):
         """
         Obtain an instance of the admin alerts service  ~~->AdminAlerts:Service~~

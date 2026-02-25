@@ -927,6 +927,48 @@ def admin_alerts():
 def autoassign_search():
     return render_template(templates.ADMIN_AUTOASSIGN_SEARCH)
 
+@blueprint.route("/journal-csv", methods=["GET"])
+@login_required
+def journal_csv_search():
+    svc = DOAJ.journalService()
+    free = svc.get_free_csv()
+    premium = svc.get_premium_csv()
+    return render_template(templates.ADMIN_JOURNAL_CSV_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/journal-csv/delete", methods=["POST"])
+@login_required
+def journal_csv_delete():
+    svc = DOAJ.journalService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_csv(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)
+
+@blueprint.route("/pdd", methods=["GET"])
+@login_required
+def pdd_search():
+    svc = DOAJ.publicDataDumpService()
+    free = svc.get_free_dump()
+    premium = svc.get_premium_dump()
+    return render_template(templates.ADMIN_PDD_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/pdd/delete", methods=["POST"])
+@login_required
+def pdd_delete():
+    svc = DOAJ.publicDataDumpService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_pdd(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)
+
 @blueprint.route("/ris", methods=["GET"])
 @login_required
 def ris_search():

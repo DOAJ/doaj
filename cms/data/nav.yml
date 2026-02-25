@@ -11,12 +11,14 @@ entries:
       - label: Articles
         route: doaj.articles_search   # ~~->ArticlesSearch:WebRoute~~
   - id: documentation
-    label: Documentation
+    label: Data
     footer: true
     secondary: true
     entries:
       - label: API
         route: doaj.docs              # ~~->Documentation:WebRoute~~
+      - label: Journal CSV
+        route: doaj.journal_csv       # ~~->JournalCSV:WebRoute~~
       - label: OAI-PMH
         route: doaj.oai_pmh           # ~~->OAIPMHDocumentation:WebRoute~~
       - label: Widgets
@@ -52,13 +54,18 @@ entries:
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: Blog
         url: https://blog.doaj.org    # ~~->News:ExternalService~~
+  - id: premium # label is set dynamically in the html
+    feather: star
+    footer: true
+    primary: true
+    secondary_mobile: true
+    route: doaj.premium
   - id: support
     label: Support
     feather: heart
     footer: true
     primary: true
     secondary_mobile: true
-    route: doaj.support               # ~~->Support:WebRoute~~
     entries:
       - label: Institutions and libraries
         route: doaj.support           # ~~->Support:WebRoute~~
@@ -68,6 +75,8 @@ entries:
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
       - label: Funders
         route: doaj.funders           # ~~->Funders:WebRoute~~
+      - label: Premium Mode
+        route: doaj.premium           # ~~->Premium:WebRoute~~
   - id: apply
     label: Apply
     footer: true

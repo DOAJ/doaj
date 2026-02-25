@@ -1,4 +1,6 @@
 from portality import store
+from portality.store import StoreException
+
 
 class NoWriteStore(store.Store):
 
@@ -6,7 +8,7 @@ class NoWriteStore(store.Store):
         pass
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
-        raise IOError("No writes")
+        raise StoreException("No writes")
 
     def exists(self, container_id):
         return False
@@ -21,10 +23,10 @@ class NoWriteStore(store.Store):
         return None
 
     def delete(self, container_id, target_name=None):
-        raise IOError("No writes")
+        raise StoreException("No writes")
 
     def path(self, container_id, filename, create_container=False, must_exist=True):
-        raise IOError("No writes")
+        raise StoreException("No writes")
 
     def list_container_ids(self):
         return []

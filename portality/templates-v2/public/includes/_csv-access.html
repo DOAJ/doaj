@@ -1,0 +1,19 @@
+<table>
+    <thead>
+        <tr>
+            <th>Record Type</th>
+            <th>Last Updated</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tr>
+        <td>Journal</td>
+        <td>
+            {{ dates.format(jc.export_date, dates.FMT_DATE_HUMAN) }}
+            {% if not current_user.is_anonymous and current_user.has_role(constants.ROLE_PREMIUM_CSV) %}[PREMIUM]{% endif %}
+        </td>
+        <td>
+            <a href="{{ url_for('doaj.csv_data') }}" class="btn btn-primary">Download ({{ jc.size_human }})</a>
+        </td>
+    </tr>
+</table>

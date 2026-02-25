@@ -2,12 +2,13 @@ import json
 import time
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
-    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
+    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory, \
+    DataDumpFixtureFactory, JournalCSVFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
 from portality.constants import BgjobOutcomeStatus
-from portality.lib import dataobj
+from portality.lib import dataobj, dates
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
@@ -1493,8 +1494,7 @@ class TestModels(DoajTestCase):
             "no_apc" : 50
         })
 
-        models.Cache.cache_csv("/csv/filename.csv")
-        models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
+        models.Cache.cache_sitemap("sitemap.xml")
 
         time.sleep(1)
 
@@ -1505,19 +1505,7 @@ class TestModels(DoajTestCase):
         assert stats["abstracts"] == 40
         assert stats["no_apc"] == 50
 
-        assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
-
-        article_data = models.Cache.get_public_data_dump().get("article")
-        assert article_data.get("url") == "http://example.com/article"
-        assert article_data.get("size") == 100
-        assert article_data.get("container") == "ac"
-        assert article_data.get("filename") == "af"
-
-        journal_data = models.Cache.get_public_data_dump().get("journal")
-        assert journal_data.get("url") == "http://example.com/journal"
-        assert journal_data.get("size") == 200
-        assert journal_data.get("container") == "jc"
-        assert journal_data.get("filename") == "jf"
+        assert models.Cache.get_latest_sitemap() == "sitemap.xml"
 
     def test_32_journal_like_object_discovery(self):
         """ Check that the JournalLikeObject can retrieve the correct results for Journals and Applications """
@@ -1837,7 +1825,7 @@ class TestModels(DoajTestCase):
         assert bj.has_apc is False
         assert bj.apc == []
 
-    def test_43_export(self):
+    def test_44_export(self):
         e = models.Export()
 
         e.id = "1234"
@@ -1873,7 +1861,105 @@ class TestModels(DoajTestCase):
         assert e2.request_date == "2021-06-09T00:00:00Z"
         assert e2.requester == "maned"
 
-    def test_45_ur_routing(self):
+    def test_45_data_dump(self):
+        dd = models.DataDump()
+        # get a date without milliseconds
+        now = dates.now()
+        stamp = dates.format(now)
+        now = dates.parse(stamp)
+
+        dd.dump_date = now
+        dd.set_article_dump("a1", "a2", 1, "a3")
+        dd.set_journal_dump("j1", "j2", 2, "j3")
+
+        assert dd.dump_date == now
+        assert dd.article_filename == "a2"
+        assert dd.article_container == "a1"
+        assert dd.article_url == "a3"
+        assert dd.journal_container == "j1"
+        assert dd.journal_filename == "j2"
+        assert dd.journal_url == "j3"
+
+        dd.remove_article_dump()
+        dd.remove_journal_dump()
+
+        assert dd.article_filename is None
+        assert dd.article_container is None
+        assert dd.journal_container is None
+        assert dd.journal_filename is None
+
+    def test_46_data_dump_queries(self):
+        dds = DataDumpFixtureFactory.make_n_data_dumps(3,
+                                                 dump_date=lambda x: f"2023-0{x + 1}-01T00:00:00Z",
+                                                 journal__filename=lambda x: f"journal_dump_{x + 1}.json",
+                                                 article__filename=lambda x: f"article_dump_{x + 1}.json")
+        DataDumpFixtureFactory.save_data_dumps(dds, block=True)
+
+        # the latest will be the last one created, with the most recent date
+        latest = models.DataDump.find_latest()
+        assert latest.id == dds[2].id
+
+        # the first after mid January will be the second one created
+        first_after = models.DataDump.first_dump_after(dates.parse("2023-01-14T00:00:00Z"))
+        assert first_after.id == dds[1].id
+
+        # find the first one created (the oldest) by the journal filename
+        fn_journal = models.DataDump.find_by_filename("journal_dump_1.json")
+        assert len(fn_journal) == 1
+        assert fn_journal[0].id == dds[0].id
+
+        # and the last one created (the newest) by the article filename
+        fn_article = models.DataDump.find_by_filename("article_dump_3.json")
+        assert len(fn_article) == 1
+        assert fn_article[0].id == dds[2].id
+
+        # find two oldest records as being before mid February
+        before = models.DataDump.all_dumps_before(dates.parse("2023-02-14T00:00:00Z"))
+        assert len(before) == 2
+        assert before[0].id == dds[0].id
+        assert before[1].id == dds[1].id
+
+    def test_47_journal_csv(self):
+        jc = models.JournalCSV()
+        # get a date without milliseconds
+        now = dates.now()
+        stamp = dates.format(now)
+        now = dates.parse(stamp)
+
+        jc.export_date = now
+        jc.set_csv("a1", "a2", 1, "a3")
+
+        assert jc.export_date == now
+        assert jc.filename == "a2"
+        assert jc.container == "a1"
+        assert jc.url == "a3"
+
+    def test_48_journal_csv_queries(self):
+        jcs = JournalCSVFixtureFactory.make_n_csvs(3,
+                                                 export_date=lambda x: f"2023-0{x + 1}-01T00:00:00Z",
+                                                 filename=lambda x: f"journal_csv_{x + 1}.json")
+        JournalCSVFixtureFactory.save_journal_csvs(jcs, block=True)
+
+        # the latest will be the last one created, with the most recent date
+        latest = models.JournalCSV.find_latest()
+        assert latest.id == jcs[2].id
+
+        # the first after mid January will be the second one created
+        first_after = models.JournalCSV.first_csv_after(dates.parse("2023-01-14T00:00:00Z"))
+        assert first_after.id == jcs[1].id
+
+        # find the first one created (the oldest) by the journal filename
+        fn_journal = models.JournalCSV.find_by_filename("journal_csv_1.json")
+        assert len(fn_journal) == 1
+        assert fn_journal[0].id == jcs[0].id
+
+        # find two oldest records as being before mid February
+        before = models.JournalCSV.all_csvs_before(dates.parse("2023-02-14T00:00:00Z"))
+        assert len(before) == 2
+        assert before[0].id == jcs[0].id
+        assert before[1].id == jcs[1].id
+
+    def test_49_ur_routing(self):
         rr = models.URReviewRoute()
         rr.account_id = "1234"
         rr.country_code = "GB"
@@ -1889,7 +1975,7 @@ class TestModels(DoajTestCase):
         assert rr2.country_code == "GB"
         assert rr2.target == "4321"
 
-    def test_46_admin_alerts(self):
+    def test_50_admin_alerts(self):
         a = models.AdminAlert()
         a.source = "test_source"
         a.message = "This is a test message"
