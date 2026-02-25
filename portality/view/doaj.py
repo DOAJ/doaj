@@ -9,6 +9,8 @@ from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 
+from portality.ui import exceptions as ui_exceptions
+from portality.bll import exceptions, exceptions as bll_exceptions
 from portality import constants
 from portality import dao
 from portality import models
@@ -16,7 +18,6 @@ from portality import store
 from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, api_key_required
-from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
@@ -31,7 +32,8 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals)
+    stats = DOAJ.siteService().site_statistics()
+    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals, statistics=stats)
 
 
 @blueprint.route('/login/')
@@ -257,34 +259,6 @@ def autocomplete(doc_type, field_name):
     # http://flask.pocoo.org/docs/security/#json-security
 
 
-def find_toc_journal_by_identifier(identifier):
-    if identifier is None:
-        abort(404)
-
-    if len(identifier) == 9:
-        js = models.Journal.find_by_issn(identifier, in_doaj=True)
-
-        if len(js) > 1:
-            abort(400)  # really this is a 500 - we have more than one journal with this issn
-        if len(js) == 0:
-            abort(404)
-        journal = js[0]
-
-        if journal is None:
-            abort(400)
-
-        return journal
-
-    elif len(identifier) == 32:
-        js = models.Journal.pull(identifier)  # Returns None on fail
-
-        if js is None or not js.is_in_doaj():
-            abort(404)
-        return js
-
-    abort(400)
-
-
 def is_issn_by_identifier(identifier):
     return len(identifier) == 9
 
@@ -334,8 +308,24 @@ def find_correct_redirect_identifier(identifier, bibjson) -> str:
 def toc(identifier=None):
     """ Table of Contents page for a journal. identifier may be the journal id or an issn """
     # If this route is changed, update JOURNAL_TOC_URL_FRAG in settings.py (partial ToC page link for journal CSV)
+    if identifier is None:
+        abort(400)
 
-    journal = find_toc_journal_by_identifier(identifier)
+    journalSvc = DOAJ.journalService()
+    try:
+        journal = journalSvc.find_best(identifier)
+    except bll_exceptions.ArgumentException:
+        abort(400)
+    except bll_exceptions.TooManyJournals:
+        abort(500)
+
+    if journal is None:
+        abort(404)
+
+    if journal.is_in_doaj() is False:
+        raise ui_exceptions.JournalWithdrawn()
+
+    # journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
@@ -352,7 +342,23 @@ def toc_articles_legacy(identifier=None):
 
 @blueprint.route("/toc/<identifier>/articles")
 def toc_articles(identifier=None):
-    journal = find_toc_journal_by_identifier(identifier)
+    if identifier is None:
+        abort(400)
+
+    journalSvc = DOAJ.journalService()
+    try:
+        journal = journalSvc.find_best(identifier)
+    except bll_exceptions.ArgumentException:
+        abort(400)
+    except bll_exceptions.TooManyJournals:
+        abort(500)
+
+    if journal is None:
+        abort(404)
+
+    if journal.is_in_doaj() is False:
+        raise ui_exceptions.JournalWithdrawn()
+
     bibjson = journal.bibjson()
     articles_no = journal.article_stats()["total"]
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
@@ -368,17 +374,38 @@ def article_page(identifier=None):
     # identifier must be the article id
     article = models.Article.pull(identifier)
 
-    if article is None or not article.is_in_doaj():
-        abort(404)
+    if article is None:
+        article = models.ArticleTombstone.pull(identifier)
+        if article:
+            raise ui_exceptions.TombstoneArticle()
+        else:
+            abort(404, description=Messages.ARTICLE_NOT_FOUND)
+
+    if not article.is_in_doaj():
+        raise ui_exceptions.ArticleFromWithdrawnJournal()
 
     # find the related journal record
-    journal = None
-    issns = article.bibjson().issns()
-    more_issns = article.bibjson().journal_issns
-    for issn in issns + more_issns:
-        journals = models.Journal.find_by_issn(issn)
-        if len(journals) > 0:
-            journal = journals[0]
+    journal = article.get_journal()
+    if journal is None:
+        app.logger.exception(Messages.ARTICLE_ABANDONED_LOG.format(article_id=article.id))
+        abort(500, description=Messages.ARTICLE_ABANDONED_PUBLIC)
+    if journal.is_in_doaj() is False:
+        raise ui_exceptions.ArticleFromWithdrawnJournal()
+
+    # issns = article.bibjson().issns()
+    # more_issns = article.bibjson().journal_issns
+    # for issn in issns + more_issns:
+    #     journals = models.Journal.find_by_issn(issn)
+    #     if len(journals) == 0:
+    #         app.logger.exception(Messages.ARTICLE_ABANDONED_LOG.format(article_id=article.id))
+    #         abort(500, description=Messages.ARTICLE_ABANDONED_PUBLIC)
+    #     try:
+    #         journal = models.Journal.get_active_journal(journals)
+    #     except exceptions.TooManyJournals:
+    #         app.logger.exception(Messages.TOO_MANY_JOURNALS_LOG.format(identifier=identifier))
+    #         abort(500, description=Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
+    #     except exceptions.JournalWithdrawn:
+    #         raise exceptions.ArticleFromWithdrawnJournal
 
     return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 

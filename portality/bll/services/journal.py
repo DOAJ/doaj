@@ -19,7 +19,8 @@ from portality.lib import dates
 from portality.lib.argvalidate import argvalidate
 from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreException
-from portality.store import StoreFactory, StoreException, prune_container
+from portality.store import StoreFactory, prune_container
+from portality.ui.messages import Messages
 from portality.util import no_op
 
 
@@ -121,6 +122,33 @@ class JournalService(object):
                 raise exceptions.ArgumentException("If you specify lock_journal on journal retrieval, you must also provide lock_account")
 
         return journal, the_lock
+
+    def find_best(self, identifier):
+        if len(identifier) == 9:
+            # search both in doaj and withdrawn to know whether to return 404 (not found) or 410 (gone)
+            js = models.Journal.find_by_issn(identifier)
+            if len(js) == 0:
+                return None
+
+            # if there is one or more, try to get the active one
+            active_journals = [j for j in js if j.is_in_doaj()]
+            if len(active_journals) > 1:
+                raise exceptions.TooManyJournals(Messages.TOO_MANY_JOURNALS.format(identifier=identifier))
+
+            if len(active_journals) == 0:
+                js.sort(key=lambda x: x.created_date, reverse=True)
+                return js[0]  # return the most recently created withdrawn journal
+
+            return active_journals[0]
+
+        elif len(identifier) == 32:
+            # Pull by ES identifier
+            j = models.Journal.pull(identifier)  # Returns None on fail
+            if j is None:
+                return None
+            return j
+
+        raise exceptions.ArgumentException("Identifier must be either an ISSN (9 chars) or an internal ID (32 chars)")
 
     def csv(self, prune=True, logger=None, store=None):
         """

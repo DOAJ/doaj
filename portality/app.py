@@ -22,11 +22,16 @@ from flask_login import login_user, current_user
 from datetime import datetime
 
 import portality.models as models
+import portality.ui.exceptions
 from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
 from portality.ui import templates
+from portality import constants
+
+from portality.ui.messages import Messages
+from portality.ui import exceptions
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -184,7 +189,7 @@ def set_current_context():
     '''
     return {
         'settings': settings,
-        'statistics': models.JournalArticle.site_statistics(),
+        # 'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app": app,
         "current_year": dates.now_str(FMT_YEAR),
@@ -414,23 +419,37 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
         return jsonify({'api_versions': vers})
 
 @app.errorhandler(400)
-def page_not_found(e):
+def handle_400(e):
     return render_template(templates.ERROR_400), 400
 
-
 @app.errorhandler(401)
-def page_not_found(e):
+def handle_401(e):
     return render_template(templates.ERROR_401), 401
 
-
 @app.errorhandler(404)
-def page_not_found(e):
-    return render_template(templates.ERROR_404), 404
+def handle_404(e):
+    return render_template(templates.ERROR_PAGE, error_code=404), 404
 
+@app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
+def handle_article_from_withdrawn_journal(e):
+    return render_template(templates.ERROR_PAGE, record=constants.ERROR_RECORD_ARTICLE, context=constants.ERROR_410_WITHDRAWN, error_code=410), 410
 
+@app.errorhandler(exceptions.TombstoneArticle)
+def handle_tombstone_article(e):
+    return render_template(templates.ERROR_PAGE, record=constants.ERROR_RECORD_ARTICLE, context=constants.ERROR_410_TOMBSTONE, error_code=410), 410
+
+@app.errorhandler(exceptions.JournalWithdrawn)
+def handle_journal_withdrawn(e):
+    return render_template(templates.ERROR_PAGE, record=constants.ERROR_RECORD_JOURNAL, context=constants.ERROR_410_WITHDRAWN, error_code=410), 410
+
+@app.errorhandler(ValueError)
 @app.errorhandler(500)
-def page_not_found(e):
-    return render_template(templates.ERROR_500), 500
+def handle_500(e):
+    if not hasattr(e, 'description') or e.description == e.__class__.description:
+        description = Messages.DEFAULT_500_DESCRIPTION
+    else:
+        description = e.description
+    return render_template(templates.ERROR_500, description=description), 500
 
 
 @app.errorhandler(elasticsearch.exceptions.RequestError)

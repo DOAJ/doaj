@@ -52,7 +52,7 @@ entries:
         route: doaj.epag              # ~~->EditorialPolicyAdvisoryGroup:WebRoute~~
       - label: Volunteers
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
-      - label: News
+      - label: Blog
         url: https://blog.doaj.org    # ~~->News:ExternalService~~
   - id: premium # label is set dynamically in the html
     feather: star

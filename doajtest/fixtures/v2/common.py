@@ -51,6 +51,14 @@ EDITORIAL_FORM_EXPANDED = {
     "editor": "associate"
 }
 
+LAST_REVIEW_FORM_EXPANDED = {
+    "last_full_review": "2025-01-01"
+}
+
+FLAGS_FORM_EXPANDED = {
+    'flags': []
+}
+
 JOURNAL_LIKE_BIBJSON = {
     "alternative_title": "Alternative Title",
     "apc": {
@@ -87,7 +95,7 @@ JOURNAL_LIKE_BIBJSON = {
         "country": "US"
     },
     "keywords": ["word", "key"],
-    "labels": ["s2o"],
+    "labels": ["s2o", "mirror"],
     "language": ["EN", "FR"],
     "license": [
         {
@@ -173,6 +181,8 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "institution_country" : "US",
     "keywords": ["word", "key"],
     "s2o": True,
+    "mirror": True,
+    "ojc": False,
     "language": ["EN", "FR"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",
