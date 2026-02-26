@@ -1,6 +1,7 @@
 # Account management
 GLOBAL_LOGIN = "public/account/login.html"
 LOGIN_TO_APPLY = "public/account/login_to_apply.html"
+LOGIN_VERIFY_CODE = "public/account/login_by_code.html"
 FORGOT_PASSWORD = "public/account/forgot.html"
 REGISTER = "public/account/register.html"
 CREATE_USER = "management/admin/account/create.html"
@@ -114,3 +115,5 @@ EMAIL_WF_ADMIN_READY = "email/workflow_reminder_fragments/admin_ready_frag.jinja
 EMAIL_WF_ASSED_AGE = "email/workflow_reminder_fragments/assoc_ed_age_frag.jinja2"
 EMAIL_WF_EDITOR_AGE = "email/workflow_reminder_fragments/editor_age_frag.jinja2"
 EMAIL_WF_EDITOR_GROUPCOUNT = "email/workflow_reminder_fragments/editor_groupcount_frag.jinja2"
+EMAIL_LOGIN_LINK = "email/login_code.jinja2"
+EMAIL_LOGIN_LINK_PLAINTEXT = "email/login_code.txt.jinja2"
