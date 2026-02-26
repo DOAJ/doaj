@@ -8,24 +8,32 @@ tests:
       role: Admin
     steps:
       - step: Navigate to /testdrive/flags
-      - step: Login as an admin
-      - step: Open Feline Aerodynamics Review application (available on your dashboard)
+      - step: In a separate tab login as LordWiggleworth (admin)
+      - step: Open Feline Aerodynamics Review journal (available on your dashboard)
         results:
           - Above the notes there is the Add Flag button visible and active
       - step: Click Add Flag button
         results:
           - An empty flag form is displayed
-      - step: In assigned_to input attempt to add editor's id (you can find it in your testdrive/flags data)
+      - step: In assigned_to input attempt to add "MadamPonderleaf" (an editor)
         results:
           - No matches found is displayed and it is not possible to assign the editor
-      - step: In assigned_to input add random_user's id (you can find it in your testdrive/flags data)
+      - step: In assigned_to input add "ProfessorQuibbleton" (admin)
         results:
           - Id is found and it can be selected
-      - step: Select the random_user's id
+      - step: Select "ProfessorQuibbleton"
       - step: In deadline input add an improbable date (e.g., 2025-02-31)
         results:
           - It's not possible to enter an improbable date
-      - step: In deadline input add a valid date
+      - step: In deadline input add a date in a past
+        results:
+          - A warning "Provided deadline is in the past. Is it correct?" is displayed under the deadline input
+      - step: Save the form (do not close it)
+        results:
+          - Journal form is saved correctly
+      - step: In deadline input add a date in exactly 1 week
+        results:
+          - Warning disappears
       - step: In text area add flag's note (any text)
       - step: Save application
         results:
@@ -71,6 +79,53 @@ tests:
           - This record has a flag assigned to you
           - In the flag form, in the Assign a User input, there is your id with a red flag icon
           - Resolve Flag button is active and all fields are editable
+
+  - title: Admin - Flags Notifications
+    context:
+      role: Admin
+    setup:
+     - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following all the steps; otherwise you may omit steps 2-9
+    steps:
+      - step: Navigate to /testdrive/flags
+      - step: In a separate tab login as LordWiggleworth (admin)
+      - step: Open Feline Aerodynamics Review journal (available on your dashboard)
+      - step: Click Add Flag button
+      - step: Assign "ProfessorQuibbleton" (admin)
+      - step: Add deadline in exactly 1 week
+      - step: In text area add flag's note (any text)
+      - step: Save application, Unlock & Close the form
+      - step: Log out
+      - step: In a separate tab log in as "ProfessorQuibbleton"
+        results:
+          - At the top navbar Notifications indicate a new notification
+      - step: Hover over Notifications button
+        result:
+          - At the top of the list new notification "New flag" is listed
+      - step: Click on the notification
+        results:
+          - Feline Aerodynamics Review journal form is opened in a new tab
+          - On the right the flag is displayed and assigned to you ("ProfessorQuibbleton")
+      - step: Unlock & Close the form, close the tab
+      - step: Click the Notifications button at the top navigation bar
+        results:
+          - /dashboard/notifications opens
+          - At the top of the list "New flag" notification is displayed.
+          - The long description says "A new flag in 'Feline Aerodynamics Review' (id) has been assigned to you"
+      - step: Open the testdrive/flags page <b>do not close the page where you are logged in</b>
+      - step: Click "Run background task" button, wait for the task to execute
+        result:
+          - Message "Script executed successfully!" is displayed
+      - step: Go back to the tab where you are logged as ProfessorQuibbleton
+      - step: refresh the page
+      - step: navigate to /dashboard/notifications if not already there
+        results:
+          - At the top of the notifications list a new notification "Deadline reminder" is listed
+          - Long description says "The deadline for the flag in 'Feline Aerodynamics Review' (id) is in 7 days."
+          - At the top navbar Notifications button has a new notification marked
+      - step: Click "See action" link at the right of the new "Deadline reminder" notification
+        results:
+          - Feline Aerodynamics Review journal form is opened in a new tab
+      - step: Unlock & Close the form, close the tab
 
   - title: Admin - Dashboard [NOT CURRENTLY USED]
     context:
@@ -129,7 +184,7 @@ tests:
       role: Editor
     steps:
       - step: Navigate to /testdrive/flags
-      - step: Login as an editor
+      - step: Login as MadamPonderleaf (editor)
       - step: Navigate to /applications
       - step: Open to Open Journal of Intergalactic Diplomacy - make sure you haven't resolved the flag while logged as an admin in one of the previous tests
         results:

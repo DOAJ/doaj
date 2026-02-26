@@ -10,7 +10,7 @@
 
 <h1>{{ name }} - Testdrive setup results</h1>
 
-{% macro render_dict(d) %}
+{%- macro render_dict(d) %}
     <dl>
         {% for k, v in d.items() %}
             <dt>{{ k }}</dt>
@@ -35,10 +35,10 @@
             </dd>
         {% endfor %}
     </dl>
-{% endmacro %}
+{% endmacro -%}
 
-{% for k, v in params.items() %}
-    {% if k != "teardown" and k != "non_renderable" %}
+{%- for k, v in params.items() %}
+    {% if k != "teardown" and k != "non_renderable" and k!= "script" %}
     <h2>{{ k }}</h2>
     <dl>
     {% if v is mapping %}
@@ -68,7 +68,83 @@
     {% endif %}
     </dl>
     {% endif %}
-{% endfor %}
+{% endfor -%}
+
+{% if "script" in params %}
+ <script>
+    const scriptData = {{ params['script'] | tojson }};
+</script>
+<style>
+    .script-btn {
+        background: white;
+        border: darkgray 1px solid;
+        padding: .5rem 1rem;
+        cursor: pointer;
+    }
+    .script-btn:hover {
+        box-shadow:
+        inset 1px 1px 2px rgba(0, 0, 0, 0.3),
+        inset -1px -1px 2px rgba(255, 255, 255, 0.5);
+        transition: box-shadow 0.2s ease;
+    }
+    .loading::after {
+        display: inline-block;
+        animation: dots 1.5s infinite step-end;
+        content: '';
+        width: 0;
+    }
+    @keyframes dots {
+        0%, 20% { content: ''; }
+        40% { content: '.'; }
+        60% { content: '..'; }
+        80%, 100% { content: '...'; }
+    }
+    .loading { opacity: 0.7; }
+</style>
+<button class="script-btn" id="script_btn" onclick="sendPost(scriptData)">
+    {{ params['script']['title'] | default('Run script') }}
+</button>
+<script>
+function sendPost() {
+    const btn = document.getElementById('script_btn');
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btn.textContent = 'Loading';
+    const scriptBtn = document.getElementById('script_btn');
+    fetch('/testdrive/run', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ script_name: scriptData.script_name })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Request failed');
+        }
+        return response.json();  // Or .text() if server returns plain text
+    })
+    .then(data => {
+        console.log('Success:', data);
+
+        if (scriptBtn) {
+            scriptBtn.insertAdjacentHTML('afterend', '<p>Script executed successfully!</p>');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        if (scriptBtn) {
+            scriptBtn.insertAdjacentHTML('afterend', '<p>Something went wrong :(</p>');
+        }
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btn.textContent = scriptData.title || 'Run script';  // Reset text
+    });;
+}
+</script>
+{% endif %}
 
 <h1>Teardown</h1>
 
