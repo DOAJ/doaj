@@ -1,0 +1,36 @@
+suite: Journal Reinstatement and Article Creation
+testset: Admin Journal and Article Actions
+
+tests:
+  - title: Admin – Reinstate Journal and Add Article
+    setup:
+      - Go to /testdrive/two_journals
+      - Log in as ProfessorWobblethorpe, the admin
+    context:
+      role: admin
+    steps:
+      - step: Go to /admin/admin_site_search
+      - step: Select "Journals" and search for "Transactions of Paradoxical Botany"
+      - step: From Bulk edit records, choose "Reinstate into DOAJ" and submit
+        results:
+          - Confirm the background job at /admin/background_jobs shows outcome fail
+          - Confirm message "The status couldn't be changed. For at least one journal other journals with matching ISSN(s) already exists in doaj"
+      - step: Go to /admin/journal/<transactions_journal_id>
+      - step: Attempt to reinstate the journal by clicking the "Reinstate" button
+        results:
+          - The journal is not reinstated
+          - The message is displayed "The status couldn't be changed. For at least one journal other journals with matching ISSN(s) already exists in doaj"
+      - step: Click "Unlock & Close" on the journal page
+      - step: Go to /api/v4/docs#operations-tag-CRUD_Articles
+      - step: In the CRUD Articles section, click "Post" and "Try it out"
+      - step: Paste the article source provided with the test
+      - step: Provide the API key
+      - step: Click "Execute"
+        results:
+          - Status 200, article is created successfully
+      - step: Go to /toc/1742-9002
+        results:
+          - Journal "Advanced Transactions of Paradoxical Botany" is displayed
+      - step: Click "Articles" to search for journal's articles
+        results:
+          - Article "Investigating Photosynthetic Anomalies in Invisible Ferns" is listed
