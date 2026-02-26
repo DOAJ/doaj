@@ -23,7 +23,7 @@ from portality.core import app
 from portality.crosswalks import article_doaj_xml
 from portality.tasks import ingestarticles
 from portality.ui.messages import Messages
-
+from portality.lib import dates
 
 class TestIngestArticlesDoajXML(DoajTestCase):
 
@@ -1048,3 +1048,76 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         assert file_upload.status == "failed"
         assert file_upload.error == Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL
+
+    def test_62_article_before_oa_start(self):
+        journal = article_upload_tester.create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432")
+        journal.bibjson().oa_start = dates.now().year
+        helpers.save_all_block_last([ journal,
+            article_upload_tester.create_simple_publisher("testowner")
+        ])
+
+        # make both handles, as we want as little gap as possible between requests in a moment
+        handle1 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
+
+        f1 = FileMockFactory(stream=handle1)
+
+        job1 = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f1)
+        id1 = job1.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id1)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(1)
+
+        task1 = ingestarticles.IngestArticlesBackgroundTask(job1)
+
+        task1.run()
+
+        # because file upload needs to be re-saved
+        time.sleep(1)
+
+        fu1 = models.FileUpload.pull(id1)
+
+        assert fu1.status == "failed", "received status: {}".format(fu1.status)
+        assert job1.outcome_status == "fail"
+
+        assert any('Articles before OA start date: Imaginaires autochtones contemporains. Introduction' in entry['message'] for entry in
+                   job1.audit), "No message found with 'Articles before OA start date'"
+
+        # check that article not created
+        assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
+
+    def test_63_article_after_oa_start(self):
+        journal = article_upload_tester.create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432")
+        journal.bibjson().oa_start = 2013
+        helpers.save_all_block_last([ journal,
+            article_upload_tester.create_simple_publisher("testowner")
+        ])
+
+        # make both handles, as we want as little gap as possible between requests in a moment
+        handle1 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
+
+        f1 = FileMockFactory(stream=handle1)
+
+        job1 = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f1)
+        id1 = job1.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id1)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(1)
+
+        task1 = ingestarticles.IngestArticlesBackgroundTask(job1)
+
+        task1.run()
+
+        # because file upload needs to be re-saved
+        time.sleep(1)
+
+        fu1 = models.FileUpload.pull(id1)
+
+        assert fu1.status == "processed", "received status: {}".format(fu1.status)
+
+        assert not any('Articles before OA start date: Imaginaires autochtones contemporains. Introduction' in entry['message'] for entry in
+                   job1.audit), "No message found with 'Articles before OA start date'"
+
+        # check that article not created
+        assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 1

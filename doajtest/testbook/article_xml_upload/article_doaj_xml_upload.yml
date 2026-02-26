@@ -344,8 +344,6 @@ tests:
         - status is "complete"
         - Outcome Status is "fail"
 
-
-
 - title: Check Outcome Status of "Successfully upload a file containing a new article"
   context:
     role: admin
@@ -357,3 +355,30 @@ tests:
         - Related background job is found
         - status is "complete"
         - Outcome Status is "success"
+
+- title: Upload a file before OA start date of the Journal
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the publisher account owns a journal with Print ISSN "1111-1111"
+      and E-ISSN "2222-2222", and these are not attached to any other journals and
+      that this journal does not contain "Success" or "Update" articles from previous
+      tests.  You can use the testdrive endpoint "publisher_with_journal" to create this
+    path: /testdrive/publisher_with_journal
+  - step: Update the Journal (if needed) to ensure the OA start date is as late as possible (the current year is the latest you
+          can set it to)
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select the test resource file "successful.xml"
+    resource: /xml_upload_test_package/DOAJ/successful.xml
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a entry in the "Notes" and reads as 'One or more rticles cannot be uploaded, as they have a publication date before the 'OA start date' of the Journal'.  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
