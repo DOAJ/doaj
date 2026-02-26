@@ -428,6 +428,8 @@ def handle_401(e):
 
 @app.errorhandler(404)
 def handle_404(e):
+    import traceback
+    traceback.print_exc()
     return render_template(templates.ERROR_PAGE, error_code=404), 404
 
 @app.errorhandler(exceptions.ArticleFromWithdrawnJournal)
@@ -436,6 +438,8 @@ def handle_article_from_withdrawn_journal(e):
 
 @app.errorhandler(exceptions.TombstoneArticle)
 def handle_tombstone_article(e):
+    import traceback
+    traceback.print_exc()
     return render_template(templates.ERROR_PAGE, record=constants.ERROR_RECORD_ARTICLE, context=constants.ERROR_410_TOMBSTONE, error_code=410), 410
 
 @app.errorhandler(exceptions.JournalWithdrawn)

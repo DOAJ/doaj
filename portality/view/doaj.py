@@ -371,10 +371,14 @@ def article_page(identifier=None):
     article = models.Article.pull(identifier)
 
     if article is None:
+        print('identifier: ' + identifier)
+        print('in 410/404: ' + str(models.ArticleTombstone.all()))
+
         article = models.ArticleTombstone.pull(identifier)
         if article:
             raise ui_exceptions.TombstoneArticle()
         else:
+            print('in 404: ' + str(models.ArticleTombstone.all()))
             abort(404, description=Messages.ARTICLE_NOT_FOUND)
 
     if not article.is_in_doaj():

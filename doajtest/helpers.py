@@ -120,6 +120,7 @@ def dao_proxy(dao_method, type="class"):
         @classmethod
         @functools.wraps(dao_method)
         def proxy_method(cls, *args, **kwargs):
+            print(f'passing through proxy for {dao_method.__name__}, type: {type}')
             create_index(cls.__type__)
             return dao_method.__func__(cls, *args, **kwargs)
 
@@ -128,6 +129,7 @@ def dao_proxy(dao_method, type="class"):
     else:
         @functools.wraps(dao_method)
         def proxy_method(self, *args, **kwargs):
+            print(f'passing through proxy for {dao_method.__name__}, type: {type}')
             create_index(self.__type__)
             return dao_method(self, *args, **kwargs)
 
@@ -187,6 +189,13 @@ class DoajTestCase(TestCase):
         events_queue.immediate = True
         scheduled_short_queue.immediate = True
         scheduled_long_queue.immediate = True
+
+        depth = 0
+        m = dao.DomainObject.pull
+        while hasattr(m, '__wrapped__'):
+            depth += 1
+            m = m.__wrapped__
+        print(f"\n[DoajTestCase.setUpClass] {cls.__name__}: DomainObject.pull proxy depth before patching = {depth}")
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
