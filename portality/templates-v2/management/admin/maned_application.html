@@ -14,7 +14,7 @@
 {% block body_id %}apply{% endblock %}
 
 {% block permanent_warnings %}
-    {% if obj.application_status == constants.APPLICATION_STATUS_REJECTED and continuation_info.id %}
+    {% if obj.application_status == constants.APPLICATION_STATUS_REJECTED and continuation_info.journal %}
         {% include "management/admin/includes/_warning_continuation.html" with context %}
     {% endif %}
 {% endblock %}

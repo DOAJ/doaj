@@ -448,14 +448,15 @@ def application(application_id, **kwargs):
 
     if request.method == "GET":
         fc.processor(source=ap)
-        continuation_info = {"first_rejection": request.args.get("info") == constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED}
+        continuation_info = {"initial_warning": request.args.get("info") == constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED}
         replaces = Journal.find_by_issn(ap.bibjson().replaces)
         if replaces:
-            r = replaces[0]
-            continuation_info["id"] = r.id
-            continuation_info["title"] = r.bibjson().title
+            continuation_info["journal"] = replaces[0]
+            # continuation_info["id"] = r.id
+            # continuation_info["title"] = r.bibjson().title
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks, continuation_info=continuation_info)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks,
+                                  continuation_info=continuation_info)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)

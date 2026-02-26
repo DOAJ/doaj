@@ -59,6 +59,7 @@ tests:
   - step: Click "Unlock and Close"
     results:
     - The page closes, and you are able to return to the search interface
+
 - title: Note features for admin
   context:
     role: admin
@@ -99,9 +100,10 @@ tests:
     - step: Attempt to paste the value (use separate editor)
       results:
         - Correct value is pasted
+
 - title: Reject application that is a continuation
   steps:
-    - step: go to /testdrive/reject
+    - step: go to /testdrive/reject_with_continuation
     - step: login as ProfessorFrostfire (you may want to log in using an incognito window)
     - step: open "Advances in Cold Lava Mechanics" application (available on your dashboard)
     - step: change the status to "Rejected" in the "Change status" input
