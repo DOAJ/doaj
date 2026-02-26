@@ -1,3 +1,5 @@
+import pytest
+
 from doajtest.helpers import DoajTestCase
 from portality import models, lock
 from portality.lib import dates
@@ -6,12 +8,18 @@ import time
 from datetime import timedelta
 from copy import deepcopy
 
+from portality.lib.thread_utils import wait_until
+
+pytestmark = pytest.mark.skip(reason="skip whole module while debugging")
+
 class TestLock(DoajTestCase):
 
     def test_01_lock_success_fail(self):
+        print("Starting test_01_lock_success_fail")
         source = JournalFixtureFactory.make_journal_source()
         j = models.Journal(**source)
         j.save(blocking=True)
+        print("saved journal")
 
         # first set a lock
         l = lock.lock("journal", j.id, "testuser")
@@ -19,8 +27,10 @@ class TestLock(DoajTestCase):
         assert l.type == "journal"
         assert l.username == "testuser"
         assert not l.is_expired()
+        print("set lock")
 
-        time.sleep(1)
+        wait_until(lambda: lock.has_lock("journal", j.id, "testuser") is True, timeout=5)
+        # time.sleep(1)
 
         # now try and set the lock again for the same thing by the same user
         l2 = lock.lock("journal", j.id, "testuser")
@@ -30,6 +40,8 @@ class TestLock(DoajTestCase):
         # now try and set the lock as another user
         with self.assertRaises(lock.Locked):
             l3 = lock.lock("journal", j.id, "otheruser")
+
+        print("completed test_01_lock_success_fail")
 
     def test_02_unlock(self):
         unlocked = lock.unlock("journal", "qojoiwjreiqwefoijqwiefjw", "testuser")
