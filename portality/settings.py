@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.5.0"
+DOAJ_VERSION = "8.5.2"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -67,7 +67,6 @@ ELASTIC_SEARCH_DB_PREFIX = "doaj-"  # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True  # whether or not to try creating the index and required index types on startup
-ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
@@ -451,6 +450,7 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
 }
 
 
