@@ -9,8 +9,12 @@
 {% set notabs = true %}
 {% set diff_table = true %}
 {% set quick_reject = true %}
+{% set header_style = "fixed" %}
 
-{% block page_title %}{% if obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: {{ obj.bibjson().title }}{% endblock %}
+{% block page_header %}
+{% include "management/_application-form/includes/_fixed_header.html" with context %}
+{% endblock %}
+
 {% block body_id %}apply{% endblock %}
 
 {% block admin_content scoped %}
@@ -52,4 +56,11 @@
             doaj.autocheckers.manager = new doaj.autocheckers.AutochecksManager({})
         </script>
     {% endif %}
+{% endblock %}
+
+{% block management_js %}
+{{ super() }}
+<script>
+    feather.replace()
+</script>
 {% endblock %}

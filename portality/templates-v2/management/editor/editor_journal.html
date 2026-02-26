@@ -12,11 +12,13 @@ but we are leaving it in place in case that changes #}
 {% set quick_reject = false %}
 {% set withdrawable = false %}
 
-{% block page_title %}Journal: {{ obj.bibjson().title }}{% endblock %}
+{% block page_header %}
+{% include "management/_application-form/includes/_fixed_header.html" with context %}
+{% endblock %}
 {% block body_id %}apply{% endblock %}
 
+{% set header_style = "fixed" %}
 {% block editor_content scoped %}
-    <h3>{{ obj.bibjson().title }}</h3>
     {% include "management/_application-form/includes/_editorial_form_body.html" %}
 {% endblock %}
 
