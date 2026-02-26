@@ -1219,25 +1219,12 @@ var formulaic = {
                 var containerId = edges.css_id(this.ns, "container");
                 var containerSelector = edges.css_id_selector(this.ns, "container");
                 var widgetId = edges.css_id(this.ns, this.fieldDef.name);
-                var modalOpenClass = edges.css_classes(this.ns, "open");
-                var closeClass = edges.css_classes(this.ns, "close");
 
                 this.input = $("[name=" + this.fieldDef.name + "]");
                 this.input.hide();
 
-                this.input.after('<a href="#" class="button button--tertiary ' + modalOpenClass + '">Open Subject Classifier</a>');
-                this.input.after(`<div class="modal" id="` + containerId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
-                                    <div class="modal__dialog" role="document">
-                                        <header class="flex-space-between modal__heading">
-                                          <h3 class="modal__title">
-                                            “Subject classifications”
-                                          </h3>
-                                          <span type="button" data-dismiss="modal" class="` + closeClass + ` type-01"><span class="sr-only">Close</span>&times;</span>
-                                        </header>
-                                        <p class="alert">Selecting a subject will not automatically select its sub-categories.</p>
-                                        <div id="` + widgetId + `"></div>
-                                        <button type="button" data-dismiss="modal" class="` + closeClass + `">Add subject(s)</button>
-                                    </div>
+                this.input.after(`<div id="` + containerId + `">
+                                    <div id="` + widgetId + `"></div>
                                  </div>`);
 
 
@@ -1279,7 +1266,6 @@ var formulaic = {
                         return node.display.toLowerCase();
                     },
                     renderer: doaj.renderers.newSubjectBrowserRenderer({
-                        title: "Subjects",
                         open: true,
                         showCounts: false,
                         togglable: false
@@ -1304,23 +1290,6 @@ var formulaic = {
                         }
                     }
                 });
-
-                var modalOpenSelector = edges.css_class_selector(this.ns, "open");
-                edges.on(modalOpenSelector, "click", this, "openModal");
-
-                var closeSelector = edges.css_class_selector(this.ns, "close");
-                edges.on(closeSelector, "click", this, "closeModal");
-            };
-
-            this.openModal = function () {
-                var containerSelector = edges.css_id_selector(this.ns, "container");
-                $(containerSelector).show();
-            };
-
-            this.closeModal = function () {
-                var containerSelector = edges.css_id_selector(this.ns, "container");
-                $(containerSelector).hide();
-                this.input.trigger("change");
             };
 
             this.init();
