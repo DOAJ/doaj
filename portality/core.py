@@ -304,8 +304,6 @@ def setup_jinja(app):
     app.jinja_env.globals['type'] = type
     #~~->Constants:Config~~
     app.jinja_env.globals['constants'] = constants
-    # app.jinja_env.globals['copy'] = ui_copy
-    # app.jinja_env.globals['render_copy'] = ui_copy.render_copy
     app.jinja_env.globals['templates'] = templates
     #~~-> Dates:Library~~
     app.jinja_env.globals['dates'] = dates
