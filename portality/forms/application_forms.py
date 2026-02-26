@@ -5,7 +5,7 @@ from copy import deepcopy
 
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, SelectMultipleField, \
     SelectField, \
-    FormField, FieldList, HiddenField
+    FormField, FieldList, HiddenField, DateField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
@@ -41,7 +41,8 @@ from portality.forms.validate import (
     NoScriptTag,
     Year,
     CurrentISOCurrency,
-    CurrentISOLanguage
+    CurrentISOLanguage,
+    DateInThePast
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -900,7 +901,9 @@ class FieldDefinitions:
         "help": {
             "long_help": [lazy_gettext("Enter all types of review used by the journal for "
                           "research articles. Note that editorial review is "
-                          "only accepted for arts and humanities journals.")],
+                          "only accepted for <a href='https://doaj.org/apply/guide/#arts-and-humanities-journals' target='_blank' rel='nofollow'>arts and humanities journals</a>."
+                          "For a detailed description of the peer review types, "
+                          "see <a href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0' target='_blank' rel='nofollow'>this summary</a>.")],
             "doaj_criteria": lazy_gettext("Peer review must be carried out")
         },
         "validate": [
@@ -1642,6 +1645,26 @@ class FieldDefinitions:
         }
     }
 
+    MIRROR = {
+        "name": "mirror",
+        "label": "Mirror Journal",
+        "input": "checkbox",
+        "help": {
+            "long_help": ["Is the journal a Mirror Journal?"]
+        }
+    }
+
+    OJC = {
+        "name": "ojc",
+        "label": "Open Journals Collective",
+        "input": "checkbox",
+        "help": {
+            "long_help": [
+                "Is the journal part of the <a href='https://openjournalscollective.org/' target='_blank' rel='noopener'>"
+                "Open Journals Collective</a>?"],
+        }
+    }
+
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
     # ~~->$ QuickReject:FormField~~
     QUICK_REJECT = {
@@ -2064,6 +2087,25 @@ class FieldDefinitions:
         }
     }
 
+    LAST_FULL_REVIEW = {
+        "optional": True,
+        "label": "Last Full Review Date",
+        "name": "last_full_review",
+        "validate": [
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}},
+            {"date_in_the_past": {"message": "The date must be in the past"}}
+        ],
+        "help": {
+            "placeholder": "last full review (YYYY-MM-DD)",
+            "render_error_box": True,
+            "short_help": "If you have just completed a full review of this Journal, enter the date here."
+        },
+        "input": "text",    # although this is a date, the text input is the best one to use because the widget will force that type anyway
+        "widgets": [
+            {"date_picker": {"earlier_than_now": True}}  # ~~^-> DatePicker:FormWidget~~
+        ]
+    }
+
 
 ##########################################################
 # Define our fieldsets
@@ -2251,7 +2293,9 @@ class FieldSetDefinitions:
         "name": "labels",
         "label": lazy_gettext("Specify labels for this journal"),
         "fields": [
-            FieldDefinitions.S2O["name"]
+            FieldDefinitions.S2O["name"],
+            FieldDefinitions.MIRROR["name"],
+            FieldDefinitions.OJC["name"]
         ]
     }
 
@@ -2272,6 +2316,14 @@ class FieldSetDefinitions:
         "label": lazy_gettext("Re-assign publisher account"),
         "fields": [
             FieldDefinitions.OWNER["name"]
+        ]
+    }
+
+    LAST_FULL_REVIEW = {
+        "name": "last_full_review",
+        "label": "Last Full Review",
+        "fields": [
+            FieldDefinitions.LAST_FULL_REVIEW["name"]
         ]
     }
 
@@ -2541,7 +2593,8 @@ class JournalContextDefinitions:
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.LABELS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
-        FieldSetDefinitions.FLAGS["name"]
+        FieldSetDefinitions.FLAGS["name"],
+        FieldSetDefinitions.LAST_FULL_REVIEW["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
     MANED["templates"]["form"] = templates.MANED_JOURNAL_FORM
@@ -3116,6 +3169,16 @@ class BigEndDateBuilder:
     def wtforms(field, settings):
         return BigEndDate(settings.get("message"))
 
+class DateInThePastBuilder:
+    # ~~->$ BigEndDate:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        # no client side rendering for this, as it interferes with the datepicker
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return DateInThePast(settings.get("message"))
 
 class YearBuilder:
     @staticmethod
@@ -3188,7 +3251,8 @@ PYTHON_FUNCTIONS = {
             "required_value": RequiredValueBuilder.render,
             "bigenddate": BigEndDateBuilder.render,
             "no_script_tag": NoScriptTagBuilder.render,
-            "year": YearBuilder.render
+            "year": YearBuilder.render,
+            "date_in_the_past": DateInThePastBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -3214,7 +3278,8 @@ PYTHON_FUNCTIONS = {
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
-            "current_iso_language": CurrentISOLanguageBuilder.wtforms
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms,
+            "date_in_the_past": DateInThePastBuilder.wtforms
         }
     }
 }
@@ -3238,6 +3303,7 @@ JAVASCRIPT_FUNCTIONS = {
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+    "date_picker": "formulaic.widgets.newDatePicker"  # ~~-> DatePicker:FormWidget~~
 
 }
 
@@ -3388,6 +3454,18 @@ class TextBuilder(WTFormsBuilder):
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
         return sf
 
+class DateBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "date"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        wtfargs["widget"] = widgets.Input(input_type="date")
+        sf = DateField(**wtfargs)
+        if "repeatable" in field:
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+        return sf
 
 class TextAreaBuilder(WTFormsBuilder):
     @staticmethod
@@ -3470,7 +3548,8 @@ WTFORMS_BUILDERS = [
     IntegerBuilder,
     GroupBuilder,
     GroupListBuilder,
-    HiddenFieldBuilder
+    HiddenFieldBuilder,
+    DateBuilder
 ]
 
 ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
