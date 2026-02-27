@@ -16,6 +16,33 @@
         "Best practice": "{{ _('Best practice') }}",
         "Edit this section":"{{ _('Edit this section') }}",
         "Open URL in a new tab": "{{ _('Open URL in a new tab') }}",
+
+        "DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time." :
+            "{{ _('DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.') }}",
+
+        'This field is required, because you answered "%s" to the previous question.' :
+            "{{ _('This field is required, because you answered "%s" to the previous question.') }}",
+
+        'You need to provide the answer to either this field or %s field (or both)' :
+            "{{ _('You need to provide the answer to either this field or %s field (or both)') }}",
+
+        'Value of this field and %s field must be different' :
+            "{{ _('Value of this field and %s field must be different') }}",
+
+        'This only can be set when requirements are met' :
+            "{{ _('This only can be set when requirements are met') }}",
+
+        'This only can be true when requirements are met' :
+            "{{ _('This only can be true when requirements are met') }}",
+
+        'Script tags are not allowed' :
+            "{{ _('Script tags are not allowed') }}",
+
+        "This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year" :
+            "{{ _('This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year') }}",
+
+        'Please enter a valid date in YYYY-MM-DD format.' :
+            "{{ _('Please enter a valid date in YYYY-MM-DD format.') }}",
     });
     selected_lang = '{{ session.get("lang") | default("en") }}'
     $.extend($.fn.select2.defaults, $.fn.select2.locales[selected_lang]);

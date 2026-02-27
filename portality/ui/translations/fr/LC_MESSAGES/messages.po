@@ -1,14 +1,10 @@
-# French translations for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
-#
+
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-04 11:56+0530\n"
-"PO-Revision-Date: 2025-05-05 11:30+0530\n"
+"POT-Creation-Date: 2026-02-27 18:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -18,46 +14,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: forms/application_forms.py:88
+#: forms/application_forms.py:89
 msgid "Does the journal adhere to DOAJ’s definition of open access?"
 msgstr "La revue adhère-t-elle à la définition de DOAJ du libre accès?"
 
-#: forms/application_forms.py:91 forms/application_forms.py:787
-#: forms/application_forms.py:835 forms/application_forms.py:993
-#: forms/application_forms.py:1109 forms/application_forms.py:1237
-#: forms/application_forms.py:1288
+#: forms/application_forms.py:92 forms/application_forms.py:788
+#: forms/application_forms.py:836 forms/application_forms.py:996
+#: forms/application_forms.py:1112 forms/application_forms.py:1240
+#: forms/application_forms.py:1291
 msgid "Yes"
 msgstr "Oui"
 
-#: forms/application_forms.py:92 forms/application_forms.py:788
-#: forms/application_forms.py:836 forms/application_forms.py:994
-#: forms/application_forms.py:1110 forms/application_forms.py:1238
-#: forms/application_forms.py:1289
+#: forms/application_forms.py:93 forms/application_forms.py:789
+#: forms/application_forms.py:837 forms/application_forms.py:997
+#: forms/application_forms.py:1113 forms/application_forms.py:1241
+#: forms/application_forms.py:1292
 msgid "No"
 msgstr "Non"
 
-#: forms/application_forms.py:95
+#: forms/application_forms.py:96
 msgid ""
 "See <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-"
 "open-access/' target='_blank' rel='noopener'>DOAJ’s definition of open "
 "access explained in full</a>."
-msgstr "Voir <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='noopener'>la définition du libre accès tel que défini par DOAJ</a>."
+msgstr ""
+"Voir <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-"
+"open-access/' target='_blank' rel='noopener'>la définition du libre accès"
+" tel que défini par DOAJ</a>."
 
-#: forms/application_forms.py:100
+#: forms/application_forms.py:101
 msgid "You must answer 'Yes'"
 msgstr "Vous devez répondre 'Oui'"
 
-#: forms/application_forms.py:103
+#: forms/application_forms.py:104
 msgid "You must answer <strong>Yes</strong> to continue"
 msgstr "Vous devez répondre <strong>Oui</strong> pour poursuivre"
 
-#: forms/application_forms.py:124
+#: forms/application_forms.py:125
 msgid ""
 "The journal website must display its open access statement. Where can we "
 "find this information?"
-msgstr "La revue doit afficher une déclaration en matière de libre accès. Où se trouve-t-elle? "
+msgstr ""
+"La revue doit afficher une déclaration en matière de libre accès. Où se "
+"trouve-t-elle?"
 
-#: forms/application_forms.py:127
+#: forms/application_forms.py:128
 msgid ""
 "Here is an example of a suitable Open Access statement that meets our "
 "criteria: <blockquote>This is an open access journal, which means that "
@@ -67,285 +68,323 @@ msgid ""
 " any other lawful purpose, without asking prior permission from the "
 "publisher or the author. This is in accordance with the BOAI definition "
 "of open access.</blockquote>"
-msgstr "Voici un exemple de déclaration en matière de libre accès répondant à nos critères : <blockquote>Cette revue est en libre accès, ce qui signifie que tout le contenu est librement accessible, sans frais pour toute personne ou institution. Toute personne est autorisée à lire, télécharger, copier, transmettre, imprimer, chercher ou faire un lien vers le texte intégral de ces articles, ou s’en servir à toute autre fin légale, sans avoir à demander l'autorisation préalable de l'éditeur ou de l'auteur·trice. Ceci est conforme à la définition du libre accès de la BOAI.</blockquote>"
+msgstr ""
+"Voici un exemple de déclaration en matière de libre accès répondant à nos"
+" critères : <blockquote>Cette revue est en libre accès, ce qui signifie "
+"que tout le contenu est librement accessible, sans frais pour toute "
+"personne ou institution. Toute personne est autorisée à lire, "
+"télécharger, copier, transmettre, imprimer, chercher ou faire un lien "
+"vers le texte intégral de ces articles, ou s’en servir à toute autre fin "
+"légale, sans avoir à demander l'autorisation préalable de l'éditeur ou de"
+" l'auteur·trice. Ceci est conforme à la définition du libre accès de la "
+"BOAI.</blockquote>"
 
-#: forms/application_forms.py:138
+#: forms/application_forms.py:139
 msgid "Link to the journal’s open access statement"
 msgstr "Lien vers la déclaration de libre accès de la revue"
 
-#: forms/application_forms.py:142
+#: forms/application_forms.py:143
 msgid "Enter the URL for the journal’s Open Access statement page"
-msgstr "Saisissez l'URL où se trouve la déclaration en matière de libre accès de la revue."
+msgstr ""
+"Saisissez l'URL où se trouve la déclaration en matière de libre accès de "
+"la revue."
 
-#: forms/application_forms.py:157 forms/application_forms.py:164
+#: forms/application_forms.py:158 forms/application_forms.py:165
 msgid "Journal title"
 msgstr "Titre de la revue"
 
-#: forms/application_forms.py:160
+#: forms/application_forms.py:161
 msgid ""
 "The journal title must match what is displayed on the website and what is"
 " registered at the <a href='https://portal.issn.org/' target='_blank' "
 "rel='noopener'> ISSN Portal</a>."
-msgstr "Le titre de la revue doit être le même que celui figurant sur son site web et celui inscrit à <a href='https://portal.issn.org/' target='_blank' rel='noopener'>portal.issn.org</a>."
+msgstr ""
+"Le titre de la revue doit être le même que celui figurant sur son site "
+"web et celui inscrit à <a href='https://portal.issn.org/' target='_blank'"
+" rel='noopener'>portal.issn.org</a>."
 
-#: forms/application_forms.py:162
+#: forms/application_forms.py:163
 msgid ""
 "For translated titles, you may add the translation as an alternative "
 "title."
-msgstr "Pour les titres traduits, vous pouvez ajouter la traduction en tant que titre alternatif."
+msgstr ""
+"Pour les titres traduits, vous pouvez ajouter la traduction en tant que "
+"titre alternatif."
 
-#: forms/application_forms.py:165
+#: forms/application_forms.py:166
 msgid "Title in application form, title at ISSN and website must all match"
-msgstr "Les titres dans le formulaire, sur le site web et dans le Portail ISSN doivent tous correspondre"
+msgstr ""
+"Les titres dans le formulaire, sur le site web et dans le Portail ISSN "
+"doivent tous correspondre"
 
-#: forms/application_forms.py:168
+#: forms/application_forms.py:169
 msgid "Enter the journal’s name"
 msgstr "Saisissez le titre de la revue"
 
-#: forms/application_forms.py:205
+#: forms/application_forms.py:206
 msgid "Alternative title (including translation of the title)"
 msgstr "Titre alternatif (incluant la traduction du titre) (optionnel)"
 
-#: forms/application_forms.py:247
+#: forms/application_forms.py:248
 msgid "Link to the journal’s homepage"
 msgstr "Lien vers la page d’accueil de la revue"
 
-#: forms/application_forms.py:263
+#: forms/application_forms.py:264
 msgid "Enter the URL for the journal’s <strong>homepage</strong>"
 msgstr "Indiquez l'URL de la <strong>page d'accueil</strong> de la revue"
 
-#: forms/application_forms.py:274
+#: forms/application_forms.py:275
 msgid "ISSN (print)"
 msgstr "ISSN (imprimé)"
 
-#: forms/application_forms.py:277 forms/application_forms.py:310
-#: forms/application_forms.py:325 forms/application_forms.py:335
-#: forms/application_forms.py:354 forms/application_forms.py:388
-#: forms/application_forms.py:403 forms/application_forms.py:413
+#: forms/application_forms.py:278 forms/application_forms.py:311
+#: forms/application_forms.py:326 forms/application_forms.py:336
+#: forms/application_forms.py:355 forms/application_forms.py:389
+#: forms/application_forms.py:404 forms/application_forms.py:414
 msgid ""
 "Must be a valid ISSN, fully registered and confirmed at the <a "
 "href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN "
 "Portal</a>."
 msgstr ""
-"Doit être un ISSN valide, enregistré et confirmé sur le Portail ISSN : <a"
-" href='https://portal.issn.org/.' target='_blank' rel='noopener'>"
+"Doit être un ISSN valide, enregistré et confirmé sur <a "
+"href='https://portal.issn.org/.' target='_blank' rel='noopener'>le "
+"Portail ISSN</a>: "
 
-#: forms/application_forms.py:279 forms/application_forms.py:356
+#: forms/application_forms.py:280 forms/application_forms.py:357
 msgid "Use the link under the ISSN you provided to check it."
 msgstr "Utilisez le lien sous l'ISSN que vous avez fourni pour le vérifier."
 
-#: forms/application_forms.py:280 forms/application_forms.py:312
-#: forms/application_forms.py:327 forms/application_forms.py:337
-#: forms/application_forms.py:357 forms/application_forms.py:390
-#: forms/application_forms.py:405 forms/application_forms.py:415
+#: forms/application_forms.py:281 forms/application_forms.py:313
+#: forms/application_forms.py:328 forms/application_forms.py:338
+#: forms/application_forms.py:358 forms/application_forms.py:391
+#: forms/application_forms.py:406 forms/application_forms.py:416
 msgid "The ISSN must match what is given on the journal website."
 msgstr "L'ISSN doit correspondre à celui indiqué sur le site web de la revue."
 
-#: forms/application_forms.py:281
+#: forms/application_forms.py:282
 msgid "For example, 2049-3630"
 msgstr "Par exemple, 2049-3630"
 
-#: forms/application_forms.py:282 forms/application_forms.py:314
-#: forms/application_forms.py:329 forms/application_forms.py:339
-#: forms/application_forms.py:359 forms/application_forms.py:392
-#: forms/application_forms.py:407 forms/application_forms.py:417
+#: forms/application_forms.py:283 forms/application_forms.py:315
+#: forms/application_forms.py:330 forms/application_forms.py:340
+#: forms/application_forms.py:360 forms/application_forms.py:393
+#: forms/application_forms.py:408 forms/application_forms.py:418
 msgid "ISSN must be provided"
 msgstr "Vous devez fournir une URL"
 
-#: forms/application_forms.py:286 forms/application_forms.py:300
-#: forms/application_forms.py:363 forms/application_forms.py:378
-#: forms/application_forms.py:424
+#: forms/application_forms.py:287 forms/application_forms.py:301
+#: forms/application_forms.py:364 forms/application_forms.py:379
+#: forms/application_forms.py:425
 msgid ""
 "You must provide <strong>one or both</strong> an online ISSN or a print "
 "ISSN"
-msgstr "Vous devez fournir un ISSN numérique, un ISSN imprimé <strong>ou les deux</strong>."
+msgstr ""
+"Vous devez fournir un ISSN numérique, un ISSN imprimé <strong>ou les "
+"deux</strong>."
 
-#: forms/application_forms.py:287 forms/application_forms.py:301
-#: forms/application_forms.py:364 forms/application_forms.py:379
-#: forms/application_forms.py:425 forms/application_forms.py:1798
-#: forms/application_forms.py:1826
+#: forms/application_forms.py:288 forms/application_forms.py:302
+#: forms/application_forms.py:365 forms/application_forms.py:380
+#: forms/application_forms.py:426 forms/application_forms.py:1821
+#: forms/application_forms.py:1849
 msgid "This is not a valid ISSN"
 msgstr "Ceci n'est pas un ISSN valide"
 
-#: forms/application_forms.py:288 forms/application_forms.py:303
+#: forms/application_forms.py:289 forms/application_forms.py:304
 msgid "This field must contain a different value to 'ISSN (online)'"
-msgstr "Ce champ doit contenir une valeur différente de celle sous ISSN (numérique)"
+msgstr ""
+"Ce champ doit contenir une valeur différente de celle sous ISSN "
+"(numérique)"
 
-#: forms/application_forms.py:351
+#: forms/application_forms.py:352
 msgid "ISSN (online)"
 msgstr "ISSN (numérique)"
 
-#: forms/application_forms.py:358
+#: forms/application_forms.py:359
 msgid "For example, 0378-5955"
 msgstr "Par exemple, 0378-5955"
 
-#: forms/application_forms.py:366 forms/application_forms.py:381
-#: forms/application_forms.py:427
+#: forms/application_forms.py:367 forms/application_forms.py:382
+#: forms/application_forms.py:428
 msgid "This field must contain a different value to 'ISSN (print)'"
 msgstr "Ce champ doit contenir une valeur différente de celle sous ISSN (imprimé)"
 
-#: forms/application_forms.py:436
+#: forms/application_forms.py:437
 msgid "Up to 6 subject keywords in English"
 msgstr "Jusqu’à 6 mots-clés en anglais"
 
-#: forms/application_forms.py:439
+#: forms/application_forms.py:440
 msgid ""
 "Choose up to 6 keywords that describe the journal's subject matter. "
 "Keywords must be in English."
-msgstr "Inscrivez jusqu'à 6 mots-clés qui décrivent le sujet de la revue. Les mots-clés doivent être en anglais."
+msgstr ""
+"Inscrivez jusqu'à 6 mots-clés qui décrivent le sujet de la revue. Les "
+"mots-clés doivent être en anglais."
 
-#: forms/application_forms.py:440
+#: forms/application_forms.py:441
 msgid ""
 "Use single words or short phrases (2 to 3 words) that describe the "
 "journal's main topic."
-msgstr "Utilisez des mots uniques ou de courtes expressions (2 à 3 mots) qui décrivent le thème principal de la revue."
+msgstr ""
+"Utilisez des mots uniques ou de courtes expressions (2 à 3 mots) qui "
+"décrivent le thème principal de la revue."
 
-#: forms/application_forms.py:442
+#: forms/application_forms.py:443
 msgid "Do not add acronyms, abbreviations or descriptive sentences."
 msgstr "N’incluez pas d'acronymes, d'abréviations ou de phrases descriptives."
 
-#: forms/application_forms.py:443
+#: forms/application_forms.py:444
 msgid "Note that the keywords may be edited by DOAJ editorial staff."
-msgstr "Notez que les mots-clés peuvent être modifiés par l’équipe éditoriale du DOAJ."
+msgstr ""
+"Notez que les mots-clés peuvent être modifiés par l’équipe éditoriale du "
+"DOAJ."
 
-#: forms/application_forms.py:446
+#: forms/application_forms.py:447
 msgid "Enter at least <strong>one subject keyword</strong> in English"
 msgstr "Saisissez au moins <strong>un mot-clé sujet</strong>, en anglais"
 
-#: forms/application_forms.py:467
+#: forms/application_forms.py:468
 msgid "Languages in which the journal accepts manuscripts"
 msgstr "Langues dans lesquelles la revue accepte des manuscrits"
 
-#: forms/application_forms.py:476
+#: forms/application_forms.py:477
 msgid "Enter <strong>at least one</strong> language"
 msgstr "Sélectionnez <strong>au moins une</strong> langues"
 
-#: forms/application_forms.py:484
+#: forms/application_forms.py:485
 msgid "Type or select the language"
 msgstr "Entrez ou sélectionnez la langue"
 
-#: forms/application_forms.py:494
+#: forms/application_forms.py:495
 msgid "Publisher's name"
 msgstr "Nom de l'éditeur"
 
-#: forms/application_forms.py:497 forms/application_forms.py:522
-#: forms/application_forms.py:531
+#: forms/application_forms.py:498 forms/application_forms.py:523
+#: forms/application_forms.py:532
 msgid "Enter the name of the journal's publisher"
 msgstr "Indiquez le nom de l'éditeur"
 
-#: forms/application_forms.py:506
+#: forms/application_forms.py:507
 msgid "Type or select the publisher's name"
 msgstr "Entrez ou sélectionnez le nom de l'éditeur"
 
-#: forms/application_forms.py:524 forms/application_forms.py:533
-#: forms/application_forms.py:612 forms/application_forms.py:618
+#: forms/application_forms.py:525 forms/application_forms.py:534
+#: forms/application_forms.py:613 forms/application_forms.py:619
 msgid "The Publisher's name and Other organisation's name cannot be the same."
 msgstr "Les champs Nom de l'éditeur et Autre organisation doivent être différents"
 
-#: forms/application_forms.py:560
+#: forms/application_forms.py:561
 msgid "Publisher's country"
 msgstr "Pays de l'éditeur"
 
-#: forms/application_forms.py:565
+#: forms/application_forms.py:566
 msgid ""
 "The country where the publisher carries out its business operations and "
 "is registered."
-msgstr "Le pays où l’éditeur est enregistré et exerce ses activités. "
+msgstr "Le pays où l’éditeur est enregistré et exerce ses activités."
 
-#: forms/application_forms.py:566
+#: forms/application_forms.py:567
 msgid "You must provide a publisher country"
 msgstr "Vous devez fournir une URL"
 
-#: forms/application_forms.py:567 forms/application_forms.py:659
+#: forms/application_forms.py:568 forms/application_forms.py:660
 msgid "Type or select the country"
 msgstr "Entrez ou sélectionnez le pays"
 
-#: forms/application_forms.py:571
+#: forms/application_forms.py:572
 msgid ""
 "Enter the <strong>country</strong> where the publisher carries out its "
 "business operations and is registered"
-msgstr "Saisissez <strong>le pays</strong> où l’éditeur est enregistré et exerce ses activités. "
+msgstr ""
+"Saisissez <strong>le pays</strong> où l’éditeur est enregistré et exerce "
+"ses activités."
 
-#: forms/application_forms.py:592
+#: forms/application_forms.py:593
 msgid "Other organisation's name"
-msgstr "Autre organisation, s’il y a lieu"
+msgstr "Nom de l’autre organisation"
 
-#: forms/application_forms.py:596
+#: forms/application_forms.py:597
 msgid "Any other organisation associated with the journal"
 msgstr "N’importe quelle autre organisation associée à la revue"
 
-#: forms/application_forms.py:598
+#: forms/application_forms.py:599
 msgid ""
 "The journal may be owned, funded, sponsored, or supported by another "
 "organisation that is not the publisher. If your journal is linked to a "
 "second organisation, enter its name here."
-msgstr "La revue peut être détenue, financée, parrainée ou soutenue par une autre organisation qui n'est pas l'éditeur. Si votre revue est liée à une deuxième organisation, inscrivez son nom ici."
+msgstr ""
+"La revue peut être détenue, financée, parrainée ou soutenue par une autre"
+" organisation qui n'est pas l'éditeur. Si votre revue est liée à une "
+"deuxième organisation, inscrivez son nom ici."
 
-#: forms/application_forms.py:601
+#: forms/application_forms.py:602
 msgid "Type or select the other organisation's name"
 msgstr "Entrez ou sélectionnez le nom de l'organisation"
 
-#: forms/application_forms.py:652
+#: forms/application_forms.py:653
 msgid "Other organisation's country"
-msgstr "Autre organisation, s’il y a lieu"
+msgstr "Pays de l’autre organisation"
 
-#: forms/application_forms.py:658
+#: forms/application_forms.py:659
 msgid "The country in which the other organisation is based"
 msgstr "Pays dans lequel cette autre organisation exerce ses activités"
 
-#: forms/application_forms.py:671 forms/application_forms.py:682
+#: forms/application_forms.py:672 forms/application_forms.py:683
+#, fuzzy
 msgid ""
 "'You must provide the other organization's name. You cannot provide just "
 "the country."
 msgstr "Vous devez fournir le nom de l'autre organisation et non seulement le pays"
 
-#: forms/application_forms.py:696
+#: forms/application_forms.py:697
 msgid "License(s) permitted by the journal"
 msgstr "Licence(s) autorisée(s) par la revue"
 
-#: forms/application_forms.py:700
+#: forms/application_forms.py:701
 msgid "CC BY"
 msgstr "CC BY"
 
-#: forms/application_forms.py:701
+#: forms/application_forms.py:702
 msgid "CC BY-SA"
 msgstr "CC BY-SA"
 
-#: forms/application_forms.py:702
+#: forms/application_forms.py:703
 msgid "CC BY-ND"
 msgstr "CC BY-ND"
 
-#: forms/application_forms.py:703
+#: forms/application_forms.py:704
 msgid "CC BY-NC"
 msgstr "CC BY-NC"
 
-#: forms/application_forms.py:704
+#: forms/application_forms.py:705
 msgid "CC BY-NC-SA"
 msgstr "CC BY-NC-SA"
 
-#: forms/application_forms.py:705
+#: forms/application_forms.py:706
 msgid "CC BY-NC-ND"
 msgstr "CC BY-NC-ND"
 
-#: forms/application_forms.py:706
+#: forms/application_forms.py:707
 msgid "CC0"
 msgstr "CC0"
 
-#: forms/application_forms.py:707
+#: forms/application_forms.py:708
 msgid "Public domain"
-msgstr "Domaine public "
+msgstr "Domaine public"
 
-#: forms/application_forms.py:708 forms/application_forms.py:747
+#: forms/application_forms.py:709
 msgid "Publisher's own license"
 msgstr "Licence de l’éditeur"
 
-#: forms/application_forms.py:712
+#: forms/application_forms.py:713
+#, fuzzy
 msgid ""
 "The journal must use some form of licensing to be considered for indexing"
 " in DOAJ. "
-msgstr "La revue doit accorder certains droits d’utilisation via une licence pour être éligible à l'indexation dans le DOAJ."
+msgstr ""
+"La revue doit accorder certains droits d’utilisation via une licence pour"
+" être éligible à l'indexation dans le DOAJ."
 
-#: forms/application_forms.py:713
+#: forms/application_forms.py:714
 msgid ""
 "If Creative Commons licensing is not used, then select <em>Publisher's "
 "own license</em> and enter more details below."
@@ -353,7 +392,7 @@ msgstr ""
 "Si aucune licence Creative Commons n'est utilisée, sélectionnez "
 "<em>Licence de l’éditeur</em> et donnez plus de détails ci-dessous."
 
-#: forms/application_forms.py:715
+#: forms/application_forms.py:716
 msgid ""
 "More information on CC licenses: <br/><a "
 "href='https://creativecommons.org/licenses/by/4.0/' target='_blank' "
@@ -369,89 +408,97 @@ msgid ""
 "href='https://creativecommons.org/licenses/by-nc-nd/4.0/' target='_blank'"
 " 'rel='noopener'>CC BY-NC-ND</a>"
 msgstr ""
-"Plus d'information sur les licences CC :"
-"<br/><a href='https://creativecommons.org/licenses/by/4.0/deed.fr' target='_blank'"
-"'rel='noopener'>CC BY</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-sa/4.0/deed.fr' target='_blank'"
-"'rel='noopener'>CC BY-SA</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nd/4.0/deed.fr' target='_blank'"
-"'rel='noopener'>CC BY-ND</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nc/4.0/deed.fr' target='_blank'"
-"'rel='noopener'>CC BY-NC</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr' target='_blank'"
-"'rel='noopener'>CC BY-NC-SA</a> <br/><a "
-"href='https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr' target='_blank'"
-"'rel='noopener'>CC BY-NC-ND</a>"
+"Plus d'information sur les licences CC :<br/><a "
+"href='https://creativecommons.org/licenses/by/4.0/deed.fr' "
+"target='_blank''rel='noopener'>CC BY</a> <br/><a "
+"href='https://creativecommons.org/licenses/by-sa/4.0/deed.fr' "
+"target='_blank''rel='noopener'>CC BY-SA</a> <br/><a "
+"href='https://creativecommons.org/licenses/by-nd/4.0/deed.fr' "
+"target='_blank''rel='noopener'>CC BY-ND</a> <br/><a "
+"href='https://creativecommons.org/licenses/by-nc/4.0/deed.fr' "
+"target='_blank''rel='noopener'>CC BY-NC</a> <br/><a "
+"href='https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr' "
+"target='_blank''rel='noopener'>CC BY-NC-SA</a> <br/><a "
+"href='https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr' "
+"target='_blank''rel='noopener'>CC BY-NC-ND</a>"
 
-#: forms/application_forms.py:728
+#: forms/application_forms.py:729
 msgid ""
 "<a "
 "href='https://wiki.creativecommons.org/wiki/CC0_FAQ#What_is_the_difference_between_CC0_and_the_Public_Domain_Mark_.28.22PDM.22.29.3F'"
 " target='_blank' rel='noopener'>What is the difference between CC0 and "
 "the Public Domain Mark (\"PDM\")?</a>"
-msgstr "<a href='https://wiki.creativecommons.org/wiki/CC0_FAQ#What_is_the_difference_between_CC0_and_the_Public_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' rel='noopener'>Quelle est la différence entre CC0 et la marque du domaine public (\"PDM\")?</a> (en anglais)"
+msgstr ""
+"<a "
+"href='https://wiki.creativecommons.org/wiki/CC0_FAQ#What_is_the_difference_between_CC0_and_the_Public_Domain_Mark_.28.22PDM.22.29.3F'"
+" target='_blank' rel='noopener'>Quelle est la différence entre CC0 et la "
+"marque du domaine public (\"PDM\")?</a> (en anglais)"
 
-#: forms/application_forms.py:733 forms/application_forms.py:756
+#: forms/application_forms.py:734 forms/application_forms.py:757
 msgid "Content must be licensed"
 msgstr "Une licence doit être fournie"
 
-#: forms/application_forms.py:736
+#: forms/application_forms.py:737
 msgid "Select <strong>at least one</strong> type of license"
-msgstr "Sélectionnez <strong>au moins un</strong> type de licence "
+msgstr "Sélectionnez <strong>au moins un</strong> type de licence"
 
-#: forms/application_forms.py:743
+#: forms/application_forms.py:744
 msgid "Select all the attributes that your license has"
 msgstr "Sélectionnez tous les attributs correspondant à votre licence"
 
-#: forms/application_forms.py:750
+#: forms/application_forms.py:751
 msgid "Attribution"
 msgstr "Attribution"
 
-#: forms/application_forms.py:751
+#: forms/application_forms.py:752
 msgid "Share Alike"
 msgstr "Partage dans les mêmes conditions"
 
-#: forms/application_forms.py:752
+#: forms/application_forms.py:753
 msgid "No Derivatives"
 msgstr "Pas d'oeuvre dérivée / Pas de modification"
 
-#: forms/application_forms.py:753
+#: forms/application_forms.py:754
 msgid "No Commercial Usage"
 msgstr "Utilisation non commerciale"
 
-#: forms/application_forms.py:763 forms/application_forms.py:854
-#: forms/application_forms.py:939 forms/application_forms.py:1004
-#: forms/application_forms.py:1209 forms/application_forms.py:1256
-#: forms/application_forms.py:1305 forms/application_forms.py:1425
-#: forms/application_forms.py:1525
+#: forms/application_forms.py:764 forms/application_forms.py:855
+#: forms/application_forms.py:942 forms/application_forms.py:1007
+#: forms/application_forms.py:1212 forms/application_forms.py:1259
+#: forms/application_forms.py:1308 forms/application_forms.py:1428
+#: forms/application_forms.py:1528
 msgid "Where can we find this information?"
 msgstr "Où se trouve cette information?"
 
-#: forms/application_forms.py:767
+#: forms/application_forms.py:768
 msgid "Enter the URL for the journal’s <strong>license terms</strong> page"
 msgstr ""
 "Saisissez l'URL où se trouvent les <strong>informations sur les "
 "licences</strong>"
 
-#: forms/application_forms.py:771
-msgid "Link to the page where the license terms are stated on your site."
-msgstr "Lien vers la page de votre site où se trouvent les termes de la licence ou les conditions d’utilisation."
-
 #: forms/application_forms.py:772
+msgid "Link to the page where the license terms are stated on your site."
+msgstr ""
+"Lien vers la page de votre site où se trouvent les termes de la licence "
+"ou les conditions d’utilisation."
+
+#: forms/application_forms.py:773
 msgid "You must provide a link to your license terms"
 msgstr "Vous devez fournir une URL"
 
-#: forms/application_forms.py:773
+#: forms/application_forms.py:774
 msgid "https://www.my-journal.com/about#licensing"
 msgstr "https://www.my-journal.com/about#licensing"
 
-#: forms/application_forms.py:784
+#: forms/application_forms.py:785
 msgid ""
 "Does the journal embed and/or display licensing information in its "
 "articles?"
-msgstr "La revue intègre-t-elle ou affiche-t-elle ses licences ou les conditions d’utilisation dans ses articles?"
+msgstr ""
+"La revue intègre-t-elle ou affiche-t-elle ses licences ou les conditions "
+"d’utilisation dans ses articles?"
 
-#: forms/application_forms.py:791
+#: forms/application_forms.py:792
 msgid ""
 "It is recommended that licensing information is included in full-text "
 "articles but it is not required for inclusion. Answer "
@@ -464,25 +511,27 @@ msgstr ""
 "<strong>Oui</strong> si les informations relatives aux licences sont "
 "affichées ou intégrées dans toutes les versions des articles. "
 
-#: forms/application_forms.py:797 forms/application_forms.py:839
-#: forms/application_forms.py:997 forms/application_forms.py:1120
-#: forms/application_forms.py:1249 forms/application_forms.py:1298
+#: forms/application_forms.py:798 forms/application_forms.py:840
+#: forms/application_forms.py:1000 forms/application_forms.py:1123
+#: forms/application_forms.py:1252 forms/application_forms.py:1301
 msgid "Select Yes or No"
 msgstr "Sélectionnez Oui ou Non"
 
-#: forms/application_forms.py:804
+#: forms/application_forms.py:805
 msgid "Recent article displaying or embedding a license in the full text"
-msgstr "Article récent où la licence est intégrée ou affichée dans le texte intégral."
+msgstr ""
+"Article récent où la licence est intégrée ou affichée dans le texte "
+"intégral."
 
-#: forms/application_forms.py:810
+#: forms/application_forms.py:811
 msgid "Link to an example article"
 msgstr "Lien vers un exemple d'article"
 
-#: forms/application_forms.py:817
+#: forms/application_forms.py:818
 msgid "Enter the URL for any recent article that displays or embeds a license"
-msgstr "Lien vers un exemple d'article"
+msgstr "Saisissez l'URL d'un article récent où la licence est intégrée ou affichée"
 
-#: forms/application_forms.py:831
+#: forms/application_forms.py:832
 msgid ""
 "For all the licenses you have indicated above, do authors retain the "
 "copyright <b>and</b> full publishing rights without restrictions?"
@@ -491,7 +540,7 @@ msgstr ""
 "auteur·trices conservent-ils leur droit d'auteur <b>et</b> tous les "
 "droits de publication sans restriction?"
 
-#: forms/application_forms.py:842
+#: forms/application_forms.py:843
 msgid ""
 "Answer <strong>No</strong> if authors transfer copyright or assign "
 "exclusive rights to the publisher (including commercial rights). "
@@ -503,423 +552,500 @@ msgstr ""
 "droits commerciaux).<br/><br/>Répondez <strong>Oui</strong> seulement si "
 "les auteur·trices conservent tous les droits."
 
-#: forms/application_forms.py:856
+#: forms/application_forms.py:857
 msgid "Copyright terms"
 msgstr "Les droits d'auteur"
 
-#: forms/application_forms.py:858
+#: forms/application_forms.py:859
 msgid "Link to the journal’s copyright terms"
 msgstr "Saisissez l'URL où se trouvent les modalités du droit d'auteur"
 
-#: forms/application_forms.py:871
+#: forms/application_forms.py:872
 msgid "Enter the URL for the journal’s <strong>copyright terms</strong> page"
-msgstr "Saisissez l'URL où se trouvent <strong>les modalités du droit d'auteur</strong>"
+msgstr ""
+"Saisissez l'URL où se trouvent <strong>les modalités du droit "
+"d'auteur</strong>"
 
-#: forms/application_forms.py:887
+#: forms/application_forms.py:888
 msgid ""
 "DOAJ only accepts peer-reviewed journals. Which type(s) of peer review "
 "does this journal use?"
-msgstr "DOAJ accepte seulement les revues évaluées par les pair·es. Quel(s) type(s) d’évaluation par les pair·es la revue utilise-t-elle?"
+msgstr ""
+"DOAJ accepte seulement les revues évaluées par les pair·es. Quel(s) "
+"type(s) d’évaluation par les pair·es la revue utilise-t-elle?"
 
-#: forms/application_forms.py:892
+#: forms/application_forms.py:893
 msgid "Editorial review"
-msgstr "Évaluation éditoriale  "
+msgstr "Évaluation éditoriale"
 
-#: forms/application_forms.py:893 forms/application_forms.py:2153
+#: forms/application_forms.py:894 forms/application_forms.py:2195
 msgid "Peer review"
 msgstr "Évaluation par les pair·es"
 
-#: forms/application_forms.py:894
+#: forms/application_forms.py:895
 msgid "Anonymous peer review"
 msgstr "Évaluation par les pair·es anonyme"
 
-#: forms/application_forms.py:895
+#: forms/application_forms.py:896
 msgid "Double anonymous peer review"
 msgstr "Évaluation par les pair·es en double anonyme"
 
-#: forms/application_forms.py:896
-msgid "Post-publication peer review"
-msgstr "Évaluation par les pair·es après publication  "
-
 #: forms/application_forms.py:897
+msgid "Post-publication peer review"
+msgstr "Évaluation par les pair·es après publication"
+
+#: forms/application_forms.py:898
 msgid "Open peer review"
 msgstr "Évaluation par les pair·es ouverte"
 
-#: forms/application_forms.py:898 forms/application_forms.py:1346
-#: forms/application_forms.py:1595 forms/application_forms.py:2636
+#: forms/application_forms.py:899 forms/application_forms.py:1349
+#: forms/application_forms.py:1598 forms/application_forms.py:2689
 msgid "Other"
 msgstr "Autre"
 
-#: forms/application_forms.py:901
+#: forms/application_forms.py:902
 msgid ""
 "Enter all types of review used by the journal for research articles. Note"
-" that editorial review is only accepted for arts and humanities journals."
-msgstr "Indiquez tous les types d’évaluation pour les articles de recherche. Notez que l’évaluation éditoriale n'est acceptée que pour les revues en arts et sciences humaines."
+" that editorial review is only accepted for <a "
+"href='https://doaj.org/apply/guide/#arts-and-humanities-journals' "
+"target='_blank' rel='nofollow'>arts and humanities journals</a>.For a "
+"detailed description of the peer review types, see <a "
+"href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0'"
+" target='_blank' rel='nofollow'>this summary</a>."
+msgstr ""
 
-#: forms/application_forms.py:904
+#: forms/application_forms.py:907
 msgid "Peer review must be carried out"
 msgstr "La revue doit assurer une évaluation par les pairs"
 
-#: forms/application_forms.py:907
+#: forms/application_forms.py:910
 msgid "Select <strong>at least one</strong> type of review process"
 msgstr "Sélectionnez <strong>au moins un</strong> type d'évaluation"
 
-#: forms/application_forms.py:914 forms/application_forms.py:917
+#: forms/application_forms.py:917 forms/application_forms.py:920
 msgid "Other peer review"
 msgstr "Autre forme d'évaluation par les pair·e·s"
 
-#: forms/application_forms.py:924
+#: forms/application_forms.py:927
 msgid "Enter the name of another type of peer review"
 msgstr "Indiquez l'autre type d'évaluation"
 
-#: forms/application_forms.py:941
+#: forms/application_forms.py:944
 msgid "Peer review policy"
 msgstr "Politique d'évaluation par les pairs"
 
-#: forms/application_forms.py:943 forms/application_forms.py:1009
-#: forms/application_forms.py:1036 forms/application_forms.py:1055
-#: forms/application_forms.py:1074 forms/application_forms.py:1216
-#: forms/application_forms.py:1264 forms/application_forms.py:1313
-#: forms/application_forms.py:1430 forms/application_forms.py:1534
+#: forms/application_forms.py:946 forms/application_forms.py:1012
+#: forms/application_forms.py:1039 forms/application_forms.py:1058
+#: forms/application_forms.py:1077 forms/application_forms.py:1219
+#: forms/application_forms.py:1267 forms/application_forms.py:1316
+#: forms/application_forms.py:1433 forms/application_forms.py:1537
 msgid "You must provide a URL"
 msgstr "Vous devez fournir une URL"
 
-#: forms/application_forms.py:944
+#: forms/application_forms.py:947
 msgid "Link to the journal’s peer review policy"
 msgstr "Lien vers la politique d’évaluation par les pair·e·s de la revue"
 
-#: forms/application_forms.py:947
+#: forms/application_forms.py:950
 msgid "Enter the URL for the journal’s <strong>peer review policy</strong> page"
 msgstr "Saisissez l'URL où se trouve <strong>la politique d'évaluation</strong>"
 
-#: forms/application_forms.py:959
+#: forms/application_forms.py:962
 msgid "When did the journal start to publish all content using an open license?"
-msgstr "Quand la revue a-t-elle commencé à publier son contenu sous une licence ouverte?"
+msgstr ""
+"Quand la revue a-t-elle commencé à publier son contenu sous une licence "
+"ouverte?"
 
-#: forms/application_forms.py:964
+#: forms/application_forms.py:967
 msgid ""
 "Please enter the year that the journal started to publish all content as "
 "true open access, according to DOAJ's <a "
 "href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-"
 "access/' target='_blank' rel='nofollow'>definition</a>."
-msgstr "Veuillez saisir l'année où la revue a commencé à publier tout son contenu en libre accès véritable, selon la <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>définition</a> du DOAJ"
+msgstr ""
+"Veuillez saisir l'année où la revue a commencé à publier tout son contenu"
+" en libre accès véritable, selon la <a "
+"href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-"
+"access/' target='_blank' rel='nofollow'>définition</a> du DOAJ"
 
-#: forms/application_forms.py:965
+#: forms/application_forms.py:968
 msgid ""
 "For journals that have flipped to open access, enter the year that the "
 "journal flipped, not the original launch date of the journal."
-msgstr "Pour les revues qui sont devenues en libre accès (flip), entrez l'année où la revue est passée au libre accès et non la date de lancement initial de la revue."
+msgstr ""
+"Pour les revues qui sont devenues en libre accès (flip), entrez l'année "
+"où la revue est passée au libre accès et non la date de lancement initial"
+" de la revue."
 
-#: forms/application_forms.py:966
+#: forms/application_forms.py:969
 msgid ""
 "For journals that have made digitised backfiles freely available, enter "
 "the year that the journal started publishing as a fully open access "
 "title, not the date of the earliest free content."
-msgstr "Pour les revues qui ont numérisé leurs anciens numéros pour les rendre disponibles gratuitement, entrez l’année où la revue a commencé à publier en libre accès complet et non la date du contenu gratuit le plus ancien."
+msgstr ""
+"Pour les revues qui ont numérisé leurs anciens numéros pour les rendre "
+"disponibles gratuitement, entrez l’année où la revue a commencé à publier"
+" en libre accès complet et non la date du contenu gratuit le plus ancien."
 
-#: forms/application_forms.py:969
+#: forms/application_forms.py:972
 msgid "Enter the Year (YYYY)."
 msgstr "Indiquez l'année (AAAA)"
 
-#: forms/application_forms.py:972
+#: forms/application_forms.py:975
 #, python-brace-format
 msgid ""
 "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be"
 " greater than {}"
-msgstr "La date de début de l'OA doit être une année au format à 4 chiffres (par exemple, 1987) et doit être supérieure à {}"
-
-#: forms/application_forms.py:984
-msgid "Does the journal routinely screen article submissions for plagiarism?"
-msgstr "La revue vérifie-t-elle systématiquement les articles soumis pour détecter le plagiat?"
+msgstr ""
+"La date de début de l'OA doit être une année au format à 4 chiffres (par "
+"exemple, 1987) et doit être supérieure à {}"
 
 #: forms/application_forms.py:987
+msgid "Does the journal routinely screen article submissions for plagiarism?"
+msgstr ""
+"La revue vérifie-t-elle systématiquement les articles soumis pour "
+"détecter le plagiat?"
+
+#: forms/application_forms.py:990
 msgid ""
 "Screening for plagiarism is recommended, but is not a requirement for "
 "inclusion in DOAJ. If the journal does screen for plagiarism, state the "
 "services(s) used on your website."
-msgstr "La vérification du plagiat est recommandée, mais n'est pas obligatoire pour l'inclusion au DOAJ. Si la revue effectue une vérification du plagiat, indiquez le(s) service(s) utilisé(s) sur votre site web."
+msgstr ""
+"La vérification du plagiat est recommandée, mais n'est pas obligatoire "
+"pour l'inclusion au DOAJ. Si la revue effectue une vérification du "
+"plagiat, indiquez le(s) service(s) utilisé(s) sur votre site web."
 
-#: forms/application_forms.py:1005
+#: forms/application_forms.py:1008
 msgid "Plagiarism screening"
 msgstr "Détection du plagiat"
 
-#: forms/application_forms.py:1011
+#: forms/application_forms.py:1014
 msgid "Link to the journal’s plagiarism policy"
 msgstr "Lien vers la politique de la revue sur le plagiat"
 
-#: forms/application_forms.py:1012
+#: forms/application_forms.py:1015
 msgid ""
 "The page should state that the journal actively checks for plagiarism and"
 " explain how this is done (including the name of any software or service "
 "used)."
-msgstr "Cette page doit indiquer que la revue vérifie activement le plagiat et expliquer comment cela est effectué (y compris le nom de tout logiciel ou service utilisé)."
+msgstr ""
+"Cette page doit indiquer que la revue vérifie activement le plagiat et "
+"expliquer comment cela est effectué (y compris le nom de tout logiciel ou"
+" service utilisé)."
 
-#: forms/application_forms.py:1019
+#: forms/application_forms.py:1022
 msgid "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
 msgstr "Saisissez l'URL où se trouve la <strong>politique de plagiat</strong>"
 
-#: forms/application_forms.py:1033
+#: forms/application_forms.py:1036
 msgid "Link to the journal’s <b>Aims & Scope</b>"
 msgstr ""
 "Lien vers les informations sur <b>les objectifs et la couverture de la "
 "revue</b>"
 
-#: forms/application_forms.py:1040
+#: forms/application_forms.py:1043
 msgid "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"
-msgstr "Saisissez l'URL où se trouvent les <strong>objectifs et la couverture</strong> de la revue"
+msgstr ""
+"Saisissez l'URL où se trouvent les <strong>objectifs et la "
+"couverture</strong> de la revue"
 
-#: forms/application_forms.py:1052
+#: forms/application_forms.py:1055
 msgid "Link to the journal’s <b>Editorial Board</b>"
 msgstr "Lien vers le <b>comité éditorial</b> de la revue"
 
-#: forms/application_forms.py:1059
+#: forms/application_forms.py:1062
 msgid "Enter the URL for the journal’s <strong>Editorial Board</strong> page"
 msgstr "Saisissez l'URL où se trouve le <strong>comité éditorial</strong>"
 
-#: forms/application_forms.py:1071
+#: forms/application_forms.py:1074
 msgid "Link to the journal’s <b>Instructions for Authors</b>"
 msgstr "Lien vers les <b>instructions aux auteur·trices</b>"
 
-#: forms/application_forms.py:1078
+#: forms/application_forms.py:1081
 msgid ""
 "Enter the URL for the journal’s <strong>Instructions for Authors</strong>"
 " page"
-msgstr "Saisissez l'URL où se trouvent les <strong>instructions aux auteur·trices</strong>"
+msgstr ""
+"Saisissez l'URL où se trouvent les <strong>instructions aux "
+"auteur·trices</strong>"
 
-#: forms/application_forms.py:1090
+#: forms/application_forms.py:1093
 msgid ""
 "Average number of <strong>weeks</strong> between article submission & "
 "publication"
-msgstr "Nombre moyen de <strong>semaines</strong> entre la soumission d’un article et sa publication"
+msgstr ""
+"Nombre moyen de <strong>semaines</strong> entre la soumission d’un "
+"article et sa publication"
 
-#: forms/application_forms.py:1094
+#: forms/application_forms.py:1097
 msgid "Enter an average number of weeks"
 msgstr "Entrez un nombre moyen de semaines"
 
-#: forms/application_forms.py:1106
+#: forms/application_forms.py:1109
 msgid "Does the journal charge fees for publishing an article (APCs)?"
 msgstr "La revue facture-t-elle des frais pour la publication d’un article (APC)?"
 
-#: forms/application_forms.py:1113
+#: forms/application_forms.py:1116
 msgid ""
 "Publication fees are sometimes called article processing charges (APCs). "
 "You should answer Yes if any fee is required from the author for "
 "publishing their paper."
-msgstr "Les frais de publication sont parfois appelés frais de traitement des articles (APC en anglais). Vous devez répondre Oui si des frais sont exigés à l'auteur·trice pour la publication de son article."
+msgstr ""
+"Les frais de publication sont parfois appelés frais de traitement des "
+"articles (APC en anglais). Vous devez répondre Oui si des frais sont "
+"exigés à l'auteur·trice pour la publication de son article."
 
-#: forms/application_forms.py:1117
+#: forms/application_forms.py:1120
 msgid "You must tell us about any APCs"
 msgstr "Vous devez nous informer de tout APC"
 
-#: forms/application_forms.py:1128 forms/application_forms.py:1190
+#: forms/application_forms.py:1131 forms/application_forms.py:1193
 msgid "Highest fee charged"
 msgstr "Frais les plus élevés pouvant être facturés"
 
-#: forms/application_forms.py:1137
+#: forms/application_forms.py:1140
 msgid ""
 "If the journal charges a range of fees for the publication of an article,"
 " enter the highest fee. If the fee can be paid in more than one currency,"
 " you may list them here."
-msgstr "Si la revue applique une gamme de frais pour la publication d'un article, indiquez le montant le plus élevé. Si les frais peuvent être payés dans plusieurs devises, vous pouvez les indiquer ici."
+msgstr ""
+"Si la revue applique une gamme de frais pour la publication d'un article,"
+" indiquez le montant le plus élevé. Si les frais peuvent être payés dans "
+"plusieurs devises, vous pouvez les indiquer ici."
 
-#: forms/application_forms.py:1175
+#: forms/application_forms.py:1178
 msgid "Enter the currency or currencies for the journal’s publishing fees"
 msgstr "Saisissez la ou les devises pour les frais de publication de la revue"
 
-#: forms/application_forms.py:1197
+#: forms/application_forms.py:1200
 msgid "Enter the value of the highest publishing fee the journal has charged"
-msgstr "Saisissez la valeur des frais de publication les plus élevés facturés par la revue"
+msgstr ""
+"Saisissez la valeur des frais de publication les plus élevés facturés par"
+" la revue"
 
-#: forms/application_forms.py:1210 forms/application_forms.py:2186
+#: forms/application_forms.py:1213 forms/application_forms.py:2228
 msgid "Publication fees"
 msgstr "Frais de publication"
 
-#: forms/application_forms.py:1213
+#: forms/application_forms.py:1216
 msgid ""
 "Link to the page where this is stated. The page must declare <b>whether "
 "or not</b> there is a fee to publish an article in the journal."
-msgstr "Lien vers la page où cette information se trouve. Celle-ci doit préciser s'il y a des frais pour publier un article dans la <b>revue ou non</b>."
+msgstr ""
+"Lien vers la page où cette information se trouve. Celle-ci doit préciser "
+"s'il y a des frais pour publier un article dans la <b>revue ou non</b>."
 
-#: forms/application_forms.py:1221
+#: forms/application_forms.py:1224
 msgid ""
 "Enter the URL for the journal’s <strong>publication fees</strong> "
 "information page"
-msgstr "Saisissez l'URL où se trouvent les informations sur les <strong>frais de publication</strong>"
+msgstr ""
+"Saisissez l'URL où se trouvent les informations sur les <strong>frais de "
+"publication</strong>"
 
-#: forms/application_forms.py:1233
+#: forms/application_forms.py:1236
 msgid ""
 "Does the journal provide a waiver or discount on publication fees for "
 "authors?"
-msgstr "La revue offre-t-elle une exonération ou une réduction des frais de publication aux auteur·trices?"
+msgstr ""
+"La revue offre-t-elle une exonération ou une réduction des frais de "
+"publication aux auteur·trices?"
 
-#: forms/application_forms.py:1241
+#: forms/application_forms.py:1244
 msgid ""
 "Answer <strong>Yes</strong> if the journal provides publication fee "
 "waivers for authors from low-income economies, discounts for authors from"
 " lower middle-income economies, and/or waivers and discounts for other "
 "authors with demonstrable needs."
-msgstr "Répondez <strong>Oui</strong> si la revue offre des exonérations de frais de publication pour les auteur·trices venant de pays à faible revenu, des réductions pour les auteur·trices venant de pays au revenu moyen inférieur ou des exonérations et réductions pour d'autres auteur·trices ayant des besoins pouvant être démontrés."
+msgstr ""
+"Répondez <strong>Oui</strong> si la revue offre des exonérations de frais"
+" de publication pour les auteur·trices venant de pays à faible revenu, "
+"des réductions pour les auteur·trices venant de pays au revenu moyen "
+"inférieur ou des exonérations et réductions pour d'autres auteur·trices "
+"ayant des besoins pouvant être démontrés."
 
-#: forms/application_forms.py:1258
+#: forms/application_forms.py:1261
 msgid "Publication fee waiver"
 msgstr "Exonération des frais de publication"
 
-#: forms/application_forms.py:1263
+#: forms/application_forms.py:1266
 msgid "Link to the journal’s waiver information."
 msgstr "Lien vers les informations sur l'exonération de frais"
 
-#: forms/application_forms.py:1271
+#: forms/application_forms.py:1274
 msgid "Enter the URL for the journal’s <strong>waiver information</strong> page"
-msgstr "Saisissez l'URL où se <strong>trouve l'information</strong> sur les exonérations"
+msgstr ""
+"Saisissez l'URL où se <strong>trouve l'information</strong> sur les "
+"exonérations"
 
-#: forms/application_forms.py:1285
+#: forms/application_forms.py:1288
 msgid "Does the journal charge any other fees to authors?"
 msgstr "La revue facture-t-elle d’autres frais aux auteurs ?"
 
-#: forms/application_forms.py:1292
+#: forms/application_forms.py:1295
 msgid ""
 "Declare all other charges: editorial processing charges, language editing"
 " fees, colour charges, submission fees, page charges, membership fees, "
 "print subscription costs, other supplementary charges"
-msgstr "Déclarez tous les autres frais : frais de traitement éditorial, frais de révision linguistique, frais de publication en couleur, frais de soumission, frais par page, frais d'adhésion, coûts d'abonnement à l’imprimé, autres frais supplémentaires."
+msgstr ""
+"Déclarez tous les autres frais : frais de traitement éditorial, frais de "
+"révision linguistique, frais de publication en couleur, frais de "
+"soumission, frais par page, frais d'adhésion, coûts d'abonnement à "
+"l’imprimé, autres frais supplémentaires."
 
-#: forms/application_forms.py:1295
+#: forms/application_forms.py:1298
 msgid "You must declare any other charges if they exist"
 msgstr "Vous devez déclarer tous les autres frais s'ils existent"
 
-#: forms/application_forms.py:1307 forms/application_forms.py:2209
+#: forms/application_forms.py:1310 forms/application_forms.py:2251
 msgid "Other fees"
 msgstr "Autres frais"
 
-#: forms/application_forms.py:1312
+#: forms/application_forms.py:1315
 msgid "Link to the journal’s fees information"
 msgstr "Lien vers les informations sur les frais"
 
-#: forms/application_forms.py:1319
+#: forms/application_forms.py:1322
 msgid "Enter the URL for the journal’s <strong>fees<strong> information page"
 msgstr ""
 "Saisissez l'URL où se trouvent les informations sur les "
 "<strong>frais</strong>"
 
-#: forms/application_forms.py:1333
+#: forms/application_forms.py:1336
 msgid "Long-term preservation service(s) where the journal is currently archived"
-msgstr "Service(s) de préservation à long terme où la revue est actuellement archivée"
+msgstr ""
+"Service(s) de préservation à long terme où la revue est actuellement "
+"archivée"
 
-#: forms/application_forms.py:1337
+#: forms/application_forms.py:1340
 msgid "CINES"
 msgstr "CINES"
 
-#: forms/application_forms.py:1338
+#: forms/application_forms.py:1341
 msgid "CLOCKSS"
 msgstr "CLOCKSS"
 
-#: forms/application_forms.py:1339
+#: forms/application_forms.py:1342
 msgid "LOCKSS"
 msgstr "LOCKSS"
 
-#: forms/application_forms.py:1340
+#: forms/application_forms.py:1343
 msgid "Internet Archive"
 msgstr "Internet Archive"
 
-#: forms/application_forms.py:1341
+#: forms/application_forms.py:1344
 msgid "PKP PN"
 msgstr "PKP PN"
 
-#: forms/application_forms.py:1342
+#: forms/application_forms.py:1345
 msgid "PubMed Central (PMC)"
 msgstr "PubMed Central (PMC)"
 
-#: forms/application_forms.py:1343
+#: forms/application_forms.py:1346
 msgid "Portico"
 msgstr "Portico"
 
-#: forms/application_forms.py:1344 forms/application_forms.py:1373
+#: forms/application_forms.py:1347 forms/application_forms.py:1376
 msgid "A national library"
 msgstr "Une bibliothèque nationale"
 
-#: forms/application_forms.py:1348
+#: forms/application_forms.py:1351
 msgid ""
 "<em>The journal content isn’t archived with a long-term preservation "
 "service</em>"
-msgstr "<em>Le contenu de la revue n’est pas archivé par un service de préservation à long terme</em>"
+msgstr ""
 
-#: forms/application_forms.py:1353
+#: forms/application_forms.py:1356
 msgid ""
 "Content must be actively deposited in each of the options you choose. If "
 "the journal is registered with a service but archiving is not yet active,"
 " choose <em>The journal content isn’t archived with a long-term "
 "preservation service</em>."
-msgstr "Le contenu doit être déposé en continu dans chacune des options que vous sélectionnez. Si la revue est enregistrée auprès d'un service, mais que l'archivage n'est pas encore actif, <em>choisissez « Le contenu de la revue n'est pas archivé par un service de préservation à long terme</em>."
+msgstr ""
+"Le contenu doit être déposé en continu dans chacune des options que vous "
+"sélectionnez. Si la revue est enregistrée auprès d'un service, mais que "
+"l'archivage n'est pas encore actif, <em>choisissez « Le contenu de la "
+"revue n'est pas archivé par un service de préservation à long terme</em>."
 
-#: forms/application_forms.py:1356
+#: forms/application_forms.py:1359
 msgid "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."
 msgstr "PubMed Central comprend PMC (États-Unis) et EuropePMC (Wellcome Trust)."
 
-#: forms/application_forms.py:1359 forms/application_forms.py:1496
-#: forms/application_forms.py:1605
+#: forms/application_forms.py:1362 forms/application_forms.py:1499
+#: forms/application_forms.py:1608
 msgid "Select <strong>at least one</strong> option"
 msgstr "Sélectionnez <strong>au moins une</strong> réponse"
 
-#: forms/application_forms.py:1380
+#: forms/application_forms.py:1383
 msgid "Name of national library"
 msgstr "Nom de la bibliothèque nationale"
 
-#: forms/application_forms.py:1387
+#: forms/application_forms.py:1390
 msgid ""
 "Enter the name(s) of the national library or libraries where the journal "
 "is archived"
-msgstr "Saisissez le(s) nom(s) de la ou des bibliothèques nationales où la revue est archivée"
+msgstr ""
+"Saisissez le(s) nom(s) de la ou des bibliothèques nationales où la revue "
+"est archivée"
 
-#: forms/application_forms.py:1403
+#: forms/application_forms.py:1406
 msgid "Other archiving policy:"
 msgstr "Autre politique de préservation :"
 
-#: forms/application_forms.py:1410
+#: forms/application_forms.py:1413
 msgid "Enter the name of another archiving policy"
 msgstr "Indiquez le nom de l'autre politique d'archivage"
 
-#: forms/application_forms.py:1429
+#: forms/application_forms.py:1432
 msgid "Link to the preservation and archiving information"
 msgstr "Lien vers les informations sur la préservation et l'archivage"
 
-#: forms/application_forms.py:1472
+#: forms/application_forms.py:1475
 msgid ""
 "Does the journal have a policy allowing authors to deposit versions of "
 "their work in an institutional or other repository of their choice? Where"
 " is this policy recorded?"
-msgstr "La revue a-t-elle une politique permettant aux auteur·trices de déposer des versions de leur article dans un dépôt institutionnel ou autre dépôt de leur choix? Où cette politique est-elle inscrite?"
+msgstr ""
+"La revue a-t-elle une politique permettant aux auteur·trices de déposer "
+"des versions de leur article dans un dépôt institutionnel ou autre dépôt "
+"de leur choix? Où cette politique est-elle inscrite?"
 
-#: forms/application_forms.py:1477
+#: forms/application_forms.py:1480
 msgid "Diadorim"
 msgstr "Diadorim"
 
-#: forms/application_forms.py:1478
+#: forms/application_forms.py:1481
 msgid "Dulcinea"
 msgstr "Dulcinea"
 
-#: forms/application_forms.py:1479
+#: forms/application_forms.py:1482
 msgid "Mir@bel"
 msgstr "Mir@bel"
 
-#: forms/application_forms.py:1480
+#: forms/application_forms.py:1483
 msgid "Open Policy Finder"
 msgstr "Open Policy Finder"
 
-#: forms/application_forms.py:1481
+#: forms/application_forms.py:1484
 msgid "Other (including publisher’s own site)"
 msgstr "Autre (y compris le site de l’éditeur)"
 
-#: forms/application_forms.py:1483
-msgid "<em>The journal has no repository policy</em>"
-msgstr "<em>La revue n’a pas de politique de dépôt</em>"
-
 #: forms/application_forms.py:1486
+#, fuzzy
+msgid "<em>The journal has no repository policy</em>"
+msgstr "Indiquez le nom de l'autre politique de dépôt"
+
+#: forms/application_forms.py:1489
 msgid ""
 "Many authors wish to deposit a copy of their paper in an institutional or"
 " other repository of their choice. What is the journal’s policy for this?"
-msgstr "De nombreux auteur·trices souhaitent déposer une copie de leur article dans un dépôt institutionnel ou autre dépôt de leur choix. Quelle est la politique de la revue à ce sujet?"
+msgstr ""
+"De nombreux auteur·trices souhaitent déposer une copie de leur article "
+"dans un dépôt institutionnel ou autre dépôt de leur choix. Quelle est la "
+"politique de la revue à ce sujet?"
 
-#: forms/application_forms.py:1488
+#: forms/application_forms.py:1491
 msgid ""
 "You should state your policy about the different versions of the paper:\n"
 "                          <ul style='list-style-type: none;'>\n"
@@ -929,315 +1055,340 @@ msgid ""
 "                          <li>Published version (Version of Record)</li>\n"
 "                          </ul>"
 msgstr ""
-"Vous devez préciser la politique de la revue concernant les différentes versions de l'article:\n"
+"Vous devez préciser la politique de la revue concernant les différentes "
+"versions de l'article:\n"
 "                          <ul style='list-style-type: none;'>\n"
 "                          <li>Article soumis</li>\n"
 "                          <li>Article accepté (manuscrit accepté)</li>\n"
 "                          <li>Article publié (version de l’éditeur)</li>\n"
 "                          </ul>"
 
-#: forms/application_forms.py:1503
+#: forms/application_forms.py:1506
 msgid "Name of other website where policy is registered"
 msgstr "Nom de l'autre site web où la politique est inscrite"
 
-#: forms/application_forms.py:1510
+#: forms/application_forms.py:1513
 msgid "Enter the name of another repository policy"
 msgstr "Indiquez le nom de l'autre politique de dépôt"
 
-#: forms/application_forms.py:1535
+#: forms/application_forms.py:1538
 msgid ""
 "Provide the link to the policy in the selected directory. Or select "
 "'Other' and provide a link to the information on your website."
-msgstr "Indiquez le lien vers la politique dans le répertoire sélectionné. Ou sélectionne 'Autre' et indiquez le lien vers les informations sur votre site web."
+msgstr ""
+"Indiquez le lien vers la politique dans le répertoire sélectionné. Ou "
+"sélectionne 'Autre' et indiquez le lien vers les informations sur votre "
+"site web."
 
-#: forms/application_forms.py:1586
+#: forms/application_forms.py:1589
 msgid "Persistent article identifiers used by the journal"
 msgstr "Identifiants pérennes d’articles utilisés par la revue"
 
-#: forms/application_forms.py:1589
+#: forms/application_forms.py:1592
 msgid "Select at least one"
 msgstr "Sélectionnez au moins un"
 
-#: forms/application_forms.py:1591
+#: forms/application_forms.py:1594
 msgid "DOIs"
 msgstr "DOI"
 
-#: forms/application_forms.py:1592
+#: forms/application_forms.py:1595
 msgid "ARKs"
 msgstr "ARK"
 
-#: forms/application_forms.py:1593
+#: forms/application_forms.py:1596
 msgid "Handles"
 msgstr "Handle"
 
-#: forms/application_forms.py:1594
+#: forms/application_forms.py:1597
 msgid "PURLs"
 msgstr "PURL"
 
-#: forms/application_forms.py:1596
+#: forms/application_forms.py:1599
 msgid "<em>The journal does not use persistent article identifiers</em>"
-msgstr "<em>La revue n’utilise pas d'identifiants pérennes d’articles</em>"
+msgstr ""
 
-#: forms/application_forms.py:1600
+#: forms/application_forms.py:1603
+#, fuzzy
 msgid ""
 "A persistent article identifier (PID) is used to find the article no "
 "matter where it is located. The most common type of PID is the digital "
 "object identifier (DOI). "
-msgstr "Un identifiant d'article pérenne (PID) est utilisé pour retrouver l'article peu importe où il se trouve. Le type de PID le plus courant est le DOI (Digital Object Identifier)."
+msgstr ""
+"Un identifiant d'article pérenne (PID) est utilisé pour retrouver "
+"l'article peu importe où il se trouve. Le type de PID le plus courant est"
+" le DOI (Digital Object Identifier)."
 
-#: forms/application_forms.py:1602
+#: forms/application_forms.py:1605
 msgid ""
 "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' "
 "target='_blank' rel='noopener'>Read more about PIDs.</a>"
-msgstr "<a href='https://fr.wikipedia.org/wiki/Identifiant_p%C3%A9renne' target='_blank' rel='noopener'>Pour en savoir plus sur les PID</a>."
+msgstr ""
+"<a href='https://fr.wikipedia.org/wiki/Identifiant_p%C3%A9renne' "
+"target='_blank' rel='noopener'>Pour en savoir plus sur les PID</a>."
 
-#: forms/application_forms.py:1612
+#: forms/application_forms.py:1615
 msgid "Other identifier"
 msgstr "Autre identifiant"
 
-#: forms/application_forms.py:1619
+#: forms/application_forms.py:1622
 msgid "Enter the name of another type of identifier"
 msgstr "Indiquez le nom de l'autre type d'identifiant"
 
-#: forms/application_forms.py:1636
+#: forms/application_forms.py:1639
 msgid "Subscribe to Open"
 msgstr "Subscribe to Open (S2O)"
 
-#: forms/application_forms.py:1640
+#: forms/application_forms.py:1643
 msgid ""
 "Is the journal part of the <a "
 "href='https://subscribetoopencommunity.org/' target='_blank' "
 "rel='noopener'>Subscribe to Open</a> initiative?"
-msgstr "Est-ce que la revue fait partie d'une initiative <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>Subscribe to Open (S2O)</a>?"
+msgstr ""
+"Est-ce que la revue fait partie d'une initiative <a "
+"href='https://subscribetoopencommunity.org/' target='_blank' "
+"rel='noopener'>Subscribe to Open (S2O)</a>?"
 
-#: forms/application_forms.py:1649
+#: forms/application_forms.py:1672
 msgid "Reason for rejection"
 msgstr ""
 
-#: forms/application_forms.py:1657
+#: forms/application_forms.py:1680
 msgid "Additional info"
 msgstr ""
 
-#: forms/application_forms.py:1660
+#: forms/application_forms.py:1683
 msgid ""
 "The selected reason for rejection, and any additional information you "
 "include, are sent to the journal contact with the rejection email."
 msgstr ""
 
-#: forms/application_forms.py:1671
+#: forms/application_forms.py:1694
 msgid "DOAJ Account"
 msgstr ""
 
-#: forms/application_forms.py:1684
+#: forms/application_forms.py:1707
 msgid "You must confirm the account id"
 msgstr ""
 
-#: forms/application_forms.py:1695
+#: forms/application_forms.py:1718
 msgid "Change status"
 msgstr ""
 
-#: forms/application_forms.py:1710
+#: forms/application_forms.py:1733
 msgid ""
 "Set the status to 'In Progress' to signal to the applicant that you have "
 "started your review.Set the status to 'Completed' to alert the Editor "
 "that you have completed your review."
 msgstr ""
 
-#: forms/application_forms.py:1718
+#: forms/application_forms.py:1741
 msgid ""
 "Revert the status to 'In Progress' to signal to the Associate Editor that"
 " further work is needed.Set the status to 'Ready' to alert the Managing "
 "Editor that you have completed your review."
 msgstr ""
 
-#: forms/application_forms.py:1733
+#: forms/application_forms.py:1756
 msgid "Group"
 msgstr ""
 
-#: forms/application_forms.py:1756
+#: forms/application_forms.py:1779
 msgid "Individual"
 msgstr ""
 
-#: forms/application_forms.py:1771
+#: forms/application_forms.py:1794
 msgid "Discontinued on"
 msgstr ""
 
-#: forms/application_forms.py:1774
+#: forms/application_forms.py:1797
 msgid "Date must be a big-end formatted date (e.g. 2020-11-23)"
 msgstr ""
 
-#: forms/application_forms.py:1781
+#: forms/application_forms.py:1804
 msgid "You cannot enter both a discontinued date and continuation information."
 msgstr ""
 
-#: forms/application_forms.py:1786
+#: forms/application_forms.py:1809
 msgid ""
 "Please enter the discontinued date in the form YYYY-MM-DD (e.g. "
 "2020-11-23).  If the day of the month is not known, please use '01' (e.g."
 " 2020-11-01)"
 msgstr ""
 
-#: forms/application_forms.py:1795
+#: forms/application_forms.py:1818
 msgid "Continues an <strong>older</strong> journal with the ISSN(s)"
 msgstr ""
 
-#: forms/application_forms.py:1800 forms/application_forms.py:1828
+#: forms/application_forms.py:1823 forms/application_forms.py:1851
 msgid ""
 "The ISSN provided in both fields must be different. Please make sure to "
 "enter the ISSN of an older journal for the first field and the ISSN of a "
 "newer journal for the second field. They cannot be the same."
 msgstr ""
 
-#: forms/application_forms.py:1805 forms/application_forms.py:1833
+#: forms/application_forms.py:1828 forms/application_forms.py:1856
 msgid "You cannot enter both continuation information and a discontinued date"
 msgstr ""
 
-#: forms/application_forms.py:1815
+#: forms/application_forms.py:1838
 msgid "Enter the ISSN(s) of the previous title(s) of this journal."
 msgstr ""
 
-#: forms/application_forms.py:1823
+#: forms/application_forms.py:1846
 msgid "Continued by a <strong>newer</strong> journal with the ISSN(s)"
 msgstr ""
 
-#: forms/application_forms.py:1838
+#: forms/application_forms.py:1861
 msgid "Enter the ISSN(s) of the later title(s) that continue this publication."
 msgstr ""
 
-#: forms/application_forms.py:1851
+#: forms/application_forms.py:1874
 msgid "Assign one or a maximum of two subject classifications"
 msgstr ""
 
-#: forms/application_forms.py:1854
+#: forms/application_forms.py:1877
 msgid "Selecting a subject will not automatically select its sub-categories"
 msgstr ""
 
-#: forms/application_forms.py:1865
+#: forms/application_forms.py:1888
 #, python-format
 msgid ""
 "This field is required when setting the Application Status to %(y)s, "
 "%(z)s or %(a)s"
 msgstr ""
 
-#: forms/application_forms.py:1889 forms/application_forms.py:2321
+#: forms/application_forms.py:1912 forms/application_forms.py:2373
 msgid "Notes"
 msgstr ""
 
-#: forms/application_forms.py:2060 forms/application_forms.py:2350
+#: forms/application_forms.py:2083 forms/application_forms.py:2402
 msgid "Allow save without validation"
 msgstr ""
 
-#: forms/application_forms.py:2076
+#: forms/application_forms.py:2118
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:3
-#: templates-v2/_application-form/includes/_i18n_translations.html:10
+#: templates-v2/_application-form/includes/_i18n_translations.html:11
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:5
 #: templates-v2/public/public_application.html:15
 msgid "Open access compliance"
 msgstr "Exigences en matière de libre accès"
 
-#: forms/application_forms.py:2087
+#: forms/application_forms.py:2129
 #: templates-v2/_application-form/includes/_fieldset_about.html:6
 msgid "About the journal"
 msgstr "À propos de la revue"
 
-#: forms/application_forms.py:2102
+#: forms/application_forms.py:2144
 msgid "Publisher"
 msgstr "Éditeur"
 
-#: forms/application_forms.py:2112
+#: forms/application_forms.py:2154
 msgid "Other organisation, if applicable"
 msgstr "Autre organisation, s’il y a lieu"
 
-#: forms/application_forms.py:2122
+#: forms/application_forms.py:2164
 msgid "Licensing"
 msgstr "Conditions d'utilisation"
 
-#: forms/application_forms.py:2133
+#: forms/application_forms.py:2175
 msgid "Embedded licenses"
 msgstr "Affichage des licences ou conditions d’utilisation"
 
-#: forms/application_forms.py:2143
+#: forms/application_forms.py:2185
 msgid "Copyright"
 msgstr "Droit d’auteur"
 
-#: forms/application_forms.py:2164
+#: forms/application_forms.py:2206
 msgid "Plagiarism"
 msgstr "Plagiat"
 
-#: forms/application_forms.py:2174
+#: forms/application_forms.py:2216
 #: templates-v2/_application-form/includes/_fieldset_editorial.html:6
-#: templates-v2/_application-form/includes/_i18n_translations.html:13
+#: templates-v2/_application-form/includes/_i18n_translations.html:14
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:14
 #: templates-v2/public/public_application.html:18
 msgid "Editorial"
 msgstr "Pratiques éditoriales"
 
-#: forms/application_forms.py:2199
+#: forms/application_forms.py:2241
 msgid "Publication fee waivers"
 msgstr "Exonération des frais de publication"
 
-#: forms/application_forms.py:2219
+#: forms/application_forms.py:2261
 msgid "Archiving policy"
 msgstr "Politique d’archivage"
 
-#: forms/application_forms.py:2231
+#: forms/application_forms.py:2273
 msgid "Repository policy"
 msgstr "Politique de dépôt"
 
-#: forms/application_forms.py:2242
+#: forms/application_forms.py:2284
 msgid "Unique identifiers & structured data"
 msgstr "Identifiants uniques et données structurées"
 
-#: forms/application_forms.py:2252
+#: forms/application_forms.py:2294
 msgid "Specify labels for this journal"
 msgstr ""
 
-#: forms/application_forms.py:2262
+#: forms/application_forms.py:2306
 msgid "Quick reject"
 msgstr ""
 
-#: forms/application_forms.py:2272
+#: forms/application_forms.py:2316
 msgid "Re-assign publisher account"
 msgstr ""
 
-#: forms/application_forms.py:2281
+#: forms/application_forms.py:2333
 msgid "Status"
 msgstr ""
 
-#: forms/application_forms.py:2290
+#: forms/application_forms.py:2342
 msgid "Assign for review"
 msgstr ""
 
-#: forms/application_forms.py:2301
+#: forms/application_forms.py:2353
 msgid "Continuations"
 msgstr ""
 
-#: forms/application_forms.py:2312
+#: forms/application_forms.py:2364
 msgid "Subject classification"
 msgstr ""
 
-#: forms/application_forms.py:2360
+#: forms/application_forms.py:2412
 msgid "Bulk edit"
 msgstr ""
 
-#: forms/application_forms.py:2706
+#: forms/application_forms.py:2759
 msgid "No editor assigned"
 msgstr ""
 
-#: forms/application_forms.py:2878
+#: forms/application_forms.py:2895 forms/application_forms.py:3085
+msgid "This answer is required"
+msgstr ""
+
+#: forms/application_forms.py:2905
+msgid "Please enter a valid URL. It should start with http or https"
+msgstr ""
+
+#: forms/application_forms.py:2931
 #, python-brace-format
 msgid "This value should be between {min} and {max}"
 msgstr "Cette valeur doit être comprise entre {min} et {max}"
 
-#: forms/application_forms.py:2883
+#: forms/application_forms.py:2936
 #, python-brace-format
 msgid "This value should be bigger than {gte}"
 msgstr "Cette valeur doit être supérieure à {gte}"
 
-#: forms/application_forms.py:2887
+#: forms/application_forms.py:2940
 #, python-brace-format
 msgid "This value should be smaller than {lte}"
 msgstr "Cette valeur doit être inférieure à {lte}"
+
+#: forms/application_forms.py:3015 forms/application_forms.py:3019
+msgid "No script tags allowed"
+msgstr ""
 
 #: forms/validate.py:141
 msgid "Invalid URL."
@@ -1247,7 +1398,7 @@ msgstr ""
 msgid "Invalid input."
 msgstr ""
 
-#: forms/validate.py:588
+#: forms/validate.py:604
 msgid "This field is required."
 msgstr ""
 
@@ -1276,17 +1427,36 @@ msgstr "Copié!"
 msgid "Add"
 msgstr "Ajouter"
 
+#: templates-v2/_application-form/includes/_fieldset_about.html:2
+#: templates-v2/_application-form/includes/_fieldset_best-practice.html:2
+#: templates-v2/_application-form/includes/_fieldset_business-model.html:2
+#: templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:2
+#: templates-v2/_application-form/includes/_fieldset_editorial.html:2
+#: templates-v2/public/_application-form/includes/_buttons.html:4
+msgid "Back"
+msgstr "Retour"
+
 #: templates-v2/_application-form/includes/_fieldset_about.html:3
 #: templates-v2/_application-form/includes/_fieldset_best-practice.html:3
 #: templates-v2/_application-form/includes/_fieldset_business-model.html:3
 #: templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:3
 #: templates-v2/_application-form/includes/_fieldset_editorial.html:3
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:2
+msgid "Page"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_fieldset_about.html:3
+#: templates-v2/_application-form/includes/_fieldset_best-practice.html:3
+#: templates-v2/_application-form/includes/_fieldset_business-model.html:3
+#: templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:3
+#: templates-v2/_application-form/includes/_fieldset_editorial.html:3
+#: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:2
+#: templates-v2/public/_application-form/includes/_review.html:3
 msgid "of"
 msgstr "sur"
 
 #: templates-v2/_application-form/includes/_fieldset_best-practice.html:6
-#: templates-v2/_application-form/includes/_i18n_translations.html:15
+#: templates-v2/_application-form/includes/_i18n_translations.html:16
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:20
 #: templates-v2/public/public_application.html:20
 msgid "Best practice"
@@ -1298,41 +1468,45 @@ msgid ""
 "around findability, preserving the content and ethical publishing "
 "practices."
 msgstr ""
-"Les bonnes pratiques de cette section suivent les standards de publication "
-"visant la découvrabilité, la préservation des contenus et le respect de l’éthique "
-"éditoriale."
+"Les bonnes pratiques de cette section suivent les standards de "
+"publication visant la découvrabilité, la préservation des contenus et le "
+"respect de l’éthique éditoriale."
 
 #: templates-v2/_application-form/includes/_fieldset_best-practice.html:9
 msgid ""
 "We encourage journals to adopt these best practices but they are "
 "<strong>not</strong> mandatory for DOAJ indexing."
 msgstr ""
-"Nous encourageons les revues à les adopter, mais elles ne sont pas obligatoires "
-"pour l’indexation dans le DOAJ."
+"Nous encourageons les revues à les adopter, mais elles ne sont pas "
+"obligatoires pour l’indexation dans le DOAJ."
 
 #: templates-v2/_application-form/includes/_fieldset_business-model.html:6
 msgid "Business Model"
 msgstr "Modèle économique"
 
 #: templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:6
-#: templates-v2/_application-form/includes/_i18n_translations.html:12
+#: templates-v2/_application-form/includes/_i18n_translations.html:13
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:11
 #: templates-v2/public/public_application.html:17
 msgid "Copyright & licensing"
 msgstr "Droit d’auteur et conditions d'utilisation"
 
-# portality/templates-v2/_application-form/includes/_fieldset_oa_compliance.html
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:7
 msgid ""
 "You are now logged in. When you submit your application, it will be "
 "registered to this account. Please note:"
-msgstr "Vous êtes maintenant connecté à votre compte. Lorsque vous soumetterez votre candidature, elle sera enregistrée sur ce compte. Veuillez noter que:"
+msgstr ""
+"Vous êtes maintenant connecté à votre compte. Lorsque vous soumetterez "
+"votre candidature, elle sera enregistrée sur ce compte. Veuillez noter "
+"que:"
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:9
 msgid ""
 "The application form takes approximately <strong>30 minutes</strong> to "
 "complete."
-msgstr "Il faut environ <strong>30 minutes</strong> pour compléter le formulaire de candidature."
+msgstr ""
+"Il faut environ <strong>30 minutes</strong> pour compléter le formulaire "
+"de candidature."
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:10
 msgid "Your progress is automatically saved."
@@ -1344,7 +1518,11 @@ msgid ""
 "You can return to this application at any time by clicking <a "
 "href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
 "<em>Publisher dashboard</em></a> at the top."
-msgstr "Vous pourrez revenir à ce formulaire à tout moment en cliquant sur <a href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; <em>Publisher dashboard</em></a>  (Mon compte → Éditeur) en haut de la page"
+msgstr ""
+"Vous pourrez revenir à ce formulaire à tout moment en cliquant sur <a "
+"href=\"%(url)s\" target=\"_blank\"><em>Dashboard</em> &rarr; "
+"<em>Publisher dashboard</em></a>  (Mon compte → Éditeur) en haut de la "
+"page"
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:12
 #: templates-v2/public/account/login_to_apply.html:14
@@ -1352,7 +1530,10 @@ msgid ""
 "You can <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
 "only.pdf\" target=\"_blank\">print or download</a> a PDF list of the "
 "questions."
-msgstr "Vous pouvez <a href=\"/static/doaj/docs/DOAJquestions-for-reference-only.pdf\" target=\"_blank\">imprimer ou télécharger</a> une liste des questions au format PDF."
+msgstr ""
+"Vous pouvez <a href=\"/static/doaj/docs/DOAJquestions-for-reference-"
+"only.pdf\" target=\"_blank\">imprimer ou télécharger</a> une liste des "
+"questions au format PDF."
 
 #: templates-v2/_application-form/includes/_fieldset_oa_compliance.html:13
 msgid "You must apply online."
@@ -1387,43 +1568,128 @@ msgid ""
 "full texts of articles, crawl them for indexing,\n"
 "    pass them as data to software, or use them for any other lawful "
 "purpose."
-msgstr "Le libre accès désigne la situation où les titulaires des droits d'auteur sur les articles accordent certains droits d’utilisation à des tiers au moyen d’une licence ouverte (telle que Creative Commons ou un équivalent). Une licence ouverte offre un accès gratuit et immédiat aux articles et permet à toute personne de lire, télécharger, copier, transmettre, imprimer, chercher ou faire un lien vers le texte intégral de ces articles, les disséquer pour les indexer, s’en servir de données pour un logiciel, ou s’en servir à toute autre fin légale."
+msgstr ""
+"Le libre accès désigne la situation où les titulaires des droits d'auteur"
+" sur les articles accordent certains droits d’utilisation à des tiers au "
+"moyen d’une licence ouverte (telle que Creative Commons ou un "
+"équivalent). Une licence ouverte offre un accès gratuit et immédiat aux "
+"articles et permet à toute personne de lire, télécharger, copier, "
+"transmettre, imprimer, chercher ou faire un lien vers le texte intégral "
+"de ces articles, les disséquer pour les indexer, s’en servir de données "
+"pour un logiciel, ou s’en servir à toute autre fin légale."
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:6
+#: templates-v2/_application-form/includes/_i18n_translations.html:7
 #: templates-v2/public/_application-form/includes/_buttons.html:5
 msgid "Next"
 msgstr "Suivant"
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:7
+#: templates-v2/_application-form/includes/_i18n_translations.html:8
 msgid "Open link"
 msgstr "Ouvrir le lien"
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:8
+#: templates-v2/_application-form/includes/_i18n_translations.html:9
 msgid "Full contents"
 msgstr "Contenu complet"
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:9
+#: templates-v2/_application-form/includes/_i18n_translations.html:10
 msgid "Start typing…"
 msgstr "Commencez à taper..."
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:11
+#: templates-v2/_application-form/includes/_i18n_translations.html:12
 #: templates-v2/public/public_application.html:16
 msgid "About the Journal"
 msgstr "À propos de la revue"
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:14
+#: templates-v2/_application-form/includes/_i18n_translations.html:15
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:17
 #: templates-v2/public/public_application.html:19
 msgid "Business model"
 msgstr "Modèle économique"
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:16
+#: templates-v2/_application-form/includes/_i18n_translations.html:17
 msgid "Edit this section"
 msgstr "Modifier cette section"
 
-#: templates-v2/_application-form/includes/_i18n_translations.html:17
+#: templates-v2/_application-form/includes/_i18n_translations.html:18
 msgid "Open URL in a new tab"
 msgstr "Ouvrir l'URL dans un nouvel onglet"
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:21
+msgid ""
+"DOAJ only indexes open access journals which comply with the statement "
+"above. Please check and update the open access statement of your journal."
+" You may return to this application at any time."
+msgstr ""
+"DOAJ indexe seulement les revues en libre accès qui respectent "
+"l'affirmation ci-dessus. Veuillez vérifier et mettre à jour la "
+"déclaration en matière de libre accès de votre revue. Vous pouvez revenir"
+" à cette candidature à tout moment."
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:24
+#, python-format
+msgid ""
+"This field is required, because you answered \"%s\" to the previous "
+"question."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:27
+#, python-format
+msgid "You need to provide the answer to either this field or %s field (or both)"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:30
+#, python-format
+msgid "Value of this field and %s field must be different"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:33
+msgid "This only can be set when requirements are met"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:36
+msgid "This only can be true when requirements are met"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:39
+msgid "Script tags are not allowed"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:42
+msgid ""
+"This field is required, must be a year in 4 digit format (eg. 1987) and "
+"needs to get value bigger than 1900 and smaller than current year"
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:45
+msgid "Please enter a valid date in YYYY-MM-DD format."
+msgstr ""
+
+#: templates-v2/public/public_application.html:44
+msgid ""
+"You cannot submit the application because it contains some invalid "
+"fields. Please review your answers and try again."
+msgstr ""
+"Vous ne pouvez pas soumettre le formulaire car il contient des champs non"
+" valides. Veuillez vérifier vos réponses et réessayer."
+
+#: templates-v2/public/public_application.html:81
+msgid ""
+"You are about to change the form language. Any unsaved changes may be "
+"lost. To keep your changes, close this message and click the \"Save "
+"Draft\" button at the bottom of the page."
+msgstr ""
+"Vous êtes sur le point de changer la langue du formulaire. Les "
+"modifications non enregistrées risquent d’être perdues. Pour les "
+"conserver, fermez ce message et cliquez sur le bouton \"Enregistrer le "
+"brouillon\" en bas de la page."
+
+#: templates-v2/public/public_application.html:83
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates-v2/public/public_application.html:84
+msgid "Submit Anyway"
+msgstr "Soumettre quand même"
 
 #: templates-v2/public/_application-form/includes/_aside_menu.html:2
 #: templates-v2/public/account/login_to_apply.html:40
@@ -1466,10 +1732,6 @@ msgstr "https://doaj.org/apply/why-index/"
 msgid "Why index your journal in DOAJ?"
 msgstr "Pourquoi indexer votre revue dans DOAJ ?"
 
-#: templates-v2/public/_application-form/includes/_buttons.html:4
-msgid "Back"
-msgstr "Retour"
-
 #: templates-v2/public/_application-form/includes/_buttons.html:9
 msgid "Submit"
 msgstr "Envoyer"
@@ -1479,7 +1741,8 @@ msgid "Save the draft"
 msgstr "Enregistrer le brouillon"
 
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:2
-msgid "Application progress"
+#, fuzzy
+msgid "Form progress"
 msgstr "Progression du formulaire"
 
 #: templates-v2/public/_application-form/includes/_pagination_menu.html:8
@@ -1492,10 +1755,11 @@ msgid "Review your answers"
 msgstr "Révisez vos réponses"
 
 #: templates-v2/public/_application-form/includes/_review.html:21
+#, fuzzy
 msgid ""
-"I've reviewed the answers in this application and confirm that the "
-"journal meets DOAJ's basic criteria. I understand that if the application"
-" is rejected, it may be embargoed anywhere between 6 months and 3 years."
+"I've reviewed the answers in this form and confirm that the journal meets"
+" DOAJ's basic criteria. I understand that if rejected, the journal may be"
+" embargoed anywhere between 6 months and 3 years."
 msgstr ""
 "J’ai examiné les réponses fournies dans cette candidature et je confirme "
 "que la revue satisfait aux critères de sélection de base du DOAJ. Je "
@@ -1539,75 +1803,8 @@ msgid ""
 "If you cannot log in, <a href=\"%(forgot_account)s\">reset your "
 "password</a>. If you still cannot login, <a href=\"/contact\">contact "
 "us</a>."
-msgstr "Si vous ne pouvez pas vous connecter, <a href=\"%(forgot_account)s\">réinitialisez votre mot de passe</a>. Si cela ne fonctionne toujours pas, <a href=\"/contact\">contactez-nous</a>."
-
-#: templates-v2/public/public_application.html:44
-msgid ""
-"You cannot submit the application because it contains some invalid fields. "
-"Please review your answers and try again."
 msgstr ""
-"Vous ne pouvez pas soumettre le formulaire car il contient des champs non "
-"valides. Veuillez vérifier vos réponses et réessayer."
-
-#: templates-v2/public/public_application.html:81
-msgid "You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this "
-      "message and click the \"Save Draft\" button at the bottom of the page."
-msgstr "Vous êtes sur le point de changer la langue du formulaire. Les modifications non enregistrées risquent d’être perdues. "
-        "Pour les conserver, fermez ce message et cliquez sur le bouton \"Enregistrer le brouillon\" en bas de la page."
-
-#: templates-v2/public/public_application.html:83
-msgid "Cancel"
-msgstr "Annuler"
-
-#: templates-v2/public/public_application.html:84
-msgid "Submit Anyway"
-msgstr "Soumettre quand même"
-
-#~ msgid "<em>The journal has no repository policy</em>"
-#~ msgstr "<em>La revue n’a pas de politique de dépôt</em>"
-
-#~ msgid "You should state your policy about the different versions of the paper:"
-#~ msgstr ""
-#~ "Vous devez préciser la politique de "
-#~ "la revue concernant les différentes "
-#~ "versions de l'article:"
-
-#~ msgid "Submitted version"
-#~ msgstr "Article soumis"
-
-#~ msgid "Accepted version (Author Accepted Manuscript)"
-#~ msgstr "Article accepté (manuscrit accepté)"
-
-#~ msgid "Published version (Version of Record)"
-#~ msgstr "Article publié (version de l’éditeur)"
-
-#~ msgid "<em>The journal does not use persistent article identifiers</em>"
-#~ msgstr "<em>La revue n’utilise pas d'identifiants pérennes d’articles</em>"
-
-#~ msgid ""
-#~ "I’ve reviewed the answers to my "
-#~ "application and confirm that the "
-#~ "information provided is accurate and "
-#~ "true."
-#~ msgstr ""
-#~ "J'ai révisé les réponses de ma "
-#~ "candidature et je confirme que les "
-#~ "informations fournies sont exactes et "
-#~ "véridiques."
-
-#~ msgid ""
-#~ "You are about to change the form"
-#~ " language. Any unsaved changes may be"
-#~ " lost. To keep your changes, close"
-#~ " this message and click the \"Save"
-#~ " Draft\" button at the bottom of "
-#~ "the page."
-#~ msgstr ""
-#~ "Vous êtes sur le point de changer"
-#~ " la langue du formulaire. Les "
-#~ "modifications non enregistrées risquent d’être"
-#~ " perdues. Pour les conserver, fermez "
-#~ "ce message et cliquez sur le "
-#~ "bouton \"Enregistrer le brouillon\" en "
-#~ "bas de la page."
+"Si vous ne pouvez pas vous connecter, <a "
+"href=\"%(forgot_account)s\">réinitialisez votre mot de passe</a>. Si cela"
+" ne fonctionne toujours pas, <a href=\"/contact\">contactez-nous</a>."
 

@@ -745,7 +745,7 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "conditional": [
-            {"field": "license", "value": lazy_gettext("Publisher's own license")}
+            {"field": "license", "value": "Publisher's own license"}
         ],
         "options": [
             {"display": lazy_gettext("Attribution"), "value": "BY"},
@@ -1348,7 +1348,7 @@ class FieldDefinitions:
              "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": lazy_gettext("Other"), "value": "other",
              "subfields": ["preservation_service_other", "preservation_service_url"]},
-            {"display": lazy_gettext(HTMLString("<em>The journal content isn’t archived with a long-term preservation service</em>")),
+            {"display": HTMLString(lazy_gettext("<em>The journal content isn’t archived with a long-term preservation service</em>")),
              "value": "none", "exclusive": True}
         ],
         "help": {
@@ -1483,7 +1483,7 @@ class FieldDefinitions:
             {"display": lazy_gettext("Open Policy Finder"), "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
             {"display": lazy_gettext("Other (including publisher’s own site)"), "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
-            {"display": lazy_gettext(HTMLString("<em>The journal has no repository policy</em>")), "value": "none", "exclusive": True}
+            {"display": HTMLString(lazy_gettext("<em>The journal has no repository policy</em>")), "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": [lazy_gettext("Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -1596,7 +1596,7 @@ class FieldDefinitions:
             {"display": lazy_gettext("Handles"), "value": "Handles"},
             {"display": lazy_gettext("PURLs"), "value": "PURL"},
             {"display": lazy_gettext("Other"), "value": "other", "subfields": ["persistent_identifiers_other"]},
-            {"display": lazy_gettext(HTMLString("<em>The journal does not use persistent article identifiers</em>")), "value": "none",
+            {"display": HTMLString(lazy_gettext("<em>The journal does not use persistent article identifiers</em>")), "value": "none",
              "exclusive": True}
         ],
         "help": {
@@ -2892,7 +2892,7 @@ class RequiredBuilder:
         if "message" in settings:
             html_attrs["data-parsley-required-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-required-message"] = "<p><small>" + "This answer is required" + "</p></small>"
+            html_attrs["data-parsley-required-message"] = "<p><small>" + lazy_gettext("This answer is required") + "</p></small>"
         html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
@@ -2902,7 +2902,7 @@ class RequiredBuilder:
 
 class IsURLBuilder:
     # ~~->$ IsURL:FormValidator~~
-    msg = "<p><small>" + "Please enter a valid URL. It should start with http or https" + "</p></small>"
+    msg = "<p><small>" + lazy_gettext("Please enter a valid URL. It should start with http or https") + "</p></small>"
 
     @staticmethod
     def render(settings, html_attrs):
@@ -3010,13 +3010,13 @@ class NoScriptTagBuilder:
     def render(settings, html_attrs):
         html_attrs["data-parsley-no-script-tag"] = ""
         if "message" in settings:
-            html_attrs["data-parsley-noScriptTag-message"] = "<p><small>" + settings["message"] + "</small></p>"
+            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + "No script tags allowed" + "</p></small>"
+            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + lazy_gettext("No script tags allowed") + "</p></small>"
 
     @staticmethod
     def wtforms(field, settings):
-        return NoScriptTag(settings.get("message", "No script tags allowed"))
+        return NoScriptTag(settings.get("message", lazy_gettext("No script tags allowed")))
 
 
 class OptionalIfBuilder:
@@ -3082,7 +3082,7 @@ class RequiredIfBuilder:
         if "message" in settings:
             html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-required-if-message"] = "<p><small>" + "This answer is required" + "</small></p>"
+            html_attrs["data-parsley-required-if-message"] = "<p><small>" + lazy_gettext("This answer is required") + "</small></p>"
 
     @staticmethod
     def wtforms(field, settings):

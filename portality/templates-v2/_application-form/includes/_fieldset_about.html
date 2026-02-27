@@ -1,6 +1,6 @@
 {% if not notabs %}
-<p class="prevBtn label label--secondary" role="button" style="cursor: pointer;">&larr; Back</p>
-<p class="label af-pager">Page 2 {{ _("of") }} {{ FORM | length + 1}}</p>
+<p class="prevBtn label label--secondary" role="button" style="cursor: pointer;">&larr; {{ _('Back') }}</p>
+<p class="label af-pager">{{ _("Page") }} 2 {{ _("of") }} {{ FORM | length + 1}}</p>
 {% endif %}
 
 <legend class="form__legend"><div><span data-feather="edit-3"></span> {{ _("About the journal") }}</div></legend>

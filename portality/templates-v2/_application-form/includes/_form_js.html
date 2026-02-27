@@ -1,10 +1,16 @@
-<script type="text/javascript" src="/static/js/i18n.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/vendor/edges/src/components/selectors.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/js/doaj.fieldrender.edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<script type="text/javascript" src="/static/js/i18n.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% if with_i18n %}
+{% include "_application-form/includes/_i18n_translations.html" %}
+{% endif %}
+
 <script type="text/javascript" src="/static/js/application_form.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 
 {% if lcc_tree %}
 <script type="text/javascript">

@@ -88,7 +88,6 @@
 {% endblock %}
 
 {% block public_js scoped %}
-<!--The order matters. Do not change the order of the html files-->
-{% include "_application-form/includes/_form_js.html" %}
-{% include "_application-form/includes/_i18n_translations.html" %}
+    {% set with_i18n = True %}
+    {% include "_application-form/includes/_form_js.html" %}
 {% endblock %}

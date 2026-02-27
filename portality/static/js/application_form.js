@@ -815,7 +815,8 @@ window.Parsley.addValidator("requiredIf", {
         return true;
     },
     messages: {
-        en: 'This field is required, because you answered "%s" to the previous question.'
+        en: doaj.i18n.get('This field is required, because you answered "%s" to the previous question.'),
+        fr: doaj.i18n.get('This field is required, because you answered "%s" to the previous question.'),
     },
     priority: 33
 });
@@ -825,7 +826,8 @@ window.Parsley.addValidator("requiredvalue", {
         return (value === requirement);
     },
     messages: {
-        en: '<p><small>DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.</small></p>'
+        en: `<p><small>${doaj.i18n.get('DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.')}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get('DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.')}</small></p>`,
     },
     priority: 32
 });
@@ -839,7 +841,8 @@ window.Parsley.addValidator("optionalIf", {
         return false;
     },
     messages: {
-        en: 'You need to provide the answer to either this field or %s field (or both)'
+        en: doaj.i18n.get('You need to provide the answer to either this field or %s field (or both)'),
+        fr: doaj.i18n.get('You need to provide the answer to either this field or %s field (or both)'),
     },
     priority: 300
 });
@@ -849,7 +852,8 @@ window.Parsley.addValidator("differentTo", {
       return (!value || ($("[name = " + requirement + "]")).val().toLowerCase() !== value.toLowerCase());
     },
     messages: {
-        en: 'Value of this field and %s field must be different'
+        en: doaj.i18n.get('Value of this field and %s field must be different'),
+        fr: doaj.i18n.get('Value of this field and %s field must be different')
     },
     priority: 1
 });
@@ -902,7 +906,8 @@ window.Parsley.addValidator("onlyIf", {
         }
     },
     messages: {
-        en: 'This only can be set when requirements are met'
+        en: doaj.i18n.get('This only can be set when requirements are met'),
+        fr: doaj.i18n.get('This only can be set when requirements are met')
     },
     priority: 1
 });
@@ -925,7 +930,8 @@ window.Parsley.addValidator("onlyIfExists", {
         }
     },
     messages: {
-        en: 'This only can be set when requirements are met'
+        en: doaj.i18n.get('This only can be set when requirements are met'),
+        fr: doaj.i18n.get('This only can be set when requirements are met')
     },
     priority: 1
 });
@@ -957,7 +963,8 @@ window.Parsley.addValidator("notIf", {
         }
     },
     messages: {
-        en: 'This only can be true when requirements are met'
+        en: doaj.i18n.get('This only can be true when requirements are met'),
+        fr: doaj.i18n.get('This only can be true when requirements are met')
     },
     priority: 1
 });
@@ -968,7 +975,8 @@ window.Parsley.addValidator("noScriptTag", {
 
     },
     messages: {
-        en: 'Script tags are not allowed'
+        en: doaj.i18n.get('Script tags are not allowed'),
+        fr: doaj.i18n.get('Script tags are not allowed')
     },
     priority: 300
     }
@@ -983,7 +991,8 @@ window.Parsley.addValidator("year", {
         return (y >= requirement && y <= new Date().getFullYear())
     },
     messages: {
-        en: '<p><small>This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year<p><small>'
+        en: `<p><small>${doaj.i18n.get("This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year")}<p><small>`,
+        fr: `<p><small>${doaj.i18n.get("This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year")}<p><small>`
     },
     priority: 22
 });
@@ -1006,10 +1015,13 @@ window.Parsley.addValidator("validdate", {
             date.getMonth() === month - 1 &&
             date.getDate() === day
         );
-      },
-      messages: {
-          en: 'Please enter a valid date in YYYY-MM-DD format.'
-      }
+    },
+
+    messages: {
+        en: doaj.i18n.get('Please enter a valid date in YYYY-MM-DD format.'),
+        fr: doaj.i18n.get('Please enter a valid date in YYYY-MM-DD format.')
+    },
+    priority: 22
 })
 
 
