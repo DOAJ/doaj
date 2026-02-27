@@ -1,13 +1,13 @@
 {% if not notabs %}
     <p class="prevBtn label label--secondary" role="button" style="cursor: pointer;">&larr; Back</p>
-    <p class="label af-pager">Page 7 of {{ FORM | length + 1}}</p>
+    <p class="label af-pager">Page 7 {{ _("of") }} {{ FORM | length + 1}}</p>
 {% endif %}
 
 {% set t = { "val": 0} %}
 {% if obj %}
     <legend class="form__legend"><div>{{ obj.data.bibjson.title }}</div></legend>
 {% else %}
-    <legend class="form__legend"><div><span data-feather="eye"></span> Review your answers</div></legend>
+    <legend class="form__legend"><div><span data-feather="eye"></span> {{ _("Review your answers") }}</div></legend>
 {% endif %}
 
 <table id="review_table" class="review-table">
@@ -18,6 +18,6 @@
 {% if formulaic_context.name == "public" or formulaic_context.name == "update_request" %}
     <div class="form__question">
         <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
-        <label for="reviewed">I've reviewed the answers in this form and confirm that the journal meets DOAJ's basic criteria. I understand that if rejected, the journal may be embargoed anywhere between 6 months and 3 years.</label>
+        <label for="reviewed">{{ _("I've reviewed the answers in this form and confirm that the journal meets DOAJ's basic criteria. I understand that if rejected, the journal may be embargoed anywhere between 6 months and 3 years.") }}</label>
     </div>
 {% endif %}
