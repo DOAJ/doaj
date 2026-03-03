@@ -1,8 +1,6 @@
 // ~~ AdminAlerts:Edge ~~
 // ~~-> Edges:Technology ~~
-$.extend(true, doaj, {
-
-    adminAutoassignSearch : {
+doaj.adminAutoassignSearch = {
         activeEdges : {},
 
         init : function(params) {
@@ -195,7 +193,6 @@ $.extend(true, doaj, {
             doaj.adminAutoassignSearch.activeEdges[selector] = e;
         }
     }
-});
 
 
 jQuery(document).ready(function($) {
