@@ -112,6 +112,10 @@ def create_index(index_type):
         if it in CREATED_INDICES:
             return
         core.initialise_index(app, core.es_connection, only_mappings=[it])
+        # Wait for the cluster state to fully settle after creating a new index+alias.
+        # Without this, a subsequent ES.get on a different alias can transiently fail
+        # with NotFoundError while the cluster state update is still propagating.
+        core.es_connection.cluster.health(wait_for_events='languid', timeout='5s', request_timeout=10)
         CREATED_INDICES.append(it)
 
 
@@ -120,7 +124,6 @@ def dao_proxy(dao_method, type="class"):
         @classmethod
         @functools.wraps(dao_method)
         def proxy_method(cls, *args, **kwargs):
-            print(f'passing through proxy for {dao_method.__name__}, type: {type}')
             create_index(cls.__type__)
             return dao_method.__func__(cls, *args, **kwargs)
 
@@ -129,7 +132,6 @@ def dao_proxy(dao_method, type="class"):
     else:
         @functools.wraps(dao_method)
         def proxy_method(self, *args, **kwargs):
-            print(f'passing through proxy for {dao_method.__name__}, type: {type}')
             create_index(self.__type__)
             return dao_method(self, *args, **kwargs)
 
@@ -190,24 +192,18 @@ class DoajTestCase(TestCase):
         scheduled_short_queue.immediate = True
         scheduled_long_queue.immediate = True
 
-        depth = 0
-        m = dao.DomainObject.pull
-        while hasattr(m, '__wrapped__'):
-            depth += 1
-            m = m.__wrapped__
-        print(f"\n[DoajTestCase.setUpClass] {cls.__name__}: DomainObject.pull proxy depth before patching = {depth}")
-
-        dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
-        dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
-        dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
-        dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
-        dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
-        dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
-        dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
-        dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
-        dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
-        dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
-        dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
+        if not hasattr(dao.DomainObject.pull, '__wrapped__'):
+            dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
+            dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
+            dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
+            dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
+            dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
+            dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
+            dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
+            dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
+            dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
+            dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
+            dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
 
         # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()

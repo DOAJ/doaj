@@ -414,9 +414,6 @@ class DomainObject(UserDict, object):
             return None
         if out is None:
             return None
-        
-        print('pull: ' + str(out))
-        print('all: ' + str(cls.all()))
 
         return cls(**out)
 

@@ -2,7 +2,6 @@ from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.util import url_for
-from portality.lib.thread_utils import wait_until
 
 
 class TestArticlePage(DoajTestCase):
@@ -23,8 +22,6 @@ class TestArticlePage(DoajTestCase):
         source["id"] = article_id
         tombstone = models.ArticleTombstone(**source)
         tombstone.save(blocking=True)
-        print(models.ArticleTombstone.all())
-        #assert wait_until(lambda: models.ArticleTombstone.pull(article_id) is not None)
 
         with self.app_test.test_client() as t_client:
             response = t_client.get(url_for('doaj.article_page', identifier=article_id))
@@ -50,8 +47,6 @@ class TestArticlePage(DoajTestCase):
         )
         article = models.Article(**a_source)
         article.save(blocking=True)
-
-        print(models.ArticleTombstone.all())
 
         with self.app_test.test_client() as t_client:
             response = t_client.get(url_for('doaj.article_page', identifier=article.id))
@@ -221,8 +216,6 @@ class TestErrorHandlers(DoajTestCase):
         source["id"] = article_id
         tombstone = models.ArticleTombstone(**source)
         tombstone.save(blocking=True)
-
-        print(models.ArticleTombstone.all())
 
         with self.app_test.test_client() as t_client:
             response = t_client.get(url_for('doaj.article_page', identifier=article_id))

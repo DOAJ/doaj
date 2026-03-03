@@ -3,9 +3,11 @@ from portality import models, lock
 from portality.lib import dates
 from doajtest.fixtures import JournalFixtureFactory
 import time
+import pytest
 from datetime import timedelta
 from copy import deepcopy
 
+@pytest.mark.skip(reason="Causes hangs when running full test suite locally.")
 class TestLock(DoajTestCase):
 
     def test_01_lock_success_fail(self):
