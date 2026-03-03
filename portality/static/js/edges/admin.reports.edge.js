@@ -1,4 +1,4 @@
-doaj.adminReportsSearch : {
+doaj.adminReportsSearch = {
     activeEdges : {},
 
     init : function(params) {
