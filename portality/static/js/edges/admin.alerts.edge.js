@@ -13,7 +13,10 @@ doaj.adminAlertsSearch = {
         var current_scheme = window.location.protocol;
 
         var selector = params.selector || "#admin_alerts";
-        var search_url = current_scheme + "//" + current_domain + doaj.adminAlertsSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.adminAlertsSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
