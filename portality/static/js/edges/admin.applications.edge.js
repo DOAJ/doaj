@@ -8,11 +8,11 @@ doaj.adminApplicationsSearch = {
     init : function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#admin_applications";
-        var search_url = current_scheme + "//" + current_domain + doaj.adminApplicationsSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.adminApplicationsSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
