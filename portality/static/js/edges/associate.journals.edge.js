@@ -343,7 +343,7 @@ doaj.associateJournalsSearch = {
         doaj.associateJournalsSearch.activeEdges[selector] = e;
     }
 }
-
+    
 jQuery(document).ready(function($) {
     doaj.associateJournalsSearch.init();
 });
