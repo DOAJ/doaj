@@ -9,9 +9,6 @@ doaj.adminAlertsSearch = {
     init: function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#admin_alerts";
 
         var search_url = doaj.edgeUtil.url.build(
