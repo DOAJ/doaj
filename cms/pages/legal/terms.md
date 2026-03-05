@@ -39,7 +39,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ### Copyright
 
 1. Copyright of this site and the intellectual property contained in it is owned by DOAJ Fonden, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, Denmark and defaults to all rights reserved unless otherwise specified.
-2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.  The DOAJ Foundation has adopted [a patent non-assertion policy](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing).
+2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.
 3. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in DOAJ Fonden or other third parties.
 
 ### Patent non-assertion pledge

@@ -25,4 +25,4 @@ from portality.tasks.process_event import process_event_execute
 
 # Conditionally enable new application autochecking
 if app.config.get("AUTOCHECK_INCOMING", False):
-    from portality.tasks.application_autochecks import application_autochecks
+    from portality.tasks.application_autochecks import application_autochecks # noqa
