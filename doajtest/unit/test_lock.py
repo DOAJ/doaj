@@ -2,12 +2,10 @@ from doajtest.helpers import DoajTestCase
 from portality import models, lock
 from portality.lib import dates
 from doajtest.fixtures import JournalFixtureFactory
-import time
-import pytest
 from datetime import timedelta
 from copy import deepcopy
 
-@pytest.mark.skip(reason="Causes hangs when running full test suite locally.")
+
 class TestLock(DoajTestCase):
 
     def test_01_lock_success_fail(self):
@@ -16,13 +14,11 @@ class TestLock(DoajTestCase):
         j.save(blocking=True)
 
         # first set a lock
-        l = lock.lock("journal", j.id, "testuser")
+        l = lock.lock("journal", j.id, "testuser", blocking=True)
         assert l.about == j.id
         assert l.type == "journal"
         assert l.username == "testuser"
         assert not l.is_expired()
-
-        time.sleep(1)
 
         # now try and set the lock again for the same thing by the same user
         l2 = lock.lock("journal", j.id, "testuser")
@@ -42,9 +38,7 @@ class TestLock(DoajTestCase):
         j.save(blocking=True)
 
         # first set a lock
-        l = lock.lock("journal", j.id, "testuser")
-
-        time.sleep(1)
+        l = lock.lock("journal", j.id, "testuser", blocking=True)
 
         # try and unlock as a different user
         unlocked = lock.unlock("journal", j.id, "otheruser")
@@ -79,27 +73,28 @@ class TestLock(DoajTestCase):
         j.save()
         ids.append(j.id)
 
-        time.sleep(2)
-
         ls = lock.batch_lock("journal", ids, "testuser")
         assert len(ls) == 5
 
-        time.sleep(2)
+        # refresh so the locks (saved non-blocking inside batch_lock) are immediately searchable
+        models.Lock.refresh()
 
         report = lock.batch_unlock("journal", ids, "testuser")
         assert len(report["success"]) == 5
         assert len(report["fail"]) == 0
 
-        time.sleep(2)
+        # refresh so the deletes from batch_unlock are visible before the next lock
+        models.Lock.refresh()
 
         # now lock an individual record by a different user and check that no locks are set
         # in batch
-        l = lock.lock("journal", ids[3], "otheruser")
-
-        time.sleep(2)
+        l = lock.lock("journal", ids[3], "otheruser", blocking=True)
 
         with self.assertRaises(lock.Locked):
             ls = lock.batch_lock("journal", ids, "testuser")
+
+        # refresh so any rollback writes/deletes from batch_lock are visible
+        models.Lock.refresh()
 
         for id in ids:
             assert lock.has_lock("journal", id, "testuser") is False
@@ -109,12 +104,9 @@ class TestLock(DoajTestCase):
         j = models.Journal(**source)
         j.save()
 
-        time.sleep(2)
-
         after = dates.now() + timedelta(seconds=2300)
 
-        # set a lock with a longer timout
+        # set a lock with a longer timeout
         l = lock.lock("journal", j.id, "testuser", 2400)
 
         assert dates.parse(l.expires) > after
-
