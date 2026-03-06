@@ -468,6 +468,7 @@ class FieldDefinitions:
         "default": "",
         "options_fn": "iso_language_list",
         "repeatable": {
+            "label": "Language",
             "minimum": 1,
             "initial": 5
         },
@@ -3421,8 +3422,10 @@ class SelectBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         sf = SelectField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
-
+            label = field.get("label", "")
+            if field.get("repeatable", {}).get("label", ""):
+                label = field["repeatable"]["label"]
+            sf = FieldList(sf, label=label, min_entries=field.get("repeatable", {}).get("initial", 1))
         return sf
 
 
