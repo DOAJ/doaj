@@ -100,7 +100,7 @@ tests:
   - step: Click in the languages box
     results:
     - You can start to type and suggested languages appear
-  - step: Select and language and then click the arrow next to it
+  - step: Select a language and then click the arrow next to it
     results:
     - A dropdown list of all available languages appears.
   - step: Click Add Another

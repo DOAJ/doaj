@@ -3420,12 +3420,12 @@ class SelectBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
+        if field.get("repeatable", {}).get("label", ""):
+            wtfargs['label'] = field["repeatable"]["label"]
         sf = SelectField(**wtfargs)
         if "repeatable" in field:
-            label = field.get("label", "")
-            if field.get("repeatable", {}).get("label", ""):
-                label = field["repeatable"]["label"]
-            sf = FieldList(sf, label=label, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+
         return sf
 
 
