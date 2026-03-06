@@ -51,6 +51,9 @@ local_store/tmp/*
 # test detritous
 doajtest/unit/*.csv
 /.pytest_cache/
+doaj_seleniumtest_publisher.png
+test-results/
+
 
 # Logs created while debugging
 *.log
