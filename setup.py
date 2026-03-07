@@ -74,6 +74,7 @@ setup(
                  "bs4==0.0.2",   # beautifulsoup for HTML parsing
                  'openapi-spec-validator~=0.5',
                  "cryptography~=42.0", # for ad-hoc https
+                 "ruff",
                  ],
 
         # additional test dependencies for the test-extras target
