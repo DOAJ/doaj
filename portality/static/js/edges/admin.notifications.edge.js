@@ -32,11 +32,11 @@ doaj.adminNotificationsSearch = {
     init : function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#admin_notifications";
-        var search_url = current_scheme + "//" + current_domain + doaj.adminNotificationsSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.adminNotificationsSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
