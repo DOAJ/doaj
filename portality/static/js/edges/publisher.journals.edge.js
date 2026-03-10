@@ -23,11 +23,11 @@ doaj.publisherJournalsSearch = {
     init : function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#publisher_journals";
-        var search_url = current_scheme + "//" + current_domain + doaj.publisherJournalsSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.publisherJournalsSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
