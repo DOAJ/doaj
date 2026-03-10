@@ -37,11 +37,11 @@ doaj.adminEditorGroupSearch = {
     init : function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#editor_groups";
-        var search_url = current_scheme + "//" + current_domain + doaj.adminEditorGroupSearchConfig.searchPath;
+        
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.adminEditorGroupSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
