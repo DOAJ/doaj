@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from portality.constants import ConstantList
 from portality.lib import dates
 
+
 ###############################################
 ## Common coerce functions
 ###############################################
