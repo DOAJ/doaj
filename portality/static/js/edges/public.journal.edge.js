@@ -29,7 +29,7 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
         var selector = params.selector || "#public-journal-search";
 
         var search_url = doaj.edgeUtil.url.build(
-            doaj.publicSearchConfig.searchPath
+            doaj.publicSearchConfig.publicSearchPath
         );
 
         var countFormat = edges.numFormat({
