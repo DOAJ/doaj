@@ -15,7 +15,7 @@ tests:
         results:
           - Confirm the background job at /admin/background_jobs shows outcome fail
           - Confirm message "The journal could not be reinstated because at least one other record with matching ISSN(s) already exists in DOAJ"
-      - step: Go to /admin/journal/<transactions_journal_id>
+      - step: Go to "Transactions of Paradoxical Botany"'s admin form (link provided with the test)
       - step: Attempt to reinstate the journal by clicking the "Reinstate" button
         results:
           - The journal is not reinstated

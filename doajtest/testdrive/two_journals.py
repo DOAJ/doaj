@@ -76,7 +76,8 @@ class TwoJournals(TestDrive):
             },
             "journals": {
                 jindoaj.bibjson().title: {
-                    "id": jindoaj.id
+                    "id": jindoaj.id,
+                    "admin form": app.config.get("BASE_URL", "") + "/admin/journal/" + jindoaj.id
                 },
                 jwithdrawn.bibjson().title: {
                     "id": jwithdrawn.id,
