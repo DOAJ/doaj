@@ -28,11 +28,11 @@ doaj.publisherApplicationsSearch = {
     init : function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#publisher_applications";
-        var search_url = current_scheme + "//" + current_domain + doaj.publisherApplicationsSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.publisherApplicationsSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
