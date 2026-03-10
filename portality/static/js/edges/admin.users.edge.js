@@ -28,11 +28,11 @@ doaj.userSearch = {
             params = {}
         }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#users";
-        var search_url = current_scheme + "//" + current_domain + doaj.userSearchConfig.userSearchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.userSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
