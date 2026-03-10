@@ -31,7 +31,7 @@ doaj.userSearch = {
         var selector = params.selector || "#users";
 
         var search_url = doaj.edgeUtil.url.build(
-            doaj.userSearchConfig.searchPath
+            doaj.userSearchConfig.userSearchPath
         );
 
         var countFormat = edges.numFormat({
