@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 from portality.constants import ConstantList
 from portality.lib import dates
+from portality.core import app
 
 
 ###############################################
@@ -212,7 +213,7 @@ class SeamlessMixin(object):
     __SEAMLESS_APPLY_STRUCT_ON_INIT__ = True
     __SEAMLESS_CHECK_REQUIRED_ON_INIT__ = True
     __SEAMLESS_SILENT_PRUNE__ = False
-    __SEAMLESS_ALLOW_OTHER_FIELDS__ = False
+    __SEAMLESS_ALLOW_OTHER_FIELDS__ = app.config.get("ALLOW_OTHER_FIELDS", False)
 
     def __init__(self,
                     raw=None,    # The raw data
