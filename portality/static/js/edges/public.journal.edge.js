@@ -26,11 +26,11 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
     init : function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#public-journal-search";
-        var search_url = current_scheme + "//" + current_domain + doaj.publicSearchConfig.publicSearchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.publicSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
