@@ -3,14 +3,20 @@ testset: Article Deletion Notifications
 
 tests:
   - title: Article Deletion Notification Generation
-    setup:
-      - As an admin or through the API, delete one or more articles belonging to a publisher.
-      - Ensure the articles were deleted within the last 7 days.
     context:
       role: admin
     steps:
-      - step: Log in as the publisher who owned the deleted articles after an hour (scheduler configured to run hourly for testing).
-      - step: Check the notifications (bell icon or /notifications).
+      - step: Run the testdrive for deleted_articles to set up the fixtures for this test
+        path: /testdrive/deleted_articles
+      - step: Log in to the system as an administrator
+      - step: Go to the admin notifications page
+        path: /admin/notifications
+        results:
+        - There are no notifications listed for either user account supplied in the testdrive
+      - step: Go to the testdrive page without reloading it, and click the button marked "Run background task".
+        results:
+        - The text beneath the button confirms that the script executed successfully
+      - step: Return to the admin notifications page
         results:
           - A new notification is present with the title "Deleted articles in your journal(s) this week".
           - The notification content lists the titles and details of the deleted articles.

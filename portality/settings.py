@@ -32,6 +32,9 @@ REMEMBER_COOKIE_SECURE = True
 # CAUTION - this can modify the index so should NEVER be used in production!
 TESTDRIVE_ENABLED = False
 
+# List of script names which can be executed via the testdrive.
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications"]
+
 ####################################
 # Debug Mode
 

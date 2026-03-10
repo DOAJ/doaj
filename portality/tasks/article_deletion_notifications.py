@@ -10,6 +10,7 @@ from portality.core import app
 from portality.lib import dates
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_short_queue as queue
+from portality.util import url_for
 
 
 class ArticleDeletionNotificationsBackgroundTask(BackgroundTask):
@@ -18,60 +19,40 @@ class ArticleDeletionNotificationsBackgroundTask(BackgroundTask):
     def run(self):
         job = self.background_job
 
-        # Determine date range: last 7 days
-        since = dates.before_now(7 * 24 * 60 * 60)
-        since_str = dates.format(since)
+        # note we're using the doaj url_for wrapper, not the flask url_for directly, due to the request context hack required
+        action_url = url_for("publisher.upload_file")
 
         # Query tombstones created in the last week
-        q = {
-            "query": {
-                "range": {
-                    "created_date": {"gte": since_str}
-                }
-            }
-        }
+        # Determine date range: last 7 days
+        since = dates.before_now(7 * 24 * 60 * 60)
+        q = models.ArticleTombstoneRecentlyDeletedQuery(since=since)
 
         owner_to_items: Dict[str, List[dict]] = {}
 
-        for stone in models.ArticleTombstone.iterate(q, page_size=1000):
-            admin = getattr(stone, 'data', {}).get('admin', {}) if hasattr(stone, 'data') else {}
-            owner = admin.get('owner')
+        for stone in models.ArticleTombstone.iterate_unstable(q.query(), page_size=1000):
+            owner = stone.owner
             if not owner:
                 continue
 
             bj = stone.bibjson()
-            title = bj.title if hasattr(bj, 'title') else stone.data.get('bibjson', {}).get('title')
+            title = bj.title
             authors = []
-            try:
-                for a in bj.author or []:
-                    n = a.get('name') if isinstance(a, dict) else None
-                    if n:
-                        authors.append(n)
-            except Exception:
-                pass
+            for a in bj.author or []:
+                n = a.get('name') if isinstance(a, dict) else None
+                if n:
+                    authors.append(n)
 
-            volume = bj.volume if hasattr(bj, 'volume') else None
-            issue = bj.number if hasattr(bj, 'number') else None
-            start_page = bj.start_page if hasattr(bj, 'start_page') else None
-            end_page = bj.end_page if hasattr(bj, 'end_page') else None
+            volume = bj.volume
+            issue = bj.number
+            start_page = bj.start_page
+            end_page = bj.end_page
             pages = None
             if start_page and end_page:
                 pages = f"{start_page}-{end_page}"
             elif start_page:
                 pages = str(start_page)
-
-            issns = []
-            try:
-                issns = bj.issns()
-            except Exception:
-                pass
-
-            journal_name = None
-            try:
-                journal_name = bj.journal_title
-            except Exception:
-                # fall back to raw
-                journal_name = stone.data.get('bibjson', {}).get('journal', {}).get('title')
+            issns = bj.issns()
+            journal_name = bj.journal_title
 
             item = {
                 'title': title,
@@ -98,13 +79,9 @@ class ArticleDeletionNotificationsBackgroundTask(BackgroundTask):
                 job.add_audit_message(f"Owner account {owner} not found; skipping {len(items)} items")
                 continue
 
-            # Build notification content
-            short = "Deleted articles in your journal(s) this week"
+            source_id = "bg:job:" + self.__action__ + ":publisher"
 
-            lines = [
-                "The following articles have been deleted from DOAJ in the last week:",
-                "",
-            ]
+            lines = []
             for it in items:
                 auth = (", ".join(it['authors'])) if it['authors'] else "Unknown author"
                 issn_str = ", ".join([i for i in (it.get('issns') or []) if i])
@@ -114,17 +91,17 @@ class ArticleDeletionNotificationsBackgroundTask(BackgroundTask):
                 jn = f" ({it['journal']})" if it.get('journal') else ""
                 line = f"- {it['title'] or 'Untitled'} by {auth}{vol_str}{iss_str}{pg_str} [{issn_str}]{jn}"
                 lines.append(line)
-            lines.append("")
-            lines.append("Please upload replacement records if appropriate.")
 
             note = models.Notification()
             note.who = owner
             note.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS
-            note.short = short
-            note.long = "\n".join(lines)
+            note.long = notify_svc.long_notification(source_id).format(list_of_articles="\n".join(lines))
+            note.short = notify_svc.short_notification(source_id)
+            note.action = action_url
 
             notify_svc.notify(note)
             total_notes += 1
+            job.add_audit_message(f"Sending notification for owner {owner} with {len(items)} deleted articles")
 
         job.add_audit_message(f"Sent {total_notes} publisher deletion notifications.")
 
