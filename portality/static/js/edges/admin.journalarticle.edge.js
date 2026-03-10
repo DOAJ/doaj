@@ -91,11 +91,11 @@ doaj.adminJournalArticleSearch = {
     init : function(params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#admin_journals_and_articles";
-        var search_url = current_scheme + "//" + current_domain + doaj.adminJournalArticleSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.adminJournalArticleSearchConfig.searchPath
+        );
 
         var journalSelected = doaj.adminJournalArticleSearch.journalSelected(selector);
         var anySelected = doaj.adminJournalArticleSearch.anySelected(selector);
