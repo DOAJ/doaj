@@ -1,10 +1,8 @@
 import time
 
-from doajtest.helpers import DoajTestCase, StoreLocalPatcher
-from doajtest.unit_tester import bgtask_tester
+from doajtest.helpers import DoajTestCase
 from portality.background import BackgroundApi
 from portality.core import app
-from portality.store import StoreFactory
 from portality.tasks import application_autochecks
 from doajtest.fixtures import ApplicationFixtureFactory
 from portality import models, constants

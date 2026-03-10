@@ -29,3 +29,16 @@ tests:
     - On the left, the "Month" facet is displayed.
     - The selected month is displayed as selected in the "Month" facet.
 
+
+- title: Journal with Last Full Review date
+  context:
+    role: anonymous
+  steps:
+  - step: To prepare for this test, ensure that a journal is publicly available in DOAJ with a Last Full Review date set in the past.
+      You can use the testdrive setup linked here if none are available
+    path: /testdrive/publisher_with_journal
+  - step: Search for the above journal on the public search page (e.g. by the identifier provided by the testdrive)
+    path: /search/journals
+  - step: click the journal title to go to the ToC page
+    results:
+    - At the bottom of the ToC page is a "Last Full Review" date, showing the date set in the journal record.

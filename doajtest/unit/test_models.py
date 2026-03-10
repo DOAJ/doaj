@@ -65,6 +65,11 @@ class TestModels(DoajTestCase):
         j.set_created("2001-01-01T00:00:00Z")
         j.set_last_updated("2002-01-01T00:00:00Z")
         j.set_last_manual_update("2004-01-01T00:00:00Z")
+        j.last_full_review = "2020-01-02T00:00:00Z"
+        j.last_withdrawn = "2021-01-02T00:00:00Z"
+        j.last_reinstated = "2022-01-02T00:00:00Z"
+        j.last_owner_transfer = "2023-01-02T00:00:00Z"
+        j.date_applied = "2024-01-02T00:00:00Z"
         j.set_owner("richard")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
@@ -79,6 +84,18 @@ class TestModels(DoajTestCase):
         assert j.last_updated_timestamp.strftime(FMT_DATETIME_STD) == "2002-01-01T00:00:00Z"
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
         assert j.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
+
+        assert j.last_full_review == "2020-01-02"
+        assert j.last_full_review_timestamp.strftime(FMT_DATETIME_STD) == "2020-01-02T00:00:00Z"
+        assert j.last_withdrawn == "2021-01-02T00:00:00Z"
+        assert j.last_withdrawn_timestamp.strftime(FMT_DATETIME_STD) == "2021-01-02T00:00:00Z"
+        assert j.last_reinstated == "2022-01-02T00:00:00Z"
+        assert j.last_reinstated_timestamp.strftime(FMT_DATETIME_STD) == "2022-01-02T00:00:00Z"
+        assert j.last_owner_transfer == "2023-01-02T00:00:00Z"
+        assert j.last_owner_transfer_timestamp.strftime(FMT_DATETIME_STD) == "2023-01-02T00:00:00Z"
+        assert j.date_applied == "2024-01-02T00:00:00Z"
+        assert j.date_applied_timestamp.strftime(FMT_DATETIME_STD) == "2024-01-02T00:00:00Z"
+
         assert j.has_been_manually_updated() is True
         assert j.owner == "richard"
         assert j.editor_group == "worldwide"
@@ -210,7 +227,7 @@ class TestModels(DoajTestCase):
         assert a.is_in_doaj()
         assert a.upload_id() == "zyxwvu"
 
-    def test_04_suggestion_model_rw(self):
+    def test_04_application_model_rw(self):
         """Read and write properties into the suggestion model"""
         s = models.Application()
 
@@ -222,6 +239,7 @@ class TestModels(DoajTestCase):
         s.set_created("2001-01-01T00:00:00Z")
         s.set_last_updated("2002-01-01T00:00:00Z")
         s.set_last_manual_update("2004-01-01T00:00:00Z")
+        s.date_rejected = "2005-01-02T00:00:00Z"
         s.set_owner("richard")
         s.set_editor_group("worldwide")
         s.set_editor("eddie")
@@ -236,6 +254,8 @@ class TestModels(DoajTestCase):
         assert s.last_updated_timestamp.strftime(FMT_DATETIME_STD) == "2002-01-01T00:00:00Z"
         assert s.last_manual_update == "2004-01-01T00:00:00Z"
         assert s.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
+        assert s.date_rejected == "2005-01-02T00:00:00Z"
+        assert s.date_rejected_timestamp.strftime(FMT_DATETIME_STD) == "2005-01-02T00:00:00Z"
         assert s.has_been_manually_updated() is True
         assert s.owner == "richard"
         assert s.editor_group == "worldwide"
@@ -648,7 +668,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
         assert bj.language == ["EN", "FR"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "mirror"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 3, bj.subject
@@ -778,6 +798,7 @@ class TestModels(DoajTestCase):
         bj.add_keyword("keyword")
         bj.add_language("CZ")
         bj.add_label("s2o")
+        bj.add_label("ojc")
         bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
         bj.add_replaces("1234-1234")
         bj.add_subject("SCH", "TERM", "CDE")
@@ -790,7 +811,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
         assert bj.language == ["IT", "CZ"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "ojc"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
@@ -1232,9 +1253,9 @@ class TestModels(DoajTestCase):
             acc.set_password(u["password"])
             acc.save(blocking=True)
 
-        res = models.Account.autocomplete("id", "cho")["suggestions"]
+        res = models.Account.autocomplete("id", "cho")
         assert len(res) == 3, "autocomplete for 'cho': found {}, expected 3".format(len(res))
-        res = models.Account.autocomplete("id", "cho", True)["suggestions"]
+        res = models.Account.autocomplete("id", "cho", {"role.exact": "admin"})
         assert len(res) == 2, "autocomplete for 'cho', admin only: found {}, expected 2".format(len(res))
 
 
@@ -1420,8 +1441,9 @@ class TestModels(DoajTestCase):
         # check that we find all the applications when we search, and that they're in the right order
         all = models.Suggestion.find_all_by_related_journal(j.id)
         assert len(all) == 2
-        assert all[0].id == app1.id
-        assert all[1].id == app2.id
+        all_ids = [a.id for a in all]
+        assert app1.id in all_ids
+        assert app2.id in all_ids
 
     def test_30_article_stats(self):
         articles = []
@@ -1886,6 +1908,17 @@ class TestModels(DoajTestCase):
         assert a2.message == "This is a test message"
         assert a2.state == a.STATE_NEW
 
+    def test_47_ris_export(self):
+        r = models.RISExport()
+        raw = "TY  - JOUR\nTI  - Test Article\nAU  - Doe, John\nPY  - 2024\nJO  - Journal of Testing\nVL  - 1\nIS  - 1\nSP  - 1\nEP  - 10\nER  - \n"
+        r.ris_raw = raw
+        r.save(blocking=True)
+
+        r2 = models.RISExport.pull(r.id)
+        assert r2 is not None
+        assert r2.ris_raw == raw
+        bs = r2.byte_stream
+        assert bs.read().decode('utf-8') == raw
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

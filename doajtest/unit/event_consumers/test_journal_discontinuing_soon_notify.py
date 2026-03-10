@@ -1,6 +1,5 @@
 from portality import models
 from portality import constants
-from portality.bll import exceptions
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
 from portality.events.consumers.journal_discontinuing_soon_notify import JournalDiscontinuingSoonNotify

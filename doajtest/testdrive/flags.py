@@ -1,4 +1,4 @@
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.testdrive.factory import TestDrive
 from portality.lib import dates
 from portality import models, constants

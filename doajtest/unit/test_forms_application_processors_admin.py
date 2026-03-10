@@ -1,6 +1,5 @@
 from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory
-from doajtest.helpers import DoajTestCase
 from portality import models, constants
 
 from doajtest.helpers import DoajTestCase

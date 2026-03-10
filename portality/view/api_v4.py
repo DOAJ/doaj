@@ -434,7 +434,7 @@ def bulk_article_delete():
 
 @blueprint.route("/bulk/articles/<upload_id>", methods=["GET"])
 @api_key_required
-@write_required(api=True)
+# @write_required(api=True)
 @swag(swag_summary='Get bulk article creation status <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesBulkApi.get_async_status_swag())
 @plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create_status',

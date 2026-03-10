@@ -1,7 +1,5 @@
 import itertools
 import json
-import os
-import time
 from unittest.mock import Mock, patch
 
 from doajtest import test_constants

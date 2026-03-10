@@ -3,7 +3,6 @@ import time
 from typing import Iterable
 
 import portality.util
-from doajtest import helpers
 from doajtest.helpers import DoajTestCase
 from portality.dao import DomainObject
 from portality.lib import es_queries, dates

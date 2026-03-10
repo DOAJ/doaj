@@ -1,0 +1,84 @@
+input {
+  beats {
+    port => 5045
+    host => "10.131.191.162"
+  }
+}
+filter {
+  if [event][module] == "nginx" {
+    if [fileset][name] == "access" {
+      grok {
+        match => {
+          "message" => [
+            # Standard format with username/dash and all fields (HTTP/2.0 with SSL)
+            "%{IPORHOST:[nginx][access][remote_ip]} - %{DATA:[nginx][access][user_name]} \[%{HTTPDATE:[nginx][access][time]}\] \"%{WORD:[nginx][access][method]} %{DATA:[nginx][access][url]} HTTP/%{NUMBER:[nginx][access][http_version]}\" %{NUMBER:[nginx][access][response_code]} %{NUMBER:[nginx][access][body_sent][bytes]} \"%{DATA:[nginx][access][referrer]}\" \"%{DATA:[nginx][access][agent]}\" %{IPORHOST:[nginx][access][cf_connecting_ip]} %{NOTSPACE:[nginx][access][ssl_protocol]} %{NOTSPACE:[nginx][access][ssl_cipher]}",
+
+            # HTTP/1.1 with username/dash but without SSL (ends with "- -")
+            "%{IPORHOST:[nginx][access][remote_ip]} - %{DATA:[nginx][access][user_name]} \[%{HTTPDATE:[nginx][access][time]}\] \"%{WORD:[nginx][access][method]} %{DATA:[nginx][access][url]} HTTP/%{NUMBER:[nginx][access][http_version]}\" %{NUMBER:[nginx][access][response_code]} %{NUMBER:[nginx][access][body_sent][bytes]} \"%{DATA:[nginx][access][referrer]}\" \"%{DATA:[nginx][access][agent]}\" %{IPORHOST:[nginx][access][cf_connecting_ip]} - -",
+
+            # Malformed/empty requests
+            "%{IPORHOST:[nginx][access][remote_ip]} - %{DATA:[nginx][access][user_name]} \[%{HTTPDATE:[nginx][access][time]}\] \"%{DATA:[nginx][access][request]}\" %{NUMBER:[nginx][access][response_code]} %{NUMBER:[nginx][access][body_sent][bytes]} \"%{DATA:[nginx][access][referrer]}\" \"%{DATA:[nginx][access][agent]}\" %{DATA:[nginx][access][cf_connecting_ip]} %{DATA:[nginx][access][ssl_protocol]} %{DATA:[nginx][access][ssl_cipher]}"
+            ]
+        }
+        remove_field => "message"
+      }
+      # Convert "-" to null for non-SSL connections (HTTP port 80)
+      if [nginx][access][ssl_protocol] == "-" {
+        mutate {
+          remove_field => [ "[nginx][access][ssl_protocol]", "[nginx][access][ssl_cipher]" ]
+        }
+      }
+      mutate {
+        add_field => { "read_timestamp" => "%{@timestamp}" }
+        add_field => { "[nginx][access][connecting_hostname]" => "%{[nginx][access][cf_connecting_ip]}" }
+      }
+      date {
+        match => [ "[nginx][access][time]", "dd/MMM/YYYY:H:m:s Z" ]
+        remove_field => "[nginx][access][time]"
+      }
+      useragent {
+        source => "[nginx][access][agent]"
+        target => "[nginx][access][user_agent]"
+        remove_field => "[nginx][access][agent]"
+      }
+      geoip {
+        source => "[nginx][access][cf_connecting_ip]"
+        target => "[nginx][access][geoip]"
+      }
+      #dns {
+      #  reverse => [ "[nginx][access][connecting_hostname]" ]
+      #  action => "replace"
+      #  nameserver => {
+      #    address => "1.1.1.1"
+      #  }
+      #  hit_cache_size => 4096
+      #  hit_cache_ttl => 900
+      #  failed_cache_size => 512
+      #  failed_cache_ttl => 900
+      #  timeout => 0.5
+      #}
+    }
+    else if [fileset][name] == "error" {
+      grok {
+        match => { "message" => ["%{DATA:[nginx][error][time]} \[%{DATA:[nginx][error][level]}\] %{NUMBER:[nginx][error][pid]}#%{NUMBER:[nginx][error][tid]}: (\*%{NUMBER:[nginx][error][connection_id]} )?%{GREEDYDATA:[nginx][error][message]}"] }
+        remove_field => "message"
+      }
+      mutate {
+        rename => { "@timestamp" => "read_timestamp" }
+      }
+      date {
+        match => [ "[nginx][error][time]", "YYYY/MM/dd H:m:s" ]
+        remove_field => "[nginx][error][time]"
+      }
+    }
+  }
+}
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    manage_template => true
+    index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+  }
+  # For debugging, run   sudo /usr/share/logstash/bin/logstash --path.settings /etc/logstash/
+  #stdout { }
+}

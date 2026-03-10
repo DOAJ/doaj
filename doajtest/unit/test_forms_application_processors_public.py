@@ -1,10 +1,9 @@
 from werkzeug.datastructures import MultiDict
-from wtforms import Form, StringField, validators
+from wtforms import validators
 
 from portality import constants
 from doajtest.helpers import DoajTestCase
 from portality import models, core
-from portality.lib.formulaic import FormProcessor
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.forms.application_processors import NewApplication
 

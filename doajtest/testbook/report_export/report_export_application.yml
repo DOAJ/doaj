@@ -84,7 +84,7 @@ tests:
           - A date range picker is displayed
       - step: Open the "Type" pull-down menu
         results:
-          - The options are "Date Applied" and "Last Updated"
+          - The options are "Date Applied", "Last Updated" and "Date Rejected"
       - step: If not already selected, select "Date Applied"
         results:
           - The From and To dates show the month and year of the earliest and latest created dates in the search results, respectively
@@ -121,8 +121,8 @@ tests:
       - step: Go to the applications search page in the admin area
         path: /admin/applications
         results:
-          - At the bottom of the list of facets is a "Reporting Tools" section, including 3 options for working with dates
-            "limit by date range", "date applied histogram" and "last update histogram"
+          - At the bottom of the list of facets is a "Reporting Tools" section, including 4 options for working with dates
+            "limit by date range", "date applied histogram", "last update histogram" and "date rejected histogram"
       - step: Open the "Limit by Date Range" facet and set a date range which gives you a subset of the data
       - step: Apply any other filters from the facets to further refine the search results
       - step: Click on "Export Data as CSV"
@@ -151,7 +151,8 @@ tests:
       - step: Open the CSV in a spreadsheet program
         results:
           - The CSV contains the data that was displayed in the search results
-          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 3 columns include account information
+          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 4 columns include 
+            account information and the Date Rejected
 
   - title: Manage existing reports
     context:
@@ -178,7 +179,8 @@ tests:
       - step: Open the CSV in a spreadsheet program
         results:
           - The CSV contains the data that was displayed in the search results
-          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 3 columsn include account information
+          - The CSV is the "admin" CSV, not the "public" CSV.  You can tell this because the final 4 columns include
+            account information and the Date Rejected
       - step: Go back to the report search page
       - step: Try out the facets and the sorting and searching options on this page
         results:

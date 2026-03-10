@@ -1,5 +1,4 @@
 from portality.dao import DomainObject
-from portality.models.cache import Cache
 from portality.models import Journal, Article
 
 
@@ -10,9 +9,9 @@ class JournalArticle(DomainObject):
     @classmethod
     def site_statistics(cls):
 
-        stats = Cache.get_site_statistics()
-        if stats is not None:
-            return stats
+        # stats = Cache.get_site_statistics()
+        # if stats is not None:
+        #     return stats
 
         # we didn't get anything from the cache, so we need to generate and
         # cache a new set
@@ -54,7 +53,7 @@ class JournalArticle(DomainObject):
         stats["abstracts"] = "{0:,}".format(article_data.get("hits", {}).get("total", {}).get('value', 0))
 
         # now cache and return
-        Cache.cache_site_statistics(stats)
+        # Cache.cache_site_statistics(stats)
 
         return stats
 

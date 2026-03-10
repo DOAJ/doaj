@@ -1,6 +1,4 @@
 from copy import deepcopy
-from random import randint
-
 from parameterized import parameterized, param
 
 from portality import constants

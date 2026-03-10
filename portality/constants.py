@@ -84,6 +84,7 @@ EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
 EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
 EVENT_JOURNAL_DISCONTINUING_SOON = "journal:discontinuing_soon"
+EVENT_ARTICLE_SAVE = "article:save"
 
 NOTIFICATION_CLASSIFICATION_STATUS = "alert"
 NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
@@ -128,6 +129,11 @@ BGJOB_QUEUE_ID_SCHEDULED_LONG = "scheduled_long"
 # Background monitor status
 BG_STATUS_STABLE = 'stable'
 BG_STATUS_UNSTABLE = 'unstable'
+
+ERROR_RECORD_ARTICLE = "article"
+ERROR_RECORD_JOURNAL = "journal"
+ERROR_410_WITHDRAWN = "withdrawn"
+ERROR_410_TOMBSTONE = "tombstone"
 
 
 class ConstantList:

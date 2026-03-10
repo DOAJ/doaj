@@ -1,0 +1,91 @@
+rule,endpoint,methods
+/account/<username>,account.username,"DELETE, GET, POST"
+/account/forgot,account.forgot,"GET, POST"
+/account/reset/<reset_token>,account.reset,"GET, POST"
+/account/register,account.register,"GET, POST"
+/admin/journals,admin.journals_list,"DELETE, POST"
+/admin/articles,admin.articles_list,"DELETE, POST"
+/admin/delete/article/<article_id>,admin.article_endpoint,POST
+/admin/article/<article_id>,admin.article_page,"GET, POST"
+/admin/journal/<journal_id>,admin.journal_page,"GET, POST"
+/admin/journal/<journal_id>/activate,admin.journal_activate,"GET, POST"
+/admin/journal/<journal_id>/deactivate,admin.journal_deactivate,"GET, POST"
+/admin/journals/bulk/withdraw,admin.journals_bulk_withdraw,POST
+/admin/journals/bulk/reinstate,admin.journals_bulk_reinstate,POST
+/admin/journal/<journal_id>/continue,admin.journal_continue,"GET, POST"
+/admin/application/<application_id>,admin.application,"GET, POST"
+/admin/application_quick_reject/<application_id>,admin.application_quick_reject,POST
+/admin/editor_group/<group_id>,admin.editor_group,"GET, POST"
+/admin/editor_group,admin.editor_group,"GET, POST"
+/admin/<doaj_type>/bulk/assign_editor_group,admin.bulk_assign_editor_group,POST
+/admin/<doaj_type>/bulk/add_note,admin.bulk_add_note,POST
+/admin/journals/bulk/edit_metadata,admin.bulk_edit_journal_metadata,POST
+/admin/<doaj_type>/bulk/change_status,admin.applications_bulk_change_status,POST
+/admin/journals/bulk/delete,admin.bulk_journals_delete,POST
+/admin/articles/bulk/delete,admin.bulk_articles_delete,POST
+/admin/report,admin.request_report,POST
+/publisher/application/<application_id>/delete,publisher.delete_application,GET
+/publisher/update_request/<journal_id>,publisher.update_request,"DELETE, GET, POST"
+/publisher/uploadfile,publisher.upload_file,"GET, POST"
+/publisher/preservation,publisher.preservation,"GET, POST"
+/publisher/metadata,publisher.metadata,"GET, POST"
+/publisher/journal-csv,publisher.journal_csv,GET
+/publisher/journal-csv/validate,publisher.journal_csv_validate,POST
+/editor/application/<application_id>,editor.application,"GET, POST"
+/service/unlock/<object_type>/<object_id>,doajservices.unlock,POST
+/service/shorten,doajservices.shorten,POST
+/service/export/article/<article_id>/<fmt>,doajservices.export_article_ris,GET
+/service/alerts/<alert_id>/<action>,doajservices.manage_alert,POST
+/api/v1/articles,api_v1.create_article,POST
+/api/v1/articles/<article_id>,api_v1.update_article,PUT
+/api/v1/articles/<article_id>,api_v1.delete_article,DELETE
+/api/v1/bulk/articles,api_v1.bulk_article_create,POST
+/api/v1/bulk/articles,api_v1.bulk_article_delete,DELETE
+/api/v1/bulk/applications,api_v1.bulk_application_create,POST
+/api/v1/bulk/applications,api_v1.bulk_application_delete,DELETE
+/api/v1/applications,api_v1.create_application,POST
+/api/v1/applications/<application_id>,api_v1.update_application,PUT
+/api/v1/applications/<application_id>,api_v1.delete_application,DELETE
+/api/v2/articles,api_v2.create_article,POST
+/api/v2/articles/<article_id>,api_v2.update_article,PUT
+/api/v2/articles/<article_id>,api_v2.delete_article,DELETE
+/api/v2/bulk/articles,api_v2.bulk_article_create,POST
+/api/v2/bulk/articles,api_v2.bulk_article_delete,DELETE
+/api/v2/bulk/applications,api_v2.bulk_application_create,POST
+/api/v2/bulk/applications,api_v2.bulk_application_delete,DELETE
+/api/v2/applications,api_v2.create_application,POST
+/api/v2/applications/<application_id>,api_v2.update_application,PUT
+/api/v2/applications/<application_id>,api_v2.delete_application,DELETE
+/api/v3/applications,api_v3.create_application,POST
+/api/v3/applications/<application_id>,api_v3.update_application,PUT
+/api/v3/applications/<application_id>,api_v3.delete_application,DELETE
+/api/v3/articles,api_v3.create_article,POST
+/api/v3/articles/<article_id>,api_v3.update_article,PUT
+/api/v3/articles/<article_id>,api_v3.delete_article,DELETE
+/api/v3/bulk/applications,api_v3.bulk_application_create,POST
+/api/v3/bulk/applications,api_v3.bulk_application_delete,DELETE
+/api/v3/bulk/articles,api_v3.bulk_article_create,POST
+/api/v3/bulk/articles,api_v3.bulk_article_delete,DELETE
+/api/v4/applications,api_v4.create_application,POST
+/api/v4/applications/<application_id>,api_v4.update_application,PUT
+/api/v4/applications/<application_id>,api_v4.delete_application,DELETE
+/api/v4/articles,api_v4.create_article,POST
+/api/v4/articles/<article_id>,api_v4.update_article,PUT
+/api/v4/articles/<article_id>,api_v4.delete_article,DELETE
+/api/v4/bulk/applications,api_v4.bulk_application_create,POST
+/api/v4/bulk/applications,api_v4.bulk_application_delete,DELETE
+/api/v4/bulk/articles,api_v4.bulk_article_create,POST
+/api/v4/bulk/articles,api_v4.bulk_article_delete,DELETE
+/api/applications,api.create_application,POST
+/api/applications/<application_id>,api.update_application,PUT
+/api/applications/<application_id>,api.delete_application,DELETE
+/api/articles,api.create_article,POST
+/api/articles/<article_id>,api.update_article,PUT
+/api/articles/<article_id>,api.delete_article,DELETE
+/api/bulk/applications,api.bulk_application_create,POST
+/api/bulk/applications,api.bulk_application_delete,DELETE
+/api/bulk/articles,api.bulk_article_create,POST
+/api/bulk/articles,api.bulk_article_delete,DELETE
+/apply/<draft_id>,apply.public_application,"GET, POST"
+/apply/,apply.public_application,"GET, POST"
+/dashboard/notifications/<notification_id>/seen,dashboard.notification_seen,POST
