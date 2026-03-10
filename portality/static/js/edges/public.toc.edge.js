@@ -47,7 +47,7 @@ doaj.publicToC = {
         var selector = params.selector || "#journal_toc_articles";
 
         var search_url = doaj.edgeUtil.url.build(
-            doaj.publicToCConfig.searchPath
+            doaj.publicToCConfig.publicSearchPath
         );
 
         var countFormat = edges.numFormat({
