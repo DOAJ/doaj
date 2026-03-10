@@ -45,11 +45,11 @@ doaj.notificationsSearch = {
     init: function (params) {
         if (!params) { params = {} }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#notifications";
-        var search_url = current_scheme + "//" + current_domain + doaj.notificationsSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.notificationsSearchConfig.searchPath
+        );
 
         var components = [
             doaj.components.searchingNotification(),
