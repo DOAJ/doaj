@@ -29,11 +29,11 @@ doaj.publisherUpdatesSearch = {
             params = {};
         }
 
-        var current_domain = document.location.host;
-        var current_scheme = window.location.protocol;
-
         var selector = params.selector || "#publisher_update_requests";
-        var search_url = current_scheme + "//" + current_domain + doaj.publisherUpdatesSearchConfig.searchPath;
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.publisherUpdatesSearchConfig.searchPath
+        );
 
         var countFormat = edges.numFormat({
             thousandsSeparator: ","
