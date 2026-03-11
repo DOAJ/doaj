@@ -26,6 +26,7 @@ import re
 from datetime import datetime
 
 from portality import lock, constants
+from portality.lib import dates
 from portality.core import app
 from portality.models import Journal, Account
 from portality.crosswalks import journal_questions
@@ -236,6 +237,12 @@ if __name__ == "__main__":
                         fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
                         fc2.finalise(sys_acc, email_alert=False)
                         print('Automatic review. Journal has been updated.')
+
+                        # Set the last full review date on the journal to today
+                        updated_journal = Journal.pull(j.id)
+                        updated_journal.last_full_review = dates.today()
+                        updated_journal.save()
+                        print(f'Set last full review date to {updated_journal.last_full_review}')
             except Exception as e:
                 print('Failed to finalise: {1}'.format(j.id, str(e)))
                 raise
