@@ -23,6 +23,7 @@ e.g. to validate a CSV upload and create a batch of update requests from that us
 import os
 import csv
 import re
+from datetime import datetime
 
 from portality import lock, constants
 from portality.core import app
@@ -69,8 +70,17 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
     parser.add_argument("-y", "--yes", help="Bypass prompt to accept the note", action='store_true')
     parser.add_argument("-f", "--force", help="Ignore warnings and process changes anyway (errors still halt)", action='store_true')
+    parser.add_argument("-e", "--export-date", help="Warn if a journal was updated after this date (format: YYYY-MM-DD)", default=None)
 
     args = parser.parse_args()
+
+    export_date = None
+    if args.export_date:
+        try:
+            export_date = datetime.strptime(args.export_date, "%Y-%m-%d")
+        except ValueError:
+            print(f'ERROR: Invalid export date format "{args.export_date}". Use YYYY-MM-DD.')
+            exit(1)
 
     note = os.getenv('DOAJ_CSV_NOTE', '')
     print('\nNote supplied via $DOAJ_CSV_NOTE: ' + note)
@@ -157,6 +167,9 @@ if __name__ == "__main__":
                 continue
 
             print('Updating journal with ID ' + j.id)
+
+            if export_date and j.last_updated_timestamp and j.last_updated_timestamp > export_date:
+                print(f'WARNING: Journal {j.id} was last updated at {j.last_updated} which is after the export date {args.export_date}. CSV data may be stale.')
             # Load remaining rows into application form as an update
             # ~~ ^->JournalQuestions:Crosswalk ~~
             update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
