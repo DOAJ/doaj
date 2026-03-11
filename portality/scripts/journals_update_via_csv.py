@@ -105,13 +105,13 @@ if __name__ == "__main__":
     if args.sys:
         acc = sys_acc
     else:
-        found_account_name = re.split(r'[._]', os.path.basename(args.infile))[0] if args.prefix else args.account
+        found_account_name = re.split(r'[._-]', os.path.basename(args.infile))[0] if args.prefix else args.account
         print(f'Creating Update Requests as account {found_account_name}')
 
         acc = Account.pull(found_account_name)
 
         if acc is None:
-            print(f'ERROR: Account {args.account} not found.')
+            print(f'ERROR: Account {found_account_name} not found.')
             exit(1)
 
     appSvc = DOAJ.applicationService()
@@ -169,8 +169,8 @@ if __name__ == "__main__":
 
             print('Updating journal with ID ' + j.id)
 
-            if export_date and j.last_updated_timestamp and j.last_updated_timestamp > export_date:
-                print(f'WARNING: Journal {j.id} was last updated at {j.last_updated} which is after the export date {args.export_date}. CSV data may be stale.')
+            if export_date and j.last_manual_update_timestamp and j.last_manual_update_timestamp > export_date:
+                print(f'WARNING: Journal {j.id} was last manually updated at {j.last_manual_update} which is after the export date {args.export_date}. CSV data may be stale.')
             # Load remaining rows into application form as an update
             # ~~ ^->JournalQuestions:Crosswalk ~~
             update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
