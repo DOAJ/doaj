@@ -170,7 +170,11 @@ if __name__ == "__main__":
             print('Updating journal with ID ' + j.id)
 
             if export_date and j.last_manual_update_timestamp and j.last_manual_update_timestamp > export_date:
-                print(f'WARNING: Journal {j.id} was last manually updated at {j.last_manual_update} which is after the export date {args.export_date}. CSV data may be stale.')
+                print(f'WARNING: Journal {j.id} was last manually updated at {j.last_manual_update} which is after the export date {args.export_date}. CSV data may be stale - record will be skipped unless --force supplied.')
+                if not args.dry_run and not args.force:
+                    print('Skipping this record. Supply -f arg to ignore warnings and apply data.')
+                    continue
+
             # Load remaining rows into application form as an update
             # ~~ ^->JournalQuestions:Crosswalk ~~
             update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
