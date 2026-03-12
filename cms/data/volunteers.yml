@@ -341,13 +341,6 @@ ass_ed:
   language: Spanish, English
   photo: "Margalejo.jpeg"
 
-- name: Jamila Jaber
-  area: Library and Information Science
-  year_since:
-  city: Beirut
-  country: Lebanon
-  language: Arabic, French, English
-
 - name: Jinjin Liu
   area: Social Sciences, Medicine
   year_since:
@@ -462,14 +455,6 @@ ass_ed:
   city: Hannover
   country: Germany
   language: German, English
-
-- name: Mariano Hernán Corujo
-  area: Library Science
-  year_since:
-  city: Buenos Aires
-  country: Argentina
-  language: Spanish, English
-  photo: "MarianoCorujo.jpeg"
   
 - name: Marie-Eve Dugas
   area: Library Science, Social Sciences
@@ -562,16 +547,7 @@ ass_ed:
   city: Ekaterinburg
   country: Russian Federation
   language: Russian, English
-  photo: "Popova-1.jpeg"
-  
-- name: Nataliia Kaliuzhna
-  area: Library and Information Science
-  year_since:
-  city: Kyiv
-  country: Ukraine
-  language: Ukrainian, Russian, English, Polish
-  featured: true
-  photo: "Nataliia.jpg"
+  photo:
 
 - name: Natia Gabedava
   area: Humanities, Education
@@ -629,7 +605,7 @@ ass_ed:
   photo: "princessnwafor.jpg"
   
 - name: Priya
-  area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
+  area: Open Source Software, Library Science, Bibliometric Analysis
   year_since:
   city: Himachal Pradesh
   country: India
