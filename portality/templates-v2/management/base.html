@@ -191,22 +191,12 @@
 
 {% block base_js %}
     <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script type="text/javascript">
-        $.extend(true, doaj, {
-            session : {
-                currentUserId: "{{ current_user.id }}"
-            }
-        });
-    </script>
+
     {% include "_tourist/includes/_tourist.html" %}
 
     <script>
         var historical_count = {{ historical_count | default(0) }};
         var motivational_banners = {{ data.motivational_banners | tojson }};
-        var current_user = {
-            "id": "{{ current_user['id'] }}",
-            "role": {{ current_user['role'] | tojson }}
-        };
     </script>
 
 

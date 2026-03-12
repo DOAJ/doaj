@@ -11,6 +11,7 @@
                 "Public Domain" : ["https://creativecommons.org/publicdomain/zero/1.0/", ["zero"]],
             } %}
 
+    {% include "public/includes/_login_modal.html" with context %}
     <section id="about-journal" class="tabs__panel" role="tabpanel" aria-hidden="false">
         <h2 class="sr-only">About</h2>
         <div class="three-col">
@@ -301,6 +302,20 @@
                                 <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source={{ source }}">{{ bibjson.publisher_name }}</a>
                                 {% if bibjson.publisher_country %}, {{ bibjson.publisher_country_name() }}{% endif %}
                             </dd>
+                            {% if not current_user.is_authenticated or current_user.id == journal.owner %}
+                            <dd class="ur_nudge">
+                                {% if not current_user.is_authenticated %}
+                                    <span class="ur_nudge--question"><strong>Are you associated with this journal?</strong></span><br>
+                                    <span>Help us keep your record accurate!</span><br>
+                                {% elif current_user.id == journal.owner %}
+                                    <span class="ur_nudge--question"><strong>This is your journal!</strong></span><br>
+                                    <span>Help us keep your record accurate.</span><br>
+                                {% endif %}
+                                <a id="ur_nudge--link" data-id="{{ journal.id }}" href="{{ url_for('publisher.update_request', journal_id=journal.id) }}">Click here to submit an update.</a>
+                            </dd>
+                        {% endif %}
+
+                            </dd>
                         {% endif %}
 
                         {% if bibjson.institution_name %}
@@ -352,4 +367,3 @@
     </section>
 
 {% endblock %}
-
