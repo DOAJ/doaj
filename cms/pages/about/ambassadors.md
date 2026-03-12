@@ -12,10 +12,10 @@ manual_toc_tokens: |
     {
         "children": [],
         "data-toc-label": "",
-        "html": "Senior Ambassadors",
-        "id": "senior-ambassadors",
+        "html": "Community Managers",
+        "id": "community-managers",
         "level": 2,
-        "name": "Senior Ambassadors"
+        "name": "Community Managers"
       },
       {
         "children": [],

@@ -410,6 +410,7 @@ class DomainObject(UserDict, object):
         except elasticsearch.TransportError as e:
             raise Exception("ES returned an error: {x}".format(x=e.info))
         except Exception as e:
+            app.logger.exception(f"Unexpected error in pull(): {e}")
             return None
         if out is None:
             return None
