@@ -10,7 +10,7 @@ featuremap:
 
 ---
 
-We are committed to providing a data dump service for the community but, in order to ensure that DOAJ's data is used for the benefit of the entire community and under the terms of the licenses that accompany the data, access to the dumps is granted on a case-by-case basis. If you would like access, please [email the Platform Manager](mailto:platform@doaj.org) stating the following information:
+We are committed to providing a data dump service for the community. In order to ensure that DOAJ's data is used for the benefit of the entire community and under the terms of the licenses that accompany the data, access to the dumps is granted on a case-by-case basis. If you would like access, please [email Dominic Mitchell](mailto:dominic@doaj.org) stating the following information:
 
 - your name
 - the group, organisation or company you represent or that wants to use the metadata
@@ -20,7 +20,7 @@ We are committed to providing a data dump service for the community but, in orde
 
 We have applied a CC0 waiver to [the journal and article metadata](/terms/#metadata). Please make sure you understand what that means. Feel free to ask us if you have questions!
 
-Full data-dumps of the entire journal and article metadata are generated every six days. (Contact us if you need to know exactly when.) The files are in JSON format and are in the same form as those retrieved via the API.
+Full data dumps of the entire journal and article metadata are generated every six days. (Contact us if you need to know exactly when.) The files are in JSON format and match those retrieved via the API.
 
 Each file is a `tar.gz`.
 
