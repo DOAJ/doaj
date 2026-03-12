@@ -1,7 +1,6 @@
 // ~~ AdminAlerts:Edge ~~
 // ~~-> Edges:Technology ~~
 
-// Ensure namespace exists
 doaj.adminAlertsSearch = {
 
     activeEdges: {},
@@ -11,112 +10,23 @@ doaj.adminAlertsSearch = {
 
         var selector = params.selector || "#admin_alerts";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.adminAlertsSearchConfig.searchPath
-        );
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: ","
-        });
-
-        var components = [
-            doaj.components.searchingNotification(),
-
-            // facets
-            edges.newRefiningANDTermSelector({
-                id: "source",
-                category: "facet",
-                field: "source.exact",
-                display: "Source",
-                deactivateThreshold: 0,
-                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                    controls: true,
-                    open: false,
-                    togglable: true,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-
-            edges.newRefiningANDTermSelector({
-                id: "state",
-                category: "facet",
-                field: "state.exact",
-                display: "State",
-                orderBy: "term",
-                orderDir: "asc",
-                deactivateThreshold: 0,
-                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                    controls: true,
-                    open: false,
-                    togglable: true,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-
-            edges.newDateHistogramSelector({
-                id: "created_date",
-                category: "facet",
-                field: "created_date",
-                interval: "month",
-                display: "Date",
-                displayFormatter: function(val) {
-                    let d = new Date(parseInt(val))
-                    return d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
-                },
-                sortFunction: function(values) {
-                    values.reverse();
-                    return values;
-                },
-                renderer: edges.bs3.newDateHistogramSelectorRenderer({
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-
-            // search controller
-            edges.newFullSearchController({
-                id: "search-controller",
-                category: "controller",
-                sortOptions: [
-                    {'display':'Alert Date','field':'created_date'}
-                ],
-                fieldOptions: [
-                    {'display':'Message','field':'message'},
-                    {'display':'Source','field':'source'}
-                ],
-                defaultOperator: "AND",
-                renderer: doaj.renderers.newFullSearchControllerRenderer({
-                    freetextSubmitDelay: -1,
-                    searchButton: true,
-                    searchPlaceholder: "Search All Alerts"
-                })
-            }),
-
-            // pagers
-            edges.newPager({
-                id: "top-pager",
-                category: "top-pager",
-                renderer: edges.bs3.newPagerRenderer({
-                    sizeOptions: [25, 50, 100],
-                    numberFormat: countFormat,
-                    scroll: false
-                })
-            }),
-
-            edges.newPager({
-                id: "bottom-pager",
-                category: "bottom-pager",
-                renderer: edges.bs3.newPagerRenderer({
-                    sizeOptions: [25, 50, 100],
-                    numberFormat: countFormat,
-                    scroll: false
-                })
-            }),
-
-            // results
-            edges.newResultsDisplay({
+        var e = doaj.components.makeSearch({
+            selector: selector,
+            searchUrl: doaj.edgeUtil.url.build(doaj.adminAlertsSearchConfig.searchPath),
+            facets: [
+                doaj.components.refiningAndFacet({id: "source", field: "source.exact", display: "Source"}),
+                doaj.components.refiningAndFacet({id: "state", field: "state.exact", display: "State", orderBy: "term", orderDir: "asc"}),
+                doaj.components.monthDateHistogramFacet({id: "created_date", field: "created_date", display: "Date"})
+            ],
+            sortOptions: [
+                {'display': 'Alert Date', 'field': 'created_date'}
+            ],
+            fieldOptions: [
+                {'display': 'Message', 'field': 'message'},
+                {'display': 'Source', 'field': 'source'}
+            ],
+            searchPlaceholder: "Search All Alerts",
+            resultsDisplay: edges.newResultsDisplay({
                 id: "results",
                 category: "results",
                 renderer: edges.bs3.newResultsFieldsByRowRenderer({
@@ -164,36 +74,20 @@ doaj.adminAlertsSearch = {
                     ]
                 })
             }),
-
-            edges.newSelectedFilters({
-                id: "selected-filters",
-                category: "selected-filters",
-                fieldDisplays: {
-                    "source.exact": "Source",
-                    "state.exact": "State",
-                    "created_date": "Alert Date"
-                },
-                rangeFunctions: {
-                    "created_date": doaj.valueMaps.displayYearMonthPeriod
-                }
-            })
-        ];
-
-        var e = edges.newEdge({
-            selector: selector,
-            template: edges.bs3.newFacetview(),
-            search_url: search_url,
-            manageUrl: true,
-            components: components,
+            fieldDisplays: {
+                "source.exact": "Source",
+                "state.exact": "State",
+                "created_date": "Alert Date"
+            },
+            rangeFunctions: {
+                "created_date": doaj.valueMaps.displayYearMonthPeriod
+            },
             openingQuery: es.newQuery({
                 must: [es.newTermFilter({field: "state.exact", value: "new"})],
                 sort: [{field: "created_date", order: "desc"}],
                 size: 25
             }),
             callbacks: {
-                "edges:query-fail": function() {
-                    alert("There was an unexpected error. Please reload the page and try again. If the issue persists please contact an administrator.");
-                },
                 "edges:post-render": function() {
                     let resultsComponent = doaj.adminAlertsSearch.activeEdges[selector].getComponent({id: "results"});
                     let controllSelector = edges.css_class_selector(resultsComponent.renderer.namespace, "control");
