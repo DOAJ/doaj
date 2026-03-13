@@ -144,9 +144,9 @@ Our XML format only supports one language for 'Article Title' and 'Abstract'. We
 
 Metadata containing multiple languages can still be uploaded to us. However, you cannot choose which language is displayed. Please only send us one language to avoid your articles being displayed in a mixture of languages.
 
-### I am seeing a 403 forbidden error
+### I am seeing a 403 forbidden error or 500 error
 
-You may see the 403 forbidden error for different reasons. These apply to both the API and uploading XML.
+You may see the 403 forbidden or 500 errors for different reasons. These apply to both the API and uploading XML.
 
 - ISSNs
   - You may be sending us an extra ISSN that we don’t have in your journal record.
