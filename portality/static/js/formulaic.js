@@ -811,7 +811,6 @@ var formulaic = {
                     }
                 }
 
-
                 this.setUpEventListeners();
                 this.setUI();
             }
@@ -1070,12 +1069,24 @@ var formulaic = {
 
             this.markFlagAsResolved = function() {
                 $(this.flagInputsContainer[this.existingFlagIdx]).addClass("flag--resolved");
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("input")
+                    .addClass("parsley-excluded")
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("textarea")
+                    .addClass("parsley-excluded")
                 this.getResolveBtn(this.existingFlagIdx).hide();
                 this.getUnresolveBtn(this.existingFlagIdx).show();
             }
 
             this.markFlagAsUnresolved = function() {
                 $(this.flagInputsContainer[this.existingFlagIdx]).removeClass("flag--resolved");
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("input")
+                    .removeClass("parsley-excluded")
+                $(this.flagInputsContainer[this.existingFlagIdx])
+                    .find("textarea")
+                    .removeClass("parsley-excluded")
                 this.getResolveBtn(this.existingFlagIdx).show();
                 this.getUnresolveBtn(this.existingFlagIdx).hide();
             }
