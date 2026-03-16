@@ -9,7 +9,7 @@
     <tr>
         <td>Article</td>
         <td>
-            {{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}
+            {{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) if pdd else "unknown" }}
             {% if current_user.has_role(constants.ROLE_PREMIUM_PDD) %}[PREMIUM]{% endif %}
         </td>
         <td>
@@ -19,7 +19,7 @@
     <tr>
         <td>Journal</td>
         <td>
-            {{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) }}
+            {{ dates.format(pdd.dump_date, dates.FMT_DATE_HUMAN) if pdd else "unknown"  }}
             {% if current_user.has_role(constants.ROLE_PREMIUM_PDD) %}[PREMIUM]{% endif %}
         </td>
         <td>
