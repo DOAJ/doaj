@@ -1476,8 +1476,8 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><a id="' + id + '" class="' + classes + ' button" style="margin: 0; height: 100%" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">\
-                                        Open link\
+                        that.after('<p><a id="' + id + '" class="' + classes + ' button" style="margin: 0; height: 100%" rel="noopener noreferrer" target="_blank" title="'+doaj.i18n.get("Open URL in a new tab")+'" href="' + val + '">\
+                                        ' + doaj.i18n.get("Open link") +'\
                                         <span data-feather="external-link" aria-hidden="true"></span>\
                                     </a></p>');
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
@@ -1527,12 +1527,12 @@ var formulaic = {
 
                 if (val) {
                     if (this.container) {
-                        this.container.html('<small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small>');
+                        this.container.html('<small><strong>' +doaj.i18n.get("Full contents")+': ' + edges.escapeHtml(val) + '</strong></small>');
                     } else {
                         let cont = formulaic.widgets._make_empty_container(this.ns, "clickable_url", this.form, this.fieldDef);
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        cont.html('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
+                        cont.html('<p id="' + id + '" class="' + classes + '"><small><strong>'+doaj.i18n.get("Full contents")+': ' + edges.escapeHtml(val) + '</strong></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);
@@ -1646,7 +1646,7 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove<span data-feather="x" aria-hidden="true"/></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">${doaj.i18n.get("Remove")}<span data-feather="x" aria-hidden="true"/></button>'));
                     feather.replace();
                 }
 
@@ -2014,7 +2014,7 @@ var formulaic = {
                 this.elements.select2({
                     allowClear: allow_clear,
                     newOption: true,
-                    placeholder: "Start typing…"
+                    placeholder: doaj.i18n.get("Start typing…")
                 });
                 $(this.elements).on("focus", formulaic.widgets._select2_shift_focus);
             };
@@ -2074,7 +2074,7 @@ var formulaic = {
                     ajax: ajax,
                     createSearchChoice: csc,
                     initSelection: initSel,
-                    placeholder: "Start typing…",
+                    placeholder: doaj.i18n.get("Start typing…"),
                     allowClear: false,
                     tags: true,
                     tokenSeparators: [',', ";"],

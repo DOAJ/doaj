@@ -9,6 +9,8 @@ from wtforms import StringField, TextAreaField, IntegerField, BooleanField, Sele
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
+from flask_babel import lazy_gettext
+
 from portality import constants
 from portality import regex
 from portality.core import app
@@ -84,22 +86,22 @@ class FieldDefinitions:
     # ~~->$ BOAI:FormField~~
     BOAI = {
         "name": "boai",
-        "label": "Does the journal adhere to DOAJ’s definition of open access?",
+        "label": lazy_gettext("Does the journal adhere to DOAJ’s definition of open access?"),
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
+            {"display": lazy_gettext("Yes"), "value": "y"},
+            {"display": lazy_gettext("No"), "value": "n"}
         ],
         "help": {
-            "long_help": ["See <a href='https://blog.doaj.org/2020/11/17/"
+            "long_help": [lazy_gettext("See <a href='https://blog.doaj.org/2020/11/17/"
                           "what-does-doaj-define-as-open-access/' "
                           "target='_blank' rel='noopener'>"
                           "DOAJ’s definition of open access explained "
-                          "in full</a>."],
-            "doaj_criteria": "You must answer 'Yes'"
+                          "in full</a>.")],
+            "doaj_criteria": lazy_gettext("You must answer 'Yes'")
         },
         "validate": [
-            {"required": {"message": "You must answer <strong>Yes</strong> to continue"}},
+            {"required": {"message": lazy_gettext("You must answer <strong>Yes</strong> to continue")}},
             {"required_value": {"value": "y"}}
         ],
         "contexts": {
@@ -120,10 +122,10 @@ class FieldDefinitions:
     # ~~->$ OAStatementURL:FormField~~
     OA_STATEMENT_URL = {
         "name": "oa_statement_url",
-        "label": "The journal website must display its open access statement. Where can we find this information?",
+        "label": lazy_gettext("The journal website must display its open access statement. Where can we find this information?"),
         "input": "text",
         "help": {
-            "long_help": ["Here is an example of a suitable Open Access "
+            "long_help": [lazy_gettext("Here is an example of a suitable Open Access "
                           "statement that meets our criteria: <blockquote>This"
                           " is an open access journal, which means that all "
                           "content is freely available without charge to the "
@@ -133,12 +135,12 @@ class FieldDefinitions:
                           "them for any other lawful purpose, without asking "
                           "prior permission from the publisher or the author. "
                           "This is in accordance with the BOAI definition of "
-                          "open access.</blockquote>"],
-            "short_help": "Link to the journal’s open access statement",
+                          "open access.</blockquote>")],
+            "short_help": lazy_gettext("Link to the journal’s open access statement"),
             "placeholder": "https://www.my-journal.com/open-access"
         },
         "validate": [
-            {"required": {"message": "Enter the URL for the journal’s Open Access statement page"}},
+            {"required": {"message": lazy_gettext("Enter the URL for the journal’s Open Access statement page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
@@ -153,18 +155,18 @@ class FieldDefinitions:
     # ~~->$ Title:FormField~~
     TITLE = {
         "name": "title",
-        "label": "Journal title",
+        "label": lazy_gettext("Journal title"),
         "input": "text",
         "help": {
-            "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
-                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                          "For translated titles, you may add the "
-                          "translation as an alternative title."],
-            "placeholder": "Journal title",
-            "doaj_criteria": "Title in application form, title at ISSN and website must all match"
+            "long_help": [lazy_gettext("The journal title must match what is displayed on the website and what is registered at the "
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                          lazy_gettext("For translated titles, you may add the "
+                          "translation as an alternative title.")],
+            "placeholder": lazy_gettext("Journal title"),
+            "doaj_criteria": lazy_gettext("Title in application form, title at ISSN and website must all match")
         },
         "validate": [
-            {"required": {"message": "Enter the journal’s name"}},
+            {"required": {"message": lazy_gettext("Enter the journal’s name")}},
             "no_script_tag"  # ~~^-> NoScriptTag:FormValidator
         ],
         "widgets": [
@@ -201,7 +203,7 @@ class FieldDefinitions:
     # ~~->$ AlternativeTitle:FormField~~
     ALTERNATIVE_TITLE = {
         "name": "alternative_title",
-        "label": "Alternative title (including translation of the title)",
+        "label": lazy_gettext("Alternative title (including translation of the title)"),
         "input": "text",
         "optional": True,
         "help": {
@@ -243,7 +245,7 @@ class FieldDefinitions:
     # ~~->$ JournalURL:FormField~~
     JOURNAL_URL = {
         "name": "journal_url",
-        "label": "Link to the journal’s homepage",
+        "label": lazy_gettext("Link to the journal’s homepage"),
         "input": "text",
         "validate": [
             "required",
@@ -259,7 +261,7 @@ class FieldDefinitions:
         "contexts": {
             "public": {
                 "validate": [
-                    {"required": {"message": "Enter the URL for the journal’s <strong>homepage</strong>"}},
+                    {"required": {"message": lazy_gettext("Enter the URL for the journal’s <strong>homepage</strong>")}},
                     "is_url",  # ~~^->IsURL:FormValidator~~
                     "journal_url_in_public_doaj"  # ~~^-> JournalURLInPublicDOAJ:FormValidator~~
                 ],
@@ -270,22 +272,22 @@ class FieldDefinitions:
     # ~~->$ PISSN:FormField~~
     PISSN = {
         "name": "pissn",
-        "label": "ISSN (print)",
+        "label": lazy_gettext("ISSN (print)"),
         "input": "text",
         "help": {
-            "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                          "Use the link under the ISSN you provided to check it.",
-                          "The ISSN must match what is given on the journal website."],
-            "short_help": "For example, 2049-3630",
-            "doaj_criteria": "ISSN must be provided"
+            "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                          lazy_gettext("Use the link under the ISSN you provided to check it."),
+                          lazy_gettext("The ISSN must match what is given on the journal website.")],
+            "short_help": lazy_gettext("For example, 2049-3630"),
+            "doaj_criteria": lazy_gettext("ISSN must be provided")
         },
         "validate": [
             {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
-                             "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
-            {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
-            {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
-                                                           "online)'"}}  # ~~^-> DifferetTo:FormValidator~~
+                             "message": lazy_gettext("You must provide <strong>one or both</strong> an online ISSN or a print ISSN")}},
+            {"is_issn": {"message": lazy_gettext("This is not a valid ISSN")}},  # ~~^-> IsISSN:FormValidator~~
+            {"different_to": {"field": "eissn", "message": lazy_gettext("This field must contain a different value to 'ISSN ("
+                                                           "online)'")}}  # ~~^-> DifferetTo:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -296,21 +298,21 @@ class FieldDefinitions:
             "public": {
                 "validate": [
                     {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
-                    {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+                                     "message": lazy_gettext("You must provide <strong>one or both</strong> an online ISSN or a print ISSN")}},
+                    {"is_issn": {"message": lazy_gettext("This is not a valid ISSN")}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "eissn",
-                                      "message": "This field must contain a different value to 'ISSN ("
-                                                 "online)'"}},  # ~~^-> DifferetTo:FormValidator~~
+                                      "message": lazy_gettext("This field must contain a different value to 'ISSN ("
+                                                 "online)'")}},  # ~~^-> DifferetTo:FormValidator~~
                     "issn_in_public_doaj"
                 ],
             },
             "admin": {
                 "help": {
-                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                                  "The ISSN must match what is given on the journal website."],
+                    "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                                  lazy_gettext("The ISSN must match what is given on the journal website.")],
                     "placeholder": "",
-                    "doaj_criteria": "ISSN must be provided"
+                    "doaj_criteria": lazy_gettext("ISSN must be provided")
                 },
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -321,21 +323,21 @@ class FieldDefinitions:
             "editor": {
                 "disabled": True,
                 "help": {
-                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                                  "The ISSN must match what is given on the journal website."],
+                    "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                                  lazy_gettext("The ISSN must match what is given on the journal website.")],
                     "placeholder": "",
-                    "doaj_criteria": "ISSN must be provided"
+                    "doaj_criteria": lazy_gettext("ISSN must be provided")
                 },
             },
             "associate_editor": {
                 "disabled": True,
                 "help": {
-                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                                  "The ISSN must match what is given on the journal website."],
+                    "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                                  lazy_gettext("The ISSN must match what is given on the journal website.")],
                     "placeholder": "",
-                    "doaj_criteria": "ISSN must be provided"
+                    "doaj_criteria": lazy_gettext("ISSN must be provided")
                 }
             },
             "update_request": {
@@ -347,22 +349,22 @@ class FieldDefinitions:
     # ~~->$ EISSN:FormField~~
     EISSN = {
         "name": "eissn",
-        "label": "ISSN (online)",
+        "label": lazy_gettext("ISSN (online)"),
         "input": "text",
         "help": {
-            "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                          "Use the link under the ISSN you provided to check it.",
-                          "The ISSN must match what is given on the journal website."],
-            "short_help": "For example, 0378-5955",
-            "doaj_criteria": "ISSN must be provided"
+            "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                          lazy_gettext("Use the link under the ISSN you provided to check it."),
+                          lazy_gettext("The ISSN must match what is given on the journal website.")],
+            "short_help": lazy_gettext("For example, 0378-5955"),
+            "doaj_criteria": lazy_gettext("ISSN must be provided")
         },
         "validate": [
             {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                             "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
-            {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+                             "message": lazy_gettext("You must provide <strong>one or both</strong> an online ISSN or a print ISSN")}},
+            {"is_issn": {"message": lazy_gettext("This is not a valid ISSN")}},  # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "pissn",
-                              "message": "This field must contain a different value to 'ISSN (print)'"}}
+                              "message": lazy_gettext("This field must contain a different value to 'ISSN (print)'")}}
             # ~~^-> DifferetTo:FormValidator~~
         ],
         "widgets": [
@@ -374,21 +376,21 @@ class FieldDefinitions:
             "public": {
                 "validate": [
                     {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
-                    {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+                                     "message": lazy_gettext("You must provide <strong>one or both</strong> an online ISSN or a print ISSN")}},
+                    {"is_issn": {"message": lazy_gettext("This is not a valid ISSN")}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "pissn",
-                                      "message": "This field must contain a different value to 'ISSN (print)'"}},
+                                      "message": lazy_gettext("This field must contain a different value to 'ISSN (print)'")}},
                     # ~~^-> DifferetTo:FormValidator~~
                     "issn_in_public_doaj"
                 ]
             },
             "admin": {
                 "help": {
-                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                                  "The ISSN must match what is given on the journal website."],
+                    "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                                  lazy_gettext("The ISSN must match what is given on the journal website.")],
                     "placeholder": "",
-                    "doaj_criteria": "ISSN must be provided"
+                    "doaj_criteria": lazy_gettext("ISSN must be provided")
                 },
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -399,31 +401,31 @@ class FieldDefinitions:
             "editor": {
                 "disabled": True,
                 "help": {
-                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                                  "The ISSN must match what is given on the journal website."],
+                    "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                                  lazy_gettext("The ISSN must match what is given on the journal website.")],
                     "placeholder": "",
-                    "doaj_criteria": "ISSN must be provided"
+                    "doaj_criteria": lazy_gettext("ISSN must be provided")
                 },
             },
             "associate_editor": {
                 "disabled": True,
                 "help": {
-                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
-                                  "The ISSN must match what is given on the journal website."],
+                    "long_help": [lazy_gettext("Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>."),
+                                  lazy_gettext("The ISSN must match what is given on the journal website.")],
                     "placeholder": "",
-                    "doaj_criteria": "ISSN must be provided"
+                    "doaj_criteria": lazy_gettext("ISSN must be provided")
                 }
             },
             "update_request": {
                 "disabled": True,
                 "validate": [
                     {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
-                                     "message": "You must provide <strong>one or both</strong> an online ISSN or a print ISSN"}},
-                    {"is_issn": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+                                     "message": lazy_gettext("You must provide <strong>one or both</strong> an online ISSN or a print ISSN")}},
+                    {"is_issn": {"message": lazy_gettext("This is not a valid ISSN")}},  # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "pissn",  # ~~^-> DifferetTo:FormValidator~~
-                                      "message": "This field must contain a different value to 'ISSN (print)'"}}
+                                      "message": lazy_gettext("This field must contain a different value to 'ISSN (print)'")}}
                 ]
             }
         }
@@ -432,17 +434,17 @@ class FieldDefinitions:
     # ~~->$ Keywords:FormField~~
     KEYWORDS = {
         "name": "keywords",
-        "label": "Up to 6 subject keywords in English",
+        "label": lazy_gettext("Up to 6 subject keywords in English"),
         "input": "taglist",
         "help": {
-            "long_help": ["Choose up to 6 keywords that describe the journal's subject matter. "
-                          "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) "
-                                                          "that describe the journal's main topic.",
-                          "Do not add acronyms, abbreviations or descriptive sentences.",
-                          "Note that the keywords may be edited by DOAJ editorial staff."],
+            "long_help": [lazy_gettext("Choose up to 6 keywords that describe the journal's subject matter. "
+                          "Keywords must be in English."), lazy_gettext("Use single words or short phrases (2 to 3 words) "
+                                                          "that describe the journal's main topic."),
+                          lazy_gettext("Do not add acronyms, abbreviations or descriptive sentences."),
+                          lazy_gettext("Note that the keywords may be edited by DOAJ editorial staff.")],
         },
         "validate": [
-            {"required": {"message": "Enter at least <strong>one subject keyword</strong> in English"}},
+            {"required": {"message": lazy_gettext("Enter at least <strong>one subject keyword</strong> in English")}},
             {"stop_words": {"disallowed": STOP_WORDS}},  # ~~^->StopWords:FormValidator~~
             {"max_tags": {"max": 6}}
         ],
@@ -463,7 +465,7 @@ class FieldDefinitions:
     # ~~->$ Language:FormField~~
     LANGUAGE = {
         "name": "language",
-        "label": "Languages in which the journal accepts manuscripts",
+        "label": lazy_gettext("Languages in which the journal accepts manuscripts"),
         "input": "select",
         "default": "",
         "options_fn": "iso_language_list",
@@ -472,7 +474,7 @@ class FieldDefinitions:
             "initial": 5
         },
         "validate": [
-            {"required": {"message": "Enter <strong>at least one</strong> language"}},
+            {"required": {"message": lazy_gettext("Enter <strong>at least one</strong> language")}},
             "current_iso_language"
         ],
         "widgets": [
@@ -480,7 +482,7 @@ class FieldDefinitions:
             "multiple_field"
         ],
         "help": {
-            "placeholder": "Type or select the language"
+            "placeholder": lazy_gettext("Type or select the language")
         },
         "attr": {
             "class": "input-xlarge unstyled-list"
@@ -490,10 +492,10 @@ class FieldDefinitions:
     # ~~->$ PublisherName:FormField~~
     PUBLISHER_NAME = {
         "name": "publisher_name",
-        "label": "Publisher's name",
+        "label": lazy_gettext("Publisher's name"),
         "input": "text",
         "validate": [
-            {"required": {"message": "Enter the name of the journal's publisher"}},
+            {"required": {"message": lazy_gettext("Enter the name of the journal's publisher")}},
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -502,7 +504,7 @@ class FieldDefinitions:
             "full_contents"  # ~~^->FullContents:FormWidget~~
         ],
         "help": {
-            "placeholder": "Type or select the publisher's name"
+            "placeholder": lazy_gettext("Type or select the publisher's name")
         },
         "contexts": {
             "bulk_edit": {
@@ -518,18 +520,18 @@ class FieldDefinitions:
             },
             "public": {
                 "validate": [
-                    {"required": {"message": "Enter the name of the journal's publisher"}},
+                    {"required": {"message": lazy_gettext("Enter the name of the journal's publisher")}},
                     {"different_to": {"field": "institution_name",
-                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}
                 ]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
             "update_request": {
                 "validate": [
-                    {"required": {"message": "Enter the name of the journal's publisher"}},
+                    {"required": {"message": lazy_gettext("Enter the name of the journal's publisher")}},
                     {"different_to": {"field": "institution_name",
-                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}
                 ]
                 # ~~^-> DifferetTo:FormValidator~~
 
@@ -556,18 +558,18 @@ class FieldDefinitions:
     # ~~->$ PublisherCountry:FormField~~
     PUBLISHER_COUNTRY = {
         "name": "publisher_country",
-        "label": "Publisher's country",
+        "label": lazy_gettext("Publisher's country"),
         "input": "select",
         "default": "",
         "options_fn": "iso_country_list",
         "help": {
-            "long_help": ["The country where the publisher carries out its business operations and is registered."],
-            "doaj_criteria": "You must provide a publisher country",
-            "placeholder": "Type or select the country"
+            "long_help": [lazy_gettext("The country where the publisher carries out its business operations and is registered.")],
+            "doaj_criteria": lazy_gettext("You must provide a publisher country"),
+            "placeholder": lazy_gettext("Type or select the country")
         },
         "validate": [
             {"required": {
-                "message": "Enter the <strong>country</strong> where the publisher carries out its business operations and is registered"}}
+                "message": lazy_gettext("Enter the <strong>country</strong> where the publisher carries out its business operations and is registered")}}
         ],
         "widgets": [
             {"select": {}}
@@ -588,16 +590,16 @@ class FieldDefinitions:
     # ~~->$ InstitutionName:FormField~~
     INSTITUTION_NAME = {
         "name": "institution_name",
-        "label": "Other organisation's name",
+        "label": lazy_gettext("Other organisation's name"),
         "input": "text",
         "optional": True,
         "help": {
-            "short_help": "Any other organisation associated with the journal",
+            "short_help": lazy_gettext("Any other organisation associated with the journal"),
             "long_help": [
-                "The journal may be owned, funded, sponsored, or supported by another organisation that is not "
+                lazy_gettext("The journal may be owned, funded, sponsored, or supported by another organisation that is not "
                 "the publisher. If your journal is linked to "
-                "a second organisation, enter its name here."],
-            "placeholder": "Type or select the other organisation's name"
+                "a second organisation, enter its name here.")],
+            "placeholder": lazy_gettext("Type or select the other organisation's name")
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -608,13 +610,13 @@ class FieldDefinitions:
         "contexts": {
             "public": {
                 "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
+                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
             "update_request": {
                 "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
+                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
@@ -648,14 +650,14 @@ class FieldDefinitions:
     # ~~->$ InstitutionCountry:FormField~~
     INSTITUTION_COUNTRY = {
         "name": "institution_country",
-        "label": "Other organisation's country",
+        "label": lazy_gettext("Other organisation's country"),
         "input": "select",
         "default": "",
         "options_fn": "iso_country_list",
         "optional": True,
         "help": {
-            "short_help": "The country in which the other organisation is based",
-            "placeholder": "Type or select the country"
+            "short_help": lazy_gettext("The country in which the other organisation is based"),
+            "placeholder": lazy_gettext("Type or select the country")
         },
         "widgets": [
             {"select": {"allow_clear": True}}
@@ -667,7 +669,7 @@ class FieldDefinitions:
                         "only_if_exists": {
                             "fields":
                                 [{"field": "institution_name"}],
-                            "message": "'You must provide the other organization's name. You cannot provide just the country.",
+                            "message": lazy_gettext("'You must provide the other organization's name. You cannot provide just the country."),
                         }
                     }
                 ]
@@ -678,7 +680,7 @@ class FieldDefinitions:
                         "only_if_exists": {
                             "fields":
                                 [{"field": "institution_name"}],
-                            "message": "'You must provide the other organization's name. You cannot provide just the country.",
+                            "message": lazy_gettext("'You must provide the other organization's name. You cannot provide just the country."),
                         }
                     }
                 ]
@@ -692,26 +694,26 @@ class FieldDefinitions:
     # ~~->$ License:FormField~~
     LICENSE = {
         "name": "license",
-        "label": "License(s) permitted by the journal",
+        "label": lazy_gettext("License(s) permitted by the journal"),
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "CC BY", "value": "CC BY"},
-            {"display": "CC BY-SA", "value": "CC BY-SA"},
-            {"display": "CC BY-ND", "value": "CC BY-ND"},
-            {"display": "CC BY-NC", "value": "CC BY-NC"},
-            {"display": "CC BY-NC-SA", "value": "CC BY-NC-SA"},
-            {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
-            {"display": "CC0", "value": "CC0"},
-            {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher's own license", "value": "Publisher's own license",
+            {"display": lazy_gettext("CC BY"), "value": "CC BY"},
+            {"display": lazy_gettext("CC BY-SA"), "value": "CC BY-SA"},
+            {"display": lazy_gettext("CC BY-ND"), "value": "CC BY-ND"},
+            {"display": lazy_gettext("CC BY-NC"), "value": "CC BY-NC"},
+            {"display": lazy_gettext("CC BY-NC-SA"), "value": "CC BY-NC-SA"},
+            {"display": lazy_gettext("CC BY-NC-ND"), "value": "CC BY-NC-ND"},
+            {"display": lazy_gettext("CC0"), "value": "CC0"},
+            {"display": lazy_gettext("Public domain"), "value": "Public domain"},
+            {"display": lazy_gettext("Publisher's own license"), "value": "Publisher's own license",
              "subfields": ["license_attributes"]},
         ],
         "help": {
-            "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
-                          "If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter "
-                          "more details below.",
-                          "More information on CC licenses: <br/>"
+            "long_help": [lazy_gettext("The journal must use some form of licensing to be considered for indexing in DOAJ. "),
+                          lazy_gettext("If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter "
+                          "more details below."),
+                          lazy_gettext("More information on CC licenses: <br/>"
                           "<a href='https://creativecommons.org/licenses/by/4.0/"
                           "' target='_blank' 'rel='noopener'>CC BY</a> <br/>"
                           "<a href='https://creativecommons.org/licenses/by-sa/4.0/"
@@ -723,53 +725,53 @@ class FieldDefinitions:
                           "<a href='https://creativecommons.org/licenses/by-nc-sa/4.0/"
                           "' target='_blank' 'rel='noopener'>CC BY-NC-SA</a> <br/>"
                           "<a href='https://creativecommons.org/licenses/by-nc-nd/4.0/"
-                          "' target='_blank' 'rel='noopener'>CC BY-NC-ND</a>",
-                          "<a href='https://wiki.creativecommons.org/wiki/CC0_"
+                          "' target='_blank' 'rel='noopener'>CC BY-NC-ND</a>"),
+                          lazy_gettext("<a href='https://wiki.creativecommons.org/wiki/CC0_"
                           "FAQ#What_is_the_difference_between_CC0_and_the_Publ"
                           "ic_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' "
                           "rel='noopener'>What is the difference between CC0 "
-                          "and the Public Domain Mark (\"PDM\")?</a>"],
-            "doaj_criteria": "Content must be licensed"
+                          "and the Public Domain Mark (\"PDM\")?</a>")],
+            "doaj_criteria": lazy_gettext("Content must be licensed")
         },
         "validate": [
-            {"required": {"message": "Select <strong>at least one</strong> type of license"}}
+            {"required": {"message": lazy_gettext("Select <strong>at least one</strong> type of license")}}
         ]
     }
 
     # ~~->$ LicenseAttributes:FormField~~
     LICENSE_ATTRIBUTES = {
         "name": "license_attributes",
-        "label": "Select all the attributes that your license has",
+        "label": lazy_gettext("Select all the attributes that your license has"),
         "input": "checkbox",
         "multiple": True,
         "conditional": [
             {"field": "license", "value": "Publisher's own license"}
         ],
         "options": [
-            {"display": "Attribution", "value": "BY"},
-            {"display": "Share Alike", "value": "SA"},
-            {"display": "No Derivatives", "value": "ND"},
-            {"display": "No Commercial Usage", "value": "NC"}
+            {"display": lazy_gettext("Attribution"), "value": "BY"},
+            {"display": lazy_gettext("Share Alike"), "value": "SA"},
+            {"display": lazy_gettext("No Derivatives"), "value": "ND"},
+            {"display": lazy_gettext("No Commercial Usage"), "value": "NC"}
         ],
         "help": {
-            "doaj_criteria": "Content must be licensed"
+            "doaj_criteria": lazy_gettext("Content must be licensed")
         }
     }
 
     # ~~->$ LicenseTermsURL:FormField~~
     LICENSE_TERMS_URL = {
         "name": "license_terms_url",
-        "label": "Where can we find this information?",
+        "label": lazy_gettext("Where can we find this information?"),
         "input": "text",
         "diff_table_context": "License terms",
         "validate": [
-            {"required": {"message": "Enter the URL for the journal’s <strong>license terms</strong> page"}},
+            {"required": {"message": lazy_gettext("Enter the URL for the journal’s <strong>license terms</strong> page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "help": {
-            "short_help": "Link to the page where the license terms are stated on your site.",
-            "doaj_criteria": "You must provide a link to your license terms",
-            "placeholder": "https://www.my-journal.com/about#licensing",
+            "short_help": lazy_gettext("Link to the page where the license terms are stated on your site."),
+            "doaj_criteria": lazy_gettext("You must provide a link to your license terms"),
+            "placeholder": lazy_gettext("https://www.my-journal.com/about#licensing"),
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -780,40 +782,40 @@ class FieldDefinitions:
     # ~~->$ LicenseDisplay:FormField~~
     LICENSE_DISPLAY = {
         "name": "license_display",
-        "label": "Does the journal embed and/or display licensing information in its articles?",
+        "label": lazy_gettext("Does the journal embed and/or display licensing information in its articles?"),
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y", "subfields": ["license_display_example_url"]},
-            {"display": "No", "value": "n"}
+            {"display": lazy_gettext("Yes"), "value": "y", "subfields": ["license_display_example_url"]},
+            {"display": lazy_gettext("No"), "value": "n"}
         ],
         "help": {
-            "long_help": ["It is recommended that licensing information is included in full-text articles "
+            "long_help": [lazy_gettext("It is recommended that licensing information is included in full-text articles "
                           "but it is not required for inclusion. "
                           "Answer <strong>Yes</strong> if licensing is displayed or "
-                          "embedded in all versions of each article."]
+                          "embedded in all versions of each article.")]
         },
         "validate": [
-            {"required": {"message": "Select Yes or No"}}
+            {"required": {"message": lazy_gettext("Select Yes or No")}}
         ]
     }
 
     # ~~->$ LicenseDisplayExampleUrl:FormField~~
     LICENSE_DISPLAY_EXAMPLE_URL = {
         "name": "license_display_example_url",
-        "label": "Recent article displaying or embedding a license in the full text",
+        "label": lazy_gettext("Recent article displaying or embedding a license in the full text"),
         "input": "text",
         "conditional": [
             {"field": "license_display", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to an example article",
+            "short_help": lazy_gettext("Link to an example article"),
             "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
             {"required_if": {
                 "field": "license_display",
                 "value": "y",
-                "message": "Enter the URL for any recent article that displays or embeds a license"
+                "message": lazy_gettext("Enter the URL for any recent article that displays or embeds a license")
             }
             },
             "is_url"  # ~~^->IsURL:FormValidator~~
@@ -827,34 +829,34 @@ class FieldDefinitions:
     # ~~->$ CopyrightAuthorRetails:FormField~~
     COPYRIGHT_AUTHOR_RETAINS = {
         "name": "copyright_author_retains",
-        "label": "For all the licenses you have indicated above, do authors retain the copyright "
-                 "<b>and</b> full publishing rights without restrictions?",
+        "label": lazy_gettext("For all the licenses you have indicated above, do authors retain the copyright "
+                 "<b>and</b> full publishing rights without restrictions?"),
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
-            {"display": "No", "value": "n"}
+            {"display": lazy_gettext("Yes"), "value": "y"},
+            {"display": lazy_gettext("No"), "value": "n"}
         ],
         "validate": [
-            {"required": {"message": "Select Yes or No"}}
+            {"required": {"message": lazy_gettext("Select Yes or No")}}
         ],
         "help": {
-            "long_help": ["Answer <strong>No</strong> if authors transfer "
+            "long_help": [lazy_gettext("Answer <strong>No</strong> if authors transfer "
                           "copyright or assign exclusive rights to the publisher"
                           " (including commercial rights). <br/><br/> Answer "
                           "<strong>Yes</strong> only if authors publishing "
                           "under any license allowed by the journal "
-                          "retain all rights."]
+                          "retain all rights.")]
         }
     }
 
     # ~~->$ CopyrightURL:FormField~~
     COPYRIGHT_URL = {
         "name": "copyright_url",
-        "label": "Where can we find this information?",
+        "label": lazy_gettext("Where can we find this information?"),
         "input": "text",
-        "diff_table_context": "Copyright terms",
+        "diff_table_context": lazy_gettext("Copyright terms"),
         "help": {
-            "short_help": "Link to the journal’s copyright terms"
+            "short_help": lazy_gettext("Link to the journal’s copyright terms")
         },
         "placeholder": "https://www.my-journal.com/about#licensing",
         "validate": [
@@ -867,7 +869,7 @@ class FieldDefinitions:
         "contexts": {
             "public": {
                 "validate": [
-                    {"required": {"message": "Enter the URL for the journal’s <strong>copyright terms</strong> page"}},
+                    {"required": {"message": lazy_gettext("Enter the URL for the journal’s <strong>copyright terms</strong> page")}},
                     "is_url"  # ~~^->IsURL:FormValidator~~
                 ]
             },
@@ -883,46 +885,46 @@ class FieldDefinitions:
     # ~~->$ ReviewProcess:FormField~~
     REVIEW_PROCESS = {
         "name": "review_process",
-        "label": "DOAJ only accepts peer-reviewed journals. "
-                 "Which type(s) of peer review does this journal use?",
+        "label": lazy_gettext("DOAJ only accepts peer-reviewed journals. "
+                 "Which type(s) of peer review does this journal use?"),
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "Editorial review", "value": "Editorial review"},
-            {"display": "Peer review", "value": "Peer review"},
-            {"display": "Anonymous peer review", "value": "Anonymous peer review"},
-            {"display": "Double anonymous peer review", "value": "Double anonymous peer review"},
-            {"display": "Post-publication peer review", "value": "Post-publication peer review"},
-            {"display": "Open peer review", "value": "Open peer review"},
-            {"display": "Other", "value": "other", "subfields": ["review_process_other"]}
+            {"display": lazy_gettext("Editorial review"), "value": "Editorial review"},
+            {"display": lazy_gettext("Peer review"), "value": "Peer review"},
+            {"display": lazy_gettext("Anonymous peer review"), "value": "Anonymous peer review"},
+            {"display": lazy_gettext("Double anonymous peer review"), "value": "Double anonymous peer review"},
+            {"display": lazy_gettext("Post-publication peer review"), "value": "Post-publication peer review"},
+            {"display": lazy_gettext("Open peer review"), "value": "Open peer review"},
+            {"display": lazy_gettext("Other"), "value": "other", "subfields": ["review_process_other"]}
         ],
         "help": {
-            "long_help": ["Enter all types of review used by the journal for "
+            "long_help": [lazy_gettext("Enter all types of review used by the journal for "
                           "research articles. Note that editorial review is "
                           "only accepted for <a href='https://doaj.org/apply/guide/#arts-and-humanities-journals' target='_blank' rel='nofollow'>arts and humanities journals</a>."
                           "For a detailed description of the peer review types, "
-                          "see <a href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0' target='_blank' rel='nofollow'>this summary</a>."],
-            "doaj_criteria": "Peer review must be carried out"
+                          "see <a href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0' target='_blank' rel='nofollow'>this summary</a>.")],
+            "doaj_criteria": lazy_gettext("Peer review must be carried out")
         },
         "validate": [
-            {"required": {"message": "Select <strong>at least one</strong> type of review process"}}
+            {"required": {"message": lazy_gettext("Select <strong>at least one</strong> type of review process")}}
         ]
     }
 
     # ~~->$ ReviewProcessOther:FormField~~
     REVIEW_PROCESS_OTHER = {
         "name": "review_process_other",
-        "label": "Other peer review",
+        "label": lazy_gettext("Other peer review"),
         "input": "text",
         "help": {
-            "placeholder": "Other peer review"
+            "placeholder": lazy_gettext("Other peer review")
         },
         "conditional": [{"field": "review_process", "value": "other"}],
         "validate": [
             {"required_if": {
                 "field": "review_process",
                 "value": "other",
-                "message": "Enter the name of another type of peer review"
+                "message": lazy_gettext("Enter the name of another type of peer review")
             }
             }
         ],
@@ -937,15 +939,15 @@ class FieldDefinitions:
     # ~~->$ ReviewURL:FormField~~
     REVIEW_URL = {
         "name": "review_url",
-        "label": "Where can we find this information?",
+        "label": lazy_gettext("Where can we find this information?"),
         "input": "text",
-        "diff_table_context": "Peer review policy",
+        "diff_table_context": lazy_gettext("Peer review policy"),
         "help": {
-            "doaj_criteria": "You must provide a URL",
-            "short_help": "Link to the journal’s peer review policy"
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
+            "short_help": lazy_gettext("Link to the journal’s peer review policy")
         },
         "validate": [
-            {"required": {"message": "Enter the URL for the journal’s <strong>peer review policy</strong> page"}},
+            {"required": {"message": lazy_gettext("Enter the URL for the journal’s <strong>peer review policy</strong> page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
@@ -957,20 +959,20 @@ class FieldDefinitions:
     # ~~->$ OAStart:FormField~~
     OA_START = {
         "name": "oa_start",
-        "label": "When did the journal start to publish all content using an open license?",
+        "label": lazy_gettext("When did the journal start to publish all content using an open license?"),
         "input": "number",
         "datatype": "integer",
         "help": {
             "long_help": [
-                "Please enter the year that the journal started to publish all content as true open access, according to DOAJ's <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>definition</a>.",
-                "For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal.",
-                "For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content."]
+                lazy_gettext("Please enter the year that the journal started to publish all content as true open access, according to DOAJ's <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>definition</a>."),
+                lazy_gettext("For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal."),
+                lazy_gettext("For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content.")]
         },
         "validate": [
-            {"required": {"message": "Enter the Year (YYYY)."}},
+            {"required": {"message": lazy_gettext("Enter the Year (YYYY).")}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {
-                "message": "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}".format(
+                "message": lazy_gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}").format(
                     app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
@@ -982,42 +984,42 @@ class FieldDefinitions:
     # ~~->$ PlagiarismDetection:FormField~~
     PLAGIARISM_DETECTION = {
         "name": "plagiarism_detection",
-        "label": "Does the journal routinely screen article submissions for plagiarism?",
+        "label": lazy_gettext("Does the journal routinely screen article submissions for plagiarism?"),
         "input": "radio",
         "help": {
-            "long_help": ["Screening for plagiarism is recommended, but is not"
+            "long_help": [lazy_gettext("Screening for plagiarism is recommended, but is not"
                           " a requirement for inclusion in DOAJ. If the "
                           "journal does screen for plagiarism, state the "
-                          "services(s) used on your website."],
+                          "services(s) used on your website.")],
         },
         "options": [
-            {"display": "Yes", "value": "y", "subfields": ["review_process_other"]},
-            {"display": "No", "value": "n"}
+            {"display": lazy_gettext("Yes"), "value": "y", "subfields": ["review_process_other"]},
+            {"display": lazy_gettext("No"), "value": "n"}
         ],
         "validate": [
-            {"required": {"message": "Select Yes or No"}}
+            {"required": {"message": lazy_gettext("Select Yes or No")}}
         ]
     }
 
     # ~~->$ PlagiarismURL:FormField~~
     PLAGIARISM_URL = {
         "name": "plagiarism_url",
-        "label": "Where can we find this information?",
-        "diff_table_context": "Plagiarism screening",
+        "label": lazy_gettext("Where can we find this information?"),
+        "diff_table_context": lazy_gettext("Plagiarism screening"),
         "input": "text",
         "conditional": [{"field": "plagiarism_detection", "value": "y"}],
         "help": {
-            "doaj_criteria": "You must provide a URL",
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
             "placeholder": "https://www.my-journal.com/about#plagiarism",
-            "short_help": "Link to the journal’s plagiarism policy",
-            "long_help": ["The page should state that the journal actively checks for plagiarism and explain how this "
-                          "is done (including the name of any software or service used)."]
+            "short_help": lazy_gettext("Link to the journal’s plagiarism policy"),
+            "long_help": [lazy_gettext("The page should state that the journal actively checks for plagiarism and explain how this "
+                          "is done (including the name of any software or service used).")]
         },
         "validate": [
             {"required_if": {
                 "field": "plagiarism_detection",
                 "value": "y",
-                "message": "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
+                "message": lazy_gettext("Enter the URL for the journal’s <strong>plagiarism policy</strong> page")
             }
             },
             "is_url"  # ~~^->IsURL:FormValidator~~
@@ -1031,14 +1033,14 @@ class FieldDefinitions:
     # ~~->$ AimsScopeURL:FormField~~
     AIMS_SCOPE_URL = {
         "name": "aims_scope_url",
-        "label": "Link to the journal’s <b>Aims & Scope</b>",
+        "label": lazy_gettext("Link to the journal’s <b>Aims & Scope</b>"),
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL",
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
             "placeholder": "https://www.my-journal.com/about#aims"
         },
         "validate": [
-            {"required": {"message": "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"}},
+            {"required": {"message": lazy_gettext("Enter the URL for the journal’s <strong>Aims & Scope</strong> page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
@@ -1050,14 +1052,14 @@ class FieldDefinitions:
     # ~~->$ EditorialBoardURL:FormField~~
     EDITORIAL_BOARD_URL = {
         "name": "editorial_board_url",
-        "label": "Link to the journal’s <b>Editorial Board</b>",
+        "label": lazy_gettext("Link to the journal’s <b>Editorial Board</b>"),
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL",
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
             "placeholder": "https://www.my-journal.com/about#board"
         },
         "validate": [
-            {"required": {"message": "Enter the URL for the journal’s <strong>Editorial Board</strong> page"}},
+            {"required": {"message": lazy_gettext("Enter the URL for the journal’s <strong>Editorial Board</strong> page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
@@ -1069,14 +1071,14 @@ class FieldDefinitions:
     # ~~->$ AuthorInstructionsURL:FormField~~
     AUTHOR_INSTRUCTIONS_URL = {
         "name": "author_instructions_url",
-        "label": "Link to the journal’s <b>Instructions for Authors</b>",
+        "label": lazy_gettext("Link to the journal’s <b>Instructions for Authors</b>"),
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL",
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
             "placeholder": "https://www.my-journal.com/for_authors"
         },
         "validate": [
-            {"required": {"message": "Enter the URL for the journal’s <strong>Instructions for Authors</strong> page"}},
+            {"required": {"message": lazy_gettext("Enter the URL for the journal’s <strong>Instructions for Authors</strong> page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
@@ -1088,11 +1090,11 @@ class FieldDefinitions:
     # ~~->$ PublicationTimeWeeks:FormField~~
     PUBLICATION_TIME_WEEKS = {
         "name": "publication_time_weeks",
-        "label": "Average number of <strong>weeks</strong> between article submission & publication",
+        "label": lazy_gettext("Average number of <strong>weeks</strong> between article submission & publication"),
         "input": "number",
         "datatype": "integer",
         "validate": [
-            {"required": {"message": "Enter an average number of weeks"}},
+            {"required": {"message": lazy_gettext("Enter an average number of weeks")}},
             {"int_range": {"gte": 1, "lte": 100}}
         ],
         "attr": {
@@ -1104,21 +1106,21 @@ class FieldDefinitions:
     # ~~->$ APC:FormField~~
     APC = {
         "name": "apc",
-        "label": "Does the journal charge fees for publishing an article (APCs)?",
+        "label": lazy_gettext("Does the journal charge fees for publishing an article (APCs)?"),
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y", "subfields": ["apc_charges"]},
-            {"display": "No", "value": "n"}
+            {"display": lazy_gettext("Yes"), "value": "y", "subfields": ["apc_charges"]},
+            {"display": lazy_gettext("No"), "value": "n"}
         ],
         "help": {
-            "long_help": ["Publication fees are sometimes called "
+            "long_help": [lazy_gettext("Publication fees are sometimes called "
                           "article processing charges (APCs). You should answer"
                           " Yes if any fee is required from the author for "
-                          "publishing their paper."],
-            "doaj_criteria": "You must tell us about any APCs"
+                          "publishing their paper.")],
+            "doaj_criteria": lazy_gettext("You must tell us about any APCs")
         },
         "validate": [
-            {"required": {"message": "Select Yes or No"}}
+            {"required": {"message": lazy_gettext("Select Yes or No")}}
         ]
     }
 
@@ -1126,7 +1128,7 @@ class FieldDefinitions:
     APC_CHARGES = {
         "name": "apc_charges",
         "input": "group",
-        "label": "Highest fee charged",
+        "label": lazy_gettext("Highest fee charged"),
         "repeatable": {
             "minimum": 1,
             "initial": 5
@@ -1135,10 +1137,10 @@ class FieldDefinitions:
             {"field": "apc", "value": "y"}
         ],
         "help": {
-            "long_help": [" If the journal charges a range of fees for "
+            "long_help": [lazy_gettext("If the journal charges a range of fees for "
                           "the publication of an article, enter the highest fee. "
                           "If the fee can be paid in more than one currency, "
-                          "you may list them here."]
+                          "you may list them here.")]
         },
         "subfields": [
             "apc_currency",
@@ -1173,7 +1175,7 @@ class FieldDefinitions:
                 "required_if": {
                     "field": "apc",
                     "value": "y",
-                    "message": "Enter the currency or currencies for the journal’s publishing fees"
+                    "message": lazy_gettext("Enter the currency or currencies for the journal’s publishing fees")
                 }
             },
             "current_iso_currency"
@@ -1188,14 +1190,14 @@ class FieldDefinitions:
         "input": "number",
         "datatype": "integer",
         "help": {
-            "placeholder": "Highest fee charged"
+            "placeholder": lazy_gettext("Highest fee charged")
         },
         "validate": [
             {
                 "required_if": {
                     "field": "apc",
                     "value": "y",
-                    "message": "Enter the value of the highest publishing fee the journal has charged"
+                    "message": lazy_gettext("Enter the value of the highest publishing fee the journal has charged")
                 }
             }
         ],
@@ -1207,19 +1209,19 @@ class FieldDefinitions:
     # ~~->$ APCURL:FormField~~
     APC_URL = {
         "name": "apc_url",
-        "label": "Where can we find this information?",
-        "diff_table_context": "Publication fees",
+        "label": lazy_gettext("Where can we find this information?"),
+        "diff_table_context": lazy_gettext("Publication fees"),
         "input": "text",
         "help": {
-            "short_help": "Link to the page where this is stated. The page "
+            "short_help": lazy_gettext("Link to the page where this is stated. The page "
                           "must declare <b>whether or not</b> there is a fee "
-                          "to publish an article in the journal.",
-            "doaj_criteria": "You must provide a URL",
+                          "to publish an article in the journal."),
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
             "placeholder": "https://www.my-journal.com/about#apc"
         },
         "validate": [
             {"required": {
-                "message": "Enter the URL for the journal’s <strong>publication fees</strong> information page"}},
+                "message": lazy_gettext("Enter the URL for the journal’s <strong>publication fees</strong> information page")}},
             "is_url"  # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
@@ -1231,45 +1233,45 @@ class FieldDefinitions:
     # ~~->$ HasWaiver:FormField~~
     HAS_WAIVER = {
         "name": "has_waiver",
-        "label": "Does the journal provide a waiver or discount "
-                 "on publication fees for authors?",
+        "label": lazy_gettext("Does the journal provide a waiver or discount "
+                 "on publication fees for authors?"),
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y", "subfields": ["waiver_url"]},
-            {"display": "No", "value": "n"}
+            {"display": lazy_gettext("Yes"), "value": "y", "subfields": ["waiver_url"]},
+            {"display": lazy_gettext("No"), "value": "n"}
         ],
         "help": {
-            "long_help": ["Answer <strong>Yes</strong> if the journal provides"
+            "long_help": [lazy_gettext("Answer <strong>Yes</strong> if the journal provides"
                           " publication fee waivers for authors from "
                           "low-income economies, discounts for authors from "
                           "lower middle-income economies, and/or waivers and "
                           "discounts for other authors with "
-                          "demonstrable needs."]
+                          "demonstrable needs.")]
         },
         "validate": [
-            {"required": {"message": "Select Yes or No"}}
+            {"required": {"message": lazy_gettext("Select Yes or No")}}
         ]
     }
 
     # ~~->$ WaiverURL:FormField~~
     WAIVER_URL = {
         "name": "waiver_url",
-        "label": "Where can we find this information?",
+        "label": lazy_gettext("Where can we find this information?"),
         "input": "text",
-        "diff_table_context": "Publication fee waiver",
+        "diff_table_context": lazy_gettext("Publication fee waiver"),
         "conditional": [
             {"field": "has_waiver", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to the journal’s waiver information.",
-            "doaj_criteria": "You must provide a URL",
+            "short_help": lazy_gettext("Link to the journal’s waiver information."),
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
             "placeholder": "https://www.my-journal.com/about#waiver"
         },
         "validate": [
             {"required_if": {
                 "field": "has_waiver",
                 "value": "y",
-                "message": "Enter the URL for the journal’s <strong>waiver information</strong> page"
+                "message": lazy_gettext("Enter the URL for the journal’s <strong>waiver information</strong> page")
             }
             },
             "is_url"  # ~~^->IsURL:FormValidator~~
@@ -1283,41 +1285,41 @@ class FieldDefinitions:
     # ~~->$ HasOtherCharges:FormField~~
     HAS_OTHER_CHARGES = {
         "name": "has_other_charges",
-        "label": "Does the journal charge any other fees to authors?",
+        "label": lazy_gettext("Does the journal charge any other fees to authors?"),
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y", "subfields": ["other_charges_url"]},
-            {"display": "No", "value": "n"}
+            {"display": lazy_gettext("Yes"), "value": "y", "subfields": ["other_charges_url"]},
+            {"display": lazy_gettext("No"), "value": "n"}
         ],
         "help": {
-            "long_help": ["Declare all other charges: editorial processing charges, language editing fees, "
+            "long_help": [lazy_gettext("Declare all other charges: editorial processing charges, language editing fees, "
                           "colour charges, submission fees, page charges, membership fees, print subscription costs, "
-                          "other supplementary charges"],
-            "doaj_criteria": "You must declare any other charges if they exist"
+                          "other supplementary charges")],
+            "doaj_criteria": lazy_gettext("You must declare any other charges if they exist")
         },
         "validate": [
-            {"required": {"message": "Select Yes or No"}}
+            {"required": {"message": lazy_gettext("Select Yes or No")}}
         ]
     }
 
     # ~~->$ OtherChargesURL:FormField~~
     OTHER_CHARGES_URL = {
         "name": "other_charges_url",
-        "label": "Where can we find this information?",
+        "label": lazy_gettext("Where can we find this information?"),
         "input": "text",
-        "diff_table_context": "Other fees",
+        "diff_table_context": lazy_gettext("Other fees"),
         "conditional": [
             {"field": "has_other_charges", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to the journal’s fees information",
-            "doaj_criteria": "You must provide a URL"
+            "short_help": lazy_gettext("Link to the journal’s fees information"),
+            "doaj_criteria": lazy_gettext("You must provide a URL")
         },
         "validate": [
             {"required_if": {
                 "field": "has_other_charges",
                 "value": "y",
-                "message": "Enter the URL for the journal’s <strong>fees<strong> information page"
+                "message": lazy_gettext("Enter the URL for the journal’s <strong>fees<strong> information page")
             }
             },
             "is_url"  # ~~^->IsURL:FormValidator~~
@@ -1331,33 +1333,33 @@ class FieldDefinitions:
     # ~~->$ PreservationService:FormField~~
     PRESERVATION_SERVICE = {
         "name": "preservation_service",
-        "label": "Long-term preservation service(s) where the journal is currently archived",
+        "label": lazy_gettext("Long-term preservation service(s) where the journal is currently archived"),
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "CINES", "value": "CINES", "subfields": ["preservation_service_url"]},
-            {"display": "CLOCKSS", "value": "CLOCKSS", "subfields": ["preservation_service_url"]},
-            {"display": "LOCKSS", "value": "LOCKSS", "subfields": ["preservation_service_url"]},
-            {"display": "Internet Archive", "value": "Internet Archive", "subfields": ["preservation_service_url"]},
-            {"display": "PKP PN", "value": "PKP PN", "subfields": ["preservation_service_url"]},
-            {"display": "PubMed Central (PMC)", "value": "PMC", "subfields": ["preservation_service_url"]},
-            {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
-            {"display": "A national library", "value": "national_library",
+            {"display": lazy_gettext("CINES"), "value": "CINES", "subfields": ["preservation_service_url"]},
+            {"display": lazy_gettext("CLOCKSS"), "value": "CLOCKSS", "subfields": ["preservation_service_url"]},
+            {"display": lazy_gettext("LOCKSS"), "value": "LOCKSS", "subfields": ["preservation_service_url"]},
+            {"display": lazy_gettext("Internet Archive"), "value": "Internet Archive", "subfields": ["preservation_service_url"]},
+            {"display": lazy_gettext("PKP PN"), "value": "PKP PN", "subfields": ["preservation_service_url"]},
+            {"display": lazy_gettext("PubMed Central (PMC)"), "value": "PMC", "subfields": ["preservation_service_url"]},
+            {"display": lazy_gettext("Portico"), "value": "Portico", "subfields": ["preservation_service_url"]},
+            {"display": lazy_gettext("A national library"), "value": "national_library",
              "subfields": ["preservation_service_library", "preservation_service_url"]},
-            {"display": "Other", "value": "other",
+            {"display": lazy_gettext("Other"), "value": "other",
              "subfields": ["preservation_service_other", "preservation_service_url"]},
-            {"display": HTMLString("<em>The journal content isn’t archived with a long-term preservation service</em>"),
+            {"display": HTMLString(lazy_gettext("<em>The journal content isn’t archived with a long-term preservation service</em>")),
              "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": [
-                "Content must be actively deposited in each of the options you choose. "
+                lazy_gettext("Content must be actively deposited in each of the options you choose. "
                 "If the journal is registered with a service but archiving is not yet active,"
-                " choose <em>The journal content isn’t archived with a long-term preservation service</em>.",
-                "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
+                " choose <em>The journal content isn’t archived with a long-term preservation service</em>."),
+                lazy_gettext("PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust).")]
         },
         "validate": [
-            {"required": {"message": "Select <strong>at least one</strong> option"}}
+            {"required": {"message": lazy_gettext("Select <strong>at least one</strong> option")}}
         ],
         "contexts": {
             "admin": {
@@ -1371,21 +1373,21 @@ class FieldDefinitions:
     # ~~->$ PreservationServiceLibrary:FormField~~
     PRESERVATION_SERVICE_LIBRARY = {
         "name": "preservation_service_library",
-        "label": "A national library",
+        "label": lazy_gettext("A national library"),
         "input": "text",
         "repeatable": {
             "minimum": 1,
             "initial": 2
         },
         "help": {
-            "short_help": "Name of national library"
+            "short_help": lazy_gettext("Name of national library")
         },
         "conditional": [{"field": "preservation_service", "value": "national_library"}],
         "validate": [
             {"required_if": {
                 "field": "preservation_service",
                 "value": "national_library",
-                "message": "Enter the name(s) of the national library or libraries where the journal is archived"
+                "message": lazy_gettext("Enter the name(s) of the national library or libraries where the journal is archived")
             }
             }
         ],
@@ -1401,14 +1403,14 @@ class FieldDefinitions:
     # ~~->$ PreservationServiceOther:FormField~~
     PRESERVATION_SERVICE_OTHER = {
         "name": "preservation_service_other",
-        "label": "Other archiving policy:",
+        "label": lazy_gettext("Other archiving policy:"),
         "input": "text",
         "conditional": [{"field": "preservation_service", "value": "other"}],
         "validate": [
             {"required_if": {
                 "field": "preservation_service",
                 "value": "other",
-                "message": "Enter the name of another archiving policy"
+                "message": lazy_gettext("Enter the name of another archiving policy")
             }
             }
         ],
@@ -1423,12 +1425,12 @@ class FieldDefinitions:
     # ~~->$ PreservationServiceURL:FormField~~
     PRESERVATION_SERVICE_URL = {
         "name": "preservation_service_url",
-        "label": "Where can we find this information?",
+        "label": lazy_gettext("Where can we find this information?"),
         "input": "text",
         "diff_table_context": "Archiving policy",
         "help": {
-            "short_help": "Link to the preservation and archiving information",
-            "doaj_criteria": "You must provide a URL",
+            "short_help": lazy_gettext("Link to the preservation and archiving information"),
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
             "placeholder": "https://www.my-journal.com/about#archiving"
         },
         "conditional": [
@@ -1470,45 +1472,45 @@ class FieldDefinitions:
     # ~~->$ DepositPolicy:FormField~~
     DEPOSIT_POLICY = {
         "name": "deposit_policy",
-        "label": "Does the journal have a policy allowing authors to deposit versions of their work in an "
-                 "institutional or other repository of their choice? Where is this policy recorded?",
+        "label": lazy_gettext("Does the journal have a policy allowing authors to deposit versions of their work in an "
+                 "institutional or other repository of their choice? Where is this policy recorded?"),
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
-            {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
-            {"display": "Mir@bel", "value": "Mir@bel", "subfields": ["deposit_policy_url"]},
-            {"display": "Open Policy Finder", "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
-            {"display": "Other (including publisher’s own site)", "value": "other",
+            {"display": lazy_gettext("Diadorim"), "value": "Diadorim", "subfields": ["deposit_policy_url"]},
+            {"display": lazy_gettext("Dulcinea"), "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
+            {"display": lazy_gettext("Mir@bel"), "value": "Mir@bel", "subfields": ["deposit_policy_url"]},
+            {"display": lazy_gettext("Open Policy Finder"), "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
+            {"display": lazy_gettext("Other (including publisher’s own site)"), "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
-            {"display": HTMLString("<em>The journal has no repository policy</em>"), "value": "none", "exclusive": True}
+            {"display": HTMLString(lazy_gettext("<em>The journal has no repository policy</em>")), "value": "none", "exclusive": True}
         ],
         "help": {
-            "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
-                          "of their choice. What is the journal’s policy for this?",
-                          "You should state your policy about the different versions of the paper:"
-                          "<ul style='list-style-type: none;'>"
-                          "<li>Submitted version</li>"
-                          "<li>Accepted version (Author Accepted Manuscript)</li>"
-                          "<li>Published version (Version of Record)</li>"
-                          "</ul>"
+            "long_help": [lazy_gettext("Many authors wish to deposit a copy of their paper in an institutional or other repository "
+                          "of their choice. What is the journal’s policy for this?"),
+                          lazy_gettext("""You should state your policy about the different versions of the paper:
+                          <ul style='list-style-type: none;'>
+                          <li>Submitted version</li>
+                          <li>Accepted version (Author Accepted Manuscript)</li>
+                          <li>Published version (Version of Record)</li>
+                          </ul>""")
                           ]},
         "validate": [
-            {"required": {"message": "Select <strong>at least one</strong> option"}}
+            {"required": {"message": lazy_gettext("Select <strong>at least one</strong> option")}}
         ]
     }
 
     # ~~->$ DepositPolicyOther:FormField~~
     DEPOSIT_POLICY_OTHER = {
         "name": "deposit_policy_other",
-        "label": "Name of other website where policy is registered",
+        "label": lazy_gettext("Name of other website where policy is registered"),
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
             {"required_if": {
                 "field": "deposit_policy",
                 "value": "other",
-                "message": "Enter the name of another repository policy"
+                "message": lazy_gettext("Enter the name of another repository policy")
             }
             }
         ],
@@ -1523,7 +1525,7 @@ class FieldDefinitions:
     # ~~->$ DepositPolicyURL:FormField~~
     DEPOSIT_POLICY_URL = {
         "name": "deposit_policy_url",
-        "label": "Where can we find this information?",
+        "label": lazy_gettext("Where can we find this information?"),
         "input": "text",
         "diff_table_context": "Repository policy",
         "conditional": [{"field": "deposit_policy", "value": "Diadorim"},
@@ -1532,8 +1534,8 @@ class FieldDefinitions:
                         {"field": "deposit_policy", "value": "Open Policy Finder"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
-            "doaj_criteria": "You must provide a URL",
-            "short_help": "Provide the link to the policy in the selected directory. Or select 'Other' and provide a link to the information on your website.",
+            "doaj_criteria": lazy_gettext("You must provide a URL"),
+            "short_help": lazy_gettext("Provide the link to the policy in the selected directory. Or select 'Other' and provide a link to the information on your website."),
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
@@ -1584,40 +1586,40 @@ class FieldDefinitions:
     # ~~->$ PersistentIdentifiers:FormField~~
     PERSISTENT_IDENTIFIERS = {
         "name": "persistent_identifiers",
-        "label": "Persistent article identifiers used by the journal",
+        "label": lazy_gettext("Persistent article identifiers used by the journal"),
         "input": "checkbox",
         "multiple": True,
-        "hint": "Select at least one",
+        "hint": lazy_gettext("Select at least one"),
         "options": [
-            {"display": "DOIs", "value": "DOI"},
-            {"display": "ARKs", "value": "ARK"},
-            {"display": "Handles", "value": "Handles"},
-            {"display": "PURLs", "value": "PURL"},
-            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]},
-            {"display": HTMLString("<em>The journal does not use persistent article identifiers</em>"), "value": "none",
+            {"display": lazy_gettext("DOIs"), "value": "DOI"},
+            {"display": lazy_gettext("ARKs"), "value": "ARK"},
+            {"display": lazy_gettext("Handles"), "value": "Handles"},
+            {"display": lazy_gettext("PURLs"), "value": "PURL"},
+            {"display": lazy_gettext("Other"), "value": "other", "subfields": ["persistent_identifiers_other"]},
+            {"display": HTMLString(lazy_gettext("<em>The journal does not use persistent article identifiers</em>")), "value": "none",
              "exclusive": True}
         ],
         "help": {
-            "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
-                          "located. The most common type of PID is the digital object identifier (DOI). ",
-                          "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
+            "long_help": [lazy_gettext("A persistent article identifier (PID) is used to find the article no matter where it is "
+                          "located. The most common type of PID is the digital object identifier (DOI). "),
+                          lazy_gettext("<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>")],
         },
         "validate": [
-            {"required": {"message": "Select <strong>at least one</strong> option"}}
+            {"required": {"message": lazy_gettext("Select <strong>at least one</strong> option")}}
         ]
     }
 
     # ~~->$ PersistentIdentifiersOther:FormField~~
     PERSISTENT_IDENTIFIERS_OTHER = {
         "name": "persistent_identifiers_other",
-        "label": "Other identifier",
+        "label": lazy_gettext("Other identifier"),
         "input": "text",
         "conditional": [{"field": "persistent_identifiers", "value": "other"}],
         "validate": [
             {"required_if": {
                 "field": "persistent_identifiers",
                 "value": "other",
-                "message": "Enter the name of another type of identifier"
+                "message": lazy_gettext("Enter the name of another type of identifier")
             }
             }
         ],
@@ -1634,12 +1636,12 @@ class FieldDefinitions:
 
     S2O = {
         "name": "s2o",
-        "label": "Subscribe to Open",
+        "label": lazy_gettext("Subscribe to Open"),
         "input": "checkbox",
         "help": {
             "long_help": [
-                "Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
-                "Subscribe to Open</a> initiative?"],
+                lazy_gettext("Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
+                "Subscribe to Open</a> initiative?")],
         }
     }
 
@@ -1667,7 +1669,7 @@ class FieldDefinitions:
     # ~~->$ QuickReject:FormField~~
     QUICK_REJECT = {
         "name": "quick_reject",
-        "label": "Reason for rejection",
+        "label": lazy_gettext("Reason for rejection"),
         "input": "select",
         "options_fn": "quick_reject"
     }
@@ -1675,11 +1677,11 @@ class FieldDefinitions:
     # ~~->$ QuickRejectDetails:FormField~~
     QUICK_REJECT_DETAILS = {
         "name": "quick_reject_details",
-        "label": "Additional info",
+        "label": lazy_gettext("Additional info"),
         "input": "textarea",
         "help": {
-            "long_help": ["The selected reason for rejection, and any additional information you include, "
-                          "are sent to the journal contact with the rejection email."]
+            "long_help": [lazy_gettext("The selected reason for rejection, and any additional information you include, "
+                          "are sent to the journal contact with the rejection email.")]
         },
         "validate": [
             {"required_if": {"field": "quick_reject", "value": "other"}}
@@ -1689,7 +1691,7 @@ class FieldDefinitions:
     # ~~->$ Owner:FormField~~
     OWNER = {
         "name": "owner",
-        "label": "DOAJ Account",
+        "label": lazy_gettext("DOAJ Account"),
         "input": "text",
         "validate": [
             "reserved_usernames",
@@ -1702,7 +1704,7 @@ class FieldDefinitions:
         "contexts": {
             "associate_editor": {
                 "validate": [
-                    {"required": {"message": "You must confirm the account id"}},
+                    {"required": {"message": lazy_gettext("You must confirm the account id")}},
                     "reserved_usernames",
                     "owner_exists"
                 ]
@@ -1713,7 +1715,7 @@ class FieldDefinitions:
     # ~~->$ ApplicationStatus:FormField~~
     APPLICATION_STATUS = {
         "name": "application_status",
-        "label": "Change status",
+        "label": lazy_gettext("Change status"),
         "input": "select",
         "options_fn": "application_statuses",
         "validate": [
@@ -1728,16 +1730,16 @@ class FieldDefinitions:
             "associate_editor": {
                 "help": {
                     "render_error_box": False,
-                    "short_help": "Set the status to 'In Progress' to signal to the applicant that you have started your review."
-                                  "Set the status to 'Completed' to alert the Editor that you have completed your review.",
+                    "short_help": lazy_gettext("Set the status to 'In Progress' to signal to the applicant that you have started your review."
+                                  "Set the status to 'Completed' to alert the Editor that you have completed your review."),
                     "update_requests_diff": False
                 }
             },
             "editor": {
                 "help": {
                     "render_error_box": False,
-                    "short_help": "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
-                                  "Set the status to 'Ready' to alert the Managing Editor that you have completed your review.",
+                    "short_help": lazy_gettext("Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
+                                  "Set the status to 'Ready' to alert the Managing Editor that you have completed your review."),
                     "update_requests_diff": False
                 }
             }
@@ -1751,7 +1753,7 @@ class FieldDefinitions:
     # ~~->$ EditorGroup:FormField~~
     EDITOR_GROUP = {
         "name": "editor_group",
-        "label": "Group",
+        "label": lazy_gettext("Group"),
         "input": "text",
         "widgets": [
             {"autocomplete": {"type": "editor_group", "field": "name", "include": False}}
@@ -1774,7 +1776,7 @@ class FieldDefinitions:
     # ~~->$ Editor:FormField~~
     EDITOR = {
         "name": "editor",
-        "label": "Individual",
+        "label": lazy_gettext("Individual"),
         "input": "select",
         "options_fn": "editor_choices",
         "default": "",
@@ -1789,23 +1791,23 @@ class FieldDefinitions:
     # ~~->$ DiscontinuedDate:FormField~~
     DISCONTINUED_DATE = {
         "name": "discontinued_date",
-        "label": "Discontinued on",
+        "label": lazy_gettext("Discontinued on"),
         "input": "text",
         "validate": [
-            {"bigenddate": {"message": "Date must be a big-end formatted date (e.g. 2020-11-23)"}},
+            {"bigenddate": {"message": lazy_gettext("Date must be a big-end formatted date (e.g. 2020-11-23)")}},
             {
                 "not_if": {
                     "fields": [
                         {"field": "continues"},
                         {"field": "continued_by"}
                     ],
-                    "message": "You cannot enter both a discontinued date and continuation information."
+                    "message": lazy_gettext("You cannot enter both a discontinued date and continuation information.")
                 }
             }
         ],
         "help": {
-            "short_help": "Please enter the discontinued date in the form YYYY-MM-DD (e.g. 2020-11-23).  "
-                          "If the day of the month is not known, please use '01' (e.g. 2020-11-01)",
+            "short_help": lazy_gettext("Please enter the discontinued date in the form YYYY-MM-DD (e.g. 2020-11-23).  "
+                          "If the day of the month is not known, please use '01' (e.g. 2020-11-01)"),
             "render_error_box": False
         }
     }
@@ -1813,17 +1815,17 @@ class FieldDefinitions:
     # ~~->$ Continues:FormField~~
     CONTINUES = {
         "name": "continues",
-        "label": "Continues an <strong>older</strong> journal with the ISSN(s)",
+        "label": lazy_gettext("Continues an <strong>older</strong> journal with the ISSN(s)"),
         "input": "taglist",
         "validate": [
-            {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+            {"is_issn_list": {"message": lazy_gettext("This is not a valid ISSN")}},  # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "continued_by",
-                              "message": "The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same."}},
+                              "message": lazy_gettext("The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same.")}},
             # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if": {
                     "fields": [{"field": "discontinued_date"}],
-                    "message": "You cannot enter both continuation information and a discontinued date"
+                    "message": lazy_gettext("You cannot enter both continuation information and a discontinued date")
                 }
             }
         ],
@@ -1833,7 +1835,7 @@ class FieldDefinitions:
             "tagentry"  # ~~-> TagEntry:FormWidget~~
         ],
         "help": {
-            "short_help": "Enter the ISSN(s) of the previous title(s) of this journal.",
+            "short_help": lazy_gettext("Enter the ISSN(s) of the previous title(s) of this journal."),
             "render_error_box": False
         }
     }
@@ -1841,22 +1843,22 @@ class FieldDefinitions:
     # ~~->$ ContinuedBy:FormField~~
     CONTINUED_BY = {
         "name": "continued_by",
-        "label": "Continued by a <strong>newer</strong> journal with the ISSN(s)",
+        "label": lazy_gettext("Continued by a <strong>newer</strong> journal with the ISSN(s)"),
         "input": "taglist",
         "validate": [
-            {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+            {"is_issn_list": {"message": lazy_gettext("This is not a valid ISSN")}},  # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "continues",
-                              "message": "The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same."}},
+                              "message": lazy_gettext("The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same.")}},
             # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if": {
                     "fields": [{"field": "discontinued_date"}],
-                    "message": "You cannot enter both continuation information and a discontinued date"
+                    "message": lazy_gettext("You cannot enter both continuation information and a discontinued date")
                 }
             }
         ],
         "help": {
-            "short_help": "Enter the ISSN(s) of the later title(s) that continue this publication.",
+            "short_help": lazy_gettext("Enter the ISSN(s) of the later title(s) that continue this publication."),
             "render_error_box": False
         },
         "widgets": [
@@ -1869,10 +1871,10 @@ class FieldDefinitions:
     # ~~->$ Subject:FormField~~
     SUBJECT = {
         "name": "subject",
-        "label": "Assign one or a maximum of two subject classifications",
+        "label": lazy_gettext("Assign one or a maximum of two subject classifications"),
         "input": "taglist",
         "help": {
-            "short_help": "Selecting a subject will not automatically select its sub-categories",
+            "short_help": lazy_gettext("Selecting a subject will not automatically select its sub-categories"),
             "render_error_box": False,
         },
         "validate": [
@@ -1883,11 +1885,11 @@ class FieldDefinitions:
                     constants.APPLICATION_STATUS_COMPLETED,
                     constants.APPLICATION_STATUS_ACCEPTED
                 ],
-                "message": "This field is required when setting the Application Status to {y}, {z} or {a}".format(
-                    y=constants.APPLICATION_STATUS_READY,
-                    z=constants.APPLICATION_STATUS_COMPLETED,
-                    a=constants.APPLICATION_STATUS_ACCEPTED
-                )
+                "message": lazy_gettext("This field is required when setting the Application Status to %(y)s, %(z)s or %(a)s",
+                                y=constants.APPLICATION_STATUS_READY,
+                                z=constants.APPLICATION_STATUS_COMPLETED,
+                                a=constants.APPLICATION_STATUS_ACCEPTED
+                            )
             }
             }
         ],
@@ -1907,7 +1909,7 @@ class FieldDefinitions:
     NOTES = {
         "name": "notes",
         "input": "group",
-        "label": "Notes",
+        "label": lazy_gettext("Notes"),
         "repeatable": {
             "initial": 1,
             "add_button_placement": "top"
@@ -2078,7 +2080,7 @@ class FieldDefinitions:
     # ~~->$ OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name": "make_all_fields_optional",
-        "label": "Allow save without validation",
+        "label": lazy_gettext("Allow save without validation"),
         "input": "checkbox",
         "widget": {
             "optional_validation"
@@ -2113,7 +2115,7 @@ class FieldSetDefinitions:
     # ~~->$ BasicCompliance:FieldSet~~
     BASIC_COMPLIANCE = {
         "name": "basic_compliance",
-        "label": "Open access compliance",
+        "label": lazy_gettext("Open access compliance"),
         "fields": [
             FieldDefinitions.BOAI["name"],
             FieldDefinitions.OA_STATEMENT_URL["name"],
@@ -2124,7 +2126,7 @@ class FieldSetDefinitions:
     # ~~->$ AboutJournal:FieldSet~~
     ABOUT_THE_JOURNAL = {
         "name": "about_the_journal",
-        "label": "About the journal",
+        "label": lazy_gettext("About the journal"),
         "fields": [
             FieldDefinitions.TITLE["name"],
             FieldDefinitions.ALTERNATIVE_TITLE["name"],
@@ -2139,7 +2141,7 @@ class FieldSetDefinitions:
     # ~~->$ Publisher:FieldSet~~
     PUBLISHER = {
         "name": "publisher",
-        "label": "Publisher",
+        "label": lazy_gettext("Publisher"),
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
@@ -2149,7 +2151,7 @@ class FieldSetDefinitions:
     # ~~->$ Institution:FieldSet~~
     SOCIETY_OR_INSTITUTION = {
         "name": "society_or_institution",
-        "label": "Other organisation, if applicable",
+        "label": lazy_gettext("Other organisation, if applicable"),
         "fields": [
             FieldDefinitions.INSTITUTION_NAME["name"],
             FieldDefinitions.INSTITUTION_COUNTRY["name"]
@@ -2159,7 +2161,7 @@ class FieldSetDefinitions:
     # ~~->$ Licensing:FieldSet~~
     LICENSING = {
         "name": "licensing",
-        "label": "Licensing",
+        "label": lazy_gettext("Licensing"),
         "fields": [
             FieldDefinitions.LICENSE["name"],
             FieldDefinitions.LICENSE_ATTRIBUTES["name"],
@@ -2170,7 +2172,7 @@ class FieldSetDefinitions:
     # ~~->$ EmbeddedLicense:FieldSet~~
     EMBEDDED_LICENSING = {
         "name": "embedded_licensing",
-        "label": "Embedded licenses",
+        "label": lazy_gettext("Embedded licenses"),
         "fields": [
             FieldDefinitions.LICENSE_DISPLAY["name"],
             FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]
@@ -2180,7 +2182,7 @@ class FieldSetDefinitions:
     # ~~->$ Copyright:FieldSet~~
     COPYRIGHT = {
         "name": "copyright",
-        "label": "Copyright",
+        "label": lazy_gettext("Copyright"),
         "fields": [
             FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"],
             FieldDefinitions.COPYRIGHT_URL["name"]
@@ -2190,7 +2192,7 @@ class FieldSetDefinitions:
     # ~~->$ PeerReview:FieldSet~~
     PEER_REVIEW = {
         "name": "peer_review",
-        "label": "Peer review",
+        "label": lazy_gettext("Peer review"),
         "fields": [
             FieldDefinitions.REVIEW_PROCESS["name"],
             FieldDefinitions.REVIEW_PROCESS_OTHER["name"],
@@ -2201,7 +2203,7 @@ class FieldSetDefinitions:
     # ~~->$ Plagiarism:FieldSet~~
     PLAGIARISM = {
         "name": "plagiarism",
-        "label": "Plagiarism",
+        "label": lazy_gettext("Plagiarism"),
         "fields": [
             FieldDefinitions.PLAGIARISM_DETECTION["name"],
             FieldDefinitions.PLAGIARISM_URL["name"]
@@ -2211,7 +2213,7 @@ class FieldSetDefinitions:
     # ~~->$ Editorial:FieldSet~~
     EDITORIAL = {
         "name": "editorial",
-        "label": "Editorial",
+        "label": lazy_gettext("Editorial"),
         "fields": [
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
@@ -2223,7 +2225,7 @@ class FieldSetDefinitions:
     # ~~->$ APC:FieldSet~~
     APC = {
         "name": "apc",
-        "label": "Publication fees",
+        "label": lazy_gettext("Publication fees"),
         "fields": [
             FieldDefinitions.APC["name"],
             FieldDefinitions.APC_CHARGES["name"],
@@ -2236,7 +2238,7 @@ class FieldSetDefinitions:
     # ~~->$ Waivers:FieldSet~~
     APC_WAIVERS = {
         "name": "apc_waivers",
-        "label": "Publication fee waivers",
+        "label": lazy_gettext("Publication fee waivers"),
         "fields": [
             FieldDefinitions.HAS_WAIVER["name"],
             FieldDefinitions.WAIVER_URL["name"]
@@ -2246,7 +2248,7 @@ class FieldSetDefinitions:
     # ~~->$ OtherFees:FieldSet~~
     OTHER_FEES = {
         "name": "other_fees",
-        "label": "Other fees",
+        "label": lazy_gettext("Other fees"),
         "fields": [
             FieldDefinitions.HAS_OTHER_CHARGES["name"],
             FieldDefinitions.OTHER_CHARGES_URL["name"]
@@ -2256,7 +2258,7 @@ class FieldSetDefinitions:
     # ~~->$ ArchivingPolicy:FieldSet~~
     ARCHIVING_POLICY = {
         "name": "archiving_policy",
-        "label": "Archiving policy",
+        "label": lazy_gettext("Archiving policy"),
         "fields": [
             FieldDefinitions.PRESERVATION_SERVICE["name"],
             FieldDefinitions.PRESERVATION_SERVICE_LIBRARY["name"],
@@ -2268,7 +2270,7 @@ class FieldSetDefinitions:
     # ~~->$ RepositoryPolicy:FieldSet~~
     REPOSITORY_POLICY = {
         "name": "deposit_policy",
-        "label": "Repository policy",
+        "label": lazy_gettext("Repository policy"),
         "fields": [
             FieldDefinitions.DEPOSIT_POLICY["name"],
             FieldDefinitions.DEPOSIT_POLICY_OTHER["name"],
@@ -2279,7 +2281,7 @@ class FieldSetDefinitions:
     # ~~->$ UniqueIdentifiers:FieldSet~~
     UNIQUE_IDENTIFIERS = {
         "name": "unique_identifiers",
-        "label": "Unique identifiers & structured data",
+        "label": lazy_gettext("Unique identifiers & structured data"),
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
             FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]
@@ -2289,7 +2291,7 @@ class FieldSetDefinitions:
 
     LABELS = {
         "name": "labels",
-        "label": "Specify labels for this journal",
+        "label": lazy_gettext("Specify labels for this journal"),
         "fields": [
             FieldDefinitions.S2O["name"],
             FieldDefinitions.MIRROR["name"],
@@ -2301,7 +2303,7 @@ class FieldSetDefinitions:
     # ~~^-> QuickReject:Feature~~
     QUICK_REJECT = {
         "name": "quick_reject",
-        "label": "Quick reject",
+        "label": lazy_gettext("Quick reject"),
         "fields": [
             FieldDefinitions.QUICK_REJECT["name"],
             FieldDefinitions.QUICK_REJECT_DETAILS["name"]
@@ -2311,7 +2313,7 @@ class FieldSetDefinitions:
     # ~~->$ Reassign:FieldSet~~
     REASSIGN = {
         "name": "reassign",
-        "label": "Re-assign publisher account",
+        "label": lazy_gettext("Re-assign publisher account"),
         "fields": [
             FieldDefinitions.OWNER["name"]
         ]
@@ -2328,7 +2330,7 @@ class FieldSetDefinitions:
     # ~~->$ Status:FieldSet~~
     STATUS = {
         "name": "status",
-        "label": "Status",
+        "label": lazy_gettext("Status"),
         "fields": [
             FieldDefinitions.APPLICATION_STATUS["name"]
         ]
@@ -2337,7 +2339,7 @@ class FieldSetDefinitions:
     # ~~->$ Reviewers:FieldSet~~
     REVIEWERS = {
         "name": "reviewers",
-        "label": "Assign for review",
+        "label": lazy_gettext("Assign for review"),
         "fields": [
             FieldDefinitions.EDITOR_GROUP["name"],
             FieldDefinitions.EDITOR["name"]
@@ -2348,7 +2350,7 @@ class FieldSetDefinitions:
     # ~~^-> Continuations:Feature~~
     CONTINUATIONS = {
         "name": "continuations",
-        "label": "Continuations",
+        "label": lazy_gettext("Continuations"),
         "fields": [
             FieldDefinitions.CONTINUES["name"],
             FieldDefinitions.CONTINUED_BY["name"],
@@ -2359,7 +2361,7 @@ class FieldSetDefinitions:
     # ~~->$ Subject:FieldSet~~
     SUBJECT = {
         "name": "subject",
-        "label": "Subject classification",
+        "label": lazy_gettext("Subject classification"),
         "fields": [
             FieldDefinitions.SUBJECT["name"]
         ]
@@ -2368,7 +2370,7 @@ class FieldSetDefinitions:
     # ~~->$ Notes:FieldSet~~
     NOTES = {
         "name": "notes",
-        "label": "Notes",
+        "label": lazy_gettext("Notes"),
         "fields": [
             FieldDefinitions.NOTES["name"],
             FieldDefinitions.NOTE["name"],
@@ -2397,7 +2399,7 @@ class FieldSetDefinitions:
     # ~~->$ OptionalValidation:FieldSet~~
     OPTIONAL_VALIDATION = {
         "name": "optional_validation",
-        "label": "Allow save without validation",
+        "label": lazy_gettext("Allow save without validation"),
         "fields": [
             FieldDefinitions.OPTIONAL_VALIDATION["name"]
         ]
@@ -2407,7 +2409,7 @@ class FieldSetDefinitions:
     # ~~^-> BulkEdit:Feature~~
     BULK_EDIT = {
         "name": "bulk_edit",
-        "label": "Bulk edit",
+        "label": lazy_gettext("Bulk edit"),
         "fields": [
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
@@ -2684,7 +2686,7 @@ def iso_currency_list(field, formulaic_context_name):
 
 def quick_reject(field, formulaic_context_name):
     # ~~-> QuickReject:Feature~~
-    return [{"display": "Other", "value": ""}] + [{'display': v, 'value': v} for v in
+    return [{"display": lazy_gettext("Other"), "value": ""}] + [{'display': v, 'value': v} for v in
                                                   app.config.get('QUICK_REJECT_REASONS', [])]
 
 
@@ -2754,7 +2756,7 @@ def editor_choices(field, formulaic_context):
             editors = [eg.editor]
             editors += eg.associates
             editors = list(set(editors))
-            return [{"value": "", "display": "No editor assigned"}] + [{"value": editor, "display": editor} for editor
+            return [{"value": "", "display": lazy_gettext("No editor assigned")}] + [{"value": editor, "display": editor} for editor
                                                                        in editors]
         else:
             return [{"display": "", "value": ""}]
@@ -2890,7 +2892,7 @@ class RequiredBuilder:
         if "message" in settings:
             html_attrs["data-parsley-required-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-required-message"] = "<p><small>" + "This answer is required" + "</p></small>"
+            html_attrs["data-parsley-required-message"] = "<p><small>" + lazy_gettext("This answer is required") + "</p></small>"
         html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
@@ -2900,7 +2902,7 @@ class RequiredBuilder:
 
 class IsURLBuilder:
     # ~~->$ IsURL:FormValidator~~
-    msg = "<p><small>" + "Please enter a valid URL. It should start with http or https" + "</p></small>"
+    msg = "<p><small>" + lazy_gettext("Please enter a valid URL. It should start with http or https") + "</p></small>"
 
     @staticmethod
     def render(settings, html_attrs):
@@ -2926,15 +2928,17 @@ class IntRangeBuilder:
         default_msg = ""
         if "gte" in settings and "lte" in settings:
             html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
-            default_msg = "This value should be between " + str(settings.get("gte")) + " and " + str(
-                settings.get("lte"))
+            default_msg = lazy_gettext("This value should be between {min} and {max}").format(
+                min=str(settings.get("gte")), max=str(settings.get("lte")))
         else:
             if "gte" in settings:
                 html_attrs["data-parsley-min"] = settings.get("gte")
-                default_msg = "This value should be bigger than " + str(settings.get("gte"))
+                default_msg = lazy_gettext("This value should be bigger than {gte}").format(
+                    gte=str(settings.get("gte")))
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
-                default_msg = "This value should be smaller than " + str(settings.get("gte"))
+                default_msg = lazy_gettext("This value should be smaller than {lte}").format(
+                    lte=str(settings.get("lte")))
         html_attrs["data-parsley-range-message"] = "<p><small>" + settings.get("message", default_msg) + "</p></small>"
 
     @staticmethod
@@ -3006,13 +3010,13 @@ class NoScriptTagBuilder:
     def render(settings, html_attrs):
         html_attrs["data-parsley-no-script-tag"] = ""
         if "message" in settings:
-            html_attrs["data-parsley-noScriptTag-message"] = "<p><small>" + settings["message"] + "</small></p>"
+            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + "No script tags allowed" + "</p></small>"
+            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + lazy_gettext("No script tags allowed") + "</p></small>"
 
     @staticmethod
     def wtforms(field, settings):
-        return NoScriptTag(settings.get("message", "No script tags allowed"))
+        return NoScriptTag(settings.get("message", lazy_gettext("No script tags allowed")))
 
 
 class OptionalIfBuilder:
@@ -3078,7 +3082,7 @@ class RequiredIfBuilder:
         if "message" in settings:
             html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-required-if-message"] = "<p><small>" + "This answer is required" + "</small></p>"
+            html_attrs["data-parsley-required-if-message"] = "<p><small>" + lazy_gettext("This answer is required") + "</small></p>"
 
     @staticmethod
     def wtforms(field, settings):
