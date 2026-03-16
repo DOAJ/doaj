@@ -936,6 +936,7 @@ def journal_csv_search():
     return render_template(templates.ADMIN_JOURNAL_CSV_SEARCH, free=free, premium=premium)
 
 @blueprint.route("/journal-csv/delete", methods=["POST"])
+@write_required()
 @login_required
 def journal_csv_delete():
     svc = DOAJ.journalService()
@@ -957,6 +958,7 @@ def pdd_search():
     return render_template(templates.ADMIN_PDD_SEARCH, free=free, premium=premium)
 
 @blueprint.route("/pdd/delete", methods=["POST"])
+@write_required()
 @login_required
 def pdd_delete():
     svc = DOAJ.publicDataDumpService()
