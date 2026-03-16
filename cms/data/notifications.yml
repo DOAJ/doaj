@@ -128,6 +128,16 @@ bg:job:admin_reports:export_available:
   short:
     Report "{name}" ready for download
 
+bg:job:article_deletion_notifications:publisher:
+  long: |
+    The following articles have been deleted from DOAJ in the last week
+    
+    {list_of_articles}
+    
+    Please upload replacement records if appropriate.
+  short:
+    Deleted articles in your journal(s) this week
+
 journal:assed:assigned:notify:
   long: |
     The journal **{journal_name}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.

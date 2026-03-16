@@ -220,15 +220,44 @@ class Article(SeamlessMixin, DomainObject):
         hist.save()
         return hist.id
 
-    def _tombstone(self):
+    def make_tombstone(self):
         stone = ArticleTombstone()
         stone.set_id(self.id)
         sbj = stone.bibjson()
 
-        subs = self.bibjson().subjects()
-        for s in subs:
-            sbj.add_subject(s.get("scheme"), s.get("term"), s.get("code"))
+        abj = self.bibjson()
 
+        # copy minimal essential metadata
+        sbj.title = abj.title
+        sbj.author = abj.author
+        sbj.volume = abj.volume
+        sbj.number = abj.number
+        sbj.start_page = abj.start_page
+        sbj.end_page = abj.end_page
+        sbj.journal_title = abj.journal_title
+        pissn = abj.get_one_identifier(abj.P_ISSN)
+        if pissn is not None:
+            sbj.add_identifier(sbj.P_ISSN, pissn)
+        eissn = abj.get_one_identifier(abj.E_ISSN)
+        if eissn is not None:
+            sbj.add_identifier(sbj.E_ISSN, eissn)
+
+        # Ensure subjects are present (for back-compat with any consumers expecting it)
+        subs = abj.subjects()
+        if subs is not None:
+            for s in subs:
+                sbj.add_subject(s.get("scheme"), s.get("term"), s.get("code"))
+
+        # Add owner (at time of deletion) information
+        stone.owner = self.get_owner()
+
+        return stone
+
+    def _tombstone(self):
+        # make the tombstone
+        stone = self.make_tombstone()
+
+        # save and return
         stone.save()
         return stone
 
@@ -642,6 +671,16 @@ class ArticleTombstone(Article):
 
     def is_in_doaj(self):
         return False
+
+    @property
+    def owner(self):
+        return self.data.get("admin", {}).get("owner")
+
+    @owner.setter
+    def owner(self, owner):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["owner"] = owner
 
     def prep(self):
         self.data['last_updated'] = dates.now_str()
@@ -1174,3 +1213,18 @@ def _sort_articles(articles):
     s += [x for x in unsorted]
 
     return s
+
+
+class ArticleTombstoneRecentlyDeletedQuery(object):
+    def __init__(self, since=None):
+        self.since = since
+
+    def query(self):
+        q = {
+            "query": {
+                "range": {
+                    "created_date": {"gte": dates.format(self.since)}
+                }
+            }
+        }
+        return q

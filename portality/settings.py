@@ -32,6 +32,9 @@ REMEMBER_COOKIE_SECURE = True
 # CAUTION - this can modify the index so should NEVER be used in production!
 TESTDRIVE_ENABLED = False
 
+# List of script names which can be executed via the testdrive.
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications"]
+
 ####################################
 # Debug Mode
 
@@ -451,6 +454,8 @@ HUEY_SCHEDULE = {
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
     "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
+    # Weekly notification to publishers about deleted articles (Article Tombstones)
+    "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
 }
 
 
