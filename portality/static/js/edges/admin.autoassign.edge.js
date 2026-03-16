@@ -1,18 +1,16 @@
 // ~~ AdminAlerts:Edge ~~
 // ~~-> Edges:Technology ~~
-$.extend(true, doaj, {
-
-    adminAutoassignSearch : {
+doaj.adminAutoassignSearch = {
         activeEdges : {},
 
         init : function(params) {
             if (!params) { params = {} }
 
-            var current_domain = document.location.host;
-            var current_scheme = window.location.protocol;
-
             var selector = params.selector || "#autoassign";
-            var search_url = current_scheme + "//" + current_domain + doaj.adminAutoassignSearchConfig.searchPath;
+
+            var search_url = doaj.edgeUtil.url.build(
+                doaj.adminAutoassignSearchConfig.searchPath
+            );
 
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
@@ -195,7 +193,6 @@ $.extend(true, doaj, {
             doaj.adminAutoassignSearch.activeEdges[selector] = e;
         }
     }
-});
 
 
 jQuery(document).ready(function($) {

@@ -1,213 +1,210 @@
 // ~~ AdminUserSearch:Feature ~~
-$.extend(true, doaj, {
+doaj.userSearch = {
+    activeEdges: {},
 
-    userSearch: {
-        activeEdges: {},
+    editUserLink : function (val, resultobj, renderer) {
+        var result = '<a class="edit_user_link button" href="';
+        result += doaj.userSearchConfig.userEditUrl;
+        result += resultobj['id'];
+        result += '">Edit this user</a>';
+        return result;
+    },
 
-        editUserLink : function (val, resultobj, renderer) {
-            var result = '<a class="edit_user_link button" href="';
-            result += doaj.userSearchConfig.userEditUrl;
-            result += resultobj['id'];
-            result += '">Edit this user</a>';
-            return result;
-        },
-
-        userJournalsLink : function (val, resultobj, renderer) {
-            var q = {
-                "query": {
-                    "bool": {
-                        "must": [{
-                            "term": {"admin.owner.exact": resultobj.id}
-                        }]
-                    }
+    userJournalsLink : function (val, resultobj, renderer) {
+        var q = {
+            "query": {
+                "bool": {
+                    "must": [{
+                        "term": {"admin.owner.exact": resultobj.id}
+                    }]
                 }
-            };
-            return '<br/><a class="button" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
-        },
-
-        init : function(params) {
-            if (!params) {
-                params = {}
             }
+        };
+        return '<br/><a class="button" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
+    },
 
-            var current_domain = document.location.host;
-            var current_scheme = window.location.protocol;
-
-            var selector = params.selector || "#users";
-            var search_url = current_scheme + "//" + current_domain + doaj.userSearchConfig.userSearchPath;
-
-            var countFormat = edges.numFormat({
-                thousandsSeparator: ","
-            });
-
-            var components = [
-                doaj.components.searchingNotification(),
-
-                // facets
-                edges.newRefiningANDTermSelector({
-                    id: "role",
-                    category: "facet",
-                    field: "role.exact",
-                    display: "Role",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: true,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-
-                edges.newDateHistogramSelector({
-                    id: "created_date",
-                    category: "facet",
-                    field : "created_date",
-                    interval: "year",
-                    display: "Created Date",
-                    displayFormatter : function(val) {
-                        return (new Date(parseInt(val))).getUTCFullYear();
-                    },
-                    sortFunction : function(values) {
-                        values.reverse();
-                        return values;
-                    },
-                    renderer: edges.bs3.newDateHistogramSelectorRenderer({
-                        countFormat: countFormat,
-                        hideInactive: true,
-                        open: true,
-                        togglable: true
-                    })
-                }),
-
-                // configure the search controller
-                edges.newFullSearchController({
-                    id: "search-controller",
-                    category: "controller",
-                    sortOptions: [
-                        {'display':'Created Date','field':'created_date'},
-                        {'display':'Last Modified Date','field':'last_updated'},
-                        {'display':'User ID','field':'id.exact'},
-                        {'display':'Email address','field':'email.exact'}
-                    ],
-                    fieldOptions: [
-                        {'display':'User ID','field':'id'},
-                        {'display':'Email address','field':'email'}
-                    ],
-                    defaultOperator: "AND",
-                    renderer: doaj.renderers.newFullSearchControllerRenderer({
-                        freetextSubmitDelay: -1,
-                        searchButton: true,
-                        searchPlaceholder: "Search Users"
-                    })
-                }),
-
-                // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
-                edges.newPager({
-                    id: "top-pager",
-                    category: "top-pager",
-                    renderer: edges.bs3.newPagerRenderer({
-                        sizeOptions: [25, 50, 100],
-                        numberFormat: countFormat,
-                        scroll: false
-                    })
-                }),
-                edges.newPager({
-                    id: "bottom-pager",
-                    category: "bottom-pager",
-                    renderer: edges.bs3.newPagerRenderer({
-                        sizeOptions: [25, 50, 100],
-                        numberFormat: countFormat,
-                        scroll: false
-                    })
-                }),
-
-                // results display
-                edges.newResultsDisplay({
-                    id: "results",
-                    category: "results",
-                    renderer: edges.bs3.newResultsFieldsByRowRenderer({
-                        rowDisplay : [
-                            [
-                                {
-                                    "pre" : "<h3>",
-                                    "field" : "id",
-                                    "post" : "</h3>"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": '<a href="mailto:',
-                                    "field": "email",
-                                    "post": '">'
-                                },
-                                {
-                                    "field": "email",
-                                    "post": '</a>'
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Role(s)</strong>: <em>",
-                                    "field" : "role",
-                                    "post" : "</em>"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Account Created</strong>: ",
-                                    "field" : "created_date"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Account Last Modified</strong>: ",
-                                    "field": "last_updated"
-                                }
-                            ],
-                            [
-                                {
-                                    "valueFunction" : doaj.userSearch.userJournalsLink
-                                },
-                                {
-                                    "valueFunction": doaj.userSearch.editUserLink
-                                }
-                            ]
-                        ]
-                    })
-                }),
-
-                // selected filters display, with all the fields given their display names
-                edges.newSelectedFilters({
-                    id: "selected-filters",
-                    category: "selected-filters",
-                    fieldDisplays: {
-                        "role.exact": "Role",
-                        "created_date": "Created Date"
-                    },
-                    rangeFunctions : {
-                        "created_date" : doaj.valueMaps.displayYearPeriod
-                    }
-                })
-            ];
-
-            var e = edges.newEdge({
-                selector: selector,
-                template: edges.bs3.newFacetview(),
-                search_url: search_url,
-                openingQuery : es.newQuery({size: 25}),
-                manageUrl: true,
-                components: components,
-                callbacks : {
-                    "edges:query-fail" : function() {
-                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
-                    }
-                }
-            });
-            doaj.userSearch.activeEdges[selector] = e;
+    init : function(params) {
+        if (!params) {
+            params = {}
         }
+
+        var selector = params.selector || "#users";
+
+        var search_url = doaj.edgeUtil.url.build(
+            doaj.userSearchConfig.userSearchPath
+        );
+
+        var countFormat = edges.numFormat({
+            thousandsSeparator: ","
+        });
+
+        var components = [
+            doaj.components.searchingNotification(),
+
+            // facets
+            edges.newRefiningANDTermSelector({
+                id: "role",
+                category: "facet",
+                field: "role.exact",
+                display: "Role",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: true,
+                    togglable: true,
+                    countFormat: countFormat,
+                    hideInactive: true
+                })
+            }),
+
+            edges.newDateHistogramSelector({
+                id: "created_date",
+                category: "facet",
+                field : "created_date",
+                interval: "year",
+                display: "Created Date",
+                displayFormatter : function(val) {
+                    return (new Date(parseInt(val))).getUTCFullYear();
+                },
+                sortFunction : function(values) {
+                    values.reverse();
+                    return values;
+                },
+                renderer: edges.bs3.newDateHistogramSelectorRenderer({
+                    countFormat: countFormat,
+                    hideInactive: true,
+                    open: true,
+                    togglable: true
+                })
+            }),
+
+            // configure the search controller
+            edges.newFullSearchController({
+                id: "search-controller",
+                category: "controller",
+                sortOptions: [
+                    {'display':'Created Date','field':'created_date'},
+                    {'display':'Last Modified Date','field':'last_updated'},
+                    {'display':'User ID','field':'id.exact'},
+                    {'display':'Email address','field':'email.exact'}
+                ],
+                fieldOptions: [
+                    {'display':'User ID','field':'id'},
+                    {'display':'Email address','field':'email'}
+                ],
+                defaultOperator: "AND",
+                renderer: doaj.renderers.newFullSearchControllerRenderer({
+                    freetextSubmitDelay: -1,
+                    searchButton: true,
+                    searchPlaceholder: "Search Users"
+                })
+            }),
+
+            // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
+            edges.newPager({
+                id: "top-pager",
+                category: "top-pager",
+                renderer: edges.bs3.newPagerRenderer({
+                    sizeOptions: [25, 50, 100],
+                    numberFormat: countFormat,
+                    scroll: false
+                })
+            }),
+            edges.newPager({
+                id: "bottom-pager",
+                category: "bottom-pager",
+                renderer: edges.bs3.newPagerRenderer({
+                    sizeOptions: [25, 50, 100],
+                    numberFormat: countFormat,
+                    scroll: false
+                })
+            }),
+
+            // results display
+            edges.newResultsDisplay({
+                id: "results",
+                category: "results",
+                renderer: edges.bs3.newResultsFieldsByRowRenderer({
+                    rowDisplay : [
+                        [
+                            {
+                                "pre" : "<h3>",
+                                "field" : "id",
+                                "post" : "</h3>"
+                            }
+                        ],
+                        [
+                            {
+                                "pre": '<a href="mailto:',
+                                "field": "email",
+                                "post": '">'
+                            },
+                            {
+                                "field": "email",
+                                "post": '</a>'
+                            }
+                        ],
+                        [
+                            {
+                                "pre" : "<strong>Role(s)</strong>: <em>",
+                                "field" : "role",
+                                "post" : "</em>"
+                            }
+                        ],
+                        [
+                            {
+                                "pre" : "<strong>Account Created</strong>: ",
+                                "field" : "created_date"
+                            }
+                        ],
+                        [
+                            {
+                                "pre": "<strong>Account Last Modified</strong>: ",
+                                "field": "last_updated"
+                            }
+                        ],
+                        [
+                            {
+                                "valueFunction" : doaj.userSearch.userJournalsLink
+                            },
+                            {
+                                "valueFunction": doaj.userSearch.editUserLink
+                            }
+                        ]
+                    ]
+                })
+            }),
+
+            // selected filters display, with all the fields given their display names
+            edges.newSelectedFilters({
+                id: "selected-filters",
+                category: "selected-filters",
+                fieldDisplays: {
+                    "role.exact": "Role",
+                    "created_date": "Created Date"
+                },
+                rangeFunctions : {
+                    "created_date" : doaj.valueMaps.displayYearPeriod
+                }
+            })
+        ];
+
+        var e = edges.newEdge({
+            selector: selector,
+            template: edges.bs3.newFacetview(),
+            search_url: search_url,
+            openingQuery : es.newQuery({size: 25}),
+            manageUrl: true,
+            components: components,
+            callbacks : {
+                "edges:query-fail" : function() {
+                    alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                }
+            }
+        });
+        doaj.userSearch.activeEdges[selector] = e;
     }
-});
+}
 
 jQuery(document).ready(function($) {
     doaj.userSearch.init();
