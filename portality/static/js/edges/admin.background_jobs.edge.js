@@ -44,10 +44,10 @@ $.extend(true, doaj, {
 
                     // add the date added to doaj
                     if (resultobj.created_date) {
-                        dateRow += "Job Created: " + doaj.dates.humanYearMonth(resultobj.created_date) + "<br>";
+                        dateRow += "Job Created: " + resultobj.created_date + "<br>";
                     }
                     if (resultobj.last_updated) {
-                        dateRow += "Job Last Updated: " + doaj.dates.humanYearMonth(resultobj.last_updated) + "<br>";
+                        dateRow += "Job Last Updated: " + resultobj.last_updated + "<br>";
                     }
 
                     var paramsBlock = "";

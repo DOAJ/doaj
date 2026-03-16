@@ -32,6 +32,9 @@ REMEMBER_COOKIE_SECURE = True
 # CAUTION - this can modify the index so should NEVER be used in production!
 TESTDRIVE_ENABLED = False
 
+# List of script names which can be executed via the testdrive.
+TESTDRIVE_SCRIPT_WHITELIST = ["approaching_flag_deadline"]
+
 ####################################
 # Debug Mode
 
@@ -451,6 +454,7 @@ HUEY_SCHEDULE = {
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
     "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
+    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
 }
 
 
@@ -1582,6 +1586,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
     'find_discontinued_soon': {
         'last_run_successful_in': _DAY + _HOUR
     },
+    'approaching_flag_deadline': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
     'harvest': {
         'last_run_successful_in': _DAY + _HOUR
     },
@@ -1627,6 +1634,12 @@ PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 # report journals that discontinue in ... days (eg. 1 = tomorrow)
 DISCONTINUED_DATE_DELTA = 0
+
+####################################################
+# Flag management
+
+# find approaching deadlines in ... days (eg. 1 = tomorrow)
+FLAG_APPROACHING_DEADLINE_DELTA = 7
 
 ##################################################
 # Feature tours currently active

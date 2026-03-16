@@ -1,4 +1,4 @@
-from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory
 from doajtest.testdrive.factory import TestDrive
 from portality.lib import dates
 from portality import models, constants
@@ -8,9 +8,10 @@ class Flags(TestDrive):
 
     def __init__(self):
         self.another_eg = None
-        self.apps = []
+        self.journals = []
         self.admin_password = None
         self.admin = None
+        self.anotheradmin = None
         self.editor = None
         self.editor_password = None
         self.random_user = None
@@ -18,13 +19,18 @@ class Flags(TestDrive):
         self.eg = None
 
     def setup(self) -> dict:
-        self.create_accounts()
-        self.build_applications()
+        random_str = self.create_random_str()
+        self.create_accounts(random_str)
+        self.build_journals(random_str)
         return {
             "accounts": {
                 "admin": {
                     "username": self.admin.id,
                     "password": self.admin_password
+                },
+                "another admin": {
+                    "username": self.anotheradmin.id,
+                    "password": self.anotheradmin_password
                 },
                 "editor": {
                     "username": self.editor.id,
@@ -35,30 +41,42 @@ class Flags(TestDrive):
                     "password": self.random_user_password
                 }
             },
-            "applications": self.apps,
+            "journals": self.journals,
             "non_renderable": {
                 "editor_groups": [self.eg.name, self.another_eg.name]
+            },
+            "script": {
+                "script_name": "approaching_flag_deadline",
+                "title": "Run background task"
             }
         }
 
-    def create_accounts(self):
-        admin_name = self.create_random_str()
+    def create_accounts(self, random_str):
+
+        admin_name = "LordWiggleworth_" + random_str
         self.admin_password = self.create_random_str()
         self.admin = models.Account.make_account(admin_name + "@example.com", admin_name, "FlagsManed " + admin_name,
                                                  ["admin", "editor"])
         self.admin.set_password(self.admin_password)
         self.admin.save()
 
-        random_name = self.create_random_str()
+        anotheradmin_name = "ProfessorQuibbleton_" + random_str
+        self.anotheradmin_password = self.create_random_str()
+        self.anotheradmin = models.Account.make_account(anotheradmin_name + "@example.com", anotheradmin_name, "Admin " + anotheradmin_name,
+                                                 ["admin", "editor"])
+        self.anotheradmin.set_password(self.anotheradmin_password)
+        self.anotheradmin.save()
+
+        random_name = "BaronFeatherfall_" + random_str
         self.random_user_password = self.create_random_str()
         self.random_user = models.Account.make_account(random_name + "@example.com", random_name,
-                                                       "FlagsManed " + random_name,
+                                                       "Admin " + random_name,
                                                        ["admin"])
         self.random_user.set_password(self.random_user_password)
         self.random_user.save()
 
-        editor_name = self.create_random_str()
-        self.editor = models.Account.make_account(editor_name + "@example.com", editor_name, "editor " + editor_name,
+        editor_name = "MadamPonderleaf_" + random_str
+        self.editor = models.Account.make_account(editor_name + "@example.com", editor_name, "Editor " + editor_name,
                                                   ["editor"])
         self.editor_password = self.create_random_str()
         self.editor.set_password(self.editor_password)
@@ -80,11 +98,11 @@ class Flags(TestDrive):
         self.another_eg.set_editor(self.editor.id)
         self.another_eg.save()
 
-    def build_applications(self):
-        applications = [
+    def build_journals(self, random_str):
+        journals = [
             {
                 "type": models.Journal,
-                "title": "Journal of Quantum Homeopathy",
+                "title": "Journal of Quantum Homeopathy " + random_str,
                 "assigned_to": self.admin.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -92,10 +110,8 @@ class Flags(TestDrive):
                 "note": "Peer review process unclear. The journal claims to use “ancient wisdom and telepathic consensus” to select papers. Should we request further clarification, or just accept that the universe decides?"
             },
             {
-                "type": models.Application,
-                "title": "The Mars Agricultural Review",
-                "application_type": constants.APPLICATION_TYPE_NEW_APPLICATION,
-                "status": "in progress",
+                "type": models.Journal,
+                "title": "The Mars Agricultural Review " + random_str,
                 "assigned_to": self.editor.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -103,19 +119,16 @@ class Flags(TestDrive):
                 "note": "Ethical concerns? Their conflict of interest statement is just 'Trust us.' Also, every editorial board member shares the same last name. Suspicious? Or just an enthusiastic family business?"
             },
             {
-                "type": models.Application,
-                "title": "Cryptid Behavioral Studies Quarterly",
-                "application_type": constants.APPLICATION_TYPE_UPDATE_REQUEST,
+                "type": models.Journal,
+                "title": "Cryptid Behavioral Studies Quarterly " + random_str,
                 "assigned_to": self.editor.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
                 "note": "Formatting issues. Their abstracts are in Comic Sans, their references are in Wingdings, and their figures appear to be hand-drawn with crayon. Surprisingly, it almost adds to the charm."
             },
             {
-                "type": models.Application,
-                "title": "The Bermuda Triangle Journal of Lost and Found",
-                "application_type": constants.APPLICATION_TYPE_NEW_APPLICATION,
-                "status": "on hold",
+                "type": models.Journal,
+                "title": "The Bermuda Triangle Journal of Lost and Found " + random_str,
                 "assigned_to": self.editor.id,
                 "flagged_to": self.editor.id,
                 "group": self.eg.name,
@@ -123,14 +136,13 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "Feline Aerodynamics Review",
+                "title": "Feline Aerodynamics Review " + random_str,
                 "assigned_to": self.admin.id,
                 "group": self.eg.name
             },
             {
-                "type": models.Application,
-                "title": "Journal of Intergalactic Diplomacy",
-                "application_type": constants.APPLICATION_TYPE_NEW_APPLICATION,
+                "type": models.Journal,
+                "title": "Journal of Intergalactic Diplomacy " + random_str,
                 "assigned_to": self.random_user.id,
                 "flagged_to": self.admin.id,
                 "group": self.another_eg.name,
@@ -138,9 +150,8 @@ class Flags(TestDrive):
                 "note": "Editorial process... innovative? They claim to have a 100% acceptance rate because “rejecting knowledge is against our values.” Admirable, but I feel like that’s not how this works."
             },
             {
-                "type": models.Application,
-                "title": "Applied Alchemy & Unstable Chemistry",
-                "application_type": constants.APPLICATION_TYPE_UPDATE_REQUEST,
+                "type": models.Journal,
+                "title": "Applied Alchemy & Unstable Chemistry " + random_str,
                 "assigned_to": self.random_user.id,
                 "flagged_to": self.editor.id,
                 "note": "Journal scope mismatch. The journal is called The International Review of Advanced Neuroscience but 90\% of its articles are about cat memes. Honestly, I’d subscribe, but should we approve it?",
@@ -148,22 +159,16 @@ class Flags(TestDrive):
             }
         ]
 
-        for record in applications:
-            source = ApplicationFixtureFactory.make_application_source()
-            ap = models.Application(**source)
-            if "application_type" in record:
-                source["admin"]["application_type"] = record["application_type"]
+        for record in journals:
+            source = JournalFixtureFactory.make_journal_source(True)
+            ap = models.Journal(**source)
             bj = ap.bibjson()
             bj.title = record["title"]
             ap.set_id(ap.makeid())
             ap.set_last_manual_update(dates.today())
             ap.set_created(dates.before_now(200))
-            ap.remove_current_journal()
-            ap.remove_related_journal()
             ap.set_editor_group(record["group"])
             ap.set_editor(record["assigned_to"])
-            if "status" in record:
-                ap.set_application_status(record["status"])
             if "flagged_to" in record:
                 note = {"id": self.create_random_str(),
                         "note": record["note"],
@@ -176,14 +181,16 @@ class Flags(TestDrive):
                         }}
                 ap.set_notes(note)
             ap.save()
-            self.apps.append(ap.id)
+            self.journals.append(ap.id)
+
+        return self.journals
 
     def teardown(self, params):
         for acc in params.get("accounts").values():
             models.Account.remove_by_id(acc["username"])
 
-        for app in params.get("applications"):
-            models.Application.remove_by_id(app)
+        for app in params.get("journals"):
+            models.Journal.remove_by_id(app)
 
         print(params.get("non_renderable"))
         print(params.get("non_renderable").get("editor_groups"))
