@@ -422,7 +422,7 @@ def update_requests():
 @write_required()
 @login_required
 @ssl_required
-def application(application_id):
+def application(application_id, **kwargs):
     auth_svc = DOAJ.authorisationService()
     application_svc = DOAJ.applicationService()
 
@@ -448,8 +448,15 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
+
+        continuation_info = {"initial_warning": request.args.get("info") == constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED}
+        replaces = Journal.find_by_issn(ap.bibjson().replaces)
+        if replaces:
+            continuation_info["journal"] = replaces[0]
+
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks,
+                                  continuation_info=continuation_info)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -464,7 +471,7 @@ def application(application_id):
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done', info=processor.info))
             except Exception as e:
                 flash("unexpected field " + str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
@@ -533,7 +540,7 @@ def application_quick_reject(application_id):
     flash(msg, "success")
 
     # redirect the user back to the edit page
-    return redirect(url_for('.application', application_id=application_id))
+    return redirect(url_for('admin.application', application_id=application_id, info=constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED))
 
 
 @blueprint.route("/admin_site_search", methods=["GET"])

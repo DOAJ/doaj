@@ -59,6 +59,7 @@ tests:
   - step: Click "Unlock and Close"
     results:
     - The page closes, and you are able to return to the search interface
+
 - title: Note features for admin
   context:
     role: admin
@@ -99,3 +100,49 @@ tests:
     - step: Attempt to paste the value (use separate editor)
       results:
         - Correct value is pasted
+
+- title: Reject application that is a continuation
+  steps:
+    - step: go to /testdrive/reject_with_continuation
+    - step: login as ProfessorFrostfire (you may want to log in using an incognito window)
+    - step: open "Advances in Cold Lava Mechanics" application (available on your dashboard)
+    - step: change the status to "Rejected" in the "Change status" input
+    - step: save the application
+      results:
+        - application is saved
+        - a warning appears with information about an older journal and a link in "focus" mode
+        - the form is dimmed; interactions outside the warning are blocked
+        - the "Got it!" button is displayed at the bottom
+    - step: click the link in the warning
+      results:
+        - the "Annals of Cryovolcanic Ecology" form opens in a new tab
+    - step: Unlock & Close the journal form, close the tab, and return to the application form
+    - step: click the "Got it" button
+      results:
+        - the warning is now in standard mode
+        - the "Got it!" button is hidden
+        - the application is active and can be unlocked & closed
+    - step: Unlock & Close
+    - step: open the application again (navigate to `/admin/application/<application_id>` or search for "Advances in Cold Lava Mechanics" in `/admin/applications`)
+      results:
+        - the warning about the older journal is displayed at the top
+        - the application is active and editable
+        - it can be unlocked & closed
+    - step: change the status back to "In progress" and save (do not close)
+      results:
+        - the warning disappears
+    - step: once saved, click the "Quick Reject" button
+    - step: choose any rejection reason and click "Quick Reject"
+      results:
+        - application is saved
+        - the warning appears again at the top
+        - the form is dimmed; interactions outside the warning are blocked
+    - step: click "Got it"
+      results:
+        - the warning returns to standard mode
+        - the application is active and editable
+        - it can be unlocked & closed
+    - step: change any information (except status) and save
+      results:
+        - the application is saved correctly
+        - the warning remains in standard mode
