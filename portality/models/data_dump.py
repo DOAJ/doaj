@@ -156,7 +156,7 @@ class DataDump(SeamlessMixin, DomainObject):
 
     @property
     def journal_size_human(self):
-        value = self.article_size
+        value = self.journal_size
         if value is not None:
             return self._int_to_filesize(value)
         return None
