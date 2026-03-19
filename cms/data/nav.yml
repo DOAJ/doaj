@@ -56,7 +56,7 @@ entries:
         url: https://blog.doaj.org    # ~~->News:ExternalService~~
   - id: premium # label is set dynamically in the html
     feather: star
-    footer: true
+    footer: false
     primary: true
     secondary_mobile: true
     route: doaj.premium
