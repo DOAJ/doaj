@@ -112,6 +112,10 @@ def create_index(index_type):
         if it in CREATED_INDICES:
             return
         core.initialise_index(app, core.es_connection, only_mappings=[it])
+        # Wait for the cluster state to fully settle after creating a new index+alias.
+        # Without this, a subsequent ES.get on a different alias can transiently fail
+        # with NotFoundError while the cluster state update is still propagating.
+        core.es_connection.cluster.health(wait_for_events='languid', timeout='5s', request_timeout=10)
         CREATED_INDICES.append(it)
 
 
@@ -132,6 +136,22 @@ def dao_proxy(dao_method, type="class"):
             return dao_method(self, *args, **kwargs)
 
         return proxy_method
+
+
+# Wrap DAO methods once at import time so every test class shares the same proxied methods.
+# Doing this here (rather than in setUpClass) avoids re-wrapping on each class setup, which
+# would stack wrappers and is not safe under parallel (threaded) test execution.
+dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
+dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
+dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
+dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
+dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
+dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
+dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
+dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
+dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
+dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
+dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
 
 
 def create_es_db_prefix(_cls):
@@ -171,7 +191,8 @@ class DoajTestCase(TestCase):
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
             "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
-            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1']
+            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1'],
+            'PREMIUM_MODE': False
         }
 
     @classmethod
@@ -187,18 +208,6 @@ class DoajTestCase(TestCase):
         events_queue.immediate = True
         scheduled_short_queue.immediate = True
         scheduled_long_queue.immediate = True
-
-        dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
-        dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
-        dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
-        dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
-        dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
-        dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
-        dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
-        dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
-        dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
-        dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
-        dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
 
         # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
@@ -217,7 +226,11 @@ class DoajTestCase(TestCase):
                 os.remove(f)
             except FileNotFoundError:
                 pass  # could be removed by other thread / process
-        shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
+
+        tmp = paths.rel2abs(__file__, "..", "tmp")
+        shutil.rmtree(tmp, ignore_errors=True)
+        while os.path.exists(tmp):
+            time.sleep(0.1)
 
         self.reset_db_record()
 

@@ -144,7 +144,7 @@ class DomainObject(UserDict, object):
             return None
         return dates.parse(self.last_updated)
 
-    def pre_save_prep(self, blocking=False, differentiate=False):
+    def pre_save_prep(self, blocking=False, differentiate=False, update_last_updated=True):
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
 
@@ -159,12 +159,13 @@ class DomainObject(UserDict, object):
                 soon = dates.now() + timedelta(seconds=1)
                 now = soon.strftime(FMT_DATETIME_STD)
 
-        self.data['last_updated'] = now
+        if update_last_updated:
+            self.data['last_updated'] = now
 
         if 'created_date' not in self.data:
             self.data['created_date'] = now
 
-    def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
+    def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25, update_last_updated=True):
         """
         ~~->ReadOnlyMode:Feature~~
         :param retries:
@@ -183,7 +184,7 @@ class DomainObject(UserDict, object):
         if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
             block_wait = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
-        self.pre_save_prep(blocking=blocking, differentiate=differentiate)
+        self.pre_save_prep(blocking=blocking, differentiate=differentiate, update_last_updated=update_last_updated)
         now = self.data.get("last_updated", dates.now_str())
 
         attempt = 0
@@ -226,20 +227,7 @@ class DomainObject(UserDict, object):
                     attempts=attempt, id=self.data['id']))
 
         if blocking:
-            bq = BlockQuery(self.id)
-            while True:
-                res = self.query(q=bq.query())
-                j = self._unwrap_search_result(res)
-                if len(j) == 0:
-                    time.sleep(block_wait)
-                    continue
-                if len(j) > 1:
-                    raise Exception("More than one record with id {x}".format(x=self.id))
-                if j[0].get("last_updated", [])[0] == now:
-                    break
-                else:
-                    time.sleep(block_wait)
-                    continue
+            self.__class__.block(self.id, last_updated=now, sleep=block_wait)
 
         return r
 
@@ -1315,23 +1303,24 @@ class DomainObject(UserDict, object):
             res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
             if len(hits) > 0:
-                obj = hits[0].get("fields")
+                if len(hits) > 1:
+                    raise Exception("More than one record with id {x}".format(x=id))
+                obj = hits[0].get("_source", {})
                 if last_updated is not None:
-                    if "last_updated" in obj:
-                        lu = obj["last_updated"]
-                        if len(lu) > 0:
-                            threshold = dates.parse(last_updated)
-                            lud = dates.parse(lu[0])
-                            if lud >= threshold:
-                                return
+                    lu = obj.get("last_updated")
+                    if lu:
+                        threshold = dates.parse(last_updated)
+                        lud = dates.parse(lu)
+                        if lud >= threshold:
+                            return
                 else:
                     return
-            else:
-                if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
-                    raise (BlockTimeOutException(
-                        "Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}"
-                        .format(
-                            id=id, limit=max_retry_seconds)))
+
+            if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
+                raise (BlockTimeOutException(
+                    "Attempting to block until record with id {id} appears in the index, but this has not happened after {limit} seconds"
+                    .format(
+                        id=id, limit=max_retry_seconds)))
 
             time.sleep(sleep)
 
@@ -1552,16 +1541,12 @@ class BlockQuery(object):
     def query(self):
         return {
             "query": {
-                "bool": {
-                    "must": [
-                        {"term": {"id.exact": self._id}}
-                    ]
+                "ids": {
+                    "values": [self._id]
                 }
             },
-            "_source": False,
-            "docvalue_fields": [
-                {"field": "last_updated", "format": "date_time_no_millis"}
-            ]
+            "_source": ["last_updated"],
+            "size": 2
         }
 
 
