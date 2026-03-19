@@ -144,7 +144,7 @@ class DomainObject(UserDict, object):
             return None
         return dates.parse(self.last_updated)
 
-    def pre_save_prep(self, blocking=False, differentiate=False):
+    def pre_save_prep(self, blocking=False, differentiate=False, update_last_updated=True):
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
 
@@ -159,12 +159,13 @@ class DomainObject(UserDict, object):
                 soon = dates.now() + timedelta(seconds=1)
                 now = soon.strftime(FMT_DATETIME_STD)
 
-        self.data['last_updated'] = now
+        if update_last_updated:
+            self.data['last_updated'] = now
 
         if 'created_date' not in self.data:
             self.data['created_date'] = now
 
-    def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
+    def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25, update_last_updated=True):
         """
         ~~->ReadOnlyMode:Feature~~
         :param retries:
@@ -183,7 +184,7 @@ class DomainObject(UserDict, object):
         if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
             block_wait = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
-        self.pre_save_prep(blocking=blocking, differentiate=differentiate)
+        self.pre_save_prep(blocking=blocking, differentiate=differentiate, update_last_updated=update_last_updated)
         now = self.data.get("last_updated", dates.now_str())
 
         attempt = 0
