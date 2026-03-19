@@ -9,6 +9,7 @@
   position: relative;
   cursor: pointer;
   list-style: none;
+  flex-shrink: 0;
 
   a {
     text-decoration: none;
