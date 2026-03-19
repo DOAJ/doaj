@@ -105,8 +105,14 @@ ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
 ROLE_API = "api"
+ROLE_PREMIUM = "premium"
+ROLE_PREMIUM_OAI = "premium_oai"
+ROLE_PREMIUM_PDD = "premium_pdd"
+ROLE_PREMIUM_CSV = "premium_csv"
+
 # TODO add ultra_bulk_delete and refactor view to use constants
 ROLE_ADMIN_REPORT_WITH_NOTES = "ultra_admin_reports_with_notes"  # MUST start with ultra_ so that superusers don't gain
+
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
@@ -163,6 +169,7 @@ class BaseArticlesUploadStatus(ConstantList):
 
 # Storage scopes
 STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
+STORE__SCOPE__JOURNAL_CSV = "journal_csv"
 
 # OAI
 SUBJECTS_SCHEMA = "LCC:"
