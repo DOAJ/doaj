@@ -116,7 +116,7 @@ class TestJournalCSVPrune(DoajTestCase):
         assert latest_yesterday.filename in files
         assert in_date_with_files.filename in files
 
-        wait_until(lambda: len(JournalCSV.all()) == 2)
+        wait_until(lambda: len(JournalCSV.all()) == 3)
 
         records = JournalCSV.all()
         assert len(records) == 3
