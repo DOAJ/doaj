@@ -77,9 +77,11 @@ We collect some information automatically via cookies used on this site. See Sec
 
 Sometimes, we store your name, email address and the organisation where you work in Less Annoying, our customer relationship manager. Your data in Less Annoying is protected by [their privacy policy](https://www.lessannoyingcrm.com/help/gdpr).
 
-#### 1e A record in Billy
+#### 1e A record in our finance systems
 
 Sometimes, we store your name, email address and the organisation where you work in Billy, our accounting software. Your data in Billy is protected by [their Privacy Policy](https://www.billy.dk/cookie-privatlivs-politik/).
+
+We are migrating all our financial administration from Billy to E-conomic. We store email addresses and sometimes a name and a phone number for our contact person. We also store our supplier's name, which, for some team members, is their personal name. Your data in E-conomic is protected by [their privacy policy](https://www.e-conomic.com/privacy).
 
 #### 1f A user account in Slack
 Sometimes, we store your name and email address in Slack. Your personal data in Slack is governed by Slack's [privacy policy and commitment](https://slack.com/intl/en-gb/trust/compliance/gdpr).
