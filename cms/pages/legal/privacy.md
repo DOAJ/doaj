@@ -10,47 +10,52 @@ featuremap: ~~Privacy:Fragment~~
 
 Protecting your privacy and personal data is important to us. Please take a few moments to review this Policy.
 
-(Last reviewed and updated: November 2023)
+(Last reviewed and updated: March 2026)
 
 ### Summary
 
-The Directory of Open Access Journals ("DOAJ"), managed independently by [IS4OA](https://is4oa.org/), a CIC registered in the United Kingdom, is a free online directory that contains lists of peer-reviewed, open access journals. To ensure that every journal application and eventual entry in DOAJ can be vouched for by a representative of that journal and to maintain a high level of recency and accuracy, the DOAJ collects and stores two groups of email addresses: the person submitting an application (**the applicant**) and the account holder (**the journal contact**), if different from the applicant. DOAJ does not share any email addresses with anyone outside the organisation. DOAJ collects email addresses of volunteers and Ambassadors. DOAJ also collects email addresses of its team members and partners it works with.
+The Directory of Open Access Journals ("DOAJ"), managed independently by DOAJ Fonden, a not-for-profit foundation registered in Denmark, is an open online directory that contains lists of peer-reviewed, open access journals and their article metadata. 
+
+To ensure that every journal application and eventual journal record in DOAJ can be vouched for by a representative of that journal and to maintain a high level of recency and accuracy, the DOAJ collects and stores two groups of names and email addresses in our **User database**: the person submitting an application (**the applicant**) and the account holder (**the journal contact**), if different from the applicant. We also create other accounts that contain names and email addresses, usually of our teams, our volunteers, our Ambassadors, Premium Metadata Service users and our open metadata service users. DOAJ does not share names or email addresses with anyone outside the organisation, unless explicit permission has been sought.
+
+To ensure that we can maintain good customer relations with our supporters, we also store details in a Customer Relationship Manager (CRM).
 
 ### Who to contact at DOAJ about protecting your privacy
 
-The DOAJ Deputy Director, Dominic Mitchell, has assumed responsibility for the DOAJ data policy and implementing the changes required by the GDPR, which came into effect on 25th May 2018. If you have any questions or concerns about the information in this Notice or any other question about how DOAJ protects or uses your data, please [email Dominic](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
+The DOAJ Deputy Director, Dominic Mitchell, has assumed responsibility for the DOAJ data policy and implementing the changes required by the GDPR, which came into effect on 25th May 2018. If you have any questions or concerns about the information in this Notice or any other questions about how DOAJ protects or uses your data, please [email Dominic](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, DOAJ Fonden, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
 
 ### The policy
 
-This is the website for Directory of Open Access Journals, which is managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [DOAJ Blog](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and the DOAJ blog only.
+This is the website for the Directory of Open Access Journals, which is managed by DOAJ Fonden, a non-profit foundation registered in Denmark. The DOAJ does not have an app. The DOAJ uses WordPress for its blog, [DOAJ Blog](https://blog.doaj.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and the DOAJ blog only.
 
 ### 1) The information we collect and how we use it
 
-#### 1a Journal applications
+#### 1a Journal applications, journal records, and updates
 
-Before you submit an application, you must register an account or sign into your account. Your account stores:
+Before you submit an application, you must register for an account or sign in to your account. Your account stores:
 
 - Your name
 - Your email address
 - Your password
+- Your API key
 
-An account is created and stored in our User database. We need these details to process your application. You are the **Account holder**. We will use the email address you provided to contact you:
+An account is created and stored in our User database. We need these details to process your application. You are the **Applicant**. If your application is accepted, your journal record is created, at which point you become the **Journal contact**. We use the email address you provide:
 
-1.  to ask you about an update to the information we hold on the journal(s)
-2.  to inform you that we have changed the status of the journal in DOAJ
-3.  to inform you of any major changes that will affect how you carry out your tasks on the [Publisher dashboard](/publisher/)
-4.  to inform you about a new feature or piece of functionality which affects the way you do your work in DOAJ
-5.  to send you occasional DOAJ marketing emails\*
-6.  to contact you regarding a question on article metadata, which is linked to the journal in DOAJ
-7.  to ask you questions about your application 
+1.  to let you know that your application has been received, rejected or accepted
+2.  to ask you questions about your application or update
+3.  to ask you about an update to the information we hold about the journal(s)
+4.  to inform you that we have changed the status of the journal in DOAJ
+5.  to inform you of any major changes that will affect how you carry out your tasks on the [Publisher dashboard](/publisher/)
+6.  to send you occasional DOAJ marketing emails\*
+7.  to contact you regarding a question on article metadata, which is linked to your journal in DOAJ
 
 \*see section 7 below.
 
-It is not technically possible for emails generated as part of the review process to be sent to Account holders from within the DOAJ system. Therefore, email addresses and names are copied into emails created in whatever email program the DOAJ Team member or Volunteer uses. DOAJ Team members use a dedicated DOAJ workspace via Google for Business and the email client is Gmail. DOAJ Team members and Ambassadors all use @doaj.org email addresses. Volunteers use their own email addresses.
+It is only technically possible for some emails, generated as part of the review process, to be sent to Applicants by the DOAJ system. Therefore, it is sometimes necessary for your email address and names to be copied into an email in an external email programme. DOAJ Team members use a dedicated DOAJ.org email address and the email client is Gmail. Volunteers do not have access to a DOAJ.org email address and therefore use their own email addresses.
 
-Gmail automatically saves copies of emails that we send. Our use of Gmail and the protection of your personal data within it is governed by [Google's Privacy Policy](https://policies.google.com/privacy/update), [Data Processing Amendment for G Suite](https://gsuite.google.com/terms/dpa_terms.html), and [Data Processing and Security Terms for Google Cloud Platform](https://cloud.google.com/terms/data-processing-term).
+Gmail automatically saves copies of all emails that we send. Our use of Gmail and the protection of your personal data within it is governed by [Google's Privacy Policy](https://policies.google.com/privacy/update), [Data Processing Amendment for G Suite](https://gsuite.google.com/terms/dpa_terms.html), and [Data Processing and Security Terms for Google Cloud Platform](https://cloud.google.com/terms/data-processing-term).
 
-You may access, review and edit your account details by [logging into your DOAJ account](/account/login). We will never share your email address with any 3rd party, and we never discuss the details of your account or journal applications with anyone apart from you or an authorised representative.
+You may access, review and edit your account details by [logging into your DOAJ account](/account/login). We will never share your email address with any 3rd party, unless we explicitly ask your permission first. We will never discuss the details of your account or journal applications with anyone apart from you.
 
 #### 1b Volunteer applications
 
@@ -60,35 +65,32 @@ Your name
 Your email Address
 Name and email address of your reference(s)
 
-We use this information to contact you or your references regarding your application. If your application is successful, we will create an account for you in our User database. This allows applications to be assigned to you for review and to log in to your DOAJ workspace. You may access, review and edit these details by [logging into your DOAJ account](/account/login) at any time. We have to retain your email address so that we can keep you up to date about your volunteer work.
+We use this information to contact you or your references regarding your application. If your application is successful, we will create an account for you in our User database. This allows applications to be assigned to you for review and to log in to your DOAJ workspace. You may access, review and edit these details by [logging into your DOAJ account](/account/login) at any time. We need to retain your email address to keep you up to date on your volunteer work.
+
+We will also use your email address to add you to our Volunteer group in Slack. Your personal data in Slack is governed by Slack's [privacy policy and commitment](https://slack.com/intl/en-gb/trust/compliance/gdpr).
 
 #### 1c Via cookies
 
-We collect some information automatically via cookies in use on this site. See Section 3 below for full details.
+We collect some information automatically via cookies used on this site. See Section 3 below for full details.
 
-#### 1d A user account
+#### 1d A record in Less Annoying CRM
 
-Sometimes, we create a user account for individuals or organisations because they want to use our metadata services or they are a service provider operating on behalf of one or a group of publishers. We collect:
+Sometimes, we store your name, email address and the organisation where you work in Less Annoying, our customer relationship manager. Your data in Less Annoying is protected by [their privacy policy](https://www.lessannoyingcrm.com/help/gdpr).
 
-A name
-An email address
-A password
+#### 1e A record in our finance systems
 
-An account is created in our User database. This allows journals to be assigned to that account and for the Account Holder to find their API key or access special services. You may access, review and edit these details by [logging into your DOAJ account](/account/login) at any time.
+Sometimes, we store your name, email address and the organisation where you work in Billy, our accounting software. Your data in Billy is protected by [their Privacy Policy](https://www.billy.dk/cookie-privatlivs-politik/).
 
-#### 1e A record in Less Annoying CRM
+We are migrating all our financial administration from Billy to E-conomic. We store email addresses and sometimes a name and a phone number for our contact person. We also store our supplier's name, which, for some team members, is their personal name. Your data in E-conomic is protected by [their privacy policy](https://www.e-conomic.com/privacy).
 
-Sometimes, we store names, email addresses and the organisation where you work in Less Annoying, our customer relationship manager. Your data in Less Annoying is protected by [their privacy policy](https://www.lessannoyingcrm.com/help/gdpr).
+#### 1f A user account in Slack
+Sometimes, we store your name and email address in Slack. Your personal data in Slack is governed by Slack's [privacy policy and commitment](https://slack.com/intl/en-gb/trust/compliance/gdpr).
 
-#### 1f A record in Billy
+### 2) Why DOAJ needs to collect personal data
 
-Sometimes, we store names, email addresses and the organisation where you work in Billy, our accounting software. Your data in Billy is protected by [their Privacy Policy](https://www.billy.dk/cookie-privatlivs-politik/).
+DOAJ has a duty to its stakeholder groups to maintain the quality, security, and recency of its index. It also has a duty to keep its users informed of updates concerning user accounts, features and functionality, or policy changes, or changes in support levels. This is our legitimate business interest and why we need to collect a name and email address linked to each journal indexed in our database, and the name, email address and organisation of our supporters. We use other platforms to inform users and stakeholder groups of our updates, such as WordPress for our blog and Billy for sending invoices to supporters.
 
-### 2) Why we need to collect personal data
-
-DOAJ has a duty to its stakeholder groups to maintain its index's quality, security and recency. It also has a duty to keep its users informed of updates concerning user accounts, features and functionality, or policy changes. This is our legitimate business interest and why we need to collect a contact name and email address linked to each journal indexed in our database. We use those email addresses to keep our members informed and up-to-date. We use other platforms to inform users and stakeholder groups of our updates, such as WordPress for our blog or to send invoices to supporters.
-
-We rarely send marketing emails, but you may opt out of Marketing emails at any time by logging into your [DOAJ account](/account/login).
+We hardly ever send marketing emails, but you may opt out of them at any time by logging in to your [DOAJ account](/account/login).
 
 #### 2a Journals and uploading article metadata
 
