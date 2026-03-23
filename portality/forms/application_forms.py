@@ -1348,7 +1348,7 @@ class FieldDefinitions:
              "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": lazy_gettext("Other"), "value": "other",
              "subfields": ["preservation_service_other", "preservation_service_url"]},
-            {"display": HTMLString(lazy_gettext("<em>The journal content isn’t archived with a long-term preservation service</em>")),
+            {"display": lazy_gettext(HTMLString("<em>The journal content isn’t archived with a long-term preservation service</em>")),
              "value": "none", "exclusive": True}
         ],
         "help": {
@@ -1483,7 +1483,7 @@ class FieldDefinitions:
             {"display": lazy_gettext("Open Policy Finder"), "value": "Open Policy Finder", "subfields": ["deposit_policy_url"]},
             {"display": lazy_gettext("Other (including publisher’s own site)"), "value": "other",
              "subfields": ["deposit_policy_other", "deposit_policy_url"]},
-            {"display": HTMLString(lazy_gettext("<em>The journal has no repository policy</em>")), "value": "none", "exclusive": True}
+            {"display": lazy_gettext(HTMLString("<em>The journal has no repository policy</em>")), "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": [lazy_gettext("Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -1596,13 +1596,13 @@ class FieldDefinitions:
             {"display": lazy_gettext("Handles"), "value": "Handles"},
             {"display": lazy_gettext("PURLs"), "value": "PURL"},
             {"display": lazy_gettext("Other"), "value": "other", "subfields": ["persistent_identifiers_other"]},
-            {"display": HTMLString(lazy_gettext("<em>The journal does not use persistent article identifiers</em>")), "value": "none",
+            {"display": lazy_gettext(HTMLString("<em>The journal does not use persistent article identifiers</em>")), "value": "none",
              "exclusive": True}
         ],
         "help": {
-            "long_help": [lazy_gettext("A persistent article identifier (PID) is used to find the article no matter where it is "
-                          "located. The most common type of PID is the digital object identifier (DOI). "),
-                          lazy_gettext("<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>")],
+            "long_help": [
+                lazy_gettext("A persistent article identifier (PID) is used to find the article no matter where it is located. The most common type of PID is the digital object identifier (DOI)."),
+                lazy_gettext("<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>")],
         },
         "validate": [
             {"required": {"message": lazy_gettext("Select <strong>at least one</strong> option")}}

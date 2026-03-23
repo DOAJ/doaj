@@ -64,7 +64,7 @@ forms/application_forms.py:706,No,CC BY-NC-ND,CC BY-NC-ND
 forms/application_forms.py:707,No,CC0,CC0
 forms/application_forms.py:708,No,Public domain,Domaine public
 forms/application_forms.py:709,No,Publisher's own license,Licence de l’éditeur
-forms/application_forms.py:713,Yes,The journal must use some form of licensing to be considered for indexing in DOAJ. ,La revue doit accorder certains droits d’utilisation via une licence pour être éligible à l'indexation dans le DOAJ.
+forms/application_forms.py:713,Yes,The journal must use some form of licensing to be considered for indexing in DOAJ.,La revue doit accorder certains droits d’utilisation via une licence pour être éligible à l'indexation dans le DOAJ.
 forms/application_forms.py:714,No,"If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter more details below.","Si aucune licence Creative Commons n'est utilisée, sélectionnez <em>Licence de l’éditeur</em> et donnez plus de détails ci-dessous."
 forms/application_forms.py:716,No,More information on CC licenses: <br/><a href='https://creativecommons.org/licenses/by/4.0/' target='_blank' 'rel='noopener'>CC BY</a> <br/><a href='https://creativecommons.org/licenses/by-sa/4.0/' target='_blank' 'rel='noopener'>CC BY-SA</a> <br/><a href='https://creativecommons.org/licenses/by-nd/4.0/' target='_blank' 'rel='noopener'>CC BY-ND</a> <br/><a href='https://creativecommons.org/licenses/by-nc/4.0/' target='_blank' 'rel='noopener'>CC BY-NC</a> <br/><a href='https://creativecommons.org/licenses/by-nc-sa/4.0/' target='_blank' 'rel='noopener'>CC BY-NC-SA</a> <br/><a href='https://creativecommons.org/licenses/by-nc-nd/4.0/' target='_blank' 'rel='noopener'>CC BY-NC-ND</a>,Plus d'information sur les licences CC :<br/><a href='https://creativecommons.org/licenses/by/4.0/deed.fr' target='_blank''rel='noopener'>CC BY</a> <br/><a href='https://creativecommons.org/licenses/by-sa/4.0/deed.fr' target='_blank''rel='noopener'>CC BY-SA</a> <br/><a href='https://creativecommons.org/licenses/by-nd/4.0/deed.fr' target='_blank''rel='noopener'>CC BY-ND</a> <br/><a href='https://creativecommons.org/licenses/by-nc/4.0/deed.fr' target='_blank''rel='noopener'>CC BY-NC</a> <br/><a href='https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr' target='_blank''rel='noopener'>CC BY-NC-SA</a> <br/><a href='https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr' target='_blank''rel='noopener'>CC BY-NC-ND</a>
 forms/application_forms.py:729,No,"<a href='https://wiki.creativecommons.org/wiki/CC0_FAQ#What_is_the_difference_between_CC0_and_the_Public_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' rel='noopener'>What is the difference between CC0 and the Public Domain Mark (\""PDM\"")?</a>","<a href='https://wiki.creativecommons.org/wiki/CC0_FAQ#What_is_the_difference_between_CC0_and_the_Public_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' rel='noopener'>Quelle est la différence entre CC0 et la marque du domaine public (\""PDM\"")?</a> (en anglais)"
@@ -99,7 +99,7 @@ forms/application_forms.py:896,No,Double anonymous peer review,Évaluation par l
 forms/application_forms.py:897,No,Post-publication peer review,Évaluation par les pair·es après publication
 forms/application_forms.py:898,No,Open peer review,Évaluation par les pair·es ouverte
 forms/application_forms.py:899; forms/application_forms.py:1349; forms/application_forms.py:1598; forms/application_forms.py:2689,No,Other,Autre
-forms/application_forms.py:902,No,"Enter all types of review used by the journal for research articles. Note that editorial review is only accepted for <a href='https://doaj.org/apply/guide/#arts-and-humanities-journals' target='_blank' rel='nofollow'>arts and humanities journals</a>.For a detailed description of the peer review types, see <a href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0' target='_blank' rel='nofollow'>this summary</a>.",
+forms/application_forms.py:902,No,"Enter all types of review used by the journal for research articles. Note that editorial review is only accepted for <a href='https://doaj.org/apply/guide/#arts-and-humanities-journals' target='_blank' rel='nofollow'>arts and humanities journals</a>.For a detailed description of the peer review types, see <a href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0' target='_blank' rel='nofollow'>this summary</a>.","Indiquez tous les types d’évaluation pour les articles de recherche. Notez que l’évaluation éditoriale n'est acceptée que pour les revues en arts et sciences humaines. Pour une description détaillée des types d'évaluation par les pairs, voir <a href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0' target='_blank' rel='nofollow'>ce résumé</a>."
 forms/application_forms.py:907,No,Peer review must be carried out,La revue doit assurer une évaluation par les pairs
 forms/application_forms.py:910,No,Select <strong>at least one</strong> type of review process,Sélectionnez <strong>au moins un</strong> type d'évaluation
 forms/application_forms.py:917; forms/application_forms.py:920,No,Other peer review,Autre forme d'évaluation par les pair·e·s
@@ -158,7 +158,7 @@ forms/application_forms.py:1344,No,PKP PN,PKP PN
 forms/application_forms.py:1345,No,PubMed Central (PMC),PubMed Central (PMC)
 forms/application_forms.py:1346,No,Portico,Portico
 forms/application_forms.py:1347; forms/application_forms.py:1376,No,A national library,Une bibliothèque nationale
-forms/application_forms.py:1351,No,<em>The journal content isn’t archived with a long-term preservation service</em>,
+forms/application_forms.py:1351,No,<em>The journal content isn’t archived with a long-term preservation service</em>,<em>Le contenu de la revue n’est pas archivé par un service de préservation à long terme</em>
 forms/application_forms.py:1356,No,"Content must be actively deposited in each of the options you choose. If the journal is registered with a service but archiving is not yet active, choose <em>The journal content isn’t archived with a long-term preservation service</em>.","Le contenu doit être déposé en continu dans chacune des options que vous sélectionnez. Si la revue est enregistrée auprès d'un service, mais que l'archivage n'est pas encore actif, <em>choisissez « Le contenu de la revue n'est pas archivé par un service de préservation à long terme</em>."
 forms/application_forms.py:1359,No,PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust).,PubMed Central comprend PMC (États-Unis) et EuropePMC (Wellcome Trust).
 forms/application_forms.py:1362; forms/application_forms.py:1499; forms/application_forms.py:1608,No,Select <strong>at least one</strong> option,Sélectionnez <strong>au moins une</strong> réponse
@@ -185,8 +185,8 @@ forms/application_forms.py:1594,No,DOIs,DOI
 forms/application_forms.py:1595,No,ARKs,ARK
 forms/application_forms.py:1596,No,Handles,Handle
 forms/application_forms.py:1597,No,PURLs,PURL
-forms/application_forms.py:1599,No,<em>The journal does not use persistent article identifiers</em>,
-forms/application_forms.py:1603,Yes,A persistent article identifier (PID) is used to find the article no matter where it is located. The most common type of PID is the digital object identifier (DOI). ,Un identifiant d'article pérenne (PID) est utilisé pour retrouver l'article peu importe où il se trouve. Le type de PID le plus courant est le DOI (Digital Object Identifier).
+forms/application_forms.py:1599,No,<em>The journal does not use persistent article identifiers</em>,<em>La revue n’utilise pas d'identifiants pérennes d’articles</em>
+forms/application_forms.py:1603,Yes,A persistent article identifier (PID) is used to find the article no matter where it is located. The most common type of PID is the digital object identifier (DOI).,Un identifiant d'article pérenne (PID) est utilisé pour retrouver l'article peu importe où il se trouve. Le type de PID le plus courant est le DOI (Digital Object Identifier).
 forms/application_forms.py:1605,No,<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>,<a href='https://fr.wikipedia.org/wiki/Identifiant_p%C3%A9renne' target='_blank' rel='noopener'>Pour en savoir plus sur les PID</a>.
 forms/application_forms.py:1615,No,Other identifier,Autre identifiant
 forms/application_forms.py:1622,No,Enter the name of another type of identifier,Indiquez le nom de l'autre type d'identifiant
@@ -240,21 +240,21 @@ forms/application_forms.py:2364,No,Subject classification,
 forms/application_forms.py:2412,No,Bulk edit,
 forms/application_forms.py:2759,No,No editor assigned,
 forms/application_forms.py:2895; forms/application_forms.py:3085,No,This answer is required,
-forms/application_forms.py:2905,No,Please enter a valid URL. It should start with http or https,
+forms/application_forms.py:2905,No,Please enter a valid URL. It should start with http or https,Veuillez saisir une URL valide. Elle doit commencer par http ou https.
 forms/application_forms.py:2931,No,This value should be between {min} and {max},Cette valeur doit être comprise entre {min} et {max}
 forms/application_forms.py:2936,No,This value should be bigger than {gte},Cette valeur doit être supérieure à {gte}
 forms/application_forms.py:2940,No,This value should be smaller than {lte},Cette valeur doit être inférieure à {lte}
 forms/application_forms.py:3015; forms/application_forms.py:3019,No,No script tags allowed,
-forms/validate.py:141,No,Invalid URL.,
-forms/validate.py:209,No,Invalid input.,
-forms/validate.py:604,No,This field is required.,
+forms/validate.py:141,No,Invalid URL.,URL invalide
+forms/validate.py:209,No,Invalid input.,Saisie invalide
+forms/validate.py:604,No,This field is required.,Ce champ est obligatoire
 templates-v2/_application-form/includes/_field.html:8; templates-v2/_application-form/includes/_list.html:14,No,Optional,Optionnel
 templates-v2/_application-form/includes/_field.html:12; templates-v2/_application-form/includes/_list.html:8,No,More help,Plus d'aide
 templates-v2/_application-form/includes/_field.html:15; templates-v2/_application-form/includes/_list.html:11,No,Copy value,Copier la valeur
 templates-v2/_application-form/includes/_field.html:16; templates-v2/_application-form/includes/_list.html:12,No,Copied!,Copié!
 templates-v2/_application-form/includes/_field.html:33; templates-v2/_application-form/includes/_list.html:20,No,Add,Ajouter
 templates-v2/_application-form/includes/_fieldset_about.html:2; templates-v2/_application-form/includes/_fieldset_best-practice.html:2; templates-v2/_application-form/includes/_fieldset_business-model.html:2; templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:2; templates-v2/_application-form/includes/_fieldset_editorial.html:2; templates-v2/public/_application-form/includes/_buttons.html:4,No,Back,Retour
-templates-v2/_application-form/includes/_fieldset_about.html:3; templates-v2/_application-form/includes/_fieldset_best-practice.html:3; templates-v2/_application-form/includes/_fieldset_business-model.html:3; templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:3; templates-v2/_application-form/includes/_fieldset_editorial.html:3; templates-v2/_application-form/includes/_fieldset_oa_compliance.html:2,No,Page,
+templates-v2/_application-form/includes/_fieldset_about.html:3; templates-v2/_application-form/includes/_fieldset_best-practice.html:3; templates-v2/_application-form/includes/_fieldset_business-model.html:3; templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:3; templates-v2/_application-form/includes/_fieldset_editorial.html:3; templates-v2/_application-form/includes/_fieldset_oa_compliance.html:2,No,Page,Page
 templates-v2/_application-form/includes/_fieldset_about.html:3; templates-v2/_application-form/includes/_fieldset_best-practice.html:3; templates-v2/_application-form/includes/_fieldset_business-model.html:3; templates-v2/_application-form/includes/_fieldset_copyright-licensing.html:3; templates-v2/_application-form/includes/_fieldset_editorial.html:3; templates-v2/_application-form/includes/_fieldset_oa_compliance.html:2; templates-v2/public/_application-form/includes/_review.html:3,No,of,sur
 templates-v2/_application-form/includes/_fieldset_best-practice.html:6; templates-v2/_application-form/includes/_i18n_translations.html:16; templates-v2/public/_application-form/includes/_pagination_menu.html:20; templates-v2/public/public_application.html:20,No,Best practice,Pratiques exemplaires
 templates-v2/_application-form/includes/_fieldset_best-practice.html:8,No,"The best practices in this section adhere to publishing standards based around findability, preserving the content and ethical publishing practices.","Les bonnes pratiques de cette section suivent les standards de publication visant la découvrabilité, la préservation des contenus et le respect de l’éthique éditoriale."
@@ -279,14 +279,14 @@ templates-v2/_application-form/includes/_i18n_translations.html:15; templates-v2
 templates-v2/_application-form/includes/_i18n_translations.html:17,No,Edit this section,Modifier cette section
 templates-v2/_application-form/includes/_i18n_translations.html:18,No,Open URL in a new tab,Ouvrir l'URL dans un nouvel onglet
 templates-v2/_application-form/includes/_i18n_translations.html:21,No,DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.,DOAJ indexe seulement les revues en libre accès qui respectent l'affirmation ci-dessus. Veuillez vérifier et mettre à jour la déclaration en matière de libre accès de votre revue. Vous pouvez revenir à cette candidature à tout moment.
-templates-v2/_application-form/includes/_i18n_translations.html:24,No,"This field is required, because you answered \""%s\"" to the previous question.",
+templates-v2/_application-form/includes/_i18n_translations.html:24,No,"This field is required, because you answered \""%s\"" to the previous question.","Ce champ est obligatoire, car vous avez répondu « %s » à la question précédente."
 templates-v2/_application-form/includes/_i18n_translations.html:27,No,You need to provide the answer to either this field or %s field (or both),
 templates-v2/_application-form/includes/_i18n_translations.html:30,No,Value of this field and %s field must be different,
 templates-v2/_application-form/includes/_i18n_translations.html:33,No,This only can be set when requirements are met,
 templates-v2/_application-form/includes/_i18n_translations.html:36,No,This only can be true when requirements are met,
 templates-v2/_application-form/includes/_i18n_translations.html:39,No,Script tags are not allowed,
 templates-v2/_application-form/includes/_i18n_translations.html:42,No,"This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year",
-templates-v2/_application-form/includes/_i18n_translations.html:45,No,Please enter a valid date in YYYY-MM-DD format.,
+templates-v2/_application-form/includes/_i18n_translations.html:45,No,Please enter a valid date in YYYY-MM-DD format.,Veuillez saisir une date valide au format AAAA-MM-JJ.
 templates-v2/public/public_application.html:44,No,You cannot submit the application because it contains some invalid fields. Please review your answers and try again.,Vous ne pouvez pas soumettre le formulaire car il contient des champs non valides. Veuillez vérifier vos réponses et réessayer.
 templates-v2/public/public_application.html:81,No,"You are about to change the form language. Any unsaved changes may be lost. To keep your changes, close this message and click the \""Save Draft\"" button at the bottom of the page.","Vous êtes sur le point de changer la langue du formulaire. Les modifications non enregistrées risquent d’être perdues. Pour les conserver, fermez ce message et cliquez sur le bouton \""Enregistrer le brouillon\"" en bas de la page."
 templates-v2/public/public_application.html:83,No,Cancel,Annuler

@@ -104,7 +104,7 @@ python po_csv_converter.py csv2po <csv_file> <po_file>
 
 Example to update messages.po file from CSV file
 ```
-python scripts/po_csv_converter.py csv2po translations/messages_fr.csv translations/fr/LC_MESSAGES/messages.po
+python scripts/po_csv_converter.py csv2po ui/translations/messages_fr.csv ui/translations/fr/LC_MESSAGES/messages.po
 ```
 
 This script will also generate a file with name as translations/messages_fr_<date>.csv format. 
@@ -116,7 +116,7 @@ Once the messages.po file is updated, generate the messages.mo binary file
 cd to `portality` directory
 
 ```shell
-python scripts/locale_translation.sh
+bash scripts/locale_translation.sh
 ```
 
 Select option 3 from the list
