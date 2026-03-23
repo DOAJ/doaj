@@ -308,7 +308,7 @@ def reset(reset_token):
     return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
 
-@blueprint.route('/logout')
+@blueprint.route('/logout', methods=['POST'])
 @ssl_required
 def logout():
     logout_user()
