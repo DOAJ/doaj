@@ -111,6 +111,8 @@ This script will also generate a file with name as translations/messages_fr_<dat
 This file contains the messages that were not updated in the po file because of the reasons like broken html tags etc.
 Review this file before moving to next step.
 
+If the `messages.po` file contains any translations that are still marked as `fuzzy`, then these translations need to be reviewed and updated by the translator before generating the `messages.mo` file.  Translations with this tag are not included in the `messages.mo` file, and therefore will not be available in the application.
+
 Once the messages.po file is updated, generate the messages.mo binary file
 
 cd to `portality` directory
@@ -131,3 +133,4 @@ Please select an option:
 ```
 
 Select option 4 to exit the script
+
