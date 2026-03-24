@@ -304,7 +304,7 @@ def reset(reset_token):
     return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
 
-@blueprint.route('/logout')
+@blueprint.route('/logout', methods=['POST'])
 @ssl_required
 def logout():
     logout_user()
@@ -331,7 +331,7 @@ class RegisterForm(RedirectForm):
         Checks honeypot fields and determines whether the form was submitted by a bot
         :return: True, if bot suspected; False, if human
         """
-        return self.email.data != "" or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
+        return self.email.data != "" or self.hptimer.data is None or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
@@ -378,5 +378,6 @@ def register(template=templates.REGISTER):
     return render_template(template, form=form)
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
+@write_required()
 def create():
     return register(template=templates.CREATE_USER)

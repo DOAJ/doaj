@@ -13,16 +13,8 @@ class Cache(DomainObject):
     @classmethod
     def get_site_statistics(cls):
         rec = cls.pull("site_statistics")
-        returnable = rec is not None
         if rec is not None:
-            if rec.is_stale():
-                returnable = False
-
-        # if the cache exists and is in date (or is otherwise returnable), then explicilty build the
-        # cache object and return it.  If we are read-only mode, then we always return the current stats
-        # since the cache won't be allowed to store the regenerated ones
-        try:
-            if returnable or app.config.get("READ_ONLY_MODE", False):
+            try:
                 return {
                     "journals": rec.data.get("journals"),
                     "countries": rec.data.get("countries"),
@@ -30,8 +22,8 @@ class Cache(DomainObject):
                     "no_apc": rec.data.get("no_apc"),
                     "new_journals": rec.data.get("new_journals")
                 }
-        except AttributeError:
-            pass    # Return None below
+            except AttributeError:
+                pass    # Return None below
 
         # if we get to here, then we don't return the cache
         return None
@@ -41,18 +33,6 @@ class Cache(DomainObject):
         cobj = cls(**stats)
         cobj.set_id("site_statistics")
         cobj.save()
-
-    @classmethod
-    def cache_csv(cls, url):
-        cobj = cls(**{
-            "url": url
-        })
-        cobj.set_id("csv")
-        cobj.save()
-
-    @classmethod
-    def get_latest_csv(cls):
-        return cls.pull("csv")
 
     @classmethod
     def cache_sitemap(cls, url):
@@ -71,15 +51,26 @@ class Cache(DomainObject):
         cobj.save()
 
     @classmethod
-    def get_latest_sitemap(cls):
-        rec = cls.pull("sitemap")
+    def get_sitemap(cls, n):
+        rec = cls.pull("sitemap"+str(n))
         if rec is None:
             return None
         return rec.get("filename")
 
     @classmethod
-    def get_sitemap(cls, n):
-        rec = cls.pull("sitemap"+str(n))
+    def cache_sitemap_indexes(cls, urls):
+        """Cache multiple sitemap index URLs"""
+        for idx, url in enumerate(urls):
+            cobj = cls(**{
+                "filename": url
+            })
+            cobj.set_id(f"sitemap_index_{idx}")
+            cobj.save()
+
+    @classmethod
+    def get_sitemap_index(cls, n):
+        """Get a specific sitemap index URL"""
+        rec = cls.pull(f"sitemap_index_{n}")
         if rec is None:
             return None
         return rec.get("filename")
@@ -107,24 +98,6 @@ class Cache(DomainObject):
     @classmethod
     def get_public_data_dump(cls):
         return cls.pull("public_data_dump")
-
-    def is_stale(self):
-        if not self.last_updated:
-            lu = DEFAULT_TIMESTAMP_VAL
-        else:
-            lu = self.last_updated
-
-        lu = dates.parse(lu)
-        now = dates.now()
-        dt = now - lu
-
-        # compatibility with Python 2.6
-        if hasattr(dt, 'total_seconds'):
-            total_seconds = dt.total_seconds()
-        else:
-            total_seconds = (dt.microseconds + (dt.seconds + dt.days * 24 * 3600) * 10**6) / 10**6
-
-        return total_seconds > app.config.get("SITE_STATISTICS_TIMEOUT")
 
     def marked_regen(self):
         return self.data.get("regen", False)

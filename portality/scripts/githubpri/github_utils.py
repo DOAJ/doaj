@@ -7,11 +7,14 @@ import functools
 import logging
 import os
 import warnings
+from datetime import datetime
 from typing import Union, Iterable, TypedDict
 
 import requests
 from requests import Response
 from requests.auth import HTTPBasicAuth
+
+from portality.lib import dates
 
 URL_API = "https://api.github.com"
 
@@ -173,6 +176,7 @@ class Issue(TypedDict):
     url: str
     assignees: list[str]
     label_names: list[str]
+    deadline: datetime | None
 
 
 def find_all_issues(owner, repo, project_number, sender: GithubReqSender) -> Iterable[Issue]:
@@ -218,6 +222,14 @@ def find_all_issues(owner, repo, project_number, sender: GithubReqSender) -> Ite
                         name
                       }
                     }
+                   }
+                  ... on ProjectV2ItemFieldDateValue {
+                    date
+                    field {
+                      ... on ProjectV2Field {
+                        name
+                      }
+                    }
                   }
                 }
               }
@@ -254,6 +266,11 @@ def find_all_issues(owner, repo, project_number, sender: GithubReqSender) -> Ite
 
     def _to_issue(item):
         content = item['content']
+        dls = [f['date'] for f in item['fieldValues']['nodes'] if f and f['field']['name'] == 'Deadline']
+        dls = [d for d in dls if d is not None]
+        dl = None
+        if len(dls) > 0:
+            dl = dates.parse(dls[0])
         return Issue(
             number=content['number'],
             title=content['title'],
@@ -262,6 +279,7 @@ def find_all_issues(owner, repo, project_number, sender: GithubReqSender) -> Ite
             status=next((f['name'] for f in item['fieldValues']['nodes']
                          if f and f['field']['name'] == 'Status'), None),
             label_names=[l['name'] for l in content['labels']['nodes']],
+            deadline=dl
         )
 
     # Fetch all items

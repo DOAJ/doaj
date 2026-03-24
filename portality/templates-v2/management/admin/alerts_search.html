@@ -1,0 +1,28 @@
+{% extends "management/admin/base.html" %}
+{# ~~ AdminAlertsSearch:Page -> AdminAlerts:Edge~~ #}
+
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block admin_content %}
+    <div id="admin_alerts"></div>
+{% endblock %}
+
+{% block admin_js %}
+
+    <script type="text/javascript">
+        $.extend(true, doaj, {
+            adminAlertsSearchConfig : {
+                searchPath : '/admin_query/alerts/_search',
+                managePath: '/service/alerts/'
+            }
+        });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.alerts.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% endblock %}

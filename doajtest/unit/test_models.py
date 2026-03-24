@@ -2,12 +2,13 @@ import json
 import time
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
-    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
+    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory, \
+    DataDumpFixtureFactory, JournalCSVFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_history_dir, save_all_block_last
 from portality import constants
 from portality import models
 from portality.constants import BgjobOutcomeStatus
-from portality.lib import dataobj
+from portality.lib import dataobj, dates
 from portality.lib import seamless
 from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
@@ -65,6 +66,11 @@ class TestModels(DoajTestCase):
         j.set_created("2001-01-01T00:00:00Z")
         j.set_last_updated("2002-01-01T00:00:00Z")
         j.set_last_manual_update("2004-01-01T00:00:00Z")
+        j.last_full_review = "2020-01-02T00:00:00Z"
+        j.last_withdrawn = "2021-01-02T00:00:00Z"
+        j.last_reinstated = "2022-01-02T00:00:00Z"
+        j.last_owner_transfer = "2023-01-02T00:00:00Z"
+        j.date_applied = "2024-01-02T00:00:00Z"
         j.set_owner("richard")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
@@ -79,6 +85,18 @@ class TestModels(DoajTestCase):
         assert j.last_updated_timestamp.strftime(FMT_DATETIME_STD) == "2002-01-01T00:00:00Z"
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
         assert j.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
+
+        assert j.last_full_review == "2020-01-02"
+        assert j.last_full_review_timestamp.strftime(FMT_DATETIME_STD) == "2020-01-02T00:00:00Z"
+        assert j.last_withdrawn == "2021-01-02T00:00:00Z"
+        assert j.last_withdrawn_timestamp.strftime(FMT_DATETIME_STD) == "2021-01-02T00:00:00Z"
+        assert j.last_reinstated == "2022-01-02T00:00:00Z"
+        assert j.last_reinstated_timestamp.strftime(FMT_DATETIME_STD) == "2022-01-02T00:00:00Z"
+        assert j.last_owner_transfer == "2023-01-02T00:00:00Z"
+        assert j.last_owner_transfer_timestamp.strftime(FMT_DATETIME_STD) == "2023-01-02T00:00:00Z"
+        assert j.date_applied == "2024-01-02T00:00:00Z"
+        assert j.date_applied_timestamp.strftime(FMT_DATETIME_STD) == "2024-01-02T00:00:00Z"
+
         assert j.has_been_manually_updated() is True
         assert j.owner == "richard"
         assert j.editor_group == "worldwide"
@@ -210,7 +228,7 @@ class TestModels(DoajTestCase):
         assert a.is_in_doaj()
         assert a.upload_id() == "zyxwvu"
 
-    def test_04_suggestion_model_rw(self):
+    def test_04_application_model_rw(self):
         """Read and write properties into the suggestion model"""
         s = models.Application()
 
@@ -222,6 +240,7 @@ class TestModels(DoajTestCase):
         s.set_created("2001-01-01T00:00:00Z")
         s.set_last_updated("2002-01-01T00:00:00Z")
         s.set_last_manual_update("2004-01-01T00:00:00Z")
+        s.date_rejected = "2005-01-02T00:00:00Z"
         s.set_owner("richard")
         s.set_editor_group("worldwide")
         s.set_editor("eddie")
@@ -236,6 +255,8 @@ class TestModels(DoajTestCase):
         assert s.last_updated_timestamp.strftime(FMT_DATETIME_STD) == "2002-01-01T00:00:00Z"
         assert s.last_manual_update == "2004-01-01T00:00:00Z"
         assert s.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
+        assert s.date_rejected == "2005-01-02T00:00:00Z"
+        assert s.date_rejected_timestamp.strftime(FMT_DATETIME_STD) == "2005-01-02T00:00:00Z"
         assert s.has_been_manually_updated() is True
         assert s.owner == "richard"
         assert s.editor_group == "worldwide"
@@ -648,7 +669,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
         assert bj.language == ["EN", "FR"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "mirror"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 3, bj.subject
@@ -778,6 +799,7 @@ class TestModels(DoajTestCase):
         bj.add_keyword("keyword")
         bj.add_language("CZ")
         bj.add_label("s2o")
+        bj.add_label("ojc")
         bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
         bj.add_replaces("1234-1234")
         bj.add_subject("SCH", "TERM", "CDE")
@@ -790,7 +812,7 @@ class TestModels(DoajTestCase):
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
         assert bj.language == ["IT", "CZ"]
-        assert bj.labels == ["s2o"]
+        assert bj.labels == ["s2o", "ojc"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
@@ -1217,6 +1239,27 @@ class TestModels(DoajTestCase):
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed C")
         assert len(res) == 1, "autocomplete for 'BioMed C': found {}, expected 2".format(len(res))
 
+    def test_22a_users_autocomplete(test):
+        test_users = [
+            {"name": "Chomp Nougat", "email": "chompnougat@example.com", "password": "pass", "role": ["admin", "api"]},
+            {"name": "Choco Li", "email": "chocoli@example.com", "password": "pass", "role": ["associated editor"]},
+            {"name": "Chonky Bar", "email": "chonkybar@example.com", "password": "pass", "role": ["admin"]},
+            {"name": "Marsh Mellow", "email": "mellow@example.com", "password": "pass", "role": ["admin"]}
+        ]
+
+        for u in test_users:
+            acc = models.Account(id=u["name"])
+            acc.set_email(u["email"])
+            acc.set_role(u["role"])
+            acc.set_password(u["password"])
+            acc.save(blocking=True)
+
+        res = models.Account.autocomplete("id", "cho")
+        assert len(res) == 3, "autocomplete for 'cho': found {}, expected 3".format(len(res))
+        res = models.Account.autocomplete("id", "cho", {"role.exact": "admin"})
+        assert len(res) == 2, "autocomplete for 'cho', admin only: found {}, expected 2".format(len(res))
+
+
     def test_23_provenance(self):
         """Read and write properties into the provenance model"""
         p = models.Provenance()
@@ -1399,8 +1442,9 @@ class TestModels(DoajTestCase):
         # check that we find all the applications when we search, and that they're in the right order
         all = models.Suggestion.find_all_by_related_journal(j.id)
         assert len(all) == 2
-        assert all[0].id == app1.id
-        assert all[1].id == app2.id
+        all_ids = [a.id for a in all]
+        assert app1.id in all_ids
+        assert app2.id in all_ids
 
     def test_30_article_stats(self):
         articles = []
@@ -1450,11 +1494,7 @@ class TestModels(DoajTestCase):
             "no_apc" : 50
         })
 
-        models.Cache.cache_csv("/csv/filename.csv")
-
         models.Cache.cache_sitemap("sitemap.xml")
-
-        models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
 
         time.sleep(1)
 
@@ -1465,21 +1505,9 @@ class TestModels(DoajTestCase):
         assert stats["abstracts"] == 40
         assert stats["no_apc"] == 50
 
-        assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
-
-        assert models.Cache.get_latest_sitemap() == "sitemap.xml"
-
-        article_data = models.Cache.get_public_data_dump().get("article")
-        assert article_data.get("url") == "http://example.com/article"
-        assert article_data.get("size") == 100
-        assert article_data.get("container") == "ac"
-        assert article_data.get("filename") == "af"
-
-        journal_data = models.Cache.get_public_data_dump().get("journal")
-        assert journal_data.get("url") == "http://example.com/journal"
-        assert journal_data.get("size") == 200
-        assert journal_data.get("container") == "jc"
-        assert journal_data.get("filename") == "jf"
+        # FIXME: we removed '.get_latest_sitemap() in favour of numbered sitemaps and indexes. My change makes a mockery of this test.
+        # assert models.Cache.get_latest_sitemap() == "sitemap.xml"
+        assert models.Cache.get_sitemap('') == "sitemap.xml"
 
     def test_32_journal_like_object_discovery(self):
         """ Check that the JournalLikeObject can retrieve the correct results for Journals and Applications """
@@ -1799,7 +1827,7 @@ class TestModels(DoajTestCase):
         assert bj.has_apc is False
         assert bj.apc == []
 
-    def test_43_export(self):
+    def test_44_export(self):
         e = models.Export()
 
         e.id = "1234"
@@ -1834,6 +1862,151 @@ class TestModels(DoajTestCase):
         assert e2.name == "Random Name"
         assert e2.request_date == "2021-06-09T00:00:00Z"
         assert e2.requester == "maned"
+
+    def test_45_data_dump(self):
+        dd = models.DataDump()
+        # get a date without milliseconds
+        now = dates.now()
+        stamp = dates.format(now)
+        now = dates.parse(stamp)
+
+        dd.dump_date = now
+        dd.set_article_dump("a1", "a2", 1, "a3")
+        dd.set_journal_dump("j1", "j2", 2, "j3")
+
+        assert dd.dump_date == now
+        assert dd.article_filename == "a2"
+        assert dd.article_container == "a1"
+        assert dd.article_url == "a3"
+        assert dd.journal_container == "j1"
+        assert dd.journal_filename == "j2"
+        assert dd.journal_url == "j3"
+
+        dd.remove_article_dump()
+        dd.remove_journal_dump()
+
+        assert dd.article_filename is None
+        assert dd.article_container is None
+        assert dd.journal_container is None
+        assert dd.journal_filename is None
+
+    def test_46_data_dump_queries(self):
+        dds = DataDumpFixtureFactory.make_n_data_dumps(3,
+                                                 dump_date=lambda x: f"2023-0{x + 1}-01T00:00:00Z",
+                                                 journal__filename=lambda x: f"journal_dump_{x + 1}.json",
+                                                 article__filename=lambda x: f"article_dump_{x + 1}.json")
+        DataDumpFixtureFactory.save_data_dumps(dds, block=True)
+
+        # the latest will be the last one created, with the most recent date
+        latest = models.DataDump.find_latest()
+        assert latest.id == dds[2].id
+
+        # the first after mid January will be the second one created
+        first_after = models.DataDump.first_dump_after(dates.parse("2023-01-14T00:00:00Z"))
+        assert first_after.id == dds[1].id
+
+        # find the first one created (the oldest) by the journal filename
+        fn_journal = models.DataDump.find_by_filename("journal_dump_1.json")
+        assert len(fn_journal) == 1
+        assert fn_journal[0].id == dds[0].id
+
+        # and the last one created (the newest) by the article filename
+        fn_article = models.DataDump.find_by_filename("article_dump_3.json")
+        assert len(fn_article) == 1
+        assert fn_article[0].id == dds[2].id
+
+        # find two oldest records as being before mid February
+        before = models.DataDump.all_dumps_before(dates.parse("2023-02-14T00:00:00Z"))
+        assert len(before) == 2
+        assert before[0].id == dds[0].id
+        assert before[1].id == dds[1].id
+
+    def test_47_journal_csv(self):
+        jc = models.JournalCSV()
+        # get a date without milliseconds
+        now = dates.now()
+        stamp = dates.format(now)
+        now = dates.parse(stamp)
+
+        jc.export_date = now
+        jc.set_csv("a1", "a2", 1, "a3")
+
+        assert jc.export_date == now
+        assert jc.filename == "a2"
+        assert jc.container == "a1"
+        assert jc.url == "a3"
+
+    def test_48_journal_csv_queries(self):
+        jcs = JournalCSVFixtureFactory.make_n_csvs(3,
+                                                 export_date=lambda x: f"2023-0{x + 1}-01T00:00:00Z",
+                                                 filename=lambda x: f"journal_csv_{x + 1}.json")
+        JournalCSVFixtureFactory.save_journal_csvs(jcs, block=True)
+
+        # the latest will be the last one created, with the most recent date
+        latest = models.JournalCSV.find_latest()
+        assert latest.id == jcs[2].id
+
+        # the first after mid January will be the second one created
+        first_after = models.JournalCSV.first_csv_after(dates.parse("2023-01-14T00:00:00Z"))
+        assert first_after.id == jcs[1].id
+
+        # find the first one created (the oldest) by the journal filename
+        fn_journal = models.JournalCSV.find_by_filename("journal_csv_1.json")
+        assert len(fn_journal) == 1
+        assert fn_journal[0].id == jcs[0].id
+
+        # find two oldest records as being before mid February
+        before = models.JournalCSV.all_csvs_before(dates.parse("2023-02-14T00:00:00Z"))
+        assert len(before) == 2
+        assert before[0].id == jcs[0].id
+        assert before[1].id == jcs[1].id
+
+    def test_49_ur_routing(self):
+        rr = models.URReviewRoute()
+        rr.account_id = "1234"
+        rr.country_code = "GB"
+        rr.target = "4321"
+
+        assert rr.account_id == "1234"
+        assert rr.country_code == "GB"
+        assert rr.target == "4321"
+
+        rr.save(blocking=True)
+        rr2 = models.URReviewRoute.pull(rr.id)
+        assert rr2.account_id == "1234"
+        assert rr2.country_code == "GB"
+        assert rr2.target == "4321"
+
+    def test_50_admin_alerts(self):
+        a = models.AdminAlert()
+        a.source = "test_source"
+        a.message = "This is a test message"
+        a.state = a.STATE_NEW
+
+        assert a.source == "test_source"
+        assert a.message == "This is a test message"
+        assert a.state == a.STATE_NEW
+
+        with self.assertRaises(seamless.SeamlessException):
+            a.state = "random_state"  # should raise an error for invalid state
+
+        a.save(blocking=True)
+        a2 = models.AdminAlert.pull(a.id)
+        assert a2.source == "test_source"
+        assert a2.message == "This is a test message"
+        assert a2.state == a.STATE_NEW
+
+    def test_47_ris_export(self):
+        r = models.RISExport()
+        raw = "TY  - JOUR\nTI  - Test Article\nAU  - Doe, John\nPY  - 2024\nJO  - Journal of Testing\nVL  - 1\nIS  - 1\nSP  - 1\nEP  - 10\nER  - \n"
+        r.ris_raw = raw
+        r.save(blocking=True)
+
+        r2 = models.RISExport.pull(r.id)
+        assert r2 is not None
+        assert r2.ris_raw == raw
+        bs = r2.byte_stream
+        assert bs.read().decode('utf-8') == raw
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

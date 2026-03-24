@@ -11,22 +11,22 @@
 {% block admin_content %}
     <div class="flex-end">
         {% if request.values.get("filter") == None %}
-            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}">Show all</a></span>
+            <span class="tag tag--primary"><a href="{{ url_for('dashboard.top_todo') }}">Show all</a></span>
         {% else %}
-            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}">Show all</a></span>
+            <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}">Show all</a></span>
         {% endif %}
 
         {% if request.values.get("filter") == "na" %}
-            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+            <span class="tag tag--primary"><a href="{{ url_for('dashboard.top_todo') }}?filter=na">New Applications</a></span>
         {% else %}
-            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+            <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}?filter=na">New Applications</a></span>
         {% endif %}
 
         {% if request.values.get("filter") == "ur" %}
             <span class="tag tag--primary"><a
-                    href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+                    href="{{ url_for('dashboard.top_todo') }}?filter=ur">Update Requests</a></span>
         {% else %}
-            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+            <span class="tag tag--tertiary"><a href="{{ url_for('dashboard.top_todo') }}?filter=ur">Update Requests</a></span>
         {% endif %}
 
         {%  if request.values.get("filter") == "oh" %}
@@ -35,6 +35,7 @@
             <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=oh">On Hold</a></span>
         {% endif %}
     </div>
+
     {% include "management/includes/_todo.html" %}
     {% set groups = managed_groups %}
     {% set person_of_assignments =  maned_assignments %}

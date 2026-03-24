@@ -1,4 +1,4 @@
-<fieldset>
+<section>
     <legend class="form__legend"><div><span data-feather="settings" aria-hidden="true"></span> Administrative</div></legend>
     {% set fs = formulaic_context.fieldset("reviewers") %}
     {% if fs %}
@@ -6,6 +6,19 @@
         <div class="row">
             {% for f in fs.fields() %}
                 <div class="col-md-6">
+                {% set field_template = f.template %}
+                {%  include field_template %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% set fs = formulaic_context.fieldset("last_full_review") %}
+    {% if fs %}
+        <h2 class="form__header">{{ fs.label }}</h2>
+        <div class="row">
+            {% for f in fs.fields() %}
+                <div class="col-md-12">
                 {% set field_template = f.template %}
                 {%  include field_template %}
                 </div>
@@ -70,4 +83,4 @@
             {%  include field_template %}
         {% endfor %}
     {% endif %}
-</fieldset>
+</section>

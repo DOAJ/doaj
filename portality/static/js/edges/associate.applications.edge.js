@@ -25,7 +25,6 @@ $.extend(true, doaj, {
 
             var components = [
                 doaj.components.searchingNotification(),
-
                 // facets
                 doaj.facets.openOrClosed(),
 

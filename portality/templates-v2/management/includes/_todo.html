@@ -1,3 +1,31 @@
+{#{% set FLAG_CONST = [#}
+{#        constants.TODO_REGULAR_FLAGS_ALL,#}
+{#        constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS,#}
+{#        constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS,#}
+{#        constants.TODO_REGULAR_FLAGS_ONHOLD,#}
+{#        constants.TODO_URGENT_FLAGS_ALL,#}
+{#        constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS,#}
+{#        constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS,#}
+{#        constants.TODO_URGENT_FLAGS_ONHOLD ]#}
+{#%}#}
+{##}
+{#{% set URGENT_FLAG_ATTRS = {#}
+{#        "text" : "<strong>Flagged to you (Urgent Deadline)</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",#}
+{#        "show_status": false,#}
+{#        "colour" : "var(--sanguine)",#}
+{#        "feather": "flag",#}
+{#        "link" : ""#}
+{#    }#}
+{#%}#}
+{#{% set REGULAR_FLAG_ATTRS = {#}
+{#        "text" : "<strong>Flagged to you</strong> <span class='todo-list__status'>Deadline: {DEADLINE} </span>",#}
+{#        "no_deadline_text": "<strong>Flagged to you</strong> <span class='todo-list__status'>No deadline</span>",#}
+{#        "show_status": false,#}
+{#        "colour" : "var(--grapefruit)",#}
+{#        "feather": "flag",#}
+{#        "link" : ""#}
+{#    }#}
+{#%}#}
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Editor</span>",
@@ -102,7 +130,16 @@
             "link" : url_for('editor.associate_suggestions')
         }
     }
-        %}
+%}
+
+{#        constants.TODO_REGULAR_FLAGS_ALL: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_REGULAR_FLAGS_NEW_APPLICATIONS: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_REGULAR_FLAGS_UPDATE_REQUESTS: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_REGULAR_FLAGS_ONHOLD: REGULAR_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_ALL: URGENT_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_NEW_APPLICATIONS: URGENT_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_UPDATE_REQUESTS: URGENT_FLAG_ATTRS,#}
+{#        constants.TODO_URGENT_FLAGS_ONHOLD: URGENT_FLAG_ATTRS#}
 
 <section>
 
@@ -150,24 +187,32 @@
             {% set app_route = "admin.application" if current_user.has_role("admin") else "editor.application" %}
             {% set app_url =  url_for(app_route, application_id=todo.object_id) %}
             {% set app_date = todo.object.date_applied_timestamp %}
+            {% set is_flagged = todo.object.is_flagged and current_user.has_role("admin") %}
+{#            {% set deadline = todo.object.most_urgent_flag_deadline %}#}
             <li class="todo-list__item" data-app-url="{{ app_url }}" data-action-ids="{{ todo.action_id|join(",") }}">
                 <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
                     <div class="flex">
-                        <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
-                            <time datetime="{{ app_date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="First submitted {{ app_date.strftime('%A, %-d %B %Y') }}">
-                                <span style="font-size: 22px;">{{ app_date.strftime('%d') }}</span><br>
-                                <span style="font-size: 13.55px;">{{ app_date.strftime('%b') }}</span><br>
-                                <span style="font-size: 9.35px;">{{ app_date.strftime('%Y') }}</span>
-                                {# TODO link to search results for this kind of task, across all editor groups #}
-                            </time>
-                        </a>
+                        <div class="flex-col">
+                            <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+                                <time datetime="{{ app_date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="First submitted {{ app_date.strftime('%A, %-d %B %Y') }}">
+                                    <span style="font-size: 22px;">{{ app_date.strftime('%d') }}</span><br>
+                                    <span style="font-size: 13.55px;">{{ app_date.strftime('%b') }}</span><br>
+                                    <span style="font-size: 9.35px;">{{ app_date.strftime('%Y') }}</span>
+                                    {# TODO link to search results for this kind of task, across all editor groups #}
+                                </time>
+                            </a>
+                        </div>
                         <div style="margin-left: 1em;" class="flex-space-between">
                             <header>
                                 <p class="label label--secondary">
                                     <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
                                         {% set main_action = todo.action_id[0] %}
                                         {% if action.show_status %}[{{ todo.object.application_status }}]{% endif %}
-                                        {{ action.text | safe }}
+{#                                        {% if not main_action in FLAG_CONST %}#}
+                                            {{ action.text | safe }}
+{#                                        {% else %}#}
+{#                                            {% if deadline == "9999-12-31" %} {{ action.no_deadline_text | safe }} {% else %} {{ action.text | replace('{DEADLINE}', deadline) | safe }} {% endif %}#}
+{#                                        {% endif %}#}
                                     </a>
                                 </p>
                                 <h3>
@@ -177,6 +222,9 @@
                             <div>
                  <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
                     <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
+                     {% if is_flagged %}
+                        <span data-feather="flag" aria-hidden="true"></span>
+                     {% endif %}
                  </span>
                             </div>
                         </div>

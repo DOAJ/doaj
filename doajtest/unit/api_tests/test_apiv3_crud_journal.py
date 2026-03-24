@@ -1,12 +1,11 @@
 from doajtest.helpers import DoajTestCase
-from portality.api.current.data_objects import journal
 from portality.api.current.data_objects.journal import OutgoingJournal
-from portality.api.current.crud.journals import JournalsCrudApi, Api401Error, Api404Error
+from portality.api.current.crud.journals import JournalsCrudApi, Api404Error
 from portality import models
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 import time
 
-from portality.lib.seamless import SeamlessMixin, SeamlessData, Construct
+from portality.lib.seamless import Construct
 
 
 def mock_lookup(struct, path):
@@ -34,10 +33,12 @@ class TestCrudJournal(DoajTestCase):
         # check that it does not contain information that it shouldn't
         assert oj.data.get("index") is None, "index: {}".format(oj.data.get("index"))
         assert oj.data.get("history") is None, "history: {}".format(oj.data.get("history"))
-        assert oj.data.get("admin", {}).get("active") is None, "active: {}".format(oj.data.get("admin", {}).get("active"))
-        assert oj.data.get("admin", {}).get("notes") is None, "notes: {}".format(oj.data.get("admin", {}).get("notes"))
-        assert oj.data.get("admin", {}).get("editor_group") is None, "editor_group: {}".format(oj.data.get("admin", {}).get("editor_group"))
-        assert oj.data.get("admin", {}).get("editor") is None, "editor: {}".format(oj.data.get("admin", {}).get("editor"))
+
+        admin_keys = oj.data.get("admin", {}).keys()
+        assert len(admin_keys) == 3
+        assert "in_doaj" in admin_keys, "admin keys: {}".format(admin_keys)
+        assert "ticked" in admin_keys, "admin keys: {}".format(admin_keys)
+        assert "last_full_review" in admin_keys, "admin keys: {}".format(admin_keys)
 
     def test_02_outgoing_journal_urls(self):    #TODO allow allow_coerce_failure=True for journal.__setattr__
         """ We've relaxed the URL constraints for outgoing journals - https://github.com/DOAJ/doajPM/issues/2268 """

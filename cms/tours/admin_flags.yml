@@ -1,0 +1,75 @@
+steps:
+  - selector: '.flags__container'
+    overlay: false
+    title: Flags have arrived
+    content: Flag is like a note, but with superpowers. You can assign them to another admin (or yourself) and optionally set a deadline. Only admins can create, view, and resolve flags.</br><b>Try adding a flag as you go through this tour!</b>
+
+  - selector: '#add_flag'
+    overlay: false
+    title: Adding a flag
+    content: Click the "Add Flag" button to start. Remember, only admins have access to this feature.
+
+  - selector: '#add_flag'
+    overlay: false
+    title: Only one flag at a time
+    content: Each record can have only one active flag. If a record is already flagged, you’ll need to resolve the existing flag before you can add a new one.
+
+  - selector: '#s2id_flags-0-flag_assignee'
+    overlay: false
+    title: Assign a user
+    content: This is required. A flag must be assigned to someone with the admin role. If you skip this, it’ll just be saved as a regular note.
+
+  - selector: '#flags-0-flag_deadline'
+    overlay: false
+    title: Set a deadline (optional)
+    content: You can add a deadline to indicate urgency. Flags with past deadlines or ones due within 7 days are marked as Urgent.
+
+  - selector: '#flags-0-flag_note'
+    overlay: false
+    title: Add your note
+    content: Write the message or instruction you'd like the assignee to see. This becomes the core of the flag.
+
+  - selector: '#submitBtn'
+    overlay: false
+    title: Saved with the journal
+    content: Just like notes, flags are saved with the journal and stay linked to it.</br><i>To continue this tutorial, click Save, then go to "Feature Tours," select the "Flags" tour, and start at step 8.</i>
+
+  - selector: '#resolve_flag--0'
+    overlay: false
+    title: Resolving a flag
+    content: Click the "Resolve" button to mark the flag as done. Don’t worry—it’s reversible until you save your changes.<i>To continue this tutorial, click Save, then go to "Feature Tours," select the "Flags" tour, and start at step 9.</i>
+
+  - selector: '.notes__container'
+    overlay: false
+    title: Nothing gets lost!
+    content: Once you save, the resolved flag turns into a note, with extra info showing who resolved it and when.
+
+  - selector: '#admin_dashboard_nav'
+    overlay: false
+    title: Handy to know
+    content: >
+      <ul>
+      <li> You can see <b>all flags assigned to you on your dashboard, sorted by deadline</b> — urgent ones stand out clearly.</li>
+      <li>Also, <b>flagged journals are marked with a flag icon</b>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 512 512"><path d="M336.174 80c-49.132 0-93.305-32-161.913-32-31.301 0-58.303 6.482-80.721 15.168a48.04 48.04 0 0 0 2.142-20.727C93.067 19.575 74.167 1.594 51.201.104 23.242-1.71 0 20.431 0 48c0 17.764 9.657 33.262 24 41.562V496c0 8.837 7.163 16 16 16h16c8.837 0 16-7.163 16-16v-83.443C109.869 395.28 143.259 384 199.826 384c49.132 0 93.305 32 161.913 32 58.479 0 101.972-22.617 128.548-39.981C503.846 367.161 512 352.051 512 335.855V95.937c0-34.459-35.264-57.768-66.904-44.117C409.193 67.309 371.641 80 336.174 80zM464 336c-21.783 15.412-60.824 32-102.261 32-59.945 0-102.002-32-161.913-32-43.361 0-96.379 9.403-127.826 24V128c21.784-15.412 60.824-32 102.261-32 59.945 0 102.002 32 161.913 32 43.271 0 96.32-17.366 127.826-32v240z"/></svg>
+      throughout the system, and those <b>flagged to you show a red flag</b>
+      <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_137_201)">
+      <path d="M1.875 0.9375C1.875 0.417969 1.45703 0 0.9375 0C0.417969 0 0 0.417969 0 0.9375V2.5V13.6914V15.625V19.0625C0 19.582 0.417969 20 0.9375 20C1.45703 20 1.875 19.582 1.875 19.0625V15.1562L5.01172 14.3711C6.61719 13.9688 8.31641 14.1562 9.79688 14.8945C11.5234 15.7578 13.5273 15.8633 15.332 15.1836L16.6875 14.6758C17.1758 14.4922 17.5 14.0273 17.5 13.5039V2.57812C17.5 1.67969 16.5547 1.09375 15.75 1.49609L15.375 1.68359C13.5664 2.58984 11.4375 2.58984 9.62891 1.68359C8.25781 0.996094 6.68359 0.824219 5.19531 1.19531L1.875 2.03125V0.9375ZM1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#282624"/>
+      <path d="M1.875 3.96484L5.64844 3.01953C6.70312 2.75781 7.81641 2.87891 8.78906 3.36328C10.9336 4.43359 13.4258 4.52344 15.625 3.62891V13.0742L14.6719 13.4297C13.3555 13.9219 11.8906 13.8477 10.6328 13.2188C8.75 12.2773 6.59766 12.043 4.55469 12.5508L1.875 13.2227V3.96484Z" fill="#982E0A"/>
+      </g>
+      <defs>
+      <clipPath id="clip0_137_201">
+      <rect width="17.5" height="20" fill="white"/>
+      </clipPath>
+      </defs>
+      </svg>
+      , so you always know what needs your attention. </b></li>
+      <li>If you want to find flagged records quickly, <b> use the admin search pages </b> —
+      you can <b>filter to see all flagged journals or just those assigned to you</b>.</li>
+      </ul>
+
+  - selector: '#feature_tour_nav'
+    overlay: false
+    title: Want to see this tour again?
+    content: You can always restart this tour from the Feature Tours menu if you need a refresher.

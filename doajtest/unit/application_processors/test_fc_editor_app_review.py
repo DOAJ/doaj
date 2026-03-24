@@ -120,8 +120,9 @@ class TestEditorAppReview(DoajTestCase):
 
             # now construct it from form data (with a known source)
             formulaic_context = ApplicationFormFactory.context("editor")
+            app = models.Application(**APPLICATION_SOURCE)
             fc = formulaic_context.processor(formdata=MultiDict(make_application_form()),
-                                             source=models.Application(**APPLICATION_SOURCE))
+                                             source=app)
 
             assert isinstance(fc, EditorApplication)
             assert fc.form is not None
@@ -154,9 +155,12 @@ class TestEditorAppReview(DoajTestCase):
             assert fc.target.bibjson().replaces == ["1111-1111"]
             assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
             assert fc.target.bibjson().discontinued_date == "2001-01-01"
-            assert fc.target.bibjson().labels == ["s2o"]
+            assert fc.target.bibjson().labels == ["s2o", "mirror"]
             assert fc.target.current_journal == "123456789987654321"
             assert fc.target.related_journal == "987654321123456789"
+
+            assert fc.target.date_applied == app.date_applied
+            assert fc.target.date_rejected == app.date_rejected
 
             # now do finalise (which will also re-run all of the steps above)
             fc.finalise()

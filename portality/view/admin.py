@@ -241,7 +241,7 @@ def journal_page(journal_id):
         processor = fc.processor(formdata=request.form, source=journal)
         if processor.validate():
             try:
-                processor.finalise()
+                processor.finalise(current_user._get_current_object())
                 flash('Journal updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
@@ -466,7 +466,7 @@ def application(application_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
             except Exception as e:
-                flash(str(e))
+                flash("unexpected field " + str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
@@ -667,10 +667,14 @@ def editor_group(group_id=None):
 def user_autocomplete():
     q = request.values.get("q")
     s = request.values.get("s", 10)
-    ac = models.Account.autocomplete("id", q, size=s)
+    admin_only = "admin_only" in request.args
+    if admin_only:
+        ac = models.Account.admin_autocomplete("id", q, size=s)
+    else:
+        ac = models.Account.autocomplete("id", q, size=s)
 
     # return a json response
-    resp = make_response(json.dumps(ac))
+    resp = make_response(json.dumps({"suggestions": ac}))
     resp.mimetype = "application/json"
     return resp
 
@@ -912,3 +916,78 @@ def get_report(report_id):
 @login_required
 def reports_search():
     return render_template(templates.ADMIN_REPORTS_SEARCH)
+
+@blueprint.route("/alerts", methods=["GET"])
+@login_required
+def admin_alerts():
+    return render_template(templates.ADMIN_ALERTS_SEARCH)
+
+@blueprint.route("/autoassign", methods=["GET"])
+@login_required
+def autoassign_search():
+    return render_template(templates.ADMIN_AUTOASSIGN_SEARCH)
+
+@blueprint.route("/journal-csv", methods=["GET"])
+@login_required
+def journal_csv_search():
+    svc = DOAJ.journalService()
+    free = svc.get_free_csv()
+    premium = svc.get_premium_csv()
+    return render_template(templates.ADMIN_JOURNAL_CSV_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/journal-csv/delete", methods=["POST"])
+@write_required()
+@login_required
+def journal_csv_delete():
+    svc = DOAJ.journalService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_csv(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)
+
+@blueprint.route("/pdd", methods=["GET"])
+@login_required
+def pdd_search():
+    svc = DOAJ.publicDataDumpService()
+    free = svc.get_free_dump()
+    premium = svc.get_premium_dump()
+    return render_template(templates.ADMIN_PDD_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/pdd/delete", methods=["POST"])
+@write_required()
+@login_required
+def pdd_delete():
+    svc = DOAJ.publicDataDumpService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_pdd(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)
+
+@blueprint.route("/ris", methods=["GET"])
+@login_required
+def ris_search():
+    return render_template(templates.ADMIN_RIS_SEARCH)
+
+@blueprint.route("/ris/<id>/<action>", methods=["POST"])
+@login_required
+def ris_manage(id, action):
+    if action not in ["delete", "regenerate"]:
+        abort(404)
+
+    svc = DOAJ.exportService()
+
+    if action == "delete":
+        svc.remove_ris(id)
+        return make_json_resp({"delete": "success"}, status_code=200)
+
+    if action == "regenerate":
+        svc.ris(id)
+        return make_json_resp({"regenerate": "success"}, status_code=200)

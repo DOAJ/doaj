@@ -19,6 +19,13 @@ class EditorGroup(DomainObject):
             return ids[0]
 
     @classmethod
+    def group_by_name(cls, name):
+        id = cls.group_exists_by_name(name)
+        if id is not None:
+            return cls.pull(id)
+        return None
+
+    @classmethod
     def _groups_by_x(cls, **kwargs):
         """ Generalised editor groups by maned / editor / associate """
         # ~~-> EditorGroupMember:Query~~

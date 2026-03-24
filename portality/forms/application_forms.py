@@ -5,7 +5,7 @@ from copy import deepcopy
 
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, SelectMultipleField, \
     SelectField, \
-    FormField, FieldList, HiddenField
+    FormField, FieldList, HiddenField, DateField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
@@ -39,7 +39,8 @@ from portality.forms.validate import (
     NoScriptTag,
     Year,
     CurrentISOCurrency,
-    CurrentISOLanguage
+    CurrentISOLanguage,
+    DateInThePast
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -519,7 +520,7 @@ class FieldDefinitions:
                 "validate": [
                     {"required": {"message": "Enter the name of the journal's publisher"}},
                     {"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
                 ]
                 # ~~^-> DifferetTo:FormValidator~~
 
@@ -528,7 +529,7 @@ class FieldDefinitions:
                 "validate": [
                     {"required": {"message": "Enter the name of the journal's publisher"}},
                     {"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                                      "message": "The Publisher's name and Other organisation's name cannot be the same."}}
                 ]
                 # ~~^-> DifferetTo:FormValidator~~
 
@@ -898,7 +899,9 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Enter all types of review used by the journal for "
                           "research articles. Note that editorial review is "
-                          "only accepted for arts and humanities journals."],
+                          "only accepted for <a href='https://doaj.org/apply/guide/#arts-and-humanities-journals' target='_blank' rel='nofollow'>arts and humanities journals</a>."
+                          "For a detailed description of the peer review types, "
+                          "see <a href='https://docs.google.com/document/d/1ADiVPR7tY8a9JKr2VjFEXbNG7FIpz22nOPDDPfRzJxA/edit?tab=t.0' target='_blank' rel='nofollow'>this summary</a>."],
             "doaj_criteria": "Peer review must be carried out"
         },
         "validate": [
@@ -1356,7 +1359,7 @@ class FieldDefinitions:
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
         ],
-        "contexts" : {
+        "contexts": {
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
@@ -1637,6 +1640,26 @@ class FieldDefinitions:
             "long_help": [
                 "Is the journal part of the <a href='https://subscribetoopencommunity.org/' target='_blank' rel='noopener'>"
                 "Subscribe to Open</a> initiative?"],
+        }
+    }
+
+    MIRROR = {
+        "name": "mirror",
+        "label": "Mirror Journal",
+        "input": "checkbox",
+        "help": {
+            "long_help": ["Is the journal a Mirror Journal?"]
+        }
+    }
+
+    OJC = {
+        "name": "ojc",
+        "label": "Open Journals Collective",
+        "input": "checkbox",
+        "help": {
+            "long_help": [
+                "Is the journal part of the <a href='https://openjournalscollective.org/' target='_blank' rel='noopener'>"
+                "Open Journals Collective</a>?"],
         }
     }
 
@@ -1948,6 +1971,110 @@ class FieldDefinitions:
         "input": "hidden"
     }
 
+    FLAGS = {
+        "name": "flags",
+        "input": "group",
+        "label": "Flags",
+        "repeatable": {
+            "initial": 2,
+            "add_button_placement": "top",
+            "add_field_permission": ["admin"]
+        },
+        "subfields": [
+            "flag_setter",
+            "flag_created_date",
+            "flag_assignee",
+            "flag_deadline",
+            "flag_note",
+            "flag_note_id",
+            "flag_resolved"
+        ],
+        "template": templates.FLAGS_LIST,
+        "entry_template": templates.FLAG_ENTRY_GROUP,
+        "widgets": [
+            "multiple_field",
+            "flag_manager"
+        ],
+        "merge_disabled": "merge_disabled_notes"
+    }
+
+    FLAG_RESOLVED = {
+        "subfield": True,
+        "name": "flag_resolved",
+        "group": "flags",
+        "input": "hidden",
+    }
+
+    # ~~->$ NoteAuthor:FormField~~
+    FLAG_SETTER = {
+        "subfield": True,
+        "name": "flag_setter",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    # ~~->$ NoteDate:FormField~~
+    FLAG_CREATED_DATE = {
+        "subfield": True,
+        "name": "flag_created_date",
+        "group": "flags",
+        "input": "hidden",
+        "disabled": True
+    }
+
+    FLAG_DEADLINE = {
+        "subfield": True,
+        "optional": True,
+        "label": "Deadline",
+        "name": "flag_deadline",
+        "validate": [
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
+        ],
+        "help": {
+            "placeholder": "deadline (YYYY-MM-DD)",
+            "render_error_box": True,
+            "warning_message": Messages.FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING
+        },
+        "group": "flags",
+        "input": "text",
+    }
+
+    FLAG_NOTE = {
+        "subfield": True,
+        "name": "flag_note",
+        "group": "flags",
+        "input": "textarea",
+    }
+
+    # ~~->$ NoteID:FormField~~
+    FLAG_NOTE_ID = {
+        "subfield": True,
+        "name": "flag_note_id",
+        "group": "flags",
+        "input": "hidden"
+    }
+
+    FLAG_ASSIGNEE = {
+        "subfield": True,
+        "name": "flag_assignee",
+        "label": "Assign a user",
+        "help": {
+            "placeholder": "assigned_to",
+            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+        },
+        "group": "flags",
+        "validate": [
+            "reserved_usernames",
+            "owner_exists"
+        ],
+        "widgets": [
+            {"autocomplete": {"type": "admin", "include": False, "allow_clear_input": False}},
+            # ~~^-> Autocomplete:FormWidget~~
+        ],
+        "input": "text",
+    }
+
     # ~~->$ OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name": "make_all_fields_optional",
@@ -1956,6 +2083,25 @@ class FieldDefinitions:
         "widget": {
             "optional_validation"
         }
+    }
+
+    LAST_FULL_REVIEW = {
+        "optional": True,
+        "label": "Last Full Review Date",
+        "name": "last_full_review",
+        "validate": [
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}},
+            {"date_in_the_past": {"message": "The date must be in the past"}}
+        ],
+        "help": {
+            "placeholder": "last full review (YYYY-MM-DD)",
+            "render_error_box": True,
+            "short_help": "If you have just completed a full review of this Journal, enter the date here."
+        },
+        "input": "text",    # although this is a date, the text input is the best one to use because the widget will force that type anyway
+        "widgets": [
+            {"date_picker": {"earlier_than_now": True}}  # ~~^-> DatePicker:FormWidget~~
+        ]
     }
 
 
@@ -2145,7 +2291,9 @@ class FieldSetDefinitions:
         "name": "labels",
         "label": "Specify labels for this journal",
         "fields": [
-            FieldDefinitions.S2O["name"]
+            FieldDefinitions.S2O["name"],
+            FieldDefinitions.MIRROR["name"],
+            FieldDefinitions.OJC["name"]
         ]
     }
 
@@ -2166,6 +2314,14 @@ class FieldSetDefinitions:
         "label": "Re-assign publisher account",
         "fields": [
             FieldDefinitions.OWNER["name"]
+        ]
+    }
+
+    LAST_FULL_REVIEW = {
+        "name": "last_full_review",
+        "label": "Last Full Review",
+        "fields": [
+            FieldDefinitions.LAST_FULL_REVIEW["name"]
         ]
     }
 
@@ -2219,7 +2375,22 @@ class FieldSetDefinitions:
             FieldDefinitions.NOTE_AUTHOR["name"],
             FieldDefinitions.NOTE_DATE["name"],
             FieldDefinitions.NOTE_ID["name"],
-            FieldDefinitions.NOTE_AUTHOR_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"]
+        ]
+    }
+
+    FLAGS = {
+        "name": "flags",
+        "label": "Flag",
+        "fields": [
+            FieldDefinitions.FLAGS["name"],
+            FieldDefinitions.FLAG_SETTER["name"],
+            FieldDefinitions.FLAG_CREATED_DATE["name"],
+            FieldDefinitions.FLAG_DEADLINE["name"],
+            FieldDefinitions.FLAG_NOTE["name"],
+            FieldDefinitions.FLAG_NOTE_ID["name"],
+            FieldDefinitions.FLAG_ASSIGNEE["name"],
+            FieldDefinitions.FLAG_RESOLVED["name"],
         ]
     }
 
@@ -2340,7 +2511,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
@@ -2419,7 +2590,9 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.LABELS["name"],
-        FieldSetDefinitions.CONTINUATIONS["name"]
+        FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.FLAGS["name"],
+        FieldSetDefinitions.LAST_FULL_REVIEW["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
     MANED["templates"]["form"] = templates.MANED_JOURNAL_FORM
@@ -2530,7 +2703,8 @@ def application_statuses(field, formulaic_context):
     # It would be nice to be able to somehow disable it being changed, perhaps we can do that
     # via a widget
     _application_status_admin = _application_status_base + [
-        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
+        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW,
+         Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
         (constants.APPLICATION_STATUS_UPDATE_REQUEST, Messages.FORMS__APPLICATION_STATUS__UPDATE_REQUEST),
         (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, Messages.FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED),
         (constants.APPLICATION_STATUS_ON_HOLD, Messages.FORMS__APPLICATION_STATUS__ON_HOLD),
@@ -2553,7 +2727,8 @@ def application_statuses(field, formulaic_context):
     elif formulaic_context_name == "editor":
         status_list = _application_status_editor
     elif formulaic_context_name == "accepted":
-        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
+        status_list = [(constants.APPLICATION_STATUS_ACCEPTED,
+                        Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
     else:
         status_list = _application_status_base
 
@@ -2613,6 +2788,32 @@ def disable_edit_note_except_editing_user(field: FormulaicField,
     if form_field is None:
         return True
     return cur_user_id != form_field.data.get('note_author_id')
+
+
+def disable_edit_flag_except_author_admin_assignee(field: FormulaicField,
+                                                   formulaic_context: FormulaicContext):
+    # This is currently not used but will be needed again when the flags feature will be made available for non-admin users
+
+    """
+    Only allow the current user to edit this field if current user is an author, assignee or admin
+
+    :param field:
+    :param formulaic_context:
+    :return:
+        False is editable, True is disabled
+    """
+
+    # ~~->Notes:Feature~~
+    editing_user = formulaic_context.extra_param.get('editing_user')
+    cur_user_id = editing_user and editing_user.id
+    cur_user_is_admin = editing_user and editing_user.is_super
+    form_field: FormField = field.find_related_form_field('notes', formulaic_context)
+    if form_field is None:
+        return True
+
+    return (cur_user_id != form_field.data.get('flag_assignee') and
+            cur_user_id != form_field.data.get('flag_setter') and
+            not cur_user_is_admin)
 
 
 #######################################################
@@ -2900,7 +3101,8 @@ class OnlyIfBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True),
+                      message=settings.get('message'))
 
 
 class OnlyIfExistsBuilder:
@@ -2912,7 +3114,8 @@ class OnlyIfExistsBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIfExists(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+        return OnlyIfExists(other_fields=settings.get('fields') or fields,
+                            ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
 
 
 class NotIfBuildier:
@@ -2955,13 +3158,23 @@ class BigEndDateBuilder:
     # ~~->$ BigEndDate:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-pattern"] = "\d{4}-\d{2}-\d{2}"
+        html_attrs["data-parsley-validdate"] = ""
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
     def wtforms(field, settings):
         return BigEndDate(settings.get("message"))
 
+class DateInThePastBuilder:
+    # ~~->$ BigEndDate:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        # no client side rendering for this, as it interferes with the datepicker
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return DateInThePast(settings.get("message"))
 
 class YearBuilder:
     @staticmethod
@@ -3010,6 +3223,7 @@ PYTHON_FUNCTIONS = {
     "disabled": {
         "application_status_disabled": application_status_disabled,
         "disable_edit_note_except_editing_user": disable_edit_note_except_editing_user,
+        "disable_edit_flag_except_author_admin_assignee": disable_edit_flag_except_author_admin_assignee
     },
     "merge_disabled": {
         "merge_disabled_notes": merge_disabled_notes
@@ -3033,7 +3247,8 @@ PYTHON_FUNCTIONS = {
             "required_value": RequiredValueBuilder.render,
             "bigenddate": BigEndDateBuilder.render,
             "no_script_tag": NoScriptTagBuilder.render,
-            "year": YearBuilder.render
+            "year": YearBuilder.render,
+            "date_in_the_past": DateInThePastBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -3059,7 +3274,8 @@ PYTHON_FUNCTIONS = {
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
-            "current_iso_language": CurrentISOLanguageBuilder.wtforms
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms,
+            "date_in_the_past": DateInThePastBuilder.wtforms
         }
     }
 }
@@ -3079,9 +3295,12 @@ JAVASCRIPT_FUNCTIONS = {
     "load_editors": "formulaic.widgets.newLoadEditors",  # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace": "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
-    "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
-    "issn_link" : "formulaic.widgets.newIssnLink", # ~~-> IssnLink:FormWidget~~,
-    "article_info": "formulaic.widgets.newArticleInfo", # ~~-> ArticleInfo:FormWidget~~
+    "autocheck": "formulaic.widgets.newAutocheck",  # ~~-> Autocheck:FormWidget~~
+    "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
+    "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
+    "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
+    "date_picker": "formulaic.widgets.newDatePicker"  # ~~-> DatePicker:FormWidget~~
+
 }
 
 
@@ -3091,6 +3310,31 @@ JAVASCRIPT_FUNCTIONS = {
 
 class NumberWidget(widgets.Input):
     input_type = 'number'
+
+class FieldsetWidget(object):
+    """
+       Renders a fieldset with a legend
+       if legend_display is true the question is displayed
+       if legend_display is false it is for screen readers only
+    """
+    def __init__(self, legend, sr_only_label = True, prefix_label=False):
+        self.sr_only = sr_only_label
+        self.prefix_label = prefix_label
+
+        self.legend = f'<legend '
+        if self.sr_only:
+            self.legend += f'class="sr-only"'
+        self.legend += f'>{legend}</legend>'
+
+        self.html_wrapper = f"<fieldset> {self.legend} [BODY]</fieldset>"
+
+    def __call__(self, field, **kwargs):
+        fields = ''
+        for subfield in field:
+            fields += f'{subfield.label}{subfield(**kwargs)}' if self.prefix_label else f'{subfield(**kwargs)}{subfield.label}'
+
+        html = self.html_wrapper.replace("[BODY]", fields)
+        return HTMLString(''.join(html))
 
 
 class ListWidgetWithSubfields(object):
@@ -3139,7 +3383,8 @@ class RadioBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        wtfargs["widget"] = ListWidgetWithSubfields()
+        # wtfargs["widget"] = ListWidgetWithSubfields()
+        wtfargs["widget"] = FieldsetWidget(legend=field.get("label"), sr_only_label=True)
         return UnconstrainedRadioField(**wtfargs)
 
 
@@ -3205,6 +3450,18 @@ class TextBuilder(WTFormsBuilder):
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
         return sf
 
+class DateBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "date"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        wtfargs["widget"] = widgets.Input(input_type="date")
+        sf = DateField(**wtfargs)
+        if "repeatable" in field:
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+        return sf
 
 class TextAreaBuilder(WTFormsBuilder):
     @staticmethod
@@ -3287,11 +3544,14 @@ WTFORMS_BUILDERS = [
     IntegerBuilder,
     GroupBuilder,
     GroupListBuilder,
-    HiddenFieldBuilder
+    HiddenFieldBuilder,
+    DateBuilder
 ]
 
-ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
-JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
+                                   javascript_functions=JAVASCRIPT_FUNCTIONS)
+JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
+                               javascript_functions=JAVASCRIPT_FUNCTIONS)
 
 if __name__ == "__main__":
     """

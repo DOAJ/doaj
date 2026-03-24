@@ -1,0 +1,9 @@
+{
+	"elastic_search_host" : null,
+	"elastic_search_db" : null,
+	"confirm" : false,
+	"max_content_length" : 10000000,
+	"types" : {
+		"account" : {"import" : true, "limit" : -1, "download_test_users": true}
+    }
+}

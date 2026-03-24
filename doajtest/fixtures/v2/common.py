@@ -11,6 +11,33 @@ NOTES_FORM_EXPANDED = {
     ]
 }
 
+from portality.lib import dates
+
+def build_flags_form_expanded(assignee=None, deadline="", setter=None, created_date=None, note=None, resolved=False):
+    if not setter:
+        setter = "(fake_setter_id)"
+    if not created_date:
+        created_date = dates.today()
+    if not note:
+        note = "This is a flag"
+
+    flags_form_expanded = {
+        'flags': [
+            {
+                "flag_created_date": created_date,
+                "flag_deadline": deadline,
+                "flag_assignee": assignee,
+                "flag_setter": setter,
+                "flag_note_id": "1234-5678-9012",
+                "flag_note": note,
+                "flag_resolved": "true" if resolved else "false"
+            }
+        ]
+    }
+
+    return flags_form_expanded
+
+
 SUBJECT_FORM_EXPANDED = {
     "subject": ['HB1-3840', 'H', 'SF600-1100']
 }
@@ -22,6 +49,14 @@ OWNER_FORM_EXPANDED = {
 EDITORIAL_FORM_EXPANDED = {
     "editor_group": "editorgroup",
     "editor": "associate"
+}
+
+LAST_REVIEW_FORM_EXPANDED = {
+    "last_full_review": "2025-01-01"
+}
+
+FLAGS_FORM_EXPANDED = {
+    'flags': []
 }
 
 JOURNAL_LIKE_BIBJSON = {
@@ -60,7 +95,7 @@ JOURNAL_LIKE_BIBJSON = {
         "country": "US"
     },
     "keywords": ["word", "key"],
-    "labels": ["s2o"],
+    "labels": ["s2o", "mirror"],
     "language": ["EN", "FR"],
     "license": [
         {
@@ -146,6 +181,8 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "institution_country" : "US",
     "keywords": ["word", "key"],
     "s2o": True,
+    "mirror": True,
+    "ojc": False,
     "language": ["EN", "FR"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",

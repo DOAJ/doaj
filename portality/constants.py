@@ -46,6 +46,7 @@ ALLOWED_ARTICLE_IDENT_TYPES = [IDENT_TYPE_DOI, IDENT_TYPE_PISSN, IDENT_TYPE_EISS
 LINK_TYPE_FULLTEXT = "fulltext"
 
 # ~~-> Todo:Service~~
+TODO_ASSIGNED_TO_ME = "todo_assigned_to_me"
 TODO_MANED_STALLED = "todo_maned_stalled"
 TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
 TODO_MANED_READY = "todo_maned_ready"
@@ -63,6 +64,15 @@ TODO_ASSOCIATE_PROGRESS_STALLED = "todo_associate_progress_stalled"
 TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
 TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
+# TODO_URGENT_FLAGS_ALL = "todo_urgent_flags_all"
+# TODO_URGENT_FLAGS_NEW_APPLICATIONS = "todo_urgent_flags_new_applications"
+# TODO_URGENT_FLAGS_UPDATE_REQUESTS = "todo_urgent_flags_update_requests"
+# TODO_URGENT_FLAGS_ONHOLD = "todo_urgent_flags_onhold"
+# TODO_REGULAR_FLAGS_ALL = "todo_regular_flags_all"
+# TODO_REGULAR_FLAGS_NEW_APPLICATIONS = "todo_regular_flags_new_applications"
+# TODO_REGULAR_FLAGS_UPDATE_REQUESTS = "todo_regular_flags_update_requests"
+# TODO_REGULAR_FLAGS_ONHOLD = "todo_regular_flags_onhold"
+
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
@@ -74,6 +84,7 @@ EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
 EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
 EVENT_JOURNAL_DISCONTINUING_SOON = "journal:discontinuing_soon"
+EVENT_ARTICLE_SAVE = "article:save"
 
 NOTIFICATION_CLASSIFICATION_STATUS = "alert"
 NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
@@ -94,8 +105,14 @@ ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
 ROLE_API = "api"
+ROLE_PREMIUM = "premium"
+ROLE_PREMIUM_OAI = "premium_oai"
+ROLE_PREMIUM_PDD = "premium_pdd"
+ROLE_PREMIUM_CSV = "premium_csv"
+
 # TODO add ultra_bulk_delete and refactor view to use constants
 ROLE_ADMIN_REPORT_WITH_NOTES = "ultra_admin_reports_with_notes"  # MUST start with ultra_ so that superusers don't gain
+
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
@@ -118,6 +135,11 @@ BGJOB_QUEUE_ID_SCHEDULED_LONG = "scheduled_long"
 # Background monitor status
 BG_STATUS_STABLE = 'stable'
 BG_STATUS_UNSTABLE = 'unstable'
+
+ERROR_RECORD_ARTICLE = "article"
+ERROR_RECORD_JOURNAL = "journal"
+ERROR_410_WITHDRAWN = "withdrawn"
+ERROR_410_TOMBSTONE = "tombstone"
 
 
 class ConstantList:
@@ -147,6 +169,7 @@ class BaseArticlesUploadStatus(ConstantList):
 
 # Storage scopes
 STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
+STORE__SCOPE__JOURNAL_CSV = "journal_csv"
 
 # OAI
 SUBJECTS_SCHEMA = "LCC:"

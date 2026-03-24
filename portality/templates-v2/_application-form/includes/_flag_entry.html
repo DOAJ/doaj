@@ -1,0 +1,25 @@
+<div class="form__question--group {{ f.name }}__question--group--{{ idx }}">
+    <div class="form__question_inputs_div--{{ idx }}">
+        {% for subfield in f.group_subfields() %}
+        <div class="form-inputs--container {{ f.name }}-inputs--container--{{ idx }}">
+             {% if subfield.label %}<label style="margin-left: 0">{{ subfield.label }} {% if subfield.optional %}<span
+                class="form__question--optional">(Optional)</span>{% endif %} </label>{% endif %}
+            {% if subfield.help("short_help") %}
+                <p class="form__short-help"><small>{{ subfield.help("short_help") | safe }}</small></p>
+            {% endif %}
+            {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
+            <div id="{{ f.name }}-errors"></div>
+            {% if subfield.help("warning_message") %}
+                <div id="{{ f.name }}-warning" class="warning alert alert--danger" style="display:none">{{ subfield.help("warning_message") }}</div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+    </div>
+    <p class="control_buttons_div--{{ idx }}">
+        <button type="button" id="resolve_flag--{{ idx }}" class="resolve_flag__button label">Resolve Flag</button>
+        <button type="button" id="unresolve_flag--{{ idx }}" class="unresolve_flag__button label">Undo Resolving
+        </button>
+        <button type="button" id="cancelAddingFlag--{{ idx }}" class="remove_field__button">Cancel</button>
+    </p>
+</div>

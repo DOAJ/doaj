@@ -1,20 +1,34 @@
-version: '2.1'
-
 services:
   doaj-redis:
-    build: redis/
-    command: "redis-server /usr/local/etc/redis/redis.conf --appendonly yes --port ${REDIS_PORT:-6379}"
+    container_name: doaj-redis
+    image: redis:7.2
+    command: redis-server --maxmemory 100mb --appendonly yes --port ${REDIS_PORT:-6379}
     ports:
-        - "${REDIS_BIND_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
+      - "${REDIS_BIND_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
     volumes:
       - doaj_redis_data:/data
+    networks:
+      - doaj-network
+
+  doaj-opensearch:
+    container_name: doaj-opensearch
+    image: opensearchproject/opensearch:1.3.20
+    environment:
+      - cluster.name=doaj-cluster
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "${OPENSEARCH_BIND_HOST:-127.0.0.1}:${OPENSEARCH_PORT:-9200}:9200"
+    volumes:
+      - doaj_opensearch_data:/usr/share/opensearch/data
+    networks:
+      - doaj-network
 
   selenium-chrome:
     image: selenium/standalone-chrome:110.0
     logging:
       driver: none
-    volumes:
-      - /dev/shm:/dev/shm
     shm_size: 4gb
     ports:
       - '4444:4444'
@@ -23,6 +37,13 @@ services:
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - SE_SESSION_REQUEST_TIMEOUT=400
       - SE_SESSION_RETRY_INTERVAL=2
+    networks:
+      - doaj-network
+
+networks:
+  doaj-network:
+    driver: bridge
 
 volumes:
-    doaj_redis_data: {}
+  doaj_redis_data: {}
+  doaj_opensearch_data: {}

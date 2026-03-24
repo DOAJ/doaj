@@ -101,6 +101,14 @@ class DuplicateUpdateRequest(Exception):
     def __init__(self, message=None):
         super(DuplicateUpdateRequest, self).__init__(message)
 
+class TooManyJournals(Exception):
+    """
+        Raised when too many journals in DOAJ and with the same issns is found
+    """
+
+    def __init__(self, message=None, context=None):
+        super(TooManyJournals, self).__init__(message)
+
 
 class IngestException(Exception):
     """
@@ -147,3 +155,9 @@ class SetEncoder(json.JSONEncoder):
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
+
+class RemoteServiceException(Exception):
+    """
+    Exception to raise when a remote service call fails
+    """
+    pass

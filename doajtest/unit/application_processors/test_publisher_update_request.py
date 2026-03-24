@@ -42,7 +42,8 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # we start by constructing it from source
         formulaic_context = ApplicationFormFactory.context("update_request")
-        fc = formulaic_context.processor(source=models.Application(**UPDATE_REQUEST_SOURCE))
+        app = models.Application(**UPDATE_REQUEST_SOURCE)
+        fc = formulaic_context.processor(source=app)
         # fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=models.Suggestion(**UPDATE_REQUEST_SOURCE))
         assert isinstance(fc, PublisherUpdateRequest)
         assert fc.form is not None
@@ -91,10 +92,12 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
-        assert fc.target.bibjson().labels == ["s2o"]
+        assert fc.target.bibjson().labels == ["s2o", "mirror"]
         assert fc.target.current_journal == "123456789987654321"
         assert fc.target.related_journal == "987654321123456789"
         assert fc.target.bibjson().subject == fc.source.bibjson().subject
+        assert fc.target.date_applied == app.date_applied
+        assert fc.target.date_rejected == app.date_rejected
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()

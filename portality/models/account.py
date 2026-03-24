@@ -3,12 +3,12 @@ from flask_login import UserMixin
 from datetime import timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from portality import constants
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
-
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
@@ -84,6 +84,17 @@ class Account(DomainObject, UserMixin):
             except ValueError:
                 return None
         return cls(**obs[0])
+
+    # @classmethod
+    # def autocomplete(cls, field, prefix, admin_only=False, size=5):
+    #
+    #     return {"suggestions": super().autocomplete(field, prefix, filter_condition=filter_condition, size=size)}
+
+    @classmethod
+    def admin_autocomplete(cls, field, prefix, size=5):
+        """Autocomplete for admin users only."""
+        filter_condition = {"role.exact": "admin"}
+        return cls.autocomplete(field, prefix, filter_condition=filter_condition, size=size)
 
     @property
     def marketing_consent(self):
@@ -222,6 +233,13 @@ class Account(DomainObject, UserMixin):
         k = uuid.uuid4().hex
         self.data['api_key'] = k
         return k
+
+    @property
+    def is_premium(self):
+        return (self.has_role(constants.ROLE_PREMIUM) or
+                self.has_role(constants.ROLE_PREMIUM_OAI) or
+                self.has_role(constants.ROLE_PREMIUM_PDD) or
+                self.has_role(constants.ROLE_PREMIUM_CSV))
 
     @classmethod
     def pull_by_api_key(cls, key):

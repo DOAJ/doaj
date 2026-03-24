@@ -1,0 +1,33 @@
+{% extends "public/base.html" %}
+
+{% block body_class %}error-page{% endblock %}
+{% block page_title %}
+    {% set error_code_titles = {
+        404: "Not found",
+        410: "Gone"
+    }%}
+    {{ error_code }}: {{ error_code_titles[error_code]}}
+{% endblock %}
+
+{% block public_content %}
+{% set wrong_page = False %}
+{% if error_code == 404 %}
+    {% set error_text = data.error_pages.404 %}
+{% elif error_code == 410 %}
+    {% set error_text = data.error_pages.410[record][context]  %}
+{% else %}
+    {% set wrong_page = True %}
+    {% include "500.html" %}
+{% endif %}
+
+{% if not wrong_page %}
+    <div class="container page-content">
+        {{ error_code_titles }}
+        <section class="col-md-offset-3 col-md-6">
+            <h1>{{ error_code }} — <br/>{{ error_text.header }}</h1>
+            <p>{{ error_text.text }}</p>
+            {% include "/includes/_search_buttons.html" %}
+        </section>
+    </div>
+{% endif %}
+{% endblock %}

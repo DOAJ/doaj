@@ -4,7 +4,8 @@ from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
 from portality.models import Account
-
+from portality.lib import dates
+from builtins import ValueError
 
 class JournalGenericXWalk(object):
     """
@@ -256,6 +257,14 @@ class JournalGenericXWalk(object):
         if s2o is not None and (s2o.data == "y" or s2o.data is True):
             bibjson.add_label("s2o")
 
+        mirror = getattr(form, "mirror", None)
+        if mirror is not None and (mirror.data == "y" or mirror.data is True):
+            bibjson.add_label("mirror")
+
+        ojc = getattr(form, "ojc", None)
+        if ojc is not None and (ojc.data == "y" or ojc.data is True):
+            bibjson.add_label("ojc")
+
     @classmethod
     def form2admin(cls, form, obj):
         if getattr(form, "notes", None):
@@ -265,6 +274,27 @@ class JournalGenericXWalk(object):
                     note_id = formnote["note_id"]
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
                                  author_id=formnote["note_author_id"])
+
+        if getattr(form, "flags", None):
+            for flag in form.flags.data:
+                if flag.get("flag_note") is None or flag.get("flag_note") == "":
+                    continue
+
+                flag_date = flag["flag_created_date"]
+                try:
+                    if flag.get("flag_deadline") == "" or flag.get("flag_deadline") is None:
+                        flag_deadline = dates.far_in_the_future()
+                    else:
+                        flag_deadline = dates.parse(flag.get("flag_deadline"), format=dates.FMT_DATE_STD)
+                except:
+                    # FIXME: why is there validation in the crosswalk?
+                    raise ValueError("Flag deadline must be a valid date in BigEnd format (ie. YYYY-MM-DD)")
+                flag_assigned_to = flag["flag_assignee"]
+                flag_author = flag["flag_setter"]
+                flag_id = flag["flag_note_id"]
+                flag_note = flag["flag_note"]
+                obj.add_note(flag_note, date=flag_date, id=flag_id,
+                             author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
 
         if getattr(form, 'owner', None):
             owner = form.owner.data
@@ -283,6 +313,12 @@ class JournalGenericXWalk(object):
             if editor:
                 editor = editor.strip()
                 obj.set_editor(editor)
+
+        if getattr(form, "last_full_review", None):
+            lfr = form.last_full_review.data
+            if lfr:
+                lfr = lfr.strip()
+                obj.last_full_review = lfr
 
     @classmethod
     def bibjson2form(cls, bibjson, forminfo):
@@ -430,11 +466,13 @@ class JournalGenericXWalk(object):
 
         # labels
         forminfo['s2o'] = "s2o" in bibjson.labels
+        forminfo['mirror'] = "mirror" in bibjson.labels
+        forminfo['ojc'] = "ojc" in bibjson.labels
 
     @classmethod
     def admin2form(cls, obj, forminfo):
         forminfo['notes'] = []
-        for n in obj.ordered_notes:
+        for n in obj.ordered_notes_except_flags:
             author_id = n.get('author_id', '')
             note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
             note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
@@ -443,11 +481,30 @@ class JournalGenericXWalk(object):
                         }
             forminfo['notes'].append(note_obj)
 
+        forminfo["flags"] = []
+        if obj.flags:
+            # display only the newest flag
+            flag = obj.flags[0]
+            author_id = flag["author_id"]
+            flag_setter = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
+            deadline = flag["flag"].get("deadline")
+            flag_deadline = (
+                deadline if (deadline and deadline != dates.far_in_the_future()) else ""
+            )
+            flag_assignee = flag["flag"]["assigned_to"]
+            flag_obj = {"flag_created_date": flag["date"], "flag_note": flag["note"],
+                        "flag_note_id": flag["id"], "flag_setter": flag_setter, "flag_assignee": flag_assignee,
+                        "flag_deadline": flag_deadline }
+            forminfo['flags'].append(flag_obj)
+
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:
             forminfo['editor_group'] = obj.editor_group
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
+
+        if getattr(obj, "last_full_review", None):
+            forminfo["last_full_review"] = obj.last_full_review
 
 
 class JournalFormXWalk(JournalGenericXWalk):

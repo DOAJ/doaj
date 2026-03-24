@@ -209,6 +209,34 @@ var doaj = {
         return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year) + " at " + String(hour) + ":" + String(minute);
     },
 
+    humanFileSize: function(bytes, customFormatter) {
+        let value, unit;
+        if (bytes < 1024) {
+            value = bytes;
+            unit = " B";
+        } else {
+            let kb = bytes / 1024;
+            if (kb < 1024) {
+                value = kb;
+                unit = " KB";
+            } else {
+                let mb = kb / 1024;
+                if (mb < 1024) {
+                    value = mb;
+                    unit = " MB";
+                } else {
+                    let gb = mb / 1024;
+                    value = gb;
+                    unit = " GB";
+                }
+            }
+        }
+        if (customFormatter && typeof customFormatter === "function") {
+            return customFormatter(value) + unit;
+        }
+        return value.toFixed(2) + unit;
+    },
+
     listMonthsInLocale : function() {
         const months = [];
         for (let i = 0; i < 12; i++) {
@@ -264,6 +292,7 @@ var doaj = {
         let terms = params.terms;
         let term = params.term;
         let queryString = params.queryString;
+        let defaultField = params.defaultField || false;
         let sort = params.sort;
 
         let musts = [];
@@ -280,12 +309,16 @@ var doaj = {
         }
 
         if (queryString) {
-            musts.push({
+            let qs = {
                 "query_string" : {
                     "default_operator" : "AND",
                     "query" : queryString
                 }
-            })
+            }
+            if (defaultField) {
+                qs.query_string.default_field = defaultField;
+            }
+            musts.push(qs);
         }
 
         let query = {"match_all": {}}
@@ -314,16 +347,17 @@ var doaj = {
 
 function setCookieConsent(event) {
     event.preventDefault();
-    $.ajax({
-        type: "GET",
-        url: "/cookie_consent",
-        success: function() {
-            $("#cookie-consent").remove();
-        },
-        error : function() {
-            alert("We weren't able to set your cookie consent preferences, please try again later.");
-        }
-    })
+    try {
+        const element = $(event.currentTarget);
+        const name = element.attr("data-key");
+        const value = "By using our website, you have agreed to our cookie policy.";
+        const maxAge = 31536000; // 1 year in seconds
+        const cookie = name + "=" + encodeURIComponent(value) + ";Max-Age=" + maxAge + ";Path=/;Secure";
+        document.cookie = cookie;
+        $("#cookie-consent").remove();
+    } catch (e) {
+        alert("We weren't able to set your cookie consent preferences, please try again later.");
+    }
 }
 
 function dissmissSiteNote(event) {

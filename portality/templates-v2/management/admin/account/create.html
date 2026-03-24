@@ -24,12 +24,14 @@
         jQuery(document).ready(function($) {
             $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
         });
+        $("#submitBtn").prop("disabled", false);
         </script>
 
     {% else %}
         <script type="text/javascript">
             jQuery(document).ready(function ($) {
                 doaj.honeypot.init();
+                $("#submitBtn").prop("disabled", false);
             });
         </script>
     {% endif %}

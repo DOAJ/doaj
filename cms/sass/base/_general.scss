@@ -263,15 +263,16 @@ select {
 
 input[type="checkbox"],
 input[type="radio"] {
-  display: none;
+  position: absolute;
 
   opacity: 0;
   width: 0.8em;
   height: 0.8em;
+  pointer-events: none;
   //margin-left: -0.8rem;
 
   &:focus  + label {
-    outline: dashed 2px lightgrey;
+    outline: solid 2px $warm-black;
     outline-offset: 1px;
   }
 

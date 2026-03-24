@@ -1,0 +1,29 @@
+{% extends "management/admin/base.html" %}
+{# ~~ AdminAlertsSearch:Page -> AdminAlerts:Edge~~ #}
+
+{% block page_title %}RIS Exports from Articles{% endblock %}
+
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block admin_content %}
+    <div id="ris"></div>
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript">
+        $.extend(true, doaj, {
+            adminRISSearchConfig : {
+                searchPath : '/admin_query/ris/_search'
+            }
+        });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.TabularResultsRenderer.js"></script>
+    <script type="text/javascript" src="/static/js/edges/admin.ris.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% endblock %}
