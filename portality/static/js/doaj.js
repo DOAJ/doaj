@@ -209,6 +209,34 @@ var doaj = {
         return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year) + " at " + String(hour) + ":" + String(minute);
     },
 
+    humanFileSize: function(bytes, customFormatter) {
+        let value, unit;
+        if (bytes < 1024) {
+            value = bytes;
+            unit = " B";
+        } else {
+            let kb = bytes / 1024;
+            if (kb < 1024) {
+                value = kb;
+                unit = " KB";
+            } else {
+                let mb = kb / 1024;
+                if (mb < 1024) {
+                    value = mb;
+                    unit = " MB";
+                } else {
+                    let gb = mb / 1024;
+                    value = gb;
+                    unit = " GB";
+                }
+            }
+        }
+        if (customFormatter && typeof customFormatter === "function") {
+            return customFormatter(value) + unit;
+        }
+        return value.toFixed(2) + unit;
+    },
+
     listMonthsInLocale : function() {
         const months = [];
         for (let i = 0; i < 12; i++) {

@@ -307,28 +307,43 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 ## In other languages
 
-Please note that these translations may not include the latest changes made to the Guide.
+Our guide to applying is available in several languages. Below is a list of translations, please note that not all translations include the latest changes made to the Guide.
 
-Our criteria are available in:
+### Version 2.7
+- [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+- [Chinese](https://docs.google.com/document/d/1SAzNH-RWGQVc_3EMe7t5Gud_813s6m14/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+- [Portuguese](https://docs.google.com/document/d/11uNQ6hnFONazdHz-jmVL-fP1uH-yGN-q/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+- [Spanish](https://docs.google.com/document/d/1M1zEdjUXmmHxQT6fZ051N-im2n7e9giz5s9mqoMvkOw/edit?usp=sharing)
 
-- [Afrikaans](https://docs.google.com/document/d/1CePOCIpIRMmXQZGV_oSqagTlmpb7YG9vG9CShry7Okw/edit?usp=sharing)
-- [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
-- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
-- [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
-- [Chinese (application form)](https://zenodo.org/record/4350096)
-- [Chinese](https://zenodo.org/record/4633341)
-- [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
-- [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
-- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
-- [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
+### Version 2.5
+
 - [Greek](https://drive.google.com/file/d/1nHujiotWovloKQC97mwQVPMW_ierKEOt/view?usp=sharing)
-- [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
-- [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
-- [Portuguese](https://drive.google.com/file/d/15ThVsQCJkYnv2Vw-A6mkgMVGVoO9oBB7/view?usp=sharing)
-- [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
-- [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
+
+### Version 2.4
+
+- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
 - [Turkish](https://docs.google.com/document/d/18JYSfpAMxUsdQctxdqY2WCggGWHYGIiC/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
 - [Ukrainian](https://docs.google.com/document/d/10lGTROkEoTu8PwdVO440DsXuldGb_sUjxrFR1GmjD-w/edit?usp=sharing)
+
+### Version 2.3
+
+- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
+
+### Version 2.2
+
+- [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
+
+### No version information
+
+- [Afrikaans](https://docs.google.com/document/d/1CePOCIpIRMmXQZGV_oSqagTlmpb7YG9vG9CShry7Okw/edit?usp=sharing)
+- [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
+- [Chinese (application form)](https://zenodo.org/record/4350096)
+- [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
+- [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
+- [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
+- [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
+- [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
+
 
 ---
 

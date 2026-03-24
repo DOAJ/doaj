@@ -104,9 +104,9 @@ def batch_lock(type, ids, username, timeout=None):
     failon = None
     for id in ids:
         try:
-            lock(type, id, username, timeout)
+            l = lock(type, id, username, timeout)
             locked.append(id)
-            locks.append(lock)
+            locks.append(l)
         except Locked as e:
             abort = True
             failon = id
