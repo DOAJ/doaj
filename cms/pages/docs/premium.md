@@ -20,4 +20,4 @@ To access your premium metadata services, you must be logged into your DOAJ acco
 
 ```https://doaj.org/csv?api_key=[your api key]```
 
-To upgrade your account to premium, please [contact us](mailto:platform@doaj.org).
+To upgrade your account to premium, or if you just want to learn more about our services, please [complete this form](https://forms.gle/Bbd6KiDijCinzNdp9) and we will contact you.
