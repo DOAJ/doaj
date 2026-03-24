@@ -174,7 +174,6 @@ tests:
     - step: click on the journal title
       results:
         - You are taken to the journal ToC which displays the "Subscribe to Open" label#
-
 - title: Journal Full Reviews
   context:
     role: admin
@@ -196,7 +195,6 @@ tests:
       results:
       - The journal you just edited is displayed at the top of the results
       - The "Last Full Review" field displays the date you just entered
-
 - title: Journal Owner Transfer
   context:
     role: admin
