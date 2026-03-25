@@ -25,22 +25,14 @@ doaj.publisherJournalsSearch = {
 
         var selector = params.selector || "#publisher_journals";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.publisherJournalsSearchConfig.searchPath
-        );
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: ","
-        });
-
         var components = [
             doaj.components.searchingNotification(),
 
             edges.newPager({
                 id: "result-count",
                 category: "pager",
-                renderer : edges.bs3.newResultCountRenderer({
-                    countFormat: countFormat,
+                renderer: edges.bs3.newResultCountRenderer({
+                    countFormat: doaj.valueMaps.countFormat,
                     suffix: " indexed journals",
                     htmlContainerWrapper: false
                 })
@@ -55,7 +47,7 @@ doaj.publisherJournalsSearch = {
                 syncCounts: false,
                 lifecycle: "update",
                 updateType: "fresh",
-                renderer : doaj.renderers.newORTermSelectorRenderer({
+                renderer: doaj.renderers.newORTermSelectorRenderer({
                     showCount: true,
                     hideEmpty: false,
                     open: false,
@@ -63,8 +55,6 @@ doaj.publisherJournalsSearch = {
                 })
             }),
 
-            // Subject Browser
-            ///////////////////////////////////
             doaj.components.subjectBrowser({
                 tree: doaj.publisherJournalsSearchConfig.lccTree,
                 hideEmpty: true
@@ -79,7 +69,7 @@ doaj.publisherJournalsSearch = {
                 syncCounts: false,
                 lifecycle: "update",
                 updateType: "fresh",
-                renderer : doaj.renderers.newORTermSelectorRenderer({
+                renderer: doaj.renderers.newORTermSelectorRenderer({
                     showCount: true,
                     hideEmpty: false,
                     open: false,
@@ -90,14 +80,14 @@ doaj.publisherJournalsSearch = {
             edges.newFullSearchController({
                 id: "sort_by",
                 category: "controller",
-                sortOptions : [
-                    {'display':'Added to DOAJ (newest first)','field':'created_date', "dir" : "desc"},
-                    {'display':'Added to DOAJ (oldest first)','field':'created_date', "dir" : "asc"},
-                    {'display':'Last updated (most recent first)','field':'last_updated', "dir" : "desc"},
-                    {'display':'Last updated (less recent first)','field':'last_updated', "dir" : "asc"},
-                    {'display':'Title (A-Z)','field':'index.unpunctitle.exact', "dir" : "asc"},
-                    {'display':'Title (Z-A)','field':'index.unpunctitle.exact', "dir" : "desc"},
-                    {'display':'Relevance','field':'_score'}
+                sortOptions: [
+                    {'display': 'Added to DOAJ (newest first)', 'field': 'created_date', "dir": "desc"},
+                    {'display': 'Added to DOAJ (oldest first)', 'field': 'created_date', "dir": "asc"},
+                    {'display': 'Last updated (most recent first)', 'field': 'last_updated', "dir": "desc"},
+                    {'display': 'Last updated (less recent first)', 'field': 'last_updated', "dir": "asc"},
+                    {'display': 'Title (A-Z)', 'field': 'index.unpunctitle.exact', "dir": "asc"},
+                    {'display': 'Title (Z-A)', 'field': 'index.unpunctitle.exact', "dir": "desc"},
+                    {'display': 'Relevance', 'field': '_score'}
                 ],
                 renderer: doaj.renderers.newSortRenderer({
                     prefix: "Sort by",
@@ -108,50 +98,42 @@ doaj.publisherJournalsSearch = {
             edges.newPager({
                 id: "rpp",
                 category: "pager",
-                renderer : doaj.renderers.newPageSizeRenderer({
+                renderer: doaj.renderers.newPageSizeRenderer({
                     sizeOptions: [50, 100, 200],
                     sizeLabel: "Results per page"
                 })
             }),
 
-            // selected filters display, with all the fields given their display names
             edges.newSelectedFilters({
                 id: "selected-filters",
                 category: "selected-filters",
-                compoundDisplays : [
+                compoundDisplays: [
                     {
-                        filters : [
-                            es.newTermFilter({
-                                field: "bibjson.apc.has_apc",
-                                value: false
-                            }),
-                            es.newTermFilter({
-                                field: "bibjson.other_charges.has_other_charges",
-                                value: false
-                            })
+                        filters: [
+                            es.newTermFilter({field: "bibjson.apc.has_apc", value: false}),
+                            es.newTermFilter({field: "bibjson.other_charges.has_other_charges", value: false})
                         ],
-                        display : "Without publication fees"
+                        display: "Without publication fees"
                     }
                 ],
-                fieldDisplays : {
-                    "index.schema_codes_tree.exact" : "Subject",
-                    "index.license.exact" : "Licenses",
-                    "bibjson.publisher.name.exact" : "Publishers",
-                    "index.country.exact" : "Publishers' countries",
-                    "index.language.exact" : "Languages",
-                    "bibjson.editorial.review_process.exact" : "Peer review",
-                    "created_date" : "Date added"
+                fieldDisplays: {
+                    "index.schema_codes_tree.exact": "Subject",
+                    "index.license.exact": "Licenses",
+                    "bibjson.publisher.name.exact": "Publishers",
+                    "index.country.exact": "Publishers' countries",
+                    "index.language.exact": "Languages",
+                    "bibjson.editorial.review_process.exact": "Peer review",
+                    "created_date": "Date added"
                 },
-                rangeFunctions : {
-                    "created_date" : doaj.valueMaps.displayYearPeriod
+                rangeFunctions: {
+                    "created_date": doaj.valueMaps.displayYearPeriod
                 },
-                valueFunctions : {
-                    "index.schema_codes_tree.exact" : doaj.valueMaps.schemaCodeToNameClosure(doaj.publisherJournalsSearchConfig.lccTree)
+                valueFunctions: {
+                    "index.schema_codes_tree.exact": doaj.valueMaps.schemaCodeToNameClosure(doaj.publisherJournalsSearchConfig.lccTree)
                 },
-                renderer : doaj.renderers.newSelectedFiltersRenderer({
-                    hideValues : [
-                    ],
-                    omit : [
+                renderer: doaj.renderers.newSelectedFiltersRenderer({
+                    hideValues: [],
+                    omit: [
                         "bibjson.apc.has_apc",
                         "bibjson.other_charges.has_other_charges"
                     ]
@@ -161,18 +143,17 @@ doaj.publisherJournalsSearch = {
             edges.newPager({
                 id: "top-pager",
                 category: "top-pager",
-                renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                renderer: doaj.renderers.newPagerRenderer({
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             }),
 
-            // results display
             edges.newResultsDisplay({
                 id: "results",
                 category: "results",
-                renderer : doaj.renderers.newPublicSearchResultRenderer({
+                renderer: doaj.renderers.newPublicSearchResultRenderer({
                     actions: [
-                        doaj.publisherJournalsSearch.makeUpdateRequest,
+                        doaj.publisherJournalsSearch.makeUpdateRequest
                     ]
                 })
             }),
@@ -180,8 +161,8 @@ doaj.publisherJournalsSearch = {
             edges.newPager({
                 id: "bottom-pager",
                 category: "bottom-pager",
-                renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                renderer: doaj.renderers.newPagerRenderer({
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             })
         ];
@@ -192,22 +173,23 @@ doaj.publisherJournalsSearch = {
                 titleBar: false,
                 title: "Journals"
             }),
-            search_url: search_url,
+            search_url: doaj.edgeUtil.url.build(doaj.publisherJournalsSearchConfig.searchPath),
             manageUrl: true,
             openingQuery: es.newQuery({
-                sort: [{"field" : "created_date", "order" : "desc"}],
+                sort: [{"field": "created_date", "order": "desc"}],
                 size: 50
             }),
             components: components,
-            callbacks : {
-                "edges:query-fail" : function() {
+            callbacks: {
+                "edges:query-fail": function() {
                     alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
                 },
-                "edges:post-init" : function() {
+                "edges:post-init": function() {
                     feather.replace();
                 }
             }
         });
+
         doaj.publisherJournalsSearch.activeEdges[selector] = e;
     }
 }
