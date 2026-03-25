@@ -1,5 +1,4 @@
-$.extend(true, doaj, {
-    filters: {
+doaj.filters = {
         noCharges: function () {
             return {
                 id: "no_charges",
@@ -43,8 +42,9 @@ $.extend(true, doaj, {
             }
         }
 
-    },
-    facets: {
+};
+
+doaj.facets = {
         inDOAJ: function () {
             return edges.newRefiningANDTermSelector({
                 id: "in_doaj",
@@ -336,9 +336,9 @@ $.extend(true, doaj, {
                 })
             })
         }
-    },
+};
 
-    valueMaps: {
+doaj.valueMaps = {
         // This must be updated in line with the list in formcontext/choices.py
         applicationStatus: {
             'update_request': 'Update Request',
@@ -440,8 +440,9 @@ $.extend(true, doaj, {
         dateHistogramSelectorExporter: function(component) {
             return component.values;
         }
-    },
-    components: {
+};
+
+doaj.components = {
         pager: function (id, category) {
             return edges.newPager({
                 id: id,
@@ -1396,9 +1397,9 @@ $.extend(true, doaj, {
                 this.drawn = true;
             };
         }
-    },
+};
 
-    templates: {
+doaj.templates = {
         newPublicSearch: function (params) {
             return edges.instantiate(doaj.templates.PublicSearch, params, edges.newTemplate);
         },
@@ -1524,9 +1525,9 @@ $.extend(true, doaj, {
                 edge.context.html(frag);
             };
         }
-    },
+};
 
-    renderers: {
+doaj.renderers = {
         newAdminBasicResultsRenderer: function (params) {
             if (!params) {
                 params = {}
@@ -5533,9 +5534,9 @@ $.extend(true, doaj, {
                 this.component.setSort({field: field, dir: dir});
             };
         }
-    },
+};
 
-    fieldRender: {
+doaj.fieldRender = {
         fragment:
             {
                 fullFlagHTML: `<span class="flag flag--full" title="Record flagged to me"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -5912,9 +5913,9 @@ $.extend(true, doaj, {
                 return false;
             }
         },
-    },
+};
 
-    bulk: {
+doaj.bulk = {
         applicationMultiFormBox: function (edge_instance, doaj_type) {
             return doaj.multiFormBox.newMultiFormBox({
                 edge: edge_instance,
@@ -5977,6 +5978,4 @@ $.extend(true, doaj, {
                 }
             });
         }
-    }
-
-});
+};
