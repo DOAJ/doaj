@@ -538,6 +538,7 @@ $.extend(true, doaj, {
                 orderDir: edges.getParam(params.orderDir, undefined),
                 size: edges.getParam(params.size, undefined),
                 valueMap: edges.getParam(params.valueMap, undefined),
+                valueFunction: edges.getParam(params.valueFunction, undefined),
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: edges.getParam(params.open, false),
