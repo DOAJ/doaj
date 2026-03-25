@@ -12,7 +12,7 @@ doaj.publisherApplicationsSearch = {
                     result = '<span><a class="edit_suggestion_link" href="' + actionUrl;
                     result += '"';
                     result += '>Edit this update request</a> | <a href="' + actionUrl + '" class="delete_suggestion_link">Delete this update request</a></span>';
-                } else  if (status !== "rejected" && status !== "accepted") {
+                } else if (status !== "rejected" && status !== "accepted") {
                     result = '<span>This update request is currently being reviewed by an Editor ' + view + '.</span>';
                 } else if (status === "rejected") {
                     result = '<span>This update request has been rejected ' + view + '.</span>';
@@ -30,26 +30,10 @@ doaj.publisherApplicationsSearch = {
 
         var selector = params.selector || "#publisher_applications";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.publisherApplicationsSearchConfig.searchPath
-        );
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: ","
-        });
-
-        var components = [
-            // results display
-            edges.newResultsDisplay({
-                id: "results",
-                category: "results",
-                renderer : doaj.renderers.newPublisherApplicationRenderer()
-            })
-        ];
         var e = edges.newEdge({
             selector: selector,
             template: doaj.templates.newPublisherApplications(),
-            search_url: search_url,
+            search_url: doaj.edgeUtil.url.build(doaj.publisherApplicationsSearchConfig.searchPath),
             manageUrl: true,
             baseQuery: es.newQuery({
                 must: [
@@ -58,19 +42,26 @@ doaj.publisherApplicationsSearch = {
                         values: ["revisions_required", "pending", "in progress", "completed", "on hold", "ready", "draft"]
                     })
                 ],
-                sort: [{"field" : "last_updated", "order" : "desc"}],
+                sort: [{"field": "last_updated", "order": "desc"}],
                 size: 50
             }),
-            components: components,
-            callbacks : {
-                "edges:query-fail" : function() {
+            components: [
+                edges.newResultsDisplay({
+                    id: "results",
+                    category: "results",
+                    renderer: doaj.renderers.newPublisherApplicationRenderer()
+                })
+            ],
+            callbacks: {
+                "edges:query-fail": function() {
                     alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
                 },
-                "edges:post-init" : function() {
+                "edges:post-init": function() {
                     feather.replace();
                 }
             }
         });
+
         doaj.publisherApplicationsSearch.activeEdges[selector] = e;
     }
 }

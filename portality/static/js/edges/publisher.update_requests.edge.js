@@ -31,14 +31,6 @@ doaj.publisherUpdatesSearch = {
 
         var selector = params.selector || "#publisher_update_requests";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.publisherUpdatesSearchConfig.searchPath
-        );
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: ","
-        });
-
         var components = [
             doaj.components.searchingNotification(),
 
@@ -92,14 +84,14 @@ doaj.publisherUpdatesSearch = {
                 id: "top-pager",
                 category: "top-pager",
                 renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             }),
             edges.newPager({
                 id: "bottom-pager",
                 category: "bottom-pager",
                 renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             }),
 
@@ -131,7 +123,7 @@ doaj.publisherUpdatesSearch = {
                 titleBar: false,
                 title: "Update requests"
             }),
-            search_url: search_url,
+            search_url: doaj.edgeUtil.url.build(doaj.publisherUpdatesSearchConfig.searchPath),
             manageUrl: true,
             openingQuery: es.newQuery({
                 sort: [{"field" : "last_manual_update", "order" : "desc"}],
