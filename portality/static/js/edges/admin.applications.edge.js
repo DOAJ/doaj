@@ -1,6 +1,4 @@
 // ~~ AdminApplicationsSearch:Feature ~~
-
-// Direct namespace definition (replaces $.extend)
 doaj.adminApplicationsSearch = {
 
     activeEdges : {},
@@ -10,423 +8,275 @@ doaj.adminApplicationsSearch = {
 
         var selector = params.selector || "#admin_applications";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.adminApplicationsSearchConfig.searchPath
-        );
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: ","
-        });
-
-        var components = [
-            doaj.components.searchingNotification(),
-            // filters
-            edges.newFilterSetter({
-                id : "see_applications_no_charges",
-                category: "facet",
-                filters : [
-                    doaj.filters.noCharges()
-                ],
-                renderer : doaj.renderers.newFacetFilterSetterRenderer({
-                    facetTitle : "",
-                    open: true,
-                    togglable: false,
-                    showCount: false
+        var e = doaj.components.makeSearch({
+            selector: selector,
+            searchUrl: doaj.edgeUtil.url.build(doaj.adminApplicationsSearchConfig.searchPath),
+            facets: [
+                edges.newFilterSetter({
+                    id: "see_applications_no_charges",
+                    category: "facet",
+                    filters: [
+                        doaj.filters.noCharges()
+                    ],
+                    renderer: doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle: "",
+                        open: true,
+                        togglable: false,
+                        showCount: false
+                    })
+                }),
+                doaj.facets.openOrClosed(),
+                doaj.facets.applicationStatus(),
+                doaj.facets.hasEditorGroup(),
+                doaj.facets.hasEditor(),
+                doaj.facets.editorGroup(),
+                doaj.facets.editor(),
+                doaj.facets.classification(),
+                doaj.facets.language(),
+                doaj.facets.countryPublisher(),
+                doaj.facets.subject(),
+                doaj.facets.publisher(),
+                doaj.facets.journalLicence(),
+                doaj.components.newFacetDivider({
+                    id: "reporting_tools_divider",
+                    category: "facet",
+                    display: "Reporting Tools"
+                }),
+                doaj.components.newSimultaneousDateRangeEntry({
+                    id: "date_limiter",
+                    display: "Limit by Date Range",
+                    fields: [
+                        {"field": "admin.date_applied", "display": "Date Applied"},
+                        {"field": "last_manual_update", "display": "Last Updated"},
+                        {"field": "admin.date_rejected", "display": "Date Rejected"}
+                    ],
+                    autoLookupRange: true,
+                    category: "facet",
+                    autoLookupFilters: [
+                        es.newRangeFilter({field: "last_manual_update", gte: "2000-01-01T00:00:00Z"})
+                    ],
+                    renderer: doaj.renderers.newBSMultiDateRangeFacet({
+                        open: true
+                    })
+                }),
+                doaj.components.newDateHistogramSelector({
+                    id: "date_applied_histogram",
+                    category: "facet",
+                    field: "admin.date_applied",
+                    display: "Date Applied Histogram",
+                    interval: "year",
+                    displayFormatter: function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "date_applied_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', {year: 'numeric', timeZone: "UTC"});
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', {month: 'long', year: 'numeric', timeZone: "UTC"});
+                        }
+                    },
+                    sortFunction: function(values) {
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: doaj.valueMaps.countFormat,
+                        hideInactive: true
+                    })
+                }),
+                doaj.components.newDateHistogramSelector({
+                    id: "last_updated_histogram",
+                    category: "facet",
+                    field: "last_manual_update",
+                    display: "Last Update Histogram",
+                    interval: "year",
+                    displayFormatter: function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "last_updated_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', {year: 'numeric', timeZone: "UTC"});
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', {month: 'long', year: 'numeric', timeZone: "UTC"});
+                        }
+                    },
+                    sortFunction: function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: doaj.valueMaps.countFormat,
+                        hideInactive: true
+                    })
+                }),
+                doaj.components.newDateHistogramSelector({
+                    id: "date_rejected_histogram",
+                    category: "facet",
+                    field: "admin.date_rejected",
+                    display: "Date Rejected Histogram",
+                    interval: "year",
+                    displayFormatter: function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "date_rejected_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', {year: 'numeric', timeZone: "UTC"});
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', {month: 'long', year: 'numeric', timeZone: "UTC"});
+                        }
+                    },
+                    sortFunction: function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: doaj.valueMaps.countFormat,
+                        hideInactive: true
+                    })
+                }),
+                doaj.components.newReportExporter({
+                    id: "report-exporter",
+                    category: "facet",
+                    model: "application",
+                    facetExports: [
+                        {component_id: "application_type", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "application_status", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "has_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "classification", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "language", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "country_publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "subject", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "journal_license", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
+                        {component_id: "date_applied_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "date_rejected_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
+                    ]
                 })
-            }),
-            // facets
-            doaj.facets.openOrClosed(),
-            doaj.facets.applicationStatus(),
-            doaj.facets.hasEditorGroup(),
-            doaj.facets.hasEditor(),
-            doaj.facets.editorGroup(),
-            doaj.facets.editor(),
-            doaj.facets.classification(),
-            doaj.facets.language(),
-            doaj.facets.countryPublisher(),
-            doaj.facets.subject(),
-            doaj.facets.publisher(),
-            doaj.facets.journalLicence(),
-
-            doaj.components.newFacetDivider({
-                id: "reporting_tools_divider",
-                category: "facet",
-                display: "Reporting Tools"
-            }),
-            doaj.components.newSimultaneousDateRangeEntry({
-                id: "date_limiter",
-                display: "Limit by Date Range",
-                fields: [
-                    {"field": "admin.date_applied", "display": "Date Applied"},
-                    {"field": "last_manual_update", "display": "Last Updated"},
-                    {"field": "admin.date_rejected", "display": "Date Rejected"}
-                ],
-                autoLookupRange: true,
-                category: "facet",
-                autoLookupFilters : [
-                    es.newRangeFilter({field: "last_manual_update", gte:"2000-01-01T00:00:00Z"})
-                ],
-                renderer: doaj.renderers.newBSMultiDateRangeFacet({
-                    open: true
-                })
-            }),
-
-            doaj.components.newDateHistogramSelector({
-                id: "date_applied_histogram",
-                category: "facet",
-                field: "admin.date_applied",
-                display: "Date Applied Histogram",
-                interval: "year",
-                displayFormatter : function(val) {
-                    let date = new Date(parseInt(val));
-                    let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "date_applied_histogram"}).interval;
-                    if (interval === "year") {
-                        return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
-                    } else if (interval === "month") {
-                        return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
-                    }
-                },
-                sortFunction : function(values) {
-                    values.reverse();
-                    return values;
-                },
-                renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
-                    showSelected: false,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-
-            doaj.components.newDateHistogramSelector({
-                id: "last_updated_histogram",
-                category: "facet",
-                field: "last_manual_update",
-                display: "Last Update Histogram",
-                interval: "year",
-                displayFormatter : function(val) {
-                    let date = new Date(parseInt(val));
-                    let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "last_updated_histogram"}).interval;
-                    if (interval === "year") {
-                        return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
-                    } else if (interval === "month") {
-                        return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
-                    }
-                },
-                sortFunction : function(values) {
-                    if (values.length > 0 && values[0].display === "1970") {
-                        values.shift();
-                    }
-                    values.reverse();
-                    return values;
-                },
-                renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
-                    showSelected: false,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-
-            doaj.components.newDateHistogramSelector({
-                id: "date_rejected_histogram",
-                category: "facet",
-                field: "admin.date_rejected",
-                display: "Date Rejected Histogram",
-                interval: "year",
-                displayFormatter : function(val) {
-                    let date = new Date(parseInt(val));
-                    let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "date_rejected_histogram"}).interval;
-                    if (interval === "year") {
-                        return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
-                    } else if (interval === "month") {
-                        return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
-                    }
-                },
-                sortFunction : function(values) {
-                    if (values.length > 0 && values[0].display === "1970") {
-                        values.shift();
-                    }
-                    values.reverse();
-                    return values;
-                },
-                renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
-                    showSelected: false,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-
-            doaj.components.newReportExporter({
-                id: "report-exporter",
-                category: "facet",
-                model: "application",
-                facetExports: [
-                    {component_id: "application_type", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "application_status", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "has_editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "has_editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "editor_group", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "editor", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "classification", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "language", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "country_publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "subject", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "journal_license", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
-                    {component_id: "date_applied_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
-                    {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
-                    {component_id: "date_rejected_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
-                ]
-            }),
-
-            // configure the search controller
-            edges.newFullSearchController({
-                id: "search-controller",
-                category: "controller",
-                sortOptions: [
-                    {'display':'Date applied','field':'admin.date_applied'},
-                    {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-                    {'display':'Title','field':'index.unpunctitle.exact'},
-                    {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'},
-                    {'display': "Date Rejected", 'field': 'admin.date_rejected'}
-                ],
-                fieldOptions: [
-                    {'display':'Title','field':'index.title'},
-                    {'display':'Keywords','field':'bibjson.keywords'},
-                    {'display':'Classification','field':'index.classification'},
-                    {'display':'ISSN', 'field':'index.issn.exact'},
-                    {'display':'Country of publisher','field':'index.country'},
-                    {'display':'Journal language','field':'index.language'},
-                    {'display':'Publisher','field':'bibjson.publisher.name'},
-                    {'display':'Journal: alternative title','field':'bibjson.alternative_title'},
-                    {'display':'Notes','field':'admin.notes.note'},
-                ],
-                defaultOperator: "AND",
-                renderer: doaj.renderers.newFullSearchControllerRenderer({
-                    freetextSubmitDelay: -1,
-                    searchButton: true,
-                    searchPlaceholder: "Search All Applications"
-                })
-            }),
-
-            // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
-            doaj.components.pager("top-pager", "top-pager"),
-            doaj.components.pager("bottom-pager", "bottom-pager"),
-
-            // results display
-            edges.newResultsDisplay({
+            ],
+            sortOptions: [
+                {'display': 'Date applied', 'field': 'admin.date_applied'},
+                {'display': 'Last updated', 'field': 'last_manual_update'},
+                {'display': 'Title', 'field': 'index.unpunctitle.exact'},
+                {'display': 'Flag deadline', 'field': 'index.most_urgent_flag_deadline'},
+                {'display': 'Date Rejected', 'field': 'admin.date_rejected'}
+            ],
+            fieldOptions: [
+                {'display': 'Title', 'field': 'index.title'},
+                {'display': 'Keywords', 'field': 'bibjson.keywords'},
+                {'display': 'Classification', 'field': 'index.classification'},
+                {'display': 'ISSN', 'field': 'index.issn.exact'},
+                {'display': 'Country of publisher', 'field': 'index.country'},
+                {'display': 'Journal language', 'field': 'index.language'},
+                {'display': 'Publisher', 'field': 'bibjson.publisher.name'},
+                {'display': 'Journal: alternative title', 'field': 'bibjson.alternative_title'},
+                {'display': 'Notes', 'field': 'admin.notes.note'}
+            ],
+            searchPlaceholder: "Search All Applications",
+            resultsDisplay: edges.newResultsDisplay({
                 id: "results",
                 category: "results",
                 renderer: doaj.renderers.newAdminBasicResultsRenderer({
-                    topRowDisplay : [
-                        [
-                            {
-                                valueFunction: doaj.fieldRender.titleField
-                            }
-                        ],
-                        [
-                            {
-                                valueFunction: doaj.fieldRender.editSuggestion({
-                                    editUrl : doaj.adminApplicationsSearchConfig.applicationEditUrl
-                                })
-                            }
-                        ],
+                    topRowDisplay: [
+                        [{valueFunction: doaj.fieldRender.titleField}],
+                        [{valueFunction: doaj.fieldRender.editSuggestion({editUrl: doaj.adminApplicationsSearchConfig.applicationEditUrl})}]
                     ],
-                    leftRowDisplay : [
-                        [
-                            {
-                                "pre": '<strong>Alternative title: </strong>',
-                                "field": "bibjson.alternative_title"
-                            }
-                        ],
-                        [
-                            {
-                                valueFunction: doaj.fieldRender.issns
-                            }
-                        ],
-                        [
-                            {
-                                valueFunction: doaj.fieldRender.links
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Classification</strong>: ",
-                                "field": "index.classification"
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Keywords</strong>: ",
-                                "field": "bibjson.keywords"
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Publisher</strong>: ",
-                                "field": "bibjson.publisher.name"
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Country of publisher</strong>: ",
-                                valueFunction: doaj.fieldRender.countryName
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Journal language</strong>: ",
-                                "field": "bibjson.language"
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Publication charges?</strong>: ",
-                                valueFunction: doaj.fieldRender.authorPays
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Journal license</strong>: ",
-                                valueFunction: doaj.fieldRender.journalLicense
-                            }
-                        ]
+                    leftRowDisplay: [
+                        [{pre: '<strong>Alternative title: </strong>', field: "bibjson.alternative_title"}],
+                        [{valueFunction: doaj.fieldRender.issns}],
+                        [{valueFunction: doaj.fieldRender.links}],
+                        [{pre: "<strong>Classification</strong>: ", field: "index.classification"}],
+                        [{pre: "<strong>Keywords</strong>: ", field: "bibjson.keywords"}],
+                        [{pre: "<strong>Publisher</strong>: ", field: "bibjson.publisher.name"}],
+                        [{pre: "<strong>Country of publisher</strong>: ", valueFunction: doaj.fieldRender.countryName}],
+                        [{pre: "<strong>Journal language</strong>: ", field: "bibjson.language"}],
+                        [{pre: "<strong>Publication charges?</strong>: ", valueFunction: doaj.fieldRender.authorPays}],
+                        [{pre: "<strong>Journal license</strong>: ", valueFunction: doaj.fieldRender.journalLicense}]
                     ],
-                    rightRowDisplay : [
-                        [
-                            {
-                                "pre" : "<strong>Application status</strong>: ",
-                                valueFunction: doaj.fieldRender.applicationStatus
-                            }
-                        ],
-                        [
-                            {
-                                "pre" : "<strong>Owner</strong>: ",
-                                valueFunction: doaj.fieldRender.owner
-                            }
-                        ],
-                        [
-                            {
-                                "pre" : "<strong>Editor group</strong>: ",
-                                "field" : "admin.editor_group"
-                            }
-                        ],
-                        [
-                            {
-                                valueFunction: doaj.fieldRender.deadline
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Date applied</strong>: ",
-                                valueFunction: doaj.fieldRender.suggestedOn
-                            }
-                        ],
-                        [
-                            {
-                                "pre" : "<strong>Date Rejected</strong>: ",
-                                valueFunction: doaj.fieldRender.dateRejected
-                            }
-                        ],
-                        [
-                            {
-                                "pre": "<strong>Last updated</strong>: ",
-                                valueFunction: doaj.fieldRender.lastManualUpdate
-                            }
-                        ],
-
+                    rightRowDisplay: [
+                        [{pre: "<strong>Application status</strong>: ", valueFunction: doaj.fieldRender.applicationStatus}],
+                        [{pre: "<strong>Owner</strong>: ", valueFunction: doaj.fieldRender.owner}],
+                        [{pre: "<strong>Editor group</strong>: ", field: "admin.editor_group"}],
+                        [{valueFunction: doaj.fieldRender.deadline}],
+                        [{pre: "<strong>Date applied</strong>: ", valueFunction: doaj.fieldRender.suggestedOn}],
+                        [{pre: "<strong>Date Rejected</strong>: ", valueFunction: doaj.fieldRender.dateRejected}],
+                        [{pre: "<strong>Last updated</strong>: ", valueFunction: doaj.fieldRender.lastManualUpdate}]
                     ]
                 })
             }),
-
-            // selected filters display, with all the fields given their display names
-            edges.newSelectedFilters({
-                id: "selected-filters",
-                category: "selected-filters",
-                compoundDisplays : [
-                    {
-                        filters : [
-                            es.newTermFilter({
-                                field: "bibjson.apc.has_apc",
-                                value: false
-                            }),
-                            es.newTermFilter({
-                                field: "bibjson.other_charges.has_other_charges",
-                                value: false
-                            })
-                        ],
-                        display : "Without article processing charges (APCs)"
-                    }
+            compoundDisplays: [
+                {
+                    filters: [
+                        es.newTermFilter({field: "bibjson.apc.has_apc", value: false}),
+                        es.newTermFilter({field: "bibjson.other_charges.has_other_charges", value: false})
+                    ],
+                    display: "Without article processing charges (APCs)"
+                }
+            ],
+            fieldDisplays: {
+                'admin.application_status.exact': 'Status',
+                'index.application_type.exact': 'Application',
+                'index.has_editor_group.exact': 'Editor group',
+                'index.has_editor.exact': 'Associate Editor',
+                'admin.editor_group.exact': 'Editor group',
+                'admin.editor.exact': 'Editor',
+                'index.classification.exact': 'Classification',
+                'index.language.exact': 'Language',
+                'index.country.exact': 'Country',
+                'index.subject.exact': 'Subject',
+                'bibjson.publisher.name.exact': 'Publisher',
+                'bibjson.provider.exact': 'Platform, Host, Aggregator',
+                'index.has_apc.exact': 'Charges?',
+                'index.license.exact': 'License',
+                'index.is_flagged': "Only Flagged Records",
+                'index.flag_assignees.exact': "Flagged to me",
+                "admin.date_applied": "Date Applied",
+                "last_manual_update": "Last Updated",
+                "admin.date_rejected": "Date Rejected"
+            },
+            valueMaps: {
+                "index.application_type.exact": {
+                    "finished application/update": "Closed",
+                    "update request": "Open",
+                    "new application": "Open"
+                }
+            },
+            rangeFunctions: {
+                "admin.date_applied": doaj.valueMaps.displayYearMonthPeriod,
+                "last_manual_update": doaj.valueMaps.displayYearMonthPeriod,
+                "admin.date_rejected": doaj.valueMaps.displayYearMonthPeriod
+            },
+            selectedFiltersRenderer: doaj.renderers.newSelectedFiltersRenderer({
+                omit: [
+                    "bibjson.apc.has_apc",
+                    "bibjson.other_charges.has_other_charges"
                 ],
-                fieldDisplays: {
-                    'admin.application_status.exact': 'Status',
-                    'index.application_type.exact' : 'Application',
-                    'index.has_editor_group.exact' : 'Editor group',
-                    'index.has_editor.exact' : 'Associate Editor',
-                    'admin.editor_group.exact' : 'Editor group',
-                    'admin.editor.exact' : 'Editor',
-                    'index.classification.exact' : 'Classification',
-                    'index.language.exact' : 'Language',
-                    'index.country.exact' : 'Country',
-                    'index.subject.exact' : 'Subject',
-                    'bibjson.publisher.name.exact' : 'Publisher',
-                    'bibjson.provider.exact' : 'Platform, Host, Aggregator',
-                    "index.has_apc.exact" : "Charges?",
-                    'index.license.exact' : 'License',
-                    'index.is_flagged': "Only Flagged Records",
-                    'index.flag_assignees.exact': "Flagged to me",
-                    "admin.date_applied": "Date Applied",
-                    "last_manual_update": "Last Updated",
-                    "admin.date_rejected": "Date Rejected"
-                },
-                valueMaps : {
-                    "index.application_type.exact" : {
-                        "finished application/update": "Closed",
-                        "update request": "Open",
-                        "new application": "Open"
-                    }
-                },
-                rangeFunctions : {
-                    "admin.date_applied" : doaj.valueMaps.displayYearMonthPeriod,
-                    "last_manual_update": doaj.valueMaps.displayYearMonthPeriod,
-                    "admin.date_rejected": doaj.valueMaps.displayYearMonthPeriod
-                },
-                renderer : doaj.renderers.newSelectedFiltersRenderer({
-                    omit : [
-                        "bibjson.apc.has_apc",
-                        "bibjson.other_charges.has_other_charges"
-                    ],
-                    hideValues: [
-                        'index.is_flagged',
-                        'index.flag_assignees.exact'
-                    ]
-                })
-            })
-        ];
-
-
-        var e = edges.newEdge({
-            selector: selector,
-            template: edges.bs3.newFacetview(),
-            search_url: search_url,
-            manageUrl: true,
-            openingQuery : es.newQuery({
-                sort: {"field" : "admin.date_applied", "order" : "asc"}
+                hideValues: [
+                    'index.is_flagged',
+                    'index.flag_assignees.exact'
+                ]
             }),
-            components: components,
-            callbacks : {
-                "edges:query-fail" : function() {
-                    alert("There was an unexpected error. Please reload the page and try again.");
+            openingQuery: es.newQuery({
+                sort: {"field": "admin.date_applied", "order": "asc"}
+            }),
+            callbacks: {
+                "edges:pre-render": function() {
+                    doaj.multiFormBox.active.validate();
                 }
             }
         });
 
         doaj.adminApplicationsSearch.activeEdges[selector] = e;
-
         doaj.multiFormBox.active = doaj.bulk.applicationMultiFormBox(e, "applications");
-
-        $(selector).on("edges:pre-render", function() {
-            doaj.multiFormBox.active.validate();
-        });
     }
 };
 

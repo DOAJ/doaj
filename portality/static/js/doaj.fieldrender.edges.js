@@ -633,6 +633,7 @@ $.extend(true, doaj, {
             var fieldDisplays = edges.getParam(params.fieldDisplays, {});
             var rangeFunctions = edges.getParam(params.rangeFunctions, {});
             var valueMaps = edges.getParam(params.valueMaps, {});
+            var compoundDisplays = edges.getParam(params.compoundDisplays, undefined);
             var selectedFiltersRenderer = edges.getParam(params.selectedFiltersRenderer, undefined);
             var openingQuery = edges.getParam(params.openingQuery, es.newQuery({
                 sort: [{field: "created_date", order: "desc"}],
@@ -697,6 +698,9 @@ $.extend(true, doaj, {
                     rangeFunctions: rangeFunctions,
                     valueMaps: valueMaps
                 };
+                if (compoundDisplays) {
+                    sfParams.compoundDisplays = compoundDisplays;
+                }
                 if (selectedFiltersRenderer) {
                     sfParams.renderer = selectedFiltersRenderer;
                 }
