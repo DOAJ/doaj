@@ -27,14 +27,6 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
 
         var selector = params.selector || "#public-article-search";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.publicSearchConfig.publicSearchPath
-        );
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: ","
-        });
-
         var components = [
             doaj.components.searchingNotification(),
 
@@ -64,7 +56,7 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
                 id: "result-count",
                 category: "pager",
                 renderer : edges.bs3.newResultCountRenderer({
-                    countFormat: countFormat,
+                    countFormat: doaj.valueMaps.countFormat,
                     suffix: " indexed articles",
                     htmlContainerWrapper: false
                 })
@@ -111,7 +103,7 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
                 renderer : doaj.renderers.newDateHistogramSelectorRenderer({
                     open: false,
                     togglable: true,
-                    countFormat: countFormat,
+                    countFormat: doaj.valueMaps.countFormat,
                     hideInactive: false,
                     hideEmpty: true
                 })
@@ -176,7 +168,7 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
                 id: "top-pager",
                 category: "top-pager",
                 renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             }),
 
@@ -191,7 +183,7 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
                 id: "bottom-pager",
                 category: "bottom-pager",
                 renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             })
         ];
@@ -201,7 +193,7 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
             template: doaj.templates.newPublicSearch({
                 title: "Articles"
             }),
-            search_url: search_url,
+            search_url: doaj.edgeUtil.url.build(doaj.publicSearchConfig.publicSearchPath),
             manageUrl : true,
             openingQuery: es.newQuery({
                 sort: [{"field" : "created_date", "order" : "desc"}],
