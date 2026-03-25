@@ -46,14 +46,6 @@ doaj.publicToC = {
 
         var selector = params.selector || "#journal_toc_articles";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.publicToCConfig.publicSearchPath
-        );
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: ","
-        });
-
         var components = [
             doaj.components.searchingNotification(),
 
@@ -61,7 +53,7 @@ doaj.publicToC = {
                 id: "result-count",
                 category: "pager",
                 renderer : edges.bs3.newResultCountRenderer({
-                    countFormat: countFormat,
+                    countFormat: doaj.valueMaps.countFormat,
                     suffix: " indexed articles",
                     htmlContainerWrapper: false
                 })
@@ -93,7 +85,7 @@ doaj.publicToC = {
                 renderer : doaj.renderers.newDateHistogramSelectorRenderer({
                     open: false,
                     togglable: true,
-                    countFormat: countFormat,
+                    countFormat: doaj.valueMaps.countFormat,
                     hideInactive: false
                 })
             }),
@@ -117,7 +109,7 @@ doaj.publicToC = {
                 renderer : doaj.renderers.newDateHistogramSelectorRenderer({
                     open: false,
                     togglable: true,
-                    countFormat: countFormat,
+                    countFormat: doaj.valueMaps.countFormat,
                     hideInactive: true,
                     hideEmpty: true
                 })
@@ -170,7 +162,7 @@ doaj.publicToC = {
                 id: "top-pager",
                 category: "top-pager",
                 renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             }),
             // results display
@@ -184,7 +176,7 @@ doaj.publicToC = {
                 id: "bottom-pager",
                 category: "bottom-pager",
                 renderer : doaj.renderers.newPagerRenderer({
-                    numberFormat: countFormat
+                    numberFormat: doaj.valueMaps.countFormat
                 })
             })
         ];
@@ -194,7 +186,7 @@ doaj.publicToC = {
             template: doaj.templates.newPublicSearch({
                 titleBar: false
             }),
-            search_url: search_url,
+            search_url: doaj.edgeUtil.url.build(doaj.publicToCConfig.publicSearchPath),
             baseQuery : es.newQuery({
                 must : [
                     es.newTermsFilter({field: "index.issn.exact", values: doaj.publicToCConfig.tocIssns})
