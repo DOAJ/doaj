@@ -536,6 +536,8 @@ $.extend(true, doaj, {
                 deactivateThreshold: edges.getParam(params.deactivateThreshold, 0),
                 orderBy: edges.getParam(params.orderBy, undefined),
                 orderDir: edges.getParam(params.orderDir, undefined),
+                size: edges.getParam(params.size, undefined),
+                valueMap: edges.getParam(params.valueMap, undefined),
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: edges.getParam(params.open, false),
@@ -602,6 +604,7 @@ $.extend(true, doaj, {
             var sizeOptions = edges.getParam(params.sizeOptions, [25, 50, 100]);
             var fieldDisplays = edges.getParam(params.fieldDisplays, {});
             var rangeFunctions = edges.getParam(params.rangeFunctions, {});
+            var valueMaps = edges.getParam(params.valueMaps, {});
             var openingQuery = edges.getParam(params.openingQuery, es.newQuery({
                 sort: [{field: "created_date", order: "desc"}],
                 size: 25
@@ -662,7 +665,8 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: fieldDisplays,
-                    rangeFunctions: rangeFunctions
+                    rangeFunctions: rangeFunctions,
+                    valueMaps: valueMaps
                 }));
             }
 
