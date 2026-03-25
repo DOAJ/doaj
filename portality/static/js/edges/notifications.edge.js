@@ -47,10 +47,6 @@ doaj.notificationsSearch = {
 
         var selector = params.selector || "#notifications";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.notificationsSearchConfig.searchPath
-        );
-
         var components = [
             doaj.components.searchingNotification(),
 
@@ -88,7 +84,7 @@ doaj.notificationsSearch = {
         var e = edges.newEdge({
             selector: selector,
             template: edges.bs3.newFacetview(),
-            search_url: search_url,
+            search_url: doaj.edgeUtil.url.build(doaj.notificationsSearchConfig.searchPath),
             manageUrl: false,
             openingQuery : es.newQuery({
                 sort: {"field" : "created_date", "order" : "desc"},
