@@ -541,7 +541,7 @@ $.extend(true, doaj, {
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: edges.getParam(params.open, false),
-                    togglable: true,
+                    togglable: edges.getParam(params.togglable, true),
                     countFormat: doaj.valueMaps.countFormat,
                     hideInactive: edges.getParam(params.hideInactive, true)
                 })
