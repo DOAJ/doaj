@@ -543,7 +543,7 @@ $.extend(true, doaj, {
                     open: edges.getParam(params.open, false),
                     togglable: true,
                     countFormat: doaj.valueMaps.countFormat,
-                    hideInactive: true
+                    hideInactive: edges.getParam(params.hideInactive, true)
                 })
             });
         },
