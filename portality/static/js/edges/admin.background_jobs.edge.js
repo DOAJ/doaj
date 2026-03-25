@@ -91,22 +91,15 @@ doaj.adminBackgroundJobsSearch = {
                 expandBlock += auditBlock;
                 expandBlock += "</div>";
 
-                // start off the string to be rendered
                 var result = '<div class="edges-bs3-results-fields-by-row-record ' + containerClass + '">';
-
-                // start the main box that all the details go in
                 result += "<div class='row-fluid'><div class='span12'>";
-
                 result += firstRow + "<br>";
-                result += `Outcome Status: ${resultobj.outcome_status}<br />`
+                result += `Outcome Status: ${resultobj.outcome_status}<br />`;
                 result += "Job ID: " + resultobj.id + "<br>";
                 result += 'On Queue: ' + resultobj.queue_id + '<br>';
                 result += dateRow + "<br>";
-
                 result += '<a href="#" data-id="' + resultobj.id + '" class="' + toggleClass + '">More Information</a><br>';
                 result += expandBlock;
-
-                // close off the result with the ending strings, and then return
                 result += "</div></div>";
                 result += "</div>";
 
@@ -132,169 +125,46 @@ doaj.adminBackgroundJobsSearch = {
 
         var selector = params.selector || "#background_jobs";
 
-        var search_url = doaj.edgeUtil.url.build(
-            doaj.adminBackgroundJobsSearchConfig.searchPath
-        );
-
-
-        var countFormat = edges.numFormat({
-            thousandsSeparator: "," 
-        });
-
-        var components = [
-            doaj.components.searchingNotification(),
-
-            // facets
-            edges.newRefiningANDTermSelector({
-                id: "action",
-                category: "facet",
-                field: "action.exact",
-                display: "Action",
-                deactivateThreshold : 1,
-                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                    controls: true,
-                    open: false,
-                    togglable: true,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-            edges.newRefiningANDTermSelector({
-                id: "user",
-                category: "facet",
-                field: "user.exact",
-                display: "Submitted By",
-                deactivateThreshold : 1,
-                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                    controls: true,
-                    open: false,
-                    togglable: true,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-            edges.newRefiningANDTermSelector({
-                id: "status",
-                category: "facet",
-                field: "status.exact",
-                display: "Status",
-                deactivateThreshold : 1,
-                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                    controls: true,
-                    open: false,
-                    togglable: true,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-            edges.newRefiningANDTermSelector({
-                id: "queue_id",
-                category: "facet",
-                field: "queue_id.exact",
-                display: "On Queue",
-                deactivateThreshold : 1,
-                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                    controls: true,
-                    open: false,
-                    togglable: true,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-            edges.newRefiningANDTermSelector({
-                id: "outcome_status",
-                category: "facet",
-                field: "outcome_status.exact",
-                display: "Outcome Status",
-                deactivateThreshold : 1,
-                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                    controls: true,
-                    open: false,
-                    togglable: true,
-                    countFormat: countFormat,
-                    hideInactive: true
-                })
-            }),
-
-            // configure the search controller
-            edges.newFullSearchController({
-                id: "search-controller",
-                category: "controller",
-                sortOptions: [
-                    {'display':'Created Date','field':'created_date'},
-                    {'display':'Last Modified Date','field':'last_updated'}
-                ],
-                fieldOptions: [
-                    {'display':'ID','field':'id.exact'},
-                    {'display':'Action','field':'action.exact'},
-                    {'display':'Submitted By','field':'user.exact'},
-                    {'display':'Status','field':'status.exact'},
-                    {'display':'Outcome Status','field':'outcome_status.exact'},
-                ],
-                defaultOperator: "AND",
-                renderer: doaj.renderers.newFullSearchControllerRenderer({
-                    freetextSubmitDelay: -1,
-                    searchButton: true,
-                    searchPlaceholder: "Search Background Jobs"
-                })
-            }),
-
-            // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
-            edges.newPager({
-                id: "top-pager",
-                category: "top-pager",
-                renderer: edges.bs3.newPagerRenderer({
-                    sizeOptions: [10, 25, 50, 100],
-                    numberFormat: countFormat,
-                    scroll: false
-                })
-            }),
-            edges.newPager({
-                id: "bottom-pager",
-                category: "bottom-pager",
-                renderer: edges.bs3.newPagerRenderer({
-                    sizeOptions: [10, 25, 50, 100],
-                    numberFormat: countFormat,
-                    scroll: false
-                })
-            }),
-
-            // results display
-            edges.newResultsDisplay({
+        var e = doaj.components.makeSearch({
+            selector: selector,
+            searchUrl: doaj.edgeUtil.url.build(doaj.adminBackgroundJobsSearchConfig.searchPath),
+            facets: [
+                doaj.components.refiningAndFacet({id: "action", field: "action.exact", display: "Action", deactivateThreshold: 1}),
+                doaj.components.refiningAndFacet({id: "user", field: "user.exact", display: "Submitted By", deactivateThreshold: 1}),
+                doaj.components.refiningAndFacet({id: "status", field: "status.exact", display: "Status", deactivateThreshold: 1}),
+                doaj.components.refiningAndFacet({id: "queue_id", field: "queue_id.exact", display: "On Queue", deactivateThreshold: 1}),
+                doaj.components.refiningAndFacet({id: "outcome_status", field: "outcome_status.exact", display: "Outcome Status", deactivateThreshold: 1})
+            ],
+            sortOptions: [
+                {'display': 'Created Date', 'field': 'created_date'},
+                {'display': 'Last Modified Date', 'field': 'last_updated'}
+            ],
+            fieldOptions: [
+                {'display': 'ID', 'field': 'id.exact'},
+                {'display': 'Action', 'field': 'action.exact'},
+                {'display': 'Submitted By', 'field': 'user.exact'},
+                {'display': 'Status', 'field': 'status.exact'},
+                {'display': 'Outcome Status', 'field': 'outcome_status.exact'}
+            ],
+            searchPlaceholder: "Search Background Jobs",
+            sizeOptions: [10, 25, 50, 100],
+            resultsDisplay: edges.newResultsDisplay({
                 id: "results",
                 category: "results",
                 renderer: doaj.adminBackgroundJobsSearch.newBGResultsRenderer()
             }),
-
-            // selected filters display, with all the fields given their display names
-            edges.newSelectedFilters({
-                id: "selected-filters",
-                category: "selected-filters",
-                fieldDisplays: {
-                    'action.exact': 'Action',
-                    'user.exact' : 'Submitted By',
-                    'status.exact' : 'Status',
-                    'outcome_status.exact' : 'Outcome Status',
-                    'queue_id.exact' : 'On Queue',
-                }
+            fieldDisplays: {
+                'action.exact': 'Action',
+                'user.exact': 'Submitted By',
+                'status.exact': 'Status',
+                'outcome_status.exact': 'Outcome Status',
+                'queue_id.exact': 'On Queue'
+            },
+            openingQuery: es.newQuery({
+                sort: {"field": "created_date", "order": "desc"}
             })
-        ];
-
-        var e = edges.newEdge({
-            selector: selector,
-            template: edges.bs3.newFacetview(),
-            search_url: search_url,
-            manageUrl: true,
-            openingQuery : es.newQuery({
-                sort: {"field" : "created_date", "order" : "desc"}
-            }),
-            components: components,
-            callbacks : {
-                "edges:query-fail" : function() {
-                    alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
-                }
-            }
         });
+
         doaj.adminBackgroundJobsSearch.activeEdges[selector] = e;
     }
 }
