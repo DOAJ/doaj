@@ -550,13 +550,13 @@ $.extend(true, doaj, {
 
         // Month-interval date histogram facet.
         // Required params: id, field, display
-        // Optional params: interval (default "month")
+        // Optional params: open (default false), togglable (default false)
         monthDateHistogramFacet: function(params) {
             return edges.newDateHistogramSelector({
                 id: params.id,
                 category: "facet",
                 field: params.field,
-                interval: edges.getParam(params.interval, "month"),
+                interval: "month",
                 display: params.display,
                 displayFormatter: function(val) {
                     var d = new Date(parseInt(val));
@@ -568,7 +568,35 @@ $.extend(true, doaj, {
                 },
                 renderer: edges.bs3.newDateHistogramSelectorRenderer({
                     countFormat: doaj.valueMaps.countFormat,
-                    hideInactive: true
+                    hideInactive: true,
+                    open: edges.getParam(params.open, false),
+                    togglable: edges.getParam(params.togglable, false)
+                })
+            });
+        },
+
+        // Year-interval date histogram facet.
+        // Required params: id, field, display
+        // Optional params: open (default false), togglable (default false)
+        yearDateHistogramFacet: function(params) {
+            return edges.newDateHistogramSelector({
+                id: params.id,
+                category: "facet",
+                field: params.field,
+                interval: "year",
+                display: params.display,
+                displayFormatter: function(val) {
+                    return (new Date(parseInt(val))).getUTCFullYear().toString();
+                },
+                sortFunction: function(values) {
+                    values.reverse();
+                    return values;
+                },
+                renderer: edges.bs3.newDateHistogramSelectorRenderer({
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true,
+                    open: edges.getParam(params.open, false),
+                    togglable: edges.getParam(params.togglable, false)
                 })
             });
         },
