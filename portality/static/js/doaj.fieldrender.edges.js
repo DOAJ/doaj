@@ -633,6 +633,7 @@ $.extend(true, doaj, {
             var fieldDisplays = edges.getParam(params.fieldDisplays, {});
             var rangeFunctions = edges.getParam(params.rangeFunctions, {});
             var valueMaps = edges.getParam(params.valueMaps, {});
+            var selectedFiltersRenderer = edges.getParam(params.selectedFiltersRenderer, undefined);
             var openingQuery = edges.getParam(params.openingQuery, es.newQuery({
                 sort: [{field: "created_date", order: "desc"}],
                 size: 25
@@ -689,13 +690,17 @@ $.extend(true, doaj, {
             }
 
             if (Object.keys(fieldDisplays).length > 0) {
-                components.push(edges.newSelectedFilters({
+                var sfParams = {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: fieldDisplays,
                     rangeFunctions: rangeFunctions,
                     valueMaps: valueMaps
-                }));
+                };
+                if (selectedFiltersRenderer) {
+                    sfParams.renderer = selectedFiltersRenderer;
+                }
+                components.push(edges.newSelectedFilters(sfParams));
             }
 
             return edges.newEdge({
