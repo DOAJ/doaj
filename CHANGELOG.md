@@ -2,6 +2,13 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.5.3 - 2026-03-19
+
+Premium metadata services: 
+Phase-in of 2-tier data currency as served in Public Data Dump, OAI-PMH, and Journal CSV features
+
+https://github.com/DOAJ/doajPM/issues/4008
+
 ### 8.5.2 - 2026-01-15
 
 Add created and last updated dates to individual account pages.

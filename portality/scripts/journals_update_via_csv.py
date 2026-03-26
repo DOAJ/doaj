@@ -23,8 +23,10 @@ e.g. to validate a CSV upload and create a batch of update requests from that us
 import os
 import csv
 import re
+from datetime import datetime
 
 from portality import lock, constants
+from portality.lib import dates
 from portality.core import app
 from portality.models import Journal, Account
 from portality.crosswalks import journal_questions
@@ -69,8 +71,17 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
     parser.add_argument("-y", "--yes", help="Bypass prompt to accept the note", action='store_true')
     parser.add_argument("-f", "--force", help="Ignore warnings and process changes anyway (errors still halt)", action='store_true')
+    parser.add_argument("-e", "--export-date", help="Warn if a journal was updated after this date (format: YYYY-MM-DD)", default=None)
 
     args = parser.parse_args()
+
+    export_date = None
+    if args.export_date:
+        try:
+            export_date = datetime.strptime(args.export_date, "%Y-%m-%d")
+        except ValueError:
+            print(f'ERROR: Invalid export date format "{args.export_date}". Use YYYY-MM-DD.')
+            exit(1)
 
     note = os.getenv('DOAJ_CSV_NOTE', '')
     print('\nNote supplied via $DOAJ_CSV_NOTE: ' + note)
@@ -94,13 +105,13 @@ if __name__ == "__main__":
     if args.sys:
         acc = sys_acc
     else:
-        found_account_name = re.split(r'[._]', os.path.basename(args.infile))[0] if args.prefix else args.account
+        found_account_name = re.split(r'[._-]', os.path.basename(args.infile))[0] if args.prefix else args.account
         print(f'Creating Update Requests as account {found_account_name}')
 
         acc = Account.pull(found_account_name)
 
         if acc is None:
-            print(f'ERROR: Account {args.account} not found.')
+            print(f'ERROR: Account {found_account_name} not found.')
             exit(1)
 
     appSvc = DOAJ.applicationService()
@@ -157,6 +168,13 @@ if __name__ == "__main__":
                 continue
 
             print('Updating journal with ID ' + j.id)
+
+            if export_date and j.last_manual_update_timestamp and j.last_manual_update_timestamp > export_date:
+                print(f'WARNING: Journal {j.id} was last manually updated at {j.last_manual_update} which is after the export date {args.export_date}. CSV data may be stale - record will be skipped unless --force supplied.')
+                if not args.dry_run and not args.force:
+                    print('Skipping this record. Supply -f arg to ignore warnings and apply data.')
+                    continue
+
             # Load remaining rows into application form as an update
             # ~~ ^->JournalQuestions:Crosswalk ~~
             update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
@@ -223,6 +241,12 @@ if __name__ == "__main__":
                         fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
                         fc2.finalise(sys_acc, email_alert=False)
                         print('Automatic review. Journal has been updated.')
+
+                        # Set the last full review date on the journal to today
+                        updated_journal = Journal.pull(j.id)
+                        updated_journal.last_full_review = dates.today()
+                        updated_journal.save()
+                        print(f'Set last full review date to {updated_journal.last_full_review}')
             except Exception as e:
                 print('Failed to finalise: {1}'.format(j.id, str(e)))
                 raise
