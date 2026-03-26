@@ -46,7 +46,7 @@ tests:
           - The record has a flag assigned to another user, with no deadline and with a note.
           - All flag fields are editable
           - Add Flag button is disabled
-      - step: Add a valid deadline to a flag (e.g., 2025-04-01)
+      - step: Add a valid deadline to a flag (e.g., 2026-10-01)
       - step: Save the record
         results:
           - The flag is correctly saved with a new deadline
