@@ -26,6 +26,7 @@ from portality.lib.query_filters import remove_search_limits, update_request, no
 from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete, admin_reports
+from portality.tasks.journal_in_out_doaj import find_matching_issns_in_doaj
 from portality.ui.messages import Messages
 from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
@@ -292,7 +293,15 @@ def create_cont_list(continuations: Iterable[Journal],
 @ssl_required
 @write_required()
 def journal_activate(journal_id):
-    job = journal_in_out_doaj.change_in_doaj([journal_id], True)
+    matching_issns = find_matching_issns_in_doaj(journal_id)
+    if not matching_issns:
+        job = journal_in_out_doaj.change_in_doaj([journal_id], True)
+    else:
+        flash_with_url(
+            Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids=", ".join(matching_issns)),
+            "error")
+        return redirect(url_for('.journal_page', journal_id=journal_id))
+
     return redirect(url_for('.journal_page', journal_id=journal_id, job=job.id))
 
 
