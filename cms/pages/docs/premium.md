@@ -21,3 +21,19 @@ To access your premium metadata services, you must be logged into your DOAJ acco
 ```https://doaj.org/csv?api_key=[your api key]```
 
 To upgrade your account to premium, or if you just want to learn more about our services, please [complete this form](https://forms.gle/Bbd6KiDijCinzNdp9) and we will contact you.
+
+## Waiver policy
+
+The price to access our Premium Metadata Services is determined on a case-by-case basis. We have a waiver in place for anyone who doesn’t have the funding available to pay.
+
+We will waive fees for:
+
+- any student, researcher or faculty member from any institution that supports DOAJ, either directly or through a consortium.
+- anyone studying, working or contracted at a non-commercial, not-for-profit organisation* from any of the Lower Middle Income Countries, as determined by the World Bank.
+
+We may offer a trial for companies in their start-up phase.
+
+In all cases, we expect an acknowledgement to be made to DOAJ, with a link to our homepage.
+
+*National universities, professional schools, research institutes, teaching hospitals, healthcare centres, government offices, national libraries, agricultural extension centres, and local, non-governmental organisations 
+
