@@ -2,6 +2,7 @@ from doajtest.fixtures import JournalFixtureFactory
 from doajtest.testdrive.factory import TestDrive
 from portality.lib import dates
 from portality import models, constants
+from portality.core import app
 
 
 class Flags(TestDrive):
@@ -14,6 +15,8 @@ class Flags(TestDrive):
         self.anotheradmin = None
         self.editor = None
         self.editor_password = None
+        self.publisher = None
+        self.publisher_password = None
         self.random_user = None
         self.random_user_password = None
         self.eg = None
@@ -41,9 +44,15 @@ class Flags(TestDrive):
                     "password": self.random_user_password
                 }
             },
-            "journals": self.journals,
+            "journals": [
+                {"id": j.id,
+                 "title": j.bibjson().title,
+                 "url": app.config.get("BASE_URL", "") + "/admin/journal/" + j.id,
+                 } for j in self.journals
+            ],
             "non_renderable": {
-                "editor_groups": [self.eg.name, self.another_eg.name]
+                "editor_groups": [self.eg.name, self.another_eg.name],
+                "publisher": self.publisher.id
             },
             "script": {
                 "script_name": "approaching_flag_deadline",
@@ -81,6 +90,13 @@ class Flags(TestDrive):
         self.editor_password = self.create_random_str()
         self.editor.set_password(self.editor_password)
         self.editor.save()
+
+        publisher = "Publisher_" + random_str
+        self.publisher = models.Account.make_account(publisher + "@example.com", publisher, publisher,
+                                                  ["publisher", "api"])
+        self.publisher_password = self.create_random_str()
+        self.publisher.set_password(self.publisher_password)
+        self.publisher.save()
 
         gn = self.create_random_str()
         group_name = "Your Group " + gn
@@ -161,14 +177,19 @@ class Flags(TestDrive):
 
         for record in journals:
             source = JournalFixtureFactory.make_journal_source(True)
-            ap = models.Journal(**source)
-            bj = ap.bibjson()
+            j = models.Journal(**source)
+            bj = j.bibjson()
             bj.title = record["title"]
-            ap.set_id(ap.makeid())
-            ap.set_last_manual_update(dates.today())
-            ap.set_created(dates.before_now(200))
-            ap.set_editor_group(record["group"])
-            ap.set_editor(record["assigned_to"])
+            del bj.replaces
+            del bj.is_replaced_by
+            del bj.discontinued_date
+            j.set_id(j.makeid())
+            j.set_last_manual_update(dates.today())
+            bj.publisher = self.publisher.id
+            j.set_owner(self.publisher.id)
+            j.set_created(dates.before_now(200))
+            j.set_editor_group(record["group"])
+            j.set_editor(record["assigned_to"])
             if "flagged_to" in record:
                 note = {"id": self.create_random_str(),
                         "note": record["note"],
@@ -179,9 +200,9 @@ class Flags(TestDrive):
                             "assigned_to": record["flagged_to"],
                             "deadline": dates.days_after_now(record["deadline"]) if "deadline" in record.keys() else dates.far_in_the_future(),
                         }}
-                ap.set_notes(note)
-            ap.save()
-            self.journals.append(ap.id)
+                j.set_notes(note)
+            j.save()
+            self.journals.append(j)
 
         return self.journals
 
@@ -189,13 +210,13 @@ class Flags(TestDrive):
         for acc in params.get("accounts").values():
             models.Account.remove_by_id(acc["username"])
 
-        for app in params.get("journals"):
-            models.Journal.remove_by_id(app)
+        for j in params.get("journals"):
+            models.Journal.remove_by_id(j["id"])
 
-        print(params.get("non_renderable"))
-        print(params.get("non_renderable").get("editor_groups"))
         for eg in params.get("non_renderable").get("editor_groups"):
             models.EditorGroup.remove_by_id(eg)
+
+        models.Account.remove_by_id(params.get("non_renderable").get("publisher"))
 
         return {"success": True}
 

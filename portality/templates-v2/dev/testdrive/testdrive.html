@@ -177,7 +177,6 @@
         {# {% endif %}#}
         {# {% endfor %}#}
         {% elif v is iterable %}
-        <dt>list of values:</dt>
         <dd>
             <ul>
                 {% for v1 in v %}
@@ -227,6 +226,10 @@
         80%, 100% { content: '...'; }
     }
     .loading { opacity: 0.7; }
+    ul {
+        margin-left: 0;
+        list-style-type: none;
+    }
 </style>
 <button class="script-btn" id="script_btn" onclick="sendPost(scriptData)">
     {{ params['script']['title'] | default('Run script') }}
