@@ -65,8 +65,8 @@ A [copy of our patent non-assertion pledge](https://docs.google.com/document/d/1
 
 ---
 
-### Licensing terms for content published on DOAJ News Service
-15. DOAJ News Service is the DOAJ blog, hosted on WordPress: https://blog.doaj.org
+### Licensing terms for content published on the DOAJ Blog
+15. DOAJ's blog is hosted on WordPress: https://blog.doaj.org
 
 16. All content posted on the blog is licensed under the CC BY-NC Creative Commons license. See the blog footer for full details.
 
