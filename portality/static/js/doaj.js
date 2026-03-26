@@ -122,11 +122,6 @@ var doaj = {
         const namespace = "doaj-minisearch";
         const container = "." + namespace + "--container";
 
-        // Initialize quick search keywords input with autocomplete suggestions
-        if (typeof autocomplete === 'function') {
-            autocomplete('#quick-search-keywords', 'bibjson.keywords', 'journal', 1, true, false);
-        }
-
         $(container + " [name=content-type]").on("change", function() {
             let that = $(this);
             if (!that.is(":checked")) {
