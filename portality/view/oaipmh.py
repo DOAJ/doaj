@@ -524,10 +524,14 @@ def list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, fr
         # do an initial list records
         return _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=metadata_prefix, from_date=from_date, until_date=until_date, oai_set=oai_set)
     else:
+        # Technically speaking, having other parameters should result in a BadRequest.  This is interfering with
+        # the premium metadata mechanism, though, so just ignoring that for now.  The resumption token overrides
+        # all other parameters anyway
+        
         # resumption of previous request
-        if (metadata_prefix is not None or from_date is not None or until_date is not None
-                or oai_set is not None):
-            return BadArgument(base_url)
+        # if (metadata_prefix is not None or from_date is not None or until_date is not None
+        #         or oai_set is not None):
+        #     return BadArgument(base_url)
         return _resume_list_records(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
 
 
