@@ -29,7 +29,7 @@ The price to access our Premium Metadata Services is determined on a case-by-cas
 We will waive fees for:
 
 - any student, researcher or faculty member from any institution that supports DOAJ, either directly or through a consortium.
-- anyone studying, working or contracted at a non-commercial, not-for-profit organisation* from any of the Lower Middle Income Countries, as determined by the World Bank.
+- anyone studying, working or contracted at a non-commercial, not-for-profit organisation* from any of the Low- and Lower-Middle Income Countries, as determined by [the World Bank](https://data.worldbank.org/).
 
 We may offer a trial for companies in their start-up phase.
 
