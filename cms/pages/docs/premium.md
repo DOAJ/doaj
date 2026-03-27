@@ -16,11 +16,11 @@ Premium metadata service users have access to the following services:
 * Current Public Data Dump: data received from the Public Data Dump will be up-to-date to within 1 day of the current data in DOAJ.
 * Current Journal CSV: data contained in the Journal CSV will be up-to-date to within 1 hour of the current data in DOAJ.
 
+To upgrade your account to premium, or if you just want to learn more about our services, please [complete this form](https://forms.gle/Bbd6KiDijCinzNdp9) and we will contact you.
+
 To access your premium metadata services, you must be logged into your DOAJ account.  If accessing content machine-to-machine, you can include your API key in the URL to ensure you are receiving the most up-to-date data.  For example:
 
 ```https://doaj.org/csv?api_key=[your api key]```
-
-To upgrade your account to premium, or if you just want to learn more about our services, please [complete this form](https://forms.gle/Bbd6KiDijCinzNdp9) and we will contact you.
 
 ## Waiver policy
 
