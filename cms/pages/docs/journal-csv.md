@@ -30,4 +30,4 @@ If you would like access to more up-to-date metadata and to know more about our 
 
 ## Technical support for Premium Metadata Service users
 
-If you require technical support, please send an email to [our Help Desk](mailto:helpdesk@doaj.org?subject=Premium%20Metadata%20Service&bcc=B01D5@logemail.lessannoyingcrm.com)
+If you require technical support, please send an email to [helpdesk@doaj.org](mailto:helpdesk@doaj.org?subject=Premium%20Metadata%20Service)
