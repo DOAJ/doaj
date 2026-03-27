@@ -35,5 +35,9 @@ We may offer a trial for companies in their start-up phase.
 
 In all cases, we expect an acknowledgement to be made to DOAJ, with a link to our homepage.
 
+## Technical support for Premium Metadata Service users
+
+If you are a Premium Metadata Service user and you require technical support, please send an email to [helpdesk@doaj.org](mailto:helpdesk@doaj.org?subject=Premium%20Metadata%20Service)
+
 *National universities, professional schools, research institutes, teaching hospitals, healthcare centres, government offices, national libraries, agricultural extension centres, and local, non-governmental organisations 
 
