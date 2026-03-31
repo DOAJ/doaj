@@ -1976,11 +1976,6 @@ class FieldDefinitions:
         "name": "flags",
         "input": "group",
         "label": "Flags",
-        "repeatable": {
-            "initial": 2,
-            "add_button_placement": "top",
-            "add_field_permission": ["admin"]
-        },
         "subfields": [
             "flag_setter",
             "flag_created_date",
@@ -1990,10 +1985,8 @@ class FieldDefinitions:
             "flag_note_id",
             "flag_resolved"
         ],
-        "template": templates.FLAGS_LIST,
-        "entry_template": templates.FLAG_ENTRY_GROUP,
+        "template": templates.FLAG_ENTRY_GROUP,
         "widgets": [
-            "multiple_field",
             "flag_manager"
         ],
         "merge_disabled": "merge_disabled_notes"

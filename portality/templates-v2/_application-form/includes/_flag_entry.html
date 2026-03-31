@@ -1,4 +1,10 @@
 <div class="form__question--group {{ f.name }}__question--group--{{ idx }}">
+    {% if current_user.has_role("admin") %}
+        <p class="add_field__button_div" id="add_flag__button_div">
+            <button type="button" id="add_flag" class="add_flag__button label" >Add Flag</button>
+        </p>
+        {% break %}
+    {% endif %}
     <div class="form__question_inputs_div--{{ idx }}">
         {% for subfield in f.group_subfields() %}
         <div class="form-inputs--container {{ f.name }}-inputs--container--{{ idx }}">
