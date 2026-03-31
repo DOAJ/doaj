@@ -125,7 +125,7 @@
         <!-- Blog -->
         <section class="hero homepage__blog">
             <div class="container">
-                <h2 class="label label--secondary">News Service</h2>
+                <h2 class="label label--secondary">Blog</h2>
 
                 <div class="row">
                     {# Latest posts #}
@@ -229,7 +229,7 @@
                             {# TODO: Make sure these links work #}
                             <p>&rarr; <a href="{{ url_for('atom.feed') }}">See Atom feed</a></p>
                             <p>&rarr; <a href="https://docs.google.com/spreadsheets/d/1Kv3MbgFSgtSDnEGkA2JacrSjunRu0umHeZCtcMeqO5E/edit?usp=sharing">A log of journals added (and withdrawn)</a></p>
-                            <p>&rarr; <a href="{{ url_for('doaj.csv_data') }}">DOWNLOAD all journals as CSV</a></p>
+                            <p>&rarr; <a href="{{ url_for('doaj.journal_csv') }}">DOWNLOAD all journals as CSV</a></p>
                         </div>
                     </header>
                     <div class="col-sm-8">
