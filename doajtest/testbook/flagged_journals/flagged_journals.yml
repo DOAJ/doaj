@@ -9,22 +9,23 @@ tests:
     steps:
       - step: Navigate to /testdrive/flags
       - step: Login as an admin
-      - step: Open Feline Aerodynamics Review application (available on your dashboard)
+      - step: Click on the Journals icon
+      - step: Click Edit This Journal on the Feline Aerodynamics Review Journal (second journal in the list)
         results:
           - Above the notes there is the Add Flag button visible and active
       - step: Click Add Flag button
         results:
           - An empty flag form is displayed
-      - step: In assigned_to input attempt to add editor's id (you can find it in your testdrive/flags data)
+      - step: In assigned_to input attempt to add editor's username (you can find it in your testdrive/flags data)
         results:
           - No matches found is displayed and it is not possible to assign the editor
-      - step: In assigned_to input add random_user's id (you can find it in your testdrive/flags data)
+      - step: In assigned_to input add random_user's username (you can find it in your testdrive/flags data)
         results:
-          - Id is found and it can be selected
-      - step: Select the random_user's id
+          - Username is found and it can be selected
+      - step: Select the random_user's username
       - step: In deadline input add an improbable date (e.g., 2025-02-31)
         results:
-          - It's not possible to enter an improbable date
+          - It's not possible to enter a date in the past
       - step: In deadline input add a valid date
       - step: In text area add flag's note (any text)
       - step: Save application
@@ -33,12 +34,12 @@ tests:
           - All fields are editable
           - Add Flag button is disabled
       - step: Close the application with Unlock & Close
-      - step: Open The Bermuda Triangle Journal of Lost and Found record (available on your dashboard)
+      - step: Click Edit This Record for The Bermuda Triangle Journal of Lost and Found record (first journal on the Journals page)
         results:
           - The record has a flag assigned to another user, with no deadline and with a note.
           - All flag fields are editable
           - Add Flag button is disabled
-      - step: Add a valid deadline to a flag (e.g., 2025-04-01)
+      - step: Add a valid deadline to a flag (e.g., 2026-06-01)
       - step: Save the record
         results:
           - The flag is correctly saved with a new deadline
@@ -66,7 +67,7 @@ tests:
           - The new flag is saved and displayed
           - The old flag was converted to a note with text This flag was resolved on <i>date</i> by <your id>; and flag's note
       - step: Click Unlock & Close to close the application
-      - step: Open Journal of Intergalactic Diplomacy record
+      - step: Open Journal of Intergalactic Diplomacy record (last record on the first page of Journals)
         results:
           - This record has a flag assigned to you
           - In the flag form, in the Assign a User input, there is your id with a red flag icon
