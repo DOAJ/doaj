@@ -787,32 +787,31 @@ var formulaic = {
 
             this.init = function() {
                 const fieldName = this.fieldDef.name
-                this.container = $("." + fieldName + "__container");
-                this.flagGroups = $("div[class*='" + fieldName + "__question--group--']");
-                this.flagInputsContainer = $("[class^='form__question_inputs_div--']");
-                this.assigneeInputs = this.container.find("input[name$='-flag_assignee']");
-                this.addFlagBtn = this.container.find("#add_flag");
-                this.resolveFlagBtns = $("[id^='resolve_flag--']");
-                this.unresolveFlagBtns = $("[id^='unresolve_flag--']");
-                this.cancelFlagBtns = $("[id^='cancelAddingFlag--']");
-                this.flagNote = $("[id$='-flag_note']")
+                this.container = $("." + fieldName + "__container")[0];
+                this.flagInputsContainer = $("." + fieldName + "-inputs--container")[0];
+                this.assigneeInput = $("#" + fieldName + "-flag_setter")[0];
+                this.resolvedInput = $("#" + fieldName + "-flag_resolved")[0];
+                this.addFlagBtn = $("#add_flag")[0];
+                this.resolveFlagBtn = $("#resolve_flag-btn")[0];
+                this.unresolveFlagBtn = $("#unresolve_flag-btn")[0];
+                this.cancelFlagBtn = $("#cancel_flag-btn")[0];
+                this.flagNote = $("#" + fieldName + "-flag_note")[0];
                 this.textarea_max_height = 150;
-                this.flagDeadline = $("[id$='-flag_deadline']");
+                this.flagDeadline = $("#" + fieldName + "-flag_deadline")[0];
                 $(this.flagDeadline).flatpickr({"allowInput": true});
 
-                this.flagExists = false;
-                this.existingFlagIdx = null;
-                this.newFlagIdx = null;
-
-                for (var j = 0; j < this.assigneeInputs.length; j++) {
-                    if ($(this.assigneeInputs[j]).val()) {
-                        this.flagExists = true;
-                        break;
-                    }
+                this.flagExists = !!$(this.assigneeInput).val();
+                if (this.flagExists) {
+                    this.disableAddBtn();
+                    this.initializeExistingFlag();
+                }
+                else {
+                    $(this.flagInputsContainer).hide();
+                    this.enableAddBtn();
+                    this.toggleFlagButtons({showResolve: false, showUnresolve: false, showCancel: false});
                 }
 
                 this.setUpEventListeners();
-                this.setUI();
             }
 
             this.fullFlagHTML = function() {
@@ -833,17 +832,18 @@ var formulaic = {
 
             this.setUpEventListeners = function() {
                 this.addFlagBtn.on("click", () => this.addFlag())
-                this.resolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.resolveFlag(e)));
-                this.unresolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.unresolveFlag(e)));
-                this.cancelFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.cancelFlag(e)));
-                this.flagNote.each((_, textarea) => $(textarea).on("input", () => {
-                  textarea.style.height = 'auto'; // Reset first
-                  textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
-                }));
-                this.flagDeadline.each((_, input) => $(input).on("change", (e) => {
+                this.resolveFlagBtn.on("click", (e) => this.resolveFlag(e));
+                this.unresolveFlagBtn.on("click", (e) => this.unresolveFlag(e));
+                this.cancelFlagBtn.on("click", (e) => this.cancelFlag(e));
+                this.flagNote.on("input", () => {
+                    const textarea = this.flagNote[0];
+                    textarea.style.height = 'auto'; // Reset first
+                    textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
+                });
+                this.flagDeadline.on("change", (e) => {
                     const $that = $(e.target);
                     this.togglePastDeadlineWarning($that);
-                }));
+                });
             }
 
             this.togglePastDeadlineWarning = function($deadline_input) {
@@ -865,98 +865,21 @@ var formulaic = {
                 $(this.addFlagBtn).prop('title', "You can add only one flag per record. Resolve the existing flag to add another one.");
             }
 
-            this.getResolveBtn = function(idx) {
-                return $("[id^='resolve_flag--" + idx + "']")
-            }
-
-            this.getUnresolveBtn = function(idx) {
-                return $("[id^='unresolve_flag--" + idx + "']")
-            }
-
-            this.getResolvedInput = function(idx) {
-                return $("input[id='" + this.fieldDef + "-" + idx + "-flag_resolved']")
-            }
-
-            this.getClearFlagBtn = function(idx) {
-                return $("button[id='clearFlag--" + idx + "']");
-            }
-
-            this.getCancelFlagBtn = function(idx) {
-                return $("button[id='cancelAddingFlag--" + idx + "']")
-            }
-
-            this.getResolveFlagInput = function(idx) {
-                return $("input[id='" + this.fieldDef.name + "-" + idx + "-flag_resolved']")
-            }
-
-
-            this.removeResolveButtonsIfResolveDisabled = function () {
-                let $resolveInputs = $(this.container).find($("input[id$='flag_resolved']"));
-                $resolveInputs.each((idx, elem) => {
-                    if ($(elem).is(":disabled")) {
-                        this.getResolveBtn(idx).remove();
-                        this.getUnresolveBtn(idx).remove();
-                    }
-                });
-            };
-
-            this.setupFlagIndices = function () {
-                // existing flag is 1 if it doesn't exist just to be able to remove it.
-                this.existingFlagIdx = this.flagExists ? 0 : null;
-                this.newFlagIdx = this.flagExists ? 1 : 0;
-            };
-
-            this.toggleFlagButtons = function (idx, { showResolve = false, showUnresolve = false, showCancel = false, showClear = false }) {
-                this.getResolveBtn(idx).toggle(showResolve);
-                this.getUnresolveBtn(idx).toggle(showUnresolve);
-                this.getCancelFlagBtn(idx).toggle(showCancel);
-                this.getClearFlagBtn(idx).toggle(showClear);
+            this.toggleFlagButtons = function ({ showResolve = false, showUnresolve = false, showCancel = false, showClear = false }) {
+                $(this.resolveFlagBtn).toggle(showResolve);
+                $(this.unresolveFlagBtn).toggle(showUnresolve);
+                $(this.cancelFlagBtn).toggle(showCancel);
             };
 
             this.initializeExistingFlag = function () {
                 this.setUpFlagDetails();
-                if ($(this.flagDeadline[this.existingFlagIdx]).val()) {
-                    this.togglePastDeadlineWarning($(this.flagDeadline[this.existingFlagIdx]))
+                if (this.flagDeadline.val()) {
+                    this.togglePastDeadlineWarning($(this.flagDeadline))
                 }
                 this.setUpNoteDetails();
-                $(this.assigneeInputs[this.existingFlagIdx]).on("change", () => this.setUpFlagDetails());
+                $(this.assigneeInput).on("change", () => this.setUpFlagDetails());
 
-                this.toggleFlagButtons(this.existingFlagIdx, { showResolve: true, showUnresolve: false });
-            };
-
-            this.setupNewFlagGroup = function () {
-                if (!this.addFlagBtn.length) {
-                    this.flagGroups[this.newFlagIdx].remove();
-                } else {
-                    this.setupNewFlagVisibility();
-                }
-            };
-
-            this.setupNewFlagVisibility = function () {
-                this.toggleFlagButtons(this.newFlagIdx, { showCancel: true, showClear: true });
-
-                $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_setter").hide();
-                $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_created_date").hide();
-                if (this.flagExists) {
-                    $(this.flagGroups[this.newFlagIdx]).insertBefore(this.flagGroups[this.existingFlagIdx]);
-                }
-                $(this.flagGroups[this.newFlagIdx]).hide();
-            };
-
-            this.setUI = function() {
-
-                this.removeResolveButtonsIfResolveDisabled();
-
-                this.setupFlagIndices();
-                if (this.flagExists) {
-                    this.initializeExistingFlag();
-                }
-                else {
-                    // only 1 flagGroup is needed, the second one can be removed.
-                    $(this.flagGroups[1]).remove();
-                }
-                this.setupNewFlagGroup()
-                this.setAddBtnStatus();
+                this.toggleFlagButtons( { showResolve: true });
             };
 
             this.replaceInputWithSpan = function(input, newValue=null) {
@@ -1048,16 +971,6 @@ var formulaic = {
                     }
                 }
             };
-
-
-            this.setAddBtnStatus = function() {
-                if (this.flagExists) {
-                    this.disableAddBtn();
-                }
-                else {
-                    this.enableAddBtn();
-                }
-            }
 
             this.showNewFlag = function() {
                 $(this.flagGroups[this.newFlagIdx]).show();

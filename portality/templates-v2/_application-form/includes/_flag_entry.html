@@ -2,39 +2,33 @@
 
 <div class="{{ f.name }}__container form__question editorial-panel__question">
     <a id="question-{{ f.name }}"></a>
-    <div class="editorial-panel__question-header flex flex-space-between">
-        <label>
-            {% if f.help("long_help") %}
+    <div class="editorial-panel__question-header flex flex-end">
+        {% if f.help("long_help") %}
+            <label>
                 <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
-            {% endif %}
-        </label>
-            {% if current_user.has_role("admin") %}
-                <p class="add_field__button_div" id="add_flag__button_div">
-                    <button type="button" id="add_flag" class="add_flag__button label" >Add Flag</button>
-                </p>
-            {% endif %}
+            </label>
+        {% endif %}
+        {% if current_user.has_role("admin") %}
+                <button type="button" id="add_flag" class="add_flag__button label" >Add Flag</button>
+        {% endif %}
     </div>
     {% if f.help("short_help") %}
        <p class="form__short-help" style="margin-left: .5rem"><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
+    <div class="form-inputs--container {{ f.name }}-inputs--container">
         {% for subfield in f.group_subfields() %}
-        <div class="form-inputs--container {{ f.name }}-inputs--container--{{ idx }}">
             {% if subfield.label %}<label style="margin-left: 0">{{ subfield.label }} </label>{% endif %}
             {{ subfield.render_form_control() }}
             <div id="{{ f.name }}-errors"></div>
             {% if subfield.help("warning_message") %}
                 <div id="{{ f.name }}-warning" class="warning alert alert--danger" style="display:none">{{ subfield.help("warning_message") }}</div>
             {% endif %}
-
-        </div>
         {% endfor %}
-    <p class="control_buttons_div">
-        <button type="button" id="resolve_flag" class="resolve_flag__button label">Resolve Flag</button>
-        <button type="button" id="unresolve_flag" class="unresolve_flag__button label">Undo Resolving
-        </button>
-        <button type="button" id="cancelAddingFlag" class="remove_field__button">Cancel</button>
-    </p>
-
+    </div>
+    <button type="button" id="resolve_flag-btn" class="resolve_flag__button label">Resolve Flag</button>
+    <button type="button" id="unresolve_flag-btn" class="unresolve_flag__button label">Undo Resolving
+    </button>
+    <button type="button" id="cancel_flag-btn" class="remove_field__button">Cancel</button>
 </div>
 
     {% include "_application-form/includes/_modal.html" %}
