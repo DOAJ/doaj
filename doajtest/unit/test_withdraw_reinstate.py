@@ -110,9 +110,10 @@ class TestWithdrawReinstate(DoajTestCase):
 
         time.sleep(1)
 
-        # job failed
+        # job completed but failed with message
         bjob = task.background_job
-        assert bjob.status == "error"
+        assert bjob.status == "complete"
+        assert bjob.outcome_status == "fail"
         assert any(audit["message"] == Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS for audit in bjob["audit"])
         # no status changed
         for id in ids:
