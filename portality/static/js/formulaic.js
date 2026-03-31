@@ -1216,6 +1216,9 @@ var formulaic = {
             this.init = function () {
 
                 var tree = doaj.af.lccTree;
+                if (!tree || tree.length === 0) {
+                    return;
+                }
                 var containerId = edges.css_id(this.ns, "container");
                 var containerSelector = edges.css_id_selector(this.ns, "container");
                 var widgetId = edges.css_id(this.ns, this.fieldDef.name);
@@ -2067,7 +2070,7 @@ var formulaic = {
                 };
 
                 // apply the create search choice
-                let selector = "[name='" + this.fieldDef.name + "']";
+                let selector = this.form.formSelector + " [name='" + this.fieldDef.name + "']";
                 $(selector).select2({
                     multiple: true,
                     minimumInputLength: 1,
@@ -2081,7 +2084,6 @@ var formulaic = {
                     maximumSelectionSize: this.args["maximumSelectionSize"],
                     width: 'resolve'
                 });
-
                 $(selector).on("focus", formulaic.widgets._select2_shift_focus);
 
             };
