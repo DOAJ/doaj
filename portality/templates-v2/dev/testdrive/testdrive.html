@@ -295,5 +295,26 @@ function sendPost() {
             })
             .catch(err => console.error('Failed to copy', err));
     }
+
+    (function () {
+        const teardownUrl = "{{ params.teardown }}";
+
+        function triggerTeardown() {
+            if (!teardownUrl) return;
+
+            // best-effort request during page unload
+            if (navigator.sendBeacon) {
+                console.log("sendBeacon");
+                navigator.sendBeacon(teardownUrl);
+            } else {
+                // very old fallback (less reliable)
+                console.log("image fallback");
+                const img = new Image();
+                img.src = teardownUrl;
+            }
+        }
+
+        window.addEventListener("beforeunload", triggerTeardown);
+    })();
 </script>
 </html>
