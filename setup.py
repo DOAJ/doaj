@@ -21,6 +21,7 @@ setup(
         "jsonpath-ng~=1.6",
         "flask<3",
         "Werkzeug<3.0",   # FIXME: we have passwords using plain sha1 that are undecodable after 3.0
+        "Flask-Babel==4.0.0",
         "Flask-Cors==5.0.0",
         "Flask-DebugToolbar==0.15.1",
         "Flask-Login==0.6.3",
