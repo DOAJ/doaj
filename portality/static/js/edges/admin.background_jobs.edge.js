@@ -122,7 +122,6 @@ $.extend(true, doaj, {
             };
 
             this.formattedDate = function(input){
-                console.log("hello")
                 try {
                     // Fast validation
                     if (typeof input !== "string" || input.length < 20) {
