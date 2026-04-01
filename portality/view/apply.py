@@ -13,6 +13,10 @@ from portality.ui import templates
 
 blueprint = Blueprint('apply', __name__)
 
+# NOT and active URL this I will handle once the PR for application form in french is handled.
+@blueprint.route("/thank-you/fr", methods=["GET"])
+def application_thanks_fr():
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/fr-thank-you.html")
 
 @blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
