@@ -124,3 +124,14 @@ button.aria-button {
     -moz-appearance: none;
     appearance: none;
 }
+
+.user-actions {
+  display: flex;
+  align-items: center;
+
+  .user-item {
+    form {
+      margin: 0;
+    }
+  }
+}

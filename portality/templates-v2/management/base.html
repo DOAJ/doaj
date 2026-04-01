@@ -174,25 +174,27 @@
         {% include "includes/_flash_notification.html" %}
         {% block management_content %}{% endblock %}
 
-        <p>
-            <small style="display: flex; align-items: center;">
-                
-                <!-- Logout form -->
-                <form method="POST" action="{{ url_for('account.logout') }}" style="margin: 0;">
-                    <button type="submit" id="logout" class="tag">
-                        Logout
-                        <span data-feather="log-out" aria-hidden="true"></span>
-                    </button>
+        <section class="user-actions">
+            <div class="user-item">
+                <form method="POST" action="{{ url_for('account.logout') }}">
+                    <small>
+                        <button type="submit" id="logout" class="tag">
+                            Logout
+                            <span data-feather="log-out" aria-hidden="true"></span>
+                        </button>
+                    </small>
                 </form>
+            </div>
 
-                <!-- Settings link -->
-                <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
-                    <span data-feather="settings" aria-hidden="true"></span>
-                    Settings
-                </a>
-
-            </small>
-        </p>
+            <div class="user-item">
+                <small>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
+                        <span data-feather="settings" aria-hidden="true"></span>
+                        Settings
+                    </a>
+                </small>
+            </div>
+        </section>
     </main>
     {% include "includes/_back-to-top.html" %}
 
