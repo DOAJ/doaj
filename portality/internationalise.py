@@ -87,7 +87,7 @@ def url_for_other_page(endpoint, **kwargs):
         kwargs['lang'] = g.get('lang', DEFAULT_LOCALE)
     return url_for(endpoint, **kwargs)
 
-def internationalize(app):
+def internationalise(app):
     # Initialize internationalization using Flask-Babel
     app.config['BABEL_DEFAULT_LOCALE'] = DEFAULT_LOCALE  # Default
     app.config['BABEL_DEFAULT_TIMEZONE'] = DEFAULT_TIMEZONE

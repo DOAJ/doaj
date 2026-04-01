@@ -32,7 +32,7 @@ from portality import constants
 
 from portality.ui.messages import Messages
 from portality.ui import exceptions
-from portality.internationalize import internationalize
+from portality.internationalise import internationalise
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -106,7 +106,7 @@ if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False)
 # putting it here ensures it will run under any web server
 initialise_index(app, es_connection)
 
-internationalize(app)
+internationalise(app)
 
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
