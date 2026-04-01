@@ -151,7 +151,6 @@ You may see the 403 forbidden or 500 errors for different reasons. These apply t
 - ISSNs
   - You may be sending us an extra ISSN that we don’t have in your journal record.
   - You may be sending only one ISSN, but we have two in the journal record.
-  - We may have the journal's ISSNs in an old version of your journal record.
   - You might have put the EISSN in the PISSN field and vice-versa.
 - Wrong account
   - You may be sending us an ISSN that belongs to a journal attached to a different account.
