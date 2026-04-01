@@ -2,6 +2,12 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.6.0
+
+French translation of application form, introducing numerous internationalisation features.
+
+https://github.com/DOAJ/doajPM/issues/3916
+
 ### 8.5.6 - 2026-03-31
 
 Fix for quick search (via menu bar) selector scope
