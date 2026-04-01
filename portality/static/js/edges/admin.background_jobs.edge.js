@@ -79,7 +79,7 @@ $.extend(true, doaj, {
                         auditBlock += "<strong>Audit Messages:</strong><br>";
                         for (var i = 0; i < resultobj.audit.length; i++) {
                             var audit = resultobj.audit[i];
-                            auditBlock += audit.timestamp + " -- " + edges.escapeHtml(audit.message) + "<br>";
+                            auditBlock += this.formattedDate(audit.timestamp) + " -- " + edges.escapeHtml(audit.message) + "<br>";
                         }
                     }
 
@@ -119,6 +119,57 @@ $.extend(true, doaj, {
 
                 var moreInfoSelector = edges.css_class_selector(this.namespace, "toggle", this);
                 edges.on(moreInfoSelector, "click", this, "toggleMoreInformation");
+            };
+
+            this.formattedDate = function(input){
+                console.log("hello")
+                try {
+                    // Fast validation
+                    if (typeof input !== "string" || input.length < 20) {
+                    console.error("formatTimestamp: Invalid input →", input);
+                    return input;
+                    }
+
+                    // Normalize microseconds → milliseconds (no regex)
+                    let normalized = input;
+                    const dotIndex = input.indexOf(".");
+                    if (dotIndex !== -1) {
+                    const zIndex = input.indexOf("Z", dotIndex);
+                    if (zIndex !== -1) {
+                        normalized = input.slice(0, dotIndex + 4) + "Z";
+                    }
+                    }
+
+                    const date = new Date(normalized);
+
+                    // Invalid date check (fast NaN check)
+                    if (date.getTime() !== date.getTime()) {
+                    console.error("formatTimestamp: Invalid date →", input);
+                    return input;
+                    }
+
+                    // Extract parts
+                    const y = date.getUTCFullYear();
+                    const m = date.getUTCMonth() + 1;
+                    const d = date.getUTCDate();
+                    const h = date.getUTCHours();
+                    const min = date.getUTCMinutes();
+                    const s = date.getUTCSeconds();
+
+                    // Inline formatting (no helper functions)
+                    return (
+                    y + "-" +
+                    (m < 10 ? "0" : "") + m + "-" +
+                    (d < 10 ? "0" : "") + d + " " +
+                    (h < 10 ? "0" : "") + h + ":" +
+                    (min < 10 ? "0" : "") + min + ":" +
+                    (s < 10 ? "0" : "") + s
+                    );
+
+                } catch (error) {
+                    console.error("formatTimestamp: Unexpected error →", error, "Input:", input);
+                    return input;
+                }
             };
 
             this.toggleMoreInformation = function(element) {
