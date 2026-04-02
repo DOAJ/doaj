@@ -495,6 +495,7 @@ class JournalGenericXWalk(object):
 
         forminfo["flags"] = []
         if obj.flags:
+            print(obj.flags)
             # display only the newest flag
             flag = obj.flags[0]
             author_id = flag["author_id"]
@@ -508,6 +509,7 @@ class JournalGenericXWalk(object):
                         "flag_note_id": flag["id"], "flag_setter": flag_setter, "flag_assignee": flag_assignee,
                         "flag_deadline": flag_deadline }
             forminfo['flags'].append(flag_obj)
+            forminfo["flags"] = flag_obj
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:
