@@ -786,21 +786,23 @@ var formulaic = {
             this.namespace = "formulaic-flagmanager-" + this.fieldDef.name;
 
             this.init = function() {
-                const fieldName = this.fieldDef.name
-                this.$container = $($("." + fieldName + "__container")[0]);
-                this.$flagInputsContainer = $($("." + fieldName + "-inputs--container")[0]);
-                this.$assigneeInput = $($("#" + fieldName + "-flag_setter")[0]);
-                this.$resolvedInput = $($("#" + fieldName + "-flag_resolved")[0]);
+                this.fieldName = this.fieldDef.name
+                this.$container = $($("." + this.fieldName + "__container")[0]);
+                this.$flagInputsContainer = $($("." + this.fieldName + "-inputs--container")[0]);
+                this.$assigneeInput = $($("#" + this.fieldName + "-flag_assignee")[0]);
+                this.$resolvedInput = $($("#" + this.fieldName + "-flag_resolved")[0]);
+                this.$authorInput = $($("#" + this.fieldName + "-flag_setter")[0]);
+                this.$createdInput = $($("#" + this.fieldName + "-flag_created_date")[0]);
                 this.$addFlagBtn = $($("#add_flag")[0]);
                 this.$resolveFlagBtn = $($("#resolve_flag-btn")[0]);
                 this.$unresolveFlagBtn = $($("#unresolve_flag-btn")[0]);
                 this.$cancelFlagBtn = $($("#cancel_flag-btn")[0]);
-                this.$flagNote = $($("#" + fieldName + "-flag_note")[0]);
+                this.$flagNote = $($("#" + this.fieldName + "-flag_note")[0]);
                 this.textarea_max_height = 150;
-                this.$flagDeadline = $($("#" + fieldName + "-flag_deadline")[0]);
+                this.$flagDeadline = $($("#" + this.fieldName + "-flag_deadline")[0]);
                 this.$flagDeadline.flatpickr({"allowInput": true});
 
-                this.flagExists = !!$(this.assigneeInput).val();
+                this.flagExists = !!(this.$assigneeInput.val());
                 if (this.flagExists) {
                     this.disableAddBtn();
                     this.initializeExistingFlag();
@@ -846,12 +848,12 @@ var formulaic = {
                 });
             }
 
-            this.togglePastDeadlineWarning = function($deadline_input) {
-                if (doaj.dates.is_in_the_past($deadline_input.val())){
-                    $deadline_input.siblings('.warning').show();
+            this.togglePastDeadlineWarning = function() {
+                if (doaj.dates.is_in_the_past(this.$flagDeadline.val())){
+                    this.$flagDeadline.siblings('.warning').show();
                 }
                 else {
-                    $deadline_input.siblings('.warning').hide();
+                    this.$flagDeadline.siblings('.warning').hide();
                 }
             }
 
@@ -873,102 +875,50 @@ var formulaic = {
 
             this.initializeExistingFlag = function () {
                 this.setUpFlagDetails();
-                if (this.flagDeadline.val()) {
-                    this.togglePastDeadlineWarning($(this.flagDeadline))
+                if (this.$flagDeadline.val()) {
+                    this.togglePastDeadlineWarning()
                 }
-                this.setUpNoteDetails();
-                $(this.assigneeInput).on("change", () => this.setUpFlagDetails());
-
-                this.toggleFlagButtons( showResolve=true );
+                this.setUpFlagHeader();
+                $(this.$assigneeInput).on("change", () => this.setUpFlagDetails());
+                this.toggleFlagButtons( showResolve=true, showUnresolve=false );
             };
 
-            this.replaceInputWithSpan = function(input, newValue=null) {
-                let $input = $(input);
-                let text = newValue || $input.val();
-
-                let newFlag = false;
-
-                if ($input.closest('body').length === 0) {
-                    $('body').append($input.css({ position: 'absolute', visibility: 'hidden' }));
-                    newFlag = true;
+            this.insertSpan = function(content, $placement, before=false, idSuffix="") {
+                let id = "spanPretendingToBeInput";
+                const $input = this.$flagDeadline;
+                if (idSuffix){
+                    id += "--" + idSuffix;
                 }
-
-                // Create the span
-                let $span = $('<span class="spanPretendingToBeInput" id="spanPretendingToBeInput--flag"></span>')
-                    .html(text)
+                let $span = $('<span class="spanPretendingToBeInput" id="' + id + '"></span>')
+                    .html(content)
                     .css({
                         color: $input.css('color'),
                         textAlign: $input.css('text-align'),
                         verticalAlign: $input.css('vertical-align'),
                         lineHeight: $input.css('line-height'),
                     })
-
-                    if (newFlag) {
-                        $input.remove();
+                    if (before) {
+                        $placement.before($span, $span)
                     }
-                    return $span;
+                    else {
+                        $placement.after($span, $span)
+                    }
                 }
 
-            this.setUpNoteDetails = function() {
-                let $authorInput = $("input[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_setter']");
-                let $flagDateInput = $("input[id='" + this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_created_date']");
-                let newNoteText = `<strong>Created by: </strong>` + $authorInput.val() + ", " + doaj.dates.humanDateTime($flagDateInput.val());
-                let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), newNoteText)
-                $authorInput.before($newSpan);
-                $authorInput.hide();
-                $flagDateInput.hide();
+            this.setUpFlagHeader = function() {
+                const humanFriendlyAuthor = this.$authorInput.val().replace(/\s*\([^)]*\)\s*/g, "").trim();
+                const headerText = `<strong>Created by: </strong>` + humanFriendlyAuthor + ", " + doaj.dates.humanDateTime(this.$createdInput.val());
+                // let $newSpan = this.replaceInputWithSpan($("<input id='" + this.fieldName + "-flag_header' disabled='disabled' type='text'>"), newNoteText)
+                this.insertSpan(headerText, this.$authorInput, before=true, idSuffix=this.fieldName)
             };
 
             this.setUpFlagDetails = function() {
-                let $assigneeInput = $(this.assigneeInputs[this.existingFlagIdx]);
-                let $flagDeadlineInput = $("[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_deadline']");
-                let flagDetailsText = `<span>`;
-                let flagDetailsText_assignee = "";
-                let flagDetailsText_deadline = "";
-
-                if ($assigneeInput.is(":disabled")) {
-                    if ($assigneeInput.val() === doaj.session.currentUserId) {
-                        flagDetailsText += this.fullFlagHTML();
-                    }
-                    else {
-                        flagDetailsText_assignee = `<strong>Assigned to: </strong>` + $assigneeInput.val();
-                    }
-
-                    if ($flagDeadlineInput.val()) {
-                        flagDetailsText_deadline = `<strong>Deadline: </strong>` + $flagDeadlineInput.val();
-                    }
-
-                    if (flagDetailsText_assignee !== "") {
-                        if (flagDetailsText_deadline) {
-                            flagDetailsText += flagDetailsText_assignee + `, ` + flagDetailsText_deadline;
-                        }
-                        else {
-                            flagDetailsText += flagDetailsText_assignee;
-                        }
-                    }
-                    else {
-                        if (flagDetailsText_deadline) {
-                            flagDetailsText += flagDetailsText_deadline;
-                        }
-                    }
-
-                    flagDetailsText += `</span>`;
-
-                    let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), flagDetailsText);
-                    $assigneeInput.parent().before($newSpan);
-                    $assigneeInput.parent().hide();
-                    $flagDeadlineInput.parent().hide();
+                const flagIcon = $(".flag")
+                if (flagIcon.length > 0) {
+                    flagIcon.remove();
                 }
-                else {
-                    if ($(".flag").length > 0) {
-                        $(".flag").remove();
-                    }
-                    if ($assigneeInput.val() === doaj.session.currentUserId) {
-                        if ($(".flag").length > 0) {
-                            $(".flag").remove();
-                        }
-                        $assigneeInput.parent().prepend(this.fullFlagHTML());
-                    }
+                if (this.$assigneeInput.val() === doaj.session.currentUserId) {
+                    this.$assigneeInput.parent().prepend(this.fullFlagHTML());
                 }
             };
 
