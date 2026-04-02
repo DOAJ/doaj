@@ -1,5 +1,5 @@
 .editorial-panel {
-    span.spanPretendingToBeInput {
+    .spanPretendingToBeInput {
         display: block;
 
         &:has(svg) {
@@ -61,6 +61,20 @@
     .flag--resolved {
         position: relative;
         opacity: 0.2; /* Set opacity of entire div */
+        .pretendInputWrapper {
+            .pretendLabel {
+                margin-bottom: .75rem;
+                font-size: 1.125em;
+            }
+            .pretendInput {
+                margin-bottom: .375rem;
+                width: 100% !important;
+                border: 1px solid #A9A7A5;
+                padding: .5em;
+                font-size: 1em;
+            }
+        }
+
     }
 
     .flag--resolved::before {

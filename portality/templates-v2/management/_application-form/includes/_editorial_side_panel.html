@@ -47,6 +47,7 @@
         {% endfor %}
     {% endif %}
 
+    <aside class="editorial-panel__content">
     <fieldset>
         {% set fs = formulaic_context.fieldset("flags") %}
         {% if fs %}
@@ -65,4 +66,5 @@
             {% endfor %}
         {% endif %}
     </fieldset>
+    </aside>
 </div>

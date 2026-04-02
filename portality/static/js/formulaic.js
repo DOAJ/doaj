@@ -908,7 +908,6 @@ var formulaic = {
             this.setUpFlagHeader = function() {
                 const humanFriendlyAuthor = this.$authorInput.val().replace(/\s*\([^)]*\)\s*/g, "").trim();
                 const headerText = `<strong>Created by: </strong>` + humanFriendlyAuthor + ", " + doaj.dates.humanDateTime(this.$createdInput.val());
-                // let $newSpan = this.replaceInputWithSpan($("<input id='" + this.fieldName + "-flag_header' disabled='disabled' type='text'>"), newNoteText)
                 this.insertSpan(headerText, this.$authorInput, before=true, idSuffix=this.fieldName)
             };
 
@@ -927,15 +926,18 @@ var formulaic = {
             }
 
             this.markFlagAsResolved = function() {
-                $(this.flagInputsContainer[this.existingFlagIdx]).addClass("flag--resolved");
-                $(this.flagInputsContainer[this.existingFlagIdx])
-                    .find("input")
-                    .addClass("parsley-excluded")
-                $(this.flagInputsContainer[this.existingFlagIdx])
-                    .find("textarea")
-                    .addClass("parsley-excluded")
-                this.getResolveBtn(this.existingFlagIdx).hide();
-                this.getUnresolveBtn(this.existingFlagIdx).show();
+                const classes = this.$flagInputsContainer.attr("class") || "";
+                const flag_content = `<div class="header spanPretendingToBeInput">` + $("#spanPretendingToBeInput--flags").html() + `</div>` +
+                    `<div class="assignee pretendInputWrapper"><div class="pretendLabel">Assign a user 
+</div><div class="pretendInput">` + this.$assigneeInput.val() + `</div></div>` +
+                    `<div class="deadline pretendInputWrapper"><div class="pretendLabel">Deadline 
+</div><div class="pretendInput">` + this.$flagDeadline.val() + `</div></div>` +
+                    `<div class="note pretendInputWrapper"><div class="pretendInput">` + this.$flagNote.val() + `</div></div>`
+                const $resolvedContainer = $("<div>")
+                    .addClass(classes)
+                    .addClass("flag--resolved")
+                    .html(flag_content);
+                this.$flagInputsContainer.after($resolvedContainer);
             }
 
             this.markFlagAsUnresolved = function() {
@@ -966,19 +968,21 @@ var formulaic = {
 
             this.resolveFlag = function(e) {
                 this.markFlagAsResolved();
-                this.getResolveFlagInput(this.existingFlagIdx).val("true");
-                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("readonly", true))
+                this.$resolvedInput.val("true");
                 this.flagExists = false;
-                this.setAddBtnStatus();
+                this.toggleFlagButtons(false, true, false);
+                this.enableAddBtn();
+                this.$flagInputsContainer.find("input, textarea").val("");
+                this.$assigneeInput.val("").trigger("change");
+                this.$flagInputsContainer.hide();
             }
 
             this.unresolveFlag = function(e) {
-                // let flagId = e.target.id.split("--")[1];
-                this.markFlagAsUnresolved();
-                this.getResolveFlagInput().val("false");
-                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("readonly", false))
+                // this.markFlagAsUnresolved();
+                this.$resolvedInput.val("false");
                 this.flagExists = true;
-                this.setAddBtnStatus();
+                this.disableAddBtn();
+                console.log("marked as unresolved")
             }
 
             this.init();
