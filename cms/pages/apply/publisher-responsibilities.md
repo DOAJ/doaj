@@ -131,6 +131,15 @@ If a member of the DOAJ Team has sent you a CSV file, we ask that you complete i
 
 We aim to process update requests within one month.
 
+### Uploading article metadata
+
+You may upload article metadata to us once your journal is indexed in DOAJ. 
+
+- The article metadata you upload must have a [Publication date](/docs/xml/#list-of-doaj-xml-elements) on or after the date that the journal started to publish as true open access, according to [DOAJ's definition](/apply/guide/#the-type-of-open-access).
+- You are not able to upload article metadata for back files prior to the OA start year. 
+
+From April 2026, journal account owners will receive an automated email notification if we delete any article metadata due to broken links or duplication. Please see [further details](/docs/faq/#uploading-article-metadata) on uploading article metadata.
+
 ### Journal title changes, mergers or continuations
 
 - There are [specific rules](https://www.issn.org/understanding-the-issn/assignment-rules/issn-the-major-principles/) about what to do when a journal changes its title.
