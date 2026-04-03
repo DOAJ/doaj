@@ -34,7 +34,7 @@ def locale_middleware():
             return None
 
         # Redirect for included routes
-        if request.path and any(request.path.startswith(f'/{route}') for route in INCLUDE_ROUTES):
+        if request.path and any(request.path.strip('/') == f'{route}' for route in INCLUDE_ROUTES):
             # update selected language
             lang = request.args.get('lang')
             if lang:
