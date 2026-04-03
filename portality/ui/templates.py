@@ -55,6 +55,7 @@ UPDATE_REQUESTS_SEARCH = "management/admin/update_requests.html"
 DASHBOARD = "management/admin/dashboard.html"
 NOTIFICATIONS = "management/admin/notifications.html"
 ADMIN_UNLOCKED = "management/admin/unlocked.html"
+ADMIN_WORKFLOW_OVERVIEW = "management/admin/workflow.html"
 
 # Application Form
 MANED_APPLICATION_FORM = "management/admin/maned_application.html"
@@ -69,6 +70,14 @@ PUBLISHER_READ_ONLY_APPLICATION = "public/publisher/readonly_application.html"
 MANED_READ_ONLY_JOURNAL = "management/admin/readonly_journal.html"
 EDITOR_READ_ONLY_JOURNAL = "management/editor/readonly_journal.html"
 MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_journal_bulk_edit.html"
+
+# Workflow components
+WORKFLOW_CLAIM_WIDGET = "management/admin/_workflow/includes/claim.html"
+WORKFLOW_ASSIGN_WIDGET = "management/admin/_workflow/includes/assign.html"
+WORKFLOW_UNCLAIM_WIDGET = "management/admin/_workflow/includes/unclaim.html"
+WORKFLOW_MINIMAL_REVIEW_WIDGET = "management/admin/_workflow/includes/minimal_review.html"
+WORKFLOW_FAIL_WIDGET = "management/admin/_workflow/includes/fail.html"
+WORKFLOW_EDIT_WIDGET = "management/admin/_workflow/includes/edit.html"
 
 # Reusable application form components
 AF_ENTRY_GOUP = "_application-form/includes/_entry_group.html"

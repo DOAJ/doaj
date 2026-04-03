@@ -174,3 +174,8 @@ class DOAJ(object):
         """
         from portality.bll.services import admin_alerts
         return admin_alerts.AdminAlertsService()
+
+    @classmethod
+    def workflowService(cls):
+        from portality.bll.services import workflow
+        return workflow.WorkflowService()
