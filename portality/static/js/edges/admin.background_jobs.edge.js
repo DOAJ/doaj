@@ -79,7 +79,7 @@ $.extend(true, doaj, {
                         auditBlock += "<strong>Audit Messages:</strong><br>";
                         for (var i = 0; i < resultobj.audit.length; i++) {
                             var audit = resultobj.audit[i];
-                            auditBlock += doaj.dates.formatFullDateTime(audit.timestamp) + " -- " + edges.escapeHtml(audit.message) + "<br>";
+                            auditBlock += audit.timestamp + " -- " + edges.escapeHtml(audit.message) + "<br>";
                         }
                     }
 
