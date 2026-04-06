@@ -91,7 +91,7 @@ The following information must be available online and easily accessible from th
   - The editorial board for the journal should consist of at least five editors with appropriate qualifications and expertise. It is recommended that board members should not all come from the same institution.
 - All articles must pass through a quality control system (peer review) before publication.
   - The type and details of the peer review process must be stated clearly on the website, including the process for special issues, if applicable.
-  - At least two independent reviewers should review each article.
+  - At least two independent reviewers must review each article.
 - Use of a plagiarism checking service is highly recommended but not required for inclusion in DOAJ.
 - Endogeny must be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
@@ -130,7 +130,7 @@ When concerns regarding a journal or publisher's quality and publishing practice
 
 - Presence of clear and reliable key information on the journal's website
 - Composition of the journal's editorial board
-- Signs of poor peer review processess
+- Signs of poor peer review processes
 - Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
 - Journal management and operation
 
@@ -284,18 +284,23 @@ Reports of questionable practice will be investigated by the [quality team](http
 
 ## Appeals
 
-Appeals must be submitted within six months from the decision date. Your journal is eligible to submit an appeal if
+Appeals must be submitted within six months from the decision date. A journal or publisher is eligible to submit an appeal if
 
-- It has been removed from DOAJ.
-- The application has been rejected, and no new application is allowed for at least one year.
+- The journal has been removed from DOAJ.
+- The application has been rejected, and no new application from the publisher or journal is allowed for at least one year.
 
-Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal should contain the following information:
+If the decision applies to a publisher, the publisher must appeal; appeals from individual journals will not be considered. Appeals are for when the decision was made in error: changes made after the decision will not be considered. The appeal must give evidence that the original assessment was in error and that the criteria were met at the time of the decision.
+
+Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal must contain the following information:
 
 - Journal title
 - Journal ISSN
+- Journal publisher
 - Reason for appeal
 - Evidence for the DOAJ Appeals Committee to consider
 - The original notification of rejection/removal
+
+Appeals submitted without the required information will not be accepted for review.
 
 Appeals related to the outcome of a [quality investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
 
