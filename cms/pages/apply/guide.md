@@ -124,9 +124,9 @@ Journals that publish special issues or other content curated by guest editors m
   - “All rights reserved” is never appropriate for open access content.
 - [More about copyright](/apply/copyright-and-licensing/)
 
-## Quality criteria
+## Integrity & Ethics criteria
 
-When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the quality team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
+When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the Journal Integrity & Ethics team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
 
 - Presence of clear and reliable key information on the journal's website
 - Composition of the journal's editorial board
@@ -252,7 +252,6 @@ Rejected applications for which the following were the only issues can be resubm
 - Unconfirmed ISSN
 - Website unavailable
 - Insufficient content published
-- The journal was transferred to a publisher not already in DOAJ
 
 Where a journal has been rejected for other reasons, a new application may be submitted after six months.
 
@@ -278,7 +277,7 @@ We undertake periodic re-evaluation of journals accepted into DOAJ, particularly
 - They have not been updated by the publisher for several years 
 - Reports are received of website unavailability or questionable practices
 
-Reports of questionable practice will be investigated by the [quality team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
+Reports of questionable practice will be investigated by the [Journal Integrity and Ethics team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
 
 ---
 
