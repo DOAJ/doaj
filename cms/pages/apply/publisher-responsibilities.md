@@ -162,6 +162,9 @@ If a journal is moving to or from another publisher, let us know as soon as poss
 - Name and email address of the old publisher
 - Name and email address of the new publisher
 
+If the journal has transferred to a new publisher that has not registered with us earlier and/or does not have journals indexed in DOAJ it will be removed and the new publisher may submit an application with no embargo period.
+
+
 ## Journal queries
 
 ### Journal is not listed (is withdrawn)
