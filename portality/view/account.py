@@ -18,6 +18,11 @@ from portality.ui import templates
 
 blueprint = Blueprint('account', __name__)
 
+@blueprint.url_value_preprocessor
+def pull_lang(endpoint, values):
+    # Remove 'lang' so it is not passed to the view function
+    if values:
+        lang = values.pop('lang', None)
 
 @blueprint.route('/')
 @login_required
@@ -226,7 +231,6 @@ def login():
         return render_template(templates.LOGIN_TO_APPLY, form=form)
     return render_template(templates.GLOBAL_LOGIN, form=form)
 
-
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
 @write_required()
@@ -304,7 +308,7 @@ def reset(reset_token):
     return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
 
-@blueprint.route('/logout')
+@blueprint.route('/logout', methods=['POST'])
 @ssl_required
 def logout():
     logout_user()
@@ -378,5 +382,6 @@ def register(template=templates.REGISTER):
     return render_template(template, form=form)
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
+@write_required()
 def create():
     return register(template=templates.CREATE_USER)

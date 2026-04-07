@@ -1,6 +1,3 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-
 class DoajLoginPage:
     URL = 'localhost:5004/account/login'
 

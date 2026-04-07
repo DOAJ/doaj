@@ -10,10 +10,8 @@ def load_cases():
                                "test_id",
                                {"test_id" : []})
 
-import json
-
 from doajtest.fixtures.background import save_mock_bgjob
-from doajtest.helpers import DoajTestCase, apply_test_case_config
+from doajtest.helpers import DoajTestCase
 from portality.util import patch_config
 from portality import constants
 from portality.bll import DOAJ

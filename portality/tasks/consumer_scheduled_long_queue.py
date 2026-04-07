@@ -15,3 +15,4 @@ from portality.tasks.article_cleanup_sync import scheduled_article_cleanup_sync,
 from portality.tasks.harvester import scheduled_harvest  # noqa
 from portality.tasks.public_data_dump import scheduled_public_data_dump, public_data_dump  # noqa
 from portality.tasks.sitemap import scheduled_sitemap, generate_sitemap  # noqa
+from portality.tasks.ris_export import scheduled_ris_export, ris_export

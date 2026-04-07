@@ -14,7 +14,7 @@ Our index offers a voice to your journals, regardless of their language or subje
 
 - Discovery services and aggregators: OpenAlex, Web of Science, Scopus, Proquest products, EBSCO products, Google Scholar, OCLC, WorldCat, Dimensions, CORE, ROAR, ROAD, Research4Life portals, OpenAIRE and many more
 - University discovery systems and library portals
-- AI solutions such as ChatGPT, university large language processing models, and other projects
+- AI solutions such as ChatGPT, Gemini, Perplexity, university large language processing models, and other projects
 - Journal platforms such as Redalyc and Latindex
 - National funder tools, like in Indonesia, Norway, or Austria
 - Online tools: Plan S' Journal Checker Tool (JCT), B!SON OA Journal Recommender, Open Access Journal Finder from Enago, SciFree's Journal Search Tool, BASE (Bielefeld Academic Search Engine), JURN, ChronosHub's journal finder

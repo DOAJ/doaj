@@ -26,15 +26,11 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         super(TestBLLPrepareUpdatePublisher, self).setUp()
         self.svc = DOAJ.articleService()
         self.is_id_updated = self.svc._doi_or_fulltext_updated
-        self.merge = Article.merge
-        self.pull = Article.pull
 
     def tearDown(self):
 
         super(TestBLLPrepareUpdatePublisher, self).tearDown()
         self.svc._doi_or_fulltext_updated = self.is_id_updated
-        Article.merge = self.merge
-        Article.pull = self.pull
 
     @parameterized.expand(is_acceptable_load_cases)
     def test_is_acceptable(self, value, kwargs):

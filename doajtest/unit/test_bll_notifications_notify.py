@@ -4,7 +4,6 @@ from io import StringIO
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.bll import DOAJ
-from portality.ui.messages import Messages
 from portality.ui import templates
 from portality.bll.exceptions import NoSuchObjectException, NoSuchPropertyException
 
