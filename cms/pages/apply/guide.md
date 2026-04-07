@@ -301,7 +301,7 @@ Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal must con
 
 Appeals submitted without the required information will not be accepted for review.
 
-Appeals related to the outcome of a [quality investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
+Appeals related to the outcome of the [Journal Integrity and Ethics team's investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
 
