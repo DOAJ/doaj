@@ -33,7 +33,7 @@ When you register with us, we use your email address to send important informati
 
 - Add helpdesk@doaj.org to your contacts.
 - Check your Spam folder. If you see an email from us there, mark it as safe.
-- Log into your account regularly and check that your email address is up to date.
+- Log in to your account regularly and check that your email address is up to date.
 
 **Using an institutional email address**
 If you use an institutional email address, your institution may apply extra security measures, such as a firewall. Your IT department administers the firewall. If you aren’t receiving our emails, contact your IT department to see if they can find emails from helpdesk@doaj.org and if they will let them through. If they have concerns about doing this, ask them to contact us.
