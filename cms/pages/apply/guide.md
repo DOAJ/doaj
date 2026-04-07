@@ -91,7 +91,7 @@ The following information must be available online and easily accessible from th
   - The editorial board for the journal should consist of at least five editors with appropriate qualifications and expertise. It is recommended that board members should not all come from the same institution.
 - All articles must pass through a quality control system (peer review) before publication.
   - The type and details of the peer review process must be stated clearly on the website, including the process for special issues, if applicable.
-  - At least two independent reviewers must review each article.
+  - At least two independent reviewers must review each article, with an exception for arts & humanities journals(for which editorial review must be handled with a minimum of two editors).
 - Use of a plagiarism checking service is highly recommended but not required for inclusion in DOAJ.
 - Endogeny must be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
