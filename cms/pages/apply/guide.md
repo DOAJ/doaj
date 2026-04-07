@@ -126,7 +126,7 @@ Journals that publish special issues or other content curated by guest editors m
 
 ## Integrity and Ethics criteria
 
-When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the Journal Integrity and Ethics team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
+When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the Integrity and Ethics team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
 
 - Presence of clear and reliable key information on the journal's website
 - Composition of the journal's editorial board
@@ -301,7 +301,7 @@ Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal must con
 
 Appeals submitted without the required information will not be accepted for review.
 
-Appeals related to the outcome of the [Journal Integrity and Ethics team's investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
+Appeals related to the outcome of the [Integrity and Ethics team's investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
 
