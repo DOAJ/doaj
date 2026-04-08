@@ -6,7 +6,7 @@ import sys
 setup(
     name='doaj',
     version='8.6.0',
-    python_requires='>=3.10', # EOL October 2026
+    python_requires='>=3.12',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
@@ -60,7 +60,7 @@ setup(
         # priorities list generation
         'gspread~=5.10.0',
         'oauth2client~=4.1.3',
-        'pandas~=2.0.1',  # pandas lets us generate URLs for linkcheck
+        'pandas~=2.2.0',  # pandas lets us generate URLs for linkcheck
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
 
