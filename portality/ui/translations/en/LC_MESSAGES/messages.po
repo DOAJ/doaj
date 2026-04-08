@@ -214,6 +214,10 @@ msgstr ""
 msgid "Languages in which the journal accepts manuscripts"
 msgstr ""
 
+#: forms/application_forms.py:473
+msgid "Language"
+msgstr ""
+
 #: forms/application_forms.py:477
 msgid "Enter <strong>at least one</strong> language"
 msgstr ""
@@ -1459,6 +1463,10 @@ msgstr ""
 
 #: templates-v2/_application-form/includes/_i18n_translations.html:45
 msgid "Please enter a valid date in YYYY-MM-DD format."
+msgstr ""
+
+#: templates-v2/_application-form/includes/_i18n_translations.html:46
+msgid "Remove"
 msgstr ""
 
 #: templates-v2/public/public_application.html:44

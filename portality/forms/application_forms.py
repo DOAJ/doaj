@@ -470,7 +470,7 @@ class FieldDefinitions:
         "default": "",
         "options_fn": "iso_language_list",
         "repeatable": {
-            "label": "Language",
+            "label": lazy_gettext("Language"),
             "minimum": 1,
             "initial": 5
         },
