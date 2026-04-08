@@ -207,7 +207,7 @@ class FieldDefinitions:
         "input": "text",
         "optional": True,
         "help": {
-            "placeholder": "Ma revue"
+            "placeholder": "Mi revista"
         },
         "validate": [
             "no_script_tag"  # ~~^-> NoScriptTag:FormValidator
