@@ -1,5 +1,5 @@
 from portality.bll.services.workflow import Claim, Assign, Reassign, Unclaim, Fail, MinimalReview, ApplicationEdit, \
-    RescindMinimalReview, Triaged
+    RescindMinimalReview, Triaged, Unassign
 from portality.ui import templates
 from portality.util import url_for
 
@@ -45,6 +45,10 @@ class AssignUI(EventUI):
     template = templates.WORKFLOW_ASSIGN_WIDGET
     route_id = "workflow.assign"
 
+class UnassignUI(EventUI):
+    template = templates.WORKFLOW_UNASSIGN_WIDGET
+    route_id = "workflow.unassign"
+
 class UnclaimUI(EventUI):
     template = templates.WORKFLOW_UNCLAIM_WIDGET
     route_id = "workflow.unclaim"
@@ -69,7 +73,8 @@ EVENT_MAP = {
     Fail: FailUI,
     MinimalReview: None,
     RescindMinimalReview: None,
-    Triaged: TriagedUI
+    Triaged: TriagedUI,
+    Unassign: UnassignUI
 }
 
 #####################################

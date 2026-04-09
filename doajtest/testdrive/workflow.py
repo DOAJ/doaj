@@ -23,7 +23,7 @@ class Workflow(TestDrive):
             app.set_id(app.makeid())
             app.bibjson().title = "Workflow Test " + str(i)
             app.set_created(dates.before_now(86400*i))
-            state = svc.initialise_workflow(app)
+            state = svc.initialise_workflow(acc, app)
             state.workflow_control.set_created(app.created_date)
             state.saveall()
             states.append(state)

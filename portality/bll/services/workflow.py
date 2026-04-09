@@ -142,9 +142,13 @@ class State:
         return WorkflowControlStateQuery(cls.module, cls.stage, cls.editor_group, cls.reviewer)
 
     @classmethod
-    def enter(cls, wf_control:models.WorkflowControl, application:models.Application=None):
+    def enter(cls, actor:Union[str, Account],
+              wf_control:models.WorkflowControl,
+              application:models.Application=None,
+              from_state: "State"=None):
         instance = cls(wf_control, application)
         instance.apply()
+        instance.audit(actor, from_state)
         return instance
 
     @classmethod
@@ -214,6 +218,21 @@ class State:
     def do(self, action:WorkflowAction):
         return self
 
+    def get_audit_partial(self):
+        return {
+            "module": self.module,
+            "stage": self.stage,
+            "editor_group": self.workflow_control.editor_group,
+            "reviewer": self.workflow_control.reviewer
+        }
+
+    def audit(self, actor, from_state:"State"=None, date=None):
+        origin_data = None
+        if from_state is not None:
+            origin_data = from_state.get_audit_partial()
+        target_data = self.get_audit_partial()
+        self.workflow_control.add_audit(actor, target_data, origin_data, date)
+
     def saveall(self, *args, **kwargs):
         self.workflow_control.save(*args, **kwargs)
         if self._application:
@@ -245,7 +264,21 @@ class Assign(ReviewerAssignment): pass
 
 class Reassign(ReviewerAssignment): pass
 
-class Fail(WorkflowEvent): pass
+class Unassign(WorkflowEvent): pass
+
+class Fail(WorkflowEvent):
+    def __init__(self, actor:Union[str, Account], note:str=None, embargo_end:str=None):
+        super().__init__(actor)
+        self._note = note
+        self._embargo_end = embargo_end
+
+    @property
+    def note(self):
+        return self._note
+
+    @property
+    def embargo_end(self):
+        return self._embargo_end
 
 class MinimalReview(WorkflowEvent): pass
 
@@ -320,9 +353,9 @@ class AwaitingTriage(State):
 
         wfc.reviewer = event.actor_id
         if wfc.triage.has_minimal_review:
-            return TriageAssessmentMinimalReview.enter(self._wf_control, self._application)
+            return TriageAssessmentMinimalReview.enter(event.actor, self._wf_control, self._application, self)
         else:
-            return TriageAssessmentInProgress.enter(self._wf_control, self._application)
+            return TriageAssessmentInProgress.enter(event.actor, self._wf_control, self._application, self)
 
     def event_assign(self, event:Assign):
         wfc = self.workflow_control
@@ -334,9 +367,9 @@ class AwaitingTriage(State):
 
         wfc.reviewer = event.reviewer_id
         if wfc.triage.has_minimal_review:
-            return TriageAssessmentMinimalReview.enter(self._wf_control, self._application)
+            return TriageAssessmentMinimalReview.enter(event.actor, self._wf_control, self._application, self)
         else:
-            return TriageAssessmentInProgress.enter(self._wf_control, self._application)
+            return TriageAssessmentInProgress.enter(event.actor, self._wf_control, self._application, self)
 
 class TriageAssessmentInProgress(State):
     module = MODULE_TRIAGE
@@ -344,7 +377,7 @@ class TriageAssessmentInProgress(State):
     editor_group = MODULE_TRIAGE_EG
     reviewer = ASSIGNED
 
-    events = [Unclaim, Reassign, Fail, MinimalReview]
+    events = [Unclaim, Reassign, Unassign, Fail, MinimalReview]
     actions = [ApplicationEdit]
 
     def apply(self):
@@ -379,6 +412,8 @@ class TriageAssessmentInProgress(State):
             return self.event_unclaim(event)
         elif isinstance(event, Reassign):
             return self.event_reassign(event)
+        elif isinstance(event, Unassign):
+            return self.event_unassign(event)
         elif isinstance(event, Fail):
             return self.event_fail(event)
         elif isinstance(event, MinimalReview):
@@ -398,7 +433,7 @@ class TriageAssessmentInProgress(State):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         del wfc.reviewer
-        return AwaitingTriage.enter(self._wf_control, self._application)
+        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
 
     def event_reassign(self, event:Reassign):
         wfc = self.workflow_control
@@ -406,11 +441,30 @@ class TriageAssessmentInProgress(State):
             raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
 
         wfc.reviewer = event.reviewer_id
-        return self.enter(self._wf_control, self._application)
+        return self.enter(event.actor, self._wf_control, self._application, self)
+
+    def event_unassign(self, event:Unassign):
+        wfc = self.workflow_control
+        if not event.actor.has_role(constants.ROLE_ADMIN):
+            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
+
+        del wfc.reviewer
+        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
 
     def event_fail(self, event:Fail):
-        # TODO: we don't know where this goes yet
-        raise NotImplementedError()
+        wfc = self.workflow_control
+        if wfc.reviewer != event.actor_id:
+            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
+
+        appSvc = DOAJ.applicationService()
+        appSvc.reject_application(self.application, event.actor, note=event.note)
+
+        del wfc.editor_group
+        del wfc.reviewer
+
+        # TODO: not clear what to do with application embargoes, perhaps these are a new type?
+
+        return Rejected.enter(event.actor, self._wf_control, self._application, self)
 
     def event_minimal_review(self, event:MinimalReview):
         wfc = self.workflow_control
@@ -418,7 +472,7 @@ class TriageAssessmentInProgress(State):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         wfc.triage.has_minimal_review = True
-        return TriageAssessmentMinimalReview.enter(self._wf_control, self._application)
+        return TriageAssessmentMinimalReview.enter(event.actor, self._wf_control, self._application, self)
 
     def do_edit(self, action:ApplicationEdit):
         wfc = self.workflow_control
@@ -437,7 +491,7 @@ class TriageAssessmentMinimalReview(State):
     editor_group = MODULE_TRIAGE_EG
     reviewer = ASSIGNED
 
-    events = [Triaged, Unclaim, Reassign, Fail, RescindMinimalReview]
+    events = [Triaged, Unclaim, Reassign, Unassign, Fail, RescindMinimalReview]
     actions = [ApplicationEdit]
 
     def apply(self):
@@ -474,6 +528,8 @@ class TriageAssessmentMinimalReview(State):
             return self.event_unclaim(event)
         elif isinstance(event, Reassign):
             return self.event_reassign(event)
+        elif isinstance(event, Unassign):
+            return self.event_unassign(event)
         elif isinstance(event, Fail):
             return self.event_fail(event)
         elif isinstance(event, RescindMinimalReview):
@@ -509,7 +565,7 @@ class TriageAssessmentMinimalReview(State):
             wfc.editor_group = vessel.name
             wfc.reviewer = event.maned
 
-            return QuickFailCriteriaCheck.enter(self._wf_control, self._application)
+            return QuickFailCriteriaCheck.enter(event.actor, self._wf_control, self._application, self)
 
         elif event.editor_group is not None:
             eg = EditorGroup.pull(event.editor_group)
@@ -519,7 +575,7 @@ class TriageAssessmentMinimalReview(State):
             wfc.editor_group = eg.name
             del wfc.reviewer
 
-            return QuickFailAwaitingAssignment.enter(self._wf_control, self._application)
+            return QuickFailAwaitingAssignment.enter(event.actor, self._wf_control, self._application, self)
 
         raise ValueError("Triaged event must have either a target maned or a target editor group")
 
@@ -529,7 +585,7 @@ class TriageAssessmentMinimalReview(State):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         del wfc.reviewer
-        return AwaitingTriage.enter(self._wf_control, self._application)
+        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
 
     def event_reassign(self, event: Reassign):
         wfc = self.workflow_control
@@ -537,11 +593,30 @@ class TriageAssessmentMinimalReview(State):
             raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
 
         wfc.reviewer = event.reviewer_id
-        return self.enter(self._wf_control, self._application)
+        return self.enter(event.actor, self._wf_control, self._application, self)
+
+    def event_unassign(self, event:Unassign):
+        wfc = self.workflow_control
+        if not event.actor.has_role(constants.ROLE_ADMIN):
+            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
+
+        del wfc.reviewer
+        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
 
     def event_fail(self, event: Fail):
-        # TODO: we don't know where this goes yet
-        raise NotImplementedError()
+        wfc = self.workflow_control
+        if wfc.reviewer != event.actor_id:
+            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
+
+        appSvc = DOAJ.applicationService()
+        appSvc.reject_application(self.application, event.actor, event.note)
+
+        del wfc.editor_group
+        del wfc.reviewer
+
+        # TODO: not clear what to do with application embargoes, perhaps these are a new type?
+
+        return Rejected.enter(event.actor, self._wf_control, self._application, self)
 
     def event_rescind_minimal_review(self, event: RescindMinimalReview):
         wfc = self.workflow_control
@@ -549,7 +624,7 @@ class TriageAssessmentMinimalReview(State):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         wfc.triage.has_minimal_review = False
-        return TriageAssessmentInProgress.enter(self._wf_control, self._application)
+        return TriageAssessmentInProgress.enter(event.actor, self._wf_control, self._application, self)
 
     def do_edit(self, action: ApplicationEdit):
         wfc = self.workflow_control
@@ -568,6 +643,49 @@ class QuickFailAwaitingAssignment(State):
 
 class QuickFailCriteriaCheck(State):
     pass
+
+MODULE_REJECTED = "rejected"
+MODULE_REJECTED_STAGE_REJECTED = "rejected"
+
+class Rejected(State):
+    module = MODULE_REJECTED
+    stage = MODULE_REJECTED_STAGE_REJECTED
+    editor_group = ANY
+    reviewer = ANY
+
+    def apply(self):
+        # Ensure the workflow control object is in the right state
+        wf_control = self.workflow_control
+        if wf_control.module != self.module:
+            wf_control.module = self.module
+
+        if wf_control.stage != self.stage:
+            wf_control.stage = self.stage
+
+        # back-compatibility for the original workflow
+        application = self.application
+
+        if application.application_status != constants.APPLICATION_STATUS_REJECTED:
+            appSvc = DOAJ.applicationService()
+            acc = None
+            if wf_control.reviewer is not None:
+                acc = models.Account.pull(wf_control.reviewer)
+            if acc is None:
+                # FIXME: what's the way to do this?
+                acc = models.Account.pull("system")
+            appSvc.reject_application(application, acc)
+
+        if wf_control.editor_group is not None:
+            if application.editor_group != wf_control.editor_group:
+                application.set_editor_group(wf_control.editor_group)
+        else:
+            application.remove_editor_group()
+
+        if wf_control.reviewer is not None:
+            if application.editor != wf_control.reviewer:
+                application.set_editor(wf_control.reviewer)
+        else:
+            application.remove_editor()
 
 
 class WorkflowService:
@@ -620,10 +738,10 @@ class WorkflowService:
         new_state = state_instance.exit(event)
         return new_state
 
-    def initialise_workflow(self, application):
+    def initialise_workflow(self, actor:Union[str, Account], application:models.Application) -> State:
         wfc = models.WorkflowControl()
         wfc.application_id = application.id
         wfc.original_application = application
         wfc.application_title = application.bibjson().title
-        initial_state = AwaitingTriage.enter(wfc, application)
+        initial_state = AwaitingTriage.enter(actor, wfc, application)
         return initial_state

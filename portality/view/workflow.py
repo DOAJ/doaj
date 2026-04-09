@@ -7,7 +7,7 @@ from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
 from portality.bll.services.workflow import AwaitingTriage, TriageAssessmentInProgress, Claim, Unclaim, \
-    TriageAssessmentMinimalReview, MinimalReview, RescindMinimalReview
+    TriageAssessmentMinimalReview, MinimalReview, RescindMinimalReview, Unassign, Rejected, Fail
 from portality.decorators import ssl_required
 from portality.ui import templates
 from portality.ui.workflow import StateUI
@@ -22,10 +22,12 @@ def index():
     awaiting_triage = [StateUI(x) for x in svc.first_n_in_state(AwaitingTriage, 10)]
     triage_in_progress = [StateUI(x) for x in svc.first_n_in_state(TriageAssessmentInProgress, 10)]
     triage_minimal_review = [StateUI(x) for x in svc.first_n_in_state(TriageAssessmentMinimalReview, 10)]
+    rejected = [StateUI(x) for x in svc.first_n_in_state(Rejected, 10)]
     return render_template(templates.ADMIN_WORKFLOW_OVERVIEW,
                            awaiting_triage=awaiting_triage,
                            triage_in_progress=triage_in_progress,
                            triage_minimal_review=triage_minimal_review,
+                           rejected=rejected,
                            admin_page=True)
 
 @blueprint.route('/claim', methods=['POST'])
@@ -90,11 +92,58 @@ def assign():
 def reassign():
     pass
 
+@blueprint.route("/unassign", methods=["POST"])
+@login_required
+@ssl_required
+def unassign():
+    wfc_id = request.form.get("workflow_control")
+    if wfc_id is None:
+        abort(400)
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc_id, Unassign(current_user))
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(404)
+
+    onward = request.form.get("onward")
+    if onward is not None:
+        url = url_for(onward)
+        return redirect(url)
+
+    resp = make_response(json.dumps({"status": "success"}))
+    resp.mimetype = "application/json"
+    return resp
+
 @blueprint.route("/fail", methods=["POST"])
 @login_required
 @ssl_required
 def fail():
-    pass
+    wfc_id = request.form.get("workflow_control")
+    if wfc_id is None:
+        abort(400)
+
+    note = request.form.get("note")
+    embargo = request.form.get("embargo_end")
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc_id, Fail(current_user, note, embargo))
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(404)
+
+    onward = request.form.get("onward")
+    if onward is not None:
+        url = url_for(onward)
+        return redirect(url)
+
+    resp = make_response(json.dumps({"status": "success"}))
+    resp.mimetype = "application/json"
+    return resp
 
 @blueprint.route("/minimal_review", methods=["POST"])
 @login_required

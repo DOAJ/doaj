@@ -76,6 +76,7 @@ MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_jour
 # Workflow components
 WORKFLOW_CLAIM_WIDGET = "management/admin/_workflow/includes/claim.html"
 WORKFLOW_ASSIGN_WIDGET = "management/admin/_workflow/includes/assign.html"
+WORKFLOW_UNASSIGN_WIDGET = "management/admin/_workflow/includes/unassign.html"
 WORKFLOW_UNCLAIM_WIDGET = "management/admin/_workflow/includes/unclaim.html"
 WORKFLOW_MINIMAL_REVIEW_WIDGET = "management/admin/_workflow/includes/minimal_review.html"
 WORKFLOW_FAIL_WIDGET = "management/admin/_workflow/includes/fail.html"

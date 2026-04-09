@@ -1,25 +1,60 @@
-<div class="flex" style="border: 1px solid #ccc; padding: 1em; margin-bottom: 1em; flex-wrap: wrap">
+<div style="border: 1px solid #ccc; padding: 1em; margin-bottom: 1em;">
     {% set wfc = state.workflow_control %}
-    <h2 style="flex-basis: 100%">{{ wfc.application_title }}</h2><br>
+    <h2>
+        <a href="{{ url_for("admin.application", application_id=wfc.application_id) }}" target="_blank">{{ wfc.application_title }}</a>
+    </h2>
 
-    <span class="tag tag--featured">Module: {{ wfc.module }}</span>
-    <span class="tag tag--featured">Stage: {{ wfc.stage }}</span>
-    {% if wfc.editorial_group %}
-        <span class="tag tag--featured">Group: {{ wfc.editorial_group }}</span>
-    {% endif %}
-    {% if wfc.reviewer %}
-        <span class="tag tag--featured">Reviewer: {{ wfc.reviewer }}</span>
-    {% endif %}
+    <div class="flex" style="flex-wrap: wrap">
+        <span class="tag tag--featured">Module: {{ wfc.module }}</span>
+        <span class="tag tag--featured">Stage: {{ wfc.stage }}</span>
+        {% if wfc.editorial_group %}
+            <span class="tag tag--featured">Group: {{ wfc.editorial_group }}</span>
+        {% endif %}
+        {% if wfc.reviewer %}
+            <span class="tag tag--featured">Reviewer: {{ wfc.reviewer }}</span>
+        {% endif %}
 
-    {% for event in state.events %}
-        <div style="margin-left: 25px">
-            {% include event.template %}
-        </div>
-    {% endfor %}
+        {% for event in state.events %}
+            <div style="margin-left: 25px">
+                {% include event.template %}
+            </div>
+        {% endfor %}
 
-    {% for action in state.actions %}
-        <div style="margin-left: 25px">
-            {% include action.template %}
-        </div>
-    {% endfor %}
+        {% for action in state.actions %}
+            <div style="margin-left: 25px">
+                {% include action.template %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <td>Event Date</td>
+                    <td>Actor</td>
+                    <td>From State</td>
+                    <td>To State</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entry in wfc.audit %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.user }}</td>
+                    <td>
+                        {% if entry.from_state %}
+                            {{ entry.from_state.module }}: {{ entry.from_state.stage }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if entry.to_state %}
+                            {{ entry.to_state.module }}: {{ entry.to_state.stage }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>

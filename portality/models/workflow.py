@@ -1,9 +1,12 @@
+from datetime import datetime
+from typing import Union
+
 from portality.dao import DomainObject
-from portality.lib import es_data_mapping
+from portality.lib import es_data_mapping, dates
 from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
 from portality.core import app
-from portality.models import Application
+from portality.models import Application, Account
 
 import json
 
@@ -20,7 +23,10 @@ STRUCT = {
         "last_updated": {"coerce": "utcdatetime"},
         "es_type": {"coerce": "unicode"},
     },
-    "objects": ["application", "state", "modules", "audit"],
+    "lists": {
+        "audit": {"contains": "object"}
+    },
+    "objects": ["application", "state", "modules"],
     "structs": {
         "application": {
             "fields": {
@@ -35,6 +41,25 @@ STRUCT = {
                 "date": {"coerce": "utcdatetime"},
                 "from_state": {"coerce": "unicode"},
                 "to_state": {"coerce": "unicode"}
+            },
+            "objects": ["from_state", "to_state"],
+            "structs": {
+                "from_state": {
+                    "fields": {
+                        "module": {"coerce": "unicode"},
+                        "stage": {"coerce": "unicode"},
+                        "editor_group": {"coerce": "unicode"},
+                        "reviewer": {"coerce": "unicode"}
+                    }
+                },
+                "to_state": {
+                    "fields": {
+                        "module": {"coerce": "unicode"},
+                        "stage": {"coerce": "unicode"},
+                        "editor_group": {"coerce": "unicode"},
+                        "reviewer": {"coerce": "unicode"}
+                    }
+                }
             }
         },
         "modules": {
@@ -127,6 +152,10 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     def editor_group(self, val):
         self.__seamless__.set_single("state.editor_group", val)
 
+    @editor_group.deleter
+    def editor_group(self):
+        self.__seamless__.delete("state.editor_group")
+
     @property
     def reviewer(self):
         return self.__seamless__.get_single("state.reviewer")
@@ -190,6 +219,29 @@ class WorkflowControl(SeamlessMixin, DomainObject):
             self.__seamless__.set_single("modules.triage", {})
             t = self.__seamless__.get_single("modules.triage")
         return Triage(t)
+
+    ##################################
+    ## Audit
+
+    def add_audit(self, actor:Union[str, Account], to_state:dict, from_state:dict=None, date:Union[str, datetime]=None):
+        if date is None:
+            date = dates.now()
+        if isinstance(actor, Account):
+            actor = actor.id
+
+        audit_entry = {
+            "user": actor,
+            "date": date,
+            "to_state": to_state
+        }
+        if from_state is not None:
+            audit_entry["from_state"] = from_state
+
+        self.__seamless__.add_to_list_with_struct("audit", audit_entry)
+
+    @property
+    def audit(self):
+        return self.__seamless__.get_list("audit")
 
 class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT

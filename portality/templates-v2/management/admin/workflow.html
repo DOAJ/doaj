@@ -30,6 +30,13 @@
         {% include "management/admin/_workflow/includes/workflow_entry.html" %}
     {% endfor %}
     </section>
+
+    <h1>Rejected Applications</h1>
+    <section>
+    {% for state in rejected %}
+        {% include "management/admin/_workflow/includes/workflow_entry.html" %}
+    {% endfor %}
+    </section>
 {% endblock %}
 
 {% block admin_js %}
