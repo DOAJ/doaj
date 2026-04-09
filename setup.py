@@ -47,10 +47,11 @@ setup(
         #"pycountry @ git+https://github.com/DOAJ/pycountry.git@caf24adc255bccc968a16d44702e8cd6a115dd50#egg=pycountry",
         "python-dateutil",  # something else already installs this; note we need it without an explicit version freeze
         "pytz==2024.2",
-        "redis==3.3.11",
+        "redis==7.4.0",
         "requests~=2.32.3",
         "responses==0.10.6",
         "rstr~=3.2.2",
+        "setuptools<81",  # FIXME setuptools has removed pkg_resources. ModuleNotFoundError: No module named 'pkg_resources'
         "tzlocal~=5.2.0",
         "Unidecode~=1.3.8",
 
