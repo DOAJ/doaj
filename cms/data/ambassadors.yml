@@ -81,12 +81,6 @@ general:
     coi:
       2025: https://drive.google.com/file/d/1zGGdqFbJ4D9Ho0dkYQ8ccmYGUiMIAWCa/view?usp=sharing
 
-  - name: Melkamu Beyene
-    region: East Africa
-    bio: "Dr. Melkamu Beyene is an Assistant Professor in the School of Information Science at Addis Ababa University. He received his PhD in Information Retrieval from Addis Ababa University in a joint program with the Institut National des Sciences Appliquées de Lyon, France 2017. He is a Chief Librarian at Addis Ababa University Library system and Chairperson of the Consortium of Ethiopian Academic and Research Libraries from March 08, 2018."
-    photo: "melkamu.JPG"
-    coi:
-
   - name: Ikhwan Arief
     region: Indonesia
     bio: "Ikhwan is a faculty member in the Industrial Engineering Department at Universitas Andalas, Indonesia. He is an enthusiastic photography hobbyist. He joined DOAJ in 2018 as an ambassador and gradually became a volunteer editor. He used to manage the university's library information system, including establishing the online public access catalogue (OPAC) and the repository servers. He is keenly interested in data science, primarily industrial and manufacturing systems research. He has been assisting Indonesian journal managers in their application to DOAJ."
@@ -94,36 +88,13 @@ general:
     coi:
       2022: https://drive.google.com/file/d/1bmVVvMAPToLQCHGOfNz0D80xi4WyZhwn/view?usp=sharing
       2025: https://drive.google.com/file/d/1MkVElQ1RwXQKtUUrskhGBilShb1-awMh/view?usp=sharing
-
-  - name: Mochammad Tanzil Multazam
-    region: Indonesia
-    bio: "Mochammad Tanzil Multazam is a prominent academic and legal expert at Universitas Muhammadiyah Sidoarjo, known for his significant contributions to scientific publication and library management. Since 2016, he has played a pivotal role in enhancing the quality of Indonesian journals through his leadership at Relawan Jurnal Indonesia, managing over 13,000 journals as the largest Crossref Sponsoring Organization globally. In 2023, he became Head of the UMSIDA Library, continuing his efforts to integrate digital technology into academic publishing. His influence extends internationally, particularly through the Silkroad Research Network, fostering collaboration among journal managers along the Silk Road Region."
-    photo: "Tanzil.jpg"
-    coi:
-      2024: https://drive.google.com/file/d/1q3h3T45-VRbvJxf8e_HacEDnvJhzg5yY/view?usp=sharing
-      
+  
   - name: Cenyu Shen
     region: China
     bio: "Cenyu Shen is a former researcher at Hanken School of Economics, participating in multiple research projects about open access. She earned her PhD in Information Systems Science in 2020, specializing in the gold open access journal model, sustainability strategies, and predatory open access issues. One of her publications has been cited over 1,000 times and was ranked fourth in the Financial Times list of the 100 most socially impactful business school research papers from 2015 to 2020. She is an active advocate for open access publishing and joined DOAJ in 2016 as an ambassador, fostering collaborations with domestic associations and publishing institutions. She established the DOAJ China journal community and has led efforts to help Chinese journals improve their quality and practices. She later transitioned to an editorial role and currently serves as Deputy Head of Editorial for Quality. She loves to read, swim, and ski in her spare time."
     photo: "Cenyu_SHEN.jpg"
     coi:
       2024: https://drive.google.com/file/d/18qzajh_3i3c7g4HsV7MHSmJ6wROS6hib/view
-
-  - name: Amber Osman
-    region: Pakistan
-    bio: "Amber is a passionate expert in open science and a research enthusiast. Over the last decade, she has been actively involved in different international academic, research & publishing organizations and with the Higher Education Commission (Govt. of Pakistan). She has been <a href='https://www.youtube.com/watch?v=n612FOybhIM' target='_blank'>an award-winning journal editor</a> for advancing the publishing process by adopting innovative research and publishing solutions. Amber advocates for best practices in open access scholarly content. She has a Master of Philosophy in marketing."
-    photo: "amber.jpeg"
-    coi:
-      2022: https://drive.google.com/file/d/18KLtcd-F4q1XbVxh5o54k7feQUY-e-uv/view?usp=sharing
-      2025: https://drive.google.com/file/d/13AYgDT-9oUScyUiLjz8zPVP6_oGUxBnd/view?usp=sharing
-
-  - name: Muhammad Imtiaz Subhani
-    region: Pakistan
-    bio: "Dr. Subhani is an <a href='https://news.pakistantimes.com/2015/05/05/sajms-secures-third-position-in-scholarone-vision-award-2015-367073.html' target='_blank'>award-winning editor by Thomson Reuters in 2015</a>. He holds a PhD in Financial Econometrics from Iqra University, Pakistan. Dr. Subahni is a Professor and Dean of the Business School at ILMA University, Pakistan. He is currently <a href='https://customer.sspnet.org/ssp/AboutUs/Committee-Roster.aspx?Code=EDUCATION' target='_blank'>working voluntarily for Society for Scholarly Publishing (SSP)</a> as an education committee member. He is also a member of Creative Commons Global Network, CC Open GLAM, and Research Data Publishing Ethics, FORCE 11. He is a scientific publishing consultant & a technical committee member of HEC Journals’ Recognition System at the Higher Education Commission, Government of Pakistan."
-    photo: "subhani-1.jpeg"
-    coi:
-      2022: https://drive.google.com/file/d/1nYQZ8h766UsNY_gWwCbRyVQ_yxdCyQN5/view?usp=sharing
-      2025: https://drive.google.com/file/d/1T2xpJoydfP4EDXuzBfps2U1qGDXjSYKt/view?usp=sharing
 
   - name: Shuai Yan
     region: China

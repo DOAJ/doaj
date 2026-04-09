@@ -12,17 +12,18 @@ featuremap:
 
 Academic organisations' support of DOAJ is vital, and we are proud that over 80% of our support comes from these types of organisations. We are very grateful to all our supporting academic organisations.
 
-### 2024-2026 pricing
+### 2026 pricing
 
-For 2024, we have revised and simplified our supporter model to align with the levels recommended by SCOSS. This model enables us to invest in the organisation's future and continue providing high-quality service to our community.
+Our model aligns with the levels recommended by SCOSS. This model enables us to invest in the organisation's future and continue providing high-quality service to our community.
 
 |                     | Euros(€) | USDs($) | GBPs(£) |
 |---------------------|----------|---------|---------|
 | Large organisations | 4,000    | 4,400   | 3,440   |
 | Small organisations | 2,000    | 2,200   | 1,720   |
-| Organisations from [low- and middle-income countries](https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html) | 500 | 550 | 430 |
 
-In 2025 and 2026, a 25% discount will be applied to institutions supporting us via a billing consortium. Please [contact us](/contact/) for further information.
+In 2026, a discount will be applied to institutions supporting us via a billing consortium. Please [contact us](/contact/) for further information.
+
+Organisations from [low- and middle-income countries](https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html) are eligible for a discounted contribution. 
 
 We always have a wishlist of development projects for which we require additional funding. Please contact us if you would like to support us over and above our standard rates.
 
