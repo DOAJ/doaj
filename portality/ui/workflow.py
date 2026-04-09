@@ -1,5 +1,5 @@
-from portality.bll.services.workflow import Claim, Assign, Reassign, Unclaim, Fail, MinimalReview, ApplicationEdit, \
-    RescindMinimalReview, Triaged, Unassign
+from portality.bll.services.workflow.core import Claim, Assign, Reassign, Unclaim, Fail, ApplicationEdit, Unassign
+from portality.bll.services.workflow.triage import MinimalReview, RescindMinimalReview, Triaged
 from portality.ui import templates
 from portality.util import url_for
 
@@ -71,10 +71,12 @@ EVENT_MAP = {
     Reassign: ReassignUI,
     Unclaim: UnclaimUI,
     Fail: FailUI,
+    Unassign: UnassignUI,
+
     MinimalReview: None,
     RescindMinimalReview: None,
     Triaged: TriagedUI,
-    Unassign: UnassignUI
+
 }
 
 #####################################

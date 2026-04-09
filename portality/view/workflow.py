@@ -6,8 +6,10 @@ from flask_login import login_required, current_user
 from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
-from portality.bll.services.workflow import AwaitingTriage, TriageAssessmentInProgress, Claim, Unclaim, \
-    TriageAssessmentMinimalReview, MinimalReview, RescindMinimalReview, Unassign, Rejected, Fail
+from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail
+from portality.bll.services.workflow.rejected import Rejected
+from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
+    TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview
 from portality.decorators import ssl_required
 from portality.ui import templates
 from portality.ui.workflow import StateUI

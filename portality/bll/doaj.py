@@ -1,4 +1,5 @@
 # ~~DOAJ:Service~~
+
 class DOAJ(object):
     """
     Primary entry point to the services which back up the DOAJ Business Logic Layer.
@@ -182,5 +183,5 @@ class DOAJ(object):
 
     @classmethod
     def workflowService(cls):
-        from portality.bll.services import workflow
-        return workflow.WorkflowService()
+        from portality.bll.services.workflow import service
+        return service.WorkflowService()

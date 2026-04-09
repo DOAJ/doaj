@@ -96,6 +96,11 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     __SEAMLESS_STRUCT__ = STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
 
+    # Generic state definition values
+    ANY = "*"
+    UNASSIGNED = "-"
+    ASSIGNED = "+"
+
     def __init__(self, **kwargs):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted
         if "_source" in kwargs:
@@ -280,3 +285,75 @@ class WorkflowControlQuery:
                 }
             }
         }
+
+class WorkflowControlStateQuery:
+    def __init__(self,
+                 module:str=None,
+                 stage:str=None,
+                 editor_group:str=None,
+                 reviewer:str=None,
+                 size:int=100):
+        self._module = module
+        self._stage = stage
+        self._editor_group = editor_group
+        self._reviewer = reviewer
+        self._size = size
+
+    @property
+    def size(self):
+        return self._size
+
+    @size.setter
+    def size(self, size:int):
+        self._size = size
+
+    def query(self):
+        must = []
+        must_not = []
+
+        if self._module is not None:
+            if self._module != WorkflowControl.ANY:
+                if self._module == WorkflowControl.UNASSIGNED:
+                    must_not.append({"exists": {"field": "state.module"}})
+                elif self._module == WorkflowControl.ASSIGNED:
+                    must.append({"exists": {"field": "state.module"}})
+                else:
+                    must.append({"term": {"state.module.exact": self._module}})
+
+        if self._stage is not None:
+            if self._stage != WorkflowControl.ANY:
+                if self._stage == WorkflowControl.UNASSIGNED:
+                    must_not.append({"exists": {"field": "state.stage"}})
+                elif self._stage == WorkflowControl.ASSIGNED:
+                    must.append({"exists": {"field": "state.stage"}})
+                else:
+                    must.append({"term": {"state.stage.exact": self._stage}})
+
+        if self._editor_group is not None:
+            if self._editor_group != WorkflowControl.ANY:
+                if self._editor_group == WorkflowControl.UNASSIGNED:
+                    must_not.append({"exists": {"field": "state.editor_group"}})
+                elif self._editor_group == WorkflowControl.ASSIGNED:
+                    must.append({"exists": {"field": "state.editor_group"}})
+                else:
+                    must.append({"term": {"state.editor_group.exact": self._editor_group}})
+
+        if self._reviewer is not None:
+            if self._reviewer != WorkflowControl.ANY:
+                if self._reviewer == WorkflowControl.UNASSIGNED:
+                    must_not.append({"exists": {"field": "state.reviewer"}})
+                elif self._reviewer == WorkflowControl.ASSIGNED:
+                    must.append({"exists": {"field": "state.reviewer"}})
+                else:
+                    must.append({"term": {"state.reviewer.exact": self._reviewer}})
+
+        bool = {}
+        if len(must) > 0:
+            bool["must"] = must
+        if len(must_not) > 0:
+            bool["must_not"] = must_not
+        q = {"query": {"bool": bool}}
+
+        q["sort"] = {"created_date": {"order": "asc"}}
+
+        return q
