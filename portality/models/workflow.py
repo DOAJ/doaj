@@ -9,7 +9,7 @@ import json
 
 TRIAGE_STRUCT = {
     "fields": {
-        "has_minimal_review": {"coerce": "bool", "default": False},
+        "has_minimal_review": {"coerce": "bool"},
     }
 }
 
@@ -76,6 +76,22 @@ class WorkflowControl(SeamlessMixin, DomainObject):
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
         super(WorkflowControl, self).__init__(raw=kwargs)
+
+    ####################################
+    ## Class methods for locating WorkflowControl objects
+
+    @classmethod
+    def find_by_application(cls, app_id):
+        q = WorkflowControlQuery(application_id=app_id)
+        objs = cls.object_query(q.query())
+        if len(objs) > 1:
+            raise ValueError("Multiple WorkflowControl objects found for application id: {}".format(app_id))
+        elif len(objs) == 0:
+            return None
+        else:
+            return objs[0]
+
+    ####################################
 
     def mappings(self):
         return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
@@ -198,3 +214,17 @@ class Triage(SeamlessMixin):
 
 ##########################################
 
+class WorkflowControlQuery:
+    def __init__(self, application_id=None):
+        self._application_id = application_id
+
+    def query(self):
+        return {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"application.id.exact": self._application_id}}
+                    ]
+                }
+            }
+        }

@@ -78,6 +78,7 @@ WORKFLOW_UNCLAIM_WIDGET = "management/admin/_workflow/includes/unclaim.html"
 WORKFLOW_MINIMAL_REVIEW_WIDGET = "management/admin/_workflow/includes/minimal_review.html"
 WORKFLOW_FAIL_WIDGET = "management/admin/_workflow/includes/fail.html"
 WORKFLOW_EDIT_WIDGET = "management/admin/_workflow/includes/edit.html"
+WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 
 # Reusable application form components
 AF_ENTRY_GOUP = "_application-form/includes/_entry_group.html"

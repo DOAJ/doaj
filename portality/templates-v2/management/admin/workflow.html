@@ -23,6 +23,13 @@
         {% include "management/admin/_workflow/includes/workflow_entry.html" %}
     {% endfor %}
     </section>
+
+    <h1>Triage that has met Minimal Review needs</h1>
+    <section>
+    {% for state in triage_minimal_review %}
+        {% include "management/admin/_workflow/includes/workflow_entry.html" %}
+    {% endfor %}
+    </section>
 {% endblock %}
 
 {% block admin_js %}

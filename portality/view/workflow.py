@@ -5,7 +5,9 @@ from flask_login import login_required, current_user
 
 from portality import models
 from portality.bll import DOAJ
-from portality.bll.services.workflow import AwaitingTriage, TriageAssessmentInProgress, Claim, Unclaim
+from portality.bll.exceptions import AuthoriseException
+from portality.bll.services.workflow import AwaitingTriage, TriageAssessmentInProgress, Claim, Unclaim, \
+    TriageAssessmentMinimalReview, MinimalReview, RescindMinimalReview
 from portality.decorators import ssl_required
 from portality.ui import templates
 from portality.ui.workflow import StateUI
@@ -19,9 +21,11 @@ def index():
     svc = DOAJ.workflowService()
     awaiting_triage = [StateUI(x) for x in svc.first_n_in_state(AwaitingTriage, 10)]
     triage_in_progress = [StateUI(x) for x in svc.first_n_in_state(TriageAssessmentInProgress, 10)]
+    triage_minimal_review = [StateUI(x) for x in svc.first_n_in_state(TriageAssessmentMinimalReview, 10)]
     return render_template(templates.ADMIN_WORKFLOW_OVERVIEW,
                            awaiting_triage=awaiting_triage,
                            triage_in_progress=triage_in_progress,
+                           triage_minimal_review=triage_minimal_review,
                            admin_page=True)
 
 @blueprint.route('/claim', methods=['POST'])
@@ -34,7 +38,9 @@ def claim():
 
     svc = DOAJ.workflowService()
     try:
-        svc.apply_event(wfc_id, Claim(current_user.id))
+        new_state = svc.apply_event(wfc_id, Claim(current_user))
+    except AuthoriseException:
+        abort(401)
     except ValueError:
         abort(404)
 
@@ -57,7 +63,9 @@ def unclaim():
 
     svc = DOAJ.workflowService()
     try:
-        svc.apply_event(wfc_id, Unclaim())
+        new_state = svc.apply_event(wfc_id, Unclaim(current_user))
+    except AuthoriseException:
+        abort(401)
     except ValueError:
         abort(404)
 
@@ -94,8 +102,39 @@ def fail():
 def minimal_review():
     pass
 
+@blueprint.route("/triaged", methods=["POST"])
+@login_required
+@ssl_required
+def triaged():
+    pass
+
 @blueprint.route("/edit/<application_id>", methods=["GET"])
 @login_required
 @ssl_required
 def edit(application_id):
-    pass
+    # FIXME: this is just a demonstrator
+    try:
+        wfc = models.WorkflowControl.find_by_application(application_id)
+    except ValueError:
+        abort(500)
+
+    if wfc is None:
+        abort(404)
+
+    event = None
+    if wfc.triage.has_minimal_review:
+        event = RescindMinimalReview(current_user)
+    else:
+        event = MinimalReview(current_user)
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc.id, event)
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(404)
+
+    url = url_for("workflow.index")
+    return redirect(url)
+

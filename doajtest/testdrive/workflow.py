@@ -2,6 +2,7 @@ from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.testdrive.factory import TestDrive
 from portality import models, constants
 from portality.bll import DOAJ
+from portality.lib import dates
 
 
 class Workflow(TestDrive):
@@ -19,7 +20,11 @@ class Workflow(TestDrive):
         for i in range(5):
             source = ApplicationFixtureFactory.make_application_source()
             app = models.Application(**source)
+            app.set_id(app.makeid())
+            app.bibjson().title = "Workflow Test " + str(i)
+            app.set_created(dates.before_now(86400*i))
             state = svc.initialise_workflow(app)
+            state.workflow_control.set_created(app.created_date)
             state.saveall()
             states.append(state)
 

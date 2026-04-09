@@ -80,8 +80,6 @@ class AuthorisationService(object):
 
         raise exceptions.AuthoriseException(reason=no_auth_reason)
 
-
-
     def can_view_application(self, account, application):
         """
         Is the given account allowed to view the update request application
