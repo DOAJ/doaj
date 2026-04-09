@@ -792,7 +792,7 @@ msgstr "Autre (y compris le site de l’éditeur)"
 
 #: forms/application_forms.py:1486
 msgid "<em>The journal has no repository policy</em>"
-msgstr "<em>Indiquez le nom de l'autre politique de dépôt</em>"
+msgstr "<em>La revue n'a pas de politique de dépôt</em>"
 
 #: forms/application_forms.py:1489
 msgid "Many authors wish to deposit a copy of their paper in an institutional or other repository of their choice. What is the journal’s policy for this?"
