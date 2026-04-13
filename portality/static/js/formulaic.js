@@ -916,7 +916,10 @@ var formulaic = {
                 }
 
             this.setUpFlagHeader = function() {
-                const humanFriendlyAuthor = this.$authorInput.val().replace(/\s*\([^)]*\)\s*/g, "").trim();
+                const raw = this.$authorInput.val();
+                const name = raw.replace(/\s*\([^)]*\)\s*/g, "");
+                const idMatch = raw.match(/\(([^)]*)\)/);
+                const humanFriendlyAuthor = name.trim() || (idMatch ? idMatch[1].trim() : "");
                 const headerText = `<strong>Created by: </strong>` + humanFriendlyAuthor + ", " + doaj.dates.humanDateTime(this.$createdInput.val());
                 this.insertSpan(headerText, this.$authorInput, before=true, idSuffix=this.fieldName)
             };
