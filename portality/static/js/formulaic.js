@@ -868,9 +868,15 @@ var formulaic = {
             }
 
             this.toggleFlagButtons = function (showResolve = false, showUnresolve = false, showCancel = false) {
-                this.$resolveFlagBtn.toggle(showResolve);
-                this.$unresolveFlagBtn.toggle(showUnresolve);
-                this.$cancelFlagBtn.toggle(showCancel);
+                if (showResolve !== null) {
+                    this.$resolveFlagBtn.toggle(showResolve);
+                }
+                if (showUnresolve !== null) {
+                    this.$unresolveFlagBtn.toggle(showUnresolve);
+                }
+                if (showCancel !== null) {
+                    this.$cancelFlagBtn.toggle(showCancel);
+                }
             };
 
             this.initializeExistingFlag = function () {
@@ -937,7 +943,8 @@ var formulaic = {
                     .addClass(classes)
                     .addClass("flag--resolved")
                     .html(flag_content);
-                this.$flagInputsContainer.after($resolvedContainer);
+                this.$cancelFlagBtn.after($resolvedContainer);
+
             }
 
             this.markFlagAsUnresolved = function() {
@@ -956,14 +963,14 @@ var formulaic = {
                 this.flagExists = true;
                 this.disableAddBtn();
                 this.$flagInputsContainer.show();
-                this.toggleFlagButtons(false, false, true);
+                this.toggleFlagButtons(false, null, true);
             }
 
             this.cancelFlag = function(e) {
                 this.flagExists = false;
                 this.enableAddBtn();
                 this.$flagInputsContainer.hide();
-                this.toggleFlagButtons(false, false, false);
+                this.toggleFlagButtons(false, null, false);
             }
 
             this.resolveFlag = function(e) {
