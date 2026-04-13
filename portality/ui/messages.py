@@ -160,7 +160,7 @@ class Messages(object):
     AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING = "Autoassign: Editor group '{target}' does not exist, cannot auto assign"
     AUTOASSIGN__NOTE__ASSIGN = "Autoassign: Editor group auto assigned to '{target}' because {reason}"
 
-    FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username};\n Original note: {note}"
+    FORMS__APPLICATION_FLAG__RESOLVED = "Flag resolved on {date} by {username}; \n Original flag: created on {created_date}, by {author}, assigned to {assignee}, deadline {deadline}. \n Note: {note}"
     FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING = "Provided deadline is in the past. Is it correct?"
 
     ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS = "Article found that belongs to more than 1 journal. Article's id: {article_id}"

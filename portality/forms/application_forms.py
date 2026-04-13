@@ -1990,8 +1990,7 @@ class FieldDefinitions:
         "template": templates.FLAG_ENTRY_GROUP,
         "widgets": [
             "flag_manager"
-        ],
-        "merge_disabled": "merge_disabled_notes"
+        ]
     }
 
     FLAG_RESOLVED = {
@@ -2007,7 +2006,6 @@ class FieldDefinitions:
         "name": "flag_setter",
         "group": "flags",
         "input": "hidden",
-        "disabled": True
     }
 
     # ~~->$ NoteDate:FormField~~
@@ -2016,7 +2014,6 @@ class FieldDefinitions:
         "name": "flag_created_date",
         "group": "flags",
         "input": "hidden",
-        "disabled": True
     }
 
     FLAG_DEADLINE = {

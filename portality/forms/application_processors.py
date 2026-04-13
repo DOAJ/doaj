@@ -226,28 +226,27 @@ class ApplicationProcessor(FormProcessor):
                         pass
 
     def _resolve_flags(self, account):
+        import json
         # handle flag resolution
-
         # check that this form knows about flags
         if getattr(self.form, "flags", None) is None:
             return
 
-        resolved_flags = []
-        for flag in self.form.flags.data:
-            if flag["flag_resolved"] == "true":
-                # Note: new notes do not necessarily have ids, but flags that are being
-                # resolved must have an id because they must exist already to be resolved
-                resolved_flags.append(flag["flag_note_id"])
-
-        for flag_id in resolved_flags:
+        flag = self.form.flags.data
+        if flag["flag_resolved"]:
             acc_id = account.id if account else "unknown user"
-            flag = self.target.get_note_by_id(flag_id)
+            resolved = json.loads(flag["flag_resolved"])
+            print(resolved)
             new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                created_date=dates.human_date(resolved["created"]),
+                author=resolved["author"],
+                assignee=resolved["assignee"],
+                deadline=resolved["deadline"],
                 date=dates.today(),
                 username=acc_id,
-                note=flag.get("note", "")
+                note=resolved["note"]
             )
-            self.target.resolve_flag(flag_id, new_note_text)
+            self.target.resolve_flag(flag["flag_note_id"], new_note_text, dates.today(), acc_id)
 
 
 class NewApplication(ApplicationProcessor):

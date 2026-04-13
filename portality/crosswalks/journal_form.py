@@ -39,9 +39,9 @@ class JournalGenericXWalk(object):
         old_flag_assignee = old_flags[0]["flag"]["assigned_to"] if old_flags else None
         new_flags = form.flags.data
         new_flag_assignee = None
-        is_resolved = form.flags.data[0]["flag_resolved"] or form.flags.data[0]["flag_resolved"] == "false"
+        is_resolved = form.flags.data["flag_resolved"] or form.flags.data["flag_resolved"] == "false"
         if not is_resolved and new_flags:
-            new_flag_assignee = form.flags.data[0]["flag_assignee"]
+            new_flag_assignee = form.flags.data["flag_assignee"]
         return old_flag_assignee != new_flag_assignee if new_flag_assignee else False
 
     @classmethod
@@ -287,26 +287,23 @@ class JournalGenericXWalk(object):
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
                                  author_id=formnote["note_author_id"])
 
-        if getattr(form, "flags", None):
-            for flag in form.flags.data:
-                if flag.get("flag_note") is None or flag.get("flag_note") == "":
-                    continue
-
-                flag_date = flag["flag_created_date"]
-                try:
-                    if flag.get("flag_deadline") == "" or flag.get("flag_deadline") is None:
-                        flag_deadline = dates.far_in_the_future()
-                    else:
-                        flag_deadline = dates.parse(flag.get("flag_deadline"), format=dates.FMT_DATE_STD)
-                except:
-                    # FIXME: why is there validation in the crosswalk?
-                    raise ValueError("Flag deadline must be a valid date in BigEnd format (ie. YYYY-MM-DD)")
-                flag_assigned_to = flag["flag_assignee"]
-                flag_author = flag["flag_setter"]
-                flag_id = flag["flag_note_id"]
-                flag_note = flag["flag_note"]
-                obj.add_note(flag_note, date=flag_date, id=flag_id,
-                             author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
+        flag = getattr(form, "flags", None)
+        if flag and flag["flag_note"].data:
+            flag_date = flag["flag_created_date"].data
+            try:
+                if flag["flag_deadline"].data:
+                    flag_deadline = dates.parse(flag["flag_deadline"].data, format=dates.FMT_DATE_STD)
+                else:
+                    flag_deadline = dates.far_in_the_future()
+            except:
+                # FIXME: why is there validation in the crosswalk?
+                raise ValueError("Flag deadline must be a valid date in BigEnd format (ie. YYYY-MM-DD)")
+            flag_assigned_to = flag["flag_assignee"].data
+            flag_author = flag["flag_setter"].data
+            flag_id = flag["flag_note_id"].data
+            flag_note = flag["flag_note"].data
+            obj.add_note(flag_note, date=flag_date, id=flag_id,
+                         author_id=flag_author, assigned_to=flag_assigned_to, deadline=flag_deadline)
 
         if getattr(form, 'owner', None):
             owner = form.owner.data
@@ -495,7 +492,6 @@ class JournalGenericXWalk(object):
 
         forminfo["flags"] = []
         if obj.flags:
-            print(obj.flags)
             # display only the newest flag
             flag = obj.flags[0]
             author_id = flag["author_id"]
