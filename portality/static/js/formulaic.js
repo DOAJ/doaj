@@ -860,10 +860,6 @@ var formulaic = {
             this.enableAddBtn = function() {
                 this.$addFlagBtn.prop('disabled', false);
                 this.$addFlagBtn.prop('title', "Add flag to that record");
-                if (this.$resolvedInput.val()) {
-                    this.$unresolveFlagBtn.prop('disabled', true);
-                    this.$unresolveFlagBtn.prop('title', "Only one flag per record is permitted. Cancel the new flag to unresolve this one.");
-                }
             }
 
             this.disableAddBtn = function() {
@@ -958,18 +954,24 @@ var formulaic = {
                 this.flagExists = true;
                 this.disableAddBtn();
                 this.$flagInputsContainer.show();
-                this.toggleFlagButtons(false, null, true);
+                if (this.$resolvedInput.val()) {
+                    this.$unresolveFlagBtn.prop('disabled', true);
+                    this.$unresolveFlagBtn.prop('title', "Only one flag per record is permitted. Cancel the new flag to unresolve this one.");
+                }
+                this.toggleFlagButtons(null, null, true);
             }
 
             this.cancelFlag = function(e) {
                 this.flagExists = false;
-                this.enableAddBtn();
+                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").val("");
+                this.$assigneeInput.val("").trigger("change");
                 this.$flagInputsContainer.hide();
                 this.toggleFlagButtons(false, null, false);
                 if (this.$resolvedInput.val()) {
                     this.$unresolveFlagBtn.prop('disabled', false);
                     this.$unresolveFlagBtn.prop('title', "");
                 }
+                this.enableAddBtn();
             }
 
             this.resolveFlag = function(e) {
