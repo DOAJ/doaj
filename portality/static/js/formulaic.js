@@ -930,10 +930,6 @@ var formulaic = {
                 }
             };
 
-            this.hideNewFlag = function() {
-                $(this.flagGroups[this.newFlagIdx]).hide();
-            }
-
             this.markFlagAsResolved = function() {
                 const classes = this.$flagInputsContainer.attr("class") || "";
                 const flag_content = `<div class="header spanPretendingToBeInput">` + $("#spanPretendingToBeInput--flags").html() + `</div>` +

@@ -279,6 +279,7 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def form2admin(cls, form, obj):
+        import re
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
                 if formnote["note"]:
@@ -299,7 +300,11 @@ class JournalGenericXWalk(object):
                 # FIXME: why is there validation in the crosswalk?
                 raise ValueError("Flag deadline must be a valid date in BigEnd format (ie. YYYY-MM-DD)")
             flag_assigned_to = flag["flag_assignee"].data
-            flag_author = flag["flag_setter"].data
+            author = flag["flag_setter"].data
+            flag_author = author
+            if author:
+                flag_author = re.findall(r'\((.*?)\)', author)[0]
+                print("id: ", flag_author)
             flag_id = flag["flag_note_id"].data
             flag_note = flag["flag_note"].data
             obj.add_note(flag_note, date=flag_date, id=flag_id,
