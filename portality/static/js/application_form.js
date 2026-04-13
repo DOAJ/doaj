@@ -797,8 +797,8 @@ window.Parsley.addValidator("requiredIf", {
         // console.log(thisElementId)
 
         const getGroupWithIndexFromInputId = (inputId) => {
-          const match = inputId.match(/^([^-]+)-(\d+)-/);
-          return match ? `${match[1]}-${match[2]}` : null;
+          const match = inputId.match(/^([^-]+-\d+-)|^([^-]+)/);
+          return match ? (match[1] || match[2]) : "";
         }
 
         let skipIfDisabled  = parsleyInstance.$element.attr("data-parsley-validate-if-disabled") === "false";
