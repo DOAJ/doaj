@@ -16,7 +16,7 @@ On this page, you can find links, information and contacts specifically for jour
 - [Logos](https://doaj-kit.netlify.app/building-blocks/logotype/)
 
 ## Current campaigns
-Every year, we focus on several themes. Our current campaigns are:
+Every year, we focus on several themes for our blog and social media campaigns. Our current campaigns are:
 
 - [Open Climate Campaign](https://blog.doaj.org/2026/02/23/doaj-sustains-the-open-climate-campaigns-legacy-with-new-tagging/)
 - [DOAJ's open data](https://blog.doaj.org/2025/11/19/open-infrastructure-open-data-our-role-in-advancing-oa-research/)
@@ -25,8 +25,8 @@ Every year, we focus on several themes. Our current campaigns are:
 
 ## Contact
 
-Press enquiries: Katrine Sundsbø [katrine@doaj.org](mailto:katrine@doaj.org?subject=Press Enquiry)
-Social media and blog: Tracy Creagh [tracy@doaj.org](mailto:tracy@doaj.org?subject=Social media and blog)
+- Press enquiries: Katrine Sundsbø [katrine@doaj.org](mailto:katrine@doaj.org?subject=Press Enquiry)
+- Social media and blog: Tracy Creagh [tracy@doaj.org](mailto:tracy@doaj.org?subject=Social media and blog)
 
 ## Social media and online
 
