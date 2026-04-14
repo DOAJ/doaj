@@ -8,6 +8,7 @@ from portality.core import app
 class Flags(TestDrive):
 
     def __init__(self):
+        self.id = self.create_random_str()
         self.another_eg = None
         self.journals = []
         self.admin_password = None
@@ -22,10 +23,10 @@ class Flags(TestDrive):
         self.eg = None
 
     def setup(self) -> dict:
-        random_str = self.create_random_str()
-        self.create_accounts(random_str)
-        self.build_journals(random_str)
+        self.create_accounts()
+        self.build_journals()
         return {
+            "id": self.id,
             "accounts": {
                 "admin": {
                     "username": self.admin.id,
@@ -60,38 +61,41 @@ class Flags(TestDrive):
             }
         }
 
-    def create_accounts(self, random_str):
+    def _attach_id(self):
+        return "__" + self.id
 
-        admin_name = "LordWiggleworth_" + random_str
+    def create_accounts(self):
+
+        admin_name = "LordWiggleworth" + self._attach_id()
         self.admin_password = self.create_random_str()
-        self.admin = models.Account.make_account(admin_name + "@example.com", admin_name, "FlagsManed " + admin_name,
+        self.admin = models.Account.make_account(admin_name + "@example.com", admin_name, admin_name,
                                                  ["admin", "editor"])
         self.admin.set_password(self.admin_password)
         self.admin.save()
 
-        anotheradmin_name = "ProfessorQuibbleton_" + random_str
+        anotheradmin_name = "ProfessorQuibbleton" + self._attach_id()
         self.anotheradmin_password = self.create_random_str()
-        self.anotheradmin = models.Account.make_account(anotheradmin_name + "@example.com", anotheradmin_name, "Admin " + anotheradmin_name,
+        self.anotheradmin = models.Account.make_account(anotheradmin_name + "@example.com", anotheradmin_name, anotheradmin_name,
                                                  ["admin", "editor"])
         self.anotheradmin.set_password(self.anotheradmin_password)
         self.anotheradmin.save()
 
-        random_name = "BaronFeatherfall_" + random_str
+        random_name = "BaronFeatherfall" + self._attach_id()
         self.random_user_password = self.create_random_str()
         self.random_user = models.Account.make_account(random_name + "@example.com", random_name,
-                                                       "Admin " + random_name,
+                                                       random_name,
                                                        ["admin"])
         self.random_user.set_password(self.random_user_password)
         self.random_user.save()
 
-        editor_name = "MadamPonderleaf_" + random_str
-        self.editor = models.Account.make_account(editor_name + "@example.com", editor_name, "Editor " + editor_name,
+        editor_name = "MadamPonderleaf" + self._attach_id()
+        self.editor = models.Account.make_account(editor_name + "@example.com", editor_name, editor_name,
                                                   ["editor"])
         self.editor_password = self.create_random_str()
         self.editor.set_password(self.editor_password)
         self.editor.save()
 
-        publisher = "Publisher_" + random_str
+        publisher = "Publisher" + self._attach_id()
         self.publisher = models.Account.make_account(publisher + "@example.com", publisher, publisher,
                                                   ["publisher", "api"])
         self.publisher_password = self.create_random_str()
@@ -114,11 +118,11 @@ class Flags(TestDrive):
         self.another_eg.set_editor(self.editor.id)
         self.another_eg.save()
 
-    def build_journals(self, random_str):
+    def build_journals(self):
         journals = [
             {
                 "type": models.Journal,
-                "title": "Journal of Quantum Homeopathy " + random_str,
+                "title": "Journal of Quantum Homeopathy " + self._attach_id(),
                 "assigned_to": self.admin.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -127,7 +131,7 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "The Mars Agricultural Review " + random_str,
+                "title": "The Mars Agricultural Review " + self._attach_id(),
                 "assigned_to": self.editor.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -136,7 +140,7 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "Cryptid Behavioral Studies Quarterly " + random_str,
+                "title": "Cryptid Behavioral Studies Quarterly " + self._attach_id(),
                 "assigned_to": self.editor.id,
                 "flagged_to": self.admin.id,
                 "group": self.eg.name,
@@ -144,7 +148,7 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "The Bermuda Triangle Journal of Lost and Found " + random_str,
+                "title": "The Bermuda Triangle Journal of Lost and Found " + self._attach_id(),
                 "assigned_to": self.editor.id,
                 "flagged_to": self.editor.id,
                 "group": self.eg.name,
@@ -152,13 +156,13 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "Feline Aerodynamics Review " + random_str,
+                "title": "Feline Aerodynamics Review " + self._attach_id(),
                 "assigned_to": self.admin.id,
                 "group": self.eg.name
             },
             {
                 "type": models.Journal,
-                "title": "Journal of Intergalactic Diplomacy " + random_str,
+                "title": "Journal of Intergalactic Diplomacy " + self._attach_id(),
                 "assigned_to": self.random_user.id,
                 "flagged_to": self.admin.id,
                 "group": self.another_eg.name,
@@ -167,11 +171,12 @@ class Flags(TestDrive):
             },
             {
                 "type": models.Journal,
-                "title": "Applied Alchemy & Unstable Chemistry " + random_str,
+                "title": "Applied Alchemy & Unstable Chemistry " + self._attach_id(),
                 "assigned_to": self.random_user.id,
                 "flagged_to": self.editor.id,
                 "note": "Journal scope mismatch. The journal is called The International Review of Advanced Neuroscience but 90\% of its articles are about cat memes. Honestly, I’d subscribe, but should we approve it?",
-                "group": self.another_eg.name
+                "group": self.another_eg.name,
+                "deadline": 30,
             }
         ]
 

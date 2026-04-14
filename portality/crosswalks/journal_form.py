@@ -289,7 +289,7 @@ class JournalGenericXWalk(object):
                                  author_id=formnote["note_author_id"])
 
         flag = getattr(form, "flags", None)
-        if flag and flag["flag_note"].data:
+        if flag:
             flag_date = flag["flag_created_date"].data
             try:
                 if flag["flag_deadline"].data:

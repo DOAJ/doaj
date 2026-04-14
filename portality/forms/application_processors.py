@@ -147,11 +147,11 @@ class ApplicationProcessor(FormProcessor):
                 if n.get("id") == sn.get("id"):
                     n["date"] = sn.get("date")
 
-        # record the positions of any blank notes
+        # record the positions of any blank notes except flags
         i = 0
         removes = []
         for n in tnotes:
-            if n.get("note").strip() == "":
+            if not n.get("flag", {}).get("assigned_to", "") and n.get("note").strip() == "":
                 removes.append(i)
             i += 1
 

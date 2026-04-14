@@ -6,27 +6,31 @@ tests:
   - title: Admin - Add, Edit, Resolve
     context:
       role: Admin
+    setup:
+      - "At the top of the Testdrive page, the test title is shown followed by its ID, e.g. 'Flags (id: 234)'."
+      - "Usernames and record titles follow the `name__id` format. When the test says to log in as User__<id>, use the test ID, e.g. User__123."
+      - "During the test, you may see multiple records or users with the same name. Always select the one that matches your test ID."
+      - "All data in the Testdrive dashboard includes a copy button. You can use it to quickly copy the correct value and use it in the relevant place in the test."
     steps:
       - step: Navigate to /testdrive/flags
-      - step: In a separate tab, login as LordWiggleworth (admin)
-      - step: Click on the Journals icon
-      - step: Click Edit This Journal on the Feline Aerodynamics Review Journal (second journal in the list)
+      - step: In a separate tab, login as 'LordWiggleworth__<id>' (admin)
+      - step: Open the "Feline Aerodynamics Review Journal__<id>" admin form - the url is provided in the testdrive
         results:
           - Above the notes there is the Add Flag button visible and active
       - step: Click Add Flag button
         results:
           - An empty flag form is displayed
-      - step: In assigned_to input attempt to add username "MadamPonderleaf" (an editor)
+      - step: In 'Assign an admin' input attempt to add username "MadamPonderleaf__<id>"
         results:
-          - No matches found is displayed and it is not possible to assign the editor
-      - step: In assigned_to input add username "ProfessorQuibbleton" (admin)
+          - No matches are found it is not possible to assign this user
+      - step: In 'Assign an admin' input add username "ProfessorQuibbleton__<id>" (admin)
         results:
           - Username is found and it can be selected
-      - step: Select "ProfessorQuibbleton"
-      - step: In deadline input add an improbable date (e.g., 2025-02-31)
+      - step: Select "ProfessorQuibbleton__<id>"
+      - step: In the "Deadline" input attempt to add an improbable date (e.g., 2025-02-31)
         results:
           - It's not possible to enter an improbable date
-      - step: In deadline input add a date in a past
+      - step: In the "Deadline" input add a date in the past
         results:
           - A warning "Provided deadline is in the past. Is it correct?" is displayed under the deadline input
       - step: Save the form (do not close it)
@@ -42,15 +46,11 @@ tests:
           - All fields are editable
           - Add Flag button is disabled
       - step: Close the application with Unlock & Close
-      - step: Click Edit This Record for The Bermuda Triangle Journal of Lost and Found record (first journal on the Journals page)
+      - step: Open "The Bermuda Triangle Journal of Lost and Found __<id>" admin form - the url is provided in the testdrive
         results:
-          - The record has a flag assigned to another user, with no deadline and with a note.
+          - The record has a flag assigned to MadamPonderleaf__<id>
           - All flag fields are editable
           - Add Flag button is disabled
-      - step: Add a valid deadline to a flag (e.g., 2026-10-01)
-      - step: Save the record
-        results:
-          - The flag is correctly saved with a new deadline
       - step: Click Resolve Flag button
         results:
           - The flag is marked as resolved
@@ -70,15 +70,15 @@ tests:
           - The empty form is hidden
           - Undo Resolving and Add Flag buttons are active
       - step: Click Add Flag button
-      - step: Add a new flag, assign it to ProfessorQuibbleton and provide a note, then save the application
+      - step: Add a new flag, assign it to ProfessorQuibbleton__<id> and provide a note, then save the application
         results:
           - The new flag is saved and displayed
-          - The old flag was converted to a note with text This flag was resolved on <i>date</i> by <your id>; and flag's note
+          - The old flag was converted to a note with previous flag's details
       - step: Click Unlock & Close to close the application
-      - step: Open Journal of Intergalactic Diplomacy record (last record on the first page of Journals)
+      - step: Open "Journal of Intergalactic Diplomacy record __<id>" admin journal form - the url is provided in the testdrive
         results:
-          - This record has a flag assigned to you
-          - In the flag form, in the Assign a User input, there is your id with a red flag icon
+          - This record has a flag assigned to you (LordWiggleworth__<id>)
+          - The flag is marked with a red flag icon
           - Resolve Flag button is active and all fields are editable
 
   - title: Admin - Flags Notifications
@@ -88,32 +88,32 @@ tests:
      - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following all the steps; otherwise you may omit steps 2-9
     steps:
       - step: Navigate to /testdrive/flags
-      - step: In a separate tab login as LordWiggleworth (admin)
-      - step: Open Feline Aerodynamics Review journal (url is available on your dashboard)
+      - step: In a separate tab login as LordWiggleworth__<id> (admin)
+      - step: Feline Aerodynamics Review - an update request assigned to you, with no flags
       - step: Click Add Flag button
-      - step: Assign "ProfessorQuibbleton" (admin)
+      - step: Assign "ProfessorQuibbleton__<id>"
       - step: Add deadline in exactly 1 week
-      - step: In text area add flag's note (any text)
+      - step: In the text area add the flag's note (any text)
       - step: Save application, Unlock & Close the form
       - step: Log out
-      - step: In a separate tab log in as "ProfessorQuibbleton"
+      - step: In a separate tab log in as "ProfessorQuibbleton__<id>"
         results:
-          - At the top navbar Notifications indicate a new notification
+          - At the top navbar "Notifications" indicate a new notification
       - step: Hover over Notifications button
         result:
           - At the top of the list new notification "New flag" is listed
-      - step: Click on the notification
+      - step: Click on the "New flag" notification
         results:
-          - Feline Aerodynamics Review journal form is opened in a new tab
-          - On the right the flag is displayed and assigned to you ("ProfessorQuibbleton")
+          - "Feline Aerodynamics Review __<id>" journal form is opened in a new tab
+          - On the right the flag is displayed and assigned to you ("ProfessorQuibbleton__<id>")
       - step: Unlock & Close the form, close the tab
       - step: Click the Notifications button at the top navigation bar
         results:
           - /dashboard/notifications opens
           - At the top of the list "New flag" notification is displayed.
-          - The long description says "A new flag in 'Feline Aerodynamics Review' (id) has been assigned to you"
+          - The long description says "A new flag in 'Feline Aerodynamics Review __<id>' has been assigned to you"
       - step: Open the testdrive/flags page <b>do not close the page where you are logged in</b>
-      - step: Click "Run background task" button, wait for the task to execute
+      - step: Click "Run background task" button located at the bottom of the testdrive page, wait for the task to execute
         result:
           - Message "Script executed successfully!" is displayed
       - step: Go back to the tab where you are logged as ProfessorQuibbleton
@@ -121,7 +121,7 @@ tests:
       - step: navigate to /dashboard/notifications if not already there
         results:
           - At the top of the notifications list a new notification "Deadline reminder" is listed
-          - Long description says "The deadline for the flag in 'Feline Aerodynamics Review' (id) is in 7 days."
+          - Long description says "The deadline for the flag in 'Feline Aerodynamics Review__<id>' is in 7 days."
           - At the top navbar Notifications button has a new notification marked
       - step: Click "See action" link at the right of the new "Deadline reminder" notification
         results:

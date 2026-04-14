@@ -2060,9 +2060,9 @@ class FieldDefinitions:
     FLAG_ASSIGNEE = {
         "subfield": True,
         "name": "flag_assignee",
-        "label": "Assign a user",
+        "label": "Assign an admin",
         "help": {
-            "placeholder": "assigned_to"
+            "placeholder": "Username"
         },
         "group": "flags",
         "validate": [
