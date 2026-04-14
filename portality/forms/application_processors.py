@@ -236,7 +236,6 @@ class ApplicationProcessor(FormProcessor):
         if flag["flag_resolved"]:
             acc_id = account.id if account else "unknown user"
             resolved = json.loads(flag["flag_resolved"])
-            print(resolved)
             new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
                 created_date=dates.human_date(resolved["created"]),
                 author=resolved["author"],
