@@ -2,7 +2,7 @@
 layout: no-sidenav
 title: Merci pour votre candidature.
 section: Apply
-aside: /public/includes/_aside_in_case_of_rejection.html
+aside: /public/includes/_fr_aside_in_case_of_rejection.html
 featuremap: ~~ApplicationThanks:Fragment->RejectionAside:Template~~
 
 ---
