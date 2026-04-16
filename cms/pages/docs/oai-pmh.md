@@ -22,6 +22,8 @@ The OAI-PMH feed available to Premium metadata service users updates immediately
 
 If you would like access to more up-to-date metadata and to know more about our Premium Metadata Services, please see the [Premium Metadata Services](/docs/premium) page.
 
+If you are a Premium Metadata Service user and you require technical support, please send an email to [helpdesk@doaj.org](mailto:helpdesk@doaj.org?subject=Premium%20Metadata%20Service)
+
 ## Journal feed
 
 {:.tabular-list}

@@ -12,12 +12,20 @@ featuremap:
 ---
 
 ## All users
-For all users, full data dumps of the journal and article metadata are generated monthly.
+For all users, full public data dumps (PDD) of the journal and article metadata are generated monthly. For access, please send an email to [platform@doaj.org](mailto:platform@doaj.org), with the following details:
+
+- your name
+- the group, organisation or company you represent or that wants to use the metadata
+- your group/organisation/company address, including country
+- whether you want access to the journal or article metadata, or both
+- what you want to use the metadata for (include as much information as possible)
 
 ## Premium metadata service users
-Full data dumps of the entire journal and article metadata are generated daily for premium metadata service users. To access Premium metadata services, you must be logged in and have an active Premium metadata services account. 
+Full public data dumps (PDD) of the entire journal and article metadata are generated daily for Premium Setadata Service users. To access the daily PDD, you must be logged in and have an active Premium metadata services account. 
 
-If you would like access to more up-to-date metadata and to know more about our Premium Metadata Services, please see the [Premium Metadata Services](/docs/premium) page.
+For access or if you want to know more about our Premium Metadata Services, please see the [Premium Metadata Services](/docs/premium) page.
+
+If you are a Premium Metadata Service user and you require technical support, please send an email to [helpdesk@doaj.org](mailto:helpdesk@doaj.org?subject=Premium%20Metadata%20Service)
 
 ## About the files
 
