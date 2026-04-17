@@ -15,7 +15,7 @@ doaj.editorGroupApplicationsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.edgeUtil.url.build(doaj.editorGroupApplicationsSearchConfig.searchPath),
+            searchUrl: doaj.build(doaj.editorGroupApplicationsSearchConfig.searchPath),
             facets: [
                 doaj.facets.openOrClosed(),
                 doaj.components.refiningAndFacet({id: "application_status", field: "admin.application_status.exact", display: "Application Status", deactivateThreshold: 1, valueFunction: doaj.editorGroupApplicationsSearch.editorStatusMap}),

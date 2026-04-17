@@ -612,7 +612,7 @@ doaj.components = {
         //
         // Required params:
         //   selector      {string}  CSS selector for the container div, e.g. "#admin_alerts"
-        //   searchUrl     {string}  Full search URL (use doaj.edgeUtil.url.build(path) to construct)
+        //   searchUrl     {string}  Full search URL (use doaj.build(path) to construct)
         //
         // Optional params:
         //   facets            {Array}   Pre-built component objects (use refiningAndFacet / monthDateHistogramFacet)

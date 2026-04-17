@@ -8,7 +8,7 @@ doaj.adminReportsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.edgeUtil.url.build(doaj.adminReportsSearchConfig.searchPath),
+            searchUrl: doaj.build(doaj.adminReportsSearchConfig.searchPath),
             facets: [
                 doaj.components.refiningAndFacet({id: "requester", field: "requester.exact", display: "Produced By", deactivateThreshold: 1}),
                 edges.newDateHistogramSelector({

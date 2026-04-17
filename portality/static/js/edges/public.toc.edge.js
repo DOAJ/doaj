@@ -186,7 +186,7 @@ doaj.publicToC = {
             template: doaj.templates.newPublicSearch({
                 titleBar: false
             }),
-            search_url: doaj.edgeUtil.url.build(doaj.publicToCConfig.publicSearchPath),
+            search_url: doaj.build(doaj.publicToCConfig.publicSearchPath),
             baseQuery : es.newQuery({
                 must : [
                     es.newTermsFilter({field: "index.issn.exact", values: doaj.publicToCConfig.tocIssns})

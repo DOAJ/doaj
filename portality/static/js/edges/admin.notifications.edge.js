@@ -40,7 +40,7 @@ doaj.adminNotificationsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.edgeUtil.url.build(doaj.adminNotificationsSearchConfig.searchPath),
+            searchUrl: doaj.build(doaj.adminNotificationsSearchConfig.searchPath),
             facets: [
                 doaj.components.refiningAndFacet({id: "who", field: "who.exact", display: "Notification For", deactivateThreshold: 1}),
                 doaj.components.refiningAndFacet({id: "created_by", field: "created_by.exact", display: "Notification", size: 20, orderBy: "term", orderDir: "asc", deactivateThreshold: 1, valueMap: doaj.adminNotificationsSearch.createdByMap}),

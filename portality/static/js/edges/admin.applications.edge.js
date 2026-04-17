@@ -10,7 +10,7 @@ doaj.adminApplicationsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.edgeUtil.url.build(doaj.adminApplicationsSearchConfig.searchPath),
+            searchUrl: doaj.build(doaj.adminApplicationsSearchConfig.searchPath),
             facets: [
                 edges.newFilterSetter({
                     id: "see_applications_no_charges",

@@ -87,7 +87,7 @@ doaj.adminJournalArticleSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.edgeUtil.url.build(doaj.adminJournalArticleSearchConfig.searchPath),
+            searchUrl: doaj.build(doaj.adminJournalArticleSearchConfig.searchPath),
             facets: [
                 doaj.components.refiningAndFacet({id: "journals_articles", field: "es_type.exact", display: "Journals vs Articles", valueMap: {"journal": "Journals", "article": "Articles"}}),
                 doaj.facets.inDOAJ(),

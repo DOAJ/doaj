@@ -84,7 +84,7 @@ doaj.notificationsSearch = {
         var e = edges.newEdge({
             selector: selector,
             template: edges.bs3.newFacetview(),
-            search_url: doaj.edgeUtil.url.build(doaj.notificationsSearchConfig.searchPath),
+            search_url: doaj.build(doaj.notificationsSearchConfig.searchPath),
             manageUrl: false,
             openingQuery : es.newQuery({
                 sort: {"field" : "created_date", "order" : "desc"},

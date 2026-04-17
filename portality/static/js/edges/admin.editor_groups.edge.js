@@ -41,7 +41,7 @@ doaj.adminEditorGroupSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.edgeUtil.url.build(doaj.adminEditorGroupSearchConfig.searchPath),
+            searchUrl: doaj.build(doaj.adminEditorGroupSearchConfig.searchPath),
             facets: [
                 doaj.components.refiningAndFacet({id: "maned", field: "maned.exact", display: "Managing Editor", deactivateThreshold: 1, open: true, togglable: false})
             ],

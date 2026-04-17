@@ -173,7 +173,7 @@ doaj.publisherJournalsSearch = {
                 titleBar: false,
                 title: "Journals"
             }),
-            search_url: doaj.edgeUtil.url.build(doaj.publisherJournalsSearchConfig.searchPath),
+            search_url: doaj.build(doaj.publisherJournalsSearchConfig.searchPath),
             manageUrl: true,
             openingQuery: es.newQuery({
                 sort: [{"field": "created_date", "order": "desc"}],

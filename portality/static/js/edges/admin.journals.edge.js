@@ -57,7 +57,7 @@ doaj.adminJournalsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.edgeUtil.url.build(doaj.adminJournalsSearchConfig.searchPath),
+            searchUrl: doaj.build(doaj.adminJournalsSearchConfig.searchPath),
             facets: [
                 edges.newFilterSetter({
                     id: "flagged",
