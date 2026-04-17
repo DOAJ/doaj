@@ -290,7 +290,7 @@ var doaj = {
         return window.location.protocol + "//" + document.location.host;
     },
 
-    build: function(path) {
+    buildUrl: function(path) {
         return doaj.getBaseURL() + path;
     },
 

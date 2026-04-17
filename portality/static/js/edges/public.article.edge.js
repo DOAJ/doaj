@@ -193,7 +193,7 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
             template: doaj.templates.newPublicSearch({
                 title: "Articles"
             }),
-            search_url: doaj.build(doaj.publicSearchConfig.publicSearchPath),
+            search_url: doaj.buildUrl(doaj.publicSearchConfig.publicSearchPath),
             manageUrl : true,
             openingQuery: es.newQuery({
                 sort: [{"field" : "created_date", "order" : "desc"}],

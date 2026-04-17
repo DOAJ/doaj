@@ -123,7 +123,7 @@ doaj.publisherUpdatesSearch = {
                 titleBar: false,
                 title: "Update requests"
             }),
-            search_url: doaj.build(doaj.publisherUpdatesSearchConfig.searchPath),
+            search_url: doaj.buildUrl(doaj.publisherUpdatesSearchConfig.searchPath),
             manageUrl: true,
             openingQuery: es.newQuery({
                 sort: [{"field" : "last_manual_update", "order" : "desc"}],

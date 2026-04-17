@@ -12,7 +12,7 @@ doaj.adminAlertsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.build(doaj.adminAlertsSearchConfig.searchPath),
+            searchUrl: doaj.buildUrl(doaj.adminAlertsSearchConfig.searchPath),
             facets: [
                 doaj.components.refiningAndFacet({id: "source", field: "source.exact", display: "Source"}),
                 doaj.components.refiningAndFacet({id: "state", field: "state.exact", display: "State", orderBy: "term", orderDir: "asc"}),

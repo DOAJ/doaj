@@ -10,7 +10,7 @@ doaj.adminRISSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.build(doaj.adminRISSearchConfig.searchPath),
+            searchUrl: doaj.buildUrl(doaj.adminRISSearchConfig.searchPath),
             sortOptions: [
                 {'display': 'Created Date', 'field': 'created_date'},
                 {'display': 'Last Updated', 'field': 'last_updated'}

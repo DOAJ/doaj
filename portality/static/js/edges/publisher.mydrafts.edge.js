@@ -33,7 +33,7 @@ doaj.publisherApplicationsSearch = {
         var e = edges.newEdge({
             selector: selector,
             template: doaj.templates.newPublisherApplications(),
-            search_url: doaj.build(doaj.publisherApplicationsSearchConfig.searchPath),
+            search_url: doaj.buildUrl(doaj.publisherApplicationsSearchConfig.searchPath),
             manageUrl: true,
             baseQuery: es.newQuery({
                 must: [

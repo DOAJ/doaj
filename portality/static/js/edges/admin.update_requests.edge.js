@@ -32,7 +32,7 @@ doaj.adminApplicationsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.build(doaj.adminApplicationsSearchConfig.searchPath),
+            searchUrl: doaj.buildUrl(doaj.adminApplicationsSearchConfig.searchPath),
             facets: [
                 doaj.facets.openOrClosed(),
                 doaj.facets.applicationStatus(),

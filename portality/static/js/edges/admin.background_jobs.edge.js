@@ -127,7 +127,7 @@ doaj.adminBackgroundJobsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.build(doaj.adminBackgroundJobsSearchConfig.searchPath),
+            searchUrl: doaj.buildUrl(doaj.adminBackgroundJobsSearchConfig.searchPath),
             facets: [
                 doaj.components.refiningAndFacet({id: "action", field: "action.exact", display: "Action", deactivateThreshold: 1}),
                 doaj.components.refiningAndFacet({id: "user", field: "user.exact", display: "Submitted By", deactivateThreshold: 1}),

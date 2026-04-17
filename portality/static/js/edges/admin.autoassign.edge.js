@@ -10,7 +10,7 @@ doaj.adminAutoassignSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.build(doaj.adminAutoassignSearchConfig.searchPath),
+            searchUrl: doaj.buildUrl(doaj.adminAutoassignSearchConfig.searchPath),
             facets: [
                 doaj.components.refiningAndFacet({id: "target", field: "target.exact", display: "Editor Group", orderBy: "term", orderDir: "asc", size: 50}),
                 doaj.components.refiningAndFacet({id: "account", field: "account_id.exact", display: "Publisher", orderBy: "term", orderDir: "asc"}),

@@ -8,7 +8,7 @@ doaj.editorGroupJournalsSearch = {
 
         var e = doaj.components.makeSearch({
             selector: selector,
-            searchUrl: doaj.build(doaj.editorGroupJournalsSearchConfig.searchPath),
+            searchUrl: doaj.buildUrl(doaj.editorGroupJournalsSearchConfig.searchPath),
             facets: [
                 doaj.facets.inDOAJ(),
                 doaj.components.refiningAndFacet({id: "owner", field: "admin.owner.exact", display: "Owner", deactivateThreshold: 1}),

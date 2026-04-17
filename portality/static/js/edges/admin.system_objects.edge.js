@@ -57,7 +57,7 @@ doaj.systemObjectSearch = {
     initProvenance: function() {
         var e = doaj.components.makeSearch({
             selector: "#provenance_search",
-            searchUrl: doaj.build("/admin_query/provenance/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/provenance/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "user", field: "user.exact", display: "User"}),
                 doaj.components.refiningAndFacet({id: "type", field: "type.exact", display: "Object Type"}),
@@ -94,7 +94,7 @@ doaj.systemObjectSearch = {
     initFileUploads: function() {
         var e = doaj.components.makeSearch({
             selector: "#file_uploads_search",
-            searchUrl: doaj.build("/admin_query/upload/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/upload/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "status", field: "status.exact", display: "Status"}),
                 doaj.components.refiningAndFacet({id: "owner", field: "owner.exact", display: "Owner"}),
@@ -128,7 +128,7 @@ doaj.systemObjectSearch = {
     initBulkUploads: function() {
         var e = doaj.components.makeSearch({
             selector: "#bulk_uploads_search",
-            searchUrl: doaj.build("/admin_query/bulk_articles/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/bulk_articles/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "status", field: "status.exact", display: "Status"}),
                 doaj.components.refiningAndFacet({id: "owner", field: "owner.exact", display: "Owner"}),
@@ -159,7 +159,7 @@ doaj.systemObjectSearch = {
     initCache: function() {
         var e = doaj.components.makeSearch({
             selector: "#cache_search",
-            searchUrl: doaj.build("/admin_query/cache/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/cache/_search"),
             sortOptions: [
                 {"display": "Date Created", "field": "created_date"},
                 {"display": "Last Updated", "field": "last_updated"}
@@ -174,7 +174,7 @@ doaj.systemObjectSearch = {
     initLocks: function() {
         var e = doaj.components.makeSearch({
             selector: "#locks_search",
-            searchUrl: doaj.build("/admin_query/lock/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/lock/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "type", field: "type.exact", display: "Type"}),
                 doaj.components.refiningAndFacet({id: "username", field: "username.exact", display: "Username"}),
@@ -206,7 +206,7 @@ doaj.systemObjectSearch = {
     initPreservation: function() {
         var e = doaj.components.makeSearch({
             selector: "#preservation_search",
-            searchUrl: doaj.build("/admin_query/preserve/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/preserve/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "status", field: "status.exact", display: "Status"}),
                 doaj.components.refiningAndFacet({id: "owner", field: "owner.exact", display: "Owner"}),
@@ -238,7 +238,7 @@ doaj.systemObjectSearch = {
     initArticleTombstones: function() {
         var e = doaj.components.makeSearch({
             selector: "#article_tombstones_search",
-            searchUrl: doaj.build("/admin_query/article_tombstone/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/article_tombstone/_search"),
             facets: [
                 doaj.components.monthDateHistogramFacet({id: "created_date", field: "created_date", display: "Date Deleted"})
             ],
@@ -266,7 +266,7 @@ doaj.systemObjectSearch = {
     initDraftApplications: function() {
         var e = doaj.components.makeSearch({
             selector: "#draft_applications_search",
-            searchUrl: doaj.build("/admin_query/draft_application/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/draft_application/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "owner", field: "admin.owner.exact", display: "Owner"}),
                 doaj.components.monthDateHistogramFacet({id: "created_date", field: "created_date", display: "Date"})
@@ -296,7 +296,7 @@ doaj.systemObjectSearch = {
     initHarvesterState: function() {
         var e = doaj.components.makeSearch({
             selector: "#harvester_state_search",
-            searchUrl: doaj.build("/admin_query/harvester_state/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/harvester_state/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "status", field: "status.exact", display: "Status"}),
                 doaj.components.refiningAndFacet({id: "account", field: "account.exact", display: "Account"})
@@ -328,7 +328,7 @@ doaj.systemObjectSearch = {
     initAutochecks: function() {
         var e = doaj.components.makeSearch({
             selector: "#autochecks_search",
-            searchUrl: doaj.build("/admin_query/autocheck/_search"),
+            searchUrl: doaj.buildUrl("/admin_query/autocheck/_search"),
             facets: [
                 doaj.components.refiningAndFacet({id: "checked_by", field: "checks.checked_by.exact", display: "Checked By"}),
                 doaj.components.monthDateHistogramFacet({id: "created_date", field: "created_date", display: "Date"})
