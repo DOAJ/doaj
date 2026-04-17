@@ -75,6 +75,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     # the front-end to continue to work, even if the object sees data which is not in the struct.
     # This can be commented out after any migration which changes the data model
     __SEAMLESS_SILENT_PRUNE__ = app.config.get("SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE", False)
+    __SEAMLESS_ALLOW_OTHER_FIELDS__ = app.config.get("SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS", False)
 
     def __init__(self, *args, **kwargs):
         super(JournalLikeObject, self).__init__(*args, **kwargs)
@@ -315,7 +316,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             id = None
 
         note = Note()
-        note.date = date
+        note.set_created(date)
         note.note = note_text
         note.resource_type = self.__type__
 
@@ -332,6 +333,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             note.author_id = author_id
 
         self._notes[note.id] = note
+        self.__seamless__.delete_from_list("admin.note_ids", note.id)
+        self.__seamless__.add_to_list_with_struct("admin.note_ids", note.id)
 
         if assigned_to is not None or deadline is not None:
             flag = {}
@@ -371,8 +374,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_note(self, note:Union[Note, dict]):
         if isinstance(note, Note):
             self._notes[note.id] = False
+            self.__seamless__.delete_from_list("admin.note_ids", note.id)
         else:
             self._notes[note["id"]] = False
+            self.__seamless__.delete_from_list("admin.note_ids", note["id"])
 
     # def remove_note(self, note):
     #     self.__seamless__.delete_from_list("admin.notes", matchsub=note)
@@ -383,6 +388,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         :param note_id: The ID of the note to remove.
         """
         self._notes[note_id] = False
+        self.__seamless__.delete_from_list("admin.note_ids", note_id)
 
     # def remove_note_by_id(self, note_id):
     #     """
@@ -405,10 +411,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def set_notes(self, notes:Union[list[Note], list[dict]]):
         self._notes = {}
         self._notes_loaded = True
+        ids = []
         for n in notes:
             if isinstance(n, dict):
                 n = Note(**n)
             self._notes[n.id] = n
+            ids.append(n.id)
+
+        self.__seamless__.set_list("admin.note_ids", ids)
 
     # def set_notes(self, notes):
     #     self.__seamless__.set_with_struct("admin.notes", notes)
@@ -416,6 +426,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_notes(self):
         for n in self._notes.keys():
             self._notes[n] = False
+        self.__seamless__.set_list("admin.note_ids", [])
 
     # def remove_notes(self):
     #     self.__seamless__.delete("admin.notes")
@@ -448,6 +459,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if not self._notes_loaded:
             self._load_notes()
         return [n for n in self._notes.values() if n]
+
+    @property
+    def note_ids(self):
+        return self.__seamless__.get_list("admin.note_ids")
 
     @property
     def notes_except_flags(self):
@@ -539,9 +554,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
                 n.save()
 
     def _load_notes(self):
-        notes = Note.all_by_resource(self.__type__, self.id)
-        for n in notes:
-            self._notes[n.id] = n
+        for n in self.note_ids:
+            if n not in self._notes:
+                self._notes[n] = Note.pull(n)
         self._notes_loaded = True
 
     #### end of notes methods
@@ -614,7 +629,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         is_flagged = False
         flag_assignees = []
         most_urgent_flag_deadline = dates.far_in_the_future()
-        notes = []
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -698,11 +712,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if self.editor is not None:
             has_editor = "Yes"
 
-        # index the content of the notes
-        note_objects = self.note_objects
-        for n in note_objects:
-            notes.append(n.note)
-
         # build the index part of the object
         index = {}
 
@@ -741,11 +750,23 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["schema_code"] = schema_codes
         if len(schema_codes_tree) > 0:
             index["schema_codes_tree"] = schema_codes_tree
-        if len(notes) > 0:
-            index["notes"] = notes
 
         self.__seamless__.set_with_struct("index", index)
 
+        # also add the admin index fields
+
+        # index the content of the notes
+        admin_index = {}
+
+        notes = []
+        note_objects = self.note_objects
+        for n in note_objects:
+            notes.append(n.note)
+
+        if len(notes) > 0:
+            admin_index["notes"] = notes
+
+        self.__seamless__.set_with_struct("admin.index", admin_index)
 
 class Journal(JournalLikeObject):
     __type__ = "journal"

@@ -998,9 +998,12 @@ QUERY_FILTERS = {
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
 PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
-    # "admin.notes.note",
-    # "admin.notes.id",
-    # "admin.notes.author_id",
+    # old protections for notes
+    # TODO: these MUST remain in place for the duration of deployment, they can be removed post migration
+    "admin.notes.note",
+    "admin.notes.id",
+    "admin.notes.author_id",
+    # New protections for notes
     "admin.index.notes"
 ]
 
@@ -1812,3 +1815,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = True

@@ -188,11 +188,11 @@ SHARED_JOURNAL_LIKE = {
                 "editor" : {"coerce" : "unicode"},
                 "date_applied": {"coerce": "utcdatetime"},
             },
-            # "lists" : {
-            #     "notes" : {"contains" : "object"}
-            # },
+            "lists" : {
+                "note_ids" : {"contains" : "field", "coerce" : "unicode"},
+            },
             "objects" : [
-                "contact", "flag"
+                "contact", "flag", "index"
             ],
             "structs" : {
                 "contact" : {
@@ -206,6 +206,11 @@ SHARED_JOURNAL_LIKE = {
                         "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
                         "deadline": {"coerce" : "bigenddate"},
                         "note_id": {"coerce" : "unicode"}
+                    }
+                },
+                "index": {
+                    "lists": {
+                        "notes": {"contains": "field", "coerce": "unicode"},
                     }
                 }
                 # "notes" : {
@@ -275,12 +280,6 @@ ARTICLE_STRUCT = {
                 "publisher_record_id": {"coerce": "unicode"},
                 "seal": {"coerce": "bool"},
                 "upload_id": {"coerce": "unicode"}
-            },
-            "objects": ["index"],
-            "structs": {
-                "lists": {
-                    "notes": {"contains": "field", "coerce" : "unicode"},
-                }
             }
         },
         "index": {

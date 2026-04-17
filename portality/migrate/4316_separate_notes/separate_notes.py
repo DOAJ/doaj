@@ -56,13 +56,14 @@ for model_class in MODELS:
         new_jl.prep()
         jl_data = new_jl.data
         jl_data = _diff(original, jl_data)
+        jl_data["id"] = new_jl.id
         jbatch.append(jl_data)
 
         for note in notes:
-            note.prep()
             nbatch.append(note.data)
 
         if len(jbatch) > MAX_BATCH or len(nbatch) > MAX_BATCH:
+            print(f"batch {len(jbatch)}, nbatch {len(nbatch)}")
             model_class.bulk(jbatch)
             Note.bulk(nbatch)
             jbatch = []
