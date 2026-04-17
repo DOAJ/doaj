@@ -27,6 +27,11 @@ class Note(SeamlessMixin, DomainObject):
     __SEAMLESS_STRUCT__ = STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
 
+    @classmethod
+    def all_by_resource(cls, resource_type, resource_id):
+        q = NotesByResourceQuery(resource_type, resource_id)
+        return [n for n in cls.iterate_unstable(q.query())]
+
     def __init__(self, **kwargs):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted
         if "_source" in kwargs:
@@ -44,14 +49,47 @@ class Note(SeamlessMixin, DomainObject):
     def note(self):
         return self.__seamless__.get_single("note")
 
+    @note.setter
+    def note(self, val):
+        self.__seamless__.set_single("note", val)
+
     @property
     def author_id(self):
         return self.__seamless__.get_single("author_id")
+
+    @author_id.setter
+    def author_id(self, val):
+        self.__seamless__.set_single("author_id", val)
 
     @property
     def resource_type(self):
         return self.__seamless__.get_single("resource_type")
 
+    @resource_type.setter
+    def resource_type(self, val):
+        self.__seamless__.set_single("resource_type", val)
+
     @property
     def resource_id(self):
         return self.__seamless__.get_single("resource_id")
+
+    @resource_id.setter
+    def resource_id(self, val):
+        self.__seamless__.set_single("resource_id", val)
+
+class NotesByResourceQuery:
+    def __init__(self, resource_type, resource_id):
+        self._resource_type = resource_type
+        self._resource_id = resource_id
+
+    def query(self):
+        return {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"resource_type": self._resource_type}},
+                        {"term": {"resource_id": self._resource_id}}
+                    ]
+                }
+            }
+        }

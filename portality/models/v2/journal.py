@@ -4,7 +4,7 @@ import string
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Union
 
 from unidecode import unidecode
 
@@ -15,6 +15,7 @@ from portality.lib.coerce import COERCE_MAP
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL, find_earliest_date
 from portality.lib.seamless import SeamlessMixin
 from portality.models.account import Account
+from portality.models.note import Note
 from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
 
@@ -74,6 +75,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     # the front-end to continue to work, even if the object sees data which is not in the struct.
     # This can be commented out after any migration which changes the data model
     __SEAMLESS_SILENT_PRUNE__ = app.config.get("SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE", False)
+
+    def __init__(self, *args, **kwargs):
+        super(JournalLikeObject, self).__init__(*args, **kwargs)
+        self._notes = {}
+        self._notes_loaded = False
 
     @classmethod
     def find_by_issn(cls, issns, in_doaj=None, max=10):
@@ -302,57 +308,146 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     #### Notes methods
 
-    def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
+    def add_note(self, note_text:str, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()
         if id == "":
             id = None
 
-        obj = {"date": date, "note": note}
+        note = Note()
+        note.date = date
+        note.note = note_text
+        note.resource_type = self.__type__
+
+        if self.id is None:
+            self.set_id(self.makeid())
+        note.resource_id = self.id
+
         if id is not None:
-            obj["id"] = id
+            note.set_id(id)
+        else:
+            note.set_id(self.makeid())
+
         if author_id is not None:
-            obj["author_id"] = author_id
+            note.author_id = author_id
+
+        self._notes[note.id] = note
+
         if assigned_to is not None or deadline is not None:
-            obj["flag"] = {}
+            flag = {}
             if assigned_to is not None:
-                obj["flag"]["assigned_to"] = assigned_to
+                flag["assigned_to"] = assigned_to
             if deadline is not None:
-                obj["flag"]["deadline"] = deadline
-        self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
-        if id is None:
-            obj["id"] = uuid.uuid4()
-        self.__seamless__.add_to_list_with_struct("admin.notes", obj)
+                flag["deadline"] = deadline
+            flag["note_id"] = note.id
+            self.__seamless__.set_single("admin.flag", flag)
+
+    # def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
+    #     if not date:
+    #         date = dates.now_str()
+    #     if id == "":
+    #         id = None
+    #
+    #     obj = {"date": date, "note": note}
+    #     if id is not None:
+    #         obj["id"] = id
+    #     if author_id is not None:
+    #         obj["author_id"] = author_id
+    #     if assigned_to is not None or deadline is not None:
+    #         obj["flag"] = {}
+    #         if assigned_to is not None:
+    #             obj["flag"]["assigned_to"] = assigned_to
+    #         if deadline is not None:
+    #             obj["flag"]["deadline"] = deadline
+    #     self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
+    #     if id is None:
+    #         obj["id"] = uuid.uuid4()
+    #     self.__seamless__.add_to_list_with_struct("admin.notes", obj)
 
     def add_note_by_dict(self, note):
-        return self.add_note(note=note.get("note"), date=note.get("date"),
+        return self.add_note(note_text=note.get("note"), date=note.get("date"),
                              id=note.get("id"), author_id=note.get("author_id"))
 
-    def remove_note(self, note):
-        self.__seamless__.delete_from_list("admin.notes", matchsub=note)
+    def remove_note(self, note:Union[Note, dict]):
+        if isinstance(note, Note):
+            self._notes[note.id] = False
+        else:
+            self._notes[note["id"]] = False
 
-    def remove_note_by_id(self, note_id):
+    # def remove_note(self, note):
+    #     self.__seamless__.delete_from_list("admin.notes", matchsub=note)
+
+    def remove_note_by_id(self, note_id:str):
         """
         Remove a note by its ID.
         :param note_id: The ID of the note to remove.
         """
-        self.__seamless__.delete_from_list("admin.notes", matchsub={"id": note_id})
+        self._notes[note_id] = False
 
-    def get_note_by_id(self, note_id):
-        candidates = [n for n in self.notes if n.get("id") == note_id]
-        if len(candidates) == 0:
-            return None
-        return candidates[0]
+    # def remove_note_by_id(self, note_id):
+    #     """
+    #     Remove a note by its ID.
+    #     :param note_id: The ID of the note to remove.
+    #     """
+    #     self.__seamless__.delete_from_list("admin.notes", matchsub={"id": note_id})
 
-    def set_notes(self, notes):
-        self.__seamless__.set_with_struct("admin.notes", notes)
+    def get_note_by_id(self, note_id:str):
+        if not self._notes_loaded:
+            self._load_notes()
+        return self._notes.get(note_id)
+
+    # def get_note_by_id(self, note_id):
+    #     candidates = [n for n in self.notes if n.get("id") == note_id]
+    #     if len(candidates) == 0:
+    #         return None
+    #     return candidates[0]
+
+    def set_notes(self, notes:Union[list[Note], list[dict]]):
+        self._notes = {}
+        self._notes_loaded = True
+        for n in notes:
+            if isinstance(n, dict):
+                n = Note(**n)
+            self._notes[n.id] = n
+
+    # def set_notes(self, notes):
+    #     self.__seamless__.set_with_struct("admin.notes", notes)
 
     def remove_notes(self):
-        self.__seamless__.delete("admin.notes")
+        for n in self._notes.keys():
+            self._notes[n] = False
+
+    # def remove_notes(self):
+    #     self.__seamless__.delete("admin.notes")
 
     @property
     def notes(self):
-        return self.__seamless__.get_list("admin.notes")
+        if not self._notes_loaded:
+            self._load_notes()
+
+        flag = self.__seamless__.get_single("admin.flag")
+        if flag is None:
+            return [n.data for n in self._notes.values() if n]
+
+        raw = []
+        for n in self._notes.values():
+            if not n:
+                continue
+            ndata = n.data
+            if flag["note_id"] == n.id:
+                ndata.update({"flag": deepcopy(flag)})
+            raw.append(ndata)
+        return raw
+
+    # @property
+    # def notes(self):
+    #     return self.__seamless__.get_list("admin.notes")
+
+    @property
+    def note_objects(self):
+        if not self._notes_loaded:
+            self._load_notes()
+        return [n for n in self._notes.values() if n]
 
     @property
     def notes_except_flags(self):
@@ -364,7 +459,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @property
     def is_flagged(self):
-        return len(self.flags) > 0
+        return self.__seamless__.get_single("admin.flag") is not None
+
+    # @property
+    # def is_flagged(self):
+    #     return len(self.flags) > 0
 
     def resolve_flag(self, flag_id, updated_note):
         flag = self.get_note_by_id(flag_id)
@@ -373,12 +472,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @property
     def most_urgent_flag_deadline(self):
-        # We allow only 1 flag per record now, but this code allows more
-        # Filter notes to only include those with a 'flag' and a 'deadline'
-        deadlines = [
-            flag["flag"].get("deadline") for flag in self.flags
-            if flag["flag"].get("deadline")
-        ]
+        flag = self.__seamless__.delete("admin.flag")
+        if flag is None:
+            return dates.far_in_the_future()
+
+        deadlines = [flag.get("deadline")] if flag.get("deadline") else []
 
         # Find the flag with the earliest deadline
         if not len(deadlines):
@@ -387,6 +485,23 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         earliest_flag_deadline = find_earliest_date(deadlines, dates_format=FMT_DATE_STD)
 
         return earliest_flag_deadline
+
+    # @property
+    # def most_urgent_flag_deadline(self):
+    #     # We allow only 1 flag per record now, but this code allows more
+    #     # Filter notes to only include those with a 'flag' and a 'deadline'
+    #     deadlines = [
+    #         flag["flag"].get("deadline") for flag in self.flags
+    #         if flag["flag"].get("deadline")
+    #     ]
+    #
+    #     # Find the flag with the earliest deadline
+    #     if not len(deadlines):
+    #         return dates.far_in_the_future()  # Dummy date for least urgent date
+    #
+    #     earliest_flag_deadline = find_earliest_date(deadlines, dates_format=FMT_DATE_STD)
+    #
+    #     return earliest_flag_deadline
 
     @property
     def ordered_notes(self):
@@ -416,6 +531,19 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             ordered += clusters[key]
         return ordered
 
+    def _persist_notes(self):
+        for nid, n in self._notes.values():
+            if n is False:
+                Note.delete_by_id(nid)
+            else:
+                n.save()
+
+    def _load_notes(self):
+        notes = Note.all_by_resource(self.__type__, self.id)
+        for n in notes:
+            self._notes[n.id] = n
+        self._notes_loaded = True
+
     #### end of notes methods
 
     def bibjson(self):
@@ -428,6 +556,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def set_bibjson(self, bibjson):
         bibjson = bibjson.data if isinstance(bibjson, JournalLikeBibJSON) else bibjson
         self.__seamless__.set_with_struct("bibjson", bibjson)
+
+    def save(self, *args, **kwargs):
+        res = super(JournalLikeObject, self).save(**kwargs)
+        self._persist_notes()
+        return res
 
     ######################################################
     ## DEPRECATED METHODS
