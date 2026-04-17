@@ -614,6 +614,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         is_flagged = False
         flag_assignees = []
         most_urgent_flag_deadline = dates.far_in_the_future()
+        notes = []
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -697,6 +698,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if self.editor is not None:
             has_editor = "Yes"
 
+        # index the content of the notes
+        note_objects = self.note_objects
+        for n in note_objects:
+            notes.append(n.note)
+
         # build the index part of the object
         index = {}
 
@@ -716,6 +722,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         index["has_editor"] = has_editor
 
         index["issn"] = cbib.issns()
+
         if len(titles) > 0:
             index["title"] = titles
         if len(subjects) > 0:
@@ -734,6 +741,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["schema_code"] = schema_codes
         if len(schema_codes_tree) > 0:
             index["schema_codes_tree"] = schema_codes_tree
+        if len(notes) > 0:
+            index["notes"] = notes
 
         self.__seamless__.set_with_struct("index", index)
 

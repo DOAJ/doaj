@@ -275,6 +275,12 @@ ARTICLE_STRUCT = {
                 "publisher_record_id": {"coerce": "unicode"},
                 "seal": {"coerce": "bool"},
                 "upload_id": {"coerce": "unicode"}
+            },
+            "objects": ["index"],
+            "structs": {
+                "lists": {
+                    "notes": {"contains": "field", "coerce" : "unicode"},
+                }
             }
         },
         "index": {
@@ -295,7 +301,7 @@ ARTICLE_STRUCT = {
                 "schema_codes_tree": {"coerce" : "unicode"},
                 "schema_subject": {"coerce" : "unicode"},
                 "subject": {"coerce" : "unicode"},
-                "unpunctitle": {"coerce" : "unicode"}
+                "unpunctitle": {"coerce" : "unicode"},
             }
         }
     }

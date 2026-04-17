@@ -998,9 +998,10 @@ QUERY_FILTERS = {
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
 PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
-    "admin.notes.note",
-    "admin.notes.id",
-    "admin.notes.author_id"
+    # "admin.notes.note",
+    # "admin.notes.id",
+    # "admin.notes.author_id",
+    "admin.index.notes"
 ]
 
 ADMIN_NOTES_INDEX_ONLY_FIELDS = {
@@ -1016,34 +1017,40 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
 }
 
 ADMIN_NOTES_SEARCH_MAPPING = {
-    "admin.notes.id": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
-    },
-    "admin.notes.note": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
-    },
-    "admin.notes.author_id": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
+    "admin.index.notes": {
+        "type": "text"
     }
 }
+
+# ADMIN_NOTES_SEARCH_MAPPING = {
+#     "admin.notes.id": {
+#         "type": "text",
+#         "fields": {
+#             "exact": {
+#                 "type": "keyword",
+#                 "store": True
+#             }
+#         }
+#     },
+#     "admin.notes.note": {
+#         "type": "text",
+#         "fields": {
+#             "exact": {
+#                 "type": "keyword",
+#                 "store": True
+#             }
+#         }
+#     },
+#     "admin.notes.author_id": {
+#         "type": "text",
+#         "fields": {
+#             "exact": {
+#                 "type": "keyword",
+#                 "store": True
+#             }
+#         }
+#     }
+# }
 
 ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
 

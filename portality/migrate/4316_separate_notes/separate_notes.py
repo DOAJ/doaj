@@ -48,8 +48,6 @@ def _diff(original, current):
 for model_class in MODELS:
     jbatch = []
     nbatch = []
-    jtotal = 0
-    ntotal = 0
 
     for result in model_class.iterate(wrap=False):
         original = deepcopy(result)
