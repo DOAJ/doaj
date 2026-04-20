@@ -12,7 +12,9 @@ MAX_BATCH = 1000
 
 def extract_notes(model_class, jl:dict) -> tuple[JournalLikeObject, list[Note]]:
     notes = deepcopy(jl.get("admin", {}).get("notes", []))
-    del jl["admin"]["notes"]
+    if len(notes) > 0:
+        del jl["admin"]["notes"]
+
     jl_obj = model_class(**jl)
 
     for note_data in notes:
@@ -55,8 +57,6 @@ for model_class in MODELS:
 
         new_jl.prep()
         jl_data = new_jl.data
-        jl_data = _diff(original, jl_data)
-        jl_data["id"] = new_jl.id
         jbatch.append(jl_data)
 
         for note in notes:
@@ -64,13 +64,13 @@ for model_class in MODELS:
 
         if len(jbatch) > MAX_BATCH or len(nbatch) > MAX_BATCH:
             print(f"batch {len(jbatch)}, nbatch {len(nbatch)}")
-            model_class.bulk(jbatch)
+            model_class.bulk(jbatch, action="index")
             Note.bulk(nbatch)
             jbatch = []
             nbatch = []
 
     if len(jbatch) > 0:
-        model_class.bulk(jbatch)
+        model_class.bulk(jbatch, action="index")
     if len(nbatch) > 0:
         Note.bulk(nbatch)
 
