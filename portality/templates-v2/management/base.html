@@ -174,7 +174,7 @@
         {% include "includes/_flash_notification.html" %}
         {% block management_content %}{% endblock %}
 
-        <section class="user-actions">
+        <section class="user-actions flex">
             <div class="user-item">
                 <form method="POST" action="{{ url_for('account.logout') }}">
                     <small>
