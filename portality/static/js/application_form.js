@@ -93,8 +93,11 @@ doaj.af.BaseApplicationForm = class {
 
             tab.fieldsets.forEach((fs) => {
                 let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
+                if (fieldset === undefined) {
+                    fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
+                }
                 fieldset.fields.forEach((f) => {
-                    if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
+                    if (f && f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
                         let value = this.determineFieldsValue(f.name);
                         let text = this.convertValueToText(value);
                         if (f.input === 'taglist') {
@@ -186,7 +189,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.TABS = [
             {title: "Open access compliance", fieldsets: ["basic_compliance"]},
-            {title: "About the Journal", fieldsets: ["about_the_journal", "publisher", "society_or_institution"]},
+            {title: "About the Journal", fieldsets: ["about_the_journal_extended", "publisher", "society_or_institution"]},
             {title: "Copyright & licensing", fieldsets: ["licensing", "embedded_licensing", "copyright"]},
             {title: "Editorial", fieldsets: ["peer_review", "plagiarism", "editorial"]},
             {title: "Business model", fieldsets: ["apc", "apc_waivers", "other_fees"]},

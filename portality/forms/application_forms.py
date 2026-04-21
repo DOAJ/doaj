@@ -2109,9 +2109,16 @@ class FieldSetDefinitions:
             FieldDefinitions.JOURNAL_URL["name"],
             FieldDefinitions.PISSN["name"],
             FieldDefinitions.EISSN["name"],
-            FieldDefinitions.LANGUAGE["name"]
+            FieldDefinitions.LANGUAGE["name"],
         ]
     }
+
+    ABOUT_THE_JOURNAL_EXTENDED = {
+        "name": "about_the_journal_extended",
+        "label": "About the journal",
+        "fields": ABOUT_THE_JOURNAL["fields"] + [FieldDefinitions.KEYWORDS["name"]]
+    }
+
 
     # ~~->$ Publisher:FieldSet~~
     PUBLISHER = {
@@ -2195,6 +2202,12 @@ class FieldSetDefinitions:
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
             FieldDefinitions.PUBLICATION_TIME_WEEKS["name"],
         ]
+    }
+
+    SUBJECT_AND_KEYWORDS = {
+        "name": "subject_and_keywords",
+        "label": "Subject and Keywords",
+        "fields": [FieldDefinitions.SUBJECT["name"], FieldDefinitions.KEYWORDS["name"]]
     }
 
     # ~~->$ APC:FieldSet~~
@@ -2325,25 +2338,6 @@ class FieldSetDefinitions:
         ]
     }
 
-    # ~~->$ Subject:FieldSet~~
-    SUBJECT_AND_KEYWORDS = {
-        "name": "subject_and_keywords",
-        "label": "Subject classification and keywords",
-        "fields": [
-            FieldDefinitions.SUBJECT["name"],
-            FieldDefinitions.KEYWORDS["name"]
-        ]
-    }
-
-    # ~~->$ Subject:FieldSet~~
-    KEYWORDS = {
-        "name": "keywords",
-        "label": "Keywords",
-        "fields": [
-            FieldDefinitions.KEYWORDS["name"]
-        ]
-    }
-
     # ~~->$ Notes:FieldSet~~
     NOTES = {
         "name": "notes",
@@ -2408,7 +2402,6 @@ class ApplicationContextDefinitions:
         "name": "public",
         "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
-            FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
             FieldSetDefinitions.PUBLISHER["name"],
             FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"],
             FieldSetDefinitions.LICENSING["name"],
@@ -2416,10 +2409,10 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.COPYRIGHT["name"],
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.PLAGIARISM["name"],
-            FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.APC["name"],
             FieldSetDefinitions.APC_WAIVERS["name"],
             FieldSetDefinitions.OTHER_FEES["name"],
+            FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
@@ -2443,9 +2436,6 @@ class ApplicationContextDefinitions:
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
     UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
-    UPDATE["fieldsets"] += [
-        FieldSetDefinitions.KEYWORDS["name"],
-    ]
 
     # ~~->$ ReadOnlyApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2453,9 +2443,6 @@ class ApplicationContextDefinitions:
     READ_ONLY["name"] = "application_read_only"
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
     READ_ONLY["templates"]["form"] = templates.PUBLISHER_READ_ONLY_APPLICATION
-    READ_ONLY["fieldsets"] += [
-        FieldSetDefinitions.KEYWORDS["name"],
-    ]
 
     # ~~->$ AssociateEditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2464,7 +2451,6 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -2478,7 +2464,6 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -2496,15 +2481,19 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
-        FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
         FieldSetDefinitions.NOTES["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
-    # now we can update the Public Context with the correct "About" fieldset
-    PUBLIC["fieldsets"] += [FieldSetDefinitions.KEYWORDS["name"]]
+    # add about the journal and editorial fields that differ between the contexts
+    public_context = [PUBLIC, READ_ONLY, UPDATE]
+    for pc in public_context:
+        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"]]
 
+    editorial_context = [ASSOCIATE, EDITOR, MANED]
+    for ec in editorial_context:
+        ec["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL["name"], FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"]]
 
 class JournalContextDefinitions:
     # ~~->$ ReadOnlyJournal:FormContext~~
@@ -2523,13 +2512,13 @@ class JournalContextDefinitions:
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.PLAGIARISM["name"],
             FieldSetDefinitions.EDITORIAL["name"],
+            FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
             FieldSetDefinitions.APC["name"],
             FieldSetDefinitions.APC_WAIVERS["name"],
             FieldSetDefinitions.OTHER_FEES["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
-            FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
 
         ],
         "templates": {
