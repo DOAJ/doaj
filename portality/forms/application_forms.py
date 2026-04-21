@@ -2231,8 +2231,8 @@ class FieldSetDefinitions:
 
     SUBJECT_AND_KEYWORDS = {
         "name": "subject_and_keywords",
-        "label": lazy_gettext("Subject and Keywords"),
-        "fields": [FieldDefinitions.SUBJECT["name"], FieldDefinitions.KEYWORDS["name"]]
+        "label": lazy_gettext("Keywords and Subject"),
+        "fields": [FieldDefinitions.KEYWORDS["name"], FieldDefinitions.SUBJECT["name"]]
     }
 
     # ~~->$ APC:FieldSet~~
