@@ -133,13 +133,9 @@ class ApplicationProcessor(FormProcessor):
         if self.target is None:
             raise Exception("Cannot carry data on to a non-existent target - run the xwalk first")
 
-        # first off, get the notes (by reference) in the target and the notes from the source
+        # first off, get the notes (by value) in the target and the notes from the source
         tnotes = self.target.notes
         snotes = self.source.notes
-
-        # if there are no notes, we might not have the notes by reference, so later will
-        # need to set them by value
-        apply_notes_by_value = len(tnotes) == 0
 
         # for each of the target notes we need to get the original dates from the source notes
         for n in tnotes:
@@ -170,8 +166,7 @@ class ApplicationProcessor(FormProcessor):
                 if not found:
                     tnotes.append(sn)
 
-        if apply_notes_by_value:
-            self.target.set_notes(tnotes)
+        self.target.set_notes(tnotes)
 
     def _carry_continuations(self):
         if self.source is None:

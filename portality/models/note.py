@@ -10,6 +10,7 @@ STRUCT = {
         "note" : {"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated": {"coerce" : "utcdatetime"},
+        "es_type": {"coerce": "unicode"},
         "author_id" : {"coerce" : "unicode"},  # account_id of the note's author
         "resource_type": {"coerce" : "unicode"},
         "resource_id": {"coerce" : "unicode"},

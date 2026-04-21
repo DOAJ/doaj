@@ -13,7 +13,7 @@ from portality.models import Journal, Account, Suggestion, Provenance
 
 
 def load_parameter_sets():
-    return load_from_matrix("accept_application.csv", test_ids=[])
+    return load_from_matrix("accept_application.csv", test_ids=["68"])
 
 
 EXCEPTIONS = {

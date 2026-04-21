@@ -18,6 +18,8 @@ def extract_notes(model_class, jl:dict) -> tuple[JournalLikeObject, list[Note]]:
     jl_obj = model_class(**jl)
 
     for note_data in notes:
+        del note_data["id"] # Notes may share IDs across objects, because they've never been globally unique before
+        # This will also sort out any flags
         jl_obj.add_note_by_dict(note_data)
 
     note_objects = jl_obj.note_objects
