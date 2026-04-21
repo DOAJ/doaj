@@ -277,13 +277,17 @@ class JournalGenericXWalk(object):
 
         if getattr(form, "flags", None):
             for flag in form.flags.data:
+                if flag.get("flag_note") is None or flag.get("flag_note") == "":
+                    continue
+
                 flag_date = flag["flag_created_date"]
                 try:
-                    if flag.get("flag_deadline") == "":
+                    if flag.get("flag_deadline") == "" or flag.get("flag_deadline") is None:
                         flag_deadline = dates.far_in_the_future()
                     else:
                         flag_deadline = dates.parse(flag.get("flag_deadline"), format=dates.FMT_DATE_STD)
                 except:
+                    # FIXME: why is there validation in the crosswalk?
                     raise ValueError("Flag deadline must be a valid date in BigEnd format (ie. YYYY-MM-DD)")
                 flag_assigned_to = flag["flag_assignee"]
                 flag_author = flag["flag_setter"]
@@ -309,6 +313,12 @@ class JournalGenericXWalk(object):
             if editor:
                 editor = editor.strip()
                 obj.set_editor(editor)
+
+        if getattr(form, "last_full_review", None):
+            lfr = form.last_full_review.data
+            if lfr:
+                lfr = lfr.strip()
+                obj.last_full_review = lfr
 
     @classmethod
     def bibjson2form(cls, bibjson, forminfo):
@@ -492,6 +502,9 @@ class JournalGenericXWalk(object):
             forminfo['editor_group'] = obj.editor_group
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
+
+        if getattr(obj, "last_full_review", None):
+            forminfo["last_full_review"] = obj.last_full_review
 
 
 class JournalFormXWalk(JournalGenericXWalk):

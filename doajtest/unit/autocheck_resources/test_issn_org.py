@@ -1,10 +1,6 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ApplicationFixtureFactory, IssnOrgFixtureFactory
-from doajtest.mocks.autocheck_resource_bundle_Resource import ResourceBundleResourceMockFactory
-
-from portality.autocheck.checkers.issn_active import ISSNActive
-from portality import models
-from portality.autocheck.resource_bundle import Resource, ResourceBundle
+from doajtest.fixtures import IssnOrgFixtureFactory
+from portality.autocheck.resource_bundle import ResourceBundle
 from portality.autocheck.resources.issn_org import ISSNOrg
 
 import responses    # mocks for the requests library

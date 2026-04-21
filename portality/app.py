@@ -16,7 +16,7 @@ import elasticsearch.exceptions
 import tzlocal
 import pytz
 
-from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
+from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory, g
 from flask_login import login_user, current_user
 
 from datetime import datetime
@@ -32,6 +32,7 @@ from portality import constants
 
 from portality.ui.messages import Messages
 from portality.ui import exceptions
+from portality.internationalise import internationalise
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -54,6 +55,7 @@ if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False)
     from portality.view.testdrive import blueprint as testdrive
 
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
+app.register_blueprint(account, name="locale_account", url_prefix='/<lang>/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
 app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
 app.register_blueprint(query, name='query', url_prefix='/query') # ~~-> Query:Blueprint~~
@@ -84,6 +86,7 @@ if 'api4' in app.config['FEATURES']:
 app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
+app.register_blueprint(apply, name="apply_locale", url_prefix='/<lang>/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
 app.register_blueprint(tours, url_prefix="/tours")  # ~~-> Tours:Blueprint~~
@@ -102,6 +105,8 @@ if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False)
 # to the app being run directly by python portality/app.py
 # putting it here ensures it will run under any web server
 initialise_index(app, es_connection)
+
+internationalise(app)
 
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
@@ -189,7 +194,7 @@ def set_current_context():
     '''
     return {
         'settings': settings,
-        'statistics': models.JournalArticle.site_statistics(),
+        # 'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app": app,
         "current_year": dates.now_str(FMT_YEAR),
@@ -445,7 +450,7 @@ def handle_journal_withdrawn(e):
 @app.errorhandler(ValueError)
 @app.errorhandler(500)
 def handle_500(e):
-    if e.description == e.__class__.description:
+    if not hasattr(e, 'description') or e.description == e.__class__.description:
         description = Messages.DEFAULT_500_DESCRIPTION
     else:
         description = e.description
@@ -495,7 +500,7 @@ def run_server(host=None, port=None, fake_https=False):
 
     if pycharm_debug:
         app.config['DEBUG'] = False
-        import pydevd
+        import pydevd_pycharm as pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'),
                         port=app.config.get('DEBUG_PYCHARM_PORT', 6000),
                         stdoutToServer=True, stderrToServer=True)

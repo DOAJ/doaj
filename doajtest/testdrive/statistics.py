@@ -4,7 +4,6 @@ from portality import models
 from doajtest.fixtures import EditorGroupFixtureFactory
 import string
 import random
-import json
 
 class Statistics(TestDrive):
     """

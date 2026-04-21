@@ -14,6 +14,13 @@ def get_mappings(app):
     # LEGACY DEFAULT MAPPINGS
     mappings = app.config["MAPPINGS"]
 
+    # Ensure legacy mappings also respect any DEFAULT_INDEX_SETTINGS override (e.g. from test.cfg),
+    # rather than using the hardcoded dict reference set at module import time in settings.py.
+    default_settings = app.config.get("DEFAULT_INDEX_SETTINGS", {})
+    for key in list(mappings.keys()):
+        if 'settings' in mappings[key]:
+            mappings[key]['settings'] = default_settings
+
     # TYPE SPECIFIC MAPPINGS
     # get the list of classes which carry the type-specific mappings to be loaded
     mapping_daos = app.config.get("ELASTIC_SEARCH_MAPPINGS", [])

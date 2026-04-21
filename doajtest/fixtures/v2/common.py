@@ -51,6 +51,14 @@ EDITORIAL_FORM_EXPANDED = {
     "editor": "associate"
 }
 
+LAST_REVIEW_FORM_EXPANDED = {
+    "last_full_review": "2025-01-01"
+}
+
+FLAGS_FORM_EXPANDED = {
+    'flags': []
+}
+
 JOURNAL_LIKE_BIBJSON = {
     "alternative_title": "Alternative Title",
     "apc": {

@@ -98,9 +98,16 @@ class Messages(object):
 
     ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
 
+    CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS = "The journal could not be reinstated because at least one other record with matching ISSN(s) already exists in DOAJ"
+
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID = "Update request {urid} automatically rejected"
     NO_UPDATE_REQUESTS = "No update requests found."
+
+    LAST_FULL_REVIEW_NOTE = "Last full review completed on {date} by `{username}`"
+    OWNER_CHANGED_NOTE = "Owner changed from `{old_owner}` to `{new_owner}` by `{changed_by}` on {date}"
+    JOURNAL_REINSTATED_NOTE = "Journal reinstated into DOAJ by `{username}` on {date}."
+    JOURNAL_WITHDRAWN_NOTE = "Journal withdrawn from DOAJ by `{username}` on {date}."
 
     BULK_JOURNAL_DELETE = "About to delete an estimated {journal_no} journals with {article_no} articles associated with their ISSNs. Existing update requests will be automatically rejected."
     BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
