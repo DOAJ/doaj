@@ -1,7 +1,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -9,7 +9,6 @@ from portality.models import Article, Account, Journal
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 from doajtest.mocks.model_Article import ModelArticleMockFactory
-from portality.dao import ESMappingMissingError
 
 import time
 
@@ -226,10 +225,15 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
 
         # We need to retrieve the correct Journal by its ISSNs
         def mock_find(issns: list, in_doaj=None, max=2):
+            res = []
             for j in journal_specs:
                 if sorted([j['eissn'], j['pissn']]) == sorted(issns):
-                    return [j['instance']]
-            return []
+                    if in_doaj is not None:
+                        if j['instance'].data['admin'].get('in_doaj') == in_doaj:
+                            res.append(j['instance'])
+                    else:
+                        res.append(j['instance'])
+            return res[:max]
 
         Journal.find_by_issn_exact = mock_find
 

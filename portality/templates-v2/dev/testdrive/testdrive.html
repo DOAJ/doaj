@@ -1,80 +1,220 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>{{ name }} - DOAJ Testdrive</title>
-  <meta name="description" content="Testdrive setup results for {{ name }}">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <meta charset="utf-8">
+    <title>{{ name }} - DOAJ Testdrive</title>
+    <meta name="description" content="Testdrive setup results for {{ name }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            margin: 20px;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        h1, h2 {
+            color: #982E0A;
+            margin-bottom: 10px;
+        }
+
+        dl {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        dt {
+            font-weight: bold;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        dd {
+            margin: 0 0 10px 20px;
+            padding: 5px 0;
+        }
+
+        ul {
+            margin: 5px 0 10px 20px;
+            padding-left: 0;
+            list-style-type: disc;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .copyable {
+            display: flex;
+            align-items: start;
+            justify-content: start;
+        }
+
+        .copy-value {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            margin-right: 5px;
+            font-family: monospace;
+            max-width: 90%;
+            overflow-x: auto;
+        }
+
+        .click-to-copy {
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 0.9em;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .click-to-copy:hover {
+            color: #fff;
+            background-color: #FD5A3B;
+            border-color: #FD5A3B;
+        }
+
+        /* Optional: make nested dl slightly indented */
+        dl dl {
+            margin-left: 20px;
+            border: 1px solid #eee;
+        }
+
+        .section-teardown {
+            padding-bottom: 5rem;
+        }
+
+        .teardown {
+            padding: .5rem 1.5rem;
+            color: #982E0A;
+            text-decoration: none;
+            border: 1px solid #982E0A;
+            box-shadow: 0.1875rem 0.1875rem 0 0 #982E0A;
+            background-color: transparent;
+        }
+
+        .teardown:hover {
+            color: white;
+            background-color: #982E0A;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
+<section class="section-data">
+    <h1>{{ name }} - Testdive setup results</h1>
+    {% macro render_copy_btn(value) %}
+    <button class="click-to-copy" data-copy="{{ value|e }}" onclick="copyToClipboard(this)"
+            aria-label="copy to clipboard">
+        Copy value
+    </button>
+    {% endmacro %}
 
-<h1>{{ name }} - Testdrive setup results</h1>
-
-{% macro render_dict(d) %}
+    {% macro render_dict(d) %}
     <dl>
         {% for k, v in d.items() %}
-            <dt>{{ k }}</dt>
-            <dd>
-                {% if v is mapping %}
-                    {{ render_dict(v) }}
-                {% elif v is iterable and v is not string and v is not mapping %}
-                    <ul>
-                        {% for item in v %}
-                            <li>
-                                {% if item is mapping %}
-                                    {{ render_dict(item) }}
-                                {% else %}
-                                    {{ item }}
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    {% if v.startswith("http") %}<a href="{{ v }}" target="_blank">{% endif %}{{ v }}{% if v.startswith("http") %}</a>{% endif %}
-                {% endif %}
-            </dd>
+        <dt>{{ k }}</dt>
+        <dd>
+            {% if v is mapping %}
+            {{ render_dict(v) }}
+            {% elif v is iterable and v is not string and v is not mapping %}
+            <ul>
+                {% for item in v %}
+                <li>
+                    {% if item is mapping %}
+                    {{ render_dict(item) }}
+                    {% else %}
+                    <span class="copyable">
+                                    <span class="copy-value" data-copy="{{ item }}">
+                                        {{ item }}
+                                    </span>
+                                    {{ render_copy_btn(item) }}
+                                </span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <span class="copyable">
+                    <span class="copy-value" data-copy="{{ v }}">
+                        {% if v.startswith("http") %}<a href="{{ v }}" target="_blank">{% endif %}{{ v }}{% if v.startswith("http") %}</a>{% endif %}
+                    </span>
+                    {{ render_copy_btn(v) }}
+                </span>
+            {% endif %}
+        </dd>
         {% endfor %}
     </dl>
-{% endmacro %}
+    {% endmacro %}
 
-{% for k, v in params.items() %}
+    {% for k, v in params.items() %}
     {% if k != "teardown" and k != "non_renderable" %}
     <h2>{{ k }}</h2>
     <dl>
-    {% if v is mapping %}
+        {% if v is mapping %}
         {{ render_dict(v) }}
-{#        {% for k1, v1 in v.items() %}#}
-{#            <dt>{{ k1 }}</dt>#}
-{#            <dd>#}
-{#                {% if v1 is iterable and (v1 is not string and v1 is not mapping) %}#}
-{#                    {{ v1 }}#}
-{#                {% else %}#}
-{#                    {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>#}
-{#                {% endif %}#}
-{#        {% endfor %}#}
-    {% elif v is iterable %}
+        {# {% for k1, v1 in v.items() %}#}
+        {#
+        <dt>{{ k1 }}</dt>
+        #}
+        {#
+        <dd>#}
+            {# {% if v1 is iterable and (v1 is not string and v1 is not mapping) %}#}
+            {# {{ v1 }}#}
+            {# {% else %}#}
+            {# {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if
+                v1.startswith("http") %}</a>{% endif %}
+        </dd>
+        #}
+        {# {% endif %}#}
+        {# {% endfor %}#}
+        {% elif v is iterable %}
         <dt>list of values:</dt>
-        <dd><ul>
-        {% for v1 in v %}
-            <li>
-            {% if v1 is mapping %}
-                {{ render_dict(v1) }}
-            {% else %}
-                {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}
-            {% endif %}
-            </li>
-        {% endfor %}
-        </ul></dd>
-    {% endif %}
+        <dd>
+            <ul>
+                {% for v1 in v %}
+                <li>
+                    {% if v1 is mapping %}
+                    {{ render_dict(v1) }}
+                    {% else %}
+                    {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if
+                    v1.startswith("http") %}</a>{% endif %}
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </dd>
+        {% endif %}
     </dl>
     {% endif %}
-{% endfor %}
+    {% endfor %}
+</section>
 
-<h1>Teardown</h1>
+<section class="section-teardown">
+    <h1>Teardown</h1>
 
-<p>When you have finished your test, you can cleanup the test resources from the test system by clicking this link</p>
+    <p>When you have finished your test, you can cleanup the test resources from the test system by clicking this
+        link</p>
 
-<a href="{{ params.teardown }}">{{ params.teardown }}</a>
-
+    <a class="teardown" href="{{ params.teardown }}">FINISH TESTING AND CLEAN UP</a>
+</section>
 </body>
+<script>
+    function copyToClipboard(button) {
+        navigator.clipboard.writeText(button.dataset.copy)
+            .then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy value', 1000);
+            })
+            .catch(err => console.error('Failed to copy', err));
+    }
+</script>
 </html>

@@ -57,7 +57,8 @@ $.extend(true, doaj, {
                     display: "Limit by Date Range",
                     fields: [
                         {"field": "admin.date_applied", "display": "Date Applied"},
-                        {"field": "last_manual_update", "display": "Last Updated"}
+                        {"field": "last_manual_update", "display": "Last Updated"},
+                        {"field": "admin.date_rejected", "display": "Date Rejected"}
                     ],
                     autoLookupRange: true,
                     category: "facet",
@@ -123,6 +124,36 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
+
+                doaj.components.newDateHistogramSelector({
+                    id: "date_rejected_histogram",
+                    category: "facet",
+                    field: "admin.date_rejected",
+                    display: "Date Rejected Histogram",
+                    interval: "year",
+                    displayFormatter : function(val) {
+                        let date = new Date(parseInt(val));
+                        let interval = doaj.adminApplicationsSearch.activeEdges[selector].getComponent({id: "date_rejected_histogram"}).interval;
+                        if (interval === "year") {
+                            return date.toLocaleString('default', { year: 'numeric', timeZone: "UTC" });
+                        } else if (interval === "month") {
+                            return date.toLocaleString('default', { month: 'long', year: 'numeric', timeZone: "UTC" });
+                        }
+                    },
+                    sortFunction : function(values) {
+                        if (values.length > 0 && values[0].display === "1970") {
+                            values.shift();
+                        }
+                        values.reverse();
+                        return values;
+                    },
+                    renderer: doaj.renderers.newFlexibleDateHistogramSelectorRenderer({
+                        showSelected: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
                 doaj.components.newReportExporter({
                     id: "report-exporter",
                     category: "facet",
@@ -141,7 +172,8 @@ $.extend(true, doaj, {
                         {component_id: "publisher", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "journal_license", exporter: doaj.valueMaps.refiningANDTermSelectorExporter},
                         {component_id: "date_applied_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
-                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
+                        {component_id: "last_updated_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter},
+                        {component_id: "date_rejected_histogram", exporter: doaj.valueMaps.dateHistogramSelectorExporter}
                     ]
                 }),
 
@@ -153,7 +185,8 @@ $.extend(true, doaj, {
                         {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
                         {'display':'Title','field':'index.unpunctitle.exact'},
-                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'}
+                        {'display':'Flag deadline', 'field': 'index.most_urgent_flag_deadline'},
+                        {'display': "Date Rejected", 'field': 'admin.date_rejected'}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
@@ -182,8 +215,8 @@ $.extend(true, doaj, {
                 edges.newResultsDisplay({
                     id: "results",
                     category: "results",
-                    renderer: edges.bs3.newResultsFieldsByRowRenderer({
-                        rowDisplay : [
+                    renderer: doaj.renderers.newAdminBasicResultsRenderer({
+                        topRowDisplay : [
                             [
                                 {
                                     valueFunction: doaj.fieldRender.titleField
@@ -196,33 +229,12 @@ $.extend(true, doaj, {
                                     })
                                 }
                             ],
+                        ],
+                        leftRowDisplay : [
                             [
                                 {
                                     "pre": '<strong>Alternative title: </strong>',
                                     "field": "bibjson.alternative_title"
-                                }
-                            ],
-                            [
-                                {
-                                    valueFunction: doaj.fieldRender.deadline
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Date applied</strong>: ",
-                                    valueFunction: doaj.fieldRender.suggestedOn
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Last updated</strong>: ",
-                                    valueFunction: doaj.fieldRender.lastManualUpdate
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Owner</strong>: ",
-                                    valueFunction: doaj.fieldRender.owner
                                 }
                             ],
                             [
@@ -232,14 +244,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Application status</strong>: ",
-                                    valueFunction: doaj.fieldRender.applicationStatus
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Editor group</strong>: ",
-                                    "field" : "admin.editor_group"
+                                    valueFunction: doaj.fieldRender.links
                                 }
                             ],
                             [
@@ -262,12 +267,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Publication charges?</strong>: ",
-                                    valueFunction: doaj.fieldRender.authorPays
-                                }
-                            ],
-                            [
-                                {
                                     "pre": "<strong>Country of publisher</strong>: ",
                                     valueFunction: doaj.fieldRender.countryName
                                 }
@@ -280,15 +279,60 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal license</strong>: ",
-                                    valueFunction: doaj.fieldRender.journalLicense
+                                    "pre": "<strong>Publication charges?</strong>: ",
+                                    valueFunction: doaj.fieldRender.authorPays
                                 }
                             ],
                             [
                                 {
-                                    valueFunction: doaj.fieldRender.links
+                                    "pre": "<strong>Journal license</strong>: ",
+                                    valueFunction: doaj.fieldRender.journalLicense
                                 }
                             ]
+                        ],
+                        rightRowDisplay : [
+                            [
+                                {
+                                    "pre" : "<strong>Application status</strong>: ",
+                                    valueFunction: doaj.fieldRender.applicationStatus
+                                }
+                            ],
+                            [
+                                {
+                                    "pre" : "<strong>Owner</strong>: ",
+                                    valueFunction: doaj.fieldRender.owner
+                                }
+                            ],
+                            [
+                                {
+                                    "pre" : "<strong>Editor group</strong>: ",
+                                    "field" : "admin.editor_group"
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: doaj.fieldRender.deadline
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Date applied</strong>: ",
+                                    valueFunction: doaj.fieldRender.suggestedOn
+                                }
+                            ],
+                            [
+                                {
+                                    "pre" : "<strong>Date Rejected</strong>: ",
+                                    valueFunction: doaj.fieldRender.dateRejected
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Last updated</strong>: ",
+                                    valueFunction: doaj.fieldRender.lastManualUpdate
+                                }
+                            ],
+
                         ]
                     })
                 }),
@@ -330,7 +374,8 @@ $.extend(true, doaj, {
                         'index.is_flagged': "Only Flagged Records",
                         'index.flag_assignees.exact': "Flagged to me",
                         "admin.date_applied": "Date Applied",
-                        "last_manual_update": "Last Updated"
+                        "last_manual_update": "Last Updated",
+                        "admin.date_rejected": "Date Rejected"
                     },
                     valueMaps : {
                         "index.application_type.exact" : {
@@ -341,7 +386,8 @@ $.extend(true, doaj, {
                     },
                     rangeFunctions : {
                         "admin.date_applied" : doaj.valueMaps.displayYearMonthPeriod,
-                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod
+                        "last_manual_update": doaj.valueMaps.displayYearMonthPeriod,
+                        "admin.date_rejected": doaj.valueMaps.displayYearMonthPeriod
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         omit : [

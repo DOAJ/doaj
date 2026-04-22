@@ -62,7 +62,7 @@
 
 {% include 'includes/_js_includes.html' %}
 
-{% if not request.cookies.get("doaj-consent") %}
+{% if not request.cookies.get(app.config.get("CONSENT_COOKIE_KEY")) and not request.cookies.get(app.config.get("SITE_NOTE_KEY")) %}
     <script type="text/javascript">
         jQuery(document).ready(function() {
             $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);

@@ -95,13 +95,8 @@ class BackgroundApi(object):
             job.success()
         job.save()
 
-        # trigger a status change event
-        jdata = deepcopy(job.data)
-        del jdata["audit"]
-        eventsSvc = DOAJ.eventsService()
-        eventsSvc.trigger(models.Event(constants.BACKGROUND_JOB_FINISHED, job.user, {
-            "job": jdata
-        }))
+        # post-execution hook (may be overridden by task implementations)
+        background_task.post_execute()
 
         if ctx is not None:
             ctx.pop()
@@ -141,6 +136,22 @@ class BackgroundTask(object):
         :return:
         """
         raise NotImplementedError()
+
+    def post_execute(self):
+        """
+        Hook executed after the job has been run and cleaned up.
+        Default implementation triggers BACKGROUND_JOB_FINISHED event.
+        Subclasses can override to change or extend the behaviour.
+        """
+        job = self.background_job
+        # trigger a status change event
+        jdata = deepcopy(job.data)
+        if "audit" in jdata:
+            del jdata["audit"]
+        eventsSvc = DOAJ.eventsService()
+        eventsSvc.trigger(models.Event(constants.BACKGROUND_JOB_FINISHED, job.user, {
+            "job": jdata
+        }))
 
     @classmethod
     def prepare(cls, username, **kwargs):

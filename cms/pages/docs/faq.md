@@ -8,7 +8,7 @@ featuremap: ~~FAQ:Fragment~~
 
 ---
 
-As soon as your journal is indexed in DOAJ, you can start uploading article metadata to us. From that we generate journal and article metadata that we make [publicly and openly available](/apply/why-index/) via different methods:
+As soon as your journal is indexed in DOAJ, you can start uploading article metadata to us. We generate journal and article metadata that we make [publicly and openly available](/apply/why-index/) via different methods:
 
 - Our [Atom feed](feed)
 - Our [OAI-PMH service](/docs/oai-pmh/)
@@ -32,9 +32,15 @@ Our metadata is collected and incorporated into commercial discovery systems, li
 
 [More details are available](/apply/why-index/).
 
+## What happens to metadata after you upload it to DOAJ
+
+As soon as you upload your metadata to us, we ingest it and discard the original XML or JSON files. We process the metadata to our own XML and JSON requirements. This metadata is then openly available across all of our endpoints. This process allows us to claim rights on the metadata. However, we choose to [waive all rights under a CC0 waiver](/terms/#metadata). The openness of our platform and the fact that we waive all rights means that anyone can collect the metadata and ingest it into their systems without any attribution to DOAJ. This includes AI-supported solutions, such as ChatGPT, Gemini, and Perplexity. One thing that isn't affected by this process is any copyright assigned to the work the metadata describes.
+
+Any questions about this process or what happens to metadata after you upload it to DOAJ can be sent to [our Help Desk](https://doaj.org/contact/).
+
 ## Uploading article metadata
 
-We are a trusted source and provider of metadata about open access journals and articles. When you upload your article metadata to us, it increases the chances of that content being visible in discovery systems globally.
+We are a trusted source and provider of metadata about open access journals and articles. When you upload your article metadata to us, it increases the chances that your content will be visible in discovery systems globally.
 
 You can upload article metadata to us in three ways.
 
@@ -49,7 +55,7 @@ You can upload article metadata to us in three ways.
   - The API key from [your DOAJ account](/account/login)
   - do not send us author email addresses
 - **Help available?** Yes, via one of our API groups; search for 'Google Group DOAJ API' in your browser.
-- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Testing available**: not currently available
 - **Documentation** [Yes](/docs/api/)
 - **FAQS** [Yes](/api/v3/docs#api-faq)
 - **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin).
@@ -72,7 +78,7 @@ You can upload article metadata to us in three ways.
   - A way to generate structured XML and validate it against the required XSD file.
   - The XSD files: [DOAJ](/static/doaj/doajArticles.xsd), [Crossref 5.3.1](/static/crossref/crossref5.3.1.xsd), [Crossref 4.4.2](/static/crossref/crossref4.4.2.xsd)
   - do not send us author email addresses
-- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Testing available**: not currently available
 - **Documentation** [DOAJ XML](/docs/xml/), [Crossref 5.3.1 XML](https://www.crossref.org/documentation/schema-library/metadata-deposit-schema-5-3-1/), [Crossref 4.4.2 XML](https://www.crossref.org/documentation/schema-library/resource-only-deposit-schema-4-4-2/)
 - **FAQS** No
 - **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin).
@@ -102,7 +108,7 @@ You can upload article metadata to us in three ways.
   - No HTML formatting, no author email addresses
   - The abstract metadata for the article: title, full-text URL, DOI (if applicable), author names, ORCiD (if applicable), affiliations, publication date, ISSN(s), Volume/Issue/Page (if applicable), abstract 
 - **Help available?** Yes. [Contact our Help Desk](mailto:helpdesk@doaj.org).
-- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Testing available**: not currently available
 - **Documentation** No
 - **Troubleshooting**: make sure you enter the Print ISSN and Electronic ISSN in the right ISSN field.
 
@@ -112,7 +118,7 @@ Sometimes, article metadata needs to be updated or corrected. When you upload ne
 
 If you are updating article metadata with bibliographic details such as title, authors, affiliations, year, volume, issue, or page number, you can send us the updated metadata using one of the methods above. For a successful update, the metadata must include an identical identifier, such as Full Text URL or DOI. 
 
-If you need to update or correct either the Full Text URL or DOI for articles that already have either a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing articles for you before you upload the new version. Submitting new Full Text URLs or DOIs will cause duplicate articles to be created. [You may find this table helpful](https://docs.google.com/spreadsheets/d/1rpmzJdut_Nfl6jph5uGTc4q-i3q73iMT7W-qtUY3X0A/edit?usp=sharing). It illustrates which uploads fail and which ones succeed.
+If you need to update or correct either the Full Text URL or DOI for articles that already have either a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing article(s) before you upload the new version. Submitting new Full Text URLs or DOIs will result in duplicate articles being created. [You may find this table helpful](https://docs.google.com/spreadsheets/d/1rpmzJdut_Nfl6jph5uGTc4q-i3q73iMT7W-qtUY3X0A/edit?usp=sharing). It illustrates which uploads fail and which ones succeed.
 
 To delete article metadata, please contact Help Desk with the following details:
 
@@ -121,6 +127,12 @@ To delete article metadata, please contact Help Desk with the following details:
 - years to be deleted (we can only delete whole years) or if we should delete all articles for a journal
 
 We will first confirm with you the number of articles to be deleted. Deleting articles is instantaneous and cannot be reversed.
+
+### Occasionally, we will delete article metadata
+
+Members of the research community, discovery services and aggregators regularly get in touch to inform us of articles in DOAJ with broken links, incorrect metadata, or duplicates. Starting in April 2026, we will begin deleting problematic or erroneous article metadata and then send an email alert to the associated publisher account. The email alert will detail the citation information of the deleted article. 
+
+If you receive one of these emails, we encourage you to re-upload the corrected article metadata as soon as you can. If you are uncertain why the article metadata was deleted, you should contact Helpdesk. If the article metadata was deleted due to a broken link, we encourage you to spot check links of other articles from journals in your account.
 
 ## Help with metadata uploads
 
@@ -138,14 +150,13 @@ Our XML format only supports one language for 'Article Title' and 'Abstract'. We
 
 Metadata containing multiple languages can still be uploaded to us. However, you cannot choose which language is displayed. Please only send us one language to avoid your articles being displayed in a mixture of languages.
 
-### I am seeing a 403 forbidden error
+### I am seeing a 403 forbidden error or 500 error
 
-You may see the 403 forbidden error for different reasons. These apply to both the API and uploading XML.
+You may see the 403 forbidden or 500 errors for different reasons. These apply to both the API and uploading XML.
 
 - ISSNs
   - You may be sending us an extra ISSN that we don’t have in your journal record.
   - You may be sending only one ISSN, but we have two in the journal record.
-  - We may have the journal's ISSNs in an old version of your journal record.
   - You might have put the EISSN in the PISSN field and vice-versa.
 - Wrong account
   - You may be sending us an ISSN that belongs to a journal attached to a different account.
@@ -167,29 +178,34 @@ You can download your article metadata by [using our API](https://doaj.org/docs/
 
 ## Using a spreadsheet to update your journal metadata
 
-If you received a spreadsheet from us, please complete it as soon as possible. The file sent to you contains a cover sheet with instructions, and more help is below. Once you have validated your file, you may email it back to us.
+If you received a spreadsheet from us--a 'Journal Update File'--please complete it by the deadline sent to you. You will have received some instructions as well. Read them carefully as they will help you with your updates.  
 
-Before you send us the file, you must do two things:
+Before you return the spreadsheet to us, you must do two things:
 
-1. Convert the spreadsheet to a CSV. To do this, you will need to first delete the instructions tab and then Save as CSV. (Save in the Unicode UTF-8 format.)
+1. Convert it to a CSV using the 'Save as' function. If asked, save it in the Unicode UTF-8 format. Delete the Instructions tab first.
 2. [Validate it](/publisher/journal-csv).
 
-Here are some tips on how to ensure that your CSV file will pass validation:
+Here are some tips to ensure that your CSV file will pass validation:
 
-- make sure CSV is in UTF-8 format
-- don't change an ISSN or Title of a journal. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
+- make sure the CSV is in UTF-8 format
+- don't change any ISSNs or journal Titles. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
 - don't add a new journal to the file. To do this, [submit a new application](/apply/).
-- don't change the title of a column
-- don't include anything in the column other than what is asked for on the instructions tab
-- ensure no spaces are accidentally added before or after the information in each cell. This can cause the validation to fail.
+- don't change the title of any columns
+- don't include anything in the column other than what is asked for in the instructions
+- make sure no spaces are accidentally added before or after the information in each cell
 
-Deleting a journal from the file will mean no update happens; it will not remove a journal from your account. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
+Deleting a journal (a row) from the spreadsheet means that no update will be applied to that journal. It will not remove the journal from your account or withdraw it from DOAJ. To do this, you must contact [Help Desk](mailto:helpdesk@doaj.org).
 
-### Validating your file
+### Validating your CSV
 
-Before emailing the CSV to us, you must validate it. Do this in your Publisher Dashboard on the 'Validate your CSV' tab. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
+To validate your CSV, go to the '[Validate your CSV](https://doaj.org/publisher/journal-csv)' tab on your Publisher Dashboard. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
 
-The following warnings may be seen after validating your CSV:
+If the CSV validates correctly, you will see one of these two messages: 
+
+'File validated successfully.</h3>You can now send us the file.'
+'File validated successfully but with warnings. Please check the warnings below and contact us with queries. If all looks good, please send us the file.'
+
+If the CSV cannot be validated, one or several warnings will be displayed:
 
 | Warning                                                                                                                | Explanation                                                                                                                                                                                                                         |
 |------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -206,9 +222,10 @@ From time to time, other validation errors might be seen if one of the cells con
 
 ## Version history
 
-This is Version 3.1 of our Metadata help page.
+This is Version 3.2 of our Metadata help page.
 
-*Version 3.1 (October 2025 - small corrections and updates)*<br>
-<S>Version 3.0 (January 2025 - added a new section: 'Correcting or updating article metadata')</s><br>
+*Version 3.2 (November 2025 - updates to the CSV validation text)*<br>
+<s>Version 3.1 (October 2025 - small corrections and updates)</s><br>
+<s>Version 3.0 (January 2025 - added a new section: 'Correcting or updating article metadata')</s><br>
 <s>Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)</s><br>
 <s>Version 1.0 (November 2023 - created this whole page with new content)</s><br>

@@ -15,7 +15,7 @@
 		"lcc" : {"import" : false, "limit" : -1},
 		"lock" : {"import" : false, "limit" : -1},
 		"news" : {"import" : true, "limit" : -1},
-		"notification" : {"import" : false, "limit" : -1},
+		"notification" : {"import" : true, "limit" : 100},
 		"preserve" : {"import" : false, "limit" : -1},
 		"provenance" : {"import" : false, "limit" : -1},
 		"upload" : {"import" : false, "limit" : -1}

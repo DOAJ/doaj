@@ -71,10 +71,15 @@ upstream doaj_ed_failover {
     keepalive_timeout 60s;
 }
 
-upstream doaj_index {
-    server 10.131.191.132:9200;
-    server 10.131.191.133:9200;
-    server 10.131.191.139:9200;
+# OpenSearch Cluster machines
+upstream doaj_opensearch_rw {
+    server 10.131.22.203:9200;       # doaj-search-rw1
+    server 10.131.99.251:9200;       # doaj-search-rw2
+}
+
+upstream doaj_opensearch_r {
+    server 10.131.100.180:9200;       # doaj-search-r1
+    server 10.131.124.133:9200;       # doaj-search-r2
 }
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
@@ -146,11 +151,11 @@ server {
         rewrite ^(.*)$ $new_uri permanent;
     }
 
-    # Use the background server for bulk API requests, since that's where the event consumer runs
-    location ~ /api(.*)/bulk {
+    # OAI has been badly affecting our latency so impose a draconian rate limit (omitting nodelay is intentional)
+    location /oai {
         if ($block_bots) {return 403;}
-        limit_req zone=api burst=8 nodelay;
-        proxy_pass http://doaj_bg_apps;
+        limit_req zone=oai burst=5;
+        proxy_pass http://doaj_oai_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -159,11 +164,11 @@ server {
         proxy_buffering off;
     }
 
-    # OAI has been badly affecting our latency so impose a draconian rate limit (omitting nodelay is intentional)
-    location /oai {
+    # Use the background server for bulk API requests, since that's where the event consumer runs
+    location ~ /api(.*)/bulk {
         if ($block_bots) {return 403;}
-        limit_req zone=oai burst=5;
-        proxy_pass http://doaj_oai_failover;
+        limit_req zone=api burst=8 nodelay;
+        proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -181,7 +186,12 @@ server {
         proxy_send_timeout 30s;
         proxy_read_timeout 30s;
 
-        proxy_pass http://doaj_apps_failover;
+        set $api_upstream doaj_apps_failover;
+        if ($request_method !~ ^(GET|HEAD|OPTIONS)$ ) {
+            set $api_upstream doaj_ed_failover;
+        }
+
+        proxy_pass http://$api_upstream;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -213,10 +223,20 @@ server {
         proxy_buffering off;
     }
 
-    # technically only the routes that require file upload need to go to the bg machine, but separate for consistency
+    location ~* /account/(login|logout) {
+        limit_req zone=general burst=10 nodelay;
+        proxy_pass http://doaj_apps_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
     location /account {
         limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
+        proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -237,9 +257,20 @@ server {
         proxy_buffering off;
     }
 
-    location /admin { # there are admin bulk actions that MUST go to bg machine
+    location ~* /admin/(.*bulk|report|application_quick_reject) { # admin bulk and heavy actions MUST go to bg machine
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    location /admin {
+        limit_req zone=general burst=10 nodelay;
+        proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -270,7 +301,7 @@ server {
         proxy_buffering off;
     }
 
-    location /publisher {   # only /publisher/uploadfile MUST go to background
+    location ~* /publisher/(uploadfile|preservation|journal-csv/validate) {
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
@@ -281,11 +312,42 @@ server {
         proxy_buffering off;
     }
 
-    location /service/export {    # DISABLED Export RIS - send this only to 1 machine while we figure out high load
+    location /publisher {
+        limit_req zone=general burst=10 nodelay;
+        proxy_pass http://doaj_ed_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    location /apply {
+        limit_req zone=general burst=10 nodelay;
+        proxy_pass http://doaj_ed_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    location /dashboard {
+        limit_req zone=general burst=10 nodelay;
+        proxy_pass http://doaj_ed_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    location /service/export {    # Export RIS - send this to the background server since it writes on cache miss
         limit_req zone=export burst=5;
-        return 503;
-        # Send to public-2 ONLY for now
-        #proxy_pass http://10.131.191.161:5050;
+        proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -294,9 +356,9 @@ server {
         proxy_buffering off;
     }
 
-    location /service {    # performs locks etc - handle on the background server
+    location /service {    # performs locks etc - handle on the editor machine
         limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
+        proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -387,7 +449,7 @@ server {
     auth_basic_user_file /etc/nginx/htpasswd;
 
     location / {
-        proxy_pass http://doaj_index;
+        proxy_pass http://doaj_opensearch_rw;
     }
 
     ssl_certificate /etc/letsencrypt/live/doajes.cottagelabs.com/fullchain.pem;

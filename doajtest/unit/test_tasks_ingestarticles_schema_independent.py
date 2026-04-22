@@ -7,8 +7,6 @@ from portality.bll.services import article as articleSvc
 from portality.core import app
 from portality.background import BackgroundException
 
-from huey.exceptions import RetryTask
-
 import ftplib, os, requests
 
 

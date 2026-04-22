@@ -26,9 +26,9 @@ STATIC_PAGE = "public/layouts/static-page.html"
 STATIC_PAGE_LAYOUT = "public/layouts/_static-page_{layout}.html"
 
 # Error pages
+ERROR_PAGE = "public/error_page.html"
 ERROR_400 = "public/400.html"
 ERROR_401 = "public/401.html"
-ERROR_404 = "public/404.html"
 ERROR_500 = "public/500.html"
 
 # API
@@ -43,6 +43,7 @@ ADMIN_ARTICLE_FORM = "management/admin/article_metadata.html"
 ADMIN_REPORTS_SEARCH = "management/admin/reports_search.html"
 ADMIN_ALERTS_SEARCH = "management/admin/alerts_search.html"
 ADMIN_AUTOASSIGN_SEARCH = "management/admin/autoassign_search.html"
+ADMIN_RIS_SEARCH = "management/admin/ris_search.html"
 BACKGROUND_JOBS_SEARCH = "management/admin/background_jobs_search.html"
 CONTINUATION = "management/admin/continuation.html"
 EDITOR_GROUP = "management/admin/editor_group.html"
@@ -54,6 +55,8 @@ UPDATE_REQUESTS_SEARCH = "management/admin/update_requests.html"
 DASHBOARD = "management/admin/dashboard.html"
 NOTIFICATIONS = "management/admin/notifications.html"
 ADMIN_UNLOCKED = "management/admin/unlocked.html"
+ADMIN_JOURNAL_CSV_SEARCH = "management/admin/journal_csv_search.html"
+ADMIN_PDD_SEARCH = "management/admin/pdd_search.html"
 
 # Application Form
 MANED_APPLICATION_FORM = "management/admin/maned_application.html"

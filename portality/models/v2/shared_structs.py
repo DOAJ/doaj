@@ -21,7 +21,7 @@ JOURNAL_BIBJSON = {
                 "license" : {"contains" : "object"},
                 "replaces" : {"contains" : "field", "coerce" : "issn", "set__allow_coerce_failure" : True},
                 "subject" : {"contains" : "object"},
-                "labels": {"contains": "field", "coerce": "unicode", "allowed_values": ["s2o"]},
+                "labels": {"contains": "field", "coerce": "unicode", "allowed_values": ["s2o", "mirror", "ojc"]},
             },
             "objects" : [
                 "apc",
@@ -186,6 +186,7 @@ SHARED_JOURNAL_LIKE = {
                 "owner" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
+                "date_applied": {"coerce": "utcdatetime"},
             },
             "lists" : {
                 "notes" : {"contains" : "object"}
