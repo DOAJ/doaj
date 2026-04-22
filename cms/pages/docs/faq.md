@@ -8,7 +8,7 @@ featuremap: ~~FAQ:Fragment~~
 
 ---
 
-As soon as your journal is indexed in DOAJ, you can start uploading article metadata to us. From that we generate journal and article metadata that we make [publicly and openly available](/apply/why-index/) via different methods:
+As soon as your journal is indexed in DOAJ, you can start uploading article metadata to us. We generate journal and article metadata that we make [publicly and openly available](/apply/why-index/) via different methods:
 
 - Our [Atom feed](feed)
 - Our [OAI-PMH service](/docs/oai-pmh/)
@@ -34,13 +34,13 @@ Our metadata is collected and incorporated into commercial discovery systems, li
 
 ## What happens to metadata after you upload it to DOAJ
 
-As soon as you upload your metadata to us, we ingest it and discard the original XML or JSON files. We process the metadata to our own XML and JSON requirements. This metadata is then openly available across all of our endpoints. This process allows us to claim rights on the metadata, however we waive all rights under a CC0 waiver. The openness of our platform and the fact that we waive all rights means that anyone can collect the metadata and ingest it into their systems without any attribution to DOAJ. This includes AI-supported solutions, such as ChatGPT, Gemini, and Perplexity. One thing that isn't affected by this process is any copyright assigned to the work the metadata describes.
+As soon as you upload your metadata to us, we ingest it and discard the original XML or JSON files. We process the metadata to our own XML and JSON requirements. This metadata is then openly available across all of our endpoints. This process allows us to claim rights on the metadata. However, we choose to [waive all rights under a CC0 waiver](/terms/#metadata). The openness of our platform and the fact that we waive all rights means that anyone can collect the metadata and ingest it into their systems without any attribution to DOAJ. This includes AI-supported solutions, such as ChatGPT, Gemini, and Perplexity. One thing that isn't affected by this process is any copyright assigned to the work the metadata describes.
 
-Any questions about this process or what happens to metadata after you upload it to DOAJ, can be sent to [our Help Desk](https://doaj.org/contact/).
+Any questions about this process or what happens to metadata after you upload it to DOAJ can be sent to [our Help Desk](https://doaj.org/contact/).
 
 ## Uploading article metadata
 
-We are a trusted source and provider of metadata about open access journals and articles. When you upload your article metadata to us, it increases the chances of that content being visible in discovery systems globally.
+We are a trusted source and provider of metadata about open access journals and articles. When you upload your article metadata to us, it increases the chances that your content will be visible in discovery systems globally.
 
 You can upload article metadata to us in three ways.
 
@@ -118,7 +118,7 @@ Sometimes, article metadata needs to be updated or corrected. When you upload ne
 
 If you are updating article metadata with bibliographic details such as title, authors, affiliations, year, volume, issue, or page number, you can send us the updated metadata using one of the methods above. For a successful update, the metadata must include an identical identifier, such as Full Text URL or DOI. 
 
-If you need to update or correct either the Full Text URL or DOI for articles that already have either a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing articles for you before you upload the new version. Submitting new Full Text URLs or DOIs will cause duplicate articles to be created. [You may find this table helpful](https://docs.google.com/spreadsheets/d/1rpmzJdut_Nfl6jph5uGTc4q-i3q73iMT7W-qtUY3X0A/edit?usp=sharing). It illustrates which uploads fail and which ones succeed.
+If you need to update or correct either the Full Text URL or DOI for articles that already have either a Full Text URL or DOI in the DOAJ metadata, you must contact us first. We will need to delete the existing article(s) before you upload the new version. Submitting new Full Text URLs or DOIs will result in duplicate articles being created. [You may find this table helpful](https://docs.google.com/spreadsheets/d/1rpmzJdut_Nfl6jph5uGTc4q-i3q73iMT7W-qtUY3X0A/edit?usp=sharing). It illustrates which uploads fail and which ones succeed.
 
 To delete article metadata, please contact Help Desk with the following details:
 
@@ -127,6 +127,12 @@ To delete article metadata, please contact Help Desk with the following details:
 - years to be deleted (we can only delete whole years) or if we should delete all articles for a journal
 
 We will first confirm with you the number of articles to be deleted. Deleting articles is instantaneous and cannot be reversed.
+
+### Occasionally, we will delete article metadata
+
+Members of the research community, discovery services and aggregators regularly get in touch to inform us of articles in DOAJ with broken links, incorrect metadata, or duplicates. Starting in April 2026, we will begin deleting problematic or erroneous article metadata and then send an email alert to the associated publisher account. The email alert will detail the citation information of the deleted article. 
+
+If you receive one of these emails, we encourage you to re-upload the corrected article metadata as soon as you can. If you are uncertain why the article metadata was deleted, you should contact Helpdesk. If the article metadata was deleted due to a broken link, we encourage you to spot check links of other articles from journals in your account.
 
 ## Help with metadata uploads
 
@@ -144,14 +150,13 @@ Our XML format only supports one language for 'Article Title' and 'Abstract'. We
 
 Metadata containing multiple languages can still be uploaded to us. However, you cannot choose which language is displayed. Please only send us one language to avoid your articles being displayed in a mixture of languages.
 
-### I am seeing a 403 forbidden error
+### I am seeing a 403 forbidden error or 500 error
 
-You may see the 403 forbidden error for different reasons. These apply to both the API and uploading XML.
+You may see the 403 forbidden or 500 errors for different reasons. These apply to both the API and uploading XML.
 
 - ISSNs
   - You may be sending us an extra ISSN that we don’t have in your journal record.
   - You may be sending only one ISSN, but we have two in the journal record.
-  - We may have the journal's ISSNs in an old version of your journal record.
   - You might have put the EISSN in the PISSN field and vice-versa.
 - Wrong account
   - You may be sending us an ISSN that belongs to a journal attached to a different account.

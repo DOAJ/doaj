@@ -1,4 +1,3 @@
-import random
 import uuid, json
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
@@ -20,6 +19,11 @@ from portality.ui import templates
 
 blueprint = Blueprint('account', __name__)
 
+@blueprint.url_value_preprocessor
+def pull_lang(endpoint, values):
+    # Remove 'lang' so it is not passed to the view function
+    if values:
+        lang = values.pop('lang', None)
 
 @blueprint.route('/')
 @login_required
@@ -458,7 +462,7 @@ def reset(reset_token):
     return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
 
-@blueprint.route('/logout')
+@blueprint.route('/logout', methods=['POST'])
 @ssl_required
 def logout():
     logout_user()
