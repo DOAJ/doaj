@@ -36,6 +36,9 @@ The work done by the [DOAJ Team](/about/team/) is supported by over 100 voluntar
 
 DOAJ also has a global network of Ambassadors who promote open access and best practices in their regions. Our Ambassadors are bound by an agreement and must declare all conflicts of interest.
 
+## Open Climate Campaign
+DOAJ is a proud sponsor of the [Open Climate Campaign](https://doaj.org). There are [200 articles in our collection](https://doaj.org/u/bC8vJF).
+
 ## Partnerships and collaborations
 
 DOAJ partners with many organisations. The nature of the partnerships varies and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
