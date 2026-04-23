@@ -1231,6 +1231,14 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
+#: view/account.py:194
+msgid "Email address or username"
+msgstr ""
+
+#: view/account.py:195
+msgid "Password"
+msgstr ""
+
 #: templates-v2/_application-form/includes/_field.html:8
 #: templates-v2/_application-form/includes/_list.html:14
 msgid "Optional"
@@ -1563,6 +1571,10 @@ msgstr ""
 msgid "Login to apply"
 msgstr ""
 
+#: templates-v2/public/account/login_to_apply.html:10
+msgid "Application form"
+msgstr ""
+
 #: templates-v2/public/account/login_to_apply.html:12
 msgid ""
 "Read our <a href=\"/apply/guide/\">Guide to applying</a> first. It will "
@@ -1590,6 +1602,10 @@ msgid ""
 "If you cannot log in, <a href=\"%(forgot_account)s\">reset your "
 "password</a>. If you still cannot login, <a href=\"/contact\">contact "
 "us</a>."
+msgstr ""
+
+#: templates-v2/_account/includes/_login_form.html:11
+msgid "Log in"
 msgstr ""
 
 #~ msgid ""

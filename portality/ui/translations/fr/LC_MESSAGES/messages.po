@@ -1105,6 +1105,14 @@ msgstr "Saisie invalide"
 msgid "This field is required."
 msgstr "Ce champ est obligatoire"
 
+#: view/account.py:194
+msgid "Email address or username"
+msgstr "Courriel ou nom d'utilisateur"
+
+#: view/account.py:195
+msgid "Password"
+msgstr "Mot de passe"
+
 #: templates-v2/_application-form/includes/_field.html:8
 #: templates-v2/_application-form/includes/_list.html:14
 msgid "Optional"
@@ -1383,6 +1391,10 @@ msgstr "J’ai examiné les réponses fournies dans cette candidature et je conf
 msgid "Login to apply"
 msgstr "Se connecter pour soumettre une candidature"
 
+#: templates-v2/public/account/login_to_apply.html:10
+msgid "Application form"
+msgstr "Formulaire de Candidature"
+
 #: templates-v2/public/account/login_to_apply.html:12
 msgid "Read our <a href=\"/apply/guide/\">Guide to applying</a> first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please <a href=\"/contact/\">contact us</a>."
 msgstr "Veuillez d'abord lire notre <a href=\"https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf\" target='_blank' 'rel='noopener'>Guide de préparation</a> à la candidature. Il vous aidera à comprendre les critères de base que votre revue doit respecter. Si vous avez besoin d'aide avec le formulaire de candidature, n'hésitez pas à nous <a href=\"/contact/\">contacter</a>."
@@ -1403,3 +1415,6 @@ msgstr "Vous n'avez pas de compte? <a href=\"%(url)s\">Enregistrez-vous ici</a>.
 msgid "If you cannot log in, <a href=\"%(forgot_account)s\">reset your password</a>. If you still cannot login, <a href=\"/contact\">contact us</a>."
 msgstr "Si vous ne pouvez pas vous connecter, <a href=\"%(forgot_account)s\">réinitialisez votre mot de passe</a>. Si cela ne fonctionne toujours pas, <a href=\"/contact\">contactez-nous</a>."
 
+#: templates-v2/_account/includes/_login_form.html:11
+msgid "Log in"
+msgstr "Se connecter"

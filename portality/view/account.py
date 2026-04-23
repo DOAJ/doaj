@@ -5,6 +5,8 @@ from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form
 
+from flask_babel import lazy_gettext
+
 from portality import util
 from portality import constants
 from portality.core import app
@@ -189,8 +191,8 @@ class RedirectForm(Form):
 
 
 class LoginForm(RedirectForm):
-    user = StringField('Email address or username', [validators.DataRequired()])
-    password = PasswordField('Password', [validators.DataRequired()])
+    user = StringField(lazy_gettext('Email address or username'), [validators.DataRequired()])
+    password = PasswordField(lazy_gettext('Password'), [validators.DataRequired()])
 
 
 @blueprint.route('/login', methods=['GET', 'POST'])
