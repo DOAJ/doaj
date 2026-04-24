@@ -424,10 +424,11 @@ class AdminApplication(ApplicationProcessor):
 
             # Record the current time as last full review, if mark as full review has been selected
             if self.form.mark_as_full_review.data:
-                j.last_full_review = dates.now_str()
+                now = dates.now_str()
+                j.last_full_review = now
                 # ToDo - Do I need to add a note for the last full review?
-                # n = Messages.LAST_FULL_REVIEW_NOTE.format(date=j.last_full_review, username=account.id)
-                # j.add_note(n, date=dates.now_str(), author_id=account.id)
+                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
+                j.add_note(n, date=now, author_id=account.id)
 
             # record the url the journal is available at in the admin are and alert the user
             if has_request_context():       # fixme: if we handle alerts via a notification service we won't have to toggle on request context
@@ -475,10 +476,11 @@ class AdminApplication(ApplicationProcessor):
         else:
             if (self.source.current_journal is not None and j is not None and
                     self.form.mark_as_full_review.data):
-                j.last_full_review = dates.now_str()
+                now = dates.now_str()
+                j.last_full_review = now
                 # ToDo - Do I need to add a note for the last full review?
-                # n = Messages.LAST_FULL_REVIEW_NOTE.format(date=j.last_full_review, username=account.id)
-                # j.add_note(n, date=dates.now_str(), author_id=account.id)
+                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
+                j.add_note(n, date=now, author_id=account.id)
             self.target.set_last_manual_update()
             self.target.save()
 
