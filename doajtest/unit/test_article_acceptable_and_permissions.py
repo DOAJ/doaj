@@ -118,7 +118,6 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         kweissn = kwargs.get("eissn")
         validated = kwargs.get("validated")
 
-        # js = JournalFixtureFactory.make_many_journal_sources(2)
         js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=True)
         journal_in_doaj = js[0]
         journal_in_doaj.set_in_doaj(True)

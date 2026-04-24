@@ -37,8 +37,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
     def test_01_publisher_update_request_success(self):
         """Give the publisher update request a full workout"""
         journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
-        # journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        # journal.set_id("123456789987654321")
         journal.save(blocking=True)
 
         # we start by constructing it from source
@@ -129,8 +127,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # make the journal to update
         journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
-        # journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        # journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -190,8 +186,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # make the journal to update
         journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
-        # journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        # journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -251,8 +245,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # make the journal to update
         journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
-        # journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        # journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -314,8 +306,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # make the journal to update
         journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
-        # journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        # journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -380,9 +370,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
     def test_07_prevent_forbidden_from_publisher(self):
         journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
-        #journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.bibjson().clear_labels()
-        #journal.set_id("123456789987654321")
         journal.save(blocking=True)
 
         # we start by constructing it from source

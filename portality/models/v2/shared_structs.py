@@ -213,25 +213,6 @@ SHARED_JOURNAL_LIKE = {
                         "notes": {"contains": "field", "coerce": "unicode"},
                     }
                 }
-                # "notes" : {
-                #     "fields" : {
-                #         "id" : {"coerce" : "unicode"},
-                #         "note" : {"coerce" : "unicode"},
-                #         "date" : {"coerce" : "utcdatetime"},
-                #         "author_id" : {"coerce" : "unicode"}  # account_id of the note's author
-                #     },
-                #     "objects": [
-                #         "flag"
-                #     ],
-                #     "structs": {
-                #         "flag": {
-                #             "fields": {
-                #                 "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
-                #                 "deadline": {"coerce" : "bigenddate"}
-                #             }
-                #         }
-                #     }
-                # },
             }
         },
         "index" : {

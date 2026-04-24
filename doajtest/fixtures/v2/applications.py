@@ -25,10 +25,6 @@ class ApplicationFixtureFactory(object):
         if "current_journal" not in overlay["admin"]:
             overlay["admin"]["current_journal"] = '123456789987654321'
         result = make_data([APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE, overlay])
-        # template = deepcopy(APPLICATION_SOURCE)
-        # template["admin"]["current_journal"] = '123456789987654321'
-        # if overlay is not None:
-        #     template = dicts.deep_merge(template, overlay, overlay=True)
         return result
 
     @staticmethod
@@ -41,11 +37,7 @@ class ApplicationFixtureFactory(object):
             overlay["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
 
         result = make_data([APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE, overlay])
-        # result = deepcopy(APPLICATION_SOURCE)
-        # result["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
         del result["admin"]["current_journal"]
-        # if overlay is not None:
-        #     result = dicts.deep_merge(result, overlay, overlay=True)
         return result
 
     @staticmethod
@@ -63,37 +55,6 @@ class ApplicationFixtureFactory(object):
                               data_stack or [APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE],
                               loaders=loaders or JOURNAL_OBJECT_BASE_LOADERS)
         return application
-
-    # @staticmethod
-    # def make_application_with_data(title=None, publisher_name=None, country=None):
-    #     application = deepcopy(APPLICATION_SOURCE)
-    #     if title:
-    #         application["bibjson"]["title"] = title
-    #     if publisher_name:
-    #         application["bibjson"]["publisher"]["name"] = publisher_name
-    #     if country:
-    #         application["bibjson"]["publisher"]["country"] = country
-    #     return application
-
-    # @staticmethod
-    # def make_many_application_sources(count=2, in_doaj=False):
-    #     application_sources = []
-    #     for i in range(0, count):
-    #         template = deepcopy(APPLICATION_SOURCE)
-    #         template['id'] = 'applicationid{0}'.format(i)
-    #         # now some very quick and very dirty date generation
-    #         fakemonth = i
-    #         if fakemonth < 1:
-    #             fakemonth = 1
-    #         if fakemonth > 9:
-    #             fakemonth = 9
-    #         template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-    #         template["bibjson"]["pissn"] = rstr.xeger(regex.ISSN_COMPILED)
-    #         template["bibjson"]["eissn"] = rstr.xeger(regex.ISSN_COMPILED)
-    #         template['bibjson']['title'] = 'Test Title {}'.format(i)
-    #         application_sources.append(deepcopy(template))
-    #         template["admin"]["current_journal"] = '123456789'
-    #     return application_sources
 
     @classmethod
     def make_multiple_applications_legacy(cls, count, data_stack=None, klazz=None, loaders=None, vary=None):

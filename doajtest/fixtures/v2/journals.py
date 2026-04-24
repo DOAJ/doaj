@@ -38,11 +38,6 @@ class JournalFixtureFactory(object):
         if "in_doaj" not in overlay:
             overlay["admin"]["in_doaj"] = in_doaj
         source = make_data([JOURNAL_BASE, JOURNAL_FULL_LEGACY_FIXTURE, overlay])
-        # template = deepcopy(JOURNAL_SOURCE)
-        # template['admin']['in_doaj'] = in_doaj
-        # if overlay is not None:
-        #     template = dicts.deep_merge(template, overlay, overlay=True)
-        # return template
         return source
 
     @staticmethod
@@ -143,21 +138,6 @@ class JournalFixtureFactory(object):
         jf.update(deepcopy(LAST_REVIEW_FORM_EXPANDED))
         return jf
 
-    # @staticmethod
-    # def make_journal_with_data(**data):
-    #     journal = deepcopy(JOURNAL_SOURCE)
-    #     in_doaj = data['in_doaj'] if'in_doaj' in data else True
-    #     journal['admin']['in_doaj'] = in_doaj
-    #     if 'title' in data:
-    #         journal["bibjson"]["title"] = data['title']
-    #     if 'publisher_name' in data:
-    #         journal["bibjson"]["publisher"]["name"] = data['publisher_name']
-    #     if 'country' in data:
-    #         journal["bibjson"]["publisher"]["country"] = data['country']
-    #     if 'alternative_title' in data:
-    #         journal["bibjson"]["alternative_title"] = data['alternative_title']
-    #     return journal
-
     @staticmethod
     def make_bulk_edit_data():
         return deepcopy(JOURNAL_BULK_EDIT)
@@ -185,12 +165,6 @@ JOURNAL_SOURCE = {
             "1234",
             "abcd"
         ],
-        # "notes": [
-        #     {"note": "Second Note", "date": "2014-05-22T00:00:00Z", "id": "1234",
-        #      "author_id": "fake_account_id__b"},
-        #     {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id": "abcd",
-        #      "author_id": "fake_account_id__a"},
-        # ],
         "owner": "publisher",
         "related_applications": [
             {"application_id": "asdfghjkl", "date_accepted": "2018-01-01T00:00:00Z"},

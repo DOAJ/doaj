@@ -333,11 +333,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         match_id = None
         for existing in self.notes:
             note_match = existing.get("note") == note_obj.note
-            # id_match = existing.get("id") == id
             author_match = existing.get("author_id") == note_obj.author_id
             date_match = existing.get("date") == date
-            # assigned_match = existing.get("flag", {}).get("assigned_to") == assigned_to
-            # deadline_match = existing.get("flag", {}).get("deadline") == deadline
             if note_match and author_match and date_match:
                 match_id = existing.get("id")
                 break

@@ -17,8 +17,6 @@ def load_journal_cases():
     account.set_id(account.makeid())
 
     journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": Journal.makeid()})
-    #journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-    #journal.set_id(journal.makeid())
 
     wrong_id = uuid.uuid4()
 
@@ -38,8 +36,6 @@ def load_application_cases():
     account.set_id(account.makeid())
 
     application = ApplicationFixtureFactory.make_legacy_application_object(overlay={"id": Application.makeid()})
-    # application = Suggestion(**ApplicationFixtureFactory.make_application_source())
-    # application.makeid()
 
     wrong_id = uuid.uuid4()
 

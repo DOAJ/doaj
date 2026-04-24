@@ -89,13 +89,11 @@ class TestBLLDeleteApplication(DoajTestCase):
                 application.set_related_journal("123456789987654321")
             elif related_journal == "found":
                 rj = JournalFixtureFactory.make_legacy_journal_object()
-                # rj = Journal(**JournalFixtureFactory.make_journal_source())
                 rj.set_id(rj.makeid())
                 rj.save(blocking=True)
                 application.set_related_journal(rj.id)
             elif related_journal == "locked":
                 rj = JournalFixtureFactory.make_legacy_journal_object()
-                # rj = Journal(**JournalFixtureFactory.make_journal_source())
                 rj.set_id(rj.makeid())
                 rj.save(blocking=True)
                 application.set_related_journal(rj.id)

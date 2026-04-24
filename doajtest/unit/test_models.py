@@ -428,7 +428,6 @@ class TestModels(DoajTestCase):
     def test_05_sync_owners(self):
         # suggestion with no current_journal
         s = ApplicationFixtureFactory.make_legacy_application_object()
-        # s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         s.save(blocking=True)
         s = models.Suggestion.pull(s.id)
         assert s is not None

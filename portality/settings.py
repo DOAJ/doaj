@@ -1044,36 +1044,6 @@ ADMIN_NOTES_SEARCH_MAPPING = {
     }
 }
 
-# ADMIN_NOTES_SEARCH_MAPPING = {
-#     "admin.notes.id": {
-#         "type": "text",
-#         "fields": {
-#             "exact": {
-#                 "type": "keyword",
-#                 "store": True
-#             }
-#         }
-#     },
-#     "admin.notes.note": {
-#         "type": "text",
-#         "fields": {
-#             "exact": {
-#                 "type": "keyword",
-#                 "store": True
-#             }
-#         }
-#     },
-#     "admin.notes.author_id": {
-#         "type": "text",
-#         "fields": {
-#             "exact": {
-#                 "type": "keyword",
-#                 "store": True
-#             }
-#         }
-#     }
-# }
-
 ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
 
 JOURNAL_EXCEPTION_MAPPING = {

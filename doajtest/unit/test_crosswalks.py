@@ -65,7 +65,6 @@ class TestCrosswalks(DoajTestCase):
 
     def test_02_journal_obj2form(self):
         j = JournalFixtureFactory.make_legacy_journal_object()
-        # j = models.Journal(**JOURNAL_SOURCE)
         form = JournalFormXWalk.obj2form(j)
 
         compare = deepcopy(JOURNAL_FORMINFO)
@@ -87,7 +86,6 @@ class TestCrosswalks(DoajTestCase):
 
     def test_04_application_obj2form(self):
         j = ApplicationFixtureFactory.make_legacy_application_object()
-        # j = models.Application(**APPLICATION_SOURCE)
         form = ApplicationFormXWalk.obj2form(j)
 
         compare = deepcopy(APPLICATION_FORMINFO)

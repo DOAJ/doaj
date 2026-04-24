@@ -76,8 +76,6 @@ class TestJournalLikeFlagsModel(DoajTestCase):
         self.another_editor.save()
 
         self.journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
-        # jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
-        # self.journal = Journal(**jsource)
         self.journal.remove_notes()
         self.journal.save()
 
@@ -183,10 +181,6 @@ class TestJournalLikeFlagsModel(DoajTestCase):
         ftext = "Resolved flag"
         with self._make_and_push_test_context_manager(acc=self.admin):
             journal = JournalFixtureFactory.make_legacy_journal_object()
-            # journal = Journal(**JOURNAL_SOURCE)
-            # ready_application = Application(**UPDATE_REQUEST_SOURCE_TEST_1)
-            # ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
-            # ready_application.set_current_journal(self.journal.id)
             journal.remove_notes()
 
             # Construct an application form

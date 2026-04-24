@@ -70,27 +70,6 @@ class TestAnon(DoajTestCase):
             }
         }
 
-        # journal = JournalFixtureFactory.make_journal_object(
-        #     data_stack=[JOURNAL_BASE, JOURNAL_FULL_LEGACY_FIXTURE, overlay]
-        # )
-
-        # journal_src['admin'] = {
-        #     'owner': 'testuser',
-        #     'editor': 'testeditor',
-        #     'notes': [
-        #         {
-        #             "id": "note1",
-        #             'note': 'Test note',
-        #             'date': '2017-02-23T00:00:00Z'
-        #         },
-        #         {
-        #             "id": "note2",
-        #             'note': 'Test note 2',
-        #             'date': '2017-02-23T00:00:00Z'
-        #         }
-        #     ]
-        # }
-
         journal = models.Journal(**overlay)
 
         with freeze_time("2017-02-23"):

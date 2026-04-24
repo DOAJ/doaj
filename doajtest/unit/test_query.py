@@ -652,7 +652,6 @@ class TestQuery(DoajTestCase):
                 "title": "I can’t really think in English"
             }
         })
-        # self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_data(title="I can’t really think in English"))
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
@@ -724,11 +723,6 @@ class TestQuery(DoajTestCase):
                 "alternative_title": "Dirasat: Shariía and Law Sciences"
             }
         })
-        # self.journal = models.Journal(**JournalFixtureFactory
-        #                               .make_journal_with_data(title="Kadınlarının sağlık",
-        #                                                       publisher_name="Ankara Üniversitesi",
-        #                                                       country="Türkiye",
-        #                                                       alternative_title="Dirasat: Shariía and Law Sciences"))
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
@@ -772,10 +766,6 @@ class TestQuery(DoajTestCase):
                 }
             }
         })
-        # application = models.Application(**ApplicationFixtureFactory
-        #                               .make_application_with_data(title="Kadınlarının sağlık",
-        #                                                       publisher_name="Ankara Üniversitesi",
-        #                                                       country="Türkiye", ))
         application.save(blocking=True)
         qsvc = QueryService()
 
