@@ -9,15 +9,16 @@ from portality import lock
 from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.lib import thread_utils
-from portality.models import Journal, Suggestion, Account
+from portality.models import Journal, Suggestion, Account, Application
 
 
 def load_journal_cases():
     account = Account(**AccountFixtureFactory.make_publisher_source())
     account.set_id(account.makeid())
 
-    journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-    journal.set_id(journal.makeid())
+    journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": Journal.makeid()})
+    #journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+    #journal.set_id(journal.makeid())
 
     wrong_id = uuid.uuid4()
 
@@ -36,8 +37,9 @@ def load_application_cases():
     account = Account(**AccountFixtureFactory.make_publisher_source())
     account.set_id(account.makeid())
 
-    application = Suggestion(**ApplicationFixtureFactory.make_application_source())
-    application.makeid()
+    application = ApplicationFixtureFactory.make_legacy_application_object(overlay={"id": Application.makeid()})
+    # application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+    # application.makeid()
 
     wrong_id = uuid.uuid4()
 
@@ -54,7 +56,7 @@ def load_application_cases():
 
 class TestBLLGetters(DoajTestCase):
 
-    @parameterized.expand(load_journal_cases)
+    @parameterized.expand(load_journal_cases())
     def test_01_get_journal(self, name, journal, journal_id, account, lock_journal, raises=None):
 
         if lock_journal:
@@ -90,7 +92,7 @@ class TestBLLGetters(DoajTestCase):
 
                 assert thread_utils.wait_until(has_lock, timeout=5)
 
-    @parameterized.expand(load_application_cases)
+    @parameterized.expand(load_application_cases())
     def test_02_get_application(self, name, application, application_id, account, lock_application, raises=None):
         if lock_application:
             lock.lock(constants.LOCK_APPLICATION, application.id, "someoneelse", blocking=True)

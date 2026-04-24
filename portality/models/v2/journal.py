@@ -309,59 +309,61 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     #### Notes methods
 
-    def add_note(self, note_text:str, date=None, id=None, author_id=None,
+    def add_note(self, note:str, date=None, id=None, author_id=None,
                  assigned_to=None, deadline=None):
-        if id == "":
-            id = None
-
-        match = False
-        for existing in self.notes:
-            note_match = existing.get("note") == note_text
-            id_match = existing.get("id") == id
-
-            if not note_match:
-                continue
-
+        if id == "": id = None
+        if not author_id: author_id = None
+        if not assigned_to: assigned_to = None
+        if not deadline: deadline = None
 
         if not date:
             date = dates.now_str()
 
-        note = Note()
-        note.set_created(date)
-        note.note = note_text
+        note_obj = Note()
+        note_obj.set_created(date)
+        note_obj.note = note
         if author_id is not None:
-            note.author_id = author_id
+            note_obj.author_id = author_id
 
-        for existing in self.notes:
-            note_matches = False
-            if (existing.get("note") == note.note and
-                    existing.get("date") == note.date and
-                    existing.get("author_id") == note.author_id):
-                note_matches = True
-            if assigned_to is not None:
-
-        note.resource_type = self.__type__
+        note_obj.resource_type = self.__type__
         if self.id is None:
             self.set_id(self.makeid())
-        note.resource_id = self.id
+        note_obj.resource_id = self.id
 
-        if id is not None:
-            note.set_id(id)
+        match_id = None
+        for existing in self.notes:
+            note_match = existing.get("note") == note_obj.note
+            # id_match = existing.get("id") == id
+            author_match = existing.get("author_id") == note_obj.author_id
+            date_match = existing.get("date") == date
+            # assigned_match = existing.get("flag", {}).get("assigned_to") == assigned_to
+            # deadline_match = existing.get("flag", {}).get("deadline") == deadline
+            if note_match and author_match and date_match:
+                match_id = existing.get("id")
+                break
+
+        # If there is no duplicate note, just go ahead.  Otherwise we're not going
+        # to set this note
+        if match_id is None:
+            if id is not None:
+                note_obj.set_id(id)
+            else:
+                note_obj.set_id(self.makeid())
+
+            self._notes[note_obj.id] = note_obj
+            self.__seamless__.delete_from_list("admin.note_ids", note_obj.id)
+            self.__seamless__.add_to_list_with_struct("admin.note_ids", note_obj.id)
         else:
-            note.set_id(self.makeid())
-
-        self._notes[note.id] = note
-        self.__seamless__.delete_from_list("admin.note_ids", note.id)
-        self.__seamless__.add_to_list_with_struct("admin.note_ids", note.id)
+            note_obj.set_id(match_id)
 
         if assigned_to is not None or deadline is not None:
             # this is a flag
-            self.set_flag(note.id, assigned_to, deadline)
+            self.set_flag(note_obj.id, assigned_to, deadline)
 
-        return note
+        return note_obj
 
     def add_note_by_dict(self, note):
-        return self.add_note(note_text=note.get("note"), date=note.get("date"),
+        return self.add_note(note=note.get("note"), date=note.get("date"),
                              id=note.get("id"), author_id=note.get("author_id"),
                              assigned_to=note.get("assigned_to"), deadline=note.get("deadline"))
 
@@ -443,8 +445,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             del d["created_date"]
         if "last_updated" in d:
             del d["last_updated"]
-        del d["resource_type"]
-        del d["resource_id"]
+        if "resource_type" in d:
+            del d["resource_type"]
+        if "resource_id" in d:
+            del d["resource_id"]
         if flag is None:
             flag = self.__seamless__.get_single("admin.flag")
         if flag is not None:
@@ -528,6 +532,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if deadline is not None:
             flag["deadline"] = deadline
         self.__seamless__.set_with_struct("admin.flag", flag)
+        is_it_there = self.__seamless__.get_single("admin.flag")
+        return flag
 
     def resolve_flag(self, flag_id, updated_note):
         flag = self.get_note_by_id(flag_id)
@@ -544,7 +550,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @property
     def most_urgent_flag_deadline(self):
-        flag = self.__seamless__.delete("admin.flag")
+        flag = self.__seamless__.get_single("admin.flag")
         if flag is None:
             return dates.far_in_the_future()
 
@@ -590,7 +596,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         for nid, n in self._notes.items():
             if n is False:
                 Note.remove_by_id(nid)
-            else:
+            elif n is not None:
                 n.save()
 
     def _load_notes(self):

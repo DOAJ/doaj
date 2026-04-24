@@ -416,6 +416,7 @@ class AdminApplication(ApplicationProcessor):
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             j = applicationService.accept_application(self.target, account)
+
             # record the url the journal is available at in the admin are and alert the user
             if has_request_context():       # fixme: if we handle alerts via a notification service we won't have to toggle on request context
                 jurl = url_for("doaj.toc", identifier=j.toc_id)

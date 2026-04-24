@@ -1019,9 +1019,28 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
     }
 }
 
+# These mappings prevent the notes and flags from being indexed in all_meta (the default for text fields)
 ADMIN_NOTES_SEARCH_MAPPING = {
     "admin.index.notes": {
         "type": "text"
+    },
+    "admin.flag.note_id": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+                "store": True
+            }
+        }
+    },
+    "admin.flag.assigned_to": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+                "store": True
+            }
+        }
     }
 }
 

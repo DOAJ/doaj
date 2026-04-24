@@ -69,8 +69,7 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
 
         # create a journal for the owner
         if owner_arg not in ["none"]:
-            source = JournalFixtureFactory.make_journal_source(in_doaj=True)
-            journal = Journal(**source)
+            journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
             journal.set_owner(owner.id)
             jbj = journal.bibjson()
             del jbj.eissn
