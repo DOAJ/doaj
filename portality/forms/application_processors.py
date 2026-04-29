@@ -213,9 +213,12 @@ class ApplicationProcessor(FormProcessor):
             # set author_id on the note if it's a new note
             for note in self.target.notes:
                 note_date = dates.parse(note['date'])
+                # FIXME: this feels quite bad, I am not going to fix it now, but
+                # we should probably sort this out in the next version of the processors
                 if not note.get('author_id') and note_date > dates.before_now(60):
                     try:
                         note['author_id'] = current_user.id
+                        self.target.add_note_by_dict(note)    # We have to explicitly re-add the note, as `.notes` is by value not reference now
                     except AttributeError:
                         # Skip if we don't have a current_user
                         pass

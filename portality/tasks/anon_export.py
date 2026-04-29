@@ -21,6 +21,11 @@ email_subs = {}
 email_counter = 0
 password = None
 
+def create_random_str(n_char=10):
+    import string, random
+
+    s = string.ascii_letters + string.digits
+    return ''.join(random.choices(s, k=n_char))
 
 def _anonymise_email(record):
     if record.email not in email_subs:
@@ -103,6 +108,7 @@ def anonymise_background_job(record):
 
 def anonymise_note(note:Note):
     note.note = "---note removed for data security---"
+    note.author_id = create_random_str()
     return note.data
 
 
