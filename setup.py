@@ -9,7 +9,7 @@ setup(
     python_requires='>=3.10', # EOL October 2026
     packages=find_packages(),
     install_requires=[
-        "awscli==1.34.25",
+        "awscli==1.44.38",
         "bagit==1.8.1",
         "beautifulsoup4",
         "boto3==1.35.25",
