@@ -27,12 +27,15 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/coverage
 # make sure that we have the documentation submodule up-to-date
 (cd $DOAJ_DOCS && git checkout master && git pull origin master)
 
+# ensure that the output directory exists
+mkdir -p $OUTDIR/report
+
 COVERAGE_FILE=$OUTDIR/coverage.data
 export COVERAGE_FILE
 
 echo "coverage run --source=portality,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/"
 coverage run --source=portality,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/
 
-echo "coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report"
-coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report
+echo "coverage html --omit='*/migrate/*,*/scripts/*' -d $OUTDIR/report"
+coverage html --omit='*/migrate/*,*/scripts/*' -d $OUTDIR/report
 
