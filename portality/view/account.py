@@ -3,14 +3,17 @@ import uuid, json
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form
+from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form, SelectMultipleField
 
 from portality import util
 from portality import constants
 from portality.core import app
+from portality.datasets import language_options, country_options
 from portality.decorators import ssl_required, write_required
+from portality.forms.application_forms import MultiSelectBuilder, iso_language_list
 from portality.models import Account, Event
-from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
+from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged, \
+    CurrentISOLanguage
 from portality.bll import DOAJ
 from portality.ui.messages import Messages
 
@@ -48,6 +51,22 @@ class UserEditForm(Form):
     ])
     email_confirm = StringField('Confirm email address')
     roles = StringField('User roles')
+    attribute_workflow = SelectMultipleField(
+        "Workflow Participation",
+        choices=[(x,x) for x in constants.EWF__ALL_STAGES]
+    )
+    attribute_language = SelectMultipleField(
+        'Can Review Languages',
+        [
+            CurrentISOLanguage()
+        ],
+        choices=language_options
+    )
+    attribute_country = SelectMultipleField(
+        'Can Review Applications from Countries',
+        choices=country_options
+    )
+    attribute_tag = StringField('Other User Attributes')
     password_change = PasswordField('Change password', [
         validators.EqualTo('password_confirm', message='Passwords must match'),
     ])
@@ -106,10 +125,29 @@ def username(username):
         if 'password_change' in newdata and len(newdata['password_change']) > 0 and not newdata['password_change'].startswith('sha1'):
             acc.set_password(newdata['password_change'])
 
-        # only super users can re-write roles
-        if "roles" in newdata and current_user.is_super:
-            new_roles = [r.strip() for r in newdata.get("roles").split(",")]
-            acc.set_role(new_roles)
+        # only super users can re-write roles and attributes
+        if current_user.is_super:
+            if "roles" in newdata:
+                new_roles = [r.strip() for r in newdata.get("roles").split(",")]
+                acc.set_role(new_roles)
+
+            # remove old attributes
+            del acc.attributes
+
+            # apply new attributes
+            if hasattr(form, "attribute_workflow") and form.attribute_workflow.data:
+                for aw in form.attribute_workflow.data:
+                    acc.add_attribute(constants.USER_ATTR__WORKFLOW, aw)
+            if hasattr(form, "attribute_language") and form.attribute_language.data:
+                for al in form.attribute_language.data:
+                    acc.add_attribute(constants.USER_ATTR__LANGUAGE, al)
+            if hasattr(form, "attribute_country") and form.attribute_country.data:
+                for ac in form.attribute_country.data:
+                    acc.add_attribute(constants.USER_ATTR__COUNTRY, ac)
+            if "attribute_tag" in newdata:
+                for at in newdata["attribute_tag"].split(","):
+                    acc.add_attribute(constants.USER_ATTR__TAG, at.strip())
+
 
         if "marketing_consent" in newdata:
             acc.set_marketing_consent(newdata["marketing_consent"] == "true")

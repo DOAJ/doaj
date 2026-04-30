@@ -670,9 +670,13 @@ class CurrentISOCurrency(object):
 
     def __call__(self, form, field):
         if field.data is not None and field.data != '':
-            check = get_currency_code(field.data, fail_if_not_found=True)
-            if check is None:
-                raise validators.ValidationError(self.message)
+            value = field.data
+            if not isinstance(value, list):
+                value = [value]
+            for v in value:
+                check = get_currency_code(v, fail_if_not_found=True)
+                if check is None:
+                    raise validators.ValidationError(self.message)
 
 
 class CurrentISOLanguage(object):
@@ -683,6 +687,10 @@ class CurrentISOLanguage(object):
 
     def __call__(self, form, field):
         if field.data is not None and field.data != '':
-            check = isolang.find(field.data)
-            if check is None:
-                raise validators.ValidationError(self.message)
+            value = field.data
+            if not isinstance(value, list):
+                value = [value]
+            for v in value:
+                check = isolang.find(v)
+                if check is None:
+                    raise validators.ValidationError(self.message)
