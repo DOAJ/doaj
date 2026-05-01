@@ -1,0 +1,28 @@
+{
+	"types": [
+		{
+			"type": "application",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions": [
+				"portality.migrate.20260501_4232_peer_review_rename.operations.peer_review_rename"
+			]
+		},
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions": [
+				"portality.migrate.20260501_4232_peer_review_rename.operations.peer_review_rename"
+			]
+		},
+		{
+			"type": "draft_application",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions": [
+				"portality.migrate.20260501_4232_peer_review_rename.operations.peer_review_rename"
+			]
+		}
+	]
+}
