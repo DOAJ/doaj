@@ -33,9 +33,9 @@ mkdir -p $OUTDIR/report
 COVERAGE_FILE=$OUTDIR/coverage.data
 export COVERAGE_FILE
 
-echo "coverage run --source=portality,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/"
-coverage run --source=portality,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/
+echo "coverage run $(which pytest) $BASE_DIR/doajtest/unit/"
+coverage run $(which pytest) $BASE_DIR/doajtest/unit/
 
-echo "coverage html --omit='*/migrate/*,*/scripts/*' -d $OUTDIR/report"
-coverage html --omit='*/migrate/*,*/scripts/*' -d $OUTDIR/report
+echo "coverage html -d $OUTDIR/report"
+coverage html -d $OUTDIR/report
 
