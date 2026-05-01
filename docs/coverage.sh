@@ -30,14 +30,9 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/coverage
 # ensure that the output directory exists
 mkdir -p $OUTDIR/report
 
-COVERAGE_FILE=$OUTDIR/coverage.data
-export COVERAGE_FILE
-
-echo "coverage run $(which pytest) $BASE_DIR/doajtest/unit/"
-coverage run $(which pytest) $BASE_DIR/doajtest/unit/
 
 rm -rf $OUTDIR/report
-echo "coverage html -d $OUTDIR/report"
-coverage html -d $OUTDIR/report
+echo "pytest -p no:randomly --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/"
+pytest -p no:randomly --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/
 rm -f $OUTDIR/report/.gitignore
 
