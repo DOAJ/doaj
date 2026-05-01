@@ -36,6 +36,8 @@ export COVERAGE_FILE
 echo "coverage run $(which pytest) $BASE_DIR/doajtest/unit/"
 coverage run $(which pytest) $BASE_DIR/doajtest/unit/
 
+rm -rf $OUTDIR/report
 echo "coverage html -d $OUTDIR/report"
 coverage html -d $OUTDIR/report
+rm -f $OUTDIR/report/.gitignore
 
