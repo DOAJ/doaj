@@ -27,12 +27,8 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/coverage
 # make sure that we have the documentation submodule up-to-date
 (cd $DOAJ_DOCS && git checkout master && git pull origin master)
 
-# ensure that the output directory exists
-mkdir -p $OUTDIR/report
-
-
 rm -rf $OUTDIR/report
-echo "pytest -p no:randomly --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/"
-pytest -p no:randomly --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/
+echo "pytest -p no:randomly --cov-config=$BASE_DIR/.coveragerc --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/"
+pytest -p no:randomly --cov-config=$BASE_DIR/.coveragerc --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/
 rm -f $OUTDIR/report/.gitignore
 
