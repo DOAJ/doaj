@@ -131,7 +131,7 @@ class Journal2QuestionXwalk(object):
             opts = {}
             [opts.update({k: v}) for k, v in ApplicationFormFactory.choices_for("license_attributes")]
             nv = [opts.get(v) for v in val]
-            return ", ".join(nv)
+            return ", ".join(str(v) for v in nv)
 
         def languages(vals):
             keep = []

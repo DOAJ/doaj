@@ -19,7 +19,7 @@ We always publish our simplified support prices openly, in line with [our commit
 
 We only accept support through our publisher supporter model from publishers with journals already indexed in DOAJ. Non-commercial/institutional rates are only available to community-led, smaller publishers with limited funding. [Contact us](/contact/) if you are unsure which category applies or if you want to discuss ways of further contributing to DOAJ's operating costs.
 
-### Commercial publishers
+### Standard rate
 
 | Band | Number of journals in DOAJ | GBPs (£)* |
 |------|----------------------------|-----------|
