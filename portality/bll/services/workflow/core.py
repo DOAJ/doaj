@@ -89,8 +89,9 @@ class ApplicationEdit(WorkflowAction): pass
 class State:
     module = None
     stage = None
-    editor_group = None
     reviewer = None
+
+    legacy_application_status = None
 
     events = []
     actions = []
@@ -101,7 +102,7 @@ class State:
 
     @classmethod
     def query(cls):
-        return WorkflowControlStateQuery(cls.module, cls.stage, cls.editor_group, cls.reviewer)
+        return WorkflowControlStateQuery(cls.module, cls.stage, cls.reviewer)
 
     @classmethod
     def enter(cls, actor:Union[str, Account],
@@ -139,23 +140,11 @@ class State:
 
         # by here, module and stage match
 
-        # check the editor group
-        # if the wfc has no eg, then if the allowed editor group is not WorkflowControl.ANY or WorkflowControl.UNASSIGNED), no match
-        # if the wfc has an eg, then if the allowed editor group is not WorkflowControl.ANY or WorkflowControl.ASSIGNED or the same as the wfc's eg, no match
-        if wf_control.editor_group is None:
-            if not (cls.editor_group == WorkflowControl.ANY or cls.editor_group == WorkflowControl.UNASSIGNED):
-                return False
-        else:
-            if not (cls.editor_group == WorkflowControl.ANY or cls.editor_group == WorkflowControl.ASSIGNED or cls.editor_group == wf_control.editor_group):
-                return False
-
-        # by here, module, stage and editor group match
-
         if wf_control.reviewer is None:
             if not (cls.reviewer == WorkflowControl.ANY or cls.reviewer == WorkflowControl.UNASSIGNED):
                 return False
         else:
-            if not (cls.reviewer == WorkflowControl.ANY or cls.reviewer == WorkflowControl.ASSIGNED or cls.reviewer == wf_control.editor_group):
+            if not (cls.reviewer == WorkflowControl.ANY or cls.reviewer == WorkflowControl.ASSIGNED or cls.reviewer == wf_control.reviewer):
                 return False
 
         return True
@@ -171,8 +160,32 @@ class State:
             self._application = Application.pull(app_id)
         return self._application
 
+    ########################################
+    ## methods applied at state entry by enter()
+
+    def apply_module(self):
+        if self.module is not None:
+            if self.workflow_control.module != self.module:
+                self.workflow_control.module = self.module
+
+    def apply_stage(self):
+        if self.stage is not None:
+            if self.workflow_control.stage != self.stage:
+                self.workflow_control.stage = self.stage
+
+    def apply_legacy_application_status(self):
+        # back-compatibility for the original workflow
+        if self.legacy_application_status is not None:
+            application = self.application
+            if application.application_status != self.legacy_application_status:
+                application.set_application_status(self.legacy_application_status)
+
     def apply(self):
-        pass
+        self.apply_module()
+        self.apply_stage()
+        self.apply_legacy_application_status()
+
+    ##########################################
 
     def exit(self, event:WorkflowEvent):
         return self
@@ -184,7 +197,6 @@ class State:
         return {
             "module": self.module,
             "stage": self.stage,
-            "editor_group": self.workflow_control.editor_group,
             "reviewer": self.workflow_control.reviewer
         }
 

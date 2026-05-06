@@ -48,7 +48,6 @@ STRUCT = {
                     "fields": {
                         "module": {"coerce": "unicode"},
                         "stage": {"coerce": "unicode"},
-                        "editor_group": {"coerce": "unicode"},
                         "reviewer": {"coerce": "unicode"}
                     }
                 },
@@ -56,7 +55,6 @@ STRUCT = {
                     "fields": {
                         "module": {"coerce": "unicode"},
                         "stage": {"coerce": "unicode"},
-                        "editor_group": {"coerce": "unicode"},
                         "reviewer": {"coerce": "unicode"}
                     }
                 }
@@ -73,7 +71,6 @@ STRUCT = {
             "fields": {
                 "module": {"coerce": "unicode"},
                 "stage": {"coerce": "unicode"},
-                "editor_group": {"coerce": "unicode"},
                 "reviewer": {"coerce": "unicode"}
             }
         }
@@ -148,18 +145,6 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     @stage.setter
     def stage(self, val):
         self.__seamless__.set_single("state.stage", val)
-
-    @property
-    def editor_group(self):
-        return self.__seamless__.get_single("state.editor_group")
-
-    @editor_group.setter
-    def editor_group(self, val):
-        self.__seamless__.set_single("state.editor_group", val)
-
-    @editor_group.deleter
-    def editor_group(self):
-        self.__seamless__.delete("state.editor_group")
 
     @property
     def reviewer(self):
@@ -290,12 +275,10 @@ class WorkflowControlStateQuery:
     def __init__(self,
                  module:str=None,
                  stage:str=None,
-                 editor_group:str=None,
                  reviewer:str=None,
                  size:int=100):
         self._module = module
         self._stage = stage
-        self._editor_group = editor_group
         self._reviewer = reviewer
         self._size = size
 
@@ -328,15 +311,6 @@ class WorkflowControlStateQuery:
                     must.append({"exists": {"field": "state.stage"}})
                 else:
                     must.append({"term": {"state.stage.exact": self._stage}})
-
-        if self._editor_group is not None:
-            if self._editor_group != WorkflowControl.ANY:
-                if self._editor_group == WorkflowControl.UNASSIGNED:
-                    must_not.append({"exists": {"field": "state.editor_group"}})
-                elif self._editor_group == WorkflowControl.ASSIGNED:
-                    must.append({"exists": {"field": "state.editor_group"}})
-                else:
-                    must.append({"term": {"state.editor_group.exact": self._editor_group}})
 
         if self._reviewer is not None:
             if self._reviewer != WorkflowControl.ANY:

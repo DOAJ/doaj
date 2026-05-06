@@ -15,7 +15,6 @@ MODULE_REJECTED_STAGE_REJECTED = "rejected"
 class Rejected(State):
     module = MODULE_REJECTED
     stage = MODULE_REJECTED_STAGE_REJECTED
-    editor_group = WorkflowControl.ANY
     reviewer = WorkflowControl.ANY
 
     def apply(self):
@@ -40,11 +39,7 @@ class Rejected(State):
                 acc = Account.pull("system")
             appSvc.reject_application(application, acc)
 
-        if wf_control.editor_group is not None:
-            if application.editor_group != wf_control.editor_group:
-                application.set_editor_group(wf_control.editor_group)
-        else:
-            application.remove_editor_group()
+        application.remove_editor_group()
 
         if wf_control.reviewer is not None:
             if application.editor != wf_control.reviewer:

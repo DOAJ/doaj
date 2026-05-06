@@ -18,7 +18,6 @@ MODULE_TRIAGE_STAGES = [
     MODULE_TRIAGE_STAGE_IN_PROGRESS,
     MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
 ]
-MODULE_TRIAGE_EG = "Triage"
 
 ######################################
 ## Workflow events specific to Triage
@@ -49,36 +48,23 @@ class Triaged(WorkflowEvent):
 class AwaitingTriage(State):
     module = MODULE_TRIAGE
     stage = WorkflowControl.ANY
-    editor_group = MODULE_TRIAGE_EG
     reviewer = WorkflowControl.UNASSIGNED
+
+    legacy_application_status = constants.APPLICATION_STATUS_PENDING
 
     events = [Claim, Assign]
 
-    def apply(self):
-        # Ensure the workflow control object is in the right state
+    def apply_stage(self):
         wf_control = self.workflow_control
-        if wf_control.module != self.module:
-            wf_control.module = self.module
-
         if wf_control.stage not in MODULE_TRIAGE_STAGES:
             if wf_control.triage.has_minimal_review:
                 wf_control.stage = MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
             else:
                 wf_control.stage = MODULE_TRIAGE_STAGE_IN_PROGRESS
 
-        if wf_control.editor_group != self.editor_group:
-            wf_control.editor_group = self.editor_group
-            wf_control.reviewer = None
-
-        # back-compatibility for the original workflow
-        application = self.application
-
-        if application.application_status != constants.APPLICATION_STATUS_PENDING:
-            application.set_application_status(constants.APPLICATION_STATUS_PENDING)
-
-        if application.editor_group != self.editor_group:
-            application.set_editor_group(self.editor_group)
-            application.remove_editor()
+    def apply(self):
+        # this is just here to remind us we can override this
+        super().apply()
 
     def exit(self, event:WorkflowEvent):
         if isinstance(event, Claim):
@@ -90,7 +76,7 @@ class AwaitingTriage(State):
 
     def event_claim(self, event:Claim):
         wfc = self.workflow_control
-        # FIXME: needs to be resolved with feature vs role capability
+
         if not event.actor.has_role(constants.ROLE_TRIAGE):
             raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
 
@@ -118,7 +104,6 @@ class AwaitingTriage(State):
 class TriageAssessmentInProgress(State):
     module = MODULE_TRIAGE
     stage = MODULE_TRIAGE_STAGE_IN_PROGRESS
-    editor_group = MODULE_TRIAGE_EG
     reviewer = WorkflowControl.ASSIGNED
 
     events = [Unclaim, Reassign, Unassign, Fail, MinimalReview]
@@ -133,9 +118,6 @@ class TriageAssessmentInProgress(State):
         if wf_control.stage != self.stage:
             wf_control.stage = self.stage
 
-        if wf_control.editor_group != self.editor_group:
-            wf_control.editor_group = self.editor_group
-
         if wf_control.reviewer is None:
             raise ValueError("Reviewer must be set for TriageAssessmentInProgress state")
 
@@ -144,9 +126,6 @@ class TriageAssessmentInProgress(State):
 
         if application.application_status != constants.APPLICATION_STATUS_IN_PROGRESS:
             application.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-
-        if application.editor_group != self.editor_group:
-            application.set_editor_group(self.editor_group)
 
         if application.editor != wf_control.reviewer:
             application.set_editor(wf_control.reviewer)
@@ -203,7 +182,6 @@ class TriageAssessmentInProgress(State):
         appSvc = DOAJ.applicationService()
         appSvc.reject_application(self.application, event.actor, note=event.note)
 
-        del wfc.editor_group
         del wfc.reviewer
 
         # TODO: not clear what to do with application embargoes, perhaps these are a new type?
@@ -233,7 +211,6 @@ class TriageAssessmentInProgress(State):
 class TriageAssessmentMinimalReview(State):
     module = MODULE_TRIAGE
     stage = MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
-    editor_group = MODULE_TRIAGE_EG
     reviewer = WorkflowControl.ASSIGNED
 
     events = [Triaged, Unclaim, Reassign, Unassign, Fail, RescindMinimalReview]
@@ -248,9 +225,6 @@ class TriageAssessmentMinimalReview(State):
         if wf_control.stage != self.stage:
             wf_control.stage = self.stage
 
-        if wf_control.editor_group != self.editor_group:
-            wf_control.editor_group = self.editor_group
-
         if wf_control.reviewer is None:
             raise ValueError("Reviewer must be set for TriageAssessmentMinimalReview state")
 
@@ -259,9 +233,6 @@ class TriageAssessmentMinimalReview(State):
 
         if application.application_status != constants.APPLICATION_STATUS_IN_PROGRESS:
             application.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-
-        if application.editor_group != self.editor_group:
-            application.set_editor_group(self.editor_group)
 
         if application.editor != wf_control.reviewer:
             application.set_editor(wf_control.reviewer)
@@ -307,7 +278,6 @@ class TriageAssessmentMinimalReview(State):
             if vessel is None:
                 raise ValueError(f"Maned '{event.maned}' is not the editor of a managing editor's special vessel group")
 
-            wfc.editor_group = vessel.name
             wfc.reviewer = event.maned
 
             from portality.bll.services.workflow.quick_fail import QuickFailCriteriaCheck
@@ -358,7 +328,6 @@ class TriageAssessmentMinimalReview(State):
         appSvc = DOAJ.applicationService()
         appSvc.reject_application(self.application, event.actor, note=event.note)
 
-        del wfc.editor_group
         del wfc.reviewer
 
         # TODO: not clear what to do with application embargoes, perhaps these are a new type?
