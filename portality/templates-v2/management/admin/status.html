@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DOAJ status monitor</title>
+    <style>
+        body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin: 1.25rem; color: #111 }
+        h1 { margin-top: 0 }
+        .status { padding: 0.6rem 1rem; border-radius: 6px; display: inline-block; margin-bottom: 0.5rem }
+        .ok { background: #e6ffed; color: #084c21; border: 1px solid #c7f0d2 }
+        .warn { background: #fff7e6; color: #6a4b00; border: 1px solid #ffe6a8 }
+        .bad { background: #ffecec; color: #7a0b0b; border: 1px solid #ffbcbc }
+        #queues li { margin: 0.25rem 0; padding: 0.35rem; border-radius: 4px }
+        .queue-ok { background: #f6fff8 }
+        .queue-unstable { background: #fff0f0; color: #7a0b0b }
+        .queue-header { display:flex; align-items:center; justify-content:space-between }
+        .queue-name { font-weight:600 }
+        .queue-details { margin-top:0.5rem; padding:0.5rem; border-radius:4px; background:#fff; border:1px solid #eee }
+        .issue-type { font-weight:600; margin-top:0.25rem }
+        .job-name { font-weight:500 }
+        #error { color: #7a0b0b; margin-top: 0.5rem }
+        #controls { margin-top: 1rem }
+        button { padding: 0.4rem 0.6rem; border-radius: 6px }
+        pre { background: #f5f5f5; padding: 0.75rem; border-radius: 6px; overflow:auto }
+    </style>
+    <meta name="refetch-interval-ms" content="300000">
+    <script>
+        // Basic DOAJ status monitor.
+        // Fetches https://doaj.org/status/ on load and every 5 minutes.
+        const STATUS_URL = '/status/';
+        const INTERVAL_MS = 300000; // 5 minutes
+
+        function el(id) { return document.getElementById(id) }
+
+        function setStatusNode(node, text, cls) {
+            node.textContent = text;
+            node.className = 'status ' + cls;
+        }
+
+        function render(data) {
+            const overall = el('overall-status');
+            const background = el('background-status');
+            const queuesList = el('queues');
+            const summary = el('summary');
+
+            // Reset
+            queuesList.innerHTML = '';
+            summary.textContent = '';
+
+            // Top-level stable
+            if (data && Object.prototype.hasOwnProperty.call(data, 'stable')) {
+                if (data.stable === false) {
+                    setStatusNode(overall, 'UNSTABLE', 'bad');
+                } else {
+                    setStatusNode(overall, 'stable', 'ok');
+                }
+            } else {
+                setStatusNode(overall, 'no data', 'warn');
+            }
+
+            // Background status
+            const bg = data && data.background;
+            if (bg && bg.status) {
+                if (String(bg.status).toLowerCase() === 'unstable') {
+                    setStatusNode(background, 'background: UNSTABLE', 'bad');
+                } else {
+                    setStatusNode(background, 'background: ' + bg.status, 'ok');
+                }
+            } else {
+                setStatusNode(background, 'background: no data', 'warn');
+            }
+
+            // Queues
+            const queues = bg && bg.queues;
+            let unstableCount = 0;
+            if (queues && typeof queues === 'object') {
+                Object.keys(queues).forEach(qname => {
+                    const q = queues[qname] || {};
+                    const li = document.createElement('li');
+                    const status = q.status || 'unknown';
+
+                    // Header area with name and status
+                    const header = document.createElement('div');
+                    header.className = 'queue-header';
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'queue-name';
+                    nameSpan.textContent = qname;
+                    const statusSpan = document.createElement('span');
+                    statusSpan.textContent = status;
+                    header.appendChild(nameSpan);
+                    header.appendChild(statusSpan);
+                    li.appendChild(header);
+
+                    // Details container (hidden by default)
+                    const details = document.createElement('div');
+                    details.className = 'queue-details';
+                    details.style.display = 'none';
+
+                    // For unstable queues, populate details only with jobs that have error messages
+                    const subsections = ['errors', 'queued', 'last_run_successful'];
+                    let hasDetails = false;
+                    subsections.forEach(sectionName => {
+                        const section = q[sectionName];
+                        if (section && typeof section === 'object' && Object.keys(section).length > 0) {
+                            const jobsList = document.createElement('ul');
+                            let sectionHasJobs = false;
+                            Object.keys(section).forEach(jobName => {
+                                const jobObj = section[jobName] || {};
+                                // err_msgs may be present as an array; only show jobs with messages
+                                const msgs = Array.isArray(jobObj.err_msgs) ? jobObj.err_msgs : null;
+                                if (msgs && msgs.length > 0) {
+                                    sectionHasJobs = true;
+                                    const jobLi = document.createElement('li');
+                                    const jobTitle = document.createElement('div');
+                                    jobTitle.className = 'job-name';
+                                    jobTitle.textContent = jobName;
+                                    jobLi.appendChild(jobTitle);
+
+                                    const msgUl = document.createElement('ul');
+                                    msgs.forEach(m => {
+                                        const mLi = document.createElement('li');
+                                        mLi.textContent = m;
+                                        msgUl.appendChild(mLi);
+                                    });
+                                    jobLi.appendChild(msgUl);
+                                    jobsList.appendChild(jobLi);
+                                }
+                            });
+                            if (sectionHasJobs) {
+                                hasDetails = true;
+                                const typeHeader = document.createElement('div');
+                                typeHeader.className = 'issue-type';
+                                typeHeader.textContent = sectionName;
+                                details.appendChild(typeHeader);
+                                details.appendChild(jobsList);
+                            }
+                        }
+                    });
+
+                    // If details found, add a toggle button (for unstable and also allow viewing)
+                    const isUnstable = String(status).toLowerCase() === 'unstable';
+                    if (isUnstable) {
+                        li.className = 'queue-unstable';
+                        unstableCount += 1;
+                    } else {
+                        li.className = 'queue-ok';
+                    }
+
+                    if (hasDetails) {
+                        const toggle = document.createElement('button');
+                        toggle.textContent = 'Show details';
+                        toggle.addEventListener('click', () => {
+                            const visible = details.style.display !== 'none';
+                            details.style.display = visible ? 'none' : 'block';
+                            toggle.textContent = visible ? 'Show details' : 'Hide details';
+                        });
+                        header.appendChild(toggle);
+                        li.appendChild(details);
+                    }
+
+                    queuesList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'no queue data';
+                queuesList.appendChild(li);
+            }
+
+            if (unstableCount > 0) {
+                summary.textContent = unstableCount + ' queue(s) unstable';
+            } else {
+                summary.textContent = 'no unstable queues detected';
+            }
+
+            // Show raw JSON
+            el('raw-json').textContent = JSON.stringify(data, null, 2);
+            el('last-updated').textContent = new Date().toLocaleString();
+        }
+
+        async function fetchStatus() {
+            const errNode = el('error');
+            errNode.textContent = '';
+            try {
+                const resp = await fetch(STATUS_URL, { cache: 'no-store' });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status + ' ' + resp.statusText);
+                const data = await resp.json();
+                render(data);
+            } catch (e) {
+                errNode.textContent = 'Failed to fetch status: ' + e.message + '. (If you see a CORS error in the browser console, the remote server may not allow cross-origin requests; run this page from a server-side proxy.)';
+                // clear UI to avoid stale impression
+                render({});
+            }
+        }
+
+        let timer = null;
+        function startPolling() {
+            if (timer) clearInterval(timer);
+            timer = setInterval(fetchStatus, INTERVAL_MS);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            el('refresh-btn').addEventListener('click', fetchStatus);
+            el('toggle-raw').addEventListener('click', () => {
+                const r = el('raw-container');
+                r.style.display = r.style.display === 'none' ? 'block' : 'none';
+            });
+            fetchStatus();
+            startPolling();
+        });
+    </script>
+</head>
+<body>
+    <h1>DOAJ status monitor</h1>
+    <div>
+        <strong>Last updated:</strong> <span id="last-updated">never</span>
+    </div>
+
+    <div style="margin-top:0.5rem">
+        <div id="overall-status" class="status warn">loading…</div>
+        <div id="background-status" class="status warn" style="margin-left:0.5rem">loading…</div>
+    </div>
+
+    <div id="controls">
+        <button id="refresh-btn">Refresh now</button>
+        <button id="toggle-raw">Toggle raw JSON</button>
+    </div>
+
+    <h3 style="margin-top:1rem">Background queues</h3>
+    <div id="summary" style="margin-bottom:0.5rem;color:#333">—</div>
+    <ul id="queues"></ul>
+
+    <div id="error" role="status" aria-live="polite"></div>
+
+    <div id="raw-container" style="display:none; margin-top:1rem">
+        <h4>Raw JSON</h4>
+        <pre id="raw-json">{}</pre>
+    </div>
+</body>
+</html>
