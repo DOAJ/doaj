@@ -35,7 +35,7 @@
             that role implicitly) #}
         {% if account.has_role(constants.ROLE_ASSOCIATE_EDITOR) %}
             <h2>Editor User Attributes</h2>
-            <p>Attributes supplied here will control which workflow items the user will be able to work on in the
+            <p>Attributes defined here will control which workflow items you will be able to work on in the
             new Editorial Workflow</p>
             {% if current_user.is_super %}
                 <div class="form__question">
@@ -53,21 +53,37 @@
             {% else %}
                 <dl>
                     <dt>Workflow Participation</dt>
-                    {% for wf in account.attribute_workflow %}
-                        <dd class="tag">{{ wf }}</dd>
-                    {% endfor %}
+                    {% if account.attribute_workflow %}
+                        {% for wf in account.attribute_workflow %}
+                            <dd class="tag">{{ wf }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
                     <dt>Language</dt>
-                    {% for language in account.attribute_language %}
-                        <dd class="tag">{{ datasets.name_for_lang(language) }}</dd>
-                    {% endfor %}
+                    {% if account.attribute_language %}
+                        {% for language in account.attribute_language %}
+                            <dd class="tag">{{ datasets.name_for_lang(language) }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
                     <dt>Country</dt>
-                    {% for country in account.attribute_country %}
-                        <dd class="tag">{{ datasets.get_country_name(country) }}</dd>
-                    {% endfor %}
+                    {% if account.attribute_country %}
+                        {% for country in account.attribute_country %}
+                            <dd class="tag">{{ datasets.get_country_name(country) }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
                     <dt>Other Attribute Tags</dt>
-                    {% for tag in account.attribute_tag %}
-                        <dd class="tag">{{ tag }}</dd>
-                    {% endfor %}
+                    {% if account.attribute_tag %}
+                        {% for tag in account.attribute_tag %}
+                            <dd class="tag">{{ tag }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
                 </dl>
             {% endif %}
         {% endif %}

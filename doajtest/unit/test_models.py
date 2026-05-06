@@ -585,13 +585,15 @@ class TestModels(DoajTestCase):
     def test_09_account(self):
         # Make a new account
         acc = models.Account.make_account(email='user@example.com', username='mrs_user',
-                                          roles=['api', 'associate_editor'])
+                                          roles=['api', 'associate_editor'],
+                                          attributes={constants.USER_ATTR__WORKFLOW: ["triage"]})
 
         # Check the new user has the right roles
         assert acc.has_role('api')
         assert acc.has_role('associate_editor')
         assert not acc.has_role('admin')
         assert acc.marketing_consent is None
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "triage")
 
         # check the api key has been generated
         assert acc.api_key is not None
@@ -623,6 +625,58 @@ class TestModels(DoajTestCase):
         acc2.generate_api_key()
         acc2.save()
         assert acc2.api_key is not None
+
+    def test_09a_account_attributes(self):
+        acc = models.Account.make_account(email='user@example.com', username='mrs_user',
+                                          roles=['api', 'associate_editor'],
+                                          attributes={constants.USER_ATTR__WORKFLOW: ["triage"]})
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "triage")
+
+        acc.add_attribute(constants.USER_ATTR__WORKFLOW, "quality")
+        acc.add_attribute(constants.USER_ATTR__LANGUAGE, "FR")
+        acc.add_attribute(constants.USER_ATTR__LANGUAGE, "EN")
+        acc.add_attribute(constants.USER_ATTR__COUNTRY, "DE")
+        acc.add_attribute(constants.USER_ATTR__COUNTRY, "ES")
+        acc.add_attribute(constants.USER_ATTR__TAG, "test")
+
+        raw = acc.attributes
+        assert raw.get(constants.USER_ATTR__WORKFLOW) == ["triage", "quality"]
+        assert raw.get(constants.USER_ATTR__LANGUAGE) == ["FR", "EN"]
+        assert raw.get(constants.USER_ATTR__COUNTRY) == ["DE", "ES"]
+        assert raw.get(constants.USER_ATTR__TAG) == ["test"]
+
+        assert acc.attribute_workflow == ["triage", "quality"]
+        assert acc.attribute_language == ["FR", "EN"]
+        assert acc.attribute_country == ["DE", "ES"]
+        assert acc.attribute_tag == ["test"]
+
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "triage")
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "quality")
+        assert acc.has_attribute(constants.USER_ATTR__LANGUAGE, "FR")
+        assert acc.has_attribute(constants.USER_ATTR__LANGUAGE, "EN")
+        assert acc.has_attribute(constants.USER_ATTR__COUNTRY, "DE")
+        assert acc.has_attribute(constants.USER_ATTR__COUNTRY, "ES")
+        assert acc.has_attribute(constants.USER_ATTR__TAG, "test")
+
+        assert acc.get_attributes(constants.USER_ATTR__WORKFLOW) == ["triage", "quality"]
+        assert acc.get_attributes(constants.USER_ATTR__LANGUAGE) == ["FR", "EN"]
+        assert acc.get_attributes(constants.USER_ATTR__COUNTRY) == ["DE", "ES"]
+        assert acc.get_attributes(constants.USER_ATTR__TAG) == ["test"]
+
+        del acc.attributes
+        raw = acc.attributes
+        assert raw is None
+
+        # try some error cases
+        with self.assertRaises(ValueError):
+            acc.add_attribute("whatever", "something")
+
+        with self.assertRaises(ValueError):
+            acc.has_attribute("whatever", "something")
+
+        with self.assertRaises(ValueError):
+            acc.get_attributes("whatever")
+
 
     def test_10_block(self):
         a = models.Article()

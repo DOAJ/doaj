@@ -19,7 +19,7 @@ class Account(DomainObject, UserMixin):
         super(Account, self).__init__(**kwargs)
 
     @classmethod
-    def make_account(cls, email, username=None, name=None, roles=None, associated_journal_ids=None):
+    def make_account(cls, email, username=None, name=None, roles=None, associated_journal_ids=None, attributes:dict[str, list]=None):
         if roles is None:
             roles = []
 
@@ -39,8 +39,16 @@ class Account(DomainObject, UserMixin):
 
         for role in roles:
             a.add_role(role)
+
         for jid in associated_journal_ids:
             a.add_journal(jid)
+
+        if attributes is not None:
+            for attr_type, value in attributes.items():
+                if not isinstance(value, list):
+                    value = [value]
+                for v in value:
+                    a.add_attribute(attr_type, v)
 
         # New accounts don't have passwords set - create a reset token for password.
         reset_token = uuid.uuid4().hex
