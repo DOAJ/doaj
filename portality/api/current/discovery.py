@@ -61,10 +61,17 @@ def query_substitute(query, substitutions):
     return ":".join(subs)
 
 
+def has_prefix_wildcard(query):
+    """
+    Check if the query contains a prefix wildcard at the start of a search term. For example: *test, ?est,
+    """
+    rx = r'(?:^|[\s:(])[\*\?]'
+    return bool(re.search(rx, query))
+
+
 def allowed(query, wildcards=False, fuzzy=False):
     if not wildcards:
-        rx = "(.+[^\\\\][\?\*]+.*)"
-        if re.search(rx, query):
+        if has_prefix_wildcard(query):
             return False
 
     if not fuzzy:
@@ -150,7 +157,7 @@ class DiscoveryApi(Api):
     def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs, bulk):
         if q is not None:
             if not allowed(q):
-                raise DiscoveryException("Query contains disallowed Lucene features")
+                raise DiscoveryException("Query contains disallowed Lucene features. Wildcards (*, ?) at the start of search terms are not allowed.")
 
             q = query_substitute(q, search_subs)
             q = escape(q)

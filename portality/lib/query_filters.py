@@ -26,6 +26,57 @@ def public_query_validator(q):
     return True
 
 
+def prefix_wildcard_validator(q):
+    """Reject queries containing wildcard at the start of a search term"""
+    import re
+    raw = q.as_dict()
+    query_string = _extract_query_string(raw)
+    if query_string is not None:
+        rx = r'(?:^|[\s:(])[\*\?]'
+        if re.search(rx, query_string):
+            return False
+    return True
+
+
+def _extract_query_string(raw):
+    """Extract the query string from a raw query dict, if present"""
+    if not isinstance(raw, dict):
+        return None
+
+    # Check for query_string at the top level query
+    query = raw.get("query", {})
+
+    # Direct query_string
+    qs = query.get("query_string", {})
+    if qs and "query" in qs:
+        return qs["query"]
+
+    # Inside bool.must
+    bool_q = query.get("bool", {})
+    for clause_type in ["must", "should", "filter"]:
+        clauses = bool_q.get(clause_type, [])
+        if isinstance(clauses, dict):
+            clauses = [clauses]
+        for clause in clauses:
+            if isinstance(clause, dict):
+                qs = clause.get("query_string", {})
+                if qs and "query" in qs:
+                    return qs["query"]
+                # Check nested bool
+                nested_bool = clause.get("bool", {})
+                for nested_type in ["must", "should", "filter"]:
+                    nested_clauses = nested_bool.get(nested_type, [])
+                    if isinstance(nested_clauses, dict):
+                        nested_clauses = [nested_clauses]
+                    for nc in nested_clauses:
+                        if isinstance(nc, dict):
+                            qs = nc.get("query_string", {})
+                            if qs and "query" in qs:
+                                return qs["query"]
+
+    return None
+
+
 def non_public_fields_validator(q):
     exclude_fields = app.config.get("PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS", {})
     context = q.get_field_context()

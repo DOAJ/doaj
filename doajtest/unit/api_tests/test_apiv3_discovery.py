@@ -88,9 +88,12 @@ class TestAPIDiscovery(DoajTestCase):
             assert res.data.get("pageSize") == 100
             assert res.data.get("query") == "Test"
 
-            # 6. Failed attempt at wildcard search
+            # 6. Failed attempt at prefix wildcard search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search("journal", None, "Te*t", 1, 10)
+                res = DiscoveryApi.search("journal", None, "*Test", 1, 10)
+
+            # 6b. Suffix wildcard search should be allowed
+            res = DiscoveryApi.search("journal", None, "Te*t", 1, 10)
 
             # 7. Failed attempt at fuzzy search
             with self.assertRaises(DiscoveryException):
@@ -192,9 +195,12 @@ class TestAPIDiscovery(DoajTestCase):
             assert res.data.get("pageSize") == 100
             assert res.data.get("query") == "Test"
 
-            # 6. Failed attempt at wildcard search
+            # 6. Failed attempt at prefix wildcard search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search("article", None, "Te*t", 1, 10)
+                res = DiscoveryApi.search("article", None, "*Test", 1, 10)
+
+            # 6b. Suffix wildcard search should be allowed
+            res = DiscoveryApi.search("article", None, "Te*t", 1, 10)
 
             # 7. Failed attempt at fuzzy search
             with self.assertRaises(DiscoveryException):
@@ -313,9 +319,12 @@ class TestAPIDiscovery(DoajTestCase):
             assert res.data.get("pageSize") == 100
             assert res.data.get("query") == "Test"
 
-            # 6. Failed attempt at wildcard search
+            # 6. Failed attempt at prefix wildcard search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search("application", acc, "Te*t", 1, 10)
+                res = DiscoveryApi.search("application", acc, "*Test", 1, 10)
+
+            # 6b. Suffix wildcard search should be allowed
+            res = DiscoveryApi.search("application", acc, "Te*t", 1, 10)
 
             # 7. Failed attempt at fuzzy search
             with self.assertRaises(DiscoveryException):

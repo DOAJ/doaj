@@ -3282,9 +3282,37 @@ $.extend(true, doaj, {
                 this.component.setSearchText(text);
             };
 
+            this.hasPrefixWildcard = function (query) {
+                if (!query) return false;
+                return /(?:^|[\s:(])[*?]/.test(query);
+            };
+
+            this.showPrefixWildcardWarning = function () {
+                var warningClass = edges.css_classes(this.namespace, "prefix-wildcard-warning", this);
+                var warningSelector = edges.css_class_selector(this.namespace, "prefix-wildcard-warning", this);
+                // remove any existing warning
+                this.component.jq(warningSelector).remove();
+                // add warning message
+                var warning = '<div class="' + warningClass + ' alert alert-warning" role="alert">' +
+                    'Prefix wildcard searches (e.g. <code>*term</code> or <code>?term</code>) are not allowed as they are computationally expensive. ' +
+                    'Please remove the wildcard from the beginning of your search term.' +
+                    '</div>';
+                this.component.context.prepend(warning);
+            };
+
+            this.clearPrefixWildcardWarning = function () {
+                var warningSelector = edges.css_class_selector(this.namespace, "prefix-wildcard-warning", this);
+                this.component.jq(warningSelector).remove();
+            };
+
             this.setSearchText = function (element) {
-                this.focusSearchBox = true;
                 var val = this.component.jq(element).val();
+                if (this.hasPrefixWildcard(val)) {
+                    this.showPrefixWildcardWarning();
+                    return;
+                }
+                this.clearPrefixWildcardWarning();
+                this.focusSearchBox = true;
                 this.component.setSearchText(val, false);
 
                 var searchFieldIdSelector = edges.css_id_selector(this.namespace, "fields", this);
@@ -3293,12 +3321,18 @@ $.extend(true, doaj, {
             };
 
             this.clearSearch = function (element) {
+                this.clearPrefixWildcardWarning();
                 this.component.clearSearch();
             };
 
             this.doSearch = function (element) {
                 var textId = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textId).val();
+                if (this.hasPrefixWildcard(text)) {
+                    this.showPrefixWildcardWarning();
+                    return;
+                }
+                this.clearPrefixWildcardWarning();
                 this.component.setSearchText(text);
             };
         },
