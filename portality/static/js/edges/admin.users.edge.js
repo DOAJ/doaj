@@ -19,151 +19,49 @@ doaj.userSearch = {
                     }]
                 }
             }
+        };
+        return '<br/><a class="button" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
+    },
 
-            var current_domain = document.location.host;
-            var current_scheme = window.location.protocol;
+    init : function(params) {
+        if (!params) { params = {} }
 
-            var selector = params.selector || "#users";
-            var search_url = current_scheme + "//" + current_domain + doaj.userSearchConfig.userSearchPath;
+        var selector = params.selector || "#users";
 
-            var countFormat = edges.numFormat({
-                thousandsSeparator: ","
-            });
-
-            var components = [
-                doaj.components.searchingNotification(),
-
-                // facets
-                edges.newRefiningANDTermSelector({
-                    id: "role",
-                    category: "facet",
-                    field: "role.exact",
-                    display: "Role",
-                    deactivateThreshold: 1,
-                    size: 20,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: true,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-
-                edges.newDateHistogramSelector({
-                    id: "created_date",
-                    category: "facet",
-                    field : "created_date",
-                    interval: "year",
-                    display: "Created Date",
-                    displayFormatter : function(val) {
-                        return (new Date(parseInt(val))).getUTCFullYear();
-                    },
-                    sortFunction : function(values) {
-                        values.reverse();
-                        return values;
-                    },
-                    renderer: edges.bs3.newDateHistogramSelectorRenderer({
-                        countFormat: countFormat,
-                        hideInactive: true,
-                        open: true,
-                        togglable: true
-                    })
-                }),
-
-                // configure the search controller
-                edges.newFullSearchController({
-                    id: "search-controller",
-                    category: "controller",
-                    sortOptions: [
-                        {'display':'Created Date','field':'created_date'},
-                        {'display':'Last Modified Date','field':'last_updated'},
-                        {'display':'User ID','field':'id.exact'},
-                        {'display':'Email address','field':'email.exact'}
-                    ],
-                    fieldOptions: [
-                        {'display':'User ID','field':'id'},
-                        {'display':'Email address','field':'email'}
-                    ],
-                    defaultOperator: "AND",
-                    renderer: doaj.renderers.newFullSearchControllerRenderer({
-                        freetextSubmitDelay: -1,
-                        searchButton: true,
-                        searchPlaceholder: "Search Users"
-                    })
-                }),
-
-                // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
-                edges.newPager({
-                    id: "top-pager",
-                    category: "top-pager",
-                    renderer: edges.bs3.newPagerRenderer({
-                        sizeOptions: [25, 50, 100],
-                        numberFormat: countFormat,
-                        scroll: false
-                    })
-                }),
-                edges.newPager({
-                    id: "bottom-pager",
-                    category: "bottom-pager",
-                    renderer: edges.bs3.newPagerRenderer({
-                        sizeOptions: [25, 50, 100],
-                        numberFormat: countFormat,
-                        scroll: false
-                    })
-                }),
-
-                // results display
-                edges.newResultsDisplay({
-                    id: "results",
-                    category: "results",
-                    renderer: edges.bs3.newResultsFieldsByRowRenderer({
-                        rowDisplay : [
-                            [
-                                {
-                                    "pre" : "<h3>",
-                                    "field" : "id",
-                                    "post" : "</h3>"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": '<a href="mailto:',
-                                    "field": "email",
-                                    "post": '">'
-                                },
-                                {
-                                    "field": "email",
-                                    "post": '</a>'
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Role(s)</strong>: <em>",
-                                    "field" : "role",
-                                    "post" : "</em>"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Account Created</strong>: ",
-                                    "field" : "created_date"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Account Last Modified</strong>: ",
-                                    "field": "last_updated"
-                                }
-                            ],
-                            [
-                                {
-                                    "valueFunction" : doaj.userSearch.userJournalsLink
-                                },
-                                {
-                                    "valueFunction": doaj.userSearch.editUserLink
-                                }
-                            ]
+        var e = doaj.components.makeSearch({
+            selector: selector,
+            searchUrl: doaj.buildUrl(doaj.userSearchConfig.userSearchPath),
+            facets: [
+                doaj.components.refiningAndFacet({id: "role", field: "role.exact", display: "Role", deactivateThreshold: 1, open: true}),
+                doaj.components.yearDateHistogramFacet({id: "created_date", field: "created_date", display: "Created Date", open: true, togglable: true})
+            ],
+            sortOptions: [
+                {'display': 'Created Date', 'field': 'created_date'},
+                {'display': 'Last Modified Date', 'field': 'last_updated'},
+                {'display': 'User ID', 'field': 'id.exact'},
+                {'display': 'Email address', 'field': 'email.exact'}
+            ],
+            fieldOptions: [
+                {'display': 'User ID', 'field': 'id'},
+                {'display': 'Email address', 'field': 'email'}
+            ],
+            searchPlaceholder: "Search Users",
+            resultsDisplay: edges.newResultsDisplay({
+                id: "results",
+                category: "results",
+                renderer: edges.bs3.newResultsFieldsByRowRenderer({
+                    rowDisplay: [
+                        [{pre: "<h3>", field: "id", post: "</h3>"}],
+                        [
+                            {pre: '<a href="mailto:', field: "email", post: '">'},
+                            {field: "email", post: '</a>'}
+                        ],
+                        [{pre: "<strong>Role(s)</strong>: <em>", field: "role", post: "</em>"}],
+                        [{pre: "<strong>Account Created</strong>: ", field: "created_date"}],
+                        [{pre: "<strong>Account Last Modified</strong>: ", field: "last_updated"}],
+                        [
+                            {valueFunction: doaj.userSearch.userJournalsLink},
+                            {valueFunction: doaj.userSearch.editUserLink}
                         ]
                     ]
                 })
