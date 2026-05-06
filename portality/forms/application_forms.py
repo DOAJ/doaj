@@ -207,7 +207,7 @@ class FieldDefinitions:
         "input": "text",
         "optional": True,
         "help": {
-            "placeholder": "Ma revue"
+            "placeholder": "Mi revista"
         },
         "validate": [
             "no_script_tag"  # ~~^-> NoScriptTag:FormValidator
@@ -470,7 +470,7 @@ class FieldDefinitions:
         "default": "",
         "options_fn": "iso_language_list",
         "repeatable": {
-            "label": "Language",
+            "label": lazy_gettext("Language"),
             "minimum": 1,
             "initial": 5
         },
@@ -2903,18 +2903,22 @@ class RequiredBuilder:
 
 class IsURLBuilder:
     # ~~->$ IsURL:FormValidator~~
-    msg = "<p><small>" + lazy_gettext("Please enter a valid URL. It should start with http or https") + "</p></small>"
+
+    @staticmethod
+    def _get_msg():
+        text = lazy_gettext("Please enter a valid URL. It should start with http or https")
+        return f"<p><small>{text}</small></p>"
 
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["type"] = "url"
         html_attrs["pattern"] = regex.HTTP_URL
         html_attrs["data-parsley-pattern"] = regex.HTTP_URL
-        html_attrs["data-parsley-pattern-message"] = IsURLBuilder.msg
+        html_attrs["data-parsley-pattern-message"] = IsURLBuilder._get_msg()
 
     @staticmethod
     def wtforms(field, settings):
-        return HTTPURL(message=settings.get('message', IsURLBuilder.msg))
+        return HTTPURL(message=settings.get('message', IsURLBuilder._get_msg()))
 
 
 class IntRangeBuilder:

@@ -19,7 +19,7 @@ class Account(DomainObject, UserMixin):
         super(Account, self).__init__(**kwargs)
 
     @classmethod
-    def make_account(cls, email, username=None, name=None, roles=None, associated_journal_ids=None):
+    def make_account(cls, email, username=None, name=None, roles=None, associated_journal_ids=None, attributes:dict[str, list]=None):
         if roles is None:
             roles = []
 
@@ -39,8 +39,16 @@ class Account(DomainObject, UserMixin):
 
         for role in roles:
             a.add_role(role)
+
         for jid in associated_journal_ids:
             a.add_journal(jid)
+
+        if attributes is not None:
+            for attr_type, value in attributes.items():
+                if not isinstance(value, list):
+                    value = [value]
+                for v in value:
+                    a.add_attribute(attr_type, v)
 
         # New accounts don't have passwords set - create a reset token for password.
         reset_token = uuid.uuid4().hex
@@ -219,6 +227,56 @@ class Account(DomainObject, UserMixin):
             role = [role]
         self.data["role"] = role
 
+    ###############################
+    ## user attributes
+
+    @property
+    def attributes(self):
+        return self.data.get("attributes")
+
+    @attributes.deleter
+    def attributes(self):
+        if "attributes" in self.data:
+            del self.data["attributes"]
+
+    @property
+    def attribute_workflow(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__WORKFLOW, [])
+
+    @property
+    def attribute_language(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__LANGUAGE, [])
+
+    @property
+    def attribute_country(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__COUNTRY, [])
+
+    @property
+    def attribute_tag(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__TAG, [])
+
+    def add_attribute(self, attribute_type, value):
+        if attribute_type not in constants.USER_ATTR__ALL:
+            raise ValueError("Unknown user attribute type: {}".format(attribute_type))
+        if "attributes" not in self.data:
+            self.data["attributes"] = {}
+        if attribute_type not in self.data["attributes"]:
+            self.data["attributes"][attribute_type] = []
+        if value not in self.data["attributes"][attribute_type]:
+            self.data["attributes"][attribute_type].append(value)
+
+    def has_attribute(self, attribute_type, value):
+        if attribute_type not in constants.USER_ATTR__ALL:
+            raise ValueError("Unknown user attribute type: {}".format(attribute_type))
+        return value in self.data.get("attributes", {}).get(attribute_type, [])
+
+    def get_attributes(self, attribute_type):
+        if attribute_type not in constants.USER_ATTR__ALL:
+            raise ValueError("Unknown user attribute type: {}".format(attribute_type))
+        return self.data.get("attributes", {}).get(attribute_type, [])
+
+    #######################
+
     def prep(self):
         self.data['last_updated'] = dates.now_str()
 
@@ -273,3 +331,32 @@ class Account(DomainObject, UserMixin):
         # TODO: in the long run this needs to move out to the user's email preferences but for now it
         # is here to replicate the behaviour in the code it replaces
         return app.config.get("ENABLE_PUBLISHER_EMAIL", False)
+
+    @classmethod
+    def find_by_attributes(cls, attribute_types_and_values:list[tuple[str, str]], limit=1000):
+        q = AttributesQuery(attribute_types_and_values, limit)
+        return cls.object_query(q.query())
+
+
+class AttributesQuery:
+    def __init__(self, attribute_types_and_values, page_size):
+        self._tup = attribute_types_and_values
+        self._size = page_size
+
+    def query(self):
+        musts = []
+        for t, v in self._tup.items():
+            if not isinstance(v, list):
+                v = [v]
+            f = {"terms": {f"attribute.{t}.exact": v}}
+            musts.append(f)
+
+        q = {
+            "query": {
+                "bool": {
+                    "must": musts
+                }
+            },
+            "size": self._size
+        }
+        return q

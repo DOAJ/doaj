@@ -1,16 +1,19 @@
 import uuid, json
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
+from flask import Blueprint, request, url_for, flash, redirect, make_response, g
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form
+from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form, SelectMultipleField
 
 from portality import util
 from portality import constants
 from portality.core import app
-from portality.decorators import ssl_required, write_required
+from portality.datasets import language_options, country_options
+from portality.decorators import ssl_required, write_required, restrict_to_role
+from portality.forms.application_forms import MultiSelectBuilder, iso_language_list
 from portality.models import Account, Event
-from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
+from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged, \
+    CurrentISOLanguage
 from portality.bll import DOAJ
 from portality.ui.messages import Messages
 
@@ -23,6 +26,20 @@ def pull_lang(endpoint, values):
     # Remove 'lang' so it is not passed to the view function
     if values:
         lang = values.pop('lang', None)
+        # store the active language on the flask.g so url_defaults can access it
+        g.lang = lang
+
+
+@blueprint.url_defaults
+def add_lang(endpoint, values):
+    """Ensure that url_for() populates the 'lang' value for this blueprint when generating URLs.
+
+    If a language has been set on g (by pull_lang) then default the 'lang' for generated URLs
+    to that value so callers don't need to explicitly pass it.
+    """
+    lang = getattr(g, 'lang', None)
+    if lang:
+        values.setdefault('lang', lang)
 
 @blueprint.route('/')
 @login_required
@@ -32,6 +49,31 @@ def index():
         abort(401)
     return render_template(templates.USER_LIST)
 
+class RedirectForm(Form):
+    next = HiddenField()
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+        if not self.next.data:
+            self.next.data = get_redirect_target() or ''
+
+    def redirect(self, endpoint='index', **values):
+        if self.next.data == util.is_safe_url(self.next.data):
+            return redirect(self.next.data)
+        target = get_redirect_target()
+        return redirect(target or url_for(endpoint, **values))
+
+
+class LoginForm(RedirectForm):
+    user = StringField('Email address or username', [validators.DataRequired()])
+    password = PasswordField('Password', [validators.DataRequired()])
+
+class ResetForm(Form):
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
 
 class UserEditForm(Form):
 
@@ -48,10 +90,47 @@ class UserEditForm(Form):
     ])
     email_confirm = StringField('Confirm email address')
     roles = StringField('User roles')
+    attribute_workflow = SelectMultipleField(
+        "Workflow Participation",
+        choices=[(x,x) for x in constants.EWF__ALL_STAGES]
+    )
+    attribute_language = SelectMultipleField(
+        'Can Review Languages',
+        [
+            CurrentISOLanguage()
+        ],
+        choices=language_options
+    )
+    attribute_country = SelectMultipleField(
+        'Can Review Applications from Countries',
+        choices=country_options
+    )
+    attribute_tag = StringField('Other User Attributes')
     password_change = PasswordField('Change password', [
         validators.EqualTo('password_confirm', message='Passwords must match'),
     ])
     password_confirm = PasswordField('Confirm password')
+
+class RegisterForm(RedirectForm):
+    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
+    name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
+    sender_email = StringField('Email address', [
+        validators.DataRequired(),
+        validators.Length(min=3, max=254),
+        validators.Email(message='Must be a valid email address'),
+        EmailAvailable(message="That email address is already in use. Please <a href='/account/forgot'>reset your password</a>. If you still cannot login, <a href='/contact'>contact us</a>.")
+    ])
+    roles = StringField('Roles')
+    # These are honeypot (bot-trap) fields
+    email = StringField('email')
+    hptimer = DecimalField('hptimer', [validators.Optional()])
+
+    def is_bot(self):
+        """
+        Checks honeypot fields and determines whether the form was submitted by a bot
+        :return: True, if bot suspected; False, if human
+        """
+        return self.email.data != "" or self.hptimer.data is None or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
 
 
 @blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
@@ -106,10 +185,29 @@ def username(username):
         if 'password_change' in newdata and len(newdata['password_change']) > 0 and not newdata['password_change'].startswith('sha1'):
             acc.set_password(newdata['password_change'])
 
-        # only super users can re-write roles
-        if "roles" in newdata and current_user.is_super:
-            new_roles = [r.strip() for r in newdata.get("roles").split(",")]
-            acc.set_role(new_roles)
+        # only super users can re-write roles and attributes
+        if current_user.is_super:
+            if "roles" in newdata:
+                new_roles = [r.strip() for r in newdata.get("roles").split(",")]
+                acc.set_role(new_roles)
+
+            # remove old attributes
+            del acc.attributes
+
+            # apply new attributes
+            if hasattr(form, "attribute_workflow") and form.attribute_workflow.data:
+                for aw in form.attribute_workflow.data:
+                    acc.add_attribute(constants.USER_ATTR__WORKFLOW, aw)
+            if hasattr(form, "attribute_language") and form.attribute_language.data:
+                for al in form.attribute_language.data:
+                    acc.add_attribute(constants.USER_ATTR__LANGUAGE, al)
+            if hasattr(form, "attribute_country") and form.attribute_country.data:
+                for ac in form.attribute_country.data:
+                    acc.add_attribute(constants.USER_ATTR__COUNTRY, ac)
+            if "attribute_tag" in newdata:
+                for at in newdata["attribute_tag"].split(","):
+                    acc.add_attribute(constants.USER_ATTR__TAG, at.strip())
+
 
         if "marketing_consent" in newdata:
             acc.set_marketing_consent(newdata["marketing_consent"] == "true")
@@ -171,27 +269,6 @@ def get_redirect_target(form=None, acc=None):
             return url_for(dest)
 
     return url_for(app.config.get("DEFAULT_LOGIN_DESTINATION"))
-
-
-class RedirectForm(Form):
-    next = HiddenField()
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        if not self.next.data:
-            self.next.data = get_redirect_target() or ''
-
-    def redirect(self, endpoint='index', **values):
-        if self.next.data == util.is_safe_url(self.next.data):
-            return redirect(self.next.data)
-        target = get_redirect_target()
-        return redirect(target or url_for(endpoint, **values))
-
-
-class LoginForm(RedirectForm):
-    user = StringField('Email address or username', [validators.DataRequired()])
-    password = PasswordField('Password', [validators.DataRequired()])
-
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
@@ -270,14 +347,6 @@ def forgot():
     return render_template(templates.FORGOT_PASSWORD)
 
 
-class ResetForm(Form):
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
-
-
 @blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
 @ssl_required
 @write_required()
@@ -315,28 +384,6 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect('/')
 
-
-class RegisterForm(RedirectForm):
-    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
-    name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
-    sender_email = StringField('Email address', [
-        validators.DataRequired(),
-        validators.Length(min=3, max=254),
-        validators.Email(message='Must be a valid email address'),
-        EmailAvailable(message="That email address is already in use. Please <a href='/account/forgot'>reset your password</a>. If you still cannot login, <a href='/contact'>contact us</a>.")
-    ])
-    roles = StringField('Roles')
-    # These are honeypot (bot-trap) fields
-    email = StringField('email')
-    hptimer = DecimalField('hptimer', [validators.Optional()])
-
-    def is_bot(self):
-        """
-        Checks honeypot fields and determines whether the form was submitted by a bot
-        :return: True, if bot suspected; False, if human
-        """
-        return self.email.data != "" or self.hptimer.data is None or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
-
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
 @write_required()
@@ -356,8 +403,12 @@ def register(template=templates.REGISTER):
             return render_template(template, form=form)
 
         if form.validate():
-            account = Account.make_account(email=form.sender_email.data, username=form.identifier.data, name=form.name.data,
-                                           roles=[r.strip() for r in form.roles.data.split(',')])
+            account = Account.make_account(email=form.sender_email.data, username=form.identifier.data, name=form.name.data)
+            if current_user.is_authenticated and current_user.has_role(constants.ROLE_ADMIN):
+                roles = [r.strip() for r in form.roles.data.split(',')]
+                for r in roles:
+                    account.add_role(r)
+
             account.save()
 
             event_svc = DOAJ.eventsService()
@@ -383,5 +434,8 @@ def register(template=templates.REGISTER):
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
 @write_required()
+@login_required
 def create():
+    if not current_user.has_role(constants.ROLE_ADMIN):
+        abort(404)
     return register(template=templates.CREATE_USER)
