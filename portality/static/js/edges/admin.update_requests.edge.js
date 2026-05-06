@@ -124,6 +124,7 @@ doaj.adminApplicationsSearch = {
                     'index.flag_assignees.exact'
                 ]
             }),
+            sizeOptions: [10, 25, 50, 100],
             openingQuery: es.newQuery({
                 sort: {"field": "admin.date_applied", "order": "asc"}
             }),

@@ -631,7 +631,7 @@ doaj.components = {
 
             var sortOptions = edges.getParam(params.sortOptions, [{"display": "Date Created", "field": "created_date"}]);
             var fieldOptions = edges.getParam(params.fieldOptions, []);
-            var sizeOptions = edges.getParam(params.sizeOptions, [10, 25, 50, 100]);
+            var sizeOptions = edges.getParam(params.sizeOptions, [25, 50, 100]);
             var fieldDisplays = edges.getParam(params.fieldDisplays, {});
             var rangeFunctions = edges.getParam(params.rangeFunctions, {});
             var valueMaps = edges.getParam(params.valueMaps, {});
