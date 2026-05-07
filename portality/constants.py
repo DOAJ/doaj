@@ -112,7 +112,6 @@ ROLE_PREMIUM_CSV = "premium_csv"
 
 # TODO add ultra_bulk_delete and refactor view to use constants
 ROLE_ADMIN_REPORT_WITH_NOTES = "ultra_admin_reports_with_notes"  # MUST start with ultra_ so that superusers don't gain
-ROLE_TRIAGE = "triage"
 
 USER_ATTR__WORKFLOW = "workflow"
 USER_ATTR__LANGUAGE = "language"

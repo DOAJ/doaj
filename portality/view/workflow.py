@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 
 from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response
 from flask_login import login_required, current_user
@@ -32,55 +33,46 @@ def index():
                            rejected=rejected,
                            admin_page=True)
 
+def _apply_event(wfc_id, event_class, onward_route, event_args:dict=None):
+    if wfc_id is None:
+        abort(400)
+
+    args = {}
+    if event_args is not None:
+        args = deepcopy(event_args)
+    args["actor"] = current_user
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc_id, event_class(**args))
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(400)
+
+    if onward_route is not None:
+        url = url_for(onward_route)
+        return redirect(url)
+
+    resp = make_response(json.dumps({"new_state": new_state.__class__.__name__}))
+    resp.mimetype = "application/json"
+    return resp
+
 @blueprint.route('/claim', methods=['POST'])
 @login_required
 @ssl_required
 def claim():
     wfc_id = request.form.get("workflow_control")
-    if wfc_id is None:
-        abort(400)
-
-    svc = DOAJ.workflowService()
-    try:
-        new_state = svc.apply_event(wfc_id, Claim(current_user))
-    except AuthoriseException:
-        abort(401)
-    except ValueError:
-        abort(404)
-
     onward = request.form.get("onward")
-    if onward is not None:
-        url = url_for(onward)
-        return redirect(url)
-
-    resp = make_response(json.dumps({"status": "success"}))
-    resp.mimetype = "application/json"
-    return resp
+    return _apply_event(wfc_id, Claim, onward)
 
 @blueprint.route("/unclaim", methods=["POST"])
 @login_required
 @ssl_required
 def unclaim():
     wfc_id = request.form.get("workflow_control")
-    if wfc_id is None:
-        abort(400)
-
-    svc = DOAJ.workflowService()
-    try:
-        new_state = svc.apply_event(wfc_id, Unclaim(current_user))
-    except AuthoriseException:
-        abort(401)
-    except ValueError:
-        abort(404)
-
     onward = request.form.get("onward")
-    if onward is not None:
-        url = url_for(onward)
-        return redirect(url)
-
-    resp = make_response(json.dumps({"status": "success"}))
-    resp.mimetype = "application/json"
-    return resp
+    return _apply_event(wfc_id, Unclaim, onward)
 
 @blueprint.route("/assign", methods=["POST"])
 @login_required
@@ -99,53 +91,19 @@ def reassign():
 @ssl_required
 def unassign():
     wfc_id = request.form.get("workflow_control")
-    if wfc_id is None:
-        abort(400)
-
-    svc = DOAJ.workflowService()
-    try:
-        new_state = svc.apply_event(wfc_id, Unassign(current_user))
-    except AuthoriseException:
-        abort(401)
-    except ValueError:
-        abort(404)
-
     onward = request.form.get("onward")
-    if onward is not None:
-        url = url_for(onward)
-        return redirect(url)
-
-    resp = make_response(json.dumps({"status": "success"}))
-    resp.mimetype = "application/json"
-    return resp
+    return _apply_event(wfc_id, Unassign, onward)
 
 @blueprint.route("/fail", methods=["POST"])
 @login_required
 @ssl_required
 def fail():
     wfc_id = request.form.get("workflow_control")
-    if wfc_id is None:
-        abort(400)
-
+    onward = request.form.get("onward")
     note = request.form.get("note")
     embargo = request.form.get("embargo_end")
 
-    svc = DOAJ.workflowService()
-    try:
-        new_state = svc.apply_event(wfc_id, Fail(current_user, note, embargo))
-    except AuthoriseException:
-        abort(401)
-    except ValueError:
-        abort(404)
-
-    onward = request.form.get("onward")
-    if onward is not None:
-        url = url_for(onward)
-        return redirect(url)
-
-    resp = make_response(json.dumps({"status": "success"}))
-    resp.mimetype = "application/json"
-    return resp
+    return _apply_event(wfc_id, Fail, onward, event_args={"note": note, "embargo_end": embargo})
 
 @blueprint.route("/minimal_review", methods=["POST"])
 @login_required

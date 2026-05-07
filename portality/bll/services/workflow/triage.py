@@ -6,7 +6,8 @@ from portality.bll.exceptions import AuthoriseException
 
 from portality.bll.services.workflow.core import WorkflowEvent, State, Claim, Assign, Unclaim, Reassign, Unassign, \
     Fail, ApplicationEdit, WorkflowAction
-from portality.models import Account, EditorGroup, WorkflowControl
+from portality.bll.services.workflow.rejected import Rejected
+from portality.models import Account, WorkflowControl
 
 ########################################
 # Triage module state definition values
@@ -19,6 +20,8 @@ MODULE_TRIAGE_STAGES = [
     MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
 ]
 
+LEGACY_EDITOR_GROUP = "Triage"
+
 ######################################
 ## Workflow events specific to Triage
 
@@ -27,20 +30,13 @@ class MinimalReview(WorkflowEvent): pass
 class RescindMinimalReview(WorkflowEvent): pass
 
 class Triaged(WorkflowEvent):
-    def __init__(self, actor:Union[str, Account],
-                 target_editor_group:Union[str, EditorGroup]=None,
-                 target_maned:Union[str, Account]=None):
+    def __init__(self, actor:Union[str, Account], label:str):
         super().__init__(actor)
-        self._editor_group = target_editor_group
-        self._maned = target_maned
+        self._label = label
 
     @property
-    def editor_group(self):
-        return self._editor_group
-
-    @property
-    def maned(self):
-        return self._maned
+    def label(self):
+        return self._label
 
 ######################################
 ## Triage Workflow States
@@ -51,6 +47,7 @@ class AwaitingTriage(State):
     reviewer = WorkflowControl.UNASSIGNED
 
     legacy_application_status = constants.APPLICATION_STATUS_PENDING
+    legacy_editor_group = LEGACY_EDITOR_GROUP
 
     events = [Claim, Assign]
 
@@ -62,143 +59,131 @@ class AwaitingTriage(State):
             else:
                 wf_control.stage = MODULE_TRIAGE_STAGE_IN_PROGRESS
 
-    def apply(self):
-        # this is just here to remind us we can override this
-        super().apply()
+    def exit(self, event:WorkflowEvent) -> State:
+        return self.dispatch_event(event, {
+            Claim: self.event_claim,
+            Assign: self.event_assign
+        })
 
-    def exit(self, event:WorkflowEvent):
-        if isinstance(event, Claim):
-            return self.event_claim(event)
-        elif isinstance(event, Assign):
-            return self.event_assign(event)
-        else:
-            raise ValueError(f"Unknown event '{event}' for state '{type(self).__name__}'")
+    def event_claim(self, event:Claim) -> State:
+        return self._assign_and_transition(event.actor, event.actor)
 
-    def event_claim(self, event:Claim):
+    def event_assign(self, event:Assign) -> State:
+        if not event.actor.has_role(constants.ROLE_ADMIN):
+            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
+        return self._assign_and_transition(event.actor, event.reviewer)
+
+    def _assign_and_transition(self, actor, reviewer) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
+        if not actor.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE):
+            raise AuthoriseException(reason=AuthoriseException.WRONG_ATTRIBUTE)
+
         wfc = self.workflow_control
+        wfc.reviewer_id = reviewer.id
 
-        if not event.actor.has_role(constants.ROLE_TRIAGE):
-            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
+        # legacy bindings
+        self.application.set_editor_group(self.legacy_editor_group)
+        self.application.set_editor(reviewer.id)
 
-        wfc.reviewer = event.actor_id
         if wfc.triage.has_minimal_review:
-            return TriageAssessmentMinimalReview.enter(event.actor, self._wf_control, self._application, self)
+            return self.transition(TriageAssessmentMinimalReview, actor)
         else:
-            return TriageAssessmentInProgress.enter(event.actor, self._wf_control, self._application, self)
+            return self.transition(TriageAssessmentInProgress, actor)
 
-    def event_assign(self, event:Assign):
+
+class TriageWorkingState(State):
+    def do(self, action:WorkflowAction) -> State:
+        if isinstance(action, ApplicationEdit):
+            return self.do_edit(action)
+        else:
+            raise ValueError(f"Unknown action '{action}' for state '{type(self).__name__}'")
+
+    def do_edit(self, action:ApplicationEdit) -> State:
+        raise NotImplementedError("do_edit must be implemented by subclasses of TriageWorkingState")
+
+    def event_unclaim(self, event:Unclaim) -> AwaitingTriage:
         wfc = self.workflow_control
-        # FIXME: needs to be resolved with feature vs role capability
-        if not (event.actor.has_role(constants.ROLE_TRIAGE) or event.actor.has_role(constants.ROLE_ADMIN)):
+        if wfc.reviewer_id != event.actor_id:
+            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
+
+        del wfc.reviewer_id
+
+        # legacy bindings
+        self.application.set_editor_group(self.legacy_editor_group)
+        self.application.remove_editor()
+
+        return self.transition(AwaitingTriage, event.actor)
+
+    def event_unassign(self, event:Unassign) -> AwaitingTriage:
+        wfc = self.workflow_control
+        if not event.actor.has_role(constants.ROLE_ADMIN):
             raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
-        if not event.reviewer.has_role(constants.ROLE_TRIAGE):
+
+        del wfc.reviewer_id
+
+        # legacy bindings
+        self.application.set_editor_group(self.legacy_editor_group)
+        self.application.remove_editor()
+
+        return self.transition(AwaitingTriage, event.actor)
+
+    def event_reassign(self, event:Reassign) -> "TriageWorkingState":
+        wfc = self.workflow_control
+        if not event.actor.has_role(constants.ROLE_ADMIN):
             raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
 
-        wfc.reviewer = event.reviewer_id
-        if wfc.triage.has_minimal_review:
-            return TriageAssessmentMinimalReview.enter(event.actor, self._wf_control, self._application, self)
-        else:
-            return TriageAssessmentInProgress.enter(event.actor, self._wf_control, self._application, self)
+        if not event.reviewer.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE):
+            raise AuthoriseException(reason=AuthoriseException.WRONG_ATTRIBUTE)
+
+        wfc.reviewer_id = event.reviewer_id
+
+        # legacy bindings
+        self.application.set_editor_group(self.legacy_editor_group)
+        self.application.set_editor(event.reviewer_id)
+
+        return self.enter(event.actor, self._wf_control, self._application, self)
+
+    def event_fail(self, event: Fail) -> "Rejected":
+        wfc = self.workflow_control
+        reviewer_permission = wfc.reviewer_id == event.actor_id and wfc.reviewer.has_attribute(
+            constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        if not reviewer_permission:
+            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
+
+        # remove the editor
+        del wfc.reviewer_id
+
+        # legacy bindings
+        self.application.remove_editor()
+        self.application.remove_editor_group()
+
+        appSvc = DOAJ.applicationService()
+        appSvc.reject_application(self.application, event.actor, note=event.note)
+
+        # TODO: not clear what to do with application embargoes, perhaps these are a new type?
+
+        from portality.bll.services.workflow.rejected import Rejected
+        return self.transition(Rejected, event.actor)
 
 
-class TriageAssessmentInProgress(State):
+class TriageAssessmentInProgress(TriageWorkingState):
     module = MODULE_TRIAGE
     stage = MODULE_TRIAGE_STAGE_IN_PROGRESS
     reviewer = WorkflowControl.ASSIGNED
+
+    legacy_application_status = constants.APPLICATION_STATUS_IN_PROGRESS
+    legacy_editor_group = LEGACY_EDITOR_GROUP
 
     events = [Unclaim, Reassign, Unassign, Fail, MinimalReview]
     actions = [ApplicationEdit]
 
     def apply(self):
-        # Ensure the workflow control object is in the right state
-        wf_control = self.workflow_control
-        if wf_control.module != self.module:
-            wf_control.module = self.module
+        super(TriageAssessmentInProgress, self).apply()
+        self.workflow_control.triage.has_minimal_review = False
 
-        if wf_control.stage != self.stage:
-            wf_control.stage = self.stage
-
-        if wf_control.reviewer is None:
-            raise ValueError("Reviewer must be set for TriageAssessmentInProgress state")
-
-        # back-compatibility for the original workflow
-        application = self.application
-
-        if application.application_status != constants.APPLICATION_STATUS_IN_PROGRESS:
-            application.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-
-        if application.editor != wf_control.reviewer:
-            application.set_editor(wf_control.reviewer)
-
-    def exit(self, event:WorkflowEvent):
-        if isinstance(event, Unclaim):
-            return self.event_unclaim(event)
-        elif isinstance(event, Reassign):
-            return self.event_reassign(event)
-        elif isinstance(event, Unassign):
-            return self.event_unassign(event)
-        elif isinstance(event, Fail):
-            return self.event_fail(event)
-        elif isinstance(event, MinimalReview):
-            return self.event_minimal_review(event)
-        else:
-            raise ValueError(f"Unknown event '{event}' for state '{type(self).__name__}'")
-
-    def do(self, action:WorkflowAction):
-        if isinstance(action, ApplicationEdit):
-            self.do_edit(action)
-        else:
-            raise ValueError(f"Unknown action '{action}' for state '{type(self).__name__}'")
-
-    def event_unclaim(self, event:Unclaim):
+    def do_edit(self, action:ApplicationEdit) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
         wfc = self.workflow_control
-        if wfc.reviewer != event.actor_id:
-            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
-
-        del wfc.reviewer
-        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_reassign(self, event:Reassign):
-        wfc = self.workflow_control
-        if not event.actor.has_role(constants.ROLE_ADMIN):
-            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
-
-        wfc.reviewer = event.reviewer_id
-        return self.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_unassign(self, event:Unassign):
-        wfc = self.workflow_control
-        if not event.actor.has_role(constants.ROLE_ADMIN):
-            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
-
-        del wfc.reviewer
-        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_fail(self, event:Fail):
-        wfc = self.workflow_control
-        if wfc.reviewer != event.actor_id:
-            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
-
-        appSvc = DOAJ.applicationService()
-        appSvc.reject_application(self.application, event.actor, note=event.note)
-
-        del wfc.reviewer
-
-        # TODO: not clear what to do with application embargoes, perhaps these are a new type?
-        from portality.bll.services.workflow.rejected import Rejected
-        return Rejected.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_minimal_review(self, event: MinimalReview):
-        wfc = self.workflow_control
-        if wfc.reviewer != event.actor_id:
-            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
-
-        wfc.triage.has_minimal_review = True
-        return TriageAssessmentMinimalReview.enter(event.actor, self._wf_control, self._application, self)
-
-    def do_edit(self, action:ApplicationEdit):
-        wfc = self.workflow_control
-        if wfc.reviewer != action.actor_id:
+        reviewer_permission = wfc.reviewer_id == action.actor_id and wfc.reviewer.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        if not (reviewer_permission or action.actor.has_role(constants.ROLE_ADMIN)):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         # FIXME: where does has_minimal_review get calculated?
@@ -207,145 +192,47 @@ class TriageAssessmentInProgress(State):
         else:
             return self
 
+    def exit(self, event:WorkflowEvent) -> State:
+        return self.dispatch_event(event, {
+            Unclaim: self.event_unclaim,
+            Unassign: self.event_unassign,
+            Reassign: self.event_reassign,
+            Fail: self.event_fail,
+            MinimalReview: self.event_minimal_review
+        })
 
-class TriageAssessmentMinimalReview(State):
+    def event_minimal_review(self, event: MinimalReview) -> "TriageAssessmentMinimalReview":
+        wfc = self.workflow_control
+        reviewer_permission = wfc.reviewer_id == event.actor_id and wfc.reviewer.has_attribute(
+            constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+
+        if not (reviewer_permission or event.actor.has_role(constants.ROLE_ADMIN)):
+            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
+
+        wfc.triage.has_minimal_review = True
+        return self.transition(TriageAssessmentMinimalReview, event.actor)
+
+
+class TriageAssessmentMinimalReview(TriageWorkingState):
     module = MODULE_TRIAGE
     stage = MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
     reviewer = WorkflowControl.ASSIGNED
+
+    legacy_application_status = constants.APPLICATION_STATUS_IN_PROGRESS
+    legacy_editor_group = LEGACY_EDITOR_GROUP
 
     events = [Triaged, Unclaim, Reassign, Unassign, Fail, RescindMinimalReview]
     actions = [ApplicationEdit]
 
     def apply(self):
-        # Ensure the workflow control object is in the right state
-        wf_control = self.workflow_control
-        if wf_control.module != self.module:
-            wf_control.module = self.module
+        super(TriageAssessmentMinimalReview, self).apply()
+        self.workflow_control.triage.has_minimal_review = True
 
-        if wf_control.stage != self.stage:
-            wf_control.stage = self.stage
-
-        if wf_control.reviewer is None:
-            raise ValueError("Reviewer must be set for TriageAssessmentMinimalReview state")
-
-        # back-compatibility for the original workflow
-        application = self.application
-
-        if application.application_status != constants.APPLICATION_STATUS_IN_PROGRESS:
-            application.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-
-        if application.editor != wf_control.reviewer:
-            application.set_editor(wf_control.reviewer)
-
-    def exit(self, event: WorkflowEvent):
-        if isinstance(event, Triaged):
-            return self.event_triaged(event)
-        elif isinstance(event, Unclaim):
-            return self.event_unclaim(event)
-        elif isinstance(event, Reassign):
-            return self.event_reassign(event)
-        elif isinstance(event, Unassign):
-            return self.event_unassign(event)
-        elif isinstance(event, Fail):
-            return self.event_fail(event)
-        elif isinstance(event, RescindMinimalReview):
-            return self.event_rescind_minimal_review(event)
-        else:
-            raise ValueError(f"Unknown event '{event}' for state '{type(self).__name__}'")
-
-    def do(self, action: WorkflowAction):
-        if isinstance(action, ApplicationEdit):
-            self.do_edit(action)
-        else:
-            raise ValueError(f"Unknown action '{action}' for state '{type(self).__name__}'")
-
-    def event_triaged(self, event: Triaged):
+    def do_edit(self, action: ApplicationEdit) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
         wfc = self.workflow_control
-        if wfc.reviewer != event.actor_id:
-            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
-
-        if event.maned is not None:
-            groups = EditorGroup.groups_by_editor(event.maned)
-            vessel = None
-            for g in groups:
-                if len(g.associates) > 0:
-                    continue
-                if g.name.lower() != event.maned.lower():
-                    continue
-                vessel = g
-                break
-
-            if vessel is None:
-                raise ValueError(f"Maned '{event.maned}' is not the editor of a managing editor's special vessel group")
-
-            wfc.reviewer = event.maned
-
-            from portality.bll.services.workflow.quick_fail import QuickFailCriteriaCheck
-            return QuickFailCriteriaCheck.enter(event.actor, self._wf_control, self._application, self)
-
-        elif event.editor_group is not None:
-            eg = EditorGroup.pull(event.editor_group)
-            if eg is None:
-                raise ValueError(f"EditorGroup '{event.editor_group}' does not exist")
-
-            wfc.editor_group = eg.name
-            del wfc.reviewer
-
-            from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment
-            return QuickFailAwaitingAssignment.enter(event.actor, self._wf_control, self._application, self)
-
-        raise ValueError("Triaged event must have either a target maned or a target editor group")
-
-    def event_unclaim(self, event: Unclaim):
-        wfc = self.workflow_control
-        if wfc.reviewer != event.actor_id:
-            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
-
-        del wfc.reviewer
-        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_reassign(self, event: Reassign):
-        wfc = self.workflow_control
-        if not event.actor.has_role(constants.ROLE_ADMIN):
-            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
-
-        wfc.reviewer = event.reviewer_id
-        return self.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_unassign(self, event:Unassign):
-        wfc = self.workflow_control
-        if not event.actor.has_role(constants.ROLE_ADMIN):
-            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
-
-        del wfc.reviewer
-        return AwaitingTriage.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_fail(self, event: Fail):
-        wfc = self.workflow_control
-        if wfc.reviewer != event.actor_id:
-            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
-
-        appSvc = DOAJ.applicationService()
-        appSvc.reject_application(self.application, event.actor, note=event.note)
-
-        del wfc.reviewer
-
-        # TODO: not clear what to do with application embargoes, perhaps these are a new type?
-
-        from portality.bll.services.workflow.rejected import Rejected
-        return Rejected.enter(event.actor, self._wf_control, self._application, self)
-
-    def event_rescind_minimal_review(self, event: RescindMinimalReview):
-        wfc = self.workflow_control
-        if wfc.reviewer != event.actor_id:
-            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
-
-        wfc.triage.has_minimal_review = False
-        return TriageAssessmentInProgress.enter(event.actor, self._wf_control, self._application, self)
-
-    def do_edit(self, action: ApplicationEdit):
-        wfc = self.workflow_control
-        if wfc.reviewer != action.actor_id:
+        reviewer_permission = wfc.reviewer_id == action.actor_id and wfc.reviewer.has_attribute(
+            constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        if not (reviewer_permission or action.actor.has_role(constants.ROLE_ADMIN)):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         # FIXME: where does has_minimal_review get calculated?
@@ -353,3 +240,50 @@ class TriageAssessmentMinimalReview(State):
             return self
         else:
             return self.event_rescind_minimal_review(RescindMinimalReview(action.actor_id))
+
+    def exit(self, event: WorkflowEvent) -> State:
+        return self.dispatch_event(event, {
+            Unclaim: self.event_unclaim,
+            Unassign: self.event_unassign,
+            Reassign: self.event_reassign,
+            RescindMinimalReview: self.event_rescind_minimal_review,
+            Fail: self.event_fail,
+            Triaged: self.event_triaged
+        })
+
+    def event_rescind_minimal_review(self, event: RescindMinimalReview) -> TriageAssessmentInProgress:
+        wfc = self.workflow_control
+        reviewer_permission = wfc.reviewer_id == event.actor_id and wfc.reviewer.has_attribute(
+            constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        if not (reviewer_permission or event.actor.has_role(constants.ROLE_ADMIN)):
+            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
+
+        wfc.triage.has_minimal_review = False
+        return self.transition(TriageAssessmentInProgress, event.actor)
+
+    def event_triaged(self, event: Triaged) -> Union["QuickFailAwaitingAssignment", "QualityReviewAwaitingAssignment"]:
+        wfc = self.workflow_control
+        reviewer_permission = wfc.reviewer_id == event.actor_id and wfc.reviewer.has_attribute(
+            constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        if not reviewer_permission:
+            raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
+
+        # add the triage label(s)
+        wfc.add_label(event.label)
+
+        # unassign the reviewer
+        del wfc.reviewer_id
+
+        # legacy bindings
+        self.application.remove_editor()
+        self.application.remove_editor_group()
+
+        if event.label == constants.EWF__QUICK_FAIL:
+            from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment
+            self.transition(QuickFailAwaitingAssignment, event.actor)
+        elif event.label == constants.EWF__QUALITY_REVIEW:
+            from portality.bll.services.workflow.quality_review import QualityReviewAwaitingAssignment
+            self.transition(QualityReviewAwaitingAssignment, event.actor)
+        else:
+            raise ValueError(f"Unknown triage label '{event.label}'")
+

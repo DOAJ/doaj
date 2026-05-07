@@ -7,11 +7,8 @@
     <div class="flex" style="flex-wrap: wrap">
         <span class="tag tag--featured">Module: {{ wfc.module }}</span>
         <span class="tag tag--featured">Stage: {{ wfc.stage }}</span>
-        {% if wfc.editorial_group %}
-            <span class="tag tag--featured">Group: {{ wfc.editorial_group }}</span>
-        {% endif %}
-        {% if wfc.reviewer %}
-            <span class="tag tag--featured">Reviewer: {{ wfc.reviewer }}</span>
+        {% if wfc.reviewer_id %}
+            <span class="tag tag--featured">Reviewer: {{ wfc.reviewer_id }}</span>
         {% endif %}
 
         {% for event in state.events %}
@@ -33,8 +30,7 @@
                 <tr>
                     <td>Event Date</td>
                     <td>Actor</td>
-                    <td>From State</td>
-                    <td>To State</td>
+                    <td>State</td>
                 </tr>
             </thead>
             <tbody>
@@ -43,13 +39,11 @@
                     <td>{{ entry.date }}</td>
                     <td>{{ entry.user }}</td>
                     <td>
-                        {% if entry.from_state %}
-                            {{ entry.from_state.module }}: {{ entry.from_state.stage }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if entry.to_state %}
-                            {{ entry.to_state.module }}: {{ entry.to_state.stage }}
+                        {% if entry.new_state %}
+                            {{ entry.new_state.module }}: {{ entry.new_state.stage }}
+                            {% if entry.new_state.reviewer %}
+                                | Reviewer: {{ entry.new_state.reviewer }}
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>

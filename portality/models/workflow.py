@@ -39,19 +39,11 @@ STRUCT = {
             "fields": {
                 "user": {"coerce": "unicode"},
                 "date": {"coerce": "utcdatetime"},
-                "from_state": {"coerce": "unicode"},
-                "to_state": {"coerce": "unicode"}
+                "new_state": {"coerce": "unicode"}
             },
-            "objects": ["from_state", "to_state"],
+            "objects": ["new_state"],
             "structs": {
-                "from_state": {
-                    "fields": {
-                        "module": {"coerce": "unicode"},
-                        "stage": {"coerce": "unicode"},
-                        "reviewer": {"coerce": "unicode"}
-                    }
-                },
-                "to_state": {
+                "new_state": {
                     "fields": {
                         "module": {"coerce": "unicode"},
                         "stage": {"coerce": "unicode"},
@@ -97,12 +89,14 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     ANY = "*"
     UNASSIGNED = "-"
     ASSIGNED = "+"
+    META_STATES = [ANY, UNASSIGNED, ASSIGNED]
 
     def __init__(self, **kwargs):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
         super(WorkflowControl, self).__init__(raw=kwargs)
+        self._reviewer_object = None
 
     ####################################
     ## Class methods for locating WorkflowControl objects
@@ -147,16 +141,32 @@ class WorkflowControl(SeamlessMixin, DomainObject):
         self.__seamless__.set_single("state.stage", val)
 
     @property
-    def reviewer(self):
+    def reviewer_id(self):
         return self.__seamless__.get_single("state.reviewer")
 
-    @reviewer.setter
-    def reviewer(self, val):
+    @reviewer_id.setter
+    def reviewer_id(self, val):
         self.__seamless__.set_single("state.reviewer", val)
 
-    @reviewer.deleter
-    def reviewer(self):
+    @reviewer_id.deleter
+    def reviewer_id(self):
         self.__seamless__.delete("state.reviewer")
+
+    @property
+    def reviewer(self):
+        rid = self.reviewer_id
+        if rid is None:
+            self._reviewer_object = None
+            return None
+
+        if self._reviewer_object is not None:
+            if self._reviewer_object.id == rid:
+                return self._reviewer_object
+            else:
+                self._reviewer_object = None
+
+        self._reviewer_object = Account.pull(rid)
+        return self._reviewer_object
 
     ##################################
     ## Application properties
@@ -213,7 +223,7 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     ##################################
     ## Audit
 
-    def add_audit(self, actor:Union[str, Account], to_state:dict, from_state:dict=None, date:Union[str, datetime]=None):
+    def add_audit(self, actor:Union[str, Account], new_state:dict, date:Union[str, datetime]=None):
         if date is None:
             date = dates.now()
         if isinstance(actor, Account):
@@ -222,10 +232,8 @@ class WorkflowControl(SeamlessMixin, DomainObject):
         audit_entry = {
             "user": actor,
             "date": date,
-            "to_state": to_state
+            "new_state": new_state
         }
-        if from_state is not None:
-            audit_entry["from_state"] = from_state
 
         self.__seamless__.add_to_list_with_struct("audit", audit_entry)
 

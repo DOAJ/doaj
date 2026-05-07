@@ -1,5 +1,6 @@
 from typing import Type, Union
 
+from portality.bll.services.workflow.quality_review import QualityReviewAwaitingAssignment, QualityReviewAssessment
 from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment, QuickFailCriteriaCheck
 from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
@@ -19,6 +20,10 @@ class WorkflowService:
         QuickFailAwaitingAssignment,
         QuickFailCriteriaCheck,
 
+        # Quality Review States
+        QualityReviewAwaitingAssignment,
+        QualityReviewAssessment,
+
         # Rejected State
         Rejected
     ]
@@ -33,7 +38,7 @@ class WorkflowService:
         query.size = n
         return [state(x) for x in WorkflowControl.object_query(q=query.query())]
 
-    def apply_event(self, wfc_id:str, event:WorkflowEvent, save=True):
+    def apply_event(self, wfc_id:str, event:WorkflowEvent, save=True) -> State:
         state_instance = self.state_for_workflow_control(wfc_id)
         if state_instance is None:
             raise ValueError(f"No state found for workflow control with id '{wfc_id}'")

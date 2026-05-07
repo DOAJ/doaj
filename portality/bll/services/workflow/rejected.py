@@ -32,8 +32,8 @@ class Rejected(State):
         if application.application_status != constants.APPLICATION_STATUS_REJECTED:
             appSvc = DOAJ.applicationService()
             acc = None
-            if wf_control.reviewer is not None:
-                acc = Account.pull(wf_control.reviewer)
+            if wf_control.reviewer_id is not None:
+                acc = Account.pull(wf_control.reviewer_id)
             if acc is None:
                 # FIXME: what's the way to do this?
                 acc = Account.pull("system")
@@ -41,8 +41,8 @@ class Rejected(State):
 
         application.remove_editor_group()
 
-        if wf_control.reviewer is not None:
-            if application.editor != wf_control.reviewer:
-                application.set_editor(wf_control.reviewer)
+        if wf_control.reviewer_id is not None:
+            if application.editor != wf_control.reviewer_id:
+                application.set_editor(wf_control.reviewer_id)
         else:
             application.remove_editor()
