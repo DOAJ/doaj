@@ -68,6 +68,7 @@ class MonitorBgjobsBackgroundTask(BackgroundTask):
             'from_address', get_system_email(), kwargs))
         return background_helper.create_job(username=username,
                                             action=cls.__action__,
+                                            queue_id=huey_helper.queue_id,
                                             params=params)
 
     def cleanup(self):
