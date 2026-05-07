@@ -28,7 +28,8 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/coverage
 (cd $DOAJ_DOCS && git checkout master && git pull origin master)
 
 rm -rf $OUTDIR/report
-echo "pytest -p no:randomly --cov-config=$BASE_DIR/.coveragerc --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/"
-pytest -p no:randomly --cov-config=$BASE_DIR/.coveragerc --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report $BASE_DIR/doajtest/unit/
+echo "pytest -p no:randomly --cov-config=$BASE_DIR/.coveragerc --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report doajtest/unit/"
+cd $BASE_DIR
+pytest -p no:randomly --cov-config=.coveragerc --cov=portality --cov=combinatrix --cov=dictdiffer --cov-report=html:$OUTDIR/report doajtest/unit/
 rm -f $OUTDIR/report/.gitignore
 
