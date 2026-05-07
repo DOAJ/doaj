@@ -83,7 +83,7 @@
 
                 <h1>
                     {%  if bibjson.title %}
-                        {{ bibjson.title }}
+                        {{ bibjson.title | rich_text }}
                     {% else %}
                         <em>[Article title missing]</em>
                     {% endif %}
@@ -165,7 +165,7 @@
                         {% endif %}
                       </p>
                     {% if bibjson.abstract %}
-                        <p class="article-details__abstract">{{ bibjson.abstract | striptags }}</p>
+                        <p class="article-details__abstract">{{ bibjson.abstract | rich_text }}</p>
                     {% else %}
                         <em class="article-details__abstract--empty">No abstracts available.</em>
                     {% endif %}

@@ -1553,7 +1553,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1
-        assert len(found[0].bibjson().abstract) == 26328
+        assert len(found[0].bibjson().abstract) == 26307
 
     def test_45_crossref_journal_1_article_1_superlong_clip(self):
         etree.XMLSchema = self.mock_load_schema
@@ -2065,7 +2065,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         assert len(found) == 1, "expected 1, found: {}".format(len(found))
         art = found[0]
         bib = art.bibjson()
-        assert bib.title == "This article has <ns0:i>unescaped</ns0:i> and &lt;i&gt;escaped&lt;/i&gt; html tags", "expected: 'This article has <i>unescaped</i> and &lt;i&gt;unexcaped&lt;/i&gt; html tags', received: {}".format(bib.title)
+        assert bib.title == "This article has <i>unescaped</i> and <i>escaped</i> html tags", "expected: 'This article has <i>unescaped</i> and <i>escaped</i> html tags', received: {}".format(bib.title)
 
         with open(ARTICLES, "r") as f:
             data = f.read()

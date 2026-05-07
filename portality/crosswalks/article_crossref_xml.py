@@ -6,6 +6,56 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from portality.ui.messages import Messages
 
+_JATS_NS = 'http://www.ncbi.nlm.nih.gov/JATS1'
+_CR442_NS = 'http://www.crossref.org/schema/4.4.2'
+_CR531_NS = 'http://www.crossref.org/schema/5.3.1'
+
+# Maps Clark-notation element tags to their HTML equivalents for rich-text rendering.
+# Covers JATS inline formatting and the HTML-like elements publishers put in titles.
+_FORMATTING_TAGS = {
+    '{%s}italic' % _JATS_NS: 'em',
+    '{%s}bold' % _JATS_NS: 'b',
+    '{%s}sub' % _JATS_NS: 'sub',
+    '{%s}sup' % _JATS_NS: 'sup',
+    '{%s}underline' % _JATS_NS: 'u',
+    '{%s}monospace' % _JATS_NS: 'code',
+    '{%s}sc' % _JATS_NS: 'span',
+    '{%s}strike' % _JATS_NS: 's',
+    '{%s}i' % _CR442_NS: 'i',
+    '{%s}b' % _CR442_NS: 'b',
+    '{%s}sub' % _CR442_NS: 'sub',
+    '{%s}sup' % _CR442_NS: 'sup',
+    '{%s}u' % _CR442_NS: 'u',
+    '{%s}i' % _CR531_NS: 'i',
+    '{%s}b' % _CR531_NS: 'b',
+    '{%s}sub' % _CR531_NS: 'sub',
+    '{%s}sup' % _CR531_NS: 'sup',
+    '{%s}u' % _CR531_NS: 'u',
+}
+
+
+def _element_to_html(element):
+    """Recursively convert an XML element's content to an HTML string.
+
+    Known formatting tags (JATS inline, HTML-like crossref elements) are mapped
+    to their HTML equivalents; unknown tags pass through their content unchanged.
+    Both element.text and child.tail are preserved so no text is lost.
+    """
+    parts = []
+    if element.text:
+        parts.append(element.text)
+    for child in element:
+        html_tag = _FORMATTING_TAGS.get(child.tag)
+        if html_tag:
+            parts.append('<%s>' % html_tag)
+            parts.append(_element_to_html(child))
+            parts.append('</%s>' % html_tag)
+        else:
+            parts.append(_element_to_html(child))
+        if child.tail:
+            parts.append(child.tail)
+    return ''.join(parts)
+
 
 
 class CrossrefXWalk442(object):
@@ -293,9 +343,11 @@ class CrossrefXWalk442(object):
     def extract_article_title(self, record, journal, bibjson):
         titles = record.find('x:titles', self.NS)
         if titles is not None:
-            title = _element(titles, "x:title", self.NS)
-            if title is not None:
-                bibjson.title = title
+            title_el = titles.find("x:title", self.NS)
+            if title_el is not None:
+                title = _element_to_html(title_el)
+                if title:
+                    bibjson.title = title
 
     def extract_authors(self, record, journal, bibjson):
         contributors = record.find("x:contributors", self.NS)
@@ -318,15 +370,13 @@ class CrossrefXWalk442(object):
     def extract_abstract(self, record, journal, bibjson):
         abstract_par = record.find("j:abstract", self.NS)
         if abstract_par is not None:
-            text_elems = list(abstract_par.iter())
-            text = ""
-            if text_elems is not None:
-                for elems in text_elems:
-                    if elems.text is not None:
-                        text = text + elems.text
-            bibjson.abstract = text[:30000]  # avoids Elasticsearch
-            # exceptions about .exact analyser not being able to handle
-            # more than 32766 UTF8 characters
+            paragraphs = abstract_par.findall("j:p", self.NS)
+            if paragraphs:
+                text = ' '.join(_element_to_html(p) for p in paragraphs)
+            else:
+                text = _element_to_html(abstract_par)
+            bibjson.abstract = text[:30000]  # avoids Elasticsearch exceptions about
+            # .exact analyser not being able to handle more than 32766 UTF8 characters
 
 ###############################################################################
 ## Crossref 5.3.1 Xwalk
