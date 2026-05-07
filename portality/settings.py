@@ -1617,9 +1617,8 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
     'monitor_bgjobs': {
         'last_run_successful_in': _WEEK + _DAY
     },
-    # FIXME: old_data_cleanup is failing https://github.com/DOAJ/doajPM/issues/4223 (should be monthly)
     'old_data_cleanup': {
-        'last_run_successful_in': _YEAR
+        'last_run_successful_in': 32 * _DAY
     },
     'prune_es_backups': {
         'last_run_successful_in': _DAY + _HOUR
