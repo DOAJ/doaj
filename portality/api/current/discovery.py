@@ -65,7 +65,7 @@ def has_prefix_wildcard(query):
     """
     Check if the query contains a prefix wildcard at the start of a search term. For example: *test, ?est,
     """
-    rx = r'(?:^|[\s:(])[\*\?]'
+    rx = r'^[*?]'
     return bool(re.search(rx, query))
 
 
