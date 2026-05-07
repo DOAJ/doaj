@@ -5,8 +5,6 @@ import itertools
 from typing import Iterable
 
 from portality import constants
-# from portality.constants import BGJOB_QUEUE_ID_LONG, BGJOB_QUEUE_ID_MAIN, BGJOB_QUEUE_ID_EVENTS, BGJOB_QUEUE_ID_SCHEDULED_LONG, BGJOB_QUEUE_ID_SCHEDULED_SHORT, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED, \
-#     BG_STATUS_STABLE, BG_STATUS_UNSTABLE, BGJOB_STATUS_COMPLETE
 from portality.core import app
 from portality.lib import dates
 from portality.models.background import BackgroundJobQueryBuilder, BackgroundJob, SimpleBgjobQueue, \
@@ -174,9 +172,7 @@ class BackgroundTaskStatusService:
     def create_background_status(self) -> dict:
         queues = {
             queue_name: self.create_queues_status(queue_name)
-            for queue_name in [constants.BGJOB_QUEUE_ID_LONG,
-                               constants.BGJOB_QUEUE_ID_MAIN,
-                               constants.BGJOB_QUEUE_ID_EVENTS,
+            for queue_name in [constants.BGJOB_QUEUE_ID_EVENTS,
                                constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
                                constants.BGJOB_QUEUE_ID_SCHEDULED_SHORT]
         }
