@@ -10,9 +10,41 @@ from portality.models import Application, Account
 
 import json
 
+TRIAGE_CHECKLIST_ENTRY = {
+    "fields": {
+        "value": {"coerce": "bool"},
+        "sv": {"coerce": "integer"},
+        "exception": {"coerce": "integer"},
+        "note_id": {"coerce": "unicode"},
+    }
+}
+
 TRIAGE_STRUCT = {
     "fields": {
         "has_minimal_review": {"coerce": "bool"},
+        "total_sv": {"coerce": "integer"},
+        "total_exception": {"coerce": "integer"}
+    },
+    "objects": ["questions"],
+    "structs": {
+        "questions": {
+            "objects": [
+                "ethics_not_excluded", #a1
+                "ethics_no_nonstandard_metrics", #a2
+                "ethics_no_fake_impact", #a3
+                "ethics_no_false_doaj_claim", #a4
+                "ethics_ttp_gt_3wk", #a5
+                "ethics_no_suspicious_ties", #a6
+            ],
+            "structs": {
+                "ethics_not_excluded": TRIAGE_CHECKLIST_ENTRY,
+                "ethics_no_nonstandard_metrics": TRIAGE_CHECKLIST_ENTRY,
+                "ethics_no_fake_impact": TRIAGE_CHECKLIST_ENTRY,
+                "ethics_no_false_doaj_claim": TRIAGE_CHECKLIST_ENTRY,
+                "ethics_ttp_gt_3wk": TRIAGE_CHECKLIST_ENTRY,
+                "ethics_no_suspicious_ties": TRIAGE_CHECKLIST_ENTRY
+            }
+        }
     }
 }
 
@@ -24,7 +56,8 @@ STRUCT = {
         "es_type": {"coerce": "unicode"},
     },
     "lists": {
-        "audit": {"contains": "object"}
+        "audit": {"contains": "object"},
+        "labels": {"contains": "field", "coerce": "unicode"}
     },
     "objects": ["application", "state", "modules"],
     "structs": {
@@ -241,11 +274,28 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     def audit(self):
         return self.__seamless__.get_list("audit")
 
+    ##################################
+    ## labelling
+
+    @property
+    def labels(self):
+        return self.__seamless__.get_list("labels")
+
+    @labels.setter
+    def labels(self, val):
+        self.__seamless__.set_with_struct("labels", val)
+
+    def add_label(self, label:str):
+        self.__seamless__.add_to_list("labels", label, unique=True)
+
+    def remove_label(self, label:str):
+        self.__seamless__.delete_from_list("labels", label)
+
+
 class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
 
-    # constructor
     def __init__(self, raw=None, **kwargs):
         super(Triage, self).__init__(raw=raw, **kwargs)
 
@@ -260,6 +310,42 @@ class Triage(SeamlessMixin):
     @has_minimal_review.setter
     def has_minimal_review(self, val):
         self.__seamless__.set_single("has_minimal_review", val)
+
+    def _calculate_severity_value(self):
+        total = 0
+        for k, v in self.__seamless__.get_single("questions", []).items():
+            if "sv" in v:
+                total += v["sv"]
+        self.__seamless__.set_with_struct("total_sv", total)
+
+    @property
+    def total_severity_value(self):
+        return self.__seamless__.get_single("total_sv")
+
+    def _set_question(self, field:str, value:bool, sv:int=None, exception:int=None, note:"Note"=None):
+        obj = {
+            "value": value,
+        }
+        if sv is not None:
+            obj["sv"] = sv
+        if exception is not None:
+            obj["exception"] = exception
+        if note is not None:
+            obj["note"] = note.id
+
+        self.__seamless__.set_with_struct(f"questions.{field}", obj)
+        self._calculate_severity_value()
+
+    @property
+    def ethics_not_excluded(self):
+        return self.__seamless__.get_single("questions.ethics_not_excluded")
+
+    @property
+    def ethics_not_excluded_answer(self):
+        return self.__seamless__.get_single("questions.ethics_not_excluded.value")
+
+    def set_ethics_not_excluded(self, val:bool, sv:int, note:"Note"):
+        self._set_question("ethics_not_excluded", val, sv=sv, note=note)
 
 
 ##########################################

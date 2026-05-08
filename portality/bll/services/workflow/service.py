@@ -5,7 +5,7 @@ from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignme
 from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview
-from portality.bll.services.workflow.core import State, WorkflowEvent
+from portality.bll.services.workflow.core import State, WorkflowEvent, WorkflowAction
 from portality.models import WorkflowControl, Account, Application
 
 
@@ -38,24 +38,42 @@ class WorkflowService:
         query.size = n
         return [state(x) for x in WorkflowControl.object_query(q=query.query())]
 
-    def apply_event(self, wfc_id:str, event:WorkflowEvent, save=True) -> State:
-        state_instance = self.state_for_workflow_control(wfc_id)
+    def apply_action(self, wfc:Union[str, WorkflowControl], action:WorkflowAction, save=True) -> State:
+        if isinstance(wfc, str):
+            wfc = WorkflowControl.pull(wfc)
+
+        state_instance = self.state_for_workflow_control(wfc)
         if state_instance is None:
-            raise ValueError(f"No state found for workflow control with id '{wfc_id}'")
+            raise ValueError(f"No state found for workflow control with id '{wfc.id}'")
+
+        new_state = self.action(state_instance, action)
+        if save:
+            new_state.saveall()
+        return new_state
+
+    def apply_event(self, wfc:Union[str, WorkflowControl], event:WorkflowEvent, save=True) -> State:
+        if isinstance(wfc, str):
+            wfc = WorkflowControl.pull(wfc)
+
+        state_instance = self.state_for_workflow_control(wfc)
+        if state_instance is None:
+            raise ValueError(f"No state found for workflow control with id '{wfc.id}'")
 
         new_state = self.event(state_instance, event)
         if save:
             new_state.saveall()
         return new_state
 
-    def state_for_workflow_control(self, wfc_id:str) -> Union[State, None]:
-        wfc = WorkflowControl.pull(wfc_id)
+    def state_for_workflow_control(self, wfc:Union[str, WorkflowControl], application:Application=None) -> Union[State, None]:
+        if isinstance(wfc, str):
+            wfc = WorkflowControl.pull(wfc)
+
         if wfc is None:
             return None
 
         for state in self.STATES:
             if state.matches(wfc):
-                return state(wfc)
+                return state(wfc, application)
 
         return None
 
@@ -64,6 +82,13 @@ class WorkflowService:
             raise ValueError(f"Invalid event '{event}' for state '{type(state_instance).__name__}'")
 
         new_state = state_instance.exit(event)
+        return new_state
+
+    def action(self, state_instance:State, action:WorkflowAction) -> State:
+        if action.__class__ not in state_instance.actions:
+            raise ValueError(f"Invalid action '{action}' on state '{type(state_instance).__name__}'")
+
+        new_state = state_instance.do(action)
         return new_state
 
     def initialise_workflow(self, actor:Union[str, Account], application:Application) -> State:

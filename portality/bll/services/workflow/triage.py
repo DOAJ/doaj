@@ -74,13 +74,15 @@ class AwaitingTriage(State):
         return self._assign_and_transition(event.actor, event.reviewer)
 
     def _assign_and_transition(self, actor, reviewer) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
-        if not actor.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE):
+        if not reviewer.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE):
             raise AuthoriseException(reason=AuthoriseException.WRONG_ATTRIBUTE)
 
         wfc = self.workflow_control
         wfc.reviewer_id = reviewer.id
 
         # legacy bindings
+        if self.application is None:
+            raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
         self.application.set_editor_group(self.legacy_editor_group)
         self.application.set_editor(reviewer.id)
 
@@ -108,6 +110,8 @@ class TriageWorkingState(State):
         del wfc.reviewer_id
 
         # legacy bindings
+        if self.application is None:
+            raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
         self.application.set_editor_group(self.legacy_editor_group)
         self.application.remove_editor()
 
@@ -121,6 +125,8 @@ class TriageWorkingState(State):
         del wfc.reviewer_id
 
         # legacy bindings
+        if self.application is None:
+            raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
         self.application.set_editor_group(self.legacy_editor_group)
         self.application.remove_editor()
 
@@ -137,6 +143,8 @@ class TriageWorkingState(State):
         wfc.reviewer_id = event.reviewer_id
 
         # legacy bindings
+        if self.application is None:
+            raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
         self.application.set_editor_group(self.legacy_editor_group)
         self.application.set_editor(event.reviewer_id)
 
@@ -153,6 +161,8 @@ class TriageWorkingState(State):
         del wfc.reviewer_id
 
         # legacy bindings
+        if self.application is None:
+            raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
         self.application.remove_editor()
         self.application.remove_editor_group()
 
@@ -275,15 +285,17 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
         del wfc.reviewer_id
 
         # legacy bindings
+        if self.application is None:
+            raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
         self.application.remove_editor()
         self.application.remove_editor_group()
 
         if event.label == constants.EWF__QUICK_FAIL:
             from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment
-            self.transition(QuickFailAwaitingAssignment, event.actor)
+            return self.transition(QuickFailAwaitingAssignment, event.actor)
         elif event.label == constants.EWF__QUALITY_REVIEW:
             from portality.bll.services.workflow.quality_review import QualityReviewAwaitingAssignment
-            self.transition(QualityReviewAwaitingAssignment, event.actor)
+            return self.transition(QualityReviewAwaitingAssignment, event.actor)
         else:
             raise ValueError(f"Unknown triage label '{event.label}'")
 

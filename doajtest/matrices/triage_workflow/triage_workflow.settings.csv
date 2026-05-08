@@ -1,0 +1,78 @@
+field,test_id,module,stage,reviewer,action,actor,has_minimal_review,label,state_id,result_module,result_stage,result_reviewer,initial_legacy_status,result_legacy_status,initial_legacy_eg,result_legacy_eg,error
+type,index,generated,generated,generated,generated,generated,generated,generated,conditional,conditional,conditional,conditional,conditional,conditional,conditional,conditional,conditional
+default,,,,,,,,,,triage,,,,,Triage,Triage,no
+,,,,,,,,,,,,,,,,,
+values,,triage,in_progress,none,action_edit,assigned_triage,yes,none,1.1,triage,in_progress,none,pending,pending,Triage,Triage,no
+values,,,minimal_review,triage,event_claim,assigned_non_triage,no,quick_fail,1.2,quick_fail,minimal_review,assigned,in progress,in progress,,none,AuthoriseException
+values,,,,non_triage,event_assign_triage,admin,,quality_review,1.3,quality_review,,,,,,,
+values,,,,,event_assign_non_triage,unassigned_triage,,,,rejected,,,,,,,
+values,,,,,event_unclaim,unassigned_non_triage,,,,,,,,,,,
+values,,,,,event_unassign,,,,,,,,,,,,
+values,,,,,event_reassign_triage,,,,,,,,,,,,
+values,,,,,event_reassign_non_triage,,,,,,,,,,,,
+values,,,,,event_minimal_review,,,,,,,,,,,,
+values,,,,,event_fail,,,,,,,,,,,,
+values,,,,,event_rescind_minimal_review,,,,,,,,,,,,
+values,,,,,event_triaged,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+constraint action,,,,!none,action_edit,,,,,,,,,,,,
+constraint action,,,,none,event_claim,,,,,,,,,,,,
+constraint action,,,,none,event_assign_triage,,,,,,,,,,,,
+constraint action,,,,none,event_assign_non_triage,,,,,,,,,,,,
+constraint action,,,,!none,event_unclaim,,,,,,,,,,,,
+constraint action,,,,!none,event_unassign,,,,,,,,,,,,
+constraint action,,,,!none,event_reassign_triage,,,,,,,,,,,,
+constraint action,,,,!none,event_reassign_non_triage,,,,,,,,,,,,
+constraint action,,,in_progress,!none,event_minimal_review,,,,,,,,,,,,
+constraint action,,,,!none,event_fail,,,,,,,,,,,,
+constraint action,,,minimal_review,!none,event_rescind_minimal_review,,,,,,,,,,,,
+constraint action,,,minimal_review,!none,event_triaged,,yes,!none,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+constraint actor,,,,triage,,assigned_triage,,,,,,,,,,,
+constraint actor,,,,non_triage,,assigned_non_triage,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+constraint label,,,,,event_triaged,,,quick_fail,,,,,,,,,
+constraint label,,,,,event_triaged,,,quality_review,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+conditional state_id,,triage,*,none,,,,,1.1,,,,,,,,
+conditional state_id,,triage,in_progress,!none,,,,,1.2,,,,,,,,
+conditional state_id,,triage,minimal_review,!none,,,,,1.3,,,,,,,,
+,,triage,,,,,,,,,,,,,,,
+conditional result_module,,triage,minimal_review,!none,event_triaged,assigned_triage,yes,quick_fail,,quick_fail,,,,,,,
+conditional result_module,,triage,minimal_review,!none,event_triaged,assigned_triage,yes,quality_review,,quality_review,,,,,,,
+conditional result_module,,triage,,!none,event_fail,assigned_triage,,,,rejected,,,,,,,
+,,triage,,,,,,,,,,,,,,,
+conditional result_stage,,triage,,none,event_claim,unassigned_triage,no,,,,in_progress,,,,,,
+conditional result_stage,,triage,,none,event_assign_triage,admin,no,,,,in_progress,,,,,,
+conditional result_stage,,triage,in_progress,,event_reassign_triage,admin,no,,,,in_progress,,,,,,
+conditional result_stage,,triage,minimal_review,,event_rescind_minimal_review,assigned_triage|admin,,,,,in_progress,,,,,,
+conditional result_stage,,triage,,none,event_claim,unassigned_triage,yes,,,,minimal_review,,,,,,
+conditional result_stage,,triage,,none,event_assign_triage,admin,yes,,,,minimal_review,,,,,,
+conditional result_stage,,triage,in_progress,,event_minimal_review,assigned_triage|admin,,,,,minimal_review,,,,,,
+conditional result_stage,,triage,minimal_review,,event_reassign_triage,admin,yes,,,,minimal_review,,,,,,
+,,,,,,,,,,,,,,,,,
+conditional result_reviewer,,,,,event_unclaim|event_unassign|event_fail|event_triaged,,,,,,,none,,,,,
+conditional result_reviewer,,,,,event_claim|event_assign_triage|event_reassign_triage,,,,,,,assigned,,,,,
+,,,,,,,,,,,,,,,,,
+conditional initial_legacy_status,,,,none,,,,,,,,,pending,,,,
+conditional initial_legacy_status,,,,!none,,,,,,,,,in progress,,,,
+,,,,,,,,,,,,,,,,,
+conditional result_legacy_status,,,,,event_unclaim|event_unassign,,,,,,,,,pending,,,
+conditional result_legacy_status,,,,,event_claim|event_assign_triage|event_reassign_triage|event_rescind_minimal_review|event_minimal_review|event_triaged,,,,,,,,,in progress,,,
+conditional result_legacy_status,,,,,action_edit,,,,,,,,,in progress,,,
+conditional result_legacy_status,,,,,event_fail,,,,,,,,,rejected,,,
+,,,,,,,,,,,,,,,,,
+conditional result_legacy_eg,,,,,event_fail|event_triaged,,,,,,,,,,,none,
+,,,,,,,,,,,,,,,,,
+conditional error,,,,,event_claim,unassigned_non_triage|admin,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_assign_triage,!admin,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_assign_non_triage,,,,,,,,,,,,AuthoriseException
+conditional error,,,,,action_edit,assigned_non_triage|unassigned_triage|unassigned_non_triage,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_unclaim,admin|unassigned_triage|unassigned_non_triage,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_unassign,!admin,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_reassign_triage,!admin,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_reassign_non_triage,,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_minimal_review,assigned_non_triage|unassigned_triage|unassigned_non_triage,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_fail,!assigned_triage,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_rescind_minimal_review,assigned_non_triage|unassigned_triage|unassigned_non_triage,,,,,,,,,,,AuthoriseException
+conditional error,,,,,event_triaged,!assigned_triage,,,,,,,,,,,AuthoriseException
