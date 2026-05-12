@@ -1,3 +1,4 @@
+from copy import deepcopy
 from datetime import datetime
 from typing import Union
 
@@ -10,24 +11,69 @@ from portality.models import Application, Account
 
 import json
 
-TRIAGE_CHECKLIST_ENTRY = {
+TRIAGE_FIELD = {
     "fields": {
-        "value": {"coerce": "bool"},
+        "compliant": {"coerce": "bool"},
         "sv": {"coerce": "integer"},
-        "exception": {"coerce": "integer"},
-        "note_id": {"coerce": "unicode"},
+    },
+    "lists": {
+        "note_ids": {"contains": "field", "coerce": "unicode"},
+        "changes": {"contains": "object"},
+    },
+    "objects": [
+        "changes"
+    ],
+    "structs": {
+        "changes": {
+            "audit_id": {"coerce": "unicode"},
+            "note_id": {"coerce": "unicode"},
+        }
     }
 }
+
+TRIAGE_FIELD_WITH_EXCEPTIONS = deepcopy(TRIAGE_FIELD)
+TRIAGE_FIELD_WITH_EXCEPTIONS["objects"].append("exceptions")
+TRIAGE_FIELD_WITH_EXCEPTIONS["structs"]["exceptions"] = {}
+
+DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD = deepcopy(TRIAGE_FIELD_WITH_EXCEPTIONS)
+DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD["structs"]["exceptions"] = {
+    "fields": {
+        "ignore_embargo": {"coerce": "bool"},#b1a
+        "website_unavailable": {"coerce": "bool"},#b1b
+        "content_volume": {"coerce": "bool"} #b1c
+    }
+}
+
+DATABASE_NO_ACTIVE_EMBARGO_FIELD = deepcopy(TRIAGE_FIELD_WITH_EXCEPTIONS)
+DATABASE_NO_ACTIVE_EMBARGO_FIELD["structs"]["exceptions"] = {
+    "fields": {
+        "confirmed_issn": {"coerce": "bool"},#b2a
+        "ignore_embargo": {"coerce": "bool"},#b2b
+        "website_unavailable": {"coerce": "bool"},#b2c
+        "content_volume": {"coerce": "bool"}#b2d
+    }
+}
+
+CONTENT_NOT_NEW_OR_FLIPPED = deepcopy(TRIAGE_FIELD_WITH_EXCEPTIONS)
+CONTENT_NOT_NEW_OR_FLIPPED["structs"]["exceptions"] = {
+    "fields": {
+        "publishing_history": {"coerce": "bool"} #e6a
+    }
+}
+
 
 TRIAGE_STRUCT = {
     "fields": {
         "has_minimal_review": {"coerce": "bool"},
         "total_sv": {"coerce": "integer"},
-        "total_exception": {"coerce": "integer"}
+        "last_visited_question": {"coerce": "unicode"},
     },
     "objects": ["questions"],
     "structs": {
         "questions": {
+            "fields": {
+                "admin_special_exception": {"coerce": "unicode"}
+            },
             "objects": [
                 "ethics_not_excluded", #a1
                 "ethics_no_nonstandard_metrics", #a2
@@ -35,14 +81,61 @@ TRIAGE_STRUCT = {
                 "ethics_no_false_doaj_claim", #a4
                 "ethics_ttp_gt_3wk", #a5
                 "ethics_no_suspicious_ties", #a6
+
+                "database_not_removed_no_embargo", #b1
+                "database_no_active_embargo", #b2
+                "database_not_listed", #b3
+                "database_not_duplicate", #b4
+
+                "issn_confirmed", #c1
+                "issn_journal_name_match", #c2
+                "issn_no_continuation", #c3
+
+                "website_working", #d1
+                "website_distinct_urls", #d2
+                "website_oa_policy", #d3
+                "website_copyright_terms", #d4
+
+                "content_no_registration", #e1
+                "content_no_barrier", #e2
+                "content_sufficient_volume", #e3
+                "content_unique_article_urls", #e4
+                "content_html_pdf", #e5
+                "content_not_new_or_flipped", #e6
+
+                "admin_metadata_accurate", #f1
+                "admin_special_exception", #f2
             ],
             "structs": {
-                "ethics_not_excluded": TRIAGE_CHECKLIST_ENTRY,
-                "ethics_no_nonstandard_metrics": TRIAGE_CHECKLIST_ENTRY,
-                "ethics_no_fake_impact": TRIAGE_CHECKLIST_ENTRY,
-                "ethics_no_false_doaj_claim": TRIAGE_CHECKLIST_ENTRY,
-                "ethics_ttp_gt_3wk": TRIAGE_CHECKLIST_ENTRY,
-                "ethics_no_suspicious_ties": TRIAGE_CHECKLIST_ENTRY
+                "ethics_not_excluded": TRIAGE_FIELD,
+                "ethics_no_nonstandard_metrics": TRIAGE_FIELD,
+                "ethics_no_fake_impact": TRIAGE_FIELD,
+                "ethics_no_false_doaj_claim": TRIAGE_FIELD,
+                "ethics_ttp_gt_3wk": TRIAGE_FIELD,
+                "ethics_no_suspicious_ties": TRIAGE_FIELD,
+
+                "database_not_removed_no_embargo": DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD,
+                "database_no_active_embargo": DATABASE_NO_ACTIVE_EMBARGO_FIELD,
+                "database_not_listed": TRIAGE_FIELD,
+                "database_not_duplicate": TRIAGE_FIELD,
+
+                "issn_confirmed": TRIAGE_FIELD,
+                "issn_journal_name_match": TRIAGE_FIELD,
+                "issn_no_continuation": TRIAGE_FIELD,
+
+                "website_working": TRIAGE_FIELD,
+                "website_distinct_urls": TRIAGE_FIELD,
+                "website_oa_policy": TRIAGE_FIELD,
+                "website_copyright_terms": TRIAGE_FIELD,
+
+                "content_no_registration": TRIAGE_FIELD,
+                "content_no_barrier": TRIAGE_FIELD,
+                "content_sufficient_volume": TRIAGE_FIELD,
+                "content_unique_article_urls": TRIAGE_FIELD,
+                "content_html_pdf": TRIAGE_FIELD,
+                "content_not_new_or_flipped": CONTENT_NOT_NEW_OR_FLIPPED,
+
+                "admin_metadata_accurate": TRIAGE_FIELD
             }
         }
     }
@@ -292,6 +385,40 @@ class WorkflowControl(SeamlessMixin, DomainObject):
         self.__seamless__.delete_from_list("labels", label)
 
 
+class TriageField(SeamlessMixin):
+    __SEAMLESS_STRUCT__ = TRIAGE_FIELD
+    __SEAMLESS_COERCE__ = COERCE_MAP
+
+    def __init__(self, raw=None, **kwargs):
+        super(TriageField, self).__init__(raw=raw, **kwargs)
+
+    @property
+    def compliant(self):
+        return self.__seamless__.get_single("compliant")
+
+    @property
+    def severity_value(self):
+        return self.__seamless__.get_single("sv")
+
+    @property
+    def note_ids(self):
+        return self.__seamless__.get_list("note_ids")
+
+    @property
+    def changes(self):
+        return self.__seamless__.get_list("changes")
+
+class DatabaseNotRemovedNoEmbargoField(TriageField):
+    __SEAMLESS_STRUCT__ = DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD
+
+    @property
+    def ignore_embargo(self):
+        return self.__seamless__.get_single("exceptions.ignore_embargo")
+
+    @ignore_embargo.setter
+    def ignore_embargo(self, val):
+        self.__seamless__.set_with_struct("exceptions.ignore_embargo", val)
+
 class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
@@ -310,6 +437,13 @@ class Triage(SeamlessMixin):
     @has_minimal_review.setter
     def has_minimal_review(self, val):
         self.__seamless__.set_single("has_minimal_review", val)
+
+    def _get_triage_field(self, field):
+        t = self.__seamless__.get_single(f"questions.{field}")
+        if t is None:
+            self.__seamless__.set_single(f"questions.{field}", {})
+            t = self.__seamless__.get_single(f"questions.{field}")
+        return TriageField(t)
 
     def _calculate_severity_value(self):
         total = 0
@@ -337,15 +471,11 @@ class Triage(SeamlessMixin):
         self._calculate_severity_value()
 
     @property
-    def ethics_not_excluded(self):
-        return self.__seamless__.get_single("questions.ethics_not_excluded")
+    def ethics_not_excluded(self) -> TriageField:
+        return self._get_triage_field("ethics_not_excluded")
 
     @property
-    def ethics_not_excluded_answer(self):
-        return self.__seamless__.get_single("questions.ethics_not_excluded.value")
-
-    def set_ethics_not_excluded(self, val:bool, sv:int, note:"Note"):
-        self._set_question("ethics_not_excluded", val, sv=sv, note=note)
+    def database_not_removed_no_embargo(self):
 
 
 ##########################################
