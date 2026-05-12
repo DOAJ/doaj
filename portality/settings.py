@@ -1472,6 +1472,7 @@ _MIN = 60
 _HOUR = 3600
 _DAY = 24 * _HOUR
 _WEEK = 7 * _DAY
+_YEAR = 52 * _WEEK + _DAY  # unless it's a leap year
 
 # Configures the age of the last completed job on the queue before the queue is marked as unstable
 # (in seconds)
@@ -1602,7 +1603,7 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _DAY + _HOUR
     },
     'datalog_journal_added_update': {
-        'last_run_successful_in': _HOUR
+        'last_run_successful_in': _DAY + _HOUR
     },
     'find_discontinued_soon': {
         'last_run_successful_in': _DAY + _HOUR
