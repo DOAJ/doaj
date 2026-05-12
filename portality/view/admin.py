@@ -991,6 +991,86 @@ def pdd_delete():
 def ris_search():
     return render_template(templates.ADMIN_RIS_SEARCH)
 
+@blueprint.route("/system/provenance", methods=["GET"])
+@login_required
+def system_object_provenance():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="provenance_search",
+                           init_function="initProvenance",
+                           page_title="Provenance")
+
+@blueprint.route("/system/file-uploads", methods=["GET"])
+@login_required
+def system_object_file_uploads():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="file_uploads_search",
+                           init_function="initFileUploads",
+                           page_title="File Uploads")
+
+@blueprint.route("/system/bulk-uploads", methods=["GET"])
+@login_required
+def system_object_bulk_uploads():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="bulk_uploads_search",
+                           init_function="initBulkUploads",
+                           page_title="Bulk Uploads")
+
+@blueprint.route("/system/cache", methods=["GET"])
+@login_required
+def system_object_cache():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="cache_search",
+                           init_function="initCache",
+                           page_title="Cache")
+
+@blueprint.route("/system/locks", methods=["GET"])
+@login_required
+def system_object_locks():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="locks_search",
+                           init_function="initLocks",
+                           page_title="Locks")
+
+@blueprint.route("/system/preservation", methods=["GET"])
+@login_required
+def system_object_preservation():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="preservation_search",
+                           init_function="initPreservation",
+                           page_title="Preservation")
+
+@blueprint.route("/system/article-tombstones", methods=["GET"])
+@login_required
+def system_object_article_tombstones():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="article_tombstones_search",
+                           init_function="initArticleTombstones",
+                           page_title="Article Tombstones")
+
+@blueprint.route("/system/draft-applications", methods=["GET"])
+@login_required
+def system_object_draft_applications():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="draft_applications_search",
+                           init_function="initDraftApplications",
+                           page_title="Draft Applications")
+
+@blueprint.route("/system/harvester-state", methods=["GET"])
+@login_required
+def system_object_harvester_state():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="harvester_state_search",
+                           init_function="initHarvesterState",
+                           page_title="Harvester State")
+
+@blueprint.route("/system/autochecks", methods=["GET"])
+@login_required
+def system_object_autochecks():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="autochecks_search",
+                           init_function="initAutochecks",
+                           page_title="Autochecks")
+
 @blueprint.route("/ris/<id>/<action>", methods=["POST"])
 @login_required
 def ris_manage(id, action):

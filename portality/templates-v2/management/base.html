@@ -59,6 +59,23 @@
                             <li><a href="{{ url_for("admin.journal_csv_search") }}" class="dropdown__link">Journal CSVs</a></li>
                         </ul>
                     </li>
+                    <li class="dropdown dropdown--notifications flex-center" id="system_objects_nav">
+                        <a href="#" class="dropdown__trigger label" id="dropdown__trigger--system-objects" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span><span data-feather="database" aria-hidden="true"></span> System Objects</span>
+                        </a>
+                        <ul class="dropdown__menu notifications" id="system_objects_views">
+                            <li><a href="{{ url_for("admin.system_object_provenance") }}" class="dropdown__link">Provenance</a></li>
+                            <li><a href="{{ url_for("admin.system_object_file_uploads") }}" class="dropdown__link">File Uploads</a></li>
+                            <li><a href="{{ url_for("admin.system_object_bulk_uploads") }}" class="dropdown__link">Bulk Uploads</a></li>
+                            <li><a href="{{ url_for("admin.system_object_cache") }}" class="dropdown__link">Cache</a></li>
+                            <li><a href="{{ url_for("admin.system_object_locks") }}" class="dropdown__link">Locks</a></li>
+                            <li><a href="{{ url_for("admin.system_object_preservation") }}" class="dropdown__link">Preservation</a></li>
+                            <li><a href="{{ url_for("admin.system_object_article_tombstones") }}" class="dropdown__link">Article Tombstones</a></li>
+                            <li><a href="{{ url_for("admin.system_object_draft_applications") }}" class="dropdown__link">Draft Applications</a></li>
+                            <li><a href="{{ url_for("admin.system_object_harvester_state") }}" class="dropdown__link">Harvester State</a></li>
+                            <li><a href="{{ url_for("admin.system_object_autochecks") }}" class="dropdown__link">Autochecks</a></li>
+                        </ul>
+                    </li>
                     <li class="flex-center" id="admin_dashboard_nav">
                         <a href="{{ url_for('dashboard.top_todo') }}" class="label">
                             <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
