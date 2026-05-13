@@ -1600,16 +1600,16 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _WEEK + _DAY
     },
     'check_latest_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'datalog_journal_added_update': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'find_discontinued_soon': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'harvest': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'journal_csv': {
         'last_run_successful_in': 2 * _HOUR
@@ -1621,7 +1621,7 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'prune_es_backups': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'public_data_dump': {
         'last_run_successful_in': 32 * _DAY
@@ -1633,10 +1633,10 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'request_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'sitemap': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     }
 }
 
