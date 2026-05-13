@@ -9,3 +9,4 @@ tests:
       - step: for each link click the link and verify that the page opened (it opens in a new tab) matches the description
         results:
           - All pages matches the description and the context
+          - this content is updated in testbook
