@@ -104,7 +104,7 @@ tests:
           - At the top of the list new notification "New flag" is listed
       - step: Click on the "New flag" notification
         results:
-          - "Feline Aerodynamics Review __<id>" journal form is opened in a new tab
+          - The form of the "Feline Aerodynamics Review __<id>" journal is opened in a new tab
           - On the right the flag is displayed and assigned to you ("ProfessorQuibbleton__<id>")
       - step: Unlock & Close the form, close the tab
       - step: Click the Notifications button at the top navigation bar
