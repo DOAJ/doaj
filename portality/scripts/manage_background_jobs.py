@@ -41,6 +41,7 @@ def get_action_handler(action):
     from portality.tasks.journal_bulk_edit import JournalBulkEditBackgroundTask
     from portality.tasks.journal_csv import JournalCSVBackgroundTask
     from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
+    from portality.tasks.old_data_cleanup import OldDataCleanupBackgroundTask
     from portality.tasks.preservation import PreservationBackgroundTask
     from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
     from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
@@ -76,7 +77,8 @@ def get_action_handler(action):
         SitemapBackgroundTask.__action__: SitemapBackgroundTask,
         SuggestionBulkEditBackgroundTask.__action__: SuggestionBulkEditBackgroundTask,
         ApplicationAutochecks.__action__: ApplicationAutochecks,
-        ProcessEventBackgroundTask.__action__: ProcessEventBackgroundTask
+        ProcessEventBackgroundTask.__action__: ProcessEventBackgroundTask,
+        OldDataCleanupBackgroundTask.__action__: OldDataCleanupBackgroundTask
     }
     return HANDLERS.get(action)
 

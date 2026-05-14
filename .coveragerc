@@ -1,0 +1,13 @@
+[run]
+relative_files = True
+source = portality,combinatrix,dictdiffer
+omit =
+    */migrate/*
+    */scripts/*
+    *cfg*
+
+[report]
+omit =
+    */migrate/*
+    */scripts/*
+    *cfg*
