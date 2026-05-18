@@ -951,7 +951,7 @@ class FieldDefinitions:
             }},  # ~~^-> NotValue:FormValidator~~
             {"forbidden_word": {
                 "word": "blind",
-                "message": lazy_gettext("Please use the structured options above to indicate the type of blind peer review used.")
+                "message": lazy_gettext("Please use the structured options above to indicate the type of peer review used.")
             }}  # ~~^-> ForbiddenWord:FormValidator~~
         ],
         "widgets": [
