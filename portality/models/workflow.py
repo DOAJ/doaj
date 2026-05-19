@@ -476,6 +476,7 @@ class Triage(SeamlessMixin):
 
     @property
     def database_not_removed_no_embargo(self):
+        pass
 
 
 ##########################################
