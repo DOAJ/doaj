@@ -4,8 +4,8 @@
 {% block page_title %}Managing Editor Dashboard{% endblock %}
 
 {% block page_header %}
-    Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
-    {{ current_user.id }}{% endif %}!
+    <h1>Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+    {{ current_user.id }}{% endif %}!</h1>
 {% endblock %}
 
 {% block admin_content %}

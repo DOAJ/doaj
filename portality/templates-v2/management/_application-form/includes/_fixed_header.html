@@ -1,0 +1,23 @@
+<div class="row">
+    <div class="col-md-8 above_the_fold">
+        <h1 class="above_the_fold--title">{% if obj.es_type == constants.ES_TYPE_JOURNAL %}Journal{% elif obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: <span id="above_the_fold__title" data-widget--click-to-copy>{{ obj.bibjson().title }}</span></h1>
+        <h2><a class="text-muted above_the_fold--url" id="above_the_fold__url" href='{{ obj.bibjson().journal_url }}' target="_blank" data-widget--click-to-copy>{{ obj.bibjson().journal_url }}</a></h2>
+        <p class="above_the_fold--issns">
+            <span data-feather="book-open"></span>
+            {% if obj.bibjson().pissn %}
+                P: <span id="above_the_fold__pissn" data-widget--click-to-copy>{{ obj.bibjson().pissn }}</span>
+                {% if obj.bibjson().eissn %}
+                    /
+                {% endif %}
+            {% endif %}
+            {% if obj.bibjson().eissn %}
+            E: <span id="above_the_fold__eissn" data-widget--click-to-copy>{{ obj.bibjson().eissn }}</span>
+            {% endif %}
+        </p>
+    </div>
+    {% if obj and (obj.es_type == constants.LOCK_JOURNAL and obj.is_in_doaj()) %}
+        <div class="col-md-4 align-right">
+            <a class="button button--tertiary see_in_doaj" href="{{ url_for('doaj.toc', identifier=obj.id) }}" target="_blank">See this journal in DOAJ</a>
+        </div>
+    {% endif %}
+</div>
