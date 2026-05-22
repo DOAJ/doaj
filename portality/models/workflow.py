@@ -393,11 +393,11 @@ class TriageField(SeamlessMixin):
         super(TriageField, self).__init__(raw=raw, **kwargs)
 
     @property
-    def compliant(self):
+    def compliant(self) -> bool:
         return self.__seamless__.get_single("compliant")
 
     @property
-    def severity_value(self):
+    def severity_value(self) -> int:
         return self.__seamless__.get_single("sv")
 
     @property
