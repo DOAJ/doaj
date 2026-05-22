@@ -600,10 +600,10 @@ msgid "Enter the Year (YYYY)."
 msgstr ""
 
 #: forms/application_forms.py:975
-#, python-brace-format
+#, python-format
 msgid ""
 "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be"
-" greater than {}"
+" greater than %(min_year)s"
 msgstr ""
 
 #: forms/application_forms.py:987
@@ -1201,18 +1201,18 @@ msgid "Please enter a valid URL. It should start with http or https"
 msgstr ""
 
 #: forms/application_forms.py:2931
-#, python-brace-format
-msgid "This value should be between {min} and {max}"
+#, python-format
+msgid "This value should be between %(min)s and %(max)s"
 msgstr ""
 
 #: forms/application_forms.py:2936
-#, python-brace-format
-msgid "This value should be bigger than {gte}"
+#, python-format
+msgid "This value should be bigger than %(gte)s"
 msgstr ""
 
 #: forms/application_forms.py:2940
-#, python-brace-format
-msgid "This value should be smaller than {lte}"
+#, python-format
+msgid "This value should be smaller than %(lte)s"
 msgstr ""
 
 #: forms/application_forms.py:3015 forms/application_forms.py:3019
