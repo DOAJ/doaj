@@ -993,12 +993,10 @@ var formulaic = {
                 this.flagExists = false;
                 this.toggleFlagButtons(false, true, false);
                 this.enableAddBtn();
-                this.$flagInputsContainer.find("input, textarea").val("");
                 $("#spanPretendingToBeInput--flags").remove();
                 this.$resolvedInput.val(JSON.stringify(resolvedFlagJSON));
-                this.$assigneeInput.val("").trigger("change");
                 this.togglePastDeadlineWarning();
-                this.$flagInputsContainer.hide();
+                this.clearAndHideFlagForm();
             }
 
             this.unresolveFlag = function(e) {

@@ -206,6 +206,24 @@ tests:
       - step: In a separate tab log in as 'LordWiggleworth__<id>' (admin)
       - step: navigate to /admin (admin Journals search)
       - step: open any journal form **without** a flag
+      - step: make any valid change in the form other than the flag, for example add/change "Last Full Review Date"
+      - step: click "Save"
+        results:
+          - The form is saved correctly
+      - step: Click "Add flag"
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the flags note input
+      - step: Enter a deadline only (leave assignee and note empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the flags note input
+      - step: Remove the deadline, leave the deadline input empty
+      - step: Add assignee only (the note and the deadline inputs still are empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the flags note input
+      - step: Click "Cancel" to clear the flag inputs and hide the flag form
       - step: Click "Add flag"
       - step: Enter a note only (leave assignee and deadline empty)
       - step: Click "Save"
@@ -217,7 +235,13 @@ tests:
         results:
           - The error under the deadline input is cleared
           - The error under the assignee input is still displayed
-      - step: Enter an assignee
+      - step: Click "Cancel"
+          - The flag inputs are hidden
+      - step: Click "Save"
+        results:
+          - The form is saved correctly
+      - step: Click "Add flag"
+      - step: Enter an assignee, a deadline and a note
       - step: Click "Save"
         results:
           - The flag is saved successfully
@@ -226,6 +250,52 @@ tests:
       - step: Click "Resolve flag"
         results:
           - The flag is marked as resolved - a RESOLVED label is displayed and all related inputs become disabled.
+      - step: Click "Add flag"
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the flags note input
+      - step: Enter a deadline only (leave assignee and note empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the flags note input
+      - step: Remove the deadline, leave the deadline input empty
+      - step: Add assignee only (the note and the deadline inputs still are empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the flags note input
+      - step: Click "Cancel" to clear the flag inputs and hide the flag form
+      - step: Click "Add flag"
+      - step: Enter a note only (leave assignee and deadline empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the assignee input
+          - An error message is displayed under the deadline input
+      - step: Enter a deadline
+      - step: Click "Save"
+        results:
+          - The error under the deadline input is cleared
+          - The error under the assignee input is still displayed
+      - step: Click "Cancel"
+          - The flag inputs are hidden
+      - step: Click "Save"
+        results:
+          - The form is saved correctly
+      - step: Click "Add flag"
+      - step: Enter an assignee, a deadline and a note
+      - step: Click "Save"
+        results:
+          - The flag is saved successfully
+          - The flag is displayed correctly with note, assignee, and deadline
+      - step: Enter a deadline only (leave assignee and note empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the assignee input
+      - step: Remove the deadline, leave the deadline input empty
+      - step: Add assignee only (the note and the deadline inputs still are empty)
+      - step: Click "Save"
+        results:
+          - An error message is displayed under the deadline input
+      - step: Click "Cancel" to clear the flag inputs and hide the flag form
       - step: Click "Add flag"
       - step: Enter a note only (leave assignee and deadline empty)
       - step: Click "Save"
