@@ -808,7 +808,7 @@ var formulaic = {
                     this.initializeExistingFlag();
                 }
                 else {
-                    this.$flagInputsContainer.hide();
+                    this.clearAndHideFlagForm();
                     this.enableAddBtn();
                     this.toggleFlagButtons(showResolve=false, showUnresolve=false, showCancel=false);
                 }
@@ -846,6 +846,18 @@ var formulaic = {
                     const $that = $(e.target);
                     this.togglePastDeadlineWarning($that);
                 });
+            }
+
+            this.clearAndHideFlagForm = function() {
+                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").val("");
+                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").prop("disabled", true);
+                this.$assigneeInput.val("").trigger("change");
+                this.$flagInputsContainer.hide();
+            }
+
+            this.showFlagForm = function() {
+                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").prop("disabled", false);
+                this.$flagInputsContainer.show();
             }
 
             this.togglePastDeadlineWarning = function() {
@@ -949,7 +961,7 @@ var formulaic = {
             this.addFlag = function() {
                 this.flagExists = true;
                 this.disableAddBtn();
-                this.$flagInputsContainer.show();
+                this.showFlagForm();
                 if (this.$resolvedInput.val()) {
                     this.$unresolveFlagBtn.prop('disabled', true);
                     this.$unresolveFlagBtn.prop('title', "Only one flag per record is permitted. Cancel the new flag to unresolve this one.");
@@ -959,9 +971,7 @@ var formulaic = {
 
             this.cancelFlag = function(e) {
                 this.flagExists = false;
-                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").val("");
-                this.$assigneeInput.val("").trigger("change");
-                this.$flagInputsContainer.hide();
+                this.clearAndHideFlagForm();
                 this.toggleFlagButtons(false, null, false);
                 if (this.$resolvedInput.val()) {
                     this.$unresolveFlagBtn.prop('disabled', false);
@@ -992,7 +1002,7 @@ var formulaic = {
             }
 
             this.unresolveFlag = function(e) {
-                this.$flagInputsContainer.show();
+                this.showFlagForm();
                 const prevFlag = JSON.parse(this.$resolvedInput.val())
                 this.$assigneeInput.val(prevFlag.assignee).trigger("change");
                 this.$flagDeadline.val(prevFlag.deadline);

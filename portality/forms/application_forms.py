@@ -29,6 +29,7 @@ from portality.forms.validate import (
     JournalURLInPublicDOAJ,
     DifferentTo,
     RequiredIfOtherValue,
+    RequiredIfActive,
     OnlyIf,
     OnlyIfExists,
     NotIf,
@@ -2047,6 +2048,11 @@ class FieldDefinitions:
         "name": "flag_note",
         "group": "flags",
         "input": "textarea",
+        "validate": [
+            {"required_if_active": {
+                "message": lazy_gettext("Flag requires a note")},
+            }
+        ]
     }
 
     # ~~->$ NoteID:FormField~~
@@ -2902,12 +2908,32 @@ class RequiredBuilder:
             html_attrs["data-parsley-required-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
             html_attrs["data-parsley-required-message"] = "<p><small>" + lazy_gettext("This answer is required") + "</p></small>"
+        if settings.get("skip_disabled"):
+            html_attrs["data-parsley-validate-if-disabled"] = "false"
         html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
     def wtforms(field, settings):
         return CustomRequired(message=settings.get("message"))
 
+class RequiredIfActiveBuilder:
+    """
+        ~~->$ RequiredIfActive:FormValidator~~
+        """
+
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-required-if-active"] = ""
+        if "message" in settings:
+            html_attrs["data-parsley-required-if-active-message"] = "<p><small>" + settings["message"] + "</small></p>"
+        else:
+            html_attrs["data-parsley-required-if-active-message"] = "<p><small>" + lazy_gettext(
+                "This answer is required") + "</p></small>"
+        html_attrs["data-parsley-validate-if-empty"] = "true"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return RequiredIfActive(message=settings.get("message"))
 
 class IsURLBuilder:
     # ~~->$ IsURL:FormValidator~~
@@ -3271,6 +3297,7 @@ PYTHON_FUNCTIONS = {
     "validate": {
         "render": {
             "required": RequiredBuilder.render,
+            "required_if_active": RequiredIfActiveBuilder.render,
             "is_url": IsURLBuilder.render,
             "int_range": IntRangeBuilder.render,
             "issn_in_public_doaj": ISSNInPublicDOAJBuilder.render,
@@ -3293,6 +3320,7 @@ PYTHON_FUNCTIONS = {
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
+            "required_if_active": RequiredIfActiveBuilder.wtforms,
             "is_url": IsURLBuilder.wtforms,
             "max_tags": MaxTagsBuilder.wtforms,
             "int_range": IntRangeBuilder.wtforms,

@@ -639,6 +639,12 @@ class Year(object):
             return
         return app.config.get('MINIMAL_OA_START_DATE', 1900) <= field.data <= dates.now().year
 
+class RequiredIfActive(object):
+    def __init__(self, message=None):
+        self.message = message or "This field is required if not disabled"
+
+    def __call__(self, form, field):
+        return
 
 class CustomRequired(object):
     """

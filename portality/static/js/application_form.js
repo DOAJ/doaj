@@ -791,6 +791,17 @@ doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
     }
 };
 
+// value required if the field is not disabled
+window.Parsley.addValidator("requiredIfActive", {
+    validateString : function(value, requirement, parsleyInstance) {
+        console.log("requiredIfActive")
+        if (parsleyInstance.$element[0].disabled) {
+            return true;
+        }
+        return !!value;
+    }
+})
+
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
         let thisElementId = parsleyInstance.$element[0].id;
