@@ -53,7 +53,7 @@ tests:
           - Add Flag button is disabled
       - step: Click Resolve Flag button
         results:
-          - The flag is marked as resolved
+          - The flag is marked as resolved - a RESOLVED label is displayed and all related inputs become disabled.
           - Add Flag button is active
           - Undo Resolving button is active
       - step: Click Undo Resolving
@@ -225,7 +225,7 @@ tests:
       - step: Edit the flag and remove the deadline value
       - step: Click "Resolve flag"
         results:
-          - The flag is marked as resolved
+          - The flag is marked as resolved - a RESOLVED label is displayed and all related inputs become disabled.
       - step: Click "Add flag"
       - step: Enter a note only (leave assignee and deadline empty)
       - step: Click "Save"
