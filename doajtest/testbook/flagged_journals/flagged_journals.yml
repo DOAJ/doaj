@@ -90,7 +90,7 @@ tests:
     steps:
       - step: Navigate to /testdrive/flags
       - step: In a separate tab login as LordWiggleworth__<id> (admin)
-      - step: Feline Aerodynamics Review - an update request assigned to you, with no flags
+      - step: Feline Aerodynamics Review - a journal assigned to you, with no flags
       - step: Click Add Flag button
       - step: Assign "ProfessorQuibbleton__<id>"
       - step: Add deadline in exactly 1 week
