@@ -197,8 +197,6 @@ tests:
           - Only Flagged Records and Flagged to you" facets are **not** displayed
 
   - title: Flag Validation
-    setup:
-      - Open any journal form without a flag
     context:
       role: admin
     steps:
