@@ -33,13 +33,13 @@ tests:
       - step: In the "Deadline" input add a date in the past
         results:
           - A warning "Provided deadline is in the past. Is it correct?" is displayed under the deadline input
+      - step: In text area add flag's note (any text)
       - step: Save the form (do not close it)
         results:
           - Journal form is saved correctly
       - step: In deadline input add a date in exactly 1 week
         results:
           - Warning disappears
-      - step: In text area add flag's note (any text)
       - step: Save application
         results:
           - The flag is saved and additional data (Created by <i>user</i> at <i>date</i>) are displayed
@@ -70,7 +70,7 @@ tests:
           - The empty form is hidden
           - Undo Resolving and Add Flag buttons are active
       - step: Click Add Flag button
-      - step: Add a new flag, assign it to ProfessorQuibbleton__<id>, add a deadline > 7 days in the future, and provide a note, then save the application
+      - step: Add a new flag, assign it to ProfessorQuibbleton__<id>, set a deadline in over 7 days in the future, and provide a note, then save the application
         results:
           - The new flag is saved and displayed
           - The old flag was converted to a note with previous flag's details
@@ -235,6 +235,12 @@ tests:
         results:
           - The error under the deadline input is cleared
           - The error under the assignee input is still displayed
+      - step: Clear the deadline input
+      - step: Add an assignee
+      - step: Click "Save"
+        results:
+          - The error under the assignee input is cleared
+          - The error under the deadline input is displayed
       - step: Click "Cancel"
           - The flag inputs are hidden
       - step: Click "Save"
@@ -275,6 +281,12 @@ tests:
         results:
           - The error under the deadline input is cleared
           - The error under the assignee input is still displayed
+      - step: Clear the deadline input
+      - step: Add an assignee
+      - step: Click "Save"
+        results:
+          - The error under the assignee input is cleared
+          - The error under the deadline input is displayed
       - step: Click "Cancel"
           - The flag inputs are hidden
       - step: Click "Save"
@@ -283,27 +295,10 @@ tests:
       - step: Click "Add flag"
       - step: Enter an assignee, a deadline and a note
       - step: Click "Save"
-        results:
-          - The flag is saved successfully
-          - The flag is displayed correctly with note, assignee, and deadline
-      - step: Enter a deadline only (leave assignee and note empty)
-      - step: Click "Save"
-        results:
-          - An error message is displayed under the assignee input
-      - step: Remove the deadline, leave the deadline input empty
-      - step: Add assignee only (the note and the deadline inputs still are empty)
-      - step: Click "Save"
-        results:
-          - An error message is displayed under the deadline input
-      - step: Click "Cancel" to clear the flag inputs and hide the flag form
+        results: The form is saved correctly with a new flag
+      - step: Click "Resolve" to resolve the flag
       - step: Click "Add flag"
-      - step: Enter a note only (leave assignee and deadline empty)
-      - step: Click "Save"
-        results:
-          - An error message is displayed under the assignee input of the new flag
-          - An error message is displayed under the deadline input of the new flag
-          - No validation errors are shown on the resolved flag fields
-      - step: Enter a deadline and an assignee for the new flag
+      - step: Enter an assignee, a deadline and a note
       - step: Click "Save"
         results:
           - The resolved flag is converted to a note
