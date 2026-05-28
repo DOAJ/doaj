@@ -973,8 +973,8 @@ class FieldDefinitions:
             {"required": {"message": lazy_gettext("Enter the Year (YYYY).")}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {
-                "message": lazy_gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}").format(
-                    app.config.get('MINIMAL_OA_START_DATE', 1900))}}
+                "message": lazy_gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than %(min_year)s",
+                    min_year=app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
             "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
@@ -2933,16 +2933,16 @@ class IntRangeBuilder:
         default_msg = ""
         if "gte" in settings and "lte" in settings:
             html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
-            default_msg = lazy_gettext("This value should be between {min} and {max}").format(
+            default_msg = lazy_gettext("This value should be between %(min)s and %(max)s",
                 min=str(settings.get("gte")), max=str(settings.get("lte")))
         else:
             if "gte" in settings:
                 html_attrs["data-parsley-min"] = settings.get("gte")
-                default_msg = lazy_gettext("This value should be bigger than {gte}").format(
+                default_msg = lazy_gettext("This value should be bigger than %(gte)s",
                     gte=str(settings.get("gte")))
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
-                default_msg = lazy_gettext("This value should be smaller than {lte}").format(
+                default_msg = lazy_gettext("This value should be smaller than %(lte)s",
                     lte=str(settings.get("lte")))
         html_attrs["data-parsley-range-message"] = "<p><small>" + settings.get("message", default_msg) + "</p></small>"
 
