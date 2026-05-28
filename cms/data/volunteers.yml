@@ -43,13 +43,21 @@ ed:
   language: Turkish, English, Russian
   photo: "Khayala.jpg"
 
+- name: Khoirul Fathoni
+  area: Humanities
+  year_since:
+  city: Ponorogo
+  country: Indonesia
+  language: Indonesian, English
+  featured: true
+  photo: "Khoirul.jpg"
+
 - name: Natalia Pamuła
   area: Humanities, Social Sciences
   year_since:
   city: Toruń
   country: Poland
   language: Polish, English
-  featured: true
   photo: "napa.jpg"
 
 - name: Pablo Hernandez
@@ -310,14 +318,6 @@ ass_ed:
   country: Morocco
   language: Arab, French, English
 
-- name: Ina Smith
-  area: Scholarly Publishing, Instructional Design
-  year_since:
-  city: Pretoria
-  country: South Africa
-  language: English, Africaans
-  photo: "ina-smith.png"
-
 - name: Irene Prähauser
   area: Library Science
   year_since:
@@ -369,6 +369,7 @@ ass_ed:
   city: Mexico City
   country: Mexico
   language: Spanish, English
+  featured: true
   photo: "Julio.jpg"
   
 - name: Juyeon Park
@@ -401,14 +402,6 @@ ass_ed:
   country: United Kingdom
   language: English
   photo: 
-  
-- name: Khoirul Fathoni
-  area: Humanities
-  year_since:
-  city:
-  country: Indonesia
-  language: Indonesian, English
-  photo: "Khoirul.jpg"
   
 - name: Leila Yang
   area: Scholarly Publishing
