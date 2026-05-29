@@ -42,6 +42,6 @@ By supporting us, your organisation will join [a growing family of like-minded i
 - We will add your institution’s name to [our Supporters page](/support/supporters/)
 - You can include details of your DOAJ support in marketing activities
 - You can use [our logo](https://doaj-kit.netlify.app/building-blocks/logotype/) on your institution’s websites and in your communications
-- You can integrate our open metadata into your discovery and aggregator tools via our [OAI-PMH feed](/docs/oai-pmh/), [API](/docs/api/) or [public data dump](/docs/public-data-dump/)
+- Via access to our [Premium Metadata Services](https://doaj.org/docs/premium), you can integrate our metadata into your discovery and aggregator tools via our [OAI-PMH feed](/docs/oai-pmh/), [API](/docs/api/) or [public data dump](/docs/public-data-dump/)
 
 ---
