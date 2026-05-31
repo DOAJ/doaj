@@ -216,10 +216,10 @@ server {
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_fast_failover;
         proxy_connect_timeout 2s;
-        proxy_send_timeout 10s;
-        proxy_read_timeout 10s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
         proxy_next_upstream error timeout;
-        proxy_next_upstream_timeout 3s;
+        proxy_next_upstream_timeout 5s;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
