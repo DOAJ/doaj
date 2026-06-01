@@ -37,6 +37,7 @@ API_V3_DOCS = "public/api/v3/api_docs.html"
 API_V4_DOCS = "public/api/v4/api_docs.html"
 
 # Admin area
+ADMIN_STATUS = "management/admin/status.html"
 ADMIN_SITE_SEARCH = "management/admin/admin_site_search.html"
 APPLICATION_LOCKED = "management/admin/application_locked.html"
 APPLICATIONS_SEARCH = "management/admin/applications.html"

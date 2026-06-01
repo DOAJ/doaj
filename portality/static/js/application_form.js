@@ -186,7 +186,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.TABS = [
             {title: "Open access compliance", fieldsets: ["basic_compliance"]},
-            {title: "About the Journal", fieldsets: ["about_the_journal", "publisher", "society_or_institution"]},
+            {title: "About the Journal", fieldsets: ["about_the_journal_extended", "publisher", "society_or_institution"]},
             {title: "Copyright & licensing", fieldsets: ["licensing", "embedded_licensing", "copyright"]},
             {title: "Editorial", fieldsets: ["peer_review", "plagiarism", "editorial"]},
             {title: "Business model", fieldsets: ["apc", "apc_waivers", "other_fees"]},

@@ -17,6 +17,7 @@ from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.core import app
+from portality import internationalise
 
 log = logging.getLogger(__name__)
 
@@ -51,6 +52,8 @@ class BackgroundApi(object):
         job = background_task.background_job
         ctx = None
         acc = None
+        if not hasattr(app, 'babel'):
+            internationalise.internationalise(app)
         if job.user is not None:
             ctx = app.test_request_context("/")
             ctx.push()
