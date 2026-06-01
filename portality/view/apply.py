@@ -21,7 +21,14 @@ def pull_lang(endpoint, values):
 
 @blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
-    return render_template(templates.STATIC_PAGE, page_frag="/apply/thank-you.html")
+    lang = session.get("lang", "en")
+
+    if lang not in ("en", "fr"):
+        lang = "en"
+
+    page_frag = "/apply/fr-thank-you.html" if lang == "fr" else "/apply/thank-you.html"
+
+    return render_template(templates.STATIC_PAGE, page_frag=page_frag)
 
 
 @blueprint.route("/draft", methods=["GET"])
