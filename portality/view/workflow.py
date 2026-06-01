@@ -3,6 +3,7 @@ from copy import deepcopy
 
 from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response
 from flask_login import login_required, current_user
+from formulaic.serialise.form.core import FormSerialiser
 
 from portality import models
 from portality.bll import DOAJ
@@ -12,6 +13,7 @@ from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview
 from portality.decorators import ssl_required
+from portality.forms.workflow.triage.forms import TriageForm
 from portality.ui import templates
 from portality.ui.workflow import StateUI
 
@@ -147,3 +149,11 @@ def edit(application_id):
     url = url_for("workflow.index")
     return redirect(url)
 
+
+@blueprint.route("/triage-form")
+@login_required
+@ssl_required
+def triage_form():
+    serialiser = FormSerialiser()
+    html = serialiser.data_to_string({}, TriageForm())
+    return html
