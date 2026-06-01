@@ -13,7 +13,7 @@ from portality.app import app
 from portality.models.account import Account
 from portality.core import app as flask_app
 from portality.lib import dates
-from portality.lib.security_utils import Encryption
+from portality.lib.security import Encryption
 
 from doajtest.helpers import DoajTestCase, with_es
 
