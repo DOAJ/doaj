@@ -786,34 +786,34 @@ var formulaic = {
             this.namespace = "formulaic-flagmanager-" + this.fieldDef.name;
 
             this.init = function() {
-                const fieldName = this.fieldDef.name
-                this.container = $("." + fieldName + "__container");
-                this.flagGroups = $("div[class*='" + fieldName + "__question--group--']");
-                this.flagInputsContainer = $("[class^='form__question_inputs_div--']");
-                this.assigneeInputs = this.container.find("input[name$='-flag_assignee']");
-                this.addFlagBtn = this.container.find("#add_flag");
-                this.resolveFlagBtns = $("[id^='resolve_flag--']");
-                this.unresolveFlagBtns = $("[id^='unresolve_flag--']");
-                this.cancelFlagBtns = $("[id^='cancelAddingFlag--']");
-                this.flagNote = $("[id$='-flag_note']")
+                this.fieldName = this.fieldDef.name
+                this.$container = $($("." + this.fieldName + "__container")[0]);
+                this.$flagInputsContainer = $($("." + this.fieldName + "-inputs--container")[0]);
+                this.$assigneeInput = $($("#" + this.fieldName + "-flag_assignee")[0]);
+                this.$resolvedInput = $($("#" + this.fieldName + "-flag_resolved")[0]);
+                this.$authorInput = $($("#" + this.fieldName + "-flag_setter")[0]);
+                this.$createdInput = $($("#" + this.fieldName + "-flag_created_date")[0]);
+                this.$addFlagBtn = $($("#add_flag")[0]);
+                this.$resolveFlagBtn = $($("#resolve_flag-btn")[0]);
+                this.$unresolveFlagBtn = $($("#unresolve_flag-btn")[0]);
+                this.$cancelFlagBtn = $($("#cancel_flag-btn")[0]);
+                this.$flagNote = $($("#" + this.fieldName + "-flag_note")[0]);
                 this.textarea_max_height = 150;
-                this.flagDeadline = $("[id$='-flag_deadline']");
-                $(this.flagDeadline).flatpickr({"allowInput": true});
+                this.$flagDeadline = $($("#" + this.fieldName + "-flag_deadline")[0]);
+                this.$flagDeadline.flatpickr({"allowInput": true});
 
-                this.flagExists = false;
-                this.existingFlagIdx = null;
-                this.newFlagIdx = null;
-
-                for (var j = 0; j < this.assigneeInputs.length; j++) {
-                    if ($(this.assigneeInputs[j]).val()) {
-                        this.flagExists = true;
-                        break;
-                    }
+                this.flagExists = !!(this.$assigneeInput.val());
+                if (this.flagExists) {
+                    this.disableAddBtn();
+                    this.initializeExistingFlag();
+                }
+                else {
+                    this.clearAndHideFlagForm();
+                    this.enableAddBtn();
+                    this.toggleFlagButtons(showResolve=false, showUnresolve=false, showCancel=false);
                 }
 
-
                 this.setUpEventListeners();
-                this.setUI();
             }
 
             this.fullFlagHTML = function() {
@@ -833,290 +833,185 @@ var formulaic = {
                 }
 
             this.setUpEventListeners = function() {
-                this.addFlagBtn.on("click", () => this.addFlag())
-                this.resolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.resolveFlag(e)));
-                this.unresolveFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.unresolveFlag(e)));
-                this.cancelFlagBtns.each((_, btn) => $(btn).on("click", (e) => this.cancelFlag(e)));
-                this.flagNote.each((_, textarea) => $(textarea).on("input", () => {
-                  textarea.style.height = 'auto'; // Reset first
-                  textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
-                }));
-                this.flagDeadline.each((_, input) => $(input).on("change", (e) => {
+                this.$addFlagBtn.on("click", () => this.addFlag())
+                this.$resolveFlagBtn.on("click", (e) => this.resolveFlag(e));
+                this.$unresolveFlagBtn.on("click", (e) => this.unresolveFlag(e));
+                this.$cancelFlagBtn.on("click", (e) => this.cancelFlag(e));
+                this.$flagNote.on("input", () => {
+                    const textarea = this.$flagNote[0];
+                    textarea.style.height = 'auto'; // Reset first
+                    textarea.style.height = Math.min(textarea.scrollHeight, this.textarea_max_height) + 'px';
+                });
+                this.$flagDeadline.on("change", (e) => {
                     const $that = $(e.target);
                     this.togglePastDeadlineWarning($that);
-                }));
+                });
             }
 
-            this.togglePastDeadlineWarning = function($deadline_input) {
-                if (doaj.dates.is_in_the_past($deadline_input.val())){
-                    $deadline_input.siblings('.warning').show();
+            this.clearAndHideFlagForm = function() {
+                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").val("");
+                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").prop("disabled", true);
+                this.$assigneeInput.val("").trigger("change");
+                this.$flagInputsContainer.hide();
+            }
+
+            this.showFlagForm = function() {
+                this.$flagInputsContainer.find("input:not(#flags-flag_resolved), textarea").prop("disabled", false);
+                this.$flagInputsContainer.show();
+            }
+
+            this.togglePastDeadlineWarning = function() {
+                if (doaj.dates.is_in_the_past(this.$flagDeadline.val())){
+                    this.$flagDeadline.siblings('.warning').show();
                 }
                 else {
-                    $deadline_input.siblings('.warning').hide();
+                    this.$flagDeadline.siblings('.warning').hide();
                 }
             }
 
             this.enableAddBtn = function() {
-                $(this.addFlagBtn).prop('disabled', false);
-                $(this.addFlagBtn).prop('title', "Add flag to that record");
+                this.$addFlagBtn.prop('disabled', false);
+                this.$addFlagBtn.prop('title', "Add flag to that record");
             }
 
             this.disableAddBtn = function() {
-                $(this.addFlagBtn).prop('disabled', true);
-                $(this.addFlagBtn).prop('title', "You can add only one flag per record. Resolve the existing flag to add another one.");
+                this.$addFlagBtn.prop('disabled', true);
+                this.$addFlagBtn.prop('title', "You can add only one flag per record. Resolve the existing flag to add another one.");
             }
 
-            this.getResolveBtn = function(idx) {
-                return $("[id^='resolve_flag--" + idx + "']")
-            }
-
-            this.getUnresolveBtn = function(idx) {
-                return $("[id^='unresolve_flag--" + idx + "']")
-            }
-
-            this.getResolvedInput = function(idx) {
-                return $("input[id='" + this.fieldDef + "-" + idx + "-flag_resolved']")
-            }
-
-            this.getClearFlagBtn = function(idx) {
-                return $("button[id='clearFlag--" + idx + "']");
-            }
-
-            this.getCancelFlagBtn = function(idx) {
-                return $("button[id='cancelAddingFlag--" + idx + "']")
-            }
-
-            this.getResolveFlagInput = function(idx) {
-                return $("input[id='" + this.fieldDef.name + "-" + idx + "-flag_resolved']")
-            }
-
-
-            this.removeResolveButtonsIfResolveDisabled = function () {
-                let $resolveInputs = $(this.container).find($("input[id$='flag_resolved']"));
-                $resolveInputs.each((idx, elem) => {
-                    if ($(elem).is(":disabled")) {
-                        this.getResolveBtn(idx).remove();
-                        this.getUnresolveBtn(idx).remove();
-                    }
-                });
-            };
-
-            this.setupFlagIndices = function () {
-                // existing flag is 1 if it doesn't exist just to be able to remove it.
-                this.existingFlagIdx = this.flagExists ? 0 : null;
-                this.newFlagIdx = this.flagExists ? 1 : 0;
-            };
-
-            this.toggleFlagButtons = function (idx, { showResolve = false, showUnresolve = false, showCancel = false, showClear = false }) {
-                this.getResolveBtn(idx).toggle(showResolve);
-                this.getUnresolveBtn(idx).toggle(showUnresolve);
-                this.getCancelFlagBtn(idx).toggle(showCancel);
-                this.getClearFlagBtn(idx).toggle(showClear);
+            this.toggleFlagButtons = function (showResolve = false, showUnresolve = false, showCancel = false) {
+                if (showResolve !== null) {
+                    this.$resolveFlagBtn.toggle(showResolve);
+                }
+                if (showUnresolve !== null) {
+                    this.$unresolveFlagBtn.toggle(showUnresolve);
+                }
+                if (showCancel !== null) {
+                    this.$cancelFlagBtn.toggle(showCancel);
+                }
             };
 
             this.initializeExistingFlag = function () {
                 this.setUpFlagDetails();
-                if ($(this.flagDeadline[this.existingFlagIdx]).val()) {
-                    this.togglePastDeadlineWarning($(this.flagDeadline[this.existingFlagIdx]))
+                if (this.$flagDeadline.val()) {
+                    this.togglePastDeadlineWarning()
                 }
-                this.setUpNoteDetails();
-                $(this.assigneeInputs[this.existingFlagIdx]).on("change", () => this.setUpFlagDetails());
-
-                this.toggleFlagButtons(this.existingFlagIdx, { showResolve: true, showUnresolve: false });
+                this.setUpFlagHeader();
+                $(this.$assigneeInput).on("change", () => this.setUpFlagDetails());
+                this.toggleFlagButtons( showResolve=true, showUnresolve=false );
             };
 
-            this.setupNewFlagGroup = function () {
-                if (!this.addFlagBtn.length) {
-                    this.flagGroups[this.newFlagIdx].remove();
-                } else {
-                    this.setupNewFlagVisibility();
+            this.insertSpan = function(content, $placement, before=false, idSuffix="") {
+                let id = "spanPretendingToBeInput";
+                const $input = this.$flagDeadline;
+                if (idSuffix){
+                    id += "--" + idSuffix;
                 }
-            };
-
-            this.setupNewFlagVisibility = function () {
-                this.toggleFlagButtons(this.newFlagIdx, { showCancel: true, showClear: true });
-
-                $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_setter").hide();
-                $("#" +this.fieldDef.name+ "-" + this.newFlagIdx + "-flag_created_date").hide();
-                if (this.flagExists) {
-                    $(this.flagGroups[this.newFlagIdx]).insertBefore(this.flagGroups[this.existingFlagIdx]);
-                }
-                $(this.flagGroups[this.newFlagIdx]).hide();
-            };
-
-            this.setUI = function() {
-
-                this.removeResolveButtonsIfResolveDisabled();
-
-                this.setupFlagIndices();
-                if (this.flagExists) {
-                    this.initializeExistingFlag();
-                }
-                else {
-                    // only 1 flagGroup is needed, the second one can be removed.
-                    $(this.flagGroups[1]).remove();
-                }
-                this.setupNewFlagGroup()
-                this.setAddBtnStatus();
-            };
-
-            this.replaceInputWithSpan = function(input, newValue=null) {
-                let $input = $(input);
-                let text = newValue || $input.val();
-
-                let newFlag = false;
-
-                if ($input.closest('body').length === 0) {
-                    $('body').append($input.css({ position: 'absolute', visibility: 'hidden' }));
-                    newFlag = true;
-                }
-
-                // Create the span
-                let $span = $('<span class="spanPretendingToBeInput" id="spanPretendingToBeInput--flag"></span>')
-                    .html(text)
+                let $span = $('<span class="spanPretendingToBeInput" id="' + id + '"></span>')
+                    .html(content)
                     .css({
                         color: $input.css('color'),
                         textAlign: $input.css('text-align'),
                         verticalAlign: $input.css('vertical-align'),
                         lineHeight: $input.css('line-height'),
                     })
-
-                    if (newFlag) {
-                        $input.remove();
+                    if (before) {
+                        $placement.before($span, $span)
                     }
-                    return $span;
+                    else {
+                        $placement.after($span, $span)
+                    }
                 }
 
-            this.setUpNoteDetails = function() {
-                let $authorInput = $("input[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_setter']");
-                let $flagDateInput = $("input[id='" + this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_created_date']");
-                let newNoteText = `<strong>Created by: </strong>` + $authorInput.val() + ", " + doaj.dates.humanDateTime($flagDateInput.val());
-                let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), newNoteText)
-                $authorInput.before($newSpan);
-                $authorInput.hide();
-                $flagDateInput.hide();
+            this.setUpFlagHeader = function() {
+                const raw = this.$authorInput.val();
+                const name = raw.replace(/\s*\([^)]*\)\s*/g, "");
+                const idMatch = raw.match(/\(([^)]*)\)/);
+                const humanFriendlyAuthor = name.trim() || (idMatch ? idMatch[1].trim() : "");
+                const headerText = `<strong>Created by: </strong>` + humanFriendlyAuthor + ", " + doaj.dates.humanDateTime(this.$createdInput.val());
+                this.insertSpan(headerText, this.$authorInput, before=true, idSuffix=this.fieldName)
             };
 
             this.setUpFlagDetails = function() {
-                let $assigneeInput = $(this.assigneeInputs[this.existingFlagIdx]);
-                let $flagDeadlineInput = $("[id='" +this.fieldDef.name + "-" + this.existingFlagIdx + "-flag_deadline']");
-                let flagDetailsText = `<span>`;
-                let flagDetailsText_assignee = "";
-                let flagDetailsText_deadline = "";
-
-                if ($assigneeInput.is(":disabled")) {
-                    if ($assigneeInput.val() === doaj.session.currentUserId) {
-                        flagDetailsText += this.fullFlagHTML();
-                    }
-                    else {
-                        flagDetailsText_assignee = `<strong>Assigned to: </strong>` + $assigneeInput.val();
-                    }
-
-                    if ($flagDeadlineInput.val()) {
-                        flagDetailsText_deadline = `<strong>Deadline: </strong>` + $flagDeadlineInput.val();
-                    }
-
-                    if (flagDetailsText_assignee !== "") {
-                        if (flagDetailsText_deadline) {
-                            flagDetailsText += flagDetailsText_assignee + `, ` + flagDetailsText_deadline;
-                        }
-                        else {
-                            flagDetailsText += flagDetailsText_assignee;
-                        }
-                    }
-                    else {
-                        if (flagDetailsText_deadline) {
-                            flagDetailsText += flagDetailsText_deadline;
-                        }
-                    }
-
-                    flagDetailsText += `</span>`;
-
-                    let $newSpan = this.replaceInputWithSpan($("<input id='dummyInput' disabled='disabled' type='text'>"), flagDetailsText);
-                    $assigneeInput.parent().before($newSpan);
-                    $assigneeInput.parent().hide();
-                    $flagDeadlineInput.parent().hide();
+                const flagIcon = $(".flag")
+                if (flagIcon.length > 0) {
+                    flagIcon.remove();
                 }
-                else {
-                    if ($(".flag").length > 0) {
-                        $(".flag").remove();
-                    }
-                    if ($assigneeInput.val() === doaj.session.currentUserId) {
-                        if ($(".flag").length > 0) {
-                            $(".flag").remove();
-                        }
-                        $assigneeInput.parent().prepend(this.fullFlagHTML());
-                    }
+                if (this.$assigneeInput.val() === doaj.session.currentUserId) {
+                    this.$assigneeInput.parent().prepend(this.fullFlagHTML());
                 }
             };
 
-
-            this.setAddBtnStatus = function() {
-                if (this.flagExists) {
-                    this.disableAddBtn();
-                }
-                else {
-                    this.enableAddBtn();
-                }
-            }
-
-            this.showNewFlag = function() {
-                $(this.flagGroups[this.newFlagIdx]).show();
-            }
-
-            this.hideNewFlag = function() {
-                $(this.flagGroups[this.newFlagIdx]).hide();
-            }
-
             this.markFlagAsResolved = function() {
-                $(this.flagInputsContainer[this.existingFlagIdx]).addClass("flag--resolved");
-                this.getResolveBtn(this.existingFlagIdx).hide();
-                this.getUnresolveBtn(this.existingFlagIdx).show();
-            }
+                const classes = this.$flagInputsContainer.attr("class") || "";
+                const flag_content = `<div class="header spanPretendingToBeInput">` + $("#spanPretendingToBeInput--flags").html() + `</div>` +
+                    `<div class="assignee pretendInputWrapper"><div class="pretendLabel">Assign a user 
+</div><div class="pretendInput">` + this.$assigneeInput.val() + `</div></div>` +
+                    `<div class="deadline pretendInputWrapper"><div class="pretendLabel">Deadline 
+</div><div class="pretendInput">` + this.$flagDeadline.val() + `</div></div>` +
+                    `<div class="note pretendInputWrapper"><div class="pretendInput">` + this.$flagNote.val() + `</div></div>`
+                const $resolvedContainer = $("<div>")
+                    .addClass(classes)
+                    .addClass("flag--resolved")
+                    .html(flag_content);
+                this.$cancelFlagBtn.after($resolvedContainer);
 
-            this.markFlagAsUnresolved = function() {
-                $(this.flagInputsContainer[this.existingFlagIdx]).removeClass("flag--resolved");
-                this.getResolveBtn(this.existingFlagIdx).show();
-                this.getUnresolveBtn(this.existingFlagIdx).hide();
             }
 
             this.addFlag = function() {
-                this.showNewFlag();
                 this.flagExists = true;
-                this.setAddBtnStatus();
-                if (this.existingFlagIdx !== null) {
-                    this.getUnresolveBtn(this.existingFlagIdx).prop("disabled", true);
-                    this.getUnresolveBtn(this.existingFlagIdx).prop("title", "You can add only one flag at the time. To unresolve this flag, remove the new flag first");
+                this.disableAddBtn();
+                this.showFlagForm();
+                if (this.$resolvedInput.val()) {
+                    this.$unresolveFlagBtn.prop('disabled', true);
+                    this.$unresolveFlagBtn.prop('title', "Only one flag per record is permitted. Cancel the new flag to unresolve this one.");
                 }
+                this.toggleFlagButtons(null, null, true);
             }
 
             this.cancelFlag = function(e) {
-                let flagId = e.target.id.split("--")[1];
-                $(this.flagGroups[flagId]).find('input,textarea').val('')
-                this.hideNewFlag();
                 this.flagExists = false;
-                this.setAddBtnStatus();
-                if (this.existingFlagIdx !== null) {
-                    this.getUnresolveBtn(this.existingFlagIdx).prop("disabled", false);
-                    this.getUnresolveBtn(this.existingFlagIdx).prop("title", "");
+                this.clearAndHideFlagForm();
+                this.toggleFlagButtons(false, null, false);
+                if (this.$resolvedInput.val()) {
+                    this.$unresolveFlagBtn.prop('disabled', false);
+                    this.$unresolveFlagBtn.prop('title', "");
                 }
+                this.enableAddBtn();
             }
 
             this.resolveFlag = function(e) {
+
+                const resolvedFlagJSON = {
+                    assignee: this.$assigneeInput.val(),
+                    deadline: this.$flagDeadline.val(),
+                    note: this.$flagNote.val(),
+                    author: this.$authorInput.val(),
+                    created: this.$createdInput.val()
+                }
                 this.markFlagAsResolved();
-                this.getResolveFlagInput(this.existingFlagIdx).val("true");
-                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("readonly", true))
                 this.flagExists = false;
-                this.setAddBtnStatus();
+                this.toggleFlagButtons(false, true, false);
+                this.enableAddBtn();
+                $("#spanPretendingToBeInput--flags").remove();
+                this.$resolvedInput.val(JSON.stringify(resolvedFlagJSON));
+                this.togglePastDeadlineWarning();
+                this.clearAndHideFlagForm();
             }
 
             this.unresolveFlag = function(e) {
-                // let flagId = e.target.id.split("--")[1];
-                this.markFlagAsUnresolved();
-                this.getResolveFlagInput().val("false");
-                $(this.flagGroups[this.existingFlagIdx]).find('input,textarea').each((index, elem) => $(elem).prop("readonly", false))
+                this.showFlagForm();
+                const prevFlag = JSON.parse(this.$resolvedInput.val())
+                this.$assigneeInput.val(prevFlag.assignee).trigger("change");
+                this.$flagDeadline.val(prevFlag.deadline);
+                this.$flagNote.val(prevFlag.note);
+                this.$createdInput.val(prevFlag.created);
+                this.$authorInput.val(prevFlag.author);
+                this.setUpFlagHeader();
                 this.flagExists = true;
-                this.setAddBtnStatus();
+                $(".flag--resolved").remove();
+                this.disableAddBtn();
+                this.toggleFlagButtons(true, false, false);
             }
 
             this.init();

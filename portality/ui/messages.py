@@ -74,9 +74,15 @@ class Messages(object):
     EXCEPTION_EDITING_DELETED_JOURNAL = "This journal has been deleted, update request cannot be accepted."
     EXCEPTION_EDITING_NON_EXISTING_APPLICATION = "You cannot edit a not-existent application"
 
-    EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
+    EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id `{x}` not found"
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
     EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
+
+    EXCEPTION_NOTIFICATION_JOURNAL_NOT_FOUND = "Journal with id {x} not found"
+
+    EXCEPTION_UNABLE_TO_CONSTRUCT_JOURNAL = "Unable to construct Journal from supplied source - data structure validation error, {x}"
+    EXCEPTION_UNABLE_TO_CONSTRUCT_ACCOUNT = "Unable to construct Account from supplied source - data structure validation error, {x}"
+
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
@@ -120,6 +126,10 @@ class Messages(object):
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
     NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
 
+    JOURNALS_WITH_APPROACHING_DEADLINES_FOUND = "Journal with deadline in {delta} days found: {id}"
+    JOURNALS_WITH_APPROACHING_DEADLINES_FOUND_NOTIFICATION_SENT_LOG = "Notification with approaching deadlines sent."
+    NO_JOURNALS_WITH_APPROACHING_DEADLINES_FOUND_LOG = "No approaching deadlines found."
+
     FORMS__APPLICATION_STATUS__PENDING = "Pending"
     FORMS__APPLICATION_STATUS__IN_PROGRESS = 'In Progress'
     FORMS__APPLICATION_STATUS__COMPLETED = 'Completed'
@@ -150,7 +160,7 @@ class Messages(object):
     AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING = "Autoassign: Editor group '{target}' does not exist, cannot auto assign"
     AUTOASSIGN__NOTE__ASSIGN = "Autoassign: Editor group auto assigned to '{target}' because {reason}"
 
-    FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username};\n Original note: {note}"
+    FORMS__APPLICATION_FLAG__RESOLVED = "Flag resolved on {date} by {username}; \n Original flag: created on {created_date}, by {author}, assigned to {assignee}, deadline {deadline}. \n Note: {note}"
     FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING = "Provided deadline is in the past. Is it correct?"
 
     ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS = "Article found that belongs to more than 1 journal. Article's id: {article_id}"

@@ -147,11 +147,11 @@ class ApplicationProcessor(FormProcessor):
                 if n.get("id") == sn.get("id"):
                     n["date"] = sn.get("date")
 
-        # record the positions of any blank notes
+        # record the positions of any blank notes except flags
         i = 0
         removes = []
         for n in tnotes:
-            if n.get("note").strip() == "":
+            if not n.get("flag", {}).get("assigned_to", "") and n.get("note").strip() == "":
                 removes.append(i)
             i += 1
 
@@ -226,28 +226,26 @@ class ApplicationProcessor(FormProcessor):
                         pass
 
     def _resolve_flags(self, account):
+        import json
         # handle flag resolution
-
         # check that this form knows about flags
         if getattr(self.form, "flags", None) is None:
             return
 
-        resolved_flags = []
-        for flag in self.form.flags.data:
-            if flag["flag_resolved"] == "true":
-                # Note: new notes do not necessarily have ids, but flags that are being
-                # resolved must have an id because they must exist already to be resolved
-                resolved_flags.append(flag["flag_note_id"])
-
-        for flag_id in resolved_flags:
+        flag = self.form.flags.data
+        if flag["flag_resolved"]:
             acc_id = account.id if account else "unknown user"
-            flag = self.target.get_note_by_id(flag_id)
+            resolved = json.loads(flag["flag_resolved"])
             new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                created_date=dates.human_date(resolved["created"]),
+                author=resolved["author"],
+                assignee=resolved["assignee"],
+                deadline=resolved["deadline"],
                 date=dates.today(),
                 username=acc_id,
-                note=flag.get("note", "")
+                note=resolved["note"]
             )
-            self.target.resolve_flag(flag_id, new_note_text)
+            self.target.resolve_flag(flag["flag_note_id"], new_note_text, dates.today(), acc_id)
 
 
 class NewApplication(ApplicationProcessor):
@@ -882,6 +880,8 @@ class ManEdJournalReview(ApplicationProcessor):
                                                   changed_by=changed_by)
             self.target.add_note(n, date=dates.now_str(), author_id=changed_by)
 
+        is_new_flag_assignee = JournalFormXWalk.is_new_flag_assignee(self.form, self.source)
+
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
@@ -910,6 +910,13 @@ class ManEdJournalReview(ApplicationProcessor):
             # except app_email.EmailException:
             #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
             #     app.logger.exception('Error sending assignment email to associate.')
+
+        if is_new_flag_assignee:
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_FLAG_ASSIGNED, current_user.id, {
+                "assignee": self.target.flags[0]["flag"]["assigned_to"],
+                "journal": self.target.data
+            }))
 
     def validate(self):
         # make use of the ability to disable validation, otherwise, let it run
