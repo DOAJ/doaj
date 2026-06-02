@@ -5,11 +5,12 @@
         <h3 class="label"> Locked for editing until <span id="lock_expires"
                                                           data-timestamp="{{ lock.utc_expires() }}">{{ lock.expire_formatted() }}</span>
         </h3>
+
         {% set fs = formulaic_context.fieldset("mark_as_full_review") %}
-        {% if fs %}
+        {% if obj.application_type==constants.APPLICATION_TYPE_UPDATE_REQUEST and fs %}
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
-                {%  include field_template %}
+                {% include field_template %}
             {% endfor %}
         {% endif %}
         <div class="editorial_panel--exit_buttons">

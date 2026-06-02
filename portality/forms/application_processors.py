@@ -423,10 +423,10 @@ class AdminApplication(ApplicationProcessor):
             j = applicationService.accept_application(self.target, account)
 
             # Record the current time as last full review, if mark as full review has been selected
-            if self.form.mark_as_full_review.data:
+            if (self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST and
+                    self.form.mark_as_full_review.data):
                 now = dates.now_str()
                 j.last_full_review = now
-                # ToDo - Do I need to add a note for the last full review?
                 n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
                 j.add_note(n, date=now, author_id=account.id)
 
@@ -475,10 +475,10 @@ class AdminApplication(ApplicationProcessor):
         # the application was neither accepted or rejected, so just save it
         else:
             if (self.source.current_journal is not None and j is not None and
-                    self.form.mark_as_full_review.data):
+                    self.form.mark_as_full_review.data and
+                    self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST):
                 now = dates.now_str()
                 j.last_full_review = now
-                # ToDo - Do I need to add a note for the last full review?
                 n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
                 j.add_note(n, date=now, author_id=account.id)
             self.target.set_last_manual_update()

@@ -2109,7 +2109,7 @@ class FieldDefinitions:
 
     MARK_AS_FULL_REVIEW = {
         "name": "mark_as_full_review",
-        "label": "Mark as full review",
+        "label": "This update request constitutes a full review of the journal",
         "input": "checkbox"
     }
 
