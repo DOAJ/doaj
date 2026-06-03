@@ -1,12 +1,34 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
-<form method="post" action="">
-    <div class="form__question">
+<form method="post" action="" class="form-login">
+    <div class="form__question form-login__question">
         {{ render_field(form.user, placeholder="email@example.com") }}
     </div>
-    <div class="form__question">
-        {{ render_field(form.password, placeholder="********") }}
+
+    <button id="login-link-btn" type="submit" class="button button--primary"
+            onclick="document.getElementById('action').value='get_link'">
+        Send me a login link
+    </button>
+
+    <div id="toggle-to-password" class="form__question">
+        <a href="#" id="show-password">Prefer to use a password?</a>
     </div>
+
+    <div id="password-section" style="display: none;">
+        <div class="form__question form-login__question">
+            {{ render_field(form.password, placeholder="********") }}
+        </div>
+
+        <button id="password-btn" type="submit" class="button button--primary"
+                onclick="document.getElementById('action').value='password_login'">
+            Log in with password
+        </button>
+
+        <div class="form__question">
+            <a href="#" id="show-login-link">Use a login link instead</a>
+        </div>
+    </div>
+
     {{ render_field(form.next) }}
-  <input type="submit" class="button button--primary" value="Log in" />
+    {{ form.action(type="hidden", id="action", value="") }}
 </form>
