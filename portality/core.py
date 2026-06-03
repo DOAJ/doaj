@@ -1,5 +1,8 @@
 import os
 import threading
+from copy import deepcopy
+from types import SimpleNamespace
+
 import yaml
 import json
 
@@ -13,6 +16,7 @@ from portality import settings, constants, datasets
 from portality.bll import exceptions, DOAJ
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping, dates, paths
+from portality.lib.dicts import AttrDict
 from portality.ui.debug_toolbar import DoajDebugToolbar
 from portality.ui import templates
 
@@ -333,6 +337,8 @@ def setup_jinja(app):
 def _load_data(app):
     if not "data" in app.jinja_env.globals:
         app.jinja_env.globals["data"] = {}
+    if not hasattr(app, "cms"):
+        app.cms = AttrDict()
     datadir = os.path.join(app.config["BASE_FILE_PATH"], "..", "cms", "data")
     for datafile in os.listdir(datadir):
         with open(os.path.join(datadir, datafile)) as f:
@@ -340,6 +346,9 @@ def _load_data(app):
         dataname = datafile.split(".")[0]
         dataname = dataname.replace("-", "_")
         app.jinja_env.globals["data"][dataname] = data
+
+        data_dict = deepcopy(data)
+        app.cms[dataname] = AttrDict.wrap(data_dict)
 
 
 ##################################################

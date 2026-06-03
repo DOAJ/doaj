@@ -1,0 +1,25 @@
+<div>
+    {% autoescape off %}
+        {% if field.ref.check %}
+            <div><strong>Check</strong>: {{ field.ref.check }}</div>
+        {% endif %}
+
+        {% if field.ref.instructions %}
+            <div style="background: #cccccc; font-style: italic; padding: 1em; margin: 1em;">{{ field.ref.instructions }}</div>
+        {% endif %}
+    {% endautoescape %}
+
+    {% if field.ref.resources|length > 0 %}
+        <strong>Resources</strong>:
+        <ul>
+            {% for resource in field.ref.resources %}
+                <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% set cr = field.ref.get_control_renderer() %}
+    {% autoescape off %}
+        {{ cr.draw(field.control) }}
+    {% endautoescape %}
+</div>

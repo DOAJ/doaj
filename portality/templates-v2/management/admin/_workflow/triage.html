@@ -1,0 +1,48 @@
+{% extends "management/admin/base.html" %}
+
+{% block page_title %}Triage Form{% endblock %}
+
+{% block admin_stylesheets %}
+<style>
+fieldset#ethics_criteria > legend {
+    font-weight: bold;
+    font-size: 2em;
+}
+
+fieldset#ethics_criteria > fieldset {
+    border: 1px solid #ccc;
+    padding: 1em;
+    margin-bottom: 1em;
+}
+
+fieldset#ethics_criteria > fieldset > legend {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<form id="{{ form.ref.struct_ref.name }}"
+      novalidate
+      action="{{ form.ref.action }}"
+      method="{{ form.ref.method }}"
+      data-parsley-focus="none">
+
+    <div class="col-md-12 page">
+        <section class="page-content">
+            {% for element in form.elements %}
+                {% set rend = element.ref.get_renderer() %}
+                {% autoescape off %}
+                    {{ rend.draw(element) }}
+                {% endautoescape %}
+            {% endfor %}
+        </section>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block admin_js %}
+
+{% endblock %}

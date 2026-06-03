@@ -85,6 +85,9 @@ WORKFLOW_FAIL_WIDGET = "management/admin/_workflow/includes/fail.html"
 WORKFLOW_EDIT_WIDGET = "management/admin/_workflow/includes/edit.html"
 WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 
+WORKFLOW_FORM_TRIAGE = "management/admin/_workflow/triage.html"
+WORKFLOW_FORM_FIELD_TRIAGE = "management/admin/_workflow/includes/triage_field.html"
+
 # Reusable application form components
 AF_ENTRY_GOUP = "_application-form/includes/_entry_group.html"
 AF_ENTRY_GROUP_HORIZONTAL = "_application-form/includes/_entry_group_horizontal.html"
