@@ -18,7 +18,7 @@ from portality.lib.security import Encryption
 from doajtest.helpers import DoajTestCase, with_es
 
 # Set up test encryption key
-app.config['ENCRYPTION_KEY'] = Fernet.generate_key()
+app.config['PASSWORDLESS_ENCRYPTION_KEY'] = Fernet.generate_key()
 
 class TestPasswordlessLogin(DoajTestCase):
     def setUp(self):
@@ -146,7 +146,7 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         super(TestPasswordlessLoginEndpoints, self).setUp()
         self.app = app.test_client()
         self.app.testing = True
-        self.url_crypto = Encryption()
+        self.url_crypto = Encryption(app.config['PASSWORDLESS_ENCRYPTION_KEY'])
 
         # Create a test account
         self.test_account = Account.make_account(
@@ -159,8 +159,7 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         self.test_account.save()
         self.test_account.refresh()
 
-    @with_es(indices=[Account.__type__])
-    @patch('portality.view.account.send_login_code_email')
+    @patch('portality.app_email.send_mail')
     def test_verify_code_success(self, mock_send_email):
         """Test successful verification of login code"""
         # Set a login code
@@ -189,7 +188,7 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         account.refresh()
         self.assertIsNone(account.login_code)
 
-    @patch('portality.view.account.send_login_code_email')
+    @patch('portality.bll.services.account.AccountService.send_login_code_email')
     def test_verify_code_invalid(self, mock_send_email):
         """Test invalid login code verification"""
         # Set a login code
@@ -218,7 +217,7 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         account = Account.pull(self.test_account.id)
         self.assertEqual(account.login_code, code)
 
-    @patch('portality.view.account.send_login_code_email')
+    @patch('portality.bll.services.account.AccountService.send_login_code_email')
     def test_verify_code_expired(self, mock_send_email):
         """Test expired login code verification"""
         # Set a login code with expiry in the past
@@ -246,16 +245,32 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         self.assertIn(b'Invalid or expired verification code', response.data)
 
 class TestSendLoginCodeEmail(TestCase):
-    @patch('portality.view.account.send_mail')
+
+    def setUp(self):
+        super(TestSendLoginCodeEmail, self).setUp()
+        self.ctx = app.test_request_context()
+        self.ctx.push()
+        self.test_account = Account.make_account(
+            username='passwordlessuser',
+            name='Passwordless User',
+            email='passwordless@example.com',
+            roles=['user']
+        )
+        self.test_account.set_password('password123')
+        self.test_account.save()
+        self.test_account.refresh()
+
+    @patch('portality.app_email.send_mail')
     def test_send_login_code_email(self, mock_send_mail):
         """Test the send_login_code_email function"""
         with app.test_request_context():
-            email = 'test@example.com'
+            email = 'passwordless@example.com'
             code = '123456'
 
             # Call the function
-            from portality.view.account import send_login_code_email
-            send_login_code_email(email, code, "")
+            from portality.bll.services.account import AccountService
+            asc = AccountService()
+            asc.send_login_code_email(self.test_account, code, "")
 
             # Check email was sent with correct parameters
             mock_send_mail.assert_called_once()
