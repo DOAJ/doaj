@@ -47,7 +47,7 @@ tests:
 - title: Update Request link behaviour for publisher and non-owner
   context:
     role: anonymous
-  path: /testdrive/ur_nudge
+    path: /testdrive/ur_nudge
   steps:
   - step: Ensure you are not logged in.  You may use a private browsing window to do this if you are already logged in.
   - step: Go to the public page of "Journal of Exoplanetary Biosignatures XXXXX".  Where XXXX is the unique
