@@ -128,6 +128,26 @@ bg:job:admin_reports:export_available:
   short:
     Report "{name}" ready for download
 
+bg:job:article_deletion_notifications:publisher:
+  long: |
+    This is an automated email to inform you that article metadata has been deleted from one or several of the journals connected to your DOAJ account:
+    
+    {list_of_articles}
+    
+    Article metadata can be deleted for <a href="https://doaj.org/docs/faq/#occasionally-we-will-delete-article-metadata">several reasons</a>, including any of the following:
+    
+    1. A user alerted us that links in the article metadata were broken. (This is in accordance with our policy for article metadata with broken links.) 
+    2. Someone from your organisation got in touch and asked us to delete some article metadata.
+    3. Someone from your organisation deleted the articles via the API.
+    4. We noticed that some article metadata was duplicated and we deleted those.
+    
+    Please <a href="https://doaj.org/docs/faq/#uploading-article-metadata">upload</a> replacement article metadata if appropriate.
+    
+    If you are not responsible for your journal article metadata, please forward this email to the right person.
+
+  short:
+    Deleted articles in your journal(s) this week
+
 journal:assed:assigned:notify:
   long: |
     The journal **{journal_name}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.
