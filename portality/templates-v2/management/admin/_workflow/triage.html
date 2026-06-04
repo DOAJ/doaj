@@ -25,7 +25,7 @@ fieldset#ethics_criteria > fieldset > legend {
 {% block admin_content %}
 <form id="{{ form.ref.struct_ref.name }}"
       novalidate
-      action="{{ form.ref.action }}"
+      action="{{ url_for('admin.triage', triage_id=triage_id) }}"
       method="{{ form.ref.method }}"
       data-parsley-focus="none">
 
@@ -37,6 +37,7 @@ fieldset#ethics_criteria > fieldset > legend {
                     {{ rend.draw(element) }}
                 {% endautoescape %}
             {% endfor %}
+            <button id="submitBtn" class="button button--cta" type="submit">Save</button>
         </section>
     </div>
 </form>
