@@ -39,6 +39,7 @@ upstream doaj_apps_failover {
     least_conn;
     server 10.131.191.147:5050 weight=3 max_fails=3 fail_timeout=30s;        #doaj-public-1
     server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;                 #doaj-public-2
+    server 10.131.9.137:5050 max_fails=3 fail_timeout=30s;                   #doaj-public-3
     server 10.131.191.148:5050 backup;          #doaj-background-1
     server 10.131.191.149:5050 backup;          #doaj-editor-1
     keepalive 32;
@@ -50,7 +51,8 @@ upstream doaj_apps_failover {
 upstream doaj_fast_failover {
     server 10.131.191.147:5050 max_fails=1 fail_timeout=10s;        #doaj-public-1
     server 10.131.191.161:5050 max_fails=1 fail_timeout=10s;        #doaj-public-2
-    server 10.131.191.148:5050 backup;                               #doaj-background-1
+    server 10.131.9.137:5050 max_fails=1 fail_timeout=10s;          #doaj-public-3
+    server 10.131.191.148:5050 backup;                              #doaj-background-1
     server 10.131.191.149:5050 max_fails=1 fail_timeout=10s;        #doaj-editor-1
     keepalive 32;
     keepalive_timeout 60s;
@@ -60,6 +62,7 @@ upstream doaj_fast_failover {
 # For OAI we try routing to the public-2 server first to keep that traffic off main public-1
 upstream doaj_oai_failover {
     server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;              #doaj-public-2
+    server 10.131.9.137:5050 backup;         #doaj-public-3
     server 10.131.191.147:5050 backup;       #doaj-public-1
     server 10.131.191.148:5050 backup;       #doaj-background-1
     server 10.131.191.149:5050 backup;       #doaj-editor-1
