@@ -133,13 +133,9 @@ class ApplicationProcessor(FormProcessor):
         if self.target is None:
             raise Exception("Cannot carry data on to a non-existent target - run the xwalk first")
 
-        # first off, get the notes (by reference) in the target and the notes from the source
+        # first off, get the notes (by value) in the target and the notes from the source
         tnotes = self.target.notes
         snotes = self.source.notes
-
-        # if there are no notes, we might not have the notes by reference, so later will
-        # need to set them by value
-        apply_notes_by_value = len(tnotes) == 0
 
         # for each of the target notes we need to get the original dates from the source notes
         for n in tnotes:
@@ -170,8 +166,7 @@ class ApplicationProcessor(FormProcessor):
                 if not found:
                     tnotes.append(sn)
 
-        if apply_notes_by_value:
-            self.target.set_notes(tnotes)
+        self.target.set_notes(tnotes)
 
     def _carry_continuations(self):
         if self.source is None:
@@ -218,9 +213,12 @@ class ApplicationProcessor(FormProcessor):
             # set author_id on the note if it's a new note
             for note in self.target.notes:
                 note_date = dates.parse(note['date'])
+                # FIXME: this feels quite bad, I am not going to fix it now, but
+                # we should probably sort this out in the next version of the processors
                 if not note.get('author_id') and note_date > dates.before_now(60):
                     try:
                         note['author_id'] = current_user.id
+                        self.target.add_note_by_dict(note)    # We have to explicitly re-add the note, as `.notes` is by value not reference now
                     except AttributeError:
                         # Skip if we don't have a current_user
                         pass
@@ -427,6 +425,7 @@ class AdminApplication(ApplicationProcessor):
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             j = applicationService.accept_application(self.target, account)
+
             # record the url the journal is available at in the admin are and alert the user
             if has_request_context():       # fixme: if we handle alerts via a notification service we won't have to toggle on request context
                 jurl = url_for("doaj.toc", identifier=j.toc_id)
