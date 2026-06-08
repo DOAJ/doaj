@@ -5,10 +5,22 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL
 from formulaic.serialise.form.controls import Radio, Textarea
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
-from portality.forms.workflow.core import WorkflowFormFieldCapability, JinjaFieldRenderer
+from portality.forms.workflow.core import ComplianceCheckFieldCapability, JinjaFieldRenderer
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
+
+#####################################################
+## Common infrastructure/reused components
+
+class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_FORM_FIELD_TRIAGE
+
+class ComplianceCheckField(Field):
+    coerce = [Unicode()]
+
+class TriageComplianceCheckCapability(ComplianceCheckFieldCapability):
+    render_class = TriageComplianceCheckFieldRenderer
 
 class NoteCapability(FormFieldCapability):
     label = "Note"
@@ -19,23 +31,19 @@ class NoteCapability(FormFieldCapability):
 
     control_class = Textarea
 
-class WorkflowFieldRenderer(JinjaFieldRenderer):
-    template = templates.WORKFLOW_FORM_FIELD_TRIAGE
+class NoteField(Field):
+    coerce = [Unicode()]
+    capabilities = (NoteCapability(),)
 
 #####################################################
 ## Ethics: Not Excluded
 
-class EthicsNotExcluded(Field):
-    class EthicsNotExcludedCapability(WorkflowFormFieldCapability):
-        label = "Compliance"
-
+class EthicsNotExcluded(ComplianceCheckField):
+    class EthicsNotExcludedCapability(TriageComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_not_excluded.compliant},
             {"value": "n", "label": T.ethics_not_excluded.non_compliant}
         ]
-        control_class = Radio
-        control_render_class = InvertedLabelInputControlHTML
-        render_class = WorkflowFieldRenderer
 
         check = T.ethics_not_excluded.check
         instructions = T.ethics_not_excluded.instructions
@@ -47,14 +55,11 @@ class EthicsNotExcluded(Field):
         ]
 
     name = "ethics_not_excluded"
-    coerce = [Boolean()]
     capabilities = (EthicsNotExcludedCapability(),)
 
 
-class EthicsNotExcludedNote(Field):
+class EthicsNotExcludedNote(NoteField):
     name = "ethics_not_excluded_note"
-    coerce = [Unicode()]
-    capabilities = (NoteCapability(),)
 
 
 class EthicsNotExcludedGroup(Structure):
@@ -78,19 +83,12 @@ class EthicsNotExcludedGroup(Structure):
 ##########################################################
 ## Ethics: Non Standard Metrics
 
-class EthicsNoNonStandardMetrics(Field):
-    class EthicsNoNonStandardMetricsCapability(WorkflowFormFieldCapability):
-        label = "Compliance"
-
+class EthicsNoNonStandardMetrics(ComplianceCheckField):
+    class EthicsNoNonStandardMetricsCapability(TriageComplianceCheckCapability):
         options = [
-            {"value": "y",
-             "label": T.ethics_no_nonstandard_metrics.compliant},
-            {"value": "n",
-             "label": T.ethics_no_nonstandard_metrics.non_compliant}
+            {"value": "y", "label": T.ethics_no_nonstandard_metrics.compliant},
+            {"value": "n", "label": T.ethics_no_nonstandard_metrics.non_compliant}
         ]
-        control_class = Radio
-        control_render_class = InvertedLabelInputControlHTML
-        render_class = WorkflowFieldRenderer
 
         check = T.ethics_no_nonstandard_metrics.check
         instructions = T.ethics_no_nonstandard_metrics.instructions
@@ -102,14 +100,11 @@ class EthicsNoNonStandardMetrics(Field):
         ]
 
     name = "ethics_no_nonstandard_metrics"
-    coerce = [Boolean()]
     capabilities = (EthicsNoNonStandardMetricsCapability(),)
 
 
-class EthicsNoNonStandardMetricsNote(Field):
+class EthicsNoNonStandardMetricsNote(NoteField):
     name = "ethics_no_nonstandard_metrics_note"
-    coerce = [Unicode()]
-    capabilities = (NoteCapability(),)
 
 
 class EthicsNoNonStandardMetricsGroup(Structure):
@@ -132,19 +127,12 @@ class EthicsNoNonStandardMetricsGroup(Structure):
 ##########################################################
 ## Ethics: No Fake Impact
 
-class EthicsNoFakeImpact(Field):
-    class EthicsNoFakeImpactCapability(WorkflowFormFieldCapability):
-        label = "Compliance"
-
+class EthicsNoFakeImpact(ComplianceCheckField):
+    class EthicsNoFakeImpactCapability(TriageComplianceCheckCapability):
         options = [
-            {"value": "y",
-             "label": T.ethics_no_fake_impact.compliant},
-            {"value": "n",
-             "label": T.ethics_no_fake_impact.non_compliant}
+            {"value": "y", "label": T.ethics_no_fake_impact.compliant},
+            {"value": "n", "label": T.ethics_no_fake_impact.non_compliant}
         ]
-        control_class = Radio
-        control_render_class = InvertedLabelInputControlHTML
-        render_class = WorkflowFieldRenderer
 
         check = T.ethics_no_fake_impact.check
         instructions = T.ethics_no_fake_impact.instructions
@@ -156,14 +144,11 @@ class EthicsNoFakeImpact(Field):
         ]
 
     name = "ethics_no_fake_impact"
-    coerce = [Boolean()]
     capabilities = (EthicsNoFakeImpactCapability(),)
 
 
-class EthicsNoFakeImpactNote(Field):
+class EthicsNoFakeImpactNote(NoteField):
     name = "ethics_no_fake_impact_note"
-    coerce = [Unicode()]
-    capabilities = (NoteCapability(),)
 
 
 class EthicsNoFakeImpactGroup(Structure):
@@ -186,19 +171,12 @@ class EthicsNoFakeImpactGroup(Structure):
 ##########################################################
 ## Ethics: No False DOAJ Claim
 
-class EthicsNoFalseDOAJClaim(Field):
-    class EthicsNoFalseDOAJClaimCapability(WorkflowFormFieldCapability):
-        label = "Compliance"
-
+class EthicsNoFalseDOAJClaim(ComplianceCheckField):
+    class EthicsNoFalseDOAJClaimCapability(TriageComplianceCheckCapability):
         options = [
-            {"value": "y",
-             "label": T.ethics_no_false_doaj_claim.compliant},
-            {"value": "n",
-             "label": T.ethics_no_false_doaj_claim.non_compliant}
+            {"value": "y", "label": T.ethics_no_false_doaj_claim.compliant},
+            {"value": "n", "label": T.ethics_no_false_doaj_claim.non_compliant}
         ]
-        control_class = Radio
-        control_render_class = InvertedLabelInputControlHTML
-        render_class = WorkflowFieldRenderer
 
         check = T.ethics_no_false_doaj_claim.check
         instructions = T.ethics_no_false_doaj_claim.instructions
@@ -210,14 +188,11 @@ class EthicsNoFalseDOAJClaim(Field):
         ]
 
     name = "ethics_no_false_doaj_claim"
-    coerce = [Boolean()]
     capabilities = (EthicsNoFalseDOAJClaimCapability(),)
 
 
 class EthicsNoFalseDOAJClaimNote(Field):
     name = "ethics_no_false_doaj_claim"
-    coerce = [Unicode()]
-    capabilities = (NoteCapability(),)
 
 
 class EthicsNoFalseDOAJClaimGroup(Structure):
@@ -240,19 +215,12 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
 ##########################################################
 ## Ethics: No Susplicious Ties
 
-class EthicsNoSuspiciousTies(Field):
-    class EthicsNoSuspiciousTiesCapability(WorkflowFormFieldCapability):
-        label = "Compliance"
-
+class EthicsNoSuspiciousTies(ComplianceCheckField):
+    class EthicsNoSuspiciousTiesCapability(TriageComplianceCheckCapability):
         options = [
-            {"value": "y",
-             "label": T.ethics_no_suspicious_ties.compliant},
-            {"value": "n",
-             "label": T.ethics_no_suspicious_ties.non_compliant}
+            {"value": "y", "label": T.ethics_no_suspicious_ties.compliant},
+            {"value": "n", "label": T.ethics_no_suspicious_ties.non_compliant}
         ]
-        control_class = Radio
-        control_render_class = InvertedLabelInputControlHTML
-        render_class = WorkflowFieldRenderer
 
         check = T.ethics_no_suspicious_ties.check
         instructions = T.ethics_no_suspicious_ties.instructions
@@ -264,14 +232,11 @@ class EthicsNoSuspiciousTies(Field):
         ]
 
     name = "ethics_no_suspicious_ties"
-    coerce = [Boolean()]
     capabilities = (EthicsNoSuspiciousTiesCapability(),)
 
 
 class EthicsNoSuspiciousTiesNote(Field):
     name = "ethics_no_suspicious_ties"
-    coerce = [Unicode()]
-    capabilities = (NoteCapability(),)
 
 
 class EthicsNoSuspiciousTiesGroup(Structure):

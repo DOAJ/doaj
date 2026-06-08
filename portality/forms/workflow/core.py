@@ -1,7 +1,8 @@
 from flask import render_template
 
+from formulaic.serialise.form.controls import Radio
 from formulaic.serialise.form.core import FormFieldCapability, FormCapability, FieldsetCapability
-from formulaic.serialise.form.render import FormHTML, FieldHTML
+from formulaic.serialise.form.render import FormHTML, FieldHTML, InvertedLabelInputControlHTML
 
 
 class JinjaFormRenderer(FormHTML):
@@ -18,10 +19,15 @@ class JinjaFieldRenderer(FieldHTML):
         html = render_template(self.template, field=representation)
         return html
 
-class WorkflowFormFieldCapability(FormFieldCapability):
+class ComplianceCheckFieldCapability(FormFieldCapability):
+    label = "Compliance"
+
     check = None
     instructions = None
     resources = []
+
+    control_class = Radio
+    control_render_class = InvertedLabelInputControlHTML
 
 class WorkflowFieldsetCapability(FieldsetCapability):
     pass

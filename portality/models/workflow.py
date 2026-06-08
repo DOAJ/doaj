@@ -391,6 +391,7 @@ class TriageField(SeamlessMixin):
 
     def __init__(self, raw=None, **kwargs):
         super(TriageField, self).__init__(raw=raw, **kwargs)
+        self._notes = {}
 
     @property
     def compliant(self) -> bool:
@@ -407,6 +408,15 @@ class TriageField(SeamlessMixin):
     @property
     def changes(self):
         return self.__seamless__.get_list("changes")
+
+    @property
+    def notes(self):
+        for nid in self.note_ids:
+            if nid not in self._notes:
+                # TODO: merge in separate notes code
+                self._notes[nid] = None
+        return self._notes
+
 
 class DatabaseNotRemovedNoEmbargoField(TriageField):
     __SEAMLESS_STRUCT__ = DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD
@@ -475,8 +485,24 @@ class Triage(SeamlessMixin):
         return self._get_triage_field("ethics_not_excluded")
 
     @property
+    def ethics_no_nonstandard_metrics(self) -> TriageField:
+        return self._get_triage_field("ethics_no_nonstandard_metrics")
+
+    @property
+    def ethics_no_fake_impact(self) -> TriageField:
+        return self._get_triage_field("ethics_no_fake_impact")
+
+    @property
+    def ethics_no_false_doaj_claim(self) -> TriageField:
+        return self._get_triage_field("ethics_no_false_doaj_claim")
+
+    @property
+    def ethics_no_suspicious_ties(self) -> TriageField:
+        return self._get_triage_field("ethics_no_suspicious_ties")
+
+    @property
     def database_not_removed_no_embargo(self):
-        pass
+        return None
 
 
 ##########################################
