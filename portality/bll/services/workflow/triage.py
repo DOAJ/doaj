@@ -20,7 +20,7 @@ MODULE_TRIAGE_STAGES = [
     MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
 ]
 
-LEGACY_EDITOR_GROUP = "Triage"
+LEGACY_EDITOR_GROUP = None
 
 ######################################
 ## Workflow events specific to Triage
@@ -46,7 +46,7 @@ class AwaitingTriage(State):
     stage = WorkflowControl.ANY
     reviewer = WorkflowControl.UNASSIGNED
 
-    legacy_application_status = constants.APPLICATION_STATUS_PENDING
+    legacy_application_status = constants.APPLICATION_STATUS_NEW_WORKFLOW
     legacy_editor_group = LEGACY_EDITOR_GROUP
 
     events = [Claim, Assign]
@@ -81,9 +81,13 @@ class AwaitingTriage(State):
         wfc.reviewer_id = reviewer.id
 
         # legacy bindings
+        # TODO: if a reviewer is assigned, but no editor group, do we get any inconsistent behaviour
         if self.application is None:
             raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
-        self.application.set_editor_group(self.legacy_editor_group)
+        if self.legacy_editor_group:
+            self.application.set_editor_group(self.legacy_editor_group)
+        else:
+            self.application.remove_editor_group()
         self.application.set_editor(reviewer.id)
 
         if wfc.triage.has_minimal_review:
@@ -112,8 +116,12 @@ class TriageWorkingState(State):
         # legacy bindings
         if self.application is None:
             raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
-        self.application.set_editor_group(self.legacy_editor_group)
+
         self.application.remove_editor()
+        if self.legacy_editor_group:
+            self.application.set_editor_group(self.legacy_editor_group)
+        else:
+            self.application.remove_editor_group()
 
         return self.transition(AwaitingTriage, event.actor)
 
@@ -127,8 +135,12 @@ class TriageWorkingState(State):
         # legacy bindings
         if self.application is None:
             raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
-        self.application.set_editor_group(self.legacy_editor_group)
+
         self.application.remove_editor()
+        if self.legacy_editor_group:
+            self.application.set_editor_group(self.legacy_editor_group)
+        else:
+            self.application.remove_editor_group()
 
         return self.transition(AwaitingTriage, event.actor)
 
@@ -145,8 +157,12 @@ class TriageWorkingState(State):
         # legacy bindings
         if self.application is None:
             raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
-        self.application.set_editor_group(self.legacy_editor_group)
+
         self.application.set_editor(event.reviewer_id)
+        if self.legacy_editor_group:
+            self.application.set_editor_group(self.legacy_editor_group)
+        else:
+            self.application.remove_editor_group()
 
         return self.enter(event.actor, self._wf_control, self._application, self)
 

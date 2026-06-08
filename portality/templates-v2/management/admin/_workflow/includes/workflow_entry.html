@@ -1,7 +1,7 @@
 <div style="border: 1px solid #ccc; padding: 1em; margin-bottom: 1em;">
     {% set wfc = state.workflow_control %}
     <h2>
-        <a href="{{ url_for("admin.application", application_id=wfc.application_id) }}" target="_blank">{{ wfc.application_title }}</a>
+        <a href="{{ url_for("workflow.triage_form", application_id=wfc.application_id) }}" target="_blank">{{ wfc.application_title }}</a>
     </h2>
 
     <div class="flex" style="flex-wrap: wrap">

@@ -58,6 +58,7 @@ NOTIFICATIONS = "management/admin/notifications.html"
 ADMIN_UNLOCKED = "management/admin/unlocked.html"
 ADMIN_JOURNAL_CSV_SEARCH = "management/admin/journal_csv_search.html"
 ADMIN_PDD_SEARCH = "management/admin/pdd_search.html"
+
 ADMIN_WORKFLOW_OVERVIEW = "management/admin/workflow.html"
 ADMIN_WORKFLOW_OVERVIEW_ENTRY = "management/admin/_workflow/includes/workflow_entry.html"
 
@@ -85,7 +86,8 @@ WORKFLOW_FAIL_WIDGET = "management/admin/_workflow/includes/fail.html"
 WORKFLOW_EDIT_WIDGET = "management/admin/_workflow/includes/edit.html"
 WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 
-WORKFLOW_FORM_TRIAGE = "management/admin/_workflow/triage.html"
+WORKFLOW_PAGE_TRIAGE = "management/admin/triage.html"
+WORKFLOW_FORM_TRIAGE = "management/admin/_workflow/_triage_form.html"
 WORKFLOW_FORM_FIELD_TRIAGE = "management/admin/_workflow/includes/triage_field.html"
 
 # Reusable application form components

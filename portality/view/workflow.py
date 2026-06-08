@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, abort, url_for, redirect,
 from flask_login import login_required, current_user
 from formulaic.serialise.form.core import FormSerialiser
 
-from portality import models
+from portality import models, constants
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
 from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail
@@ -13,6 +13,7 @@ from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview
 from portality.decorators import ssl_required
+from portality.forms.workflow.crosswalk import WorkflowControl2TriageForm
 from portality.forms.workflow.triage.forms import TriageForm
 from portality.ui import templates
 from portality.ui.workflow import StateUI
@@ -150,10 +151,25 @@ def edit(application_id):
     return redirect(url)
 
 
-@blueprint.route("/triage-form")
+@blueprint.route("/triage-form/<application_id>")
 @login_required
 @ssl_required
-def triage_form():
+def triage_form(application_id):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+        abort(403)
+
+    application = models.Application.pull(application_id)
+    if application is None:
+        abort(404)
+
+    wfc = models.WorkflowControl.find_by_application(application_id)
+    if wfc is None:
+        abort(404)
+
+    xwalk = WorkflowControl2TriageForm()
+    formdata = xwalk.transform(wfc)
+
     serialiser = FormSerialiser()
-    html = serialiser.data_to_string({}, TriageForm())
-    return html
+    form_html = serialiser.data_to_string(formdata, TriageForm())
+
+    return render_template(templates.WORKFLOW_PAGE_TRIAGE, form_html=form_html, application=application, wfc=wfc)
