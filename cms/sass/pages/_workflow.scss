@@ -27,19 +27,31 @@
     &_header {
         display: flex;
         flex-direction: row;
-        gap: 1rem;
         align-items: flex-start;
         justify-content: space-between;
         margin-bottom: 1.5rem;
         padding: 1rem .5rem;
         background-color: $light-grey;
+
+        @media screen and (max-width: 768px) {
+            padding: 20px;
+        }
+
+        @media screen and (max-width: 1279px) and (min-width: 769px) {
+            padding: 20px 30px;
+        }
+
+        @media screen and (min-width: 1280px) {
+            padding: 20px 40px;
+        }
+
     }
 
     .left {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
-        gap: 1rem;
+        gap: .5rem;
     }
 
     .top {
