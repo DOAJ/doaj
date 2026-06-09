@@ -42,7 +42,9 @@ from portality.forms.validate import (
     Year,
     CurrentISOCurrency,
     CurrentISOLanguage,
-    DateInThePast
+    DateInThePast,
+    NotValue,
+    ForbiddenWord
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -608,18 +610,34 @@ class FieldDefinitions:
             # ~~^-> Autocomplete:FormWidget~~
             "full_contents"  # ~~^->FullContents:FormWidget~~
         ],
+        "validate": [
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
+        ],
         "contexts": {
             "public": {
-                "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}]
-                # ~~^-> DifferetTo:FormValidator~~
-
+                "validate": [
+                    {"different_to": {"field": "publisher_name",
+                                      "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}},
+                    # ~~^-> DifferetTo:FormValidator~~
+                    {"not_value": {
+                        "value": "None",
+                        "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+                    }}  # ~~^-> NotValue:FormValidator~~
+                ]
             },
             "update_request": {
-                "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}]
-                # ~~^-> DifferetTo:FormValidator~~
-
+                "validate": [
+                    {"different_to": {"field": "publisher_name",
+                                      "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}},
+                    # ~~^-> DifferetTo:FormValidator~~
+                    {"not_value": {
+                        "value": "None",
+                        "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+                    }}  # ~~^-> NotValue:FormValidator~~
+                ]
             },
             "admin": {
                 "widgets": [
@@ -892,9 +910,9 @@ class FieldDefinitions:
         "multiple": True,
         "options": [
             {"display": lazy_gettext("Editorial review"), "value": "Editorial review"},
-            {"display": lazy_gettext("Peer review"), "value": "Peer review"},
-            {"display": lazy_gettext("Anonymous peer review"), "value": "Anonymous peer review"},
+            {"display": lazy_gettext("Single anonymous peer review"), "value": "Single anonymous peer review"},
             {"display": lazy_gettext("Double anonymous peer review"), "value": "Double anonymous peer review"},
+            {"display": lazy_gettext("Triple anonymous peer review"), "value": "Triple anonymous peer review"},
             {"display": lazy_gettext("Post-publication peer review"), "value": "Post-publication peer review"},
             {"display": lazy_gettext("Open peer review"), "value": "Open peer review"},
             {"display": lazy_gettext("Other"), "value": "other", "subfields": ["review_process_other"]}
@@ -926,14 +944,18 @@ class FieldDefinitions:
                 "field": "review_process",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another type of peer review")
-            }
-            }
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }},  # ~~^-> NotValue:FormValidator~~
+            {"forbidden_word": {
+                "word": "blind",
+                "message": lazy_gettext("Please use the structured options above to indicate the type of peer review used.")
+            }}  # ~~^-> ForbiddenWord:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
         ]
     }
 
@@ -1389,8 +1411,11 @@ class FieldDefinitions:
                 "field": "preservation_service",
                 "value": "national_library",
                 "message": lazy_gettext("Enter the name(s) of the national library or libraries where the journal is archived")
-            }
-            }
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -1412,11 +1437,11 @@ class FieldDefinitions:
                 "field": "preservation_service",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another archiving policy")
-            }
-            }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
@@ -1512,11 +1537,11 @@ class FieldDefinitions:
                 "field": "deposit_policy",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another repository policy")
-            }
-            }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
@@ -1621,11 +1646,11 @@ class FieldDefinitions:
                 "field": "persistent_identifiers",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another type of identifier")
-            }
-            }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
@@ -3225,6 +3250,32 @@ class CurrentISOLanguageBuilder:
         return CurrentISOLanguage(settings.get("message"))
 
 
+class NotValueBuilder:
+    # ~~->$ NotValue:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-not-value"] = settings.get("value", "")
+        if "message" in settings:
+            html_attrs["data-parsley-not-value-message"] = "<p><small>" + settings["message"] + "</small></p>"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return NotValue(settings.get("value"), settings.get("message"))
+
+
+class ForbiddenWordBuilder:
+    # ~~->$ ForbiddenWord:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-forbidden-word"] = settings.get("word", "")
+        if "message" in settings:
+            html_attrs["data-parsley-forbidden-word-message"] = "<p><small>" + settings["message"] + "</small></p>"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return ForbiddenWord(settings.get("word"), settings.get("message"))
+
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -3266,7 +3317,9 @@ PYTHON_FUNCTIONS = {
             "bigenddate": BigEndDateBuilder.render,
             "no_script_tag": NoScriptTagBuilder.render,
             "year": YearBuilder.render,
-            "date_in_the_past": DateInThePastBuilder.render
+            "date_in_the_past": DateInThePastBuilder.render,
+            "not_value": NotValueBuilder.render,
+            "forbidden_word": ForbiddenWordBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -3293,7 +3346,9 @@ PYTHON_FUNCTIONS = {
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
             "current_iso_language": CurrentISOLanguageBuilder.wtforms,
-            "date_in_the_past": DateInThePastBuilder.wtforms
+            "date_in_the_past": DateInThePastBuilder.wtforms,
+            "not_value": NotValueBuilder.wtforms,
+            "forbidden_word": ForbiddenWordBuilder.wtforms
         }
     }
 }
