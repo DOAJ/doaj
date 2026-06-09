@@ -24,7 +24,9 @@ fieldset#ethics_criteria > fieldset > legend {
 
 {% block admin_content %}
     <h1>Triage Form for {{ application.bibjson().title }}</h1>
-    {{ form_html }}
+    {% autoescape off %}
+        {{ form_html }}
+    {% endautoescape %}
 {% endblock %}
 
 {% block admin_js %}

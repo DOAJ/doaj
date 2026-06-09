@@ -170,6 +170,6 @@ def triage_form(application_id):
     formdata = xwalk.transform(wfc)
 
     serialiser = FormSerialiser()
-    form_html = serialiser.data_to_string(formdata, TriageForm())
+    form_html = serialiser.data_to_string(formdata, TriageForm(), application=application, wfc=wfc)
 
     return render_template(templates.WORKFLOW_PAGE_TRIAGE, form_html=form_html, application=application, wfc=wfc)

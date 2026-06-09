@@ -1,4 +1,4 @@
-from portality.models import WorkflowControl
+from portality.models import WorkflowControl, Note
 
 
 class WorkflowControl2TriageForm(object):
@@ -35,13 +35,15 @@ class WorkflowControl2TriageForm(object):
         def ethics_field(fieldname):
             field = getattr(triage, fieldname)
             if field.compliant is not None:
-                result["ethics_criteria"][field + "_group"][field] = "y" if field.compliant else "n"
-            notes = getattr(field, "notes")
+                result["ethics_criteria"][fieldname + "_group"][fieldname] = "y" if field.compliant else "n"
+            notes: dict[str, Note] = getattr(field, "notes")
+            # FIXME: we have a model which can handle multiple notes, and a form which cannot
+            # FIXME: how do we handle the updating of referenced notes (do we need to remember their ids)?
             for id, nobj in notes.items():
-                result["ethics_criteria"][field + "_group"][field + "_note"] = nobj
+                result["ethics_criteria"][fieldname + "_group"][fieldname + "_note"] = nobj.note
 
         ethics_field("ethics_not_excluded")
-        ethics_field("ethics_no_nonstandard_metadata")
+        ethics_field("ethics_no_nonstandard_metrics")
         ethics_field("ethics_no_fake_impact")
         ethics_field("ethics_no_false_doaj_claim")
         ethics_field("ethics_no_suspicious_ties")

@@ -152,7 +152,7 @@ class State:
         return True
 
     @property
-    def workflow_control(self):
+    def workflow_control(self) -> WorkflowControl:
         return self._wf_control
 
     @property

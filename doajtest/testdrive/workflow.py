@@ -25,6 +25,7 @@ class Workflow(TestDrive):
             app.set_created(dates.before_now(86400*i))
             state = svc.initialise_workflow(acc, app)
             state.workflow_control.set_created(app.created_date)
+            state.workflow_control.triage.ethics_not_excluded.compliant = True
             state.saveall()
             states.append(state)
 

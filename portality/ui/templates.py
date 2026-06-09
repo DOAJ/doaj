@@ -87,7 +87,7 @@ WORKFLOW_EDIT_WIDGET = "management/admin/_workflow/includes/edit.html"
 WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 
 WORKFLOW_PAGE_TRIAGE = "management/admin/triage.html"
-WORKFLOW_FORM_TRIAGE = "management/admin/_workflow/_triage_form.html"
+WORKFLOW_FORM_TRIAGE = "management/admin/_workflow/includes/_triage_form.html"
 WORKFLOW_FORM_FIELD_TRIAGE = "management/admin/_workflow/includes/triage_field.html"
 
 # Reusable application form components

@@ -1,6 +1,6 @@
 <form id="{{ form.ref.struct_ref.name }}"
       novalidate
-      action="{{ url_for('admin.triage', triage_id=triage_id) }}"
+      action="{{ url_for('workflow.triage_form', application_id=application.id) }}"
       method="{{ form.ref.method }}"
       data-parsley-focus="none">
 

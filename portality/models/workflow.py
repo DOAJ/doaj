@@ -397,6 +397,10 @@ class TriageField(SeamlessMixin):
     def compliant(self) -> bool:
         return self.__seamless__.get_single("compliant")
 
+    @compliant.setter
+    def compliant(self, val):
+        self.__seamless__.set_single("compliant", val)
+
     @property
     def severity_value(self) -> int:
         return self.__seamless__.get_single("sv")
@@ -411,10 +415,11 @@ class TriageField(SeamlessMixin):
 
     @property
     def notes(self):
+        from portality.models import Note
         for nid in self.note_ids:
             if nid not in self._notes:
                 # TODO: merge in separate notes code
-                self._notes[nid] = None
+                self._notes[nid] = Note.pull(nid)
         return self._notes
 
 

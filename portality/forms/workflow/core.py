@@ -8,15 +8,15 @@ from formulaic.serialise.form.render import FormHTML, FieldHTML, InvertedLabelIn
 class JinjaFormRenderer(FormHTML):
     template = None
 
-    def draw(self, representation):
-        html = render_template(self.template, form=representation)
+    def draw(self, representation, **kwargs):
+        html = render_template(self.template, form=representation, **kwargs)
         return html
 
 class JinjaFieldRenderer(FieldHTML):
     template = None
 
-    def draw(self, representation):
-        html = render_template(self.template, field=representation)
+    def draw(self, representation, **kwargs):
+        html = render_template(self.template, field=representation, **kwargs)
         return html
 
 class ComplianceCheckFieldCapability(FormFieldCapability):
