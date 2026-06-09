@@ -1,0 +1,22 @@
+<header class="ew_header">
+    <div class="left">
+    <span class="tag tag--workflow tag--workflow--new tag--workflow--big">new</span>
+    <div class="main_info">
+        <div class="top">
+            <h1>{{ application.bibjson().title }}</h1>
+            <span class="data data--issns">P: {{ application.bibjson().pissn }} / E: {{ application.bibjson().eissn }} </span>
+        </div>
+        <div class="bottom">
+            <span class="data data--url"><a href="{{ application.bibjson().journal_url }}" target="_blank"><span data-feather="link" class="icon"></span>{{ application.bibjson().journal_url }}</a></span>
+            <span class="data data--country"><span data-feather="globe" class="icon"></span><span class="placeholder">country tag</span></a></span>
+            <span class="data data--lang"><span><img src="/static/doaj/images/feather-icons/language.svg" class="icon" style="height: 1.25rem; width: auto;"/></span><span class="placeholder">language tag</span></a></span>
+        </div>
+    </div>
+    </div>
+    <div class="right">
+        <div class="buttons">
+            <button id="submitBtn" class="button button--primary" type="submit">Save</button>
+            <button id="unlockBtn" class="button button--tertiary">Unlock & Close</button>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,82 @@
+.ew {
+    .placeholder {
+        font-style: italic;
+        color: $dark-grey;
+    }
+    main {
+        padding: 0 !important;
+    }
+
+    &_body {
+        margin-left: 75px;
+        width: auto;
+
+        @media screen and (max-width: 768px) {
+            padding: 20px;
+        }
+
+        @media screen and (max-width: 1279px) and (min-width: 769px) {
+            padding: 30px;
+        }
+
+        @media screen and (min-width: 1280px) {
+            padding: 40px;
+        }
+    }
+
+    &_header {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding: 1rem .5rem;
+        background-color: $light-grey;
+    }
+
+    .left {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .top {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: .75rem;
+    }
+
+    .bottom {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    h1 {
+        margin-bottom: 0;
+        line-height: 1.25em;
+    }
+
+    .data,
+    .data a {
+        display: flex;
+        align-items: center;
+
+        .icon {
+            margin-right: .25rem;
+        }
+
+        &--issns {
+            color: $sanguine;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 1.1875rem;
+            letter-spacing: 0.09rem;
+        }
+    }
+}
