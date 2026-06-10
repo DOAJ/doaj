@@ -41,7 +41,6 @@ upstream doaj_apps_failover {
     server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;                 #doaj-public-2
     server 10.131.9.137:5050 max_fails=3 fail_timeout=30s;                   #doaj-public-3
     server 10.131.191.148:5050 backup;          #doaj-background-1
-    server 10.131.191.149:5050 backup;          #doaj-editor-1
     keepalive 32;
     keepalive_timeout 60s;
     keepalive_requests 100;
@@ -254,9 +253,20 @@ server {
         proxy_buffering off;
     }
 
-    location ~* /account/(login|logout) {
+    location ~* /account/logout {
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_apps_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    location ~* ^(/[a-z]{2})?/account/login {
+        limit_req zone=general burst=10 nodelay;
+        proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
