@@ -80,8 +80,6 @@ class AuthorisationService(object):
 
         raise exceptions.AuthoriseException(reason=no_auth_reason)
 
-
-
     def can_view_application(self, account, application):
         """
         Is the given account allowed to view the update request application
@@ -138,3 +136,30 @@ class AuthorisationService(object):
             return True
 
         raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
+
+    def can_reject_application(self, account: models.Account, application: models.Application):
+        """
+        Is the given account allowed to reject the application
+
+        :param account: the account doing the action
+        :param application: the application the account wants to reject
+        :return:
+        """
+        # if this is the super user, they have all rights
+        if account.is_super:
+            return True
+
+        # check for explicit role (no one really has this atm)
+        role = account.has_role("reject_application")
+        if role:
+            return True
+
+        # triage users can reject if the item is in triage
+        triage = account.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        in_progress = application.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
+        attr = triage & in_progress
+        if attr:
+            return True
+
+        raise exceptions.AuthoriseException(message="This user is not allowed to reject applications",
+                                            reason=exceptions.AuthoriseException.WRONG_ROLE)

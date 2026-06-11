@@ -1,0 +1,7 @@
+<form action="{{ event.get_route() }}" method="post" style="margin-bottom: 0">
+    <input type="hidden" name="workflow_control" value="{{ wfc.id }}">
+    {% if onward %}
+        <input type="hidden" name="onward" value="{{ onward }}">
+    {% endif %}
+    <button type="submit" style="margin: 0 0 0 0">Unclaim</button>
+</form>
