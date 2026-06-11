@@ -460,6 +460,10 @@ class AdminApplication(ApplicationProcessor):
 
         # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
+            # FIXME: I'm not really sure what `info` is for - it has been defined but unused in the
+            # base class for ages.  This doesn't feel right, though, but since it's unused doesn't
+            # cause any actual problems right now
+            self.info = constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED
             # reject the application
             applicationService.reject_application(self.target, current_user._get_current_object())
 

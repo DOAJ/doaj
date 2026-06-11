@@ -457,6 +457,12 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             $(sec).show();
         });
 
+        $("#cont_confirmation").click(function() {
+            $(this).parent().removeClass("focus");
+            $(this).hide();
+            $("#focus-overlay").hide();
+        })
+
         var that = this;
         $("#unlock").click(function(event) {
             event.preventDefault();
