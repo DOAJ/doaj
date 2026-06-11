@@ -50,7 +50,8 @@ tests:
       subject classifications
   - step: Remove one subject classification
   - step: Click "Unlock & Close"
-    results: Confirmation dialog is displayed warning you about unsaved changes
+    results:
+    - Confirmation dialog is displayed warning you about unsaved changes
   - step: Click "Stay on Page" and then 'Save'
     results:
     - The form saves
@@ -99,3 +100,21 @@ tests:
     - step: Attempt to paste the value (use separate editor)
       results:
         - Correct value is pasted
+- title: Mark as full review feature for admin
+  context:
+    role: admin
+  steps:
+    - step: an admin account (admin1)
+    - step: Login as `admin1`
+    - step: Go to Application page at `/admin/application/1234`
+    - step: Select the status as `Accepted` in Change Status
+    - step: Click on the "Mark as full review" checkbox in the side panel
+      results:
+        - "Mark as full review" checkbox is filled
+    - step: Click "Save" button
+      results:
+        - The last full review date is saved in the associated journal
+        - a new note will be created
+        - It will have the message "Last full review completed on {date} by `{username}`"
+        - your username and user id will be shown on that note
+        - the date and time you save the application will be shown
