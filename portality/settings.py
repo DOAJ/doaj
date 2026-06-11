@@ -516,6 +516,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
+    "portality.models.workflow.WorkflowControl"
 ]
 
 # Map from dataobj coercion declarations to ES mappings

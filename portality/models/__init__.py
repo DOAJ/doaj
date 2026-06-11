@@ -35,6 +35,7 @@ from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
 from portality.models.data_dump import DataDump
 from portality.models.journal_csv import JournalCSV
 from portality.models.ris_export import RISExport
+from portality.models.workflow import WorkflowControl, WorkflowControlStateQuery
 
 import sys
 

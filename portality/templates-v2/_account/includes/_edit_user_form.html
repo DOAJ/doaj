@@ -1,10 +1,21 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
+<style>
+    .select2-container-multi .select2-choices .select2-search-field input.select2-active {
+        background-image: none !important;
+    }
+</style>
+
 <h2>Edit your details</h2>
 
 <form id="edit_user" class="form form--compact" action="" method="POST">
 
     <fieldset>
+        {# Full name #}
+        <div class="form__question">
+            {{ render_field(form.name, placeholder="Firstname Lastname") }}
+        </div>
+
         {# User role #}
         {% if current_user.is_super %}
             <div class="form__question">
@@ -19,10 +30,64 @@
             </dl>
         {% endif %}
 
-        {# Full name #}
-        <div class="form__question">
-            {{ render_field(form.name, placeholder="Firstname Lastname") }}
-        </div>
+        {# User Attributes #}
+        {# only show this to admins, and only show if the user has at least the associate_editor role (editors and admins will have
+            that role implicitly) #}
+        {% if account.has_role(constants.ROLE_ASSOCIATE_EDITOR) %}
+            <h2>Editor User Attributes</h2>
+            <p>Attributes defined here will control which workflow items you will be able to work on in the
+            new Editorial Workflow</p>
+            {% if current_user.is_super %}
+                <div class="form__question">
+                    {{ render_field(form.attribute_workflow, value=account.attribute_workflow|join(','), style="width: 75%") }}
+                </div>
+                <div class="form__question">
+                    {{ render_field(form.attribute_language, value=account.attribute_language|join(','), style="width: 75%") }}
+                </div>
+                <div class="form__question">
+                    {{ render_field(form.attribute_country, value=account.attribute_country|join(','), style="width: 75%") }}
+                </div>
+                <div class="form__question">
+                    {{ render_field(form.attribute_tag, value=account.attribute_tag|join(','), style="width: 75%") }}
+                </div>
+            {% else %}
+                <dl>
+                    <dt>Workflow Participation</dt>
+                    {% if account.attribute_workflow %}
+                        {% for wf in account.attribute_workflow %}
+                            <dd class="tag">{{ wf }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
+                    <dt>Language</dt>
+                    {% if account.attribute_language %}
+                        {% for language in account.attribute_language %}
+                            <dd class="tag">{{ datasets.name_for_lang(language) }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
+                    <dt>Country</dt>
+                    {% if account.attribute_country %}
+                        {% for country in account.attribute_country %}
+                            <dd class="tag">{{ datasets.get_country_name(country) }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
+                    <dt>Other Attribute Tags</dt>
+                    {% if account.attribute_tag %}
+                        {% for tag in account.attribute_tag %}
+                            <dd class="tag">{{ tag }}</dd>
+                        {% endfor %}
+                    {% else %}
+                        <dd style="font-size: .889em">None</dd>
+                    {% endif %}
+                </dl>
+            {% endif %}
+        {% endif %}
+
     </fieldset>
     <fieldset>
         <p class="alert">

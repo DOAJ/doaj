@@ -1,0 +1,54 @@
+<div style="border: 1px solid #ccc; padding: 1em; margin-bottom: 1em;">
+    {% set wfc = state.workflow_control %}
+    <h2>
+        <a href="{{ url_for("admin.application", application_id=wfc.application_id) }}" target="_blank">{{ wfc.application_title }}</a>
+    </h2>
+
+    <div class="flex" style="flex-wrap: wrap">
+        <span class="tag tag--featured">Module: {{ wfc.module }}</span>
+        <span class="tag tag--featured">Stage: {{ wfc.stage }}</span>
+        {% if wfc.reviewer_id %}
+            <span class="tag tag--featured">Reviewer: {{ wfc.reviewer_id }}</span>
+        {% endif %}
+
+        {% for event in state.events %}
+            <div style="margin-left: 25px">
+                {% include event.template %}
+            </div>
+        {% endfor %}
+
+        {% for action in state.actions %}
+            <div style="margin-left: 25px">
+                {% include action.template %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <td>Event Date</td>
+                    <td>Actor</td>
+                    <td>State</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entry in wfc.audit %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.user }}</td>
+                    <td>
+                        {% if entry.new_state %}
+                            {{ entry.new_state.module }}: {{ entry.new_state.stage }}
+                            {% if entry.new_state.reviewer %}
+                                | Reviewer: {{ entry.new_state.reviewer }}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
