@@ -3,7 +3,7 @@ from portality.core import app
 
 from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL
-from formulaic.serialise.form.controls import Radio, Textarea
+from formulaic.serialise.form.controls import Radio, Textarea, Hidden
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
 from portality.forms.workflow.core import ComplianceCheckFieldCapability, JinjaFieldRenderer
 from portality.ui import templates
@@ -34,6 +34,15 @@ class NoteCapability(FormFieldCapability):
 class NoteField(Field):
     coerce = [Unicode()]
     capabilities = (NoteCapability(),)
+
+class RecordID(Field):
+    class RecordIDCapability(FormFieldCapability):
+        label = "Record ID"
+        control_class = Hidden
+
+    name = "id"
+    coerce = [Unicode()]
+    capabilities = (RecordIDCapability(),)
 
 #####################################################
 ## Ethics: Not Excluded

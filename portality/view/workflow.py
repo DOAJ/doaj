@@ -1,9 +1,10 @@
 import json
+from asyncore import write
 from copy import deepcopy
 
-from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response
+from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response, flash
 from flask_login import login_required, current_user
-from formulaic.serialise.form.core import FormSerialiser
+from formulaic.serialise.form.core import FormSerialiser, FormDataParser
 
 from portality import models, constants
 from portality.bll import DOAJ
@@ -12,9 +13,10 @@ from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail
 from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview
-from portality.decorators import ssl_required
-from portality.forms.workflow.crosswalk import WorkflowControl2TriageForm
+from portality.decorators import ssl_required, write_required
+from portality.forms.workflow.crosswalk import WorkflowControl2TriageForm, TriageForm2WorkflowControl
 from portality.forms.workflow.triage.forms import TriageForm
+from portality.forms.workflow.triage.processors import TriageFormProcessor
 from portality.ui import templates
 from portality.ui.workflow import StateUI
 
@@ -151,9 +153,10 @@ def edit(application_id):
     return redirect(url)
 
 
-@blueprint.route("/triage-form/<application_id>")
+@blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required()
 def triage_form(application_id):
     if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
         abort(403)
@@ -162,14 +165,40 @@ def triage_form(application_id):
     if application is None:
         abort(404)
 
-    wfc = models.WorkflowControl.find_by_application(application_id)
+    # NOTE: this hack lets us `pull` the worfklow control object, avoiding any re-indexing
+    # latency when redirecting to this page after a save
+    wfc_id = request.values.get("wfc")
+    if wfc_id is not None:
+        wfc = models.WorkflowControl.pull(wfc_id)
+        if wfc.application_id != application_id:
+            abort(400)
+    else:
+        wfc = models.WorkflowControl.find_by_application(application_id)
     if wfc is None:
         abort(404)
 
-    xwalk = WorkflowControl2TriageForm()
-    formdata = xwalk.transform(wfc)
+    if request.method == "GET":
+        processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
+        form_html = processor.render_form()
+        # form_html = processor.render_form()
+        # xwalk = WorkflowControl2TriageForm()
+        # formdata = xwalk.transform(wfc, application)
+        #
+        # serialiser = FormSerialiser()
+        # form_html = serialiser.data_to_string(formdata, TriageForm(), application=application, wfc=wfc)
 
-    serialiser = FormSerialiser()
-    form_html = serialiser.data_to_string(formdata, TriageForm(), application=application, wfc=wfc)
+        return render_template(templates.WORKFLOW_PAGE_TRIAGE, form_html=form_html, application=application, wfc=wfc)
 
-    return render_template(templates.WORKFLOW_PAGE_TRIAGE, form_html=form_html, application=application, wfc=wfc)
+    elif request.method == "POST":
+        processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=request.form)
+        processor.process_raw_form(current_user._get_current_object())
+        processor.finalise(current_user._get_current_object())
+
+        flash("Record updated")
+        return redirect(url_for("workflow.triage_form", application_id=application.id, wfc=wfc.id))
+        # form = request.form
+        # parser = FormDataParser()
+        # formdata = parser.representation_to_data(form, TriageForm())
+        # xwalk = TriageForm2WorkflowControl()
+        # partial_wfc, partial_application = xwalk.transform(formdata)
+
