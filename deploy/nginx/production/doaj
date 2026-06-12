@@ -64,7 +64,6 @@ upstream doaj_oai_failover {
     server 10.131.9.137:5050 backup;         #doaj-public-3
     server 10.131.191.147:5050 backup;       #doaj-public-1
     server 10.131.191.148:5050 backup;       #doaj-background-1
-    server 10.131.191.149:5050 backup;       #doaj-editor-1
     keepalive 16;
     keepalive_timeout 60s;
 }
