@@ -74,13 +74,13 @@ class OldDataCleanupBackgroundTask(BackgroundTask):
     @classmethod
     def prepare(cls, username, **kwargs):
         return background_helper.create_job(username=username,
-                                            action=cls.__action__)
+                                            action=cls.__action__,
+                                            queue_id=huey_helper.queue_id)
 
     @classmethod
     def submit(cls, background_job):
-        background_helper.submit_by_background_job(
-            background_job, old_data_cleanup
-        )
+        background_job.save()
+        background_helper.submit_by_background_job(background_job, old_data_cleanup)
 
 
 huey_helper = OldDataCleanupBackgroundTask.create_huey_helper(queue)
@@ -93,4 +93,4 @@ def scheduled_old_data_cleanup():
 
 @huey_helper.register_execute(is_load_config=False)
 def old_data_cleanup(job_id):
-    huey_helper.scheduled_common(job_id)
+    huey_helper.execute_common(job_id)
