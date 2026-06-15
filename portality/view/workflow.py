@@ -1,0 +1,149 @@
+import json
+from copy import deepcopy
+
+from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response
+from flask_login import login_required, current_user
+
+from portality import models
+from portality.bll import DOAJ
+from portality.bll.exceptions import AuthoriseException
+from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail
+from portality.bll.services.workflow.rejected import Rejected
+from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
+    TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview
+from portality.decorators import ssl_required
+from portality.ui import templates
+from portality.ui.workflow import StateUI
+
+blueprint = Blueprint('workflow', __name__)
+
+@blueprint.route('/')
+@login_required
+@ssl_required
+def index():
+    svc = DOAJ.workflowService()
+    awaiting_triage = [StateUI(x) for x in svc.first_n_in_state(AwaitingTriage, 10)]
+    triage_in_progress = [StateUI(x) for x in svc.first_n_in_state(TriageAssessmentInProgress, 10)]
+    triage_minimal_review = [StateUI(x) for x in svc.first_n_in_state(TriageAssessmentMinimalReview, 10)]
+    rejected = [StateUI(x) for x in svc.first_n_in_state(Rejected, 10)]
+    return render_template(templates.ADMIN_WORKFLOW_OVERVIEW,
+                           awaiting_triage=awaiting_triage,
+                           triage_in_progress=triage_in_progress,
+                           triage_minimal_review=triage_minimal_review,
+                           rejected=rejected,
+                           admin_page=True)
+
+def _apply_event(wfc_id, event_class, onward_route, event_args:dict=None):
+    if wfc_id is None:
+        abort(400)
+
+    args = {}
+    if event_args is not None:
+        args = deepcopy(event_args)
+    args["actor"] = current_user
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc_id, event_class(**args))
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(400)
+
+    if onward_route is not None:
+        url = url_for(onward_route)
+        return redirect(url)
+
+    resp = make_response(json.dumps({"new_state": new_state.__class__.__name__}))
+    resp.mimetype = "application/json"
+    return resp
+
+@blueprint.route('/claim', methods=['POST'])
+@login_required
+@ssl_required
+def claim():
+    wfc_id = request.form.get("workflow_control")
+    onward = request.form.get("onward")
+    return _apply_event(wfc_id, Claim, onward)
+
+@blueprint.route("/unclaim", methods=["POST"])
+@login_required
+@ssl_required
+def unclaim():
+    wfc_id = request.form.get("workflow_control")
+    onward = request.form.get("onward")
+    return _apply_event(wfc_id, Unclaim, onward)
+
+@blueprint.route("/assign", methods=["POST"])
+@login_required
+@ssl_required
+def assign():
+    pass
+
+@blueprint.route("/reassign", methods=["POST"])
+@login_required
+@ssl_required
+def reassign():
+    pass
+
+@blueprint.route("/unassign", methods=["POST"])
+@login_required
+@ssl_required
+def unassign():
+    wfc_id = request.form.get("workflow_control")
+    onward = request.form.get("onward")
+    return _apply_event(wfc_id, Unassign, onward)
+
+@blueprint.route("/fail", methods=["POST"])
+@login_required
+@ssl_required
+def fail():
+    wfc_id = request.form.get("workflow_control")
+    onward = request.form.get("onward")
+    note = request.form.get("note")
+    embargo = request.form.get("embargo_end")
+
+    return _apply_event(wfc_id, Fail, onward, event_args={"note": note, "embargo_end": embargo})
+
+@blueprint.route("/minimal_review", methods=["POST"])
+@login_required
+@ssl_required
+def minimal_review():
+    pass
+
+@blueprint.route("/triaged", methods=["POST"])
+@login_required
+@ssl_required
+def triaged():
+    pass
+
+@blueprint.route("/edit/<application_id>", methods=["GET"])
+@login_required
+@ssl_required
+def edit(application_id):
+    # FIXME: this is just a demonstrator
+    try:
+        wfc = models.WorkflowControl.find_by_application(application_id)
+    except ValueError:
+        abort(500)
+
+    if wfc is None:
+        abort(404)
+
+    event = None
+    if wfc.triage.has_minimal_review:
+        event = RescindMinimalReview(current_user)
+    else:
+        event = MinimalReview(current_user)
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc.id, event)
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(404)
+
+    url = url_for("workflow.index")
+    return redirect(url)
+
