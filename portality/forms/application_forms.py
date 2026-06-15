@@ -1016,7 +1016,7 @@ class FieldDefinitions:
                           "services(s) used on your website.")],
         },
         "options": [
-            {"display": lazy_gettext("Yes"), "value": "y", "subfields": ["review_process_other"]},
+            {"display": lazy_gettext("Yes"), "value": "y"},
             {"display": lazy_gettext("No"), "value": "n"}
         ],
         "validate": [
@@ -3258,9 +3258,13 @@ class ForbiddenWordBuilder:
     # ~~->$ ForbiddenWord:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-forbidden-word"] = settings.get("word", "")
-        if "message" in settings:
-            html_attrs["data-parsley-forbidden-word-message"] = "<p><small>" + settings["message"] + "</small></p>"
+        word = settings.get("word", "")
+        if word:
+            # Use Parsley's built-in pattern validator with a case-insensitive negative lookahead.
+            # The /i flag is picked up by Parsley's regexp parser via the /pattern/i literal format.
+            html_attrs["data-parsley-pattern"] = "/^(?!.*" + word + ").*$/i"
+        if "message" in settings and word:
+            html_attrs["data-parsley-pattern-message"] = "<p><small>" + settings["message"] + "</small></p>"
 
     @staticmethod
     def wtforms(field, settings):
