@@ -13,6 +13,7 @@ import json
 
 TRIAGE_FIELD = {
     "fields": {
+        "answer": {"coerce": "unicode"},
         "compliant": {"coerce": "bool"},
         "sv": {"coerce": "integer"},
     },
@@ -87,7 +88,7 @@ TRIAGE_STRUCT = {
                 "database_not_listed", #b3
                 "database_not_duplicate", #b4
 
-                "issn_confirmed", #c1
+                "issn_at_least_one", #c1
                 "issn_journal_name_match", #c2
                 "issn_no_continuation", #c3
 
@@ -119,7 +120,7 @@ TRIAGE_STRUCT = {
                 "database_not_listed": TRIAGE_FIELD,
                 "database_not_duplicate": TRIAGE_FIELD,
 
-                "issn_confirmed": TRIAGE_FIELD,
+                "issn_at_least_one": TRIAGE_FIELD,
                 "issn_journal_name_match": TRIAGE_FIELD,
                 "issn_no_continuation": TRIAGE_FIELD,
 
@@ -408,6 +409,14 @@ class TriageField(SeamlessMixin):
         self._notes = {}
 
     @property
+    def answer(self) -> str:
+        return self.__seamless__.get_single("answer")
+
+    @answer.setter
+    def answer(self, val):
+        self.__seamless__.set_single("answer", val)
+
+    @property
     def compliant(self) -> bool:
         return self.__seamless__.get_single("compliant")
 
@@ -418,6 +427,10 @@ class TriageField(SeamlessMixin):
     @property
     def severity_value(self) -> int:
         return self.__seamless__.get_single("sv")
+
+    @severity_value.setter
+    def severity_value(self, val):
+        self.__seamless__.set_single("sv", val)
 
     @property
     def note_ids(self):
@@ -531,6 +544,10 @@ class Triage(SeamlessMixin):
     @property
     def ethics_no_suspicious_ties(self) -> TriageField:
         return self._get_triage_field("ethics_no_suspicious_ties")
+
+    @property
+    def issn_at_least_one(self) -> TriageField:
+        return self._get_triage_field("issn_at_least_one")
 
     @property
     def database_not_removed_no_embargo(self):

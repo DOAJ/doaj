@@ -4,6 +4,7 @@ triage:
       label: "Current exclusions"
       compliant: "Compliant, this application is from a journal or publisher that is not currently excluded."
       non_compliant: "Non-compliant, this application is from a journal or publisher that is currently excluded."
+      later: "Do this later"
       check: "This application is from a journal or publisher that is not 
             currently excluded. (Note:  if an exclusion does not relate 
             to all journals from a publisher, an application for another 
@@ -15,39 +16,62 @@ triage:
             <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is "Yes"</li></ul>'
       resource_label: "Excluded publishers spreadsheet"
       resource_url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
 
     ethics_no_nonstandard_metrics:
       label: "Non-standard metric services"
       compliant: "Compliant, this journal does not display references to non standard services"
       non_compliant: "Non-compliant, this journal displays references to non standard services"
+      later: "Do this later"
       check: "The journal does not display any references  (images, links, logos) to non-standard 
             metric services"
       instructions: ""
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 1
 
     ethics_no_fake_impact:
       label: "Fake impact factor values"
       compliant: "Compliant, this journal does not display fake impact factor values"
       non_compliant: "Non-compliant, this journal displays fake impact factor values"
+      later: "Do this later"
       check: "The journal does not display fake impact factor values in texts or/and images"
       instructions: ""
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 3
 
     ethics_no_false_doaj_claim:
       label: "False claim to be indexed in DOAJ"
       compliant: "Compliant, this journal does not make a false claim to be indexed in DOAJ"
       non_compliant: "Non-compliant, this journal makes a false claim to be indexed in DOAJ"
+      later: "Do this later"
       check: "This journal does not make a false claim to be indexed in DOAJ"
       instructions: ""
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 3
 
     ethics_no_suspicious_ties:
       label: "Previous exclusions/suspicious publisher or journals"
       compliant: "Compliant, this publisher/journal does not have links to any previously excluded or suspicious publisher/journal"
       non_compliant: "Non-compliant, this publisher/journal has links to previously excluded or suspicious publisher/journal"
+      later: "Do this later"
       check: "The publisher/journal does not have links to 
           a) previously excluded publishers and 
           b) list of suspicious publishers (listed in the excluded publishers speadsheet)"
@@ -55,11 +79,17 @@ triage:
                   the answer is No. Make a note of it and review the application as normal"
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 10
 
     issn_at_least_one:
       label: "ISSN(s)"
       compliant: "Compliant, this journal has at least one ISSN"
       non_compliant: "Non-compliant, this record has no active and confrimed ISSNs"
+      later: "Do this later"
       check: "This journal has at least one ISSN (International Standard Serial Number) that is registered, active and confirmed at issn.org?"
       instructions: '<ul><li>Search both ISSNs (if available)</li>
                   <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is "No"</li>
@@ -73,3 +103,7 @@ triage:
         label: "Electronic ISSN"
       pissn:
         label: "Print ISSN"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"

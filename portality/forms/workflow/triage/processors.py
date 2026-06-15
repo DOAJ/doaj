@@ -1,4 +1,5 @@
 from formulaic.serialise.form.core import FormSerialiser, FormDataParser
+from portality.core import app
 from portality.forms.workflow.crosswalk import TriageForm2WorkflowControl, WorkflowControl2TriageForm
 from portality.forms.workflow.triage.forms import TriageForm, TriageSubmission
 from portality.models import Application, WorkflowControl
@@ -59,5 +60,39 @@ class TriageFormProcessor:
     def _patch_application(self, partial_application:Application) -> Application:
         pass
 
+    def _rationalise_answers(self, wfc:WorkflowControl):
+        t = wfc.triage
+        R = app.cms.workflow.triage.fields
+
+        def set_compliance(complyable, rule_source):
+            if complyable.answer in rule_source.compliant_answers:
+                complyable.compliant = True
+            elif complyable.answer in rule_source.non_compliant_answers:
+                complyable.compliant = False
+            else:
+                complyable.compliant = None
+
+        # First compute all the compliance booleans from the supplied answers
+        set_compliance(t.ethics_not_excluded, R.ethics_not_excluded)
+        set_compliance(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
+        set_compliance(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
+        set_compliance(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
+        set_compliance(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+        set_compliance(t.issn_at_least_one, R.issn_at_least_one)
+
+        def set_severity(complyable, rule_source):
+            if rule_source.severity_value and not complyable.compliant:
+                complyable.severity_value = rule_source.severity_value
+
+        # Next apply severity values (only to ethics criteria)
+        set_severity(t.ethics_not_excluded, R.ethics_not_excluded)
+        set_severity(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
+        set_severity(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
+        set_severity(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
+        set_severity(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+
+        # TODO: exceptions
+
     def finalise(self, account):
-        pass
+        self._rationalise_answers(self._target_wfc)
+        # TODO: workflow binding

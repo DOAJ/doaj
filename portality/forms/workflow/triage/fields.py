@@ -76,7 +76,8 @@ class EthicsNotExcluded(ComplianceCheckField):
     class EthicsNotExcludedCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_not_excluded.compliant},
-            {"value": "n", "label": T.ethics_not_excluded.non_compliant}
+            {"value": "n", "label": T.ethics_not_excluded.non_compliant},
+            {"value": "l", "label": T.ethics_not_excluded.later}
         ]
 
         check = T.ethics_not_excluded.check
@@ -122,7 +123,8 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
     class EthicsNoNonStandardMetricsCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_nonstandard_metrics.compliant},
-            {"value": "n", "label": T.ethics_no_nonstandard_metrics.non_compliant}
+            {"value": "n", "label": T.ethics_no_nonstandard_metrics.non_compliant},
+            {"value": "l", "label": T.ethics_not_excluded.later}
         ]
 
         check = T.ethics_no_nonstandard_metrics.check
@@ -168,7 +170,8 @@ class EthicsNoFakeImpact(ComplianceCheckField):
     class EthicsNoFakeImpactCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_fake_impact.compliant},
-            {"value": "n", "label": T.ethics_no_fake_impact.non_compliant}
+            {"value": "n", "label": T.ethics_no_fake_impact.non_compliant},
+            {"value": "l", "label": T.ethics_not_excluded.later}
         ]
 
         check = T.ethics_no_fake_impact.check
@@ -214,7 +217,8 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
     class EthicsNoFalseDOAJClaimCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_false_doaj_claim.compliant},
-            {"value": "n", "label": T.ethics_no_false_doaj_claim.non_compliant}
+            {"value": "n", "label": T.ethics_no_false_doaj_claim.non_compliant},
+            {"value": "l", "label": T.ethics_not_excluded.later}
         ]
 
         check = T.ethics_no_false_doaj_claim.check
@@ -260,7 +264,8 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
     class EthicsNoSuspiciousTiesCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_suspicious_ties.compliant},
-            {"value": "n", "label": T.ethics_no_suspicious_ties.non_compliant}
+            {"value": "n", "label": T.ethics_no_suspicious_ties.non_compliant},
+            {"value": "l", "label": T.ethics_not_excluded.later}
         ]
 
         check = T.ethics_no_suspicious_ties.check
@@ -306,7 +311,8 @@ class ISSNAtLeastOne(ComplianceCheckField):
     class ISSNAtLeastOneCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.issn_at_least_one.compliant},
-            {"value": "n", "label": T.issn_at_least_one.non_compliant}
+            {"value": "n", "label": T.issn_at_least_one.non_compliant},
+            {"value": "l", "label": T.ethics_not_excluded.later}
         ]
 
         check = T.issn_at_least_one.check
