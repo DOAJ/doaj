@@ -206,7 +206,7 @@ def _complete_verification(account):
     """Complete the verification process and log in the user"""
     account.remove_login_code()
     account.save()
-    login_user(account)
+    login_user(account, remember=True)
 
 
 def get_wait_period(secs: int) -> str:
