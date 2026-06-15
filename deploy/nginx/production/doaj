@@ -263,7 +263,7 @@ server {
         proxy_buffering off;
     }
 
-    location ~* ^(/[a-z]{2})?/account/login {
+    location ~* ^(/[a-z][a-z])?/account/login {
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
