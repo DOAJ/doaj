@@ -125,8 +125,6 @@ BGJOB_STATUS_COMPLETE = 'complete'
 
 # BackgroundJob.queue_id
 # ~~->BackgroundTasks:Feature~~
-BGJOB_QUEUE_ID_LONG = 'long_running'
-BGJOB_QUEUE_ID_MAIN = 'main_queue'
 BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
 BGJOB_QUEUE_ID_EVENTS = "events"
 BGJOB_QUEUE_ID_SCHEDULED_SHORT = "scheduled_short"
