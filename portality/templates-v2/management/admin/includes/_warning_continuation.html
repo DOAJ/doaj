@@ -1,0 +1,11 @@
+{%- if continuation_info.initial_warning -%}
+    <div class="focus-overlay" id="focus-overlay"></div>
+{%- endif -%}
+<div class="alert alert--danger {%- if continuation_info.initial_warning %} focus {%- endif -%}">
+    <p>This application has been rejected. We found a related older journal record. <strong>You may want to withdraw it.</strong><br />
+        <a href="{{ url_for('admin.journal_page', journal_id=continuation_info.journal.id) }}" target="_blank">{{ continuation_info.journal.bibjson().title }}</a>
+    </p>
+    {%- if continuation_info.initial_warning -%}
+        <button class="button button--cta" id="cont_confirmation" tabindex="1">Got it</button>
+    {%- endif -%}
+</div>
