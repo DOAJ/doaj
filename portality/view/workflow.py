@@ -180,14 +180,7 @@ def triage_form(application_id):
     if request.method == "GET":
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
         form_html = processor.render_form()
-        # form_html = processor.render_form()
-        # xwalk = WorkflowControl2TriageForm()
-        # formdata = xwalk.transform(wfc, application)
-        #
-        # serialiser = FormSerialiser()
-        # form_html = serialiser.data_to_string(formdata, TriageForm(), application=application, wfc=wfc)
-
-        return render_template(templates.WORKFLOW_PAGE_TRIAGE, form_html=form_html, application=application, wfc=wfc)
+        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc)
 
     elif request.method == "POST":
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=request.form)
@@ -196,9 +189,3 @@ def triage_form(application_id):
 
         flash("Record updated")
         return redirect(url_for("workflow.triage_form", application_id=application.id, wfc=wfc.id))
-        # form = request.form
-        # parser = FormDataParser()
-        # formdata = parser.representation_to_data(form, TriageForm())
-        # xwalk = TriageForm2WorkflowControl()
-        # partial_wfc, partial_application = xwalk.transform(formdata)
-

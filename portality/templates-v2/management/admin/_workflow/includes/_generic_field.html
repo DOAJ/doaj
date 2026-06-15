@@ -1,0 +1,7 @@
+{% if field.control|length > 1 %}<fieldset>{% endif %}
+
+{% autoescape off %}
+    {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
+{% endautoescape %}
+
+{% if field.control|length > 1 %}</fieldset>{% endif %}

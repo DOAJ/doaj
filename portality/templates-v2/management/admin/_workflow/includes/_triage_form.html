@@ -1,15 +1,16 @@
-<form id="{{ form.ref.struct_ref.name }}"
+<form id="{{ form.name }}"
       novalidate
       action="{{ url_for('workflow.triage_form', application_id=application.id) }}"
-      method="{{ form.ref.method }}"
-      data-parsley-focus="none">
+      method="{{ form.method }}"
+      data-parsley-focus="none"
+        {% for k, v in form.attributes %}{{ k }}="{{ v }}" {% endfor %}
+    >
 
     <div class="col-md-12 page">
         <section class="page-content">
             {% for element in form.elements %}
-                {% set rend = element.ref.get_renderer() %}
                 {% autoescape off %}
-                    {{ rend.draw(element) }}
+                    {{ element.renderer.draw(element, application=application, wfc=wfc) }}
                 {% endautoescape %}
             {% endfor %}
             <button id="submitBtn" class="button button--cta" type="submit">Save</button>

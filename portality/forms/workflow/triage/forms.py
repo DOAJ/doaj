@@ -1,16 +1,18 @@
 from formulaic.core import Structure, OPTIONAL, SINGLE
 from formulaic.objects import FormulaicObject
-from portality.forms.workflow.core import WorkflowFormCapability, JinjaFormRenderer
+from formulaic.serialise.form.core import FormCapability
+from portality.forms.workflow.core import JinjaFormRenderer
 from portality.forms.workflow.triage.fields import RecordID
 from portality.forms.workflow.triage.fieldsets import EthicsCriteria
 from portality.ui import templates
 
 class TriageFormRenderer(JinjaFormRenderer):
-    template = templates.WORKFLOW_FORM_TRIAGE
+    template = templates.WORKFLOW_TRIAGE_FORM
 
 class TriageForm(Structure):
-    class TriageFormCapability(WorkflowFormCapability):
+    class TriageFormCapability(FormCapability):
         order = [
+            "id",
             "ethics_criteria",
         ]
         render_class = TriageFormRenderer

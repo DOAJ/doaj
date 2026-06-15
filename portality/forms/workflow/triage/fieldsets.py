@@ -1,12 +1,12 @@
 from formulaic.core import Structure, SINGLE, OPTIONAL
-from portality.forms.workflow.core import WorkflowFieldsetCapability
-from portality.forms.workflow.triage.fields import EthicsNotExcluded, EthicsNoNonStandardMetrics, \
-    EthicsNotExcludedGroup, EthicsNoNonStandardMetricsGroup, EthicsNoFakeImpactGroup, EthicsNoFalseDOAJClaimGroup, \
+from formulaic.serialise.form.core import FieldsetCapability
+from portality.forms.workflow.core import GenericFieldset
+from portality.forms.workflow.triage.fields import EthicsNotExcludedGroup, EthicsNoNonStandardMetricsGroup, EthicsNoFakeImpactGroup, EthicsNoFalseDOAJClaimGroup, \
     EthicsNoSuspiciousTiesGroup
 
 
 class EthicsCriteria(Structure):
-    class EthicsCriteriaCapability(WorkflowFieldsetCapability):
+    class EthicsCriteriaCapability(FieldsetCapability):
         label = "Ethics criteria"
         order = [
             "ethics_not_excluded_group",
@@ -15,6 +15,8 @@ class EthicsCriteria(Structure):
             "ethics_no_false_doaj_claim_group",
             "ethics_no_suspicious_ties_group",
         ]
+
+        render_class = GenericFieldset
 
     name_ = "ethics_criteria"
     capabilities_ = (EthicsCriteriaCapability(),)

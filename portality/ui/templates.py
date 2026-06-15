@@ -86,9 +86,17 @@ WORKFLOW_FAIL_WIDGET = "management/admin/_workflow/includes/fail.html"
 WORKFLOW_EDIT_WIDGET = "management/admin/_workflow/includes/edit.html"
 WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 
-WORKFLOW_PAGE_TRIAGE = "management/admin/triage.html"
-WORKFLOW_FORM_TRIAGE = "management/admin/_workflow/includes/_triage_form.html"
-WORKFLOW_FORM_FIELD_TRIAGE = "management/admin/_workflow/includes/triage_field.html"
+# Triage workflow components
+WORKFLOW_TRIAGE_PAGE = "management/admin/triage.html"
+WORKFLOW_TRIAGE_FORM = "management/admin/_workflow/includes/_triage_form.html"
+WORKFLOW_TRIAGE_FIELD_COMPLIANCE = "management/admin/_workflow/includes/triage_field.html"
+
+WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
+
+WORKFLOW_GENERIC_FIELDSET = "management/admin/_workflow/includes/_generic_fieldset.html"
+WORKFLOW_GENERIC_COMPOUND = "management/admin/_workflow/includes/_generic_compound.html"
+WORKFLOW_GENERIC_FIELD = "management/admin/_workflow/includes/_generic_field.html"
+WORKFLOW_GENERIC_CONTROL = "management/admin/_workflow/includes/_generic_control.html"
 
 # Reusable application form components
 AF_ENTRY_GOUP = "_application-form/includes/_entry_group.html"

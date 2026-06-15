@@ -5,7 +5,8 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
-from portality.forms.workflow.core import ComplianceCheckFieldCapability, JinjaFieldRenderer
+from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, GenericControl, GenericField, \
+    GenericCompound
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
@@ -13,14 +14,32 @@ T = app.cms.workflow.triage.fields
 #####################################################
 ## Common infrastructure/reused components
 
+########
+## Compliance check capability, field, and associated renderers
+
+class RadioRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_CONTROL_RADIO
+
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
-    template = templates.WORKFLOW_FORM_FIELD_TRIAGE
+    template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
+
+class ComplianceCheckCapability(FormFieldCapability):
+    label = "Compliance"
+
+    check = None
+    instructions = None
+    resources = []
+    application_info = []
+
+    control_class = Radio
+    control_render_class = RadioRenderer
+    render_class = TriageComplianceCheckFieldRenderer
 
 class ComplianceCheckField(Field):
     coerce = [Unicode()]
 
-class TriageComplianceCheckCapability(ComplianceCheckFieldCapability):
-    render_class = TriageComplianceCheckFieldRenderer
+#######
+## Generic notes capability and field
 
 class NoteCapability(FormFieldCapability):
     label = "Note"
@@ -30,15 +49,21 @@ class NoteCapability(FormFieldCapability):
     repeatable_initial = 1
 
     control_class = Textarea
+    control_class_renderer = GenericControl
+    render_class = GenericField
 
 class NoteField(Field):
     coerce = [Unicode()]
     capabilities = (NoteCapability(),)
 
+#####################################################
+## Record ID (hidden field required for identification)
+
 class RecordID(Field):
     class RecordIDCapability(FormFieldCapability):
         label = "Record ID"
         control_class = Hidden
+        control_render_class = GenericControl
 
     name = "id"
     coerce = [Unicode()]
@@ -48,7 +73,7 @@ class RecordID(Field):
 ## Ethics: Not Excluded
 
 class EthicsNotExcluded(ComplianceCheckField):
-    class EthicsNotExcludedCapability(TriageComplianceCheckCapability):
+    class EthicsNotExcludedCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_not_excluded.compliant},
             {"value": "n", "label": T.ethics_not_excluded.non_compliant}
@@ -62,10 +87,16 @@ class EthicsNotExcluded(ComplianceCheckField):
                 "url": T.ethics_not_excluded.resource_url
             }
         ]
+        application_info = [
+            {
+                "label": "blah",
+                "source": "application",
+                "lookup_path": lambda record: record.bibjson().title
+            }
+        ]
 
     name = "ethics_not_excluded"
     capabilities = (EthicsNotExcludedCapability(),)
-
 
 class EthicsNotExcludedNote(NoteField):
     name = "ethics_not_excluded_note"
@@ -80,6 +111,8 @@ class EthicsNotExcludedGroup(Structure):
             "ethics_not_excluded_note",
         ]
 
+        render_class = GenericCompound
+
     name_ = "ethics_not_excluded_group"
     capabilities_ = (EthicsNotExcludedGroupCapability(),)
 
@@ -93,7 +126,7 @@ class EthicsNotExcludedGroup(Structure):
 ## Ethics: Non Standard Metrics
 
 class EthicsNoNonStandardMetrics(ComplianceCheckField):
-    class EthicsNoNonStandardMetricsCapability(TriageComplianceCheckCapability):
+    class EthicsNoNonStandardMetricsCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_nonstandard_metrics.compliant},
             {"value": "n", "label": T.ethics_no_nonstandard_metrics.non_compliant}
@@ -125,6 +158,8 @@ class EthicsNoNonStandardMetricsGroup(Structure):
             "ethics_no_nonstandard_metrics_note",
         ]
 
+        render_class = GenericCompound
+
     name_ = "ethics_no_nonstandard_metrics_group"
     capabilities_ = (EthicsNoNonStandardMetricsGroupCapability(),)
 
@@ -137,7 +172,7 @@ class EthicsNoNonStandardMetricsGroup(Structure):
 ## Ethics: No Fake Impact
 
 class EthicsNoFakeImpact(ComplianceCheckField):
-    class EthicsNoFakeImpactCapability(TriageComplianceCheckCapability):
+    class EthicsNoFakeImpactCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_fake_impact.compliant},
             {"value": "n", "label": T.ethics_no_fake_impact.non_compliant}
@@ -169,6 +204,8 @@ class EthicsNoFakeImpactGroup(Structure):
             "ethics_no_fake_impact_note",
         ]
 
+        render_class = GenericCompound
+
     name_ = "ethics_no_fake_impact_group"
     capabilities_ = (EthicsNoFakeImpactGroupCapability(),)
 
@@ -181,7 +218,7 @@ class EthicsNoFakeImpactGroup(Structure):
 ## Ethics: No False DOAJ Claim
 
 class EthicsNoFalseDOAJClaim(ComplianceCheckField):
-    class EthicsNoFalseDOAJClaimCapability(TriageComplianceCheckCapability):
+    class EthicsNoFalseDOAJClaimCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_false_doaj_claim.compliant},
             {"value": "n", "label": T.ethics_no_false_doaj_claim.non_compliant}
@@ -213,6 +250,8 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
             "ethics_no_false_doaj_claim_note",
         ]
 
+        render_class = GenericCompound
+
     name_ = "ethics_no_false_doaj_claim"
     capabilities_ = (EthicsNoFalseDOAJClaimGroupCapability(),)
 
@@ -225,7 +264,7 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
 ## Ethics: No Susplicious Ties
 
 class EthicsNoSuspiciousTies(ComplianceCheckField):
-    class EthicsNoSuspiciousTiesCapability(TriageComplianceCheckCapability):
+    class EthicsNoSuspiciousTiesCapability(ComplianceCheckCapability):
         options = [
             {"value": "y", "label": T.ethics_no_suspicious_ties.compliant},
             {"value": "n", "label": T.ethics_no_suspicious_ties.non_compliant}
@@ -256,6 +295,8 @@ class EthicsNoSuspiciousTiesGroup(Structure):
             "ethics_no_suspicious_ties",
             "ethics_no_suspicious_ties_note",
         ]
+
+        render_class = GenericCompound
 
     name_ = "ethics_no_suspicious_ties"
     capabilities_ = (EthicsNoSuspiciousTiesGroupCapability(),)
