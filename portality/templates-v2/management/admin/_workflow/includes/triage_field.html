@@ -18,6 +18,15 @@
         </ul>
     {% endif %}
 
+    {% if field.capability.application_info %}
+        <strong>Application Info</strong>:
+        <ul>
+            {% for info in field.capability.application_info %}
+                <li><strong>{{ info.label }}</strong>: {{ info.lookup(application, wfc) }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     {% autoescape off %}
         {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
     {% endautoescape %}

@@ -55,3 +55,21 @@ triage:
                   the answer is No. Make a note of it and review the application as normal"
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+
+    issn_at_least_one:
+      label: "ISSN(s)"
+      compliant: "Compliant, this journal has at least one ISSN"
+      non_compliant: "Non-compliant, this record has no active and confrimed ISSNs"
+      check: "This journal has at least one ISSN (International Standard Serial Number) that is registered, active and confirmed at issn.org?"
+      instructions: '<ul><li>Search both ISSNs (if available)</li>
+                  <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is "No"</li>
+                  <li>If any of the ISSNs is unregistered, provisional, unreported or listed as ceased, click "Changes to ISSNs are required", remove it, and add a note</li>
+                  <li>If you cannot find the ISSN in the ISSN portal or the search result is a different journal, try to search the ISSN portal by the Title or see if you can find the correct ISSN in the journal’s website. If this is the case, click "Changes to ISSNs are required", make the change, and add a note - don’t forget to search the correct ISSN in the DOAJ database</li>
+                  <li>If the application contains only one ISSN but there are two confirmed and active in the ISSN Portal, click "Changes to ISSNs are required", add the second ISSN, and add a note - don’t forget to search the second ISSN in the DOAJ database</li>
+                  <li><em>If the country at portal.issn.org does not match the Publisher''s country listed in the application form, make a note of it</em></li>'
+      resource_label: "https://portal.issn.org/"
+      resource_url: "https://portal.issn.org/"
+      eissn:
+        label: "Electronic ISSN"
+      pissn:
+        label: "Print ISSN"

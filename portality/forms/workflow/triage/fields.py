@@ -3,7 +3,7 @@ from portality.core import app
 
 from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL
-from formulaic.serialise.form.controls import Radio, Textarea, Hidden
+from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, GenericControl, GenericField, \
     GenericCompound
@@ -85,13 +85,6 @@ class EthicsNotExcluded(ComplianceCheckField):
             {
                 "label": T.ethics_not_excluded.resource_label,
                 "url": T.ethics_not_excluded.resource_url
-            }
-        ]
-        application_info = [
-            {
-                "label": "blah",
-                "source": "application",
-                "lookup_path": lambda record: record.bibjson().title
             }
         ]
 
@@ -238,7 +231,7 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
 
 
 class EthicsNoFalseDOAJClaimNote(Field):
-    name = "ethics_no_false_doaj_claim"
+    name = "ethics_no_false_doaj_claim_note"
 
 
 class EthicsNoFalseDOAJClaimGroup(Structure):
@@ -252,7 +245,7 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
 
         render_class = GenericCompound
 
-    name_ = "ethics_no_false_doaj_claim"
+    name_ = "ethics_no_false_doaj_claim_group"
     capabilities_ = (EthicsNoFalseDOAJClaimGroupCapability(),)
 
     ethics_no_false_doaj_claim = EthicsNoFalseDOAJClaim(OPTIONAL, SINGLE)
@@ -284,7 +277,7 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
 
 
 class EthicsNoSuspiciousTiesNote(Field):
-    name = "ethics_no_suspicious_ties"
+    name = "ethics_no_suspicious_ties_note"
 
 
 class EthicsNoSuspiciousTiesGroup(Structure):
@@ -298,7 +291,7 @@ class EthicsNoSuspiciousTiesGroup(Structure):
 
         render_class = GenericCompound
 
-    name_ = "ethics_no_suspicious_ties"
+    name_ = "ethics_no_suspicious_ties_group"
     capabilities_ = (EthicsNoSuspiciousTiesGroupCapability(),)
 
     ethics_no_suspicious_ties = EthicsNoSuspiciousTies(OPTIONAL, SINGLE)
@@ -306,3 +299,83 @@ class EthicsNoSuspiciousTiesGroup(Structure):
 
 ###########################################################
 
+###########################################################
+## ISSN: At Least One Registered ISSN
+
+class ISSNAtLeastOne(ComplianceCheckField):
+    class ISSNAtLeastOneCapability(ComplianceCheckCapability):
+        options = [
+            {"value": "y", "label": T.issn_at_least_one.compliant},
+            {"value": "n", "label": T.issn_at_least_one.non_compliant}
+        ]
+
+        check = T.issn_at_least_one.check
+        instructions = T.issn_at_least_one.instructions
+        resources = [
+            {
+                "label": T.issn_at_least_one.resource_label,
+                "url": T.issn_at_least_one.resource_url
+            }
+        ]
+
+        application_info = [
+            {
+                "label": T.issn_at_least_one.eissn.label,
+                "lookup": lambda application, wfc: application.bibjson().eissn
+            },
+            {
+                "label": T.issn_at_least_one.pissn.label,
+                "lookup": lambda application, wfc: application.bibjson().pissn
+            }
+        ]
+
+    name = "issn_at_least_one"
+    capabilities = (ISSNAtLeastOneCapability(),)
+
+
+class ISSNAtLeastOneNote(NoteField):
+    name = "issn_at_least_one_note"
+
+
+class EISSN(Field):
+    class EISSNCapability(FormFieldCapability):
+        label = T.issn_at_least_one.eissn.label
+        control_class = TextInput
+        control_render_class = GenericControl
+        render_class = GenericField
+
+    name = "eissn"
+    coerce = [Unicode()]
+    capabilities = (EISSNCapability(),)
+
+class PISSN(Field):
+    class PISSNCapability(FormFieldCapability):
+        label = T.issn_at_least_one.pissn.label
+        control_class = TextInput
+        control_render_class = GenericControl
+        render_class = GenericField
+
+    name = "pissn"
+    coerce = [Unicode()]
+    capabilities = (PISSNCapability(),)
+
+class ISSNAtLeastOneGroup(Structure):
+    class ISSNAtLeastOneGroupCapability(CompoundFieldCapability):
+        label = T.issn_at_least_one.label
+
+        order = [
+            "issn_at_least_one",
+            "eissn",
+            "pissn",
+            "issn_at_least_one_note"
+        ]
+
+        render_class = GenericCompound
+
+    name_ = "issn_at_least_one_group"
+    capabilities_ = (ISSNAtLeastOneGroupCapability(),)
+
+    issn_at_least_one = ISSNAtLeastOne(OPTIONAL, SINGLE)
+    eissn = EISSN(OPTIONAL, SINGLE)
+    pissn = PISSN(OPTIONAL, SINGLE)
+    issn_at_least_one_note = ISSNAtLeastOneNote(OPTIONAL, SINGLE)
