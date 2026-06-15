@@ -1,0 +1,44 @@
+{% extends "management/admin/base.html" %}
+{# ~~Workflow:Page~~ #}
+
+{% block page_title %}Workflow Overview{% endblock %}
+
+{% block page_header %}
+    Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+    {{ current_user.id }}{% endif %}!
+{% endblock %}
+
+{% block admin_content %}
+    {% set onward = "workflow.index" %}
+    <h1>Awaiting Triage</h1>
+    <section>
+    {% for state in awaiting_triage %}
+        {% include templates.ADMIN_WORKFLOW_OVERVIEW_ENTRY %}
+    {% endfor %}
+    </section>
+
+    <h1>Triage In Progress</h1>
+    <section>
+    {% for state in triage_in_progress %}
+        {% include templates.ADMIN_WORKFLOW_OVERVIEW_ENTRY %}
+    {% endfor %}
+    </section>
+
+    <h1>Triage that has met Minimal Review needs</h1>
+    <section>
+    {% for state in triage_minimal_review %}
+        {% include templates.ADMIN_WORKFLOW_OVERVIEW_ENTRY %}
+    {% endfor %}
+    </section>
+
+    <h1>Rejected Applications</h1>
+    <section>
+    {% for state in rejected %}
+        {% include templates.ADMIN_WORKFLOW_OVERVIEW_ENTRY %}
+    {% endfor %}
+    </section>
+{% endblock %}
+
+{% block admin_js %}
+
+{% endblock %}

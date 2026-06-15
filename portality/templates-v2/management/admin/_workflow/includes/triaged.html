@@ -1,0 +1,11 @@
+<form action="{{ event.get_route() }}" method="post" style="margin-bottom: 0">
+    {% if onward %}
+        <input type="hidden" name="onward" value="{{ onward }}">
+    {% endif %}
+    <select name="send_to" id="send_to">
+        <option value="">Label...</option>
+        <option name="{{ constants.EWF__QUICK_FAIL }}">Quick Fail</option>
+        <option name="{{ constants.EWF__QUALITY_REVIEW }}">Quality Review</option>
+    </select>
+    <button class="assign" style="margin: 0 0 0 0">Complete Triage</button>
+</form>
