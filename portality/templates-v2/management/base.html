@@ -169,7 +169,19 @@
                         {% endif %}
                     </dl>
                 </nav>
+{#                <div>#}
+{#                    {% for attribute in current_user.get_attributes(constants.USER_ATTR__LANGUAGE) %}#}
+{#                        <span class="label tag">Language:{{ datasets.name_for_lang(attribute) }}</span>#}
+{#                    {% endfor %}#}
+{#                    {% for attribute in current_user.get_attributes(constants.USER_ATTR__COUNTRY) %}#}
+{#                        <span class="label tag">Country:{{ datasets.get_country_name(attribute) }}</span>#}
+{#                    {% endfor %}#}
+{#                    {% for attribute in current_user.get_attributes(constants.USER_ATTR__TAG) %}#}
+{#                        <span class="label tag">Tag:{{ attribute }}</span>#}
+{#                    {% endfor %}#}
+{#                </div>#}
             </div>
+
         </header>
         {% include "includes/_flash_notification.html" %}
         {% block management_content %}{% endblock %}
