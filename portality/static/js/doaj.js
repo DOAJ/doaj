@@ -121,6 +121,7 @@ var doaj = {
     bindMiniSearch : function() {
         const namespace = "doaj-minisearch";
         const container = "." + namespace + "--container";
+
         $(container + " [name=content-type]").on("change", function() {
             let that = $(this);
             if (!that.is(":checked")) {

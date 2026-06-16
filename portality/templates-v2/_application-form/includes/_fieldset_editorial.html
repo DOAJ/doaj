@@ -1,17 +1,11 @@
 {% if not notabs %}
-<p class="prevBtn label label--secondary" role="button" style="cursor: pointer;">&larr; Back</p>
-<p class="label af-pager">Page 4 of {{ FORM | length + 1}}</p>
+<p class="prevBtn label label--secondary" role="button" style="cursor: pointer;">&larr; {{ _('Back') }}</p>
+<p class="label af-pager">{{ _("Page") }} 4 {{ _("of") }} {{ FORM | length + 1}}</p>
 {% endif %}
 
-<legend class="form__legend"><div><span data-feather="user-check"></span> Editorial</div></legend>
+<legend class="form__legend"><div><span data-feather="user-check"></span> {{ _("Editorial") }}</div></legend>
 
 {% set fs = formulaic_context.fieldset("peer_review") %}
-<h2 class="form__header"> {{ fs.label }}</h2>
-    {% for f in fs.fields() %}
-        {% set field_template = f.template %}
-        {%  include field_template %}
-    {% endfor %}
-{% set fs = formulaic_context.fieldset("plagiarism") %}
 <h2 class="form__header"> {{ fs.label }}</h2>
     {% for f in fs.fields() %}
         {% set field_template = f.template %}
@@ -23,3 +17,16 @@
         {% set field_template = f.template %}
         {%  include field_template %}
     {% endfor %}
+
+{% set fs = formulaic_context.fieldset("subject_and_keywords") %}
+{% if fs %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+        {% if f.name == "subject" %}
+            <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
+            <div id="subject_checkbox-errors"></div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
