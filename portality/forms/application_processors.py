@@ -426,10 +426,15 @@ class AdminApplication(ApplicationProcessor):
             if (self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST and
                     self.form.mark_as_full_review.data):
                 now = dates.now_str()
+                # Add last full review note to update request application
+                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
+                self.target.add_note(n, date=now, author_id=account.id)
+                self.target.save()
+                # Add last full review note to journal
                 j.last_full_review = now
                 n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
                 j.add_note(n, date=now, author_id=account.id)
-
+                j.save()
             # record the url the journal is available at in the admin are and alert the user
             if has_request_context():       # fixme: if we handle alerts via a notification service we won't have to toggle on request context
                 jurl = url_for("doaj.toc", identifier=j.toc_id)
@@ -474,13 +479,6 @@ class AdminApplication(ApplicationProcessor):
 
         # the application was neither accepted or rejected, so just save it
         else:
-            if (self.source.current_journal is not None and j is not None and
-                    self.form.mark_as_full_review.data and
-                    self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST):
-                now = dates.now_str()
-                j.last_full_review = now
-                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
-                j.add_note(n, date=now, author_id=account.id)
             self.target.set_last_manual_update()
             self.target.save()
 

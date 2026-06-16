@@ -10,7 +10,14 @@
         {% if obj.application_type==constants.APPLICATION_TYPE_UPDATE_REQUEST and fs %}
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
-                {% include field_template %}
+                {% if obj.application_status == constants.APPLICATION_STATUS_ACCEPTED %}
+                    {% set show=true %}
+                {% else %}
+                    {% set show=false %}
+                {% endif %}
+                <div id="mark_as_full_review_div" {% if not show %}style="display: none"{% endif %}>
+                    {% include field_template %}
+                </div>
             {% endfor %}
         {% endif %}
         <div class="editorial_panel--exit_buttons">
