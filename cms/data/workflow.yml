@@ -2,17 +2,17 @@ triage:
   fields:
     ethics_not_excluded:
       label: "Current exclusions"
-      compliant: "Compliant, this application is from a journal or publisher that is not currently excluded."
-      non_compliant: "Non-compliant, this application is from a journal or publisher that is currently excluded."
-      check: "This application is from a journal or publisher that is not 
-            currently excluded. (Note:  if an exclusion does not relate 
-            to all journals from a publisher, an application for another 
-            journal from that publisher should not be rejected at this 
-            stage.)"
-      instructions: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage. Specifically:
-            <ul><li>If there is a current publisher exclusion, the answer is "No"</li>
-            <li>if there is a current journal exclusion for the journal we triage, the answer is "No"</li>
-            <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is "Yes"</li></ul>'
+      compliant: "<span class='answer'>Compliant</span>, this application is from a journal or publisher that is <strong>not</strong> currently excluded."
+      non_compliant: "<span class='answer'>Non-compliant</span>, this application is from a journal or publisher that is currently excluded."
+      check: "This application is from a journal or publisher that is <strong>not</strong> 
+            currently excluded."
+      data:
+        - {title: "Publisher", field: "index.publisher"}
+        - {title: "Title", field: "index.title" }
+      remember: "If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage."
+      instructions: '<ul><li>If there is a current publisher exclusion, the answer is <span class="answer compliant">Compliant</span></li>
+                    <li>if there is a current journal exclusion for the journal we triage, the answer is <span class="answer compliant">Compliant</span></li>
+                    <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is <span class="answer noncompliant">Non-compliant</span></li></ul>'
       resource_label: "Excluded publishers spreadsheet"
       resource_url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
 

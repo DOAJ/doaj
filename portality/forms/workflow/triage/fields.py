@@ -53,6 +53,8 @@ class EthicsNotExcluded(ComplianceCheckField):
                 "url": T.ethics_not_excluded.resource_url
             }
         ]
+        remember = T.ethics_not_excluded.remember
+        data = T.ethics_not_excluded.data
 
     name = "ethics_not_excluded"
     capabilities = (EthicsNotExcludedCapability(),)

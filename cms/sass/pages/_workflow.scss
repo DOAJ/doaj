@@ -3,25 +3,9 @@
         font-style: italic;
         color: $dark-grey;
     }
+
     main {
         padding: 0 !important;
-    }
-
-    &_body {
-        margin-left: 75px;
-        width: auto;
-
-        @media screen and (max-width: 768px) {
-            padding: 20px;
-        }
-
-        @media screen and (max-width: 1279px) and (min-width: 769px) {
-            padding: 30px;
-        }
-
-        @media screen and (min-width: 1280px) {
-            padding: 40px;
-        }
     }
 
     &_header {
@@ -73,14 +57,17 @@
         line-height: 1.25em;
     }
 
+    .icon {
+        margin-right: .25rem;
+    }
+
+    li::marker {
+      font-size: 0.75em;
+    }
     .data,
     .data a {
         display: flex;
         align-items: center;
-
-        .icon {
-            margin-right: .25rem;
-        }
 
         &--issns {
             color: $sanguine;
@@ -91,4 +78,132 @@
             letter-spacing: 0.09rem;
         }
     }
+
+    .criterion {
+        h3 {
+            width: 100%;
+            margin: 1.25rem 0;
+            font-size: 1.25rem;
+            font-weight: normal;
+        }
+        h4:not(:first-child) {
+            margin-top: 1rem;
+        }
+        h4 {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        &-important {
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid $grapefruit;
+        }
+
+        input.review-outcome {
+            height: 0;
+            width: 0;
+            padding: 0;
+            margin: 0;
+        }
+        label.review-outcome {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: normal;
+            span.answer {
+                font-weight: bold;
+            }
+            &.compliant {
+                background-color: $dark-green;
+                color: white;
+            }
+            &.non-compliant {
+                background-color: $sanguine;
+                color: white;
+            }
+            &.action {
+                background-color: $grapefruit;
+            }
+        }
+
+        button.button.button--prev {
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-size: .8rem;
+            font-weight: normal;
+            text-decoration: underline;
+            text-transform: lowercase;
+            letter-spacing: 0;
+            &:hover {
+                background-color: transparent;
+                color: $grapefruit;
+            }
+        }
+    }
+
+    $progress-gradient: linear-gradient(
+                    90deg,
+                    #982E0A 0%,
+                    #FD5A3B 16.6%,
+                    #FA9A87 33%,
+                    #F9D950 50%,
+                    #A3C386 67%,
+                    #47A178 83%,
+                    #3A5959 100%
+    );
+
+    progress.progress {
+        width: 100%;
+        height: 1.25rem;
+        overflow: hidden;
+        appearance: none;
+
+        &::-webkit-progress-bar {
+            background: #eee;
+        }
+
+        &::-webkit-progress-value {
+            background: $progress-gradient;
+        }
+
+        &::-moz-progress-bar {
+            background: $progress-gradient;
+        }
+    }
+
+    .progress-label {
+        position: absolute;
+        right: 2.5rem;
+        color: black;
+        white-space: nowrap;
+
+        &.is-complete {
+            left: auto;
+            right: 4rem;
+            color: white;
+        }
+    }
 }
+
+span.answer {
+    font-weight: bold;
+    text-transform: capitalize;
+
+    &.compliant {
+        color: $sanguine;
+    }
+
+    &.noncompliant {
+        color: $dark-green;
+    }
+
+    &.action {
+        color: $grapefruit;
+    }
+}
+

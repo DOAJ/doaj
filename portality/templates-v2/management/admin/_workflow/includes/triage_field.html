@@ -1,26 +1,72 @@
-<h1 style="color: green">triage_field.html</h1>
-<div>
-    {% autoescape off %}
+{% autoescape off %}
+<section class="criterion container">
+<div class="row>">
+    <div class="col-md-7">
+    <header class="criteria-header">
+
+        <div class="progress">
+            <label for="triage-progress" class="sr-only">
+                Triage progress: answered 11 of 25
+            </label>
+
+            <progress class="progress" value="95" max="100" id="triage-progress">
+              60%
+            </progress>
+
+            <span class="progress-label is-complete">Answered 11 of 25</span>
+        </div>
+        <nav>
+            <button type="button" class="button button--prev">
+                Previous question
+            </button>
+        </nav>
+
+    </header>
+
         {% if field.ref.check %}
-            <div><strong>Check</strong>: {{ field.ref.check }}</div>
+            <h3>Criterion: {{ field.ref.check }}</h3>
         {% endif %}
 
-        {% if field.ref.instructions %}
-            <div style="background: #cccccc; font-style: italic; padding: 1em; margin: 1em;">{{ field.ref.instructions }}</div>
+        {% if field.ref.data %}
+            <div>
+                <h4>Information provided by the applicant</h4>
+                <ul class="criterion-details">
+                    {% for d in field.ref.data %}
+                    <li>{{ d.title }}: <strong>{{ d.field }}</strong></li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
-    {% endautoescape %}
+    </div>
+    <div class="col-md-5">
+        {% if field.ref.remember %}
+        <div class="criterion-important">
+            <h4><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>REMEMBER</h4>
+            <p>{{ field.ref.remember }}</p>
+        </div>
+        {% endif %}
+        {% if field.ref.instructions %}
+            <div class="criterion-instructions">{{ field.ref.instructions }}</div>
+        {% endif %}
 
     {% if field.ref.resources|length > 0 %}
-        <strong>Resources</strong>:
+        <h4><span data-feather="book" class="icon"  aria-hidden="true">></span>Resources</h4>
         <ul>
             {% for resource in field.ref.resources %}
                 <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
             {% endfor %}
         </ul>
     {% endif %}
-
-    {% set cr = field.ref.get_control_renderer() %}
-    {% autoescape off %}
-        {{ cr.draw(field.control) }}
-    {% endautoescape %}
+    </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <fieldset>
+            <legend class="sr-only">Review outcome</legend>
+            {% set cr = field.ref.get_control_renderer() %}
+            {{ cr.draw(field.control) }}
+        </fieldset>
+    </div>
+</div>
+</section>
+{% endautoescape %}
