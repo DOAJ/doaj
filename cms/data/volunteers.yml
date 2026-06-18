@@ -160,6 +160,14 @@ ass_ed:
   country: Colombia
   language: Spanish, English, Portuguese
   photo: "Ana Melisa Fernandes.jpg"
+
+- name: Andrea Collivignarelli
+  area: Open Access Publishing
+  year_since:
+  city: Milan 
+  country: Italy
+  language: Italian, English
+  photo: "Andrea Collivignarelli.png" 
   
 - name: Annarita Barbaro
   area: Humanities
