@@ -542,7 +542,8 @@ class ApplicationService(object):
         # * editor_group
         # * owner
         # * application date
-        notes = application.notes
+        # notes = application.notes
+        notes = application.get_detached_notes()
 
         if application.editor is not None:
             journal.set_editor(application.editor)
@@ -579,7 +580,7 @@ class ApplicationService(object):
                 journal.set_created(cj.created_date)
 
                 # bring forward any notes from the old journal record
-                old_notes = cj.notes
+                old_notes = cj.get_detached_notes()
                 for note in old_notes:
                     journal.add_note_by_dict(note)
 

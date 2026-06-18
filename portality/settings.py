@@ -520,6 +520,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
+    "portality.models.note.Note"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -1006,9 +1007,13 @@ QUERY_FILTERS = {
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
 PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
+    # old protections for notes
+    # TODO: these MUST remain in place for the duration of deployment, they can be removed post migration
     "admin.notes.note",
     "admin.notes.id",
-    "admin.notes.author_id"
+    "admin.notes.author_id",
+    # New protections for notes
+    "admin.index.notes"
 ]
 
 ADMIN_NOTES_INDEX_ONLY_FIELDS = {
@@ -1023,8 +1028,12 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
     }
 }
 
+# These mappings prevent the notes and flags from being indexed in all_meta (the default for text fields)
 ADMIN_NOTES_SEARCH_MAPPING = {
-    "admin.notes.id": {
+    "admin.index.notes": {
+        "type": "text"
+    },
+    "admin.flag.note_id": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1033,16 +1042,7 @@ ADMIN_NOTES_SEARCH_MAPPING = {
             }
         }
     },
-    "admin.notes.note": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
-    },
-    "admin.notes.author_id": {
+    "admin.flag.assigned_to": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1814,3 +1814,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = True

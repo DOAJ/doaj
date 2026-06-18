@@ -12,6 +12,7 @@ from portality.core import app, es_connection
 from portality.lib import dates
 from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
+from portality.models import Note
 from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import scheduled_long_queue as queue
@@ -20,6 +21,11 @@ email_subs = {}
 email_counter = 0
 password = None
 
+def create_random_str(n_char=10):
+    import string, random
+
+    s = string.ascii_letters + string.digits
+    return ''.join(random.choices(s, k=n_char))
 
 def _anonymise_email(record):
     if record.email not in email_subs:
@@ -31,9 +37,12 @@ def _anonymise_email(record):
 
 
 def _anonymise_admin(record):
-    for note in record.notes[:]:
-        record.remove_note(note)
-        record.add_note("---note removed for data security---", id=note["id"])
+    d = record.data
+    if "admin" in d and "index" in d["admin"] and "notes" in d["admin"]["index"]:
+        anon_notes = []
+        for note in record.data["admin"]["index"]["notes"]:
+            anon_notes.append("---note removed for data security---")
+        record.data["admin"]["index"]["notes"] = anon_notes
 
     return record
 
@@ -97,12 +106,18 @@ def anonymise_background_job(record):
 
     return bgjob.data
 
+def anonymise_note(note:Note):
+    note.note = "---note removed for data security---"
+    note.author_id = create_random_str()
+    return note.data
+
 
 anonymisation_procedures = {
     'account': anonymise_account,
     'background_job': anonymise_background_job,
     'journal': anonymise_journal,
-    'application': anonymise_application
+    'application': anonymise_application,
+    "note": anonymise_note
 }
 
 # types that should use prefix queries to optimise performance for bulk exporting

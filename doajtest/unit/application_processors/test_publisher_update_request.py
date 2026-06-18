@@ -36,8 +36,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
     def test_01_publisher_update_request_success(self):
         """Give the publisher update request a full workout"""
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.set_id("123456789987654321")
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
         journal.save(blocking=True)
 
         # we start by constructing it from source
@@ -127,8 +126,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         it only results in a single resulting journal"""
 
         # make the journal to update
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -187,8 +185,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         update request to be submitted and accepted"""
 
         # make the journal to update
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -247,8 +244,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         request, and then unrejecting the original causes an error"""
 
         # make the journal to update
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -309,8 +305,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         that still allows you to successfully unreject the first one"""
 
         # make the journal to update
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
         journal.save(blocking=True)
 
         acc = models.Account()
@@ -374,9 +369,8 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
             assert journal.related_application_record(ur1.id) is not None
 
     def test_07_prevent_forbidden_from_publisher(self):
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": "123456789987654321"})
         journal.bibjson().clear_labels()
-        journal.set_id("123456789987654321")
         journal.save(blocking=True)
 
         # we start by constructing it from source
