@@ -1,6 +1,6 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
-<form method="post" action="" class="form-login">
+<form method="post" action="{{ url_for('account.login', next=form.next.data) }}" class="form-login">
     <div class="form__question form-login__question">
         {{ render_field(form.user, placeholder="email@example.com") }}
     </div>
@@ -32,3 +32,50 @@
     {{ render_field(form.next) }}
     {{ form.action(type="hidden", id="action", value="") }}
 </form>
+
+
+<script type="text/javascript">
+    // $(document).ready(function() {
+    //     console.log("it's me")
+    //     $('#show-password').on('click', function (e) {
+    //         e.preventDefault();
+    //         console.log("click")
+    //         $('#password-section').slideDown();
+    //         $('#login-link-btn').hide();
+    //         $('#toggle-to-password').hide();
+    //     });
+    //
+    //     $('#show-login-link').on('click', function (e) {
+    //         e.preventDefault();
+    //         $('#password-section').slideUp();
+    //         $('#login-link-btn').show();
+    //         $('#toggle-to-password').show();
+    //         $('#password-section input[type="password"]').val('');
+    //     });
+    // });
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("it's me");
+
+        document.getElementById('show-password')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("click");
+
+            document.getElementById('password-section').style.display = 'block';
+            document.getElementById('login-link-btn').style.display = 'none';
+            document.getElementById('toggle-to-password').style.display = 'none';
+        });
+
+        document.getElementById('show-login-link')?.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            document.getElementById('password-section').style.display = 'none';
+            document.getElementById('login-link-btn').style.display = '';
+            document.getElementById('toggle-to-password').style.display = '';
+
+            const passwordInput = document.querySelector('#password-section input[type="password"]');
+            if (passwordInput) {
+                passwordInput.value = '';
+            }
+        });
+    });
+</script>
