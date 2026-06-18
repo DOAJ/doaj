@@ -1,0 +1,8 @@
+<fieldset id="{{ fieldset.name }}" {% for k, v in fieldset.attributes %}{{ k }}="{{ v }}" {% endfor %}>
+    <legend>{{ fieldset.label }}</legend>
+    {% for element in fieldset.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+</fieldset>

@@ -13,6 +13,7 @@ import json
 
 TRIAGE_FIELD = {
     "fields": {
+        "answer": {"coerce": "unicode"},
         "compliant": {"coerce": "bool"},
         "sv": {"coerce": "integer"},
     },
@@ -87,7 +88,7 @@ TRIAGE_STRUCT = {
                 "database_not_listed", #b3
                 "database_not_duplicate", #b4
 
-                "issn_confirmed", #c1
+                "issn_at_least_one", #c1
                 "issn_journal_name_match", #c2
                 "issn_no_continuation", #c3
 
@@ -119,7 +120,7 @@ TRIAGE_STRUCT = {
                 "database_not_listed": TRIAGE_FIELD,
                 "database_not_duplicate": TRIAGE_FIELD,
 
-                "issn_confirmed": TRIAGE_FIELD,
+                "issn_at_least_one": TRIAGE_FIELD,
                 "issn_journal_name_match": TRIAGE_FIELD,
                 "issn_no_continuation": TRIAGE_FIELD,
 
@@ -223,6 +224,7 @@ class WorkflowControl(SeamlessMixin, DomainObject):
             kwargs = kwargs["_source"]
         super(WorkflowControl, self).__init__(raw=kwargs)
         self._reviewer_object = None
+        self._notes_cache = {}
 
     ####################################
     ## Class methods for locating WorkflowControl objects
@@ -246,6 +248,12 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     @property
     def data(self):
         return self.__seamless__.data
+
+    def save(self, *args, **kwargs):
+        # all notes in the cache should get saved
+        for id, n in self._notes_cache:
+            n.save()
+        super(WorkflowControl, self).save(*args, **kwargs)
 
     ####################################
     ## state properties
@@ -339,12 +347,12 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     ## Module specifics
 
     @property
-    def triage(self):
+    def triage(self) -> "Triage":
         t = self.__seamless__.get_single("modules.triage")
         if t is None:
             self.__seamless__.set_single("modules.triage", {})
             t = self.__seamless__.get_single("modules.triage")
-        return Triage(t)
+        return Triage(t, self)
 
     ##################################
     ## Audit
@@ -384,14 +392,29 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     def remove_label(self, label:str):
         self.__seamless__.delete_from_list("labels", label)
 
+    ###################################
+    ## Model behaviour
+
+    def cache_note(self, note:"Note"):
+        self._notes_cache[note.id] = note
+
 
 class TriageField(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_FIELD
     __SEAMLESS_COERCE__ = COERCE_MAP
 
-    def __init__(self, raw=None, **kwargs):
+    def __init__(self, raw=None, parent:"Triage"=None, **kwargs):
         super(TriageField, self).__init__(raw=raw, **kwargs)
+        self._parent = parent
         self._notes = {}
+
+    @property
+    def answer(self) -> str:
+        return self.__seamless__.get_single("answer")
+
+    @answer.setter
+    def answer(self, val):
+        self.__seamless__.set_single("answer", val)
 
     @property
     def compliant(self) -> bool:
@@ -404,6 +427,10 @@ class TriageField(SeamlessMixin):
     @property
     def severity_value(self) -> int:
         return self.__seamless__.get_single("sv")
+
+    @severity_value.setter
+    def severity_value(self, val):
+        self.__seamless__.set_single("sv", val)
 
     @property
     def note_ids(self):
@@ -422,6 +449,14 @@ class TriageField(SeamlessMixin):
                 self._notes[nid] = Note.pull(nid)
         return self._notes
 
+    def add_note(self, note:"Note"):
+        if note.id is None:
+            note.set_id(note.makeid())
+        self._notes[note.id] = note
+        self.__seamless__.add_to_list("note_ids", note.id, unique=True)
+        if self._parent is not None:
+            self._parent.cache_note(note)
+
 
 class DatabaseNotRemovedNoEmbargoField(TriageField):
     __SEAMLESS_STRUCT__ = DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD
@@ -438,12 +473,17 @@ class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
 
-    def __init__(self, raw=None, **kwargs):
+    def __init__(self, raw=None, parent:WorkflowControl=None, **kwargs):
         super(Triage, self).__init__(raw=raw, **kwargs)
+        self._parent = parent
 
     @property
     def data(self):
         return self.__seamless__.data
+
+    def cache_note(self, note:"Note"):
+        if self._parent is not None:
+            self._parent.cache_note(note)
 
     @property
     def has_minimal_review(self):
@@ -458,7 +498,7 @@ class Triage(SeamlessMixin):
         if t is None:
             self.__seamless__.set_single(f"questions.{field}", {})
             t = self.__seamless__.get_single(f"questions.{field}")
-        return TriageField(t)
+        return TriageField(t, self)
 
     def _calculate_severity_value(self):
         total = 0
@@ -504,6 +544,10 @@ class Triage(SeamlessMixin):
     @property
     def ethics_no_suspicious_ties(self) -> TriageField:
         return self._get_triage_field("ethics_no_suspicious_ties")
+
+    @property
+    def issn_at_least_one(self) -> TriageField:
+        return self._get_triage_field("issn_at_least_one")
 
     @property
     def database_not_removed_no_embargo(self):

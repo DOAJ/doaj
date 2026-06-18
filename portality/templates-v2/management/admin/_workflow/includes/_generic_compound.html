@@ -1,0 +1,8 @@
+<fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
+    <legend>{{ compound.label }}</legend>
+    {% for element in compound.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+</fieldset>

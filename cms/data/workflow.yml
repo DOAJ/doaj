@@ -4,50 +4,74 @@ triage:
       label: "Current exclusions"
       compliant: "<span class='answer'>Compliant</span>, this application is from a journal or publisher that is <strong>not</strong> currently excluded."
       non_compliant: "<span class='answer'>Non-compliant</span>, this application is from a journal or publisher that is currently excluded."
-      check: "This application is from a journal or publisher that is <strong>not</strong> 
-            currently excluded."
-      data:
-        - {title: "Publisher", field: "index.publisher"}
-        - {title: "Title", field: "index.title" }
-      remember: "If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage."
-      instructions: '<ul><li>If there is a current publisher exclusion, the answer is <span class="answer compliant">Compliant</span></li>
-                    <li>if there is a current journal exclusion for the journal we triage, the answer is <span class="answer compliant">Compliant</span></li>
-                    <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is <span class="answer noncompliant">Non-compliant</span></li></ul>'
+      check: "This application is from a journal or publisher that is not 
+            currently excluded. (Note:  if an exclusion does not relate 
+            to all journals from a publisher, an application for another 
+            journal from that publisher should not be rejected at this 
+            stage.)"
+      later: "Do this later"
+      instructions: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage. Specifically:
+            <ul><li>If there is a current publisher exclusion, the answer is "No"</li>
+            <li>if there is a current journal exclusion for the journal we triage, the answer is "No"</li>
+            <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is "Yes"</li></ul>'
       resource_label: "Excluded publishers spreadsheet"
       resource_url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
 
     ethics_no_nonstandard_metrics:
       label: "Non-standard metric services"
       compliant: "Compliant, this journal does not display references to non standard services"
       non_compliant: "Non-compliant, this journal displays references to non standard services"
+      later: "Do this later"
       check: "The journal does not display any references  (images, links, logos) to non-standard 
             metric services"
       instructions: ""
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 1
 
     ethics_no_fake_impact:
       label: "Fake impact factor values"
       compliant: "Compliant, this journal does not display fake impact factor values"
       non_compliant: "Non-compliant, this journal displays fake impact factor values"
+      later: "Do this later"
       check: "The journal does not display fake impact factor values in texts or/and images"
       instructions: ""
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 3
 
     ethics_no_false_doaj_claim:
       label: "False claim to be indexed in DOAJ"
       compliant: "Compliant, this journal does not make a false claim to be indexed in DOAJ"
       non_compliant: "Non-compliant, this journal makes a false claim to be indexed in DOAJ"
+      later: "Do this later"
       check: "This journal does not make a false claim to be indexed in DOAJ"
       instructions: ""
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 3
 
     ethics_no_suspicious_ties:
       label: "Previous exclusions/suspicious publisher or journals"
       compliant: "Compliant, this publisher/journal does not have links to any previously excluded or suspicious publisher/journal"
       non_compliant: "Non-compliant, this publisher/journal has links to previously excluded or suspicious publisher/journal"
+      later: "Do this later"
       check: "The publisher/journal does not have links to 
           a) previously excluded publishers and 
           b) list of suspicious publishers (listed in the excluded publishers speadsheet)"
@@ -55,3 +79,31 @@ triage:
                   the answer is No. Make a note of it and review the application as normal"
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"
+      severity_value: 10
+
+    issn_at_least_one:
+      label: "ISSN(s)"
+      compliant: "Compliant, this journal has at least one ISSN"
+      non_compliant: "Non-compliant, this record has no active and confrimed ISSNs"
+      later: "Do this later"
+      check: "This journal has at least one ISSN (International Standard Serial Number) that is registered, active and confirmed at issn.org?"
+      instructions: '<ul><li>Search both ISSNs (if available)</li>
+                  <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is "No"</li>
+                  <li>If any of the ISSNs is unregistered, provisional, unreported or listed as ceased, click "Changes to ISSNs are required", remove it, and add a note</li>
+                  <li>If you cannot find the ISSN in the ISSN portal or the search result is a different journal, try to search the ISSN portal by the Title or see if you can find the correct ISSN in the journal’s website. If this is the case, click "Changes to ISSNs are required", make the change, and add a note - don’t forget to search the correct ISSN in the DOAJ database</li>
+                  <li>If the application contains only one ISSN but there are two confirmed and active in the ISSN Portal, click "Changes to ISSNs are required", add the second ISSN, and add a note - don’t forget to search the second ISSN in the DOAJ database</li>
+                  <li><em>If the country at portal.issn.org does not match the Publisher''s country listed in the application form, make a note of it</em></li>'
+      resource_label: "https://portal.issn.org/"
+      resource_url: "https://portal.issn.org/"
+      eissn:
+        label: "Electronic ISSN"
+      pissn:
+        label: "Print ISSN"
+      compliant_answers:
+      - "y"
+      non_compliant_answers:
+      - "n"

@@ -23,11 +23,11 @@
 
     </header>
 
-        {% if field.ref.check %}
+        {% if field.capability.check %}
             <h3>Criterion: {{ field.ref.check }}</h3>
         {% endif %}
 
-        {% if field.ref.data %}
+        {% if field.capability.data %}
             <div>
                 <h4>Information provided by the applicant</h4>
                 <ul class="criterion-details">
@@ -37,9 +37,8 @@
                 </ul>
             </div>
         {% endif %}
-    </div>
     <div class="col-md-5">
-        {% if field.ref.remember %}
+        {% if field.capability.remember %}
         <div class="criterion-important">
             <h4><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>REMEMBER</h4>
             <p>{{ field.ref.remember }}</p>
@@ -49,10 +48,10 @@
             <div class="criterion-instructions">{{ field.ref.instructions }}</div>
         {% endif %}
 
-    {% if field.ref.resources|length > 0 %}
+    {% if field.capability.resources|length > 0 %}
         <h4><span data-feather="book" class="icon"  aria-hidden="true">></span>Resources</h4>
         <ul>
-            {% for resource in field.ref.resources %}
+            {% for resource in field.capability.resources %}
                 <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
             {% endfor %}
         </ul>
@@ -67,6 +66,8 @@
             {{ cr.draw(field.control) }}
         </fieldset>
     </div>
+
+
 </div>
 </section>
 {% endautoescape %}
