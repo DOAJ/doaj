@@ -1065,6 +1065,30 @@ doaj.af.decimalPlaces = num => {
        (match[2] ? +match[2] : 0));
 };
 
+window.Parsley.addValidator("notValue", {
+    validateString: function(value, requirement) {
+        if (!value) { return true; }
+        return value.trim().toLowerCase() !== requirement.trim().toLowerCase();
+    },
+    messages: {
+        en: `<p><small>${doaj.i18n.get("'None' is not a valid answer for this question. Leave blank.")}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get("'None' is not a valid answer for this question. Leave blank.")}</small></p>`
+    },
+    priority: 32
+});
+
+window.Parsley.addValidator("forbiddenWord", {
+    validateString: function(value, requirement) {
+        if (!value) { return true; }
+        return !value.toLowerCase().includes(requirement.toLowerCase());
+    },
+    messages: {
+        en: `<p><small>${doaj.i18n.get("Please use the structured options above to indicate the type of blind peer review used.")}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get("Please use the structured options above to indicate the type of blind peer review used.")}</small></p>`
+    },
+    priority: 32
+});
+
 // remove the old type validator
 window.Parsley.removeValidator("type");
 
