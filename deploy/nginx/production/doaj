@@ -37,10 +37,9 @@ map $http_user_agent $block_bots {
 # For public site components, try all servers
 upstream doaj_apps_failover {
     least_conn;
-    server 10.131.191.147:5050 weight=3 max_fails=3 fail_timeout=30s;        #doaj-public-1
-    server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;                 #doaj-public-2
-    server 10.131.9.137:5050 max_fails=3 fail_timeout=30s;                   #doaj-public-3
-    server 10.131.191.148:5050 backup;          #doaj-background-1
+    server 10.131.191.147:5050 max_fails=3 fail_timeout=30s;        #doaj-public-1
+    server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;        #doaj-public-2
+    server 10.131.9.137:5050 max_fails=3 fail_timeout=30s;          #doaj-public-3
     keepalive 32;
     keepalive_timeout 60s;
     keepalive_requests 100;
@@ -51,8 +50,6 @@ upstream doaj_fast_failover {
     server 10.131.191.147:5050 max_fails=1 fail_timeout=10s;        #doaj-public-1
     server 10.131.191.161:5050 max_fails=1 fail_timeout=10s;        #doaj-public-2
     server 10.131.9.137:5050 max_fails=1 fail_timeout=10s;          #doaj-public-3
-    server 10.131.191.148:5050 backup;                              #doaj-background-1
-    server 10.131.191.149:5050 max_fails=1 fail_timeout=10s;        #doaj-editor-1
     keepalive 32;
     keepalive_timeout 60s;
     keepalive_requests 100;
