@@ -58,8 +58,8 @@ upstream doaj_fast_failover {
 # For api requests go through only public-2 and public-3
 upstream doaj_api_failover {
     least_conn;
-    server 10.131.191.161:5050 weight=3 max_fails=3 fail_timeout=30s;        #doaj-public-2
-    server 10.131.9.137:5050 max_fails=3 fail_timeout=30s;                   #doaj-public-3
+    server 10.131.191.161:5050 max_fails=3 fail_timeout=30s;        #doaj-public-2
+    server 10.131.9.137:5050 max_fails=3 fail_timeout=30s;          #doaj-public-3
     keepalive 32;
     keepalive_timeout 60s;
     keepalive_requests 100;
