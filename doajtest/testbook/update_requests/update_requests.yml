@@ -87,19 +87,19 @@ tests:
   steps:
     - step: an admin account (admin1)
     - step: Login as `admin1`
-    - step: Click to the `Update requests` icon on the Admin dashboard
+    - step: Click on the `Update requests` tab on the LHS panel
       results:
       - You will see a list of records
     - step: Filter the results by `Open` and select any status except `Accepted`
       results:
-        - You will see a list of records, each with a button "View Update (Finished)"
-    - step: Click the "View Update" button next to one of the records
+        - You will see a list of records, each with a button "Review Update"
+    - step: Click the "Review Update" button next to one of the records
       results:
       - a new browser tab opens, titled `Update request ...`
     - step: Check the current status of the application
       results:
-        - if the status is not accepted, the `Mark as full review` checkbox in the left side is not visible
-        - if the status is accepted, the `Mark as full review` checkbox in the left side is visible
+        - If the status is not accepted, the `Mark as full review` checkbox in the right side is not visible
+        - If the status is accepted, the `Mark as full review` checkbox in the right side is visible
     - step: Select the status as `Accepted` in Change Status
       results:
         - The checkbox `Mark as full review` in the side panel is visible
