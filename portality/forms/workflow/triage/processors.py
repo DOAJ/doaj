@@ -109,7 +109,8 @@ class TriageFormProcessor:
         if state is None:
             raise ValueError(f"No valid workflow state found for workflow control with id '{self._target_wfc.id}'")
 
-        state.do(ApplicationEdit(account))
+        # May raise an AuthoriseExeption
+        new_state = state.do(ApplicationEdit(account))
 
         self._target_application.save()
         self._target_wfc.save()

@@ -62,7 +62,6 @@ CONTENT_NOT_NEW_OR_FLIPPED["structs"]["exceptions"] = {
 
 TRIAGE_STRUCT = {
     "fields": {
-        "has_minimal_review": {"coerce": "bool"},
         "total_sv": {"coerce": "integer"},
         "last_visited_question": {"coerce": "unicode"},
     },
@@ -518,7 +517,12 @@ class Triage(SeamlessMixin):
 
     @property
     def review_complete(self):
-        return self.__seamless__.get_single("has_minimal_review")
+        check_fields = TRIAGE_STRUCT["structs"]["questions"]["objects"]
+        for f in check_fields:
+            c = self.__seamless__.get_single(f"questions.{f}.compliant")
+            if c is None:
+                return False
+        return True
 
     @review_complete.setter
     def review_complete(self, val):

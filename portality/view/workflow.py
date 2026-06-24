@@ -186,7 +186,11 @@ def triage_form(application_id):
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=request.form)
         valid = processor.validate()
         if valid:
-            processor.finalise(current_user._get_current_object())
+            try:
+                processor.finalise(current_user._get_current_object())
+            except AuthoriseException:
+                abort(401)
+
             flash("Record updated")
             return redirect(url_for("workflow.triage_form", application_id=application.id, wfc=wfc.id))
         else:
