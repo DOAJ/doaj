@@ -136,7 +136,7 @@ def edit(application_id):
         abort(404)
 
     event = None
-    if wfc.triage.has_minimal_review:
+    if wfc.triage.review_complete:
         event = RescindMinimalReview(current_user)
     else:
         event = MinimalReview(current_user)
@@ -186,7 +186,6 @@ def triage_form(application_id):
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=request.form)
         valid = processor.validate()
         if valid:
-            processor.process_raw_form(current_user._get_current_object())
             processor.finalise(current_user._get_current_object())
             flash("Record updated")
             return redirect(url_for("workflow.triage_form", application_id=application.id, wfc=wfc.id))

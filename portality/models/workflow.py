@@ -21,9 +21,6 @@ TRIAGE_FIELD = {
         "note_ids": {"contains": "field", "coerce": "unicode"},
         "changes": {"contains": "object"},
     },
-    "objects": [
-        "changes"
-    ],
     "structs": {
         "changes": {
             "audit_id": {"coerce": "unicode"},
@@ -33,7 +30,7 @@ TRIAGE_FIELD = {
 }
 
 TRIAGE_FIELD_WITH_EXCEPTIONS = deepcopy(TRIAGE_FIELD)
-TRIAGE_FIELD_WITH_EXCEPTIONS["objects"].append("exceptions")
+TRIAGE_FIELD_WITH_EXCEPTIONS["objects"] = ["exceptions"]
 TRIAGE_FIELD_WITH_EXCEPTIONS["structs"]["exceptions"] = {}
 
 DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD = deepcopy(TRIAGE_FIELD_WITH_EXCEPTIONS)
@@ -250,8 +247,11 @@ class WorkflowControl(SeamlessMixin, DomainObject):
         return self.__seamless__.data
 
     def save(self, *args, **kwargs):
+        if self.id is None:
+            self.set_id(self.makeid())
         # all notes in the cache should get saved
-        for id, n in self._notes_cache:
+        for id, n in self._notes_cache.items():
+            n.resource_id = self.id
             n.save()
         super(WorkflowControl, self).save(*args, **kwargs)
 
@@ -354,6 +354,20 @@ class WorkflowControl(SeamlessMixin, DomainObject):
             t = self.__seamless__.get_single("modules.triage")
         return Triage(t, self)
 
+    @triage.setter
+    def triage(self, val:Union[dict, "Triage"]):
+        # note that if given a Triage object this copies the contents, as the old
+        # object will be part of some other WorkflowControl object, and the mixed
+        # ownership can cause confusion
+        if isinstance(val, Triage):
+            data = deepcopy(val.data)
+            self.__seamless__.set_single("modules.triage", data)
+            # if we are given an object which has notes cached, take those notes into the
+            # cache of this object, so we can save them
+            self.cache_notes(val.cached_notes)
+        else:
+            self.__seamless__.set_with_struct("modules.triage", val)
+
     ##################################
     ## Audit
 
@@ -398,6 +412,13 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     def cache_note(self, note:"Note"):
         self._notes_cache[note.id] = note
 
+    def cache_notes(self, notes:dict):
+        for id, n in notes.items():
+            self.cache_note(n)
+
+    @property
+    def cached_notes(self):
+        return self._notes_cache
 
 class TriageField(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_FIELD
@@ -476,21 +497,31 @@ class Triage(SeamlessMixin):
     def __init__(self, raw=None, parent:WorkflowControl=None, **kwargs):
         super(Triage, self).__init__(raw=raw, **kwargs)
         self._parent = parent
+        self._notes_cache = {}
 
     @property
     def data(self):
         return self.__seamless__.data
 
     def cache_note(self, note:"Note"):
+        # cache the note at this level and pass it up.  This means that if
+        # the object gets detached in some way, the cache for everything
+        # beneath it is in place, and can be used to inform the new
+        # owner of the triage data
+        self._notes_cache[note.id] = note
         if self._parent is not None:
             self._parent.cache_note(note)
 
     @property
-    def has_minimal_review(self):
+    def cached_notes(self):
+        return self._notes_cache
+
+    @property
+    def review_complete(self):
         return self.__seamless__.get_single("has_minimal_review")
 
-    @has_minimal_review.setter
-    def has_minimal_review(self, val):
+    @review_complete.setter
+    def review_complete(self, val):
         self.__seamless__.set_single("has_minimal_review", val)
 
     def _get_triage_field(self, field):

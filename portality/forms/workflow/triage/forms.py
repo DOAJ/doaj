@@ -1,6 +1,6 @@
 from formulaic.core import Structure, OPTIONAL, SINGLE
 from formulaic.objects import FormulaicObject
-from formulaic.serialise.form.core import FormCapability
+from formulaic.serialise.form.core import FormCapability, FormObject
 from portality.forms.workflow.core import JinjaFormRenderer
 from portality.forms.workflow.triage.fields import RecordID
 from portality.forms.workflow.triage.fieldsets import EthicsCriteria, ISSN
@@ -25,7 +25,5 @@ class TriageForm(Structure):
     ethics_criteria = EthicsCriteria(OPTIONAL, SINGLE)
     issn = ISSN(OPTIONAL, SINGLE)
 
-class TriageSubmission(FormulaicObject):
+class TriageSubmission(FormObject):
     struct = TriageForm()
-    apply_structure_on_init = False
-    check_required_on_init = False

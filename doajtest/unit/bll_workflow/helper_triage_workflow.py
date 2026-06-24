@@ -170,7 +170,7 @@ def run_test(kwargs):
     if reviewer is not None:
         wfc.reviewer_id = reviewer.id
         wfc._reviewer_object = reviewer # a bit cheeky, just to avoid index lookups
-    wfc.triage.has_minimal_review = has_minimal_review
+    wfc.triage.review_complete = has_minimal_review
     wfc.application_id = application.id
     wfc.set_id(wfc.makeid())
 

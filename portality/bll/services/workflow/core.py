@@ -227,7 +227,7 @@ class State:
                 return handler(event)
         raise ValueError(f"Unknown event '{event}' for state '{type(self).__name__}'")
 
-    def do(self, action:WorkflowAction):
+    def do(self, action:WorkflowAction) -> "State":
         return self
 
     def get_audit_record(self):
