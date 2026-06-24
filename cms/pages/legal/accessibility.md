@@ -39,10 +39,10 @@ We have recently fixed:
 - Removed ReCAPTCHA from our login process
 - Radio buttons on search (and throughout the website) are now focusable
 
-Fixes that are in progress now after a review of the changes laid out in WCAG 2.2:
+Fixes that are in progress after a review of the changes laid out in WCAG 2.2:
 
 - on our forms, start using 'aria-describedby' for hint/help text
-- Font-size zooming via browser settings is now enabled.
+- Font-size zooming via browser settings.
 
 We are continuing to update this document as we find and fix accessibility issues.
 
