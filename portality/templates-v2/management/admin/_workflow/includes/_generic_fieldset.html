@@ -1,5 +1,17 @@
 <fieldset id="{{ fieldset.name }}" {% for k, v in fieldset.attributes %}{{ k }}="{{ v }}" {% endfor %}>
     <legend>{{ fieldset.label }}</legend>
+
+    <div class="error-container">
+    {% if fieldset.errors %}
+        Fieldset Errors
+        {% for error in fieldset.errors %}
+            <div class="error" style="color: red; font-weight: bold;">
+                {{ fieldset.error_message(error) }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
     {% for element in fieldset.elements %}
         {% autoescape off %}
             {{ element.renderer.draw(element, application=application, wfc=wfc) }}

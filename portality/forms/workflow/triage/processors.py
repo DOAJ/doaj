@@ -1,8 +1,10 @@
+from formulaic import engine
 from formulaic.serialise.form.core import FormSerialiser, FormDataParser
 from portality.core import app
 from portality.forms.workflow.crosswalk import TriageForm2WorkflowControl, WorkflowControl2TriageForm
 from portality.forms.workflow.triage.forms import TriageForm, TriageSubmission
 from portality.models import Application, WorkflowControl
+from formulaic.core import DataProcessingResult
 
 
 class TriageFormProcessor:
@@ -19,6 +21,7 @@ class TriageFormProcessor:
         self._form_inst:TriageSubmission = None
         self._target_application:Application = None
         self._target_wfc:WorkflowControl = None
+        self._validation_report:DataProcessingResult = None
 
     @property
     def target_application(self):
@@ -32,7 +35,12 @@ class TriageFormProcessor:
         if self._source_wfc and self._source_application:
             if self._form_inst is None:
                 self._form_inst = self.obj2form_xwalk.transform(self._source_wfc, self._source_application)
-            form_html = self.serialiser.data_to_string(self._form_inst.data, self._form_inst.struct, application=self._source_application, wfc=self._source_wfc)
+            form_html = self.serialiser.data_to_string(
+                                self._form_inst.data,
+                                self._form_inst.struct,
+                                application=self._source_application,
+                                wfc=self._source_wfc,
+                                errors=self._validation_report)
             return form_html
         elif self._source_wfc or self._source_application:
             raise ValueError("Must provide both source application and workflow control, or neither")
@@ -41,7 +49,15 @@ class TriageFormProcessor:
             return form_html
 
     def validate(self):
-        pass
+        if self._raw_formdata is None:
+            raise ValueError("No raw form data to process")
+
+        data = self.parser.representation_to_data(self._raw_formdata, TriageSubmission.struct)
+        self._form_inst = TriageSubmission(data)
+        self._validation_report = engine.validate(data, TriageSubmission.struct)
+        if self._validation_report.is_valid:
+            return True
+        return False
 
     def process_raw_form(self, account):
         if self._raw_formdata is None:

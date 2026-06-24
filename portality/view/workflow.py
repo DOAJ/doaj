@@ -184,8 +184,13 @@ def triage_form(application_id):
 
     elif request.method == "POST":
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=request.form)
-        processor.process_raw_form(current_user._get_current_object())
-        processor.finalise(current_user._get_current_object())
-
-        flash("Record updated")
-        return redirect(url_for("workflow.triage_form", application_id=application.id, wfc=wfc.id))
+        valid = processor.validate()
+        if valid:
+            processor.process_raw_form(current_user._get_current_object())
+            processor.finalise(current_user._get_current_object())
+            flash("Record updated")
+            return redirect(url_for("workflow.triage_form", application_id=application.id, wfc=wfc.id))
+        else:
+            form_html = processor.render_form()
+            return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application,
+                                   wfc=wfc)

@@ -6,6 +6,17 @@
         {% for k, v in form.attributes %}{{ k }}="{{ v }}" {% endfor %}
     >
 
+    <div class="error-container">
+    {% if form.errors %}
+        Form Errors
+        {% for error in form.errors %}
+            <div class="error" style="color: red; font-weight: bold;">
+                {{ form.error_message(error) }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
     <div class="col-md-12 page">
         <section class="page-content">
             {% for element in form.elements %}

@@ -4,4 +4,15 @@
     {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
 {% endautoescape %}
 
+<div class="error-container">
+{% if field.errors %}
+    Field Errors
+    {% for error in field.errors %}
+        <div class="error" style="color: red; font-weight: bold;">
+            {{ field.error_message(error) }}
+        </div>
+    {% endfor %}
+{% endif %}
+</div>
+
 {% if field.control|length > 1 %}</fieldset>{% endif %}

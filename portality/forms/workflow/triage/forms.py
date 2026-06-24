@@ -27,3 +27,5 @@ class TriageForm(Structure):
 
 class TriageSubmission(FormulaicObject):
     struct = TriageForm()
+    apply_structure_on_init = False
+    check_required_on_init = False

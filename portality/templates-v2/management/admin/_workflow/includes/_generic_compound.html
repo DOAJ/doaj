@@ -1,5 +1,17 @@
 <fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
     <legend>{{ compound.label }}</legend>
+
+    <div class="error-container">
+    {% if compound.errors %}
+        Field Group Errors
+        {% for error in compound.errors %}
+            <div class="error" style="color: red; font-weight: bold;">
+                {{ compound.error_message(error) }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
     {% for element in compound.elements %}
         {% autoescape off %}
             {{ element.renderer.draw(element, application=application, wfc=wfc) }}

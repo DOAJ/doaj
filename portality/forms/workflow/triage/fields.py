@@ -1,4 +1,5 @@
-from formulaic.serialise.form.render import InvertedLabelInputControlHTML
+from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent
+from formulaic.validate.validate import Regex, Different
 from portality.core import app
 
 from formulaic.coerce.coerce import Boolean, Unicode
@@ -10,6 +11,7 @@ from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRender
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
+ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 
 #####################################################
 ## Common infrastructure/reused components
@@ -349,10 +351,15 @@ class EISSN(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
+        error_messages = {
+            RegexDoesNotMatch: "The ISSN is not of the valid form",
+            FieldsShouldBeDifferent: "The value of the EISSN must be different to the PISSN"
+        }
 
     name = "eissn"
     coerce = [Unicode()]
     capabilities = (EISSNCapability(),)
+    validators = [Regex(ISSN)]
 
 class PISSN(Field):
     class PISSNCapability(FormFieldCapability):
@@ -360,10 +367,15 @@ class PISSN(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
+        error_messages = {
+            RegexDoesNotMatch: "The ISSN is not of the valid form",
+            FieldsShouldBeDifferent: "The value of the PISSN must be different to the EISSN"
+        }
 
     name = "pissn"
     coerce = [Unicode()]
     capabilities = (PISSNCapability(),)
+    validators = [Regex(ISSN)]
 
 class ISSNAtLeastOneGroup(Structure):
     class ISSNAtLeastOneGroupCapability(CompoundFieldCapability):
@@ -377,6 +389,9 @@ class ISSNAtLeastOneGroup(Structure):
         ]
 
         render_class = GenericCompound
+        error_messages = {
+            FieldsShouldBeDifferent: lambda x: f"The values of '{x.field1.get_capability(FieldCapability).label}' and '{x.field2.get_capability(FieldCapability).label}' must be different"
+        }
 
     name_ = "issn_at_least_one_group"
     capabilities_ = (ISSNAtLeastOneGroupCapability(),)
@@ -385,3 +400,5 @@ class ISSNAtLeastOneGroup(Structure):
     eissn = EISSN(OPTIONAL, SINGLE)
     pissn = PISSN(OPTIONAL, SINGLE)
     issn_at_least_one_note = ISSNAtLeastOneNote(OPTIONAL, SINGLE)
+
+    validators_ = [Different(eissn, pissn)]
