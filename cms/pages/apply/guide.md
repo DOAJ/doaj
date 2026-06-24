@@ -313,11 +313,13 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 Our guide to applying is available in several languages. Below is a list of translations, please note that not all translations include the latest changes made to the Guide.
 
-### Version 2.7
-- [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
-- [Chinese](https://docs.google.com/document/d/1SAzNH-RWGQVc_3EMe7t5Gud_813s6m14/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+### Version 2.8
+- [Chinese](https://docs.google.com/document/d/1MwiODuiinngP4fZVufR_RgF9vyztlALy/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 - [Portuguese](https://docs.google.com/document/d/11uNQ6hnFONazdHz-jmVL-fP1uH-yGN-q/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 - [Spanish](https://docs.google.com/document/d/1M1zEdjUXmmHxQT6fZ051N-im2n7e9giz5s9mqoMvkOw/edit?usp=sharing)
+
+### Version 2.7
+- [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 
 ### Version 2.5
 

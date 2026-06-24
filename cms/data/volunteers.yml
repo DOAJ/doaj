@@ -240,6 +240,14 @@ ass_ed:
   language: English, French
   photo: "aleru.jpg"
 
+- name: Dalal Abd Alghany
+  area: Library Science
+  year_since:
+  city: Damascus
+  country: Syria
+  language: Arabic, English
+  photo: "Dalal_Picture.jpg"
+
 - name: Daniela Hahn
   area: Arts & Humanities, Social Sciences
   year_since:
@@ -271,6 +279,14 @@ ass_ed:
   city: Valencia
   country: Spain
   language: Spanish, English
+
+- name: Derya Azer Karaa
+  area: Academic Publishing
+  year_since:
+  city: Istanbul
+  country: Türkiye
+  language: Turkish, English
+  photo: "Derya.jpg"  
   
 - name: Dessy Harisanty
   area: Library and Information Science
@@ -325,6 +341,14 @@ ass_ed:
   city: Rabat
   country: Morocco
   language: Arab, French, English
+
+- name: Hope Ncube
+  area: Library Science
+  year_since:
+  city: Harare
+  country: Zimbabwe
+  language: English
+  photo: "Hope.jpg"
 
 - name: Irene Prähauser
   area: Library Science
@@ -402,6 +426,22 @@ ass_ed:
   country: Iraq
   language: Arabic, English, Swedish
   photo: "karima.jpg"
+
+- name: Katie Vernon
+  area: Library Science
+  year_since:
+  city: London
+  country: United Kingdom
+  language: English
+  photo: "Katie_photo 2022.jpeg"
+
+- name: Katrin Seyler
+  area: Library Science
+  year_since:
+  city: Nuremburg
+  country: Germany
+  language: German, English
+  photo:
   
 - name: Kelly Anne Dumayne
   area: Psychology, linguistics, creative writing
@@ -409,6 +449,14 @@ ass_ed:
   city: Wales
   country: United Kingdom
   language: English
+  photo: 
+
+- name: Korina Lemonidou
+  area: Library Science
+  year_since:
+  city: Leiden
+  country: Netherlands
+  language: Greek, English
   photo: 
   
 - name: Leila Yang
@@ -426,6 +474,14 @@ ass_ed:
   country: Costa Rica
   language: Spanish, English
   photo: "Penabad.png"
+
+- name: Lilly Hammond
+  area: Library Science
+  year_since:
+  city: Melbourne
+  country: Australia
+  language: English
+  photo: "Lily_20260502_151846.jpg"
 
 - name: Lina Marcela Blandón García
   area: Science
@@ -605,6 +661,14 @@ ass_ed:
   language: English
   photo: "Priya.jpg"
 
+- name: Qiuwan Zhuang
+  area: Academic Publishing
+  year_since:
+  city: Beijing
+  country: China
+  language: Chinese, English
+  photo: "Qiuwan_CSXM8577--1X1.JPG" 
+
 - name: Remedios Melero (Reme)
   area: Social Sciences
   year_since:
@@ -665,6 +729,14 @@ ass_ed:
   language: Portuguese, English
   photo: "Costa.jpeg"
 
+- name: Thomas O'Toole-Mills
+  area: Library Science
+  year_since:
+  city: London
+  country: United Kingdom
+  language: English
+  photo: "Thomas_Profile Pic - Tom OTM.jpg"
+  
 - name: Utiya Hikmah
   area: Material Physics
   year_since:
@@ -688,6 +760,14 @@ ass_ed:
   country: USA
   language: Spanish, English, Portuguese
   photo: "Wileidys.jpg"
+
+- name: Yukari Sugiyama
+  area: Library Science
+  year_since:
+  city: New Haven
+  country: USA
+  language: English, Japanese
+  photo: "Yukari_YUL222_0380_Sugiyama_Y.jpg"
  
 - name: Zakariya Algamal
   area: Statistics
