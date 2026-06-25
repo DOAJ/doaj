@@ -103,6 +103,11 @@
             border-left: 4px solid $grapefruit;
         }
 
+        textarea {
+            min-height: 4rem;
+            min-width: 100%;
+        }
+
         input.review-outcome {
             height: 0;
             width: 0;

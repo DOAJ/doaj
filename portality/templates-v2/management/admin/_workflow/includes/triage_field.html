@@ -20,32 +20,20 @@
                 Previous question
             </button>
         </nav>
-
     </header>
-
         {% if field.capability.check %}
-            <h3>Criterion: {{ field.ref.check }}</h3>
+            <h3>Criterion: {{ field.capability.check }}</h3>
         {% endif %}
-
-        {% if field.capability.data %}
-            <div>
-                <h4>Information provided by the applicant</h4>
-                <ul class="criterion-details">
-                    {% for d in field.ref.data %}
-                    <li>{{ d.title }}: <strong>{{ d.field }}</strong></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+    </div>
     <div class="col-md-5">
         {% if field.capability.remember %}
         <div class="criterion-important">
             <h4><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>REMEMBER</h4>
-            <p>{{ field.ref.remember }}</p>
+            <p>{{ field.capability.remember }}</p>
         </div>
         {% endif %}
-        {% if field.ref.instructions %}
-            <div class="criterion-instructions">{{ field.ref.instructions }}</div>
+        {% if field.capability.instructions %}
+            <div class="criterion-instructions">{{ field.capability.instructions }}</div>
         {% endif %}
 
     {% if field.capability.resources|length > 0 %}
@@ -56,13 +44,17 @@
             {% endfor %}
         </ul>
     {% endif %}
+
+    {% if note_field %}
+        {{ note_field.renderer.draw(note_field, application=application, wfc=wfc) }}
+    {% endif %}
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
         <fieldset>
             <legend class="sr-only">Review outcome</legend>
-            {% set cr = field.ref.get_control_renderer() %}
+            {% set cr = field.capability.get_control_renderer() %}
             {{ cr.draw(field.control) }}
         </fieldset>
     </div>

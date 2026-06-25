@@ -23,10 +23,14 @@ class RadioRenderer(JinjaControlRenderer):
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
 
+class TriageCompound(GenericCompound):
+    template = templates.WORKFLOW_TRIAGE_COMPOUND
+
 class ComplianceCheckCapability(FormFieldCapability):
     label = "Compliance"
 
     check = None
+    remember = None
     instructions = None
     resources = []
     application_info = []
@@ -52,9 +56,17 @@ class NoteCapability(FormFieldCapability):
     control_class_renderer = GenericControl
     render_class = GenericField
 
+class GeneralNoteCapability(NoteCapability):
+    label = "Notes (optional)"
+    placeholder = "You can add any notes related to this question here..."
+
 class NoteField(Field):
     coerce = [Unicode()]
     capabilities = (NoteCapability(),)
+
+class GeneralNote(Field):
+    coerce = [Unicode()]
+    capabilities = (GeneralNoteCapability(),)
 
 #####################################################
 ## Record ID (hidden field required for identification)
@@ -88,8 +100,8 @@ class EthicsNotExcluded(ComplianceCheckField):
                 "url": T.ethics_not_excluded.resource_url
             }
         ]
-        remember = T.ethics_not_excluded.remember
-        data = T.ethics_not_excluded.data
+        if "remember" in T.ethics_not_excluded:
+            remember = T.ethics_not_excluded.remember
 
     name = "ethics_not_excluded"
     capabilities = (EthicsNotExcludedCapability(),)
@@ -312,9 +324,11 @@ class EthicsNoSuspiciousTiesGroup(Structure):
 class ISSNAtLeastOne(ComplianceCheckField):
     class ISSNAtLeastOneCapability(ComplianceCheckCapability):
         options = [
-            {"value": "y", "label": T.issn_at_least_one.compliant},
-            {"value": "n", "label": T.issn_at_least_one.non_compliant},
-            {"value": "l", "label": T.ethics_not_excluded.later}
+            {"value": "y", "label": T.issn_at_least_one.compliant, "type": "compliant"},
+            {"value": "n", "label": T.issn_at_least_one.non_compliant, "type": "noncompliant"},
+            {"value": "l", "label": T.issn_at_least_one.later, "type": "later"},
+            {"value": "a", "label": T.issn_at_least_one.action},
+
         ]
 
         check = T.issn_at_least_one.check
@@ -341,9 +355,8 @@ class ISSNAtLeastOne(ComplianceCheckField):
     capabilities = (ISSNAtLeastOneCapability(),)
 
 
-class ISSNAtLeastOneNote(NoteField):
+class ISSNAtLeastOneNote(GeneralNote):
     name = "issn_at_least_one_note"
-
 
 class EISSN(Field):
     class EISSNCapability(FormFieldCapability):
@@ -367,23 +380,36 @@ class PISSN(Field):
     coerce = [Unicode()]
     capabilities = (PISSNCapability(),)
 
+class ISSNAdditionalFieldsGroup(Structure):
+    class ISSNAdditionalFieldsGroupCapability(CompoundFieldCapability):
+        name = "edited_issns"
+        label  = ""
+
+        order = ["eissn", "pissn"]
+
 class ISSNAtLeastOneGroup(Structure):
     class ISSNAtLeastOneGroupCapability(CompoundFieldCapability):
         label = T.issn_at_least_one.label
 
         order = [
             "issn_at_least_one",
+            "edited_issns",
             "eissn",
             "pissn",
             "issn_at_least_one_note"
         ]
+        subfields = {
+            "check": "issn_at_least_one",
+            "note": "issn_at_least_one_note",
+            "additional_info": "edited_issns"
+        }
 
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "issn_at_least_one_group"
     capabilities_ = (ISSNAtLeastOneGroupCapability(),)
-
     issn_at_least_one = ISSNAtLeastOne(OPTIONAL, SINGLE)
+    edited_issns = ISSNAdditionalFieldsGroup(OPTIONAL, SINGLE)
     eissn = EISSN(OPTIONAL, SINGLE)
     pissn = PISSN(OPTIONAL, SINGLE)
     issn_at_least_one_note = ISSNAtLeastOneNote(OPTIONAL, SINGLE)

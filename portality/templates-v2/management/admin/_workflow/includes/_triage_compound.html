@@ -1,0 +1,20 @@
+<section id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %} class="criterion">
+    <h3>{{ compound.label }}</h3>
+    {% if compound.capability.subfields %}
+    {% set subfields = compound.capability.subfields %}
+    {% set check_name = subfields["check"] %}
+    {% set note_name = subfields["note"] %}
+    {% set note = compound.elements | selectattr("name", "equalto", note_name) | first %}
+    {% set check = compound.elements | selectattr("name", "equalto", check_name) | first %}
+        {% autoescape off %}
+            {{ check.renderer.draw(check, application=application, wfc=wfc, note_field=note) }}
+        {% endautoescape %}
+    {% else %}
+    {% for element in compound.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+    {% endif %}
+
+</section>

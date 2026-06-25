@@ -1,8 +1,8 @@
-<fieldset id="{{ fieldset.name }}" {% for k, v in fieldset.attributes %}{{ k }}="{{ v }}" {% endfor %}>
-    <legend>{{ fieldset.label }}</legend>
+<section id="{{ fieldset.name }}" {% for k, v in fieldset.attributes %}{{ k }}="{{ v }}" {% endfor %}>
+    <h2>Fieldset label: {{ fieldset.label }}</h2>
     {% for element in fieldset.elements %}
         {% autoescape off %}
             {{ element.renderer.draw(element, application=application, wfc=wfc) }}
         {% endautoescape %}
     {% endfor %}
-</fieldset>
+</section>

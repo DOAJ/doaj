@@ -5,15 +5,12 @@ triage:
       compliant: "<span class='answer'>Compliant</span>, this application is from a journal or publisher that is <strong>not</strong> currently excluded."
       non_compliant: "<span class='answer'>Non-compliant</span>, this application is from a journal or publisher that is currently excluded."
       check: "This application is from a journal or publisher that is not 
-            currently excluded. (Note:  if an exclusion does not relate 
-            to all journals from a publisher, an application for another 
-            journal from that publisher should not be rejected at this 
-            stage.)"
+            currently excluded."
       later: "Do this later"
-      instructions: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage. Specifically:
-            <ul><li>If there is a current publisher exclusion, the answer is "No"</li>
-            <li>if there is a current journal exclusion for the journal we triage, the answer is "No"</li>
-            <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is "Yes"</li></ul>'
+      remember: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage.'
+      instructions: '     <ul><li>If there is a current publisher exclusion, the answer is <span class="answer compliant">Compliant</span></li>
+            <li> if there is a current journal exclusion for the journal we triage, the answer is <span class="answer compliant">Compliant</span></li>
+            <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is <span class="answer non-compliant">Non-compliant</span></li></ul>'
       resource_label: "Excluded publishers spreadsheet"
       resource_url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
       compliant_answers:
@@ -90,13 +87,16 @@ triage:
       compliant: "Compliant, this journal has at least one ISSN"
       non_compliant: "Non-compliant, this record has no active and confrimed ISSNs"
       later: "Do this later"
+      action: "ISSN needs to be changed"
       check: "This journal has at least one ISSN (International Standard Serial Number) that is registered, active and confirmed at issn.org?"
-      instructions: '<ul><li>Search both ISSNs (if available)</li>
-                  <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is "No"</li>
-                  <li>If any of the ISSNs is unregistered, provisional, unreported or listed as ceased, click "Changes to ISSNs are required", remove it, and add a note</li>
-                  <li>If you cannot find the ISSN in the ISSN portal or the search result is a different journal, try to search the ISSN portal by the Title or see if you can find the correct ISSN in the journal’s website. If this is the case, click "Changes to ISSNs are required", make the change, and add a note - don’t forget to search the correct ISSN in the DOAJ database</li>
-                  <li>If the application contains only one ISSN but there are two confirmed and active in the ISSN Portal, click "Changes to ISSNs are required", add the second ISSN, and add a note - don’t forget to search the second ISSN in the DOAJ database</li>
-                  <li><em>If the country at portal.issn.org does not match the Publisher''s country listed in the application form, make a note of it</em></li>'
+      important: "Search <strong>both</strong> ISSNs (if available)"
+
+      instructions: '<ul>
+                  <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is <span class="answer noncompliant">Non-compliant</span></li>
+                  <li>If any of the ISSNs is unregistered, provisional, unreported or listed as ceased, click <span class="answer action">Changes to ISSNs are required</span>, remove it, and add a note</li>
+                  <li>If you cannot find the ISSN in the ISSN portal or the search result is a different journal, try to search the ISSN portal by the Title or see if you can find the correct ISSN in the journal’s website. If this is the case, click <span class="answer action">Changes to ISSNs are required</span>, make the change, and add a note</li>
+                  <li>If the application contains only one ISSN but there are two confirmed and active in the ISSN Portal, click <span class="answer action">Changes to ISSNs are required</span>, add the second ISSN, and add a note</li>
+                  </ul>'
       resource_label: "https://portal.issn.org/"
       resource_url: "https://portal.issn.org/"
       eissn:

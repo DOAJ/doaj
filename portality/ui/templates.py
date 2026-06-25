@@ -90,6 +90,7 @@ WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 WORKFLOW_TRIAGE_PAGE = "management/admin/triage.html"
 WORKFLOW_TRIAGE_FORM = "management/admin/_workflow/includes/_triage_form.html"
 WORKFLOW_TRIAGE_FIELD_COMPLIANCE = "management/admin/_workflow/includes/triage_field.html"
+WORKFLOW_TRIAGE_COMPOUND = "management/admin/_workflow/includes/_triage_compound.html"
 
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
 

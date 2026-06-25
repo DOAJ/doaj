@@ -34,10 +34,29 @@
     {% endif %}
 {%- endmacro %}
 
+{% set ns = namespace(
+    compliant_answer=None,
+    noncompliant_answer=None,
+    later_answer=None,
+    action_answer=None
+) %}
+
 {% for control in controls %}
     {% set input=control.control %}
     {% set content = {"value": ""} %}
+    {% set compliance_class="" %}
     {% if input.content %}
+        {% set compliance = input.attrs.value %}
+        <p style="color: green">{{ compliance }}</p>
+        {% if compliance == "y" %}
+            {% set ns.compliant_answer = control %}
+        {% elif compliance == "n" %}
+            {% set ns.noncompliant_answer = control %}
+        {% elif compliance == "l" %}
+            {% set ns.later_answer = control %}
+        {% elif compliance == "a" %}
+            {% set ns.action_answer = control %}
+        {% endif %}
         {% set content.value=render_content(input.content) %}
     {% endif %}
 
