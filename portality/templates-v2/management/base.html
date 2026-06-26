@@ -55,6 +55,8 @@
                         <ul class="dropdown__menu notifications" id="system_views">
                             <li><a href="{{ url_for("admin.autoassign_search") }}" class="dropdown__link">Autoassign</a></li>
                             <li><a href="{{ url_for("admin.ris_search") }}" class="dropdown__link">Article RIS</a></li>
+                            <li><a href="{{ url_for("admin.pdd_search") }}" class="dropdown__link">Public Data Dumps</a></li>
+                            <li><a href="{{ url_for("admin.journal_csv_search") }}" class="dropdown__link">Journal CSVs</a></li>
                         </ul>
                     </li>
                     <li class="flex-center" id="admin_dashboard_nav">
@@ -172,18 +174,27 @@
         {% include "includes/_flash_notification.html" %}
         {% block management_content %}{% endblock %}
 
-        <p>
-            <small>
-                <a href="{{ url_for('account.logout') }}" class="tag" id="logout">
-                    <span data-feather="log-out" aria-hidden="true"></span>
-                    Log out
-                </a>
-                <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
-                    <span data-feather="settings" aria-hidden="true"></span>
-                    Settings
-                </a>
-            </small>
-        </p>
+        <section class="user-actions flex">
+            <div class="user-item">
+                <form method="POST" action="{{ url_for('account.logout') }}">
+                    <small>
+                        <button type="submit" id="logout" class="tag">
+                            Logout
+                            <span data-feather="log-out" aria-hidden="true"></span>
+                        </button>
+                    </small>
+                </form>
+            </div>
+
+            <div class="user-item">
+                <small>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
+                        <span data-feather="settings" aria-hidden="true"></span>
+                        Settings
+                    </a>
+                </small>
+            </div>
+        </section>
     </main>
     {% include "includes/_back-to-top.html" %}
 

@@ -1,6 +1,6 @@
 import base64
 import time
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 import pytest
 from flask import url_for
@@ -9,7 +9,7 @@ from lxml import etree
 
 from doajtest.fixtures import ArticleFixtureFactory
 from doajtest.fixtures import JournalFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, patch_config
 from portality import models
 from portality.app import app
 from portality.lib import dates
@@ -528,3 +528,120 @@ class TestOaipmhFunction(DoajTestCase):
     def test_decode_resumption_token(self):
         params = decode_resumption_token(base64.urlsafe_b64encode(b'{"m":1}').decode('utf-8'))
         assert params == {"metadata_prefix": 1}
+
+
+class TestOaiPmhPremium(DoajTestCase):
+    # We're going to need this a lot.
+    oai_ns = {'oai': 'http://www.openarchives.org/OAI/2.0/',
+                   'oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+                   'dc': 'http://purl.org/dc/elements/1.1/',
+                   'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super(TestOaiPmhPremium, cls).setUpClass()
+        cls.config = patch_config(app, {
+            "PREMIUM_MODE": True,
+            "NON_PREMIUM_DELAY_SECONDS": 30 * 24 * 60 * 60
+        })
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        super(TestOaiPmhPremium, cls).tearDownClass()
+        patch_config(app, cls.config)
+
+    def test_01_no_acc_no_until(self):
+        blocks = []
+        expected_ids = []
+
+        journal_sources = JournalFixtureFactory.make_many_journal_sources(4, in_doaj=True)
+        for i, s in enumerate(journal_sources):
+            j = models.Journal(**s)
+            j.set_id(j.makeid())
+
+            if i < 2:
+                j.set_last_updated(dates.format(dates.before_now(40 * 24 * 60 * 60))) # more than a month ago
+                expected_ids.append(j.id)
+            else:
+                j.set_last_updated(dates.format(dates.before_now(10 * 24 * 60 * 60))) # less than a month ago
+
+            j.save(update_last_updated=False)
+            blocks.append((j.id, j.last_updated))
+
+        models.Journal.blockall(blocks)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                t = etree.fromstring(resp.data)
+
+                req = t.xpath("/oai:OAI-PMH/oai:request", namespaces=self.oai_ns)[0]
+                assert dates.parse(req.get("until")) <= dates.before_now(30 * 24 * 60 * 60)
+
+                # Check we only have two journals returned
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 2
+
+    def test_02_phase_in(self):
+        journals = []
+        journal_sources = JournalFixtureFactory.make_many_journal_sources(3, in_doaj=True)
+        for i, s in enumerate(journal_sources):
+            j = models.Journal(**s)
+            j.set_id(j.makeid())
+
+            if i == 0:
+                j.set_last_updated(dates.format(dates.before_now(40 * 24 * 60 * 60)))  # more than a month ago
+            elif i == 1:
+                j.set_last_updated(dates.format(dates.before_now(15 * 24 * 60 * 60)))
+            else:
+                j.set_last_updated(dates.format(dates.now()))
+
+            # j.save(update_last_updated=False)
+            journals.append(j)
+
+        JournalFixtureFactory.save_journals(journals, block=True, save_kwargs={"update_last_updated": False})
+
+        # check that when phase in is off we get the regular behaviour
+        cfg = patch_config(app, {
+            "PREMIUM_PHASE_IN": False,
+            "PREMIUM_PHASE_IN_START": dates.before_now(50 * 24 * 60 * 60),
+        })
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                t = etree.fromstring(resp.data)
+
+                # Check we only have the oldest journal record returned
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
+
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.before_now(10 * 24 * 60 * 60),
+        })
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                t = etree.fromstring(resp.data)
+
+                # Check we only have two journal records, the oldest and the one 15 days old
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 2
+
+        _ = patch_config(app, {
+            "PREMIUM_PHASE_IN": True,
+            "PREMIUM_PHASE_IN_START": dates.now()
+        })
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                t = etree.fromstring(resp.data)
+
+                # Check we have all 3 journals, as phase in is just starting
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 3
+
+        patch_config(app, cfg)

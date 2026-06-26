@@ -4,17 +4,28 @@ from typing import Dict, Iterable
 
 import rstr
 
+from portality import models
 from doajtest import test_constants
 from portality.regex import ISSN_COMPILED, DOI_COMPILED
+from portality.lib import dicts
 
 ARTICLES = test_constants.PATH_RESOURCES / "article_uploads.xml"
 
 
 class ArticleFixtureFactory(object):
 
+    @classmethod
+    def save_articles(cls, articles, block=False):
+        block_data = []
+        for a in articles:
+            a.save()
+            block_data.append((a.id, a.last_updated))
+        if block:
+            models.Article.blockall(block_data)
+
     @staticmethod
     def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None,
-                            fulltext=None):
+                            fulltext=None, overlay=None):
         source = deepcopy(ARTICLE_SOURCE)
         if not with_id:
             del source["id"]
@@ -74,7 +85,18 @@ class ArticleFixtureFactory(object):
                 if not set_fulltext:
                     source["bibjson"]["link"].append({"type": "fulltext", "url": fulltext})
 
+        if overlay is not None:
+            source = dicts.deep_merge(source, overlay, overlay=True)
+
         return source
+
+    @classmethod
+    def make_n_articles(cls, n, in_doaj=True, pissn=None, eissn=None):
+        sources = ArticleFixtureFactory.make_many_article_sources(count=n, in_doaj=in_doaj, pissn=pissn, eissn=eissn)
+        articles = []
+        for s in sources:
+            articles.append(models.Article(**s))
+        return articles
 
     @staticmethod
     def make_many_article_sources(count=2, in_doaj=False, pissn=None, eissn=None):

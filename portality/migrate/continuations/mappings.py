@@ -1,4 +1,4 @@
-""" Deprecated - we no longer use esprit """
+""" Deprecated - we no longer use esprit  or config key ELASTIC_SEARCH_VERSION"""
 from portality.core import app, es_connection
 import esprit
 

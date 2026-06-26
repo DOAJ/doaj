@@ -91,7 +91,7 @@ The following information must be available online and easily accessible from th
   - The editorial board for the journal should consist of at least five editors with appropriate qualifications and expertise. It is recommended that board members should not all come from the same institution.
 - All articles must pass through a quality control system (peer review) before publication.
   - The type and details of the peer review process must be stated clearly on the website, including the process for special issues, if applicable.
-  - At least two independent reviewers should review each article.
+  - At least two independent reviewers must review each article, with an exception for arts & humanities journals (for which editorial review must be handled with a minimum of two editors).
 - Use of a plagiarism checking service is highly recommended but not required for inclusion in DOAJ.
 - Endogeny must be minimised.
   - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
@@ -124,13 +124,13 @@ Journals that publish special issues or other content curated by guest editors m
   - “All rights reserved” is never appropriate for open access content.
 - [More about copyright](/apply/copyright-and-licensing/)
 
-## Quality criteria
+## Integrity and Ethics criteria
 
-When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the quality team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
+When concerns regarding a journal or publisher's quality and publishing practices arise during our regular review process or are flagged by community members, such cases are escalated to the Integrity and Ethics team. In addition to the normal application review, this investigation focuses on five key areas mentioned in detail in our [blog](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/):
 
 - Presence of clear and reliable key information on the journal's website
 - Composition of the journal's editorial board
-- Signs of poor peer review processess
+- Signs of poor peer review processes
 - Reputation of the journal, including any association with [paper mills](https://united2act.org/about/), excluded journals or publishers, or other disreputable organisations
 - Journal management and operation
 
@@ -212,7 +212,7 @@ The best practices in this section are about publishing standards based on finda
 Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence (AI) such as large-language models (LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
 
 -  For authors:  
-  - Authors should disclose the use of generatve AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/).
+  - Authors should disclose the use of generative AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/).
   - Authors are responsible for checking the validity of the output of any automated tools used in their research and preparing their manuscript.
   - Automated tools cannot be [credited as authors](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools).
   - Generative AI cannot be cited as a source.
@@ -252,7 +252,6 @@ Rejected applications for which the following were the only issues can be resubm
 - Unconfirmed ISSN
 - Website unavailable
 - Insufficient content published
-- The journal was transferred to a publisher not already in DOAJ
 
 Where a journal has been rejected for other reasons, a new application may be submitted after six months.
 
@@ -278,26 +277,31 @@ We undertake periodic re-evaluation of journals accepted into DOAJ, particularly
 - They have not been updated by the publisher for several years 
 - Reports are received of website unavailability or questionable practices
 
-Reports of questionable practice will be investigated by the [quality team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
+Reports of questionable practice will be investigated by the [Integrity and Ethics team](https://doaj.org/apply/guide/#quality-criteria). Journals will be removed if they no longer adhere to DOAJ criteria or publishing best practice.
 
 ---
 
 ## Appeals
 
-Appeals must be submitted within six months from the decision date. Your journal is eligible to submit an appeal if
+Appeals must be submitted within six months from the decision date. A journal or publisher is eligible to submit an appeal if
 
-- It has been removed from DOAJ.
-- The application has been rejected, and no new application is allowed for at least one year.
+- The journal has been removed from DOAJ.
+- The application has been rejected, and no new application from the publisher or journal is allowed for at least one year.
 
-Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal should contain the following information:
+If the decision applies to a publisher, the publisher must appeal; appeals from individual journals will not be considered. Appeals are for when the decision was made in error: changes made after the decision will not be considered. The appeal must give evidence that the original assessment was in error and that the criteria were met at the time of the decision.
+
+Email the [DOAJ Appeals Committee](mailto:appeals@doaj.org). The appeal must contain the following information:
 
 - Journal title
 - Journal ISSN
+- Journal publisher
 - Reason for appeal
 - Evidence for the DOAJ Appeals Committee to consider
 - The original notification of rejection/removal
 
-Appeals related to the outcome of a [quality investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
+Appeals submitted without the required information will not be accepted for review.
+
+Appeals related to the outcome of the [Integrity and Ethics team's investigation](https://blog.doaj.org/2025/01/16/inside-the-quality-team-part-1-how-we-preserve-quality-at-doaj/) will be considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. All other appeals will be handled by members of the editorial team.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
 
@@ -307,34 +311,51 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 ## In other languages
 
-Please note that these translations may not include the latest changes made to the Guide.
+Our guide to applying is available in several languages. Below is a list of translations, please note that not all translations include the latest changes made to the Guide.
 
-Our criteria are available in:
+### Version 2.8
+- [Chinese](https://docs.google.com/document/d/1MwiODuiinngP4fZVufR_RgF9vyztlALy/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+- [Portuguese](https://docs.google.com/document/d/11uNQ6hnFONazdHz-jmVL-fP1uH-yGN-q/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+- [Spanish](https://docs.google.com/document/d/1M1zEdjUXmmHxQT6fZ051N-im2n7e9giz5s9mqoMvkOw/edit?usp=sharing)
 
-- [Afrikaans](https://docs.google.com/document/d/1CePOCIpIRMmXQZGV_oSqagTlmpb7YG9vG9CShry7Okw/edit?usp=sharing)
-- [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
-- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
-- [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
-- [Chinese (application form)](https://zenodo.org/record/4350096)
-- [Chinese](https://zenodo.org/record/4633341)
-- [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
-- [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
-- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
-- [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
+### Version 2.7
+- [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+
+### Version 2.5
+
 - [Greek](https://drive.google.com/file/d/1nHujiotWovloKQC97mwQVPMW_ierKEOt/view?usp=sharing)
-- [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
-- [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
-- [Portuguese](https://drive.google.com/file/d/15ThVsQCJkYnv2Vw-A6mkgMVGVoO9oBB7/view?usp=sharing)
-- [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
-- [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
+
+### Version 2.4
+
+- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
 - [Turkish](https://docs.google.com/document/d/18JYSfpAMxUsdQctxdqY2WCggGWHYGIiC/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
 - [Ukrainian](https://docs.google.com/document/d/10lGTROkEoTu8PwdVO440DsXuldGb_sUjxrFR1GmjD-w/edit?usp=sharing)
+
+### Version 2.3
+
+- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
+
+### Version 2.2
+
+- [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
+
+### No version information
+
+- [Afrikaans](https://docs.google.com/document/d/1CePOCIpIRMmXQZGV_oSqagTlmpb7YG9vG9CShry7Okw/edit?usp=sharing)
+- [Bulgarian](https://docs.google.com/document/d/1nohen8bBektRbeU-HcGWh6h05E_kLZgKURZugLo6aSA/edit?usp=drive_link)
+- [Chinese (application form)](https://zenodo.org/record/4350096)
+- [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
+- [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
+- [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
+- [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
+- [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
+
 
 ---
 
 ## Version history
 
-This is Version 2.7 of the DOAJ Guide to applying.
+This is Version 2.8 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 

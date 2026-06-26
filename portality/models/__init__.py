@@ -14,7 +14,7 @@ from portality.models.editors import EditorGroup, EditorGroupMemberQuery, Editor
 from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery, BulkArticles
 from portality.models.lock import Lock
 from portality.models.history import ArticleHistory, JournalHistory
-from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException, ArticleTombstone
+from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException, ArticleTombstone, ArticleTombstoneRecentlyDeletedQuery
 from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
 from portality.models.atom import AtomRecord
 from portality.models.search import JournalArticle, JournalStatsQuery, ArticleStatsQuery
@@ -32,6 +32,8 @@ from portality.models.export import Export
 from portality.models.ur_review_route import URReviewRoute
 from portality.models.admin_alert import AdminAlert
 from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
+from portality.models.data_dump import DataDump
+from portality.models.journal_csv import JournalCSV
 from portality.models.ris_export import RISExport
 
 import sys

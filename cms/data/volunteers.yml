@@ -43,13 +43,21 @@ ed:
   language: Turkish, English, Russian
   photo: "Khayala.jpg"
 
+- name: Khoirul Fathoni
+  area: Humanities
+  year_since:
+  city: Ponorogo
+  country: Indonesia
+  language: Indonesian, English
+  featured: true
+  photo: "Khoirul.jpg"
+
 - name: Natalia Pamuła
   area: Humanities, Social Sciences
   year_since:
   city: Toruń
   country: Poland
   language: Polish, English
-  featured: true
   photo: "napa.jpg"
 
 - name: Pablo Hernandez
@@ -152,6 +160,14 @@ ass_ed:
   country: Colombia
   language: Spanish, English, Portuguese
   photo: "Ana Melisa Fernandes.jpg"
+
+- name: Andrea Collivignarelli
+  area: Open Access Publishing
+  year_since:
+  city: Milan 
+  country: Italy
+  language: Italian, English
+  photo: "Andrea Collivignarelli.png" 
   
 - name: Annarita Barbaro
   area: Humanities
@@ -224,6 +240,14 @@ ass_ed:
   language: English, French
   photo: "aleru.jpg"
 
+- name: Dalal Abd Alghany
+  area: Library Science
+  year_since:
+  city: Damascus
+  country: Syria
+  language: Arabic, English
+  photo: "Dalal_Picture.jpg"
+
 - name: Daniela Hahn
   area: Arts & Humanities, Social Sciences
   year_since:
@@ -255,6 +279,14 @@ ass_ed:
   city: Valencia
   country: Spain
   language: Spanish, English
+
+- name: Derya Azer Karaa
+  area: Academic Publishing
+  year_since:
+  city: Istanbul
+  country: Türkiye
+  language: Turkish, English
+  photo: "Derya.jpg"  
   
 - name: Dessy Harisanty
   area: Library and Information Science
@@ -310,13 +342,13 @@ ass_ed:
   country: Morocco
   language: Arab, French, English
 
-- name: Ina Smith
-  area: Scholarly Publishing, Instructional Design
+- name: Hope Ncube
+  area: Library Science
   year_since:
-  city: Pretoria
-  country: South Africa
-  language: English, Africaans
-  photo: "ina-smith.png"
+  city: Harare
+  country: Zimbabwe
+  language: English
+  photo: "Hope.jpg"
 
 - name: Irene Prähauser
   area: Library Science
@@ -340,13 +372,6 @@ ass_ed:
   country: Spain
   language: Spanish, English
   photo: "Margalejo.jpeg"
-
-- name: Jamila Jaber
-  area: Library and Information Science
-  year_since:
-  city: Beirut
-  country: Lebanon
-  language: Arabic, French, English
 
 - name: Jinjin Liu
   area: Social Sciences, Medicine
@@ -376,6 +401,7 @@ ass_ed:
   city: Mexico City
   country: Mexico
   language: Spanish, English
+  featured: true
   photo: "Julio.jpg"
   
 - name: Juyeon Park
@@ -400,6 +426,22 @@ ass_ed:
   country: Iraq
   language: Arabic, English, Swedish
   photo: "karima.jpg"
+
+- name: Katie Vernon
+  area: Library Science
+  year_since:
+  city: London
+  country: United Kingdom
+  language: English
+  photo: "Katie_photo 2022.jpeg"
+
+- name: Katrin Seyler
+  area: Library Science
+  year_since:
+  city: Nuremburg
+  country: Germany
+  language: German, English
+  photo:
   
 - name: Kelly Anne Dumayne
   area: Psychology, linguistics, creative writing
@@ -408,14 +450,14 @@ ass_ed:
   country: United Kingdom
   language: English
   photo: 
-  
-- name: Khoirul Fathoni
-  area: Humanities
+
+- name: Korina Lemonidou
+  area: Library Science
   year_since:
-  city:
-  country: Indonesia
-  language: Indonesian, English
-  photo: "Khoirul.jpg"
+  city: Leiden
+  country: Netherlands
+  language: Greek, English
+  photo: 
   
 - name: Leila Yang
   area: Scholarly Publishing
@@ -432,6 +474,14 @@ ass_ed:
   country: Costa Rica
   language: Spanish, English
   photo: "Penabad.png"
+
+- name: Lilly Hammond
+  area: Library Science
+  year_since:
+  city: Melbourne
+  country: Australia
+  language: English
+  photo: "Lily_20260502_151846.jpg"
 
 - name: Lina Marcela Blandón García
   area: Science
@@ -462,14 +512,6 @@ ass_ed:
   city: Hannover
   country: Germany
   language: German, English
-
-- name: Mariano Hernán Corujo
-  area: Library Science
-  year_since:
-  city: Buenos Aires
-  country: Argentina
-  language: Spanish, English
-  photo: "MarianoCorujo.jpeg"
   
 - name: Marie-Eve Dugas
   area: Library Science, Social Sciences
@@ -531,14 +573,6 @@ ass_ed:
   country: Indonesia
   language: Bahasa Indonesia, English
   photo: "Mohammad Rizkif.png"
-  
-- name: Muhamad Taufik Hidayat
-  area: Humanities, Social Sciences
-  year_since:
-  city: Tegal
-  country: Indonesia
-  language: Indonesian, English
-  photo: "MuhamadTaufik.jpg"
 
 - name: Musa Mohammed Ali 
   area: Microbiology, Immunology
@@ -562,16 +596,7 @@ ass_ed:
   city: Ekaterinburg
   country: Russian Federation
   language: Russian, English
-  photo: "Popova-1.jpeg"
-  
-- name: Nataliia Kaliuzhna
-  area: Library and Information Science
-  year_since:
-  city: Kyiv
-  country: Ukraine
-  language: Ukrainian, Russian, English, Polish
-  featured: true
-  photo: "Nataliia.jpg"
+  photo:
 
 - name: Natia Gabedava
   area: Humanities, Education
@@ -629,12 +654,20 @@ ass_ed:
   photo: "princessnwafor.jpg"
   
 - name: Priya
-  area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
+  area: Open Source Software, Library Science, Bibliometric Analysis
   year_since:
   city: Himachal Pradesh
   country: India
   language: English
   photo: "Priya.jpg"
+
+- name: Qiuwan Zhuang
+  area: Academic Publishing
+  year_since:
+  city: Beijing
+  country: China
+  language: Chinese, English
+  photo: "Qiuwan_CSXM8577--1X1.JPG" 
 
 - name: Remedios Melero (Reme)
   area: Social Sciences
@@ -696,6 +729,14 @@ ass_ed:
   language: Portuguese, English
   photo: "Costa.jpeg"
 
+- name: Thomas O'Toole-Mills
+  area: Library Science
+  year_since:
+  city: London
+  country: United Kingdom
+  language: English
+  photo: "Thomas_Profile Pic - Tom OTM.jpg"
+  
 - name: Utiya Hikmah
   area: Material Physics
   year_since:
@@ -719,6 +760,14 @@ ass_ed:
   country: USA
   language: Spanish, English, Portuguese
   photo: "Wileidys.jpg"
+
+- name: Yukari Sugiyama
+  area: Library Science
+  year_since:
+  city: New Haven
+  country: USA
+  language: English, Japanese
+  photo: "Yukari_YUL222_0380_Sugiyama_Y.jpg"
  
 - name: Zakariya Algamal
   area: Statistics

@@ -4,12 +4,13 @@
 import os
 from portality import constants
 from portality.lib import paths
+from datetime import datetime
 
 ###########################################
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.5.2"
+DOAJ_VERSION = "8.6.8"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -23,7 +24,7 @@ SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 CMS_BUILD_ASSETS_ON_STARTUP = False
 # Cookies security
-SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = True
 REMEMBER_COOKIE_SECURE = True
 
@@ -31,6 +32,9 @@ REMEMBER_COOKIE_SECURE = True
 # Testdrive for setting up the test environment.
 # CAUTION - this can modify the index so should NEVER be used in production!
 TESTDRIVE_ENABLED = False
+
+# List of script names which can be executed via the testdrive.
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications"]
 
 ####################################
 # Debug Mode
@@ -67,7 +71,6 @@ ELASTIC_SEARCH_DB_PREFIX = "doaj-"  # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True  # whether or not to try creating the index and required index types on startup
-ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
@@ -175,7 +178,8 @@ REPORTS_BASE_DIR = "/home/cloo/reports/"
 STORE_IMPL = "portality.store.StoreLocal"
 STORE_SCOPE_IMPL = {
     # Enable this by scope in order to have different scopes store via different storage implementations
-    #     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3"
+    #     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3",
+    #     constants.STORE__SCOPE__JOURNAL_CSV: "portality.store.StoreS3"
 }
 
 STORE_TMP_IMPL = "portality.store.TempStore"
@@ -194,6 +198,7 @@ STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 STORE_HARVESTER_CONTAINER = "doaj-harvester"
 STORE_EXPORT_CONTAINER = "doaj-export-placeholder"
+STORE_JOURNAL_CSV_CONTAINER = "doaj-journal-csv-placeholder"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -218,6 +223,10 @@ STORE_S3_SCOPES = {
     },
     # Used to store the admin-generated CSV reports
     "export": {
+        "aws_access_key_id": "put this in your dev/test/production.cfg",
+        "aws_secret_access_key": "put this in your dev/test/production.cfg"
+    },
+    constants.STORE__SCOPE__JOURNAL_CSV: {
         "aws_access_key_id": "put this in your dev/test/production.cfg",
         "aws_secret_access_key": "put this in your dev/test/production.cfg"
     }
@@ -287,6 +296,10 @@ LOGIN_VIA_ACCOUNT_ID = True
 PASSWORD_RESET_TIMEOUT = 86400
 # amount of time a reset token for a new account is valid for
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
+# amount of time a login through login-link is valid for
+LOGIN_LINK_TIMEOUT = 600
+# Encryption key for passwordless login
+PASSWORDLESS_ENCRYPTION_KEY = "Passwordless login encryption key"
 
 # "api" top-level role is added to all accounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = [
@@ -299,7 +312,11 @@ TOP_LEVEL_ROLES = [
     "preservation",
     constants.ROLE_PUBLIC_DATA_DUMP,
     constants.ROLE_PUBLISHER_JOURNAL_CSV,
-    constants.ROLE_ADMIN_REPORT_WITH_NOTES
+    constants.ROLE_ADMIN_REPORT_WITH_NOTES,
+    constants.ROLE_PREMIUM,
+    constants.ROLE_PREMIUM_OAI,
+    constants.ROLE_PREMIUM_PDD,
+    constants.ROLE_PREMIUM_CSV
 ]
 
 ROLE_MAP = {
@@ -319,6 +336,11 @@ ROLE_MAP = {
         "edit_suggestion",
         "editor_area",
         "read_notifications"
+    ],
+    constants.ROLE_PREMIUM: [
+        constants.ROLE_PREMIUM_OAI,
+        constants.ROLE_PREMIUM_PDD,
+        constants.ROLE_PREMIUM_CSV
     ]
 }
 
@@ -428,9 +450,6 @@ HUEY_ASYNC_DELAY = 10
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
-# Additional Logging for scheduled JournalCSV
-EXTRA_JOURNALCSV_LOGGING = False
-
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
@@ -442,7 +461,7 @@ HUEY_SCHEDULE = {
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
-    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "public_data_dump": {"month": "*", "day": "*", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
@@ -451,6 +470,9 @@ HUEY_SCHEDULE = {
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
+    # Weekly notification to publishers about deleted articles (Article Tombstones)
+    "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
 }
 
 
@@ -493,6 +515,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
     "portality.models.autocheck.Autocheck", # ~~-> Autocheck:Model~~
     "portality.models.export.Export", # ~~-> Export:Model~~
+    "portality.models.DataDump", # ~~-> DataDump:Model~~
+    "portality.models.JournalCSV", # ~~-> JournalCSV:Model~~
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
@@ -842,6 +866,16 @@ QUERY_ROUTE = {
             "auth": True,
             "role": "admin",
             "dao": "portality.models.Export"
+        },
+        "journal_csv": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.JournalCSV"  # ~~->JournalCSV:Model~~
+        },
+        "pdd": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.DataDump"  # ~~->JournalCSV:Model~~
         },
         "alerts": {
             "auth": True,
@@ -1447,6 +1481,7 @@ _MIN = 60
 _HOUR = 3600
 _DAY = 24 * _HOUR
 _WEEK = 7 * _DAY
+_YEAR = 52 * _WEEK + _DAY  # unless it's a leap year
 
 # Configures the age of the last completed job on the queue before the queue is marked as unstable
 # (in seconds)
@@ -1574,16 +1609,16 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _WEEK + _DAY
     },
     'check_latest_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'datalog_journal_added_update': {
-        'last_run_successful_in': _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'find_discontinued_soon': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'harvest': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'journal_csv': {
         'last_run_successful_in': 2 * _HOUR
@@ -1595,7 +1630,7 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'prune_es_backups': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'public_data_dump': {
         'last_run_successful_in': 32 * _DAY
@@ -1607,10 +1642,10 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'request_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'sitemap': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     }
 }
 
@@ -1619,6 +1654,12 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
 
 # how long should the temporary URL for public data dumps last
 PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
+
+##################################################
+# Journal CSV Setings
+
+# how long should the temporary URL for journal csvs last
+JOURNAL_CSV_URL_TIMEOUT = 3600
 
 ##################################################
 # Pages under maintenance
@@ -1742,7 +1783,6 @@ BGJOB_MANAGE_REDUNDANT_ACTIONS = [
 # Honeypot bot-trap settings for forms (now: only registration form)
 HONEYPOT_TIMER_THRESHOLD = 5000
 
-
 ################################
 # Url Shortener
 # ~~->URLShortener:Feature~~
@@ -1754,6 +1794,21 @@ URLSHORT_LIMIT = 50_000
 
 URLSHORT_ALLOWED_SUPERDOMAINS = ['doaj.org']
 URLSHORT_ALIAS_LENGTH = 6
+HONEYPOT_TIMER_THRESHOLD = 5000
+
+##################################################
+# Premium membership configurations
+
+# Should the system enforce premium membership mode
+PREMIUM_MODE = True
+
+# should the system respect phase-in mode, accommodating the phase-in start as the
+# oldest date for non-premium content
+PREMIUM_PHASE_IN = False
+PREMIUM_PHASE_IN_START = datetime(2026, 3, 19)
+
+# What is the delay non-premium users have to data access
+NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 
 ##################################################
 # Object validation settings

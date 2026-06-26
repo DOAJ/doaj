@@ -5,21 +5,24 @@ import sys
 
 setup(
     name='doaj',
-    version='8.5.2',
+    version='8.6.8',
+    python_requires='>=3.10', # EOL October 2026
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
         "bagit==1.8.1",
         "beautifulsoup4",
         "boto3==1.35.25",
+        "cryptography~=42.0",
         "elastic-apm==6.24.0",
         "elasticsearch==7.13.0",
-        "Faker==2.0.3",
+        "faker==40.15.0",
         "feedparser==6.0.11",
         "jinja2~=3.1.4",
         "jsonpath-ng~=1.6",
         "flask<3",
         "Werkzeug<3.0",   # FIXME: we have passwords using plain sha1 that are undecodable after 3.0
+        "Flask-Babel==4.0.0",
         "Flask-Cors==5.0.0",
         "Flask-DebugToolbar==0.15.1",
         "Flask-Login==0.6.3",

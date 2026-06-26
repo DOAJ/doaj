@@ -14,12 +14,43 @@
   > li {
     margin: 0 $spacing-04;
 
-    &:first-child {
+    &:nth-child(1 of :not(.mobile)) {
       margin-left: 0;
     }
 
     &:last-child {
       margin-right: 0;
+    }
+
+    .nav-bar__logout-form {
+      margin: 0;
+      > button.btn-logout {
+        font-size: unset;
+      }
+    }
+
+    button.dropdown__trigger,
+    .nav-bar__logout-form > button.btn-logout{
+      padding: 0;
+      border: none;
+      line-height: 75px;
+      background-color: transparent;
+      margin-bottom: 0;
+
+      &:hover,
+      &:active {
+        background: transparent;
+        color: $grapefruit;
+      }
+    }
+
+    a {
+      display: flex;
+      align-items: baseline;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      gap: .25rem;
     }
   }
 

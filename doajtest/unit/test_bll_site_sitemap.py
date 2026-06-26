@@ -27,7 +27,7 @@ def load_cases():
 
 EXCEPTIONS = {
     "ArgumentException": exceptions.ArgumentException,
-    "IOError": IOError
+    "IOError": store.StoreException
 }
 
 

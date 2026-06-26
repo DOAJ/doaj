@@ -18,11 +18,11 @@ from portality import store
 from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, api_key_required
-from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
 from portality.ui import templates
+from portality.bll import DOAJ
 
 # ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
@@ -32,7 +32,8 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals)
+    stats = DOAJ.siteService().site_statistics()
+    return render_template(templates.PUBLIC_INDEX, news=news, recent_journals=recent_journals, statistics=stats)
 
 
 @blueprint.route('/login/')
@@ -145,14 +146,20 @@ def search_post():
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_JOURNALCSV', 'JournalCSV'),
                     action=app.config.get('ANALYTICS_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
-    csv_info = models.Cache.get_latest_csv()
-    if csv_info is None:
+    svc = DOAJ.journalService()
+    if current_user and not current_user.is_anonymous and current_user.has_role(constants.ROLE_PREMIUM_CSV):
+        jc = svc.get_premium_csv()
+    else:
+        jc = svc.get_free_csv()
+
+    if jc is None:
         abort(404)
-    store_url = csv_info.get("url")
-    if store_url is None:
-        abort(404)
+
+    store_url = svc.get_temporary_url(jc)
+
     if store_url.startswith("/"):
         store_url = "/store" + store_url
+
     return redirect(store_url, code=307)
 
 
@@ -185,26 +192,23 @@ def sitemap(suffix):
 
 
 @blueprint.route("/public-data-dump/<record_type>")
-@api_key_required
+@login_required
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_PUBLICDATADUMP', 'PublicDataDump'),
                     action=app.config.get('ANALYTICS_ACTION_PUBLICDATADUMP', 'Download'))
 def public_data_dump_redirect(record_type):
-    if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP):
+    if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP) and not current_user.has_role(constants.ROLE_PREMIUM_PDD):
         abort(404)
 
-    # Make sure the PDD exists
-    pdd = models.Cache.get_public_data_dump()
-    if pdd is None:
+    svc = DOAJ.publicDataDumpService()
+    if current_user.has_role(constants.ROLE_PREMIUM_PDD):
+        dd = svc.get_premium_dump()
+    else:
+        dd = svc.get_free_dump()
+
+    if dd is None:
         abort(404)
 
-    target_data = pdd.get(record_type, {})
-    if not target_data:
-        abort(404)
-
-    main_store = store.StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
-    store_url = main_store.temporary_url(target_data.get("container"),
-                                         target_data.get("filename"),
-                                         timeout=app.config.get("PUBLIC_DATA_DUMP_URL_TIMEOUT", 3600))
+    store_url = svc.get_temporary_url(dd, record_type)
 
     if store_url.startswith("/"):
         store_url = "/store" + store_url
@@ -529,7 +533,15 @@ def widgets():
 
 @blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template(templates.STATIC_PAGE, page_frag="/docs/public-data-dump.html")
+    if current_user and not current_user.is_anonymous and (
+            current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP) or current_user.has_role(constants.ROLE_PREMIUM_PDD)):
+        dds = DOAJ.publicDataDumpService()
+        if current_user.has_role(constants.ROLE_PREMIUM_PDD):
+            dd = dds.get_premium_dump()
+        else:
+            dd = dds.get_free_dump()
+        return render_template(templates.STATIC_PAGE, page_frag="/docs/pdd-access.html", pdd=dd)
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/pdd-contact.html")
 
 
 @blueprint.route("/docs/openurl/")
@@ -541,6 +553,18 @@ def openurl():
 def faq():
     return render_template(templates.STATIC_PAGE, page_frag="/docs/faq.html")
 
+@blueprint.route("/docs/journal-csv")
+def journal_csv():
+    svc = DOAJ.journalService()
+    if not current_user.is_anonymous and current_user.has_role(constants.ROLE_PREMIUM_CSV):
+        jc = svc.get_premium_csv()
+    else:
+        jc = svc.get_free_csv()
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/journal-csv.html", jc=jc)
+
+@blueprint.route("/docs/premium")
+def premium():
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/premium.html")
 
 @blueprint.route("/about/")
 def about():

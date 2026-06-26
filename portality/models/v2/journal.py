@@ -305,6 +305,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def add_note(self, note, date=None, id=None, author_id=None, assigned_to=None, deadline=None):
         if not date:
             date = dates.now_str()
+        if id == "":
+            id = None
+
         obj = {"date": date, "note": note}
         if id is not None:
             obj["id"] = id
@@ -1048,12 +1051,12 @@ class Journal(JournalLikeObject):
         if is_update:
             self.set_last_updated()
 
-    def save(self, snapshot=True, sync_owner=True, **kwargs):
-        self.prep()
+    def save(self, snapshot=True, sync_owner=True, update_last_updated=True, **kwargs):
+        self.prep(is_update=update_last_updated)
         self.verify_against_struct()
         if sync_owner:
             self._sync_owner_to_application()
-        res = super(Journal, self).save(**kwargs)
+        res = super(Journal, self).save(update_last_updated=update_last_updated, **kwargs)
         if snapshot:
             self.snapshot()
         return res
