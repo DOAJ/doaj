@@ -262,7 +262,7 @@ select {
 /* Custom radio buttons & checkboxes */
 
 input[type="checkbox"],
-input[type="radio"] {
+input[type="radio"]:not(.review-outcome-answer) {
   position: absolute;
 
   opacity: 0;
@@ -311,7 +311,7 @@ input[type="radio"] {
   }
 }
 
-input[type="radio"] + label {
+input[type="radio"]:not(.review-outcome-answer) + label {
   display: inline-block;
   margin: 0 $spacing-04 $spacing-03 0;
 

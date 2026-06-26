@@ -1,0 +1,162 @@
+{% macro render_content(content_list) -%}
+    {%- if content_list is string -%}
+        {{- content_list -}}
+
+    {%- elif content_list is iterable and content_list is not string and content_list is not mapping -%}
+        {%- for ic in content_list -%}
+            {%- set ic_content = ic.content -%}
+            {%- set rendered_content = render_content(ic_content) -%}
+            {{ make_tag(ic, rendered_content) }}
+        {%- endfor -%}
+
+    {%- else -%}
+        {{- content_list -}}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro make_tag(spec, content, extra_class="") %}
+    {% set attrs = spec.attrs or {} %}
+
+    {% set base_class = "review-outcome-answer" %}
+    {% set class_value = base_class %}
+
+    {% if extra_class %}
+        {% set class_value = class_value ~ " " ~ extra_class %}
+    {% endif %}
+
+    <{{ spec.tag }}
+        {% for k, v in attrs.items() if k != "class" %}
+            {{ k }}="{{ v }}"
+        {% endfor %}
+        class="{{ class_value }}"
+        {% if not spec.close %}/{% endif %}
+    >
+    {% autoescape off %}
+        {{ content }}
+    {% endautoescape %}
+
+    {% if spec.close %}
+        </{{ spec.tag }}>
+    {% endif %}
+{% endmacro %}
+
+
+{% set ns = namespace(
+    compliant_answer=None,
+    noncompliant_answer=None,
+    later_answer=None,
+    action_answer=None
+) %}
+
+{% for control in controls %}
+    {% set input=control.control %}
+    {% set content = {"value": ""} %}
+    {% set compliance_class="" %}
+    {% if input %}
+        {% set compliance = input.attrs.value %}
+        {% if compliance == "y" %}
+            {% set ns.compliant_answer = control %}
+        {% elif compliance == "n" %}
+            {% set ns.noncompliant_answer = control %}
+        {% elif compliance == "l" %}
+            {% set ns.later_answer = control %}
+        {% elif compliance == "a" %}
+            {% set ns.action_answer = control %}
+        {% endif %}
+    {% endif %}
+
+{% endfor %}
+
+{% set compliant_icon %}
+  {% include "management/admin/_workflow/includes/icons/compliant-answer.html" %}
+{% endset %}
+{% set noncompliant_icon %}
+  {% include "management/admin/_workflow/includes/icons/noncompliant-answer.html" %}
+{% endset %}
+{% set later_icon %}
+  {% include "management/admin/_workflow/includes/icons/later-answer.html" %}
+{% endset %}
+{% set action_icon %}
+  {% include "management/admin/_workflow/includes/icons/action-answer.html" %}
+{% endset %}
+
+{% set control = ns.compliant_answer %}
+{% set input = control.control %}
+{% set content = {"value": ""} %}
+
+{% set compliant_label %}
+  {{ compliant_icon | safe }}
+  <span class="label-text">
+    {{ control.label.content | safe }}
+  </span>
+{% endset %}
+
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+    <div class="radio-option compliant">
+            {{ make_tag(input, content.value, extra_class="sr-only") }}
+        {% if control.label %}
+            {{ make_tag(control.label, compliant_label) }}
+        {% endif %}
+    </div>
+
+{%- if ns.action_answer -%}
+{% set control = ns.action_answer %}
+{% set input=control.control %}
+{% set action_label %}
+  {{ action_icon | safe }}
+  <span class="label-text">
+    {{ control.label.content | safe }}
+  </span>
+{% endset %}
+{% set content = {"value": ""} %}
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+    <div class="radio-option action">
+            {{ make_tag(input, content.value, "sr-only") }}
+        {% if control.label %}
+            {{ make_tag(control.label, action_label) }}
+        {% endif %}
+    </div>
+{% endif %}
+
+{% set control = ns.noncompliant_answer %}
+{% set input=control.control %}
+{% set noncompliant_label %}
+  {{ noncompliant_icon | safe }}
+  <span class="label-text">
+    {{ control.label.content | safe }}
+  </span>
+{% endset %}
+
+{% set content = {"value": ""} %}
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+    <div class="radio-option noncompliant">
+            {{ make_tag(input, content.value, "sr-only") }}
+        {% if control.label %}
+            {{ make_tag(control.label, noncompliant_label) }}
+        {% endif %}
+    </div>
+
+{% set control = ns.later_answer %}
+{% set input=control.control %}
+{% set later_label %}
+  {{ later_icon | safe }}
+  <span class="label-text">
+    {{ control.label.content | safe }}
+  </span>
+{% endset %}
+{% set content = {"value": ""} %}
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+    <div class="radio-option later">
+            {{ make_tag(input, content.value, "sr-only") }}
+        {% if control.label %}
+            {{ make_tag(control.label, later_label) }}
+        {% endif %}
+    </div>

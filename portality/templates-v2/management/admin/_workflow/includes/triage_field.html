@@ -1,6 +1,6 @@
 {% autoescape off %}
 <section class="criterion container">
-<div class="row>">
+<div class="row">
     <div class="col-md-7">
     <header class="criteria-header">
 
@@ -50,16 +50,15 @@
     {% endif %}
     </div>
 </div>
+
 <div class="row">
     <div class="col-md-12">
-        <fieldset>
+        <fieldset class="review-outcome">
             <legend class="sr-only">Review outcome</legend>
             {% set cr = field.capability.get_control_renderer() %}
             {{ cr.draw(field.control) }}
         </fieldset>
     </div>
-
-
 </div>
 </section>
 {% endautoescape %}

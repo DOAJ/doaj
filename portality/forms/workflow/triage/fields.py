@@ -20,6 +20,9 @@ T = app.cms.workflow.triage.fields
 class RadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_RADIO
 
+class TriageRadioRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_TRIAGE_CONTROL_RADIO
+
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
 
@@ -36,7 +39,7 @@ class ComplianceCheckCapability(FormFieldCapability):
     application_info = []
 
     control_class = Radio
-    control_render_class = RadioRenderer
+    control_render_class = TriageRadioRenderer
     render_class = TriageComplianceCheckFieldRenderer
 
 class ComplianceCheckField(Field):

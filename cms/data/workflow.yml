@@ -2,7 +2,7 @@ triage:
   fields:
     ethics_not_excluded:
       label: "Current exclusions"
-      compliant: "<span class='answer'>Compliant</span>, this application is from a journal or publisher that is <strong>not</strong> currently excluded."
+      compliant: '<span class="answer">Compliant</span>, this application is from a journal or publisher that is <strong>not</strong> currently excluded.'
       non_compliant: "<span class='answer'>Non-compliant</span>, this application is from a journal or publisher that is currently excluded."
       check: "This application is from a journal or publisher that is not 
             currently excluded."

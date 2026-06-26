@@ -62,8 +62,9 @@
     }
 
     li::marker {
-      font-size: 0.75em;
+        font-size: 0.75em;
     }
+
     .data,
     .data a {
         display: flex;
@@ -86,9 +87,11 @@
             font-size: 1.25rem;
             font-weight: normal;
         }
+
         h4:not(:first-child) {
             margin-top: 1rem;
         }
+
         h4 {
             display: flex;
             align-items: center;
@@ -97,6 +100,7 @@
             font-size: 1rem;
             font-weight: bold;
         }
+
         &-important {
             padding-left: 1rem;
             margin-bottom: 1rem;
@@ -108,33 +112,6 @@
             min-width: 100%;
         }
 
-        input.review-outcome {
-            height: 0;
-            width: 0;
-            padding: 0;
-            margin: 0;
-        }
-        label.review-outcome {
-            display: flex;
-            align-items: center;
-            font-size: 1rem;
-            font-weight: normal;
-            span.answer {
-                font-weight: bold;
-            }
-            &.compliant {
-                background-color: $dark-green;
-                color: white;
-            }
-            &.non-compliant {
-                background-color: $sanguine;
-                color: white;
-            }
-            &.action {
-                background-color: $grapefruit;
-            }
-        }
-
         button.button.button--prev {
             border: none;
             padding: 0;
@@ -144,6 +121,7 @@
             text-decoration: underline;
             text-transform: lowercase;
             letter-spacing: 0;
+
             &:hover {
                 background-color: transparent;
                 color: $grapefruit;
@@ -193,6 +171,140 @@
             color: white;
         }
     }
+
+    .review-outcome {
+        margin-top: $spacing-05;
+        display: flex;
+        flex-wrap: wrap;
+        gap: $spacing-04;
+        justify-content: space-between;
+        .radio-option {
+            display: flex;
+            flex: 1 1 0;
+
+            label.review-outcome-answer {
+                display: flex;
+                align-items: flex-start;
+                gap: .5rem;
+                flex: 1;
+                padding: $spacing-02 $spacing-03;
+                border-radius: 0;
+                cursor: pointer;
+                user-select: none;
+                transition: all 0.15s ease;
+
+                border: 2px solid $dark-grey;
+                background-color: white;
+                color: $warm-black;
+
+                box-shadow: $spacing-01 $spacing-02 0 0 $dark-grey;
+                margin-bottom: 0;
+
+                &:hover {
+                    border-color: $warm-black;
+                }
+
+                svg {
+                    width: 1.5rem;
+                    min-width: 1.5rem;
+                }
+            }
+
+            input[type="radio"]:hover + label.review-outcome-answer,
+            input[type="radio"]:checked + label.review-outcome-answer
+            {
+                background: $warm-black;
+                color: white;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+            }
+
+            input[type="radio"]:focus-visible + label.review-outcome-answer {
+                outline: 2px solid $warm-black;
+                outline-offset: 2px;
+            }
+
+            &.compliant {
+                label.review-outcome-answer {
+                    border: 2px solid $dark-green;
+                    color: $dark-green;
+                    box-shadow: $spacing-01 $spacing-02 0 0 $dark-green;
+                }
+                input[type="radio"]:hover + label.review-outcome-answer,
+                input[type="radio"]:checked + label.review-outcome-answer
+                {
+                    background: $dark-green;
+                    color: $white;
+                }
+                input[type="radio"]:focus-visible + label.review-outcome-answer {
+                    outline: 2px solid $dark-green;
+                }
+            }
+            &.noncompliant {
+                label.review-outcome-answer {
+                    border: 2px solid $sanguine;
+                    color: $sanguine;
+
+                    box-shadow: $spacing-01 $spacing-02 0 0 $sanguine;
+                }
+                input[type="radio"]:hover + label.review-outcome-answer,
+                input[type="radio"]:checked + label.review-outcome-answer
+                {
+                    background: $sanguine;
+                    color: $white;
+                }
+                input[type="radio"]:focus-visible + label.review-outcome-answer {
+                    outline: 2px solid $sanguine;
+                }
+            }
+            &.action {
+                label.review-outcome-answer {
+                    border: 2px solid $grapefruit;
+                    color: $grapefruit;
+
+                    box-shadow: $spacing-01 $spacing-02 0 0 $grapefruit;
+                }
+                input[type="radio"]:hover + label.review-outcome-answer,
+                input[type="radio"]:checked + label.review-outcome-answer
+                {
+                    background: $grapefruit;
+                    color: $white;
+                }
+                input[type="radio"]:focus-visible + label.review-outcome-answer {
+                    outline: 2px solid $grapefruit;
+                }
+            }
+            &.later {
+                label.review-outcome-answer {
+                    border: 2px solid $yellow;
+                    color: $warm-black;
+
+                    box-shadow: $spacing-01 $spacing-02 0 0 $yellow;
+                }
+                input[type="radio"]:hover + label.review-outcome-answer,
+                input[type="radio"]:checked + label.review-outcome-answer
+                {
+                    background: $yellow;
+                    color: $warm-black;
+                }
+                input[type="radio"]:focus-visible + label.review-outcome-answer {
+                    outline: 2px solid $yellow;
+                }
+            }
+        }
+    }
+    @media (max-width: 768px) {
+
+        .review-outcome {
+            flex-direction: column;
+        }
+
+        .radio-option {
+            flex: 1 1 auto;
+            width: 100%;
+            max-width: 100%;
+        }
+    }
 }
 
 span.answer {
@@ -211,4 +323,5 @@ span.answer {
         color: $grapefruit;
     }
 }
+
 
