@@ -16,9 +16,10 @@ TRIAGE_FIELD = {
         "answer": {"coerce": "unicode"},
         "compliant": {"coerce": "bool"},
         "sv": {"coerce": "integer"},
+        "exception": {"coerce": "bool"},
+        "note_id": {"coerce": "unicode"},
     },
     "lists": {
-        "note_ids": {"contains": "field", "coerce": "unicode"},
         "changes": {"contains": "object"},
     },
     "structs": {
@@ -28,37 +29,6 @@ TRIAGE_FIELD = {
         }
     }
 }
-
-TRIAGE_FIELD_WITH_EXCEPTIONS = deepcopy(TRIAGE_FIELD)
-TRIAGE_FIELD_WITH_EXCEPTIONS["objects"] = ["exceptions"]
-TRIAGE_FIELD_WITH_EXCEPTIONS["structs"]["exceptions"] = {}
-
-DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD = deepcopy(TRIAGE_FIELD_WITH_EXCEPTIONS)
-DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD["structs"]["exceptions"] = {
-    "fields": {
-        "ignore_embargo": {"coerce": "bool"},#b1a
-        "website_unavailable": {"coerce": "bool"},#b1b
-        "content_volume": {"coerce": "bool"} #b1c
-    }
-}
-
-DATABASE_NO_ACTIVE_EMBARGO_FIELD = deepcopy(TRIAGE_FIELD_WITH_EXCEPTIONS)
-DATABASE_NO_ACTIVE_EMBARGO_FIELD["structs"]["exceptions"] = {
-    "fields": {
-        "confirmed_issn": {"coerce": "bool"},#b2a
-        "ignore_embargo": {"coerce": "bool"},#b2b
-        "website_unavailable": {"coerce": "bool"},#b2c
-        "content_volume": {"coerce": "bool"}#b2d
-    }
-}
-
-CONTENT_NOT_NEW_OR_FLIPPED = deepcopy(TRIAGE_FIELD_WITH_EXCEPTIONS)
-CONTENT_NOT_NEW_OR_FLIPPED["structs"]["exceptions"] = {
-    "fields": {
-        "publishing_history": {"coerce": "bool"} #e6a
-    }
-}
-
 
 TRIAGE_STRUCT = {
     "fields": {
@@ -72,67 +42,82 @@ TRIAGE_STRUCT = {
                 "admin_special_exception": {"coerce": "unicode"}
             },
             "objects": [
-                "ethics_not_excluded", #a1
-                "ethics_no_nonstandard_metrics", #a2
-                "ethics_no_fake_impact", #a3
-                "ethics_no_false_doaj_claim", #a4
-                "ethics_ttp_gt_3wk", #a5
-                "ethics_no_suspicious_ties", #a6
+                "ethics_not_excluded",
+                "ethics_no_nonstandard_metrics",
+                "ethics_no_fake_impact",
+                "ethics_no_false_doaj_claim",
+                "ethics_no_suspicious_ties",
 
-                "database_not_removed_no_embargo", #b1
-                "database_no_active_embargo", #b2
-                "database_not_listed", #b3
-                "database_not_duplicate", #b4
+                "database_withdrawn",
+                "database_withdrawn_exception_ignore_embargo",
+                "database_withdrawn_exception_website_unavailable",
+                "database_withdrawn_exception_content",
+                "database_embargo",
+                "database_embargo_exception_issn",
+                "database_embargo_exception_maned",
+                "database_embargo_exception_website",
+                "database_embargo_exception_content",
+                "database_not_listed",
+                "database_not_duplicate",
 
-                "issn_at_least_one", #c1
-                "issn_journal_name_match", #c2
-                "issn_no_continuation", #c3
+                "issn_at_least_one",
+                "issn_title_match",
+                "issn_continuation",
 
-                "website_working", #d1
-                "website_distinct_urls", #d2
-                "website_oa_policy", #d3
-                "website_copyright_terms", #d4
+                "website_working",
+                "website_issn",
+                "website_url",
+                "website_license_policy",
+                "website_copyright",
 
-                "content_no_registration", #e1
-                "content_no_barrier", #e2
-                "content_sufficient_volume", #e3
-                "content_unique_article_urls", #e4
-                "content_html_pdf", #e5
-                "content_not_new_or_flipped", #e6
+                "content_no_login",
+                "content_no_embargo",
+                "content_publish_enough",
+                "content_unique_link",
+                "content_format",
+                "content_new_journal",
 
-                "admin_metadata_accurate", #f1
-                "admin_special_exception", #f2
+                "admin_metadata_review",
+                "admin_special_exception",
             ],
             "structs": {
                 "ethics_not_excluded": TRIAGE_FIELD,
                 "ethics_no_nonstandard_metrics": TRIAGE_FIELD,
                 "ethics_no_fake_impact": TRIAGE_FIELD,
                 "ethics_no_false_doaj_claim": TRIAGE_FIELD,
-                "ethics_ttp_gt_3wk": TRIAGE_FIELD,
                 "ethics_no_suspicious_ties": TRIAGE_FIELD,
 
-                "database_not_removed_no_embargo": DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD,
-                "database_no_active_embargo": DATABASE_NO_ACTIVE_EMBARGO_FIELD,
+                "database_withdrawn": TRIAGE_FIELD,
+                "database_withdrawn_exception_ignore_embargo": TRIAGE_FIELD,
+                "database_withdrawn_exception_website_unavailable": TRIAGE_FIELD,
+                "database_withdrawn_exception_content": TRIAGE_FIELD,
+                "database_embargo": TRIAGE_FIELD,
+                "database_embargo_exception_issn": TRIAGE_FIELD,
+                "database_embargo_exception_maned": TRIAGE_FIELD,
+                "database_embargo_exception_website": TRIAGE_FIELD,
+                "database_embargo_exception_content": TRIAGE_FIELD,
                 "database_not_listed": TRIAGE_FIELD,
                 "database_not_duplicate": TRIAGE_FIELD,
 
                 "issn_at_least_one": TRIAGE_FIELD,
-                "issn_journal_name_match": TRIAGE_FIELD,
-                "issn_no_continuation": TRIAGE_FIELD,
+                "issn_title_match": TRIAGE_FIELD,
+                "issn_continuation": TRIAGE_FIELD,
 
                 "website_working": TRIAGE_FIELD,
-                "website_distinct_urls": TRIAGE_FIELD,
-                "website_oa_policy": TRIAGE_FIELD,
-                "website_copyright_terms": TRIAGE_FIELD,
+                "website_issn": TRIAGE_FIELD,
+                "website_url": TRIAGE_FIELD,
+                "website_license_policy": TRIAGE_FIELD,
+                "website_copyright": TRIAGE_FIELD,
 
-                "content_no_registration": TRIAGE_FIELD,
-                "content_no_barrier": TRIAGE_FIELD,
-                "content_sufficient_volume": TRIAGE_FIELD,
-                "content_unique_article_urls": TRIAGE_FIELD,
-                "content_html_pdf": TRIAGE_FIELD,
-                "content_not_new_or_flipped": CONTENT_NOT_NEW_OR_FLIPPED,
+                "content_no_login": TRIAGE_FIELD,
+                "content_no_embargo": TRIAGE_FIELD,
+                "content_publish_enough": TRIAGE_FIELD,
+                "content_unique_link": TRIAGE_FIELD,
+                "content_format": TRIAGE_FIELD,
+                "content_new_journal": TRIAGE_FIELD,
 
-                "admin_metadata_accurate": TRIAGE_FIELD
+                "admin_metadata_review": TRIAGE_FIELD,
+                "admin_special_exception": TRIAGE_FIELD
             }
         }
     }
@@ -426,7 +411,7 @@ class TriageField(SeamlessMixin):
     def __init__(self, raw=None, parent:"Triage"=None, **kwargs):
         super(TriageField, self).__init__(raw=raw, **kwargs)
         self._parent = parent
-        self._notes = {}
+        self._note = None
 
     @property
     def answer(self) -> str:
@@ -453,41 +438,50 @@ class TriageField(SeamlessMixin):
         self.__seamless__.set_single("sv", val)
 
     @property
-    def note_ids(self):
-        return self.__seamless__.get_list("note_ids")
+    def exception(self) -> bool:
+        return self.__seamless__.get_single("exception")
+
+    @exception.setter
+    def exception(self, val:bool):
+        self.__seamless__.set_single("exception", val)
+
+    @property
+    def note_id(self):
+        return self.__seamless__.get_single("note_id")
 
     @property
     def changes(self):
         return self.__seamless__.get_list("changes")
 
     @property
-    def notes(self):
+    def note(self):
         from portality.models import Note
-        for nid in self.note_ids:
-            if nid not in self._notes:
-                # TODO: merge in separate notes code
-                self._notes[nid] = Note.pull(nid)
-        return self._notes
+        if self._note is None and self.note_id is not None:
+            self._note = Note.pull(self.note_id)
+        # for nid in self.note_ids:
+        #     if nid not in self._notes:
+        #         # TODO: merge in separate notes code
+        #         self._notes[nid] = Note.pull(nid)
+        # return self._notes
+        return self._note
 
-    def add_note(self, note:"Note"):
+    @note.setter
+    def note(self, note:"Note"):
         if note.id is None:
             note.set_id(note.makeid())
-        self._notes[note.id] = note
-        self.__seamless__.add_to_list("note_ids", note.id, unique=True)
+        self._note = note
+        self.__seamless__.set_single("note_id", note.id, unique=True)
         if self._parent is not None:
             self._parent.cache_note(note)
 
+    # def add_note(self, note:"Note"):
+    #     if note.id is None:
+    #         note.set_id(note.makeid())
+    #     self._notes[note.id] = note
+    #     self.__seamless__.add_to_list("note_ids", note.id, unique=True)
+    #     if self._parent is not None:
+    #         self._parent.cache_note(note)
 
-class DatabaseNotRemovedNoEmbargoField(TriageField):
-    __SEAMLESS_STRUCT__ = DATABASE_NOT_REMOVED_NO_EMBARGO_FIELD
-
-    @property
-    def ignore_embargo(self):
-        return self.__seamless__.get_single("exceptions.ignore_embargo")
-
-    @ignore_embargo.setter
-    def ignore_embargo(self, val):
-        self.__seamless__.set_with_struct("exceptions.ignore_embargo", val)
 
 class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT
@@ -535,6 +529,19 @@ class Triage(SeamlessMixin):
             t = self.__seamless__.get_single(f"questions.{field}")
         return TriageField(t, self)
 
+    def _set_triage_field(self, field:str, val:Union[dict, "TriageField"]):
+        # note that if given a TriageField object this copies the contents, as the old
+        # object will be part of some other WorkflowControl object, and the mixed
+        # ownership can cause confusion
+        if isinstance(val, TriageField):
+            data = deepcopy(val.data)
+            self.__seamless__.set_single(f"questions.{field}", data)
+            # if we are given an object which has notes cached, take those notes into the
+            # cache of this object, so we can save them
+            self.cache_note(val.note)
+        else:
+            self.__seamless__.set_with_struct(f"questions.{field}", val)
+
     def _calculate_severity_value(self):
         total = 0
         for k, v in self.__seamless__.get_single("questions", []).items():
@@ -546,7 +553,7 @@ class Triage(SeamlessMixin):
     def total_severity_value(self):
         return self.__seamless__.get_single("total_sv")
 
-    def _set_question(self, field:str, value:bool, sv:int=None, exception:int=None, note:"Note"=None):
+    def _set_question(self, field:str, value:bool, sv:int=None, exception:bool=None, note:"Note"=None):
         obj = {
             "value": value,
         }
@@ -564,30 +571,253 @@ class Triage(SeamlessMixin):
     def ethics_not_excluded(self) -> TriageField:
         return self._get_triage_field("ethics_not_excluded")
 
+    @ethics_not_excluded.setter
+    def ethics_not_excluded(self, field:TriageField):
+        self._set_triage_field("ethics_not_excluded", field)
+
     @property
     def ethics_no_nonstandard_metrics(self) -> TriageField:
         return self._get_triage_field("ethics_no_nonstandard_metrics")
+
+    @ethics_no_nonstandard_metrics.setter
+    def ethics_no_nonstandard_metrics(self, field:TriageField):
+        self._set_triage_field("ethics_no_nonstandard_metrics", field)
 
     @property
     def ethics_no_fake_impact(self) -> TriageField:
         return self._get_triage_field("ethics_no_fake_impact")
 
+    @ethics_no_fake_impact.setter
+    def ethics_no_fake_impact(self, field:TriageField):
+        self._set_triage_field("ethics_no_fake_impact", field)
+
     @property
     def ethics_no_false_doaj_claim(self) -> TriageField:
         return self._get_triage_field("ethics_no_false_doaj_claim")
 
+    @ethics_no_false_doaj_claim.setter
+    def ethics_no_false_doaj_claim(self, field:TriageField):
+        self._set_triage_field("ethics_no_false_doaj_claim", field)
+
     @property
     def ethics_no_suspicious_ties(self) -> TriageField:
         return self._get_triage_field("ethics_no_suspicious_ties")
+
+    @ethics_no_suspicious_ties.setter
+    def ethics_no_suspicious_ties(self, field:TriageField):
+        self._set_triage_field("ethics_no_suspicious_ties", field)
+
+    @property
+    def database_withdrawn(self):
+        return self._get_triage_field("database_withdrawn")
+
+    @database_withdrawn.setter
+    def database_withdrawn(self, field:TriageField):
+        self._set_triage_field("database_withdrawn", field)
+
+    @property
+    def database_withdrawn_exception_ignore_embargo(self):
+        return self._get_triage_field("database_withdrawn_exception_ignore_embargo")
+
+    @database_withdrawn_exception_ignore_embargo.setter
+    def database_withdrawn_exception_ignore_embargo(self, field:TriageField):
+        self._set_triage_field("database_withdrawn_exception_ignore_embargo", field)
+
+    @property
+    def database_withdrawn_exception_website_unavailable(self):
+        return self._get_triage_field("database_withdrawn_exception_website_unavailable")
+
+    @database_withdrawn_exception_website_unavailable.setter
+    def database_withdrawn_exception_website_unavailable(self, field:TriageField):
+        self._set_triage_field("database_withdrawn_exception_website_unavailable", field)
+
+    @property
+    def database_withdrawn_exception_content(self):
+        return self._get_triage_field("database_withdrawn_exception_content")
+
+    @database_withdrawn_exception_content.setter
+    def database_withdrawn_exception_content(self, field:TriageField):
+        self._set_triage_field("database_withdrawn_exception_content", field)
+
+    @property
+    def database_embargo(self):
+        return self._get_triage_field("database_embargo")
+
+    @database_embargo.setter
+    def database_embargo(self, field:TriageField):
+        self._set_triage_field("database_embargo", field)
+
+    @property
+    def database_embargo_exception_issn(self):
+        return self._get_triage_field("database_embargo_exception_issn")
+
+    @database_embargo_exception_issn.setter
+    def database_embargo_exception_issn(self, field:TriageField):
+        self._set_triage_field("database_embargo_exception_issn", field)
+
+    @property
+    def database_embargo_exception_maned(self):
+        return self._get_triage_field("database_embargo_exception_maned")
+
+    @database_embargo_exception_maned.setter
+    def database_embargo_exception_maned(self, field:TriageField):
+        self._set_triage_field("database_embargo_exception_maned", field)
+
+    @property
+    def database_embargo_exception_website(self):
+        return self._get_triage_field("database_embargo_exception_website")
+
+    @database_embargo_exception_website.setter
+    def database_embargo_exception_website(self, field:TriageField):
+        self._set_triage_field("database_embargo_exception_website", field)
+
+    @property
+    def database_embargo_exception_content(self):
+        return self._get_triage_field("database_embargo_exception_content")
+
+    @database_embargo_exception_content.setter
+    def database_embargo_exception_content(self, field:TriageField):
+        self._set_triage_field("database_embargo_exception_content", field)
+
+    @property
+    def database_not_listed(self):
+        return self._get_triage_field("database_not_listed")
+
+    @database_not_listed.setter
+    def database_not_listed(self, field:TriageField):
+        self._set_triage_field("database_not_listed", field)
+
+    @property
+    def database_not_duplicate(self):
+        return self._get_triage_field("database_not_duplicate")
+
+    @database_not_duplicate.setter
+    def database_not_duplicate(self, field:TriageField):
+        self._set_triage_field("database_not_duplicate", field)
 
     @property
     def issn_at_least_one(self) -> TriageField:
         return self._get_triage_field("issn_at_least_one")
 
     @property
-    def database_not_removed_no_embargo(self):
-        return None
+    def issn_title_match(self) -> TriageField:
+        return self._get_triage_field("issn_title_match")
 
+    @issn_title_match.setter
+    def issn_title_match(self, field:TriageField):
+        self._set_triage_field("issn_title_match", field)
+
+    @property
+    def issn_continuation(self) -> TriageField:
+        return self._get_triage_field("issn_continuation")
+
+    @issn_continuation.setter
+    def issn_continuation(self, field:TriageField):
+        self._set_triage_field("issn_continuation", field)
+
+    @property
+    def website_working(self) -> TriageField:
+        return self._get_triage_field("website_working")
+
+    @website_working.setter
+    def website_working(self, field:TriageField):
+        self._set_triage_field("website_working", field)
+
+    @property
+    def website_issn(self) -> TriageField:
+        return self._get_triage_field("website_issn")
+
+    @website_issn.setter
+    def website_issn(self, field:TriageField):
+        self._set_triage_field("website_issn", field)
+
+    @property
+    def website_url(self) -> TriageField:
+        return self._get_triage_field("website_url")
+
+    @website_url.setter
+    def website_url(self, field:TriageField):
+        self._set_triage_field("website_url", field)
+
+    @property
+    def website_license_policy(self) -> TriageField:
+        return self._get_triage_field("website_license_policy")
+
+    @website_license_policy.setter
+    def website_license_policy(self, field:TriageField):
+        self._set_triage_field("website_license_policy", field)
+
+    @property
+    def website_copyright(self) -> TriageField:
+        return self._get_triage_field("website_copyright")
+
+    @website_copyright.setter
+    def website_copyright(self, field:TriageField):
+        self._set_triage_field("website_copyright", field)
+
+    @property
+    def content_no_login(self) -> TriageField:
+        return self._get_triage_field("content_no_login")
+
+    @content_no_login.setter
+    def content_no_login(self, field:TriageField):
+        self._set_triage_field("content_no_login", field)
+
+    @property
+    def content_no_embargo(self) -> TriageField:
+        return self._get_triage_field("content_no_embargo")
+
+    @content_no_embargo.setter
+    def content_no_embargo(self, field:TriageField):
+        self._set_triage_field("content_no_embargo", field)
+
+    @property
+    def content_publish_enough(self) -> TriageField:
+        return self._get_triage_field("content_publish_enough")
+
+    @content_publish_enough.setter
+    def content_publish_enough(self, field:TriageField):
+        self._set_triage_field("content_publish_enough", field)
+
+    @property
+    def content_unique_link(self) -> TriageField:
+        return self._get_triage_field("content_unique_link")
+
+    @content_unique_link.setter
+    def content_unique_link(self, field:TriageField):
+        self._set_triage_field("content_unique_link", field)
+
+    @property
+    def content_format(self) -> TriageField:
+        return self._get_triage_field("content_format")
+
+    @content_format.setter
+    def content_format(self, field:TriageField):
+        self._set_triage_field("content_format", field)
+
+    @property
+    def content_new_journal(self) -> TriageField:
+        return self._get_triage_field("content_new_journal")
+
+    @content_new_journal.setter
+    def content_new_journal(self, field:TriageField):
+        self._set_triage_field("content_new_journal", field)
+
+    @property
+    def admin_metadata_review(self) -> TriageField:
+        return self._get_triage_field("admin_metadata_review")
+
+    @admin_metadata_review.setter
+    def admin_metadata_review(self, field:TriageField):
+        self._set_triage_field("admin_metadata_review", field)
+
+    @property
+    def admin_special_exception(self) -> TriageField:
+        return self._get_triage_field("admin_special_exception")
+
+    @admin_special_exception.setter
+    def admin_special_exception(self, field:TriageField):
+        self._set_triage_field("admin_special_exception", field)
 
 ##########################################
 
