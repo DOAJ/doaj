@@ -2,9 +2,6 @@ triage:
   fields:
     ethics_not_excluded:
       label: "Current exclusions"
-      compliant: "Compliant, this application is from a journal or publisher that is not currently excluded."
-      non_compliant: "Non-compliant, this application is from a journal or publisher that is currently excluded."
-      later: "Do this later"
       check: "This application is from a journal or publisher that is not 
             currently excluded. (Note:  if an exclusion does not relate 
             to all journals from a publisher, an application for another 
@@ -16,80 +13,233 @@ triage:
             <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is "Yes"</li></ul>'
       resource_label: "Excluded publishers spreadsheet"
       resource_url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
+      answers:
+        compliant: "Compliant, this application is from a journal or publisher that is not currently excluded."
+        non_compliant: "Non-compliant, this application is from a journal or publisher that is currently excluded."
+        later: "Do this later"
       compliant_answers:
-      - "y"
+      - "compliant"
       non_compliant_answers:
-      - "n"
+      - "non_compliant"
 
     ethics_no_nonstandard_metrics:
       label: "Non-standard metric services"
-      compliant: "Compliant, this journal does not display references to non standard services"
-      non_compliant: "Non-compliant, this journal displays references to non standard services"
-      later: "Do this later"
       check: "The journal does not display any references  (images, links, logos) to non-standard 
             metric services"
-      instructions: ""
+      instructions: "" # property must be present, so if no value include empty string
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      answers:
+        compliant: "Compliant, this journal does not display references to non standard services"
+        non_compliant: "Non-compliant, this journal displays references to non standard services"
+        later: "Do this later"
       compliant_answers:
-      - "y"
+      - "compliant"
       non_compliant_answers:
-      - "n"
+      - "non_compliant"
       severity_value: 1
 
     ethics_no_fake_impact:
       label: "Fake impact factor values"
-      compliant: "Compliant, this journal does not display fake impact factor values"
-      non_compliant: "Non-compliant, this journal displays fake impact factor values"
-      later: "Do this later"
       check: "The journal does not display fake impact factor values in texts or/and images"
-      instructions: ""
+      instructions: "" # property must be present, so if no value include empty string
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      answers:
+        compliant: "Compliant, this journal does not display fake impact factor values"
+        non_compliant: "Non-compliant, this journal displays fake impact factor values"
+        later: "Do this later"
       compliant_answers:
-      - "y"
+      - "compliant"
       non_compliant_answers:
-      - "n"
+      - "non_compliant"
       severity_value: 3
 
     ethics_no_false_doaj_claim:
       label: "False claim to be indexed in DOAJ"
-      compliant: "Compliant, this journal does not make a false claim to be indexed in DOAJ"
-      non_compliant: "Non-compliant, this journal makes a false claim to be indexed in DOAJ"
-      later: "Do this later"
       check: "This journal does not make a false claim to be indexed in DOAJ"
-      instructions: ""
+      instructions: "" # property must be present, so if no value include empty string
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      answers:
+        compliant: "Compliant, this journal does not make a false claim to be indexed in DOAJ"
+        non_compliant: "Non-compliant, this journal makes a false claim to be indexed in DOAJ"
+        later: "Do this later"
       compliant_answers:
-      - "y"
+      - "compliant"
       non_compliant_answers:
-      - "n"
+      - "non_compliant"
       severity_value: 3
 
     ethics_no_suspicious_ties:
       label: "Previous exclusions/suspicious publisher or journals"
-      compliant: "Compliant, this publisher/journal does not have links to any previously excluded or suspicious publisher/journal"
-      non_compliant: "Non-compliant, this publisher/journal has links to previously excluded or suspicious publisher/journal"
-      later: "Do this later"
       check: "The publisher/journal does not have links to 
-          a) previously excluded publishers and 
-          b) list of suspicious publishers (listed in the excluded publishers speadsheet)"
+          <ul><li>previously excluded publishers and</li> 
+          <li>list of suspicious publishers (listed in the excluded publishers speadsheet)</li></ul>"
       instructions: "If the entry in the spreadsheet is marked that is no longer questionable after last review, 
                   the answer is No. Make a note of it and review the application as normal"
       resource_label: "Quality Review Tool for Triage only"
       resource_url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      answers:
+        compliant: "Compliant, this publisher/journal does not have links to any previously excluded or suspicious publisher/journal"
+        non_compliant: "Non-compliant, this publisher/journal has links to previously excluded or suspicious publisher/journal"
+        conditional: "Compliant, No longer questionable"
+        later: "Do this later"
       compliant_answers:
-      - "y"
+      - "compliant"
+      - "conditional"
       non_compliant_answers:
-      - "n"
+      - "non_compliant"
       severity_value: 10
+
+    database_withdrawn:
+      label: "Journal withdrawn"
+      check: "This journal has not been removed from DOAJ earlier and does not have an embargo (6 months or otherwise) 
+        ( Exceptions to be checked if journal was removed)"
+      instructions: "<ul><li>Search both ISSNs (if available) in the journals admin site</li>
+        <li>If there is a record in DOAJ that it is not currently indexed, make a note of it (removal date, reasons and record’s URL)</li></ul>"
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        compliant: "Compliant, this journal has not been removed from DOAJ"
+        conditional: "This journal has been removed and has an embargo."
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "conditional"
+      has_exception: true
+
+    database_withdrawn_exception_ignore_embargo:
+      label: "Journal withdrawn - Mg. Ed. note"
+      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+      instructions: ""
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        yes: "If Yes See Action"
+        no: "If No See Action"
+      exception_answers:
+      - "yes"
+
+    database_withdrawn_exception_website_unavailable:
+      label: "Journal withdrawn - non-available website"
+      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+      instructions: ""
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        yes: "If Yes See Action"
+        no: "If No See Action"
+      exception_answers:
+      - "yes"
+
+    database_withdrawn_exception_content:
+      label: "Journal withdrawn - not enough contents"
+      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+      instructions: ""
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        yes: "If Yes See Action"
+        no: "If No See Action"
+      exception_answers:
+      - "yes"
+
+    database_embargo:
+      label: "Previous application rejection"
+      check: "This journal application does not have an active embargo (6 month embargo from previous rejection)"
+      instructions: "<ul><li>Search both ISSNs (if available) in the applications admin site and the UR admin site</li>
+        <li>If there are multiple records, open the most recently updated to see why it was rejected and when</li></ul>"
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        compliant: "Compliant, this journal does not have an active embargo from a previous rejection"
+        conditional: "This journal has an active embargo from a previous rejection"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "conditional"
+      has_exception: true
+
+    database_embargo_exception_issn:
+      label: "Previous application rejection - uncorfirmed ISSN"
+      check: "Exception:This journal was previously rejected due to ISSN not being confirmed and it is now."
+      instructions: ""
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        yes: "If Yes See Action"
+        no: "If No See Action"
+      exception_answers:
+      - "yes"
+
+    database_embargo_exception_maned:
+      label: "Previous application rejection - Mg. Ed. note"
+      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+      instructions: ""
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        yes: "If Yes See Action"
+        no: "If No See Action"
+      exception_answers:
+      - "yes"
+
+    database_embargo_exception_website:
+      label: "Previous application rejection - non-available website"
+      check: "Exception: The journal was removed previously because the journal website was not available"
+      instructions: ""
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        yes: "If Yes See Action"
+        no: "If No See Action"
+      exception_answers:
+      - "yes"
+
+    database_embargo_exception_content:
+      label: "Previous application rejection - not enough contents"
+      check: "Exception: The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
+      instructions: ""
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        yes: "If Yes See Action"
+        no: "If No See Action"
+      exception_answers:
+      - "yes"
+
+    database_not_listed:
+      label: "Indexed in DOAJ"
+      check: "This journal is not listed in DOAJ "
+      instructions: "<ul><li>Search both ISSNs (if available) in the applications admin site and the UR admin site</li>
+        <li>If there are multiple records, open the most recently updated to see why it was rejected and when</li></ul>"
+      answers:
+        compliant: "Compliant, this record is not listed in DOAJ"
+        non_compliant: "Non-compliant, this record is currently listed in DOAJ"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    database_not_duplicate:
+      label: "Duplicate application"
+      check: "This application is not a duplicate"
+      instructions: "Keep the newest application or the one which is in progress and QR the others as duplicates"
+      resource_label: "DOAJ Journals database"
+      resource_url: "https://doaj.org/admin/"
+      answers:
+        compliant: "Compliant, this application is not a duplicate"
+        non_compliant: "Non-compliant, It is a duplicate and there is a newer application"
+        conditional: "This is the most recent duplicate application"
+      compliant_answers:
+      - "compliant"
+      - "conditional"
+      non_compliant_answers:
+      - "non_compliant"
 
     issn_at_least_one:
       label: "ISSN(s)"
-      compliant: "Compliant, this journal has at least one ISSN"
-      non_compliant: "Non-compliant, this record has no active and confrimed ISSNs"
-      later: "Do this later"
       check: "This journal has at least one ISSN (International Standard Serial Number) that is registered, active and confirmed at issn.org?"
       instructions: '<ul><li>Search both ISSNs (if available)</li>
                   <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is "No"</li>
@@ -99,11 +249,259 @@ triage:
                   <li><em>If the country at portal.issn.org does not match the Publisher''s country listed in the application form, make a note of it</em></li>'
       resource_label: "https://portal.issn.org/"
       resource_url: "https://portal.issn.org/"
-      eissn:
-        label: "Electronic ISSN"
-      pissn:
-        label: "Print ISSN"
+      info:
+        eissn: "Electronic ISSN"
+        pissn: "Print ISSN"
+      edit:
+        eissn: "Electronic ISSN"
+        pissn: "Print ISSN"
+      answers:
+        compliant: "Compliant, this journal has at least one ISSN"
+        non_compliant: "Non-compliant, this record has no active and confrimed ISSNs"
+        conditional: "Changes to ISSN are required"
+        later: "Do this later"
       compliant_answers:
-      - "y"
+      - "compliant"
+      - "conditional"
       non_compliant_answers:
-      - "n"
+      - "non_compliant"
+
+    issn_title_match:
+      label: "Title in the application/website matches the title at ISSN portal"
+      check: "The journal's title and alternative title in the application form and on the website match what is shown at issn.org"
+      instructions: '<ul><li>Always use the Online ISSN record (if available) to edit the Title in the application form</li>
+                  <li>If the title on the website matches the key-title or Title proper at portal.issn.org but not the Title provided in the application form, correct the Title in the application form and add a note</li>
+                  <li>It is OK if there are some minor discrepancies between the title on the website and the one at portal.issn.org (e.g. a change from singular to plural of words, minor punctuation changes etc.)</li>
+                  <li>For applications with the title in more than one language, we prefer to use as Title the Key-title in original characters and as Alternative title the title in another language</li>
+                  <li>For titles in Roman alphabet, change the Title and Alternative title to Title Case</li>
+                  <li>A subtitle is separated by a colon and one space (e.g. “Picenum Seraphicum: Rivista di Studi Storici e Francescani”). This differs from portal.issn.org where a full stop is used for subtitles and titles of parts /sections (full stop is acceptable for titles of parts /sections, e.g. “The Lancet Regional Health. Americas”). Publishers have the habit to add the subtitle in the Alternative title field. Please make sure to edit it so that the subtitle is always accompanied by the Title (e.g. Siyar Journal: Social Issues by Academic Researchers)</li>
+                  <li>Make sure to remove the Alternative title if it’s a duplicate entry</li>
+                  <li>Never use Medline-style abbreviations</li>
+                  <li>Sometimes publishers add the English version of the title in the Alternative title field even if the journal does not have an English website and the English title is not available in the ISSN portal record. The entry in the Alternative title field has to be present in the ISSN portal record or in the website. If not, you may remove the original entry in the Alternative title field</li></ul>'
+      resource_label: "https://portal.issn.org/"
+      resource_url: "https://portal.issn.org/"
+      edit:
+        title: "Title"
+      answers:
+        compliant: "Compliant, this journal’s names in the application, on the website and at issn.org match"
+        non_compliant: "Non-compliant, this journal’s name in the application or on the website does not match the ISSN portal"
+        conditional: "Journal’s title needs to be changed"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      - "conditional"
+      non_compliant_answers:
+      - "non_compliant"
+
+    issn_continuation:
+      label: "Continuation"
+      check: "Is this application for a continuation of existing journal?"
+      instructions: '<ul><li>If your search at ISSN portal returns 3 or more journals then it is likely that the answer is Yes. Continuation status is often noted in the ISSN portal records of individual ISSNs so check for this as well, as a journal may be a continuation even if your search returns fewer than 3 journals</li>
+                  <li>Check for journal records/previous applications of the preceding journal in DOAJ. If the preceding journal is currently indexed in DOAJ, add the ISSN(s) to the correct field in the continuation box of the new application - do not add the continuation details to the preceding journal record.</li>
+                  <li>If the preceding journal has a record in DOAJ, but is not currently indexed, make a note of it in the new application. If there are previous (rejected) applications from the preceding journal, make a note of them too</li>
+                  <li><em>If the previous title is currently indexed in DOAJ and the application for the new title does not comply with the triage criteria in the Website and Journal Content sections, then in this case DO NOT reject it, but make notes of them for the Managing Editor in order to decide if the new title meets the criteria for inclusion or the new application must be rejected and the previous title record must be removed</em></li>
+                  </ul>'
+      resource_label: "https://portal.issn.org/"
+      resource_url: "https://portal.issn.org/"
+      edit:
+        continues: "Continues"
+      answers:
+        compliant: "Yes"
+        conditional: "No"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "conditional"
+
+    website_working:
+      label: "Working journal website"
+      check: "This journal has a working website"
+      instructions: '<ul><li>Open the homepage URL and make sure it is working. If not, check it again later and if it is still not working, the answer is "No" (you can double check at https://downforeveryoneorjustme.com/)</li>
+                  <li>Make sure that at least one ISSN is displayed on the website and that it is correct. If not, make a note</li>
+                  </ul>'
+      answers:
+        compliant: "Compliant, this journal has a working website"
+        non_compliant: "Non-compliant, this journal does not have a working website"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    website_issn:
+      label: "Correct ISSN is displayed on the website "
+      check: "Correct ISSN is displayed on the website "
+      instructions: ""
+      answers:
+        compliant: "The correct ISSN is displayed on the website"
+        non_compliant: "There is no ISSN displayed on the website or it is not correct"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    website_url:
+      label: "The same URL is provided for all the questions"
+      check: "The application form has distinct URLs pointing to the correct information for all the answers that require a URL "
+      instructions: "<p>If all URLs are identical but the required information is not actually available at that URL (e.g. all links point to the homepage), select 'non-compliant'.</p>
+        <p>If the website is structured so that all required information is correctly available under a single URL, select 'The URLs provided are the same, but the website design justifies it'.</p>"
+      answers:
+        compliant: "Compliant. All required URLs in the application are distinct and point to the correct information."
+        non_compliant: "Non-compliant. All URLs in the application are the same and do not point to the correct information."
+        conditional: "Compliant, Same URL acceptable. All required information is correctly provided under a single URL due to the website structure."
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    website_license_policy:
+      label: "Licensing policy"
+      check: "OA License policy is present and the same in all parts of the journal website, including the license page, submission page, instructions for authors, article abstracts, HTML pages, PDFs, website footer, and copyright forms."
+      instructions: "<ul><li>If there is no licensing information or the licensing information in the website/articles is contradictory, the answer is 'No'</li>
+        <li>If the licensing policy is stated in a different URL and not in the one provided, update the URL in the application form</li>
+        <li>If the license stated in the application form is incorrect based on the information given in the website, update the licensing information in the application form accordingly</li>
+        </ul>"
+      edit:
+        license: "License"
+        license_attributes: "License attributes"
+        license_url: "License URL"
+      answers:
+        compliant: "Compliant, OA License policy is present and consistent"
+        non_compliant: "Non-compliant, OA License policy is either not provided on the journal's website or inconsistent "
+        conditional: "Changes to OA License policy are required"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+      - "conditional"
+
+    website_copyright:
+      label: "Copyright policy"
+      check: "Copyright terms are the same in all parts of the journal website, including the copyright page, article abstracts, HTML pages, PDFs, and copyright forms."
+      instructions: "<ul><li>* If the copyright information in the website/articles is contradictory, the answer is 'No'</li>
+        </ul>"
+      edit:
+        copyright_author_retains: "Author retains copyright"
+        copyright_url: "Copyright URL"
+      answers:
+        compliant: "Compliant, Copyright terms are present and consistent"
+        non_compliant: "Non-compliant, Copyright Terms are either not provided on the journal's website or inconsistent "
+        conditional: "Changes to Copyright terms are required"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+      - "conditional"
+
+    content_no_login:
+      label: "Registration required to access full text"
+      check: "Users are able to access, read and download the articles without needing to register or login"
+      instructions: ""
+      answers:
+        compliant: "Compliant, Users are able to access, read and download the articles without login or registration"
+        non_compliant: "Non-compliant, login or registration are required to access, read or download the articles"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    content_no_embargo:
+      label: "Embargo on full text"
+      check: "All content is immediately freely available in full text with no embargo, paywall. (Does not apply to journal content in print format)"
+      instructions: ""
+      answers:
+        compliant: "Compliant, all content is immediately and freely available in full text"
+        non_compliant: "Non-compliant, some content is hidden behind embargo or paywall"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    content_publish_enough:
+      label: "5 research articles per year"
+      check: "The journal publishes at least five research articles per year"
+      instructions: ""
+      answers:
+        compliant: "Compliant, the journal publishes at least five research articles per year"
+        non_compliant: "Non-compliant, the journal publishes less than five research articles per year"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    content_unique_link:
+      label: "Full text available article by article"
+      check: "Each article has a unique link"
+      instructions: ""
+      answers:
+        compliant: "Compliant, each article has a unique link"
+        non_compliant: "Non-compliant, articles does not have unique links"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    content_format:
+      label: "Full text available in HTML or PDF"
+      check: "Articles are available in HTML or PDF format as a minimum"
+      instructions: ""
+      answers:
+        compliant: "Compliant, articles are available in HTML or PDF"
+        non_compliant: "Non-compliant, articles are not available in HTML or PDF"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    content_new_journal:
+      label: "New or Flipped journal"
+      check: "This is a newly launched journal or a flipped journal"
+      instructions: ""
+      answers:
+        compliant: "No, this is not a newly launched or a flipped journal"
+        conditional: "Yes, this is a newly launched or a flipped journal"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      - "conditional"
+      non_compliant_answers:
+      - "non_compliant"
+
+    admin_metadata_review:
+      label: "Check Metadata"
+      check: "Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , OA URL, Copyright URL and Licensing URL are correct. Incorrect information has been edited"
+      instructions: ""
+      answers:
+        compliant: "yes"
+        non_compliant: "Not acceptable"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
+
+    admin_special_exception:
+      label: "Special exception"
+      check: "This application is reviewed under a special exception. "
+      instructions: "Application may be triaged with a special exception at the discretion of the Triage user. If 
+        true then it should be added into the box provided. A special exception lies outside the regular triage 
+        workflow checks. For eg. 'application is from Africa' or 'application is from a journal where publisher name 
+        does not match the (dedicated) publisher account'"
+      answers:
+        compliant: "yes"
+        non_compliant: "no"
+        later: "Do this later"
+      compliant_answers:
+      - "compliant"
+      non_compliant_answers:
+      - "non_compliant"
