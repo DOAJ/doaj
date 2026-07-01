@@ -92,6 +92,7 @@ WORKFLOW_TRIAGE_FORM = "management/admin/_workflow/includes/_triage_form.html"
 WORKFLOW_TRIAGE_FIELD_COMPLIANCE = "management/admin/_workflow/includes/triage_field.html"
 
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
+WORKFLOW_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_checkbox.html"
 
 WORKFLOW_GENERIC_FIELDSET = "management/admin/_workflow/includes/_generic_fieldset.html"
 WORKFLOW_GENERIC_COMPOUND = "management/admin/_workflow/includes/_generic_compound.html"

@@ -1,9 +1,9 @@
 from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent
-from formulaic.validate.validate import Regex, Different, RequiredIf, NoScriptTag, IsURL
+from formulaic.validate.validate import Regex, Different, RequiredIf, NoScriptTag, IsURL, RegexOnList
 from portality.core import app
 
 from formulaic.coerce.coerce import Boolean, Unicode
-from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED
+from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, GenericControl, GenericField, \
@@ -21,6 +21,9 @@ ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 
 class RadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_RADIO
+
+class CheckboxRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_CONTROL_CHECKBOX
 
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
@@ -213,7 +216,7 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
     name = "ethics_no_false_doaj_claim"
     capabilities = (C(),)
 
-class EthicsNoFalseDOAJClaimNote(Field):
+class EthicsNoFalseDOAJClaimNote(NoteField):
     name = "ethics_no_false_doaj_claim_note"
 
 class EthicsNoFalseDOAJClaimGroup(Structure):
@@ -251,7 +254,7 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
     name = "ethics_no_suspicious_ties"
     capabilities = (C(),)
 
-class EthicsNoSuspiciousTiesNote(Field):
+class EthicsNoSuspiciousTiesNote(NoteField):
     name = "ethics_no_suspicious_ties_note"
 
 class EthicsNoSuspiciousTiesGroup(Structure):
@@ -290,7 +293,7 @@ class DatabaseWithdrawn(ComplianceCheckField):
     name = "database_withdrawn"
     capabilities = (C(),)
 
-class DatabaseWithdrawnNote(Field):
+class DatabaseWithdrawnNote(NoteField):
     name = "database_withdrawn_note"
 
 class DatabaseWithdrawnGroup(Structure):
@@ -328,7 +331,7 @@ class DatabaseWithdrawnIgnoreEmbargo(ComplianceCheckField):
     name = "database_withdrawn_exception_ignore_embargo"
     capabilities = (C(),)
 
-class DatabaseWithdrawnIgnoreEmbargoNote(Field):
+class DatabaseWithdrawnIgnoreEmbargoNote(NoteField):
     name = "database_withdrawn_exception_ignore_embargo_note"
 
 class DatabaseWithdrawnIgnoreEmbargoGroup(Structure):
@@ -357,7 +360,7 @@ class DatabaseWithdrawnWebsiteUnavailable(ComplianceCheckField):
     name = "database_withdrawn_exception_website_unavailable"
     capabilities = (C(),)
 
-class DatabaseWithdrawnWebsiteUnavailableNote(Field):
+class DatabaseWithdrawnWebsiteUnavailableNote(NoteField):
     name = "database_withdrawn_exception_website_unavailable_note"
 
 class DatabaseWithdrawnWebsiteUnavailableGroup(Structure):
@@ -386,7 +389,7 @@ class DatabaseWithdrawnContent(ComplianceCheckField):
     name = "database_withdrawn_exception_content"
     capabilities = (C(),)
 
-class DatabaseWithdrawnContentNote(Field):
+class DatabaseWithdrawnContentNote(NoteField):
     name = "database_withdrawn_exception_content_note"
 
 class DatabaseWithdrawnContentGroup(Structure):
@@ -415,7 +418,7 @@ class DatabaseEmbargo(ComplianceCheckField):
     name = "database_embargo"
     capabilities = (C(),)
 
-class DatabaseEmbargoNote(Field):
+class DatabaseEmbargoNote(NoteField):
     name = "database_embargo_note"
 
 class DatabaseEmbargoGroup(Structure):
@@ -451,7 +454,7 @@ class DatabaseEmbargoISSN(ComplianceCheckField):
     name = "database_embargo_exception_issn"
     capabilities = (C(),)
 
-class DatabaseEmbargoISSNNote(Field):
+class DatabaseEmbargoISSNNote(NoteField):
     name = "database_embargo_exception_issn_note"
 
 class DatabaseEmbargoISSNGroup(Structure):
@@ -480,7 +483,7 @@ class DatabaseEmbargoManed(ComplianceCheckField):
     name = "database_embargo_exception_note"
     capabilities = (C(),)
 
-class DatabaseEmbargoManedNote(Field):
+class DatabaseEmbargoManedNote(NoteField):
     name = "database_embargo_exception_maned_note"
 
 class DatabaseEmbargoManedGroup(Structure):
@@ -509,7 +512,7 @@ class DatabaseEmbargoWebsite(ComplianceCheckField):
     name = "database_embargo_exception_website"
     capabilities = (C(),)
 
-class DatabaseEmbargoWebsiteNote(Field):
+class DatabaseEmbargoWebsiteNote(NoteField):
     name = "database_embargo_exception_website_note"
 
 class DatabaseEmbargoWebsiteGroup(Structure):
@@ -525,7 +528,7 @@ class DatabaseEmbargoWebsiteGroup(Structure):
     note = DatabaseEmbargoWebsiteNote(OPTIONAL, SINGLE)
 
 ###########################################################
-## DOAJ Database: Withdrawn: Exception: Journal Content
+## DOAJ Database: Embargo: Exception: Journal Content
 
 class DatabaseEmbargoContent(ComplianceCheckField):
     class C(ComplianceCheckCapability):
@@ -538,7 +541,7 @@ class DatabaseEmbargoContent(ComplianceCheckField):
     name = "database_embargo_exception_content"
     capabilities = (C(),)
 
-class DatabaseEmbargoContentNote(Field):
+class DatabaseEmbargoContentNote(NoteField):
     name = "database_embargo_exception_content_note"
 
 class DatabaseEmbargoContentGroup(Structure):
@@ -567,7 +570,7 @@ class DatabaseNotListed(ComplianceCheckField):
     name = "database_not_listed"
     capabilities = (C(),)
 
-class DatabaseNotListedNote(Field):
+class DatabaseNotListedNote(NoteField):
     name = "database_not_listed_note"
 
 class DatabaseNotListedGroup(Structure):
@@ -588,6 +591,7 @@ class DatabaseNotListedGroup(Structure):
 class DatabaseNotDuplicate(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.database_not_duplicate
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -595,7 +599,7 @@ class DatabaseNotDuplicate(ComplianceCheckField):
     name = "database_not_duplicate"
     capabilities = (C(),)
 
-class DatabaseNotDuplicateNote(Field):
+class DatabaseNotDuplicateNote(NoteField):
     name = "database_not_duplicate_note"
 
 class DatabaseNotDuplicateGroup(Structure):
@@ -778,12 +782,14 @@ class Continues(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
-        error_messages = {}
+        error_messages = {
+            RegexDoesNotMatch: "regex does not match"
+        }
 
     name = "continues"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
-    validators = [Regex(ISSN)]
+    validators = [RegexOnList(ISSN)]
 
 class ISSNContinuationGroup(Structure):
     class C(CompoundFieldCapability):
@@ -816,6 +822,7 @@ class ISSNContinuationGroup(Structure):
 class WebsiteWorking(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.website_working
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -823,7 +830,7 @@ class WebsiteWorking(ComplianceCheckField):
     name = "website_working"
     capabilities = (C(),)
 
-class WebsiteWorkingNote(Field):
+class WebsiteWorkingNote(NoteField):
     name = "website_working_note"
 
 class WebsiteWorkingGroup(Structure):
@@ -844,6 +851,7 @@ class WebsiteWorkingGroup(Structure):
 class WebsiteISSN(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.website_issn
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -851,7 +859,7 @@ class WebsiteISSN(ComplianceCheckField):
     name = "website_issn"
     capabilities = (C(),)
 
-class WebsiteISSNNote(Field):
+class WebsiteISSNNote(NoteField):
     name = "website_issn_note"
 
 class WebsiteISSNGroup(Structure):
@@ -872,6 +880,7 @@ class WebsiteISSNGroup(Structure):
 class WebsiteURL(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.website_url
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -879,7 +888,7 @@ class WebsiteURL(ComplianceCheckField):
     name = "website_url"
     capabilities = (C(),)
 
-class WebsiteURLNote(Field):
+class WebsiteURLNote(NoteField):
     name = "website_url_note"
 
 class WebsiteURLGroup(Structure):
@@ -927,16 +936,16 @@ class License(Field):
             {"label": "Public domain", "value": "Public domain"},
             {"label": "Publisher's own license", "value": "Publisher's own license"}
         ]
-        control_render_class = GenericControl
+        control_render_class = CheckboxRenderer
         render_class = GenericField
 
     name = "license"
     coerce = [Unicode()]
     capabilities = (C(),)
 
-class LicenseAttributes(Field):
+class LicenseAttribute(Field):
     class C(FormFieldCapability):
-        label = T.website_license_policy.edit.license_attributes
+        label = T.website_license_policy.edit.license_attribute
         control_class = Checkbox
         multiple = True
         options = [
@@ -945,10 +954,10 @@ class LicenseAttributes(Field):
             {"label": "No Derivatives", "value": "ND"},
             {"label": "No Commercial Usage", "value": "NC"}
         ]
-        control_render_class = GenericControl
+        control_render_class = CheckboxRenderer
         render_class = GenericField
 
-    name = "license_attributes"
+    name = "license_attribute"
     coerce = [Unicode()]
     capabilities = (C(),)
 
@@ -971,7 +980,7 @@ class WebsiteLicensePolicyGroup(Structure):
         order = [
             "answer",
             "license",
-            "license_attributes",
+            "license_attribute",
             "license_url",
             "note"
         ]
@@ -982,13 +991,13 @@ class WebsiteLicensePolicyGroup(Structure):
     capabilities_ = (C(),)
 
     answer = WebsiteLicensePolicy(OPTIONAL, SINGLE)
-    license = License(REQUIRED, SINGLE)
-    license_attributes = LicenseAttributes(OPTIONAL, SINGLE)
+    license = License(REQUIRED, REPEATABLE)
+    license_attribute = LicenseAttribute(OPTIONAL, REPEATABLE)
     license_url = LicenseURL(REQUIRED, SINGLE)
     note = WebsiteLicensePolicyNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(license_attributes,  # <- this field is required if
+        RequiredIf(license_attribute,  # <- this field is required if
                    license,  # <- this field has one of the values
                    "Publisher's own license"  # <- that is non compliant
                    ),
@@ -1024,7 +1033,7 @@ class CopyrightAuthorRetains(Field):
             {"label": "Yes", "value": "y"},
             {"label": "No", "value": "n"}
         ]
-        control_render_class = GenericControl
+        control_render_class = RadioRenderer
         render_class = GenericField
 
     name = "copyright_author_retains"
@@ -1077,6 +1086,7 @@ class WebsiteCopyrightGroup(Structure):
 class ContentNoLogin(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.content_no_login
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1084,7 +1094,7 @@ class ContentNoLogin(ComplianceCheckField):
     name = "content_no_login"
     capabilities = (C(),)
 
-class ContentNoLoginNote(Field):
+class ContentNoLoginNote(NoteField):
     name = "content_no_login_note"
 
 class ContentNoLoginGroup(Structure):
@@ -1100,11 +1110,12 @@ class ContentNoLoginGroup(Structure):
     note = ContentNoLoginNote(OPTIONAL, SINGLE)
 
 ###########################################################
-## Content: No Login
+## Content: No Embargo
 
 class ContentNoEmbargo(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.content_no_embargo
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1112,7 +1123,7 @@ class ContentNoEmbargo(ComplianceCheckField):
     name = "content_no_embargo"
     capabilities = (C(),)
 
-class ContentNoEmbargoNote(Field):
+class ContentNoEmbargoNote(NoteField):
     name = "content_no_embargo_note"
 
 class ContentNoEmbargoGroup(Structure):
@@ -1133,6 +1144,7 @@ class ContentNoEmbargoGroup(Structure):
 class ContentPublishEnough(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.content_publish_enough
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1140,7 +1152,7 @@ class ContentPublishEnough(ComplianceCheckField):
     name = "content_publish_enough"
     capabilities = (C(),)
 
-class ContentPublishEnoughNote(Field):
+class ContentPublishEnoughNote(NoteField):
     name = "content_publish_enough_note"
 
 class ContentPublishEnoughGroup(Structure):
@@ -1161,6 +1173,7 @@ class ContentPublishEnoughGroup(Structure):
 class ContentUniqueLink(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.content_unique_link
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1168,7 +1181,7 @@ class ContentUniqueLink(ComplianceCheckField):
     name = "content_unique_link"
     capabilities = (C(),)
 
-class ContentUniqueLinkNote(Field):
+class ContentUniqueLinkNote(NoteField):
     name = "content_unique_link_note"
 
 class ContentUniqueLinkGroup(Structure):
@@ -1189,6 +1202,7 @@ class ContentUniqueLinkGroup(Structure):
 class ContentFormat(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.content_format
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1196,7 +1210,7 @@ class ContentFormat(ComplianceCheckField):
     name = "content_format"
     capabilities = (C(),)
 
-class ContentFormatNote(Field):
+class ContentFormatNote(NoteField):
     name = "content_format_note"
 
 class ContentFormatGroup(Structure):
@@ -1217,6 +1231,7 @@ class ContentFormatGroup(Structure):
 class ContentNewJournal(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.content_new_journal
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1224,7 +1239,7 @@ class ContentNewJournal(ComplianceCheckField):
     name = "content_new_journal"
     capabilities = (C(),)
 
-class ContentNewJournalNote(Field):
+class ContentNewJournalNote(NoteField):
     name = "content_new_journal_note"
 
 class ContentNewJournalGroup(Structure):
@@ -1245,6 +1260,7 @@ class ContentNewJournalGroup(Structure):
 class AdminMetadataReview(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.admin_metadata_review
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1252,7 +1268,7 @@ class AdminMetadataReview(ComplianceCheckField):
     name = "admin_metadata_review"
     capabilities = (C(),)
 
-class AdminMetadataReviewNote(Field):
+class AdminMetadataReviewNote(NoteField):
     name = "admin_metadata_review_note"
 
 class AdminMetadataReviewGroup(Structure):
@@ -1273,6 +1289,7 @@ class AdminMetadataReviewGroup(Structure):
 class AdminSpecialException(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.admin_special_exception
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1280,7 +1297,7 @@ class AdminSpecialException(ComplianceCheckField):
     name = "admin_special_exception"
     capabilities = (C(),)
 
-class AdminSpecialExceptionNote(Field):
+class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
 
 class AdminSpecialExceptionGroup(Structure):

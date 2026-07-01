@@ -28,19 +28,13 @@
             {% for k, v in spec.attrs.items() %}{{ k }}="{{ v }}" {% endfor %}
         {% endif %}
         {% if not spec.close %}/{% endif %}>
-            {% autoescape off %}
             {{ content }}
-            {% endautoescape %}
     {% if spec.close %}
         </{{spec.tag}}>
     {% endif %}
 {%- endmacro %}
 
 {% for control in controls %}
-    {% if control.label %}
-        {{ make_tag(control.label, control.label.content) }}
-    {% endif %}
-
     {% set input=control.control %}
     {% set content = {"value": ""} %}
     {% if input.content %}
@@ -50,4 +44,7 @@
     {% autoescape off %}
         {{ make_tag(input, content.value) }}
     {% endautoescape %}
+    {% if control.label %}
+        {{ make_tag(control.label, control.label.content) }}
+    {% endif %}
 {% endfor %}

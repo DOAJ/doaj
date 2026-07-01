@@ -103,6 +103,7 @@ triage:
       answers:
         compliant: "Compliant, this journal has not been removed from DOAJ"
         conditional: "This journal has been removed and has an embargo."
+        later: "Do this later"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -118,30 +119,33 @@ triage:
       answers:
         yes: "If Yes See Action"
         no: "If No See Action"
+        later: "Do this later"
       exception_answers:
       - "yes"
 
     database_withdrawn_exception_website_unavailable:
       label: "Journal withdrawn - non-available website"
-      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+      check: "Exception: The journal was removed previously because the journal website was not available"
       instructions: ""
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
         yes: "If Yes See Action"
         no: "If No See Action"
+        later: "Do this later"
       exception_answers:
       - "yes"
 
     database_withdrawn_exception_content:
       label: "Journal withdrawn - not enough contents"
-      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+      check: "Exception: The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
       instructions: ""
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
         yes: "If Yes See Action"
         no: "If No See Action"
+        later: "Do this later"
       exception_answers:
       - "yes"
 
@@ -155,6 +159,7 @@ triage:
       answers:
         compliant: "Compliant, this journal does not have an active embargo from a previous rejection"
         conditional: "This journal has an active embargo from a previous rejection"
+        later: "Do this later"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -170,6 +175,7 @@ triage:
       answers:
         yes: "If Yes See Action"
         no: "If No See Action"
+        later: "Do this later"
       exception_answers:
       - "yes"
 
@@ -182,6 +188,7 @@ triage:
       answers:
         yes: "If Yes See Action"
         no: "If No See Action"
+        later: "Do this later"
       exception_answers:
       - "yes"
 
@@ -194,6 +201,7 @@ triage:
       answers:
         yes: "If Yes See Action"
         no: "If No See Action"
+        later: "Do this later"
       exception_answers:
       - "yes"
 
@@ -206,6 +214,7 @@ triage:
       answers:
         yes: "If Yes See Action"
         no: "If No See Action"
+        later: "Do this later"
       exception_answers:
       - "yes"
 
@@ -217,6 +226,7 @@ triage:
       answers:
         compliant: "Compliant, this record is not listed in DOAJ"
         non_compliant: "Non-compliant, this record is currently listed in DOAJ"
+        later: "Do this later"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -232,6 +242,7 @@ triage:
         compliant: "Compliant, this application is not a duplicate"
         non_compliant: "Non-compliant, It is a duplicate and there is a newer application"
         conditional: "This is the most recent duplicate application"
+        later: "Do this later"
       compliant_answers:
       - "compliant"
       - "conditional"
@@ -304,7 +315,7 @@ triage:
       resource_label: "https://portal.issn.org/"
       resource_url: "https://portal.issn.org/"
       edit:
-        continues: "Continues"
+        continues: "Continues an <strong>older</strong> journal with the ISSN(s)"
       answers:
         compliant: "Yes"
         conditional: "No"
@@ -366,7 +377,7 @@ triage:
         </ul>"
       edit:
         license: "License"
-        license_attributes: "License attributes"
+        license_attribute: "License attributes"
         license_url: "License URL"
       answers:
         compliant: "Compliant, OA License policy is present and consistent"
