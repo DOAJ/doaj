@@ -122,7 +122,12 @@ class EthicsNotExcludedGroup(Structure):
             "ethics_not_excluded_note",
         ]
 
-        render_class = GenericCompound
+        subfields = {
+            "check": "ethics_not_excluded",
+            "note": "ethics_not_excluded_note",
+        }
+
+        render_class = TriageCompound
 
     name_ = "ethics_not_excluded_group"
     capabilities_ = (EthicsNotExcludedGroupCapability(),)
@@ -170,7 +175,12 @@ class EthicsNoNonStandardMetricsGroup(Structure):
             "ethics_no_nonstandard_metrics_note",
         ]
 
-        render_class = GenericCompound
+        subfields = {
+            "check": "ethics_no_nonstandard_metrics",
+            "note": "ethics_no_nonstandard_metrics_note",
+        }
+
+        render_class = TriageCompound
 
     name_ = "ethics_no_nonstandard_metrics_group"
     capabilities_ = (EthicsNoNonStandardMetricsGroupCapability(),)
@@ -217,13 +227,18 @@ class EthicsNoFakeImpactGroup(Structure):
             "ethics_no_fake_impact_note",
         ]
 
-        render_class = GenericCompound
+        subfields = {
+            "check": "ethics_no_fake_impact",
+            "note": "ethics_no_fake_impact_note",
+        }
+
+        render_class = TriageCompound
 
     name_ = "ethics_no_fake_impact_group"
     capabilities_ = (EthicsNoFakeImpactGroupCapability(),)
 
-    ethics_no_fake_impact = EthicsNoNonStandardMetrics(OPTIONAL, SINGLE)
-    ethics_no_fake_impact_note = EthicsNoNonStandardMetricsNote(OPTIONAL, SINGLE)
+    ethics_no_fake_impact = EthicsNoFakeImpact(OPTIONAL, SINGLE)
+    ethics_no_fake_impact_note = EthicsNoFakeImpactNote(OPTIONAL, SINGLE)
 
 ###########################################################
 
@@ -264,7 +279,12 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
             "ethics_no_false_doaj_claim_note",
         ]
 
-        render_class = GenericCompound
+        subfields = {
+            "check": "ethics_no_false_doaj_claim",
+            "note": "ethics_no_false_doaj_claim_note",
+        }
+
+        render_class = TriageCompound
 
     name_ = "ethics_no_false_doaj_claim_group"
     capabilities_ = (EthicsNoFalseDOAJClaimGroupCapability(),)
@@ -311,7 +331,12 @@ class EthicsNoSuspiciousTiesGroup(Structure):
             "ethics_no_suspicious_ties_note",
         ]
 
-        render_class = GenericCompound
+        subfields = {
+            "check": "ethics_no_suspicious_ties",
+            "note": "ethics_no_suspicious_ties_note",
+        }
+
+        render_class = TriageCompound
 
     name_ = "ethics_no_suspicious_ties_group"
     capabilities_ = (EthicsNoSuspiciousTiesGroupCapability(),)
