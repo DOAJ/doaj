@@ -99,9 +99,9 @@ class EthicsNotExcluded(ComplianceCheckField):
         instructions = T.ethics_not_excluded.instructions
         resources = [
             {
-                "label": T.ethics_not_excluded.resource_label,
-                "url": T.ethics_not_excluded.resource_url
-            }
+                "label": r.label,
+                "url": r.url
+            } for r in T.ethics_not_excluded.resources
         ]
         if "remember" in T.ethics_not_excluded:
             remember = T.ethics_not_excluded.remember
@@ -153,9 +153,9 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
         instructions = T.ethics_no_nonstandard_metrics.instructions
         resources = [
             {
-                "label": T.ethics_no_nonstandard_metrics.resource_label,
-                "url": T.ethics_no_nonstandard_metrics.resource_url
-            }
+                "label": r.label,
+                "url": r.url
+            } for r in T.ethics_no_nonstandard_metrics.resources
         ]
 
     name = "ethics_no_nonstandard_metrics"
@@ -205,9 +205,9 @@ class EthicsNoFakeImpact(ComplianceCheckField):
         instructions = T.ethics_no_fake_impact.instructions
         resources = [
             {
-                "label": T.ethics_no_fake_impact.resource_label,
-                "url": T.ethics_no_fake_impact.resource_url
-            }
+                "label": r.label,
+                "url": r.url
+            } for r in T.ethics_no_fake_impact.resources
         ]
 
     name = "ethics_no_fake_impact"
@@ -257,9 +257,9 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
         instructions = T.ethics_no_false_doaj_claim.instructions
         resources = [
             {
-                "label": T.ethics_no_false_doaj_claim.resource_label,
-                "url": T.ethics_no_false_doaj_claim.resource_url
-            }
+                "label": r.label,
+                "url": r.url
+            } for r in T.ethics_no_false_doaj_claim.resources
         ]
 
     name = "ethics_no_false_doaj_claim"
@@ -309,9 +309,9 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
         instructions = T.ethics_no_suspicious_ties.instructions
         resources = [
             {
-                "label": T.ethics_no_suspicious_ties.resource_label,
-                "url": T.ethics_no_suspicious_ties.resource_url
-            }
+                "label": r.label,
+                "url": r.url
+            } for r in T.ethics_no_suspicious_ties.resources
         ]
 
     name = "ethics_no_suspicious_ties"
@@ -363,9 +363,9 @@ class ISSNAtLeastOne(ComplianceCheckField):
         instructions = T.issn_at_least_one.instructions
         resources = [
             {
-                "label": T.issn_at_least_one.resource_label,
-                "url": T.issn_at_least_one.resource_url
-            }
+                "label": r.label,
+                "url": r.url
+            } for r in T.issn_at_least_one.resources
         ]
 
         application_info = [
