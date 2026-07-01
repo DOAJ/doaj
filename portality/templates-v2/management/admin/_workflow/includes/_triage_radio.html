@@ -84,6 +84,8 @@
 {% set input = control.control %}
 {% set content = {"value": ""} %}
 
+{% set confirmation_id = input.attrs.name ~ "-confirmation" %}
+<p id="{{ confirmation_id }}" style="display: none; width: 100%; margin-bottom: 0">Your answer</p>
 {% set compliant_label %}
   {{ compliant_icon | safe }}
   <span class="label-text">
@@ -160,3 +162,47 @@
             {{ make_tag(control.label, later_label) }}
         {% endif %}
     </div>
+
+{% set group_name = input.attrs.name %}
+{% set button_id = input.attrs.name ~ "-change" %}
+<div class="radio-option" style="display: none">
+    <button type="button" id="{{ button_id }}" data-group="{{ group_name }}" class="review-outcome-answer" onclick="clearRadios(this)">Change my answer</button>
+</div>
+{% block admin_js %}
+<script>
+    (function () {
+
+        window.clearRadios = function(button) {
+            const group = button.dataset.group;
+            const radios = document.querySelectorAll(`input[type="radio"][name="${group}"]`);
+
+            radios.forEach(radio => {
+                radio.checked = false;
+                radio.parentElement.style.display = 'flex';
+            });
+
+            button.parentElement.style.display = 'none';
+            document.getElementById(group + "-confirmation").style.display = 'none';
+
+            button.closest('fieldset').style.width = '100%';
+        };
+
+    const button_id = "{{ button_id }}";
+    const group_name = "{{ group_name }}";
+    const confirmation_id = "{{ confirmation_id }}";
+    const answers = document.querySelectorAll('input[type="radio"][name="' + group_name + '"]');
+    answers.forEach(function (a) {
+        a.addEventListener('click', function () {
+            answers.forEach(function (item) {
+                if (item !== this) {
+                    item.parentElement.style.display = 'none';
+                }
+            }.bind(this));
+            document.getElementById(button_id).parentElement.style.display = 'flex';
+            document.getElementById(confirmation_id).style.display = 'block';
+            this.closest('fieldset').style.width = 'max-content';
+        })
+    });
+})();
+</script>
+{% endblock %}

@@ -182,7 +182,8 @@
             display: flex;
             flex: 1 1 0;
 
-            label.review-outcome-answer {
+            label.review-outcome-answer,
+            button.review-outcome-answer{
                 display: flex;
                 align-items: flex-start;
                 gap: .5rem;
@@ -200,8 +201,14 @@
                 box-shadow: $spacing-01 $spacing-02 0 0 $dark-grey;
                 margin-bottom: 0;
 
+                @include font-sans;
+                font-size: .9rem;
+                text-transform: none;
+
                 &:hover {
-                    border-color: $warm-black;
+                    background-color: $warm-black;
+                    color: $white;
+                    box-shadow: none;
                 }
 
                 svg {
