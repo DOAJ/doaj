@@ -4,14 +4,14 @@
                 type="button"
                 id="{{ fieldset.name }}-header"
                 class="accordion-btn col-md-12"
-                aria-expanded="false"
+                aria-expanded="true"
                 aria-controls="{{ fieldset.name }}-questions"
                 onclick="toggleQuestionGroup('{{ fieldset.name }}-questions', this);"
         >
         {{ fieldset.label }}
         </button>
     </h2>
-    <div class="question-group--questions" id="{{ fieldset.name }}-questions">
+    <div class="question-group--body" id="{{ fieldset.name }}-questions">
     {% for element in fieldset.elements %}
         {% autoescape off %}
             {{ element.renderer.draw(element, application=application, wfc=wfc) }}

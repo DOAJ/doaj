@@ -1,5 +1,20 @@
-<section id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %} class="criterion">
-    <h3>{{ compound.label }}</h3>
+<section
+        id="{{ compound.name }}"
+        {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}
+        class="criterion-wrapper">
+    <h3 class="criterion-wrapper--header">
+        <button
+            type="button"
+            id="{{ compound.name }}-header"
+            class="accordion-btn--secondary col-md-12"
+            aria-expanded="false"
+            aria-controls="{{ compound.name }}-body"
+            onclick="toggleQuestion('{{ compound.name }}-body', this);"
+        >
+            {{ compound.label }}
+        </button>
+    </h3>
+    <div id="{{ compound.name }}-body" class="col-md-12 criterion" style="display: none;">
     {% if compound.capability.subfields %}
     {% set subfields = compound.capability.subfields %}
     {% set check_name = subfields["check"] %}
@@ -16,5 +31,17 @@
         {% endautoescape %}
     {% endfor %}
     {% endif %}
-
+    </div>
 </section>
+
+<script>
+    window.toggleQuestion = function(wrapper, btn) {
+        if (btn.getAttribute("aria-expanded") === "true") {
+            document.getElementById(wrapper).style.display = 'none';
+            btn.setAttribute("aria-expanded", "false")
+        } else {
+            document.getElementById(wrapper).style.display = 'block';
+            btn.setAttribute("aria-expanded", "true")
+        }
+    }
+</script>

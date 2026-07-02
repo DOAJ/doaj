@@ -22,13 +22,13 @@
         </nav>
     </header>
         {% if field.capability.check %}
-            <h3>Criterion: {{ field.capability.check }}</h3>
+            <h4>Criterion: {{ field.capability.check }}</h4>
         {% endif %}
     </div>
     <div class="col-md-5">
         {% if field.capability.remember %}
         <div class="criterion-important">
-            <h4><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>REMEMBER</h4>
+            <h5><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>REMEMBER</h5>
             <p>{{ field.capability.remember }}</p>
         </div>
         {% endif %}
@@ -37,7 +37,7 @@
         {% endif %}
 
     {% if field.capability.resources|length > 0 %}
-        <h4><span data-feather="book" class="icon"  aria-hidden="true">></span>Resources</h4>
+        <h5><span data-feather="book" class="icon"  aria-hidden="true">></span>Resources</h5>
         <ul>
             {% for resource in field.capability.resources %}
                 <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>

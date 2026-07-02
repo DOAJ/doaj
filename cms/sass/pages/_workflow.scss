@@ -20,6 +20,33 @@
             }
 
         }
+        .criterion-wrapper {
+            padding: 0;
+            margin: 0;
+            &--header {
+                margin: 0;
+                button.accordion-btn--secondary {
+                    margin: 0;
+                    border: 0;
+                    width: 100%;
+                    text-align: left;
+                    font-size: 0.9rem;
+                    font-weight: normal;
+                    text-transform: capitalize;
+                    background-color: $white;
+                    border-bottom: 2px solid $light-grey;
+                    &:hover, &:focus {
+                        background-color: $white;
+                        color: $grapefruit;
+                    }
+                    &[aria-expanded="true"] {
+                    font-weight: bold;
+                    border-bottom: none;
+                }
+                }
+
+        }
+        }
     }
     .placeholder {
         font-style: italic;
@@ -108,18 +135,18 @@
     }
 
     .criterion {
-        h3 {
+        h4 {
             width: 100%;
             margin: 1.25rem 0;
             font-size: 1.25rem;
             font-weight: normal;
         }
 
-        h4:not(:first-child) {
+        h5:not(:first-child) {
             margin-top: 1rem;
         }
 
-        h4 {
+        h5 {
             display: flex;
             align-items: center;
             width: 100%;
