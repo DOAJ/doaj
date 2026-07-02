@@ -96,6 +96,7 @@ WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
 WORKFLOW_TRIAGE_CONTROL_RADIO = "management/admin/_workflow/includes/_triage_radio.html"
 
 WORKFLOW_GENERIC_FIELDSET = "management/admin/_workflow/includes/_generic_fieldset.html"
+WORKFLOW_TRIAGE_FIELDSET = "management/admin/_workflow/includes/_triage_fieldset.html"
 WORKFLOW_GENERIC_COMPOUND = "management/admin/_workflow/includes/_generic_compound.html"
 WORKFLOW_GENERIC_FIELD = "management/admin/_workflow/includes/_generic_field.html"
 WORKFLOW_GENERIC_CONTROL = "management/admin/_workflow/includes/_generic_control.html"

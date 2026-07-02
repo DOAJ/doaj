@@ -56,7 +56,7 @@ class JinjaControlRenderer(ControlHTML):
 ###################
 
 class GenericFieldset(JinjaFieldsetRenderer):
-    template = templates.WORKFLOW_GENERIC_FIELDSET
+    template = templates.WORKFLOW_TRIAGE_FIELDSET
 
 class GenericCompound(JinjaCompoundRenderer):
     template = templates.WORKFLOW_GENERIC_COMPOUND
