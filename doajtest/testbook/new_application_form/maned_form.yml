@@ -50,7 +50,8 @@ tests:
       subject classifications
   - step: Remove one subject classification
   - step: Click "Unlock & Close"
-    results: Confirmation dialog is displayed warning you about unsaved changes
+    results:
+    - Confirmation dialog is displayed warning you about unsaved changes
   - step: Click "Stay on Page" and then 'Save'
     results:
     - The form saves
@@ -99,3 +100,4 @@ tests:
     - step: Attempt to paste the value (use separate editor)
       results:
         - Correct value is pasted
+

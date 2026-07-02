@@ -718,6 +718,15 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             $("#modal-quick_reject").show();
         });
 
+        $("#application_status").on("change", (e) => {
+            e.preventDefault();
+            if ($("#application_status").val() === "accepted") {
+                $("#mark_as_full_review_div").show();
+            } else {
+               $("#mark_as_full_review_div").hide();
+            }
+        });
+
         let that = this;
         $("#submit_quick_reject").on("click", function(event) {
             if ($("#quick_reject").val() === "" && $("#quick_reject_details").val() === "") {

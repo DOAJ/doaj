@@ -81,3 +81,41 @@ tests:
   - step: Go back to the My update requests tab in the other browser window, where you are signed in as a publisher
     results:
     - The status of the update requests has changed to 'Application rejected'.
+- title: Mark as full review feature
+  context:
+    role: managing editor or admin
+  steps:
+    - step: an admin account (admin1)
+    - step: Login as `admin1`
+    - step: Click on the `Update requests` tab on the LHS panel
+      results:
+      - You will see a list of records
+    - step: Filter the results by `Open` and select any status except `Accepted`
+      results:
+        - You will see a list of records, each with a button "Review Update"
+    - step: Click the "Review Update" button next to one of the records
+      results:
+      - a new browser tab opens, titled `Update request ...`
+    - step: Check the current status of the application
+      results:
+        - If the status is not accepted, the `Mark as full review` checkbox in the right side is not visible
+        - If the status is accepted, the `Mark as full review` checkbox in the right side is visible
+    - step: Select the status as `Accepted` in Change Status
+      results:
+        - The checkbox `Mark as full review` in the side panel is visible
+    - step: Click on the `Mark as full review` checkbox
+      results:
+        - The checkbox `Mark as full review` is filled
+    - step: Click "Save" button
+      results:
+        - a new note will be added to the application
+        - It will have the message "Last full review completed on {date} by `{username}`"
+        - your username and user id will be shown on that note
+        - the date and time you save the application will be shown
+    - step: Search for the journal and click on edit
+      results:
+        - The last full review date is saved in the associated journal
+        - a new note will be added to the journal
+        - It will have the message "Last full review completed on {date} by `{username}`"
+        - your username and user id will be shown on that note
+        - the date and time you save the application will be shown
