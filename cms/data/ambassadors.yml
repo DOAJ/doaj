@@ -95,10 +95,17 @@ general:
     photo: "Cenyu_SHEN.jpg"
     coi:
       2024: https://drive.google.com/file/d/18qzajh_3i3c7g4HsV7MHSmJ6wROS6hib/view
-
-  - name: Shuai Yan
+ 
+  - name: Zhang Tieming
     region: China
-    bio: "Shuai Yan has been an independent consultant since 2020. Since November 2021, Shuai has worked with STM as its China Consultant. From 2017 to 2020, he worked with Springer Nature Greater China as director of academic relationships (including government relations). From 2011 to 2017, he was at Tsinghua University Press (TUP) as an associate chief editor and was TUP's director of Journal Publishing. He was also the editor-in-chief of the Journal of Tsinghua University (Science and Technology). He has served as the president of the Society of China University Journals (CUJS) from 2004 to 2019, the vice president of the China Periodicals Association (CPA) from 2012 to 2018, and the vice president of the China Editology Society for Scientific Periodicals (CESSP) from 2015 to 2021."
-    photo: "Shuai.jpg"
+    bio: "Zhang Tieming, Editor in Chief, Journal Publishing Center of Beijing Forestry University; President of Society of China University Journals(CUJS); Vice president of China Journal Association; Member of the 8th Science and Technology Commission under the Ministry of Education，P.R. CHINA. Zhang has 20 years’ experience in editing and publishing of scientific journals. He has led a number of research projects on open access, journal publishing strategy for the Chinese Association for Science and Technology (CAST), Ministry of Education. As a team member of the CAST and STM program, he and his domestic and international colleges complied the joint Report Open Access Publishing in China (2022). He is also the team leader of the ongoing Chinese industrial standard 'Guidelines for Open Access of Scientific Journals'. He participated in consultation works on open access publishing, responsible publishing and research integrity governance for domestic institutions and international societies like OASPA and the European Science Council."
+    photo: "ZhangTieming.jpeg"
     coi:
-      2022: https://drive.google.com/file/d/1Xy9OPuTQZp5AS3wBs0Ittd3t_n4onKCy/view?usp=sharing
+      2026: https://drive.google.com/file/d/1SmdRAc2aOwCjPp01BGoBAJW7nYmGWZ11/viewusp=sharing
+      
+  - name: Dou Tianfang
+    region: China
+    bio: "Dou Tianfang is an Associate University Librarian at Tsinghua University, China. She holds a Master’s degree from Tsinghua University, with a research focus on electronic resources management, open access, and scholarly communication. She serves as a member of the Open Science and Scholarship Advisory Committee (IFLA OSSAC). She initiated the Open Science Support Initiative at Tsinghua University. She was invited to the B17 Open Access Conference in Berlin, Germany. She has led the development of several open science infrastructures at Tsinghua University, including Tsinghua Scholars and the OpenSign Platform."
+    photo: "DouTianfang.jpeg"
+    coi:
+      2026: https://drive.google.com/file/d/1nsqLw7HjVULzcpEkIJNycTRk4sg_qvLx/view?usp=sharing
