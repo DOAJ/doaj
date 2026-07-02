@@ -83,7 +83,7 @@ application:publisher:created:notify:
 
     Thank you for your application submitted to DOAJ on {application_date}.
 
-    Due to the many applications we receive, our average review time is 3 months. You may request a status update only after three months since you applied. We cannot reply to emails requesting a status update within 3 months of application.
+    Due to the many applications we receive, our average review time is 6 months. You may request a status update only after six months since you applied. We cannot reply to emails requesting a status update within 6 months of application.
     
     You may get an email from us during the review if we have questions. One of our volunteer editors who will not be using a DOAJ email address might contact you. These emails might be in your spam folder, so please check it regularly.
     You can see our volunteers listed here: [{volunteers_url}]({volunteers_url})
