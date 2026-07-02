@@ -1,6 +1,6 @@
 from portality.forms.workflow.triage.forms import TriageSubmission
 from portality.models import WorkflowControl, Note, Application
-
+from portality.datasets import licenses as LICENSES
 
 class WorkflowControl2TriageForm(object):
     def transform(self, wfc:WorkflowControl, application:Application) -> TriageSubmission:
@@ -223,16 +223,17 @@ class TriageForm2WorkflowControl(object):
     def transform(self, form:TriageSubmission, account) -> tuple[WorkflowControl, Application]:
         f = TriageSubmission.struct
         wfc = WorkflowControl()
-        t = wfc.triage
+        triage = wfc.triage
         application = Application()
+        bj = application.bibjson()
 
-        def compliance_field_answer(complyable, reference):
-            val = form.get(reference)
+        def compliance_field_radio(complyable, reference):
+            val = form.get(reference.answer)
             if val is not None:
                 complyable.answer = val
 
         def compliance_field_note(notable, reference):
-            nval = form.get(reference)
+            nval = form.get(reference.note)
             if nval is not None:
                 notable.add_note(Note(
                     note = nval,
@@ -241,70 +242,195 @@ class TriageForm2WorkflowControl(object):
                     resource_id = wfc.id
                 ))
 
+        def str_2_list(form_field, separator=","):
+            value = f.get(form_field)
+            if value is None:
+                return ""
+            return [v.strip() for v in value.split(separator)]
+
+        # Record ID
+        wfc.set_id(f.id)
+
         ###################
         ## Ethics fields
 
         # Not excluded
-        compliance_field_answer(
-            t.ethics_not_excluded,
-            f.ethics_criteria.ethics_not_excluded_group.ethics_not_excluded
-        )
-        compliance_field_note(
-            t.ethics_not_excluded,
-            f.ethics_criteria.ethics_not_excluded_group.ethics_not_excluded_note
-        )
+        compliance_field_radio(triage.ethics_not_excluded, f.ethics.not_excluded)
+        compliance_field_note(triage.ethics_not_excluded, f.ethics.not_excluded)
 
         # No Nonstandard metrics
-        compliance_field_answer(
-            t.ethics_no_nonstandard_metrics,
-            f.ethics_criteria.ethics_no_nonstandard_metrics_group.ethics_no_nonstandard_metrics
-        )
-        compliance_field_note(
-            t.ethics_no_nonstandard_metrics,
-            f.ethics_criteria.ethics_no_nonstandard_metrics_group.ethics_no_nonstandard_metrics_note
-        )
+        compliance_field_radio(triage.ethics_no_nonstandard_metrics, f.ethics.no_nonstandard_metrics)
+        compliance_field_note(triage.ethics_no_nonstandard_metrics, f.ethics.no_nonstandard_metrics)
 
         # No Fake Impact
-        compliance_field_answer(
-            t.ethics_no_fake_impact,
-            f.ethics_criteria.ethics_no_fake_impact_group.ethics_no_fake_impact
-        )
-        compliance_field_note(
-            t.ethics_no_fake_impact,
-            f.ethics_criteria.ethics_no_fake_impact_group.ethics_no_fake_impact_note
-        )
+        compliance_field_radio(triage.ethics_no_fake_impact, f.ethics.no_fake_impact)
+        compliance_field_note(triage.ethics_no_fake_impact, f.ethics.no_fake_impact)
 
         # No false DOAJ claim
-        compliance_field_answer(
-            t.ethics_no_false_doaj_claim,
-            f.ethics_criteria.ethics_no_false_doaj_claim_group.ethics_no_false_doaj_claim
-        )
-        compliance_field_note(
-            t.ethics_no_false_doaj_claim,
-            f.ethics_criteria.ethics_no_false_doaj_claim_group.ethics_no_false_doaj_claim_note
-        )
+        compliance_field_radio(triage.ethics_no_false_doaj_claim, f.ethics.no_false_doaj_claim)
+        compliance_field_note(triage.ethics_no_false_doaj_claim, f.ethics.no_false_doaj_claim)
 
         # No suspicious ties
-        compliance_field_answer(
-            t.ethics_no_suspicious_ties,
-            f.ethics_criteria.ethics_no_suspicious_ties_group.ethics_no_suspicious_ties
-        )
+        compliance_field_radio(triage.ethics_no_suspicious_ties, f.ethics.no_suspicious_ties)
+        compliance_field_note(triage.ethics_no_suspicious_ties, f.ethics.no_suspicious_ties)
+
+        ############
+        ## Database fields
+
+        # Withdrawn
+        compliance_field_radio(triage.database_withdrawn, f.database.withdrawn)
+        compliance_field_note(triage.database_withdrawn, f.database.withdrawn)
+
+        # Withdrawn: Ignore Embargo
+        compliance_field_radio(triage.database_withdrawn_exception_ignore_embargo,
+                               f.database.withdrawn_exception_ignore_embargo)
+        compliance_field_note(triage.database_withdrawn_exception_ignore_embargo,
+                              f.database.withdrawn_exception_ignore_embargo)
+
+        # Withdrawn: Website Unavailable
+        compliance_field_radio(triage.database_withdrawn_exception_website_unavailable,
+                               f.database.withdrawn_exception_website_unavailable)
+        compliance_field_note(triage.database_withdrawn_exception_website_unavailable,
+                              f.database.withdrawn_exception_website_unavailable)
+
+        # Withdrawn: Content
+        compliance_field_radio(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
+        compliance_field_note(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
+
+        # Embargo
+        compliance_field_radio(triage.database_embargo, f.database.embargo)
+        compliance_field_note(triage.database_embargo, f.database.embargo)
+
+        # Embargo: ISSN
+        compliance_field_radio(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
+        compliance_field_note(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
+
+        # Embargo: Maned
+        compliance_field_radio(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
+        compliance_field_note(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
+
+        # Embargo: Website
+        compliance_field_radio(triage.database_embargo_exception_website, f.database.embargo_exception_website)
+        compliance_field_note(triage.database_embargo_exception_website, f.database.embargo_exception_website)
+
+        # Embargo: Content
+        compliance_field_radio(triage.database_embargo_exception_content, f.database.embargo_exception_content)
+        compliance_field_note(triage.database_embargo_exception_content, f.database.embargo_exception_content)
+
+        # Not Listed
+        compliance_field_radio(triage.database_not_listed, f.database.not_listed)
+        compliance_field_note(triage.database_not_listed, f.database.not_listed)
+
+        # Not Duplicate
+        compliance_field_radio(triage.database_not_duplicate, f.database.not_duplicate)
+        compliance_field_note(triage.database_not_duplicate, f.database.not_duplicate)
 
         ################
         ## ISSN Fields
 
-        compliance_field_answer(
-            t.issn_at_least_one,
-            f.issn.issn_at_least_one_group.issn_at_least_one
-        )
-        compliance_field_note(
-            t.issn_at_least_one,
-            f.issn.issn_at_least_one_group.issn_at_least_one_note
-        )
-        eissn = form.get(f.issn.issn_at_least_one_group.eissn)
-        application.bibjson().eissn = eissn
-        pissn = form.get(f.issn.issn_at_least_one_group.pissn)
-        application.bibjson().pissn = pissn
+        # At least one registered
+        compliance_field_radio(triage.issn_at_least_one, f.issn.at_least_one)
+        compliance_field_note(triage.issn_at_least_one, f.issn.at_least_one)
+        eissn = form.get(f.issn.at_least_one.eissn)
+        bj.eissn = eissn
+        pissn = form.get(f.issn.at_least_one.pissn)
+        bj.pissn = pissn
+
+        # Title match
+        compliance_field_radio(triage.issn_title_match, f.issn.title_match)
+        compliance_field_note(triage.issn_title_match, f.issn.title_match)
+        title = form.get(f.issn.title_match.title)
+        bj.title = title
+
+        # Continuation
+        compliance_field_radio(triage.issn_continuation, f.issn.continuation)
+        compliance_field_note(triage.issn_continuation, f.issn.continuation)
+        bj.replaces = str_2_list(f.issn.continuation.continues)
+
+        ##########
+        ## Website
+
+        # Working
+        compliance_field_radio(triage.website_working, f.website.working)
+        compliance_field_note(triage.website_working, f.website.working)
+
+        # ISSN
+        compliance_field_radio(triage.website_issn, f.website.issn)
+        compliance_field_note(triage.website_issn, f.website.issn)
+
+        # URL
+        compliance_field_radio(triage.website_url, f.website.url)
+        compliance_field_note(triage.website_url, f.website.url)
+
+        # License Policy
+        compliance_field_radio(triage.website_license_policy, f.website.license_policy)
+        compliance_field_note(triage.website_license_policy, f.website.license_policy)
+
+        lurl = form.get(f.website.license_policy.license_url)
+        if lurl is not None:
+            bj.license_terms_url = lurl
+
+        licenses = form.get(f.website.license_policy.license)
+        license_attributes = form.get(f.website.license_policy.license_attribute)
+        if license_attributes is not None:
+            for ltype in licenses:
+                by, nc, nd, sa = None, None, None, None
+                if ltype in LICENSES:
+                    by = LICENSES[ltype]["BY"]
+                    nc = LICENSES[ltype]["NC"]
+                    nd = LICENSES[ltype]["ND"]
+                    sa = LICENSES[ltype]["SA"]
+                    lurl = LICENSES[ltype]["url"]
+                elif license_attributes is not None and not len(license_attributes):
+                    by = True if 'BY' in license_attributes else False
+                    nc = True if 'NC' in license_attributes else False
+                    nd = True if 'ND' in license_attributes else False
+                    sa = True if 'SA' in license_attributes else False
+                bj.add_license(ltype, by=by, nc=nc, nd=nd, sa=sa, url=lurl)
+
+        # Copyright
+        compliance_field_radio(triage.website_copyright, f.website.copyright)
+        compliance_field_note(triage.website_copyright, f.website.copyright)
+        car = form.get(f.website.copyright.copyright_author_retains)
+        bj.author_retains_copyright = car == "y"
+
+        #########
+        ## Content
+
+        # No Login
+        compliance_field_radio(triage.content_no_login, f.content.no_login)
+        compliance_field_note(triage.content_no_login, f.content.no_login)
+
+        # No Embargo
+        compliance_field_radio(triage.content_no_embargo, f.content.no_embargo)
+        compliance_field_note(triage.content_no_embargo, f.content.no_embargo)
+
+        # Publish Enough
+        compliance_field_radio(triage.content_publish_enough, f.content.publish_enough)
+        compliance_field_note(triage.content_publish_enough, f.content.publish_enough)
+
+        # Unique Link
+        compliance_field_radio(triage.content_unique_link, f.content.unique_link)
+        compliance_field_note(triage.content_unique_link, f.content.unique_link)
+
+        # Format
+        compliance_field_radio(triage.content_format, f.content.format)
+        compliance_field_note(triage.content_format, f.content.format)
+
+        # New Journal
+        compliance_field_radio(triage.content_new_journal, f.content.new_journal)
+        compliance_field_note(triage.content_new_journal, f.content.new_journal)
+
+        ##############
+        ## Admin
+
+        # Metadata Review
+        compliance_field_radio(triage.admin_metadata_review, f.admin.metadata_review)
+        compliance_field_note(triage.admin_metadata_review, f.admin.metadata_review)
+
+        # Special Exception
+        compliance_field_radio(triage.admin_special_exception, f.admin.special_exception)
+        compliance_field_note(triage.admin_special_exception, f.admin.special_exception)
 
         return wfc, application
 

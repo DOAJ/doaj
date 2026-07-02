@@ -17,6 +17,7 @@ from portality.decorators import ssl_required, write_required
 from portality.forms.workflow.crosswalk import WorkflowControl2TriageForm, TriageForm2WorkflowControl
 from portality.forms.workflow.triage.forms import TriageForm
 from portality.forms.workflow.triage.processors import TriageFormProcessor
+from portality.lib import dicts
 from portality.ui import templates
 from portality.ui.workflow import StateUI
 
@@ -183,7 +184,8 @@ def triage_form(application_id):
         return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc)
 
     elif request.method == "POST":
-        processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=request.form)
+        formdata = dicts.multidict_2_dict(request.form)
+        processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=formdata)
         valid = processor.validate()
         if valid:
             try:

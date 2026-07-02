@@ -7,9 +7,14 @@
     >
 
     <div class="error-container">
-    {% if form.errors %}
+    {% if form.has_nested_errors() %}
+        <div class="error" style="color: red; font-weight: bold;">
+            There are errors in the form. Please correct them and try again.
+        </div>
+    {% endif %}
+    {% if form.displayable_errors %}
         Form Errors
-        {% for error in form.errors %}
+        {% for error in form.displayable_errors %}
             <div class="error" style="color: red; font-weight: bold;">
                 {{ form.error_message(error) }}
             </div>
@@ -17,14 +22,16 @@
     {% endif %}
     </div>
 
-    <div class="col-md-12 page">
+    <div class="col-md-10 page">
         <section class="page-content">
             {% for element in form.elements %}
                 {% autoescape off %}
                     {{ element.renderer.draw(element, application=application, wfc=wfc) }}
                 {% endautoescape %}
             {% endfor %}
-            <button id="submitBtn" class="button button--cta" type="submit">Save</button>
         </section>
+    </div>
+    <div class="col-md-2 page">
+        <button id="submitBtn" class="button button--cta" type="submit">Save</button>
     </div>
 </form>

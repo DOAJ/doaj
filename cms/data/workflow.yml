@@ -33,6 +33,11 @@ triage:
         compliant: "Compliant, this journal does not display references to non standard services"
         non_compliant: "Non-compliant, this journal displays references to non standard services"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -49,6 +54,11 @@ triage:
         compliant: "Compliant, this journal does not display fake impact factor values"
         non_compliant: "Non-compliant, this journal displays fake impact factor values"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -65,6 +75,11 @@ triage:
         compliant: "Compliant, this journal does not make a false claim to be indexed in DOAJ"
         non_compliant: "Non-compliant, this journal makes a false claim to be indexed in DOAJ"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -85,6 +100,11 @@ triage:
         non_compliant: "Non-compliant, this publisher/journal has links to previously excluded or suspicious publisher/journal"
         conditional: "Compliant, No longer questionable"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required"
       compliant_answers:
       - "compliant"
       - "conditional"
@@ -104,6 +124,11 @@ triage:
         compliant: "Compliant, this journal has not been removed from DOAJ"
         conditional: "This journal has been removed and has an embargo."
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -117,8 +142,8 @@ triage:
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
-        yes: "If Yes See Action"
-        no: "If No See Action"
+        "yes": "If Yes See Action"
+        "no": "If No See Action"
         later: "Do this later"
       exception_answers:
       - "yes"
@@ -130,8 +155,8 @@ triage:
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
-        yes: "If Yes See Action"
-        no: "If No See Action"
+        "yes": "If Yes See Action"
+        "no": "If No See Action"
         later: "Do this later"
       exception_answers:
       - "yes"
@@ -143,8 +168,8 @@ triage:
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
-        yes: "If Yes See Action"
-        no: "If No See Action"
+        "yes": "If Yes See Action"
+        "no": "If No See Action"
         later: "Do this later"
       exception_answers:
       - "yes"
@@ -160,6 +185,11 @@ triage:
         compliant: "Compliant, this journal does not have an active embargo from a previous rejection"
         conditional: "This journal has an active embargo from a previous rejection"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -173,8 +203,8 @@ triage:
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
-        yes: "If Yes See Action"
-        no: "If No See Action"
+        "yes": "If Yes See Action"
+        "no": "If No See Action"
         later: "Do this later"
       exception_answers:
       - "yes"
@@ -186,8 +216,8 @@ triage:
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
-        yes: "If Yes See Action"
-        no: "If No See Action"
+        "yes": "If Yes See Action"
+        "no": "If No See Action"
         later: "Do this later"
       exception_answers:
       - "yes"
@@ -199,8 +229,8 @@ triage:
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
-        yes: "If Yes See Action"
-        no: "If No See Action"
+        "yes": "If Yes See Action"
+        "no": "If No See Action"
         later: "Do this later"
       exception_answers:
       - "yes"
@@ -212,8 +242,8 @@ triage:
       resource_label: "DOAJ Journals database"
       resource_url: "https://doaj.org/admin/"
       answers:
-        yes: "If Yes See Action"
-        no: "If No See Action"
+        "yes": "If Yes See Action"
+        "no": "If No See Action"
         later: "Do this later"
       exception_answers:
       - "yes"
@@ -271,6 +301,18 @@ triage:
         non_compliant: "Non-compliant, this record has no active and confrimed ISSNs"
         conditional: "Changes to ISSN are required"
         later: "Do this later"
+      validation:
+        group:
+          fields_should_be_different: "The EISSN and PISSN must be different"
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        eissn:
+          regex_not_match: "The ISSN is not of the valid form"
+          fields_should_be_different: "The value of the EISSN must be different to the PISSN"
+        pissn:
+          regex_not_match: "The ISSN is not of the valid form"
+          fields_should_be_different: "The value of the PISSN must be different to the EISSN"
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-Compliant'"
       compliant_answers:
       - "compliant"
       - "conditional"
@@ -298,6 +340,14 @@ triage:
         non_compliant: "Non-compliant, this journal’s name in the application or on the website does not match the ISSN portal"
         conditional: "Journal’s title needs to be changed"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+        title:
+          disallowed_value: "Title must not contain an HTML script tag"
+          is_required: "Title is required"
       compliant_answers:
       - "compliant"
       - "conditional"
@@ -320,6 +370,13 @@ triage:
         compliant: "Yes"
         conditional: "No"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+        continues:
+          regex_not_match: "ISSN(s) must be of the valid form, separated by commas"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -384,6 +441,20 @@ triage:
         non_compliant: "Non-compliant, OA License policy is either not provided on the journal's website or inconsistent "
         conditional: "Changes to OA License policy are required"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+        license:
+          is_required: "You must select at least one license"
+          disallowed_value: "You must select one of the valid options"
+        license_attribute:
+          disallowed_value: "You must select one of the valid options"
+          is_conditionally_required: "You must enter license attributes if you have selected `Publisher's own license`"
+        license_url:
+          is_required: "You must provide a license URL"
+          disallowed_value: "You must enter a valid URL"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -393,7 +464,7 @@ triage:
     website_copyright:
       label: "Copyright policy"
       check: "Copyright terms are the same in all parts of the journal website, including the copyright page, article abstracts, HTML pages, PDFs, and copyright forms."
-      instructions: "<ul><li>* If the copyright information in the website/articles is contradictory, the answer is 'No'</li>
+      instructions: "<ul><li>If the copyright information in the website/articles is contradictory, the answer is 'No'</li>
         </ul>"
       edit:
         copyright_author_retains: "Author retains copyright"
@@ -403,6 +474,17 @@ triage:
         non_compliant: "Non-compliant, Copyright Terms are either not provided on the journal's website or inconsistent "
         conditional: "Changes to Copyright terms are required"
         later: "Do this later"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+        copyright_author_retains:
+          is_required: "You must select an answer"
+          disallowed_value: "You must select one of the valid options"
+        copyright_url:
+          is_required: "You must provide a Copyright URL"
+          disallowed_value: "You must enter a valid URL"
       compliant_answers:
       - "compliant"
       non_compliant_answers:

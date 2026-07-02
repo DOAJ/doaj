@@ -1,4 +1,6 @@
-from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent
+from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent, IsConditionallyRequired, DisallowedValue, \
+    IsRequired
+from formulaic.validate.form.validate import LimitToFormOptions
 from formulaic.validate.validate import Regex, Different, RequiredIf, NoScriptTag, IsURL, RegexOnList
 from portality.core import app
 
@@ -42,6 +44,7 @@ class ComplianceCheckCapability(FormFieldCapability):
 
 class ComplianceCheckField(Field):
     coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
 
 #######
 ## Generic notes capability and field
@@ -59,7 +62,6 @@ class NoteCapability(FormFieldCapability):
 
 class NoteField(Field):
     coerce = [Unicode()]
-    capabilities = (NoteCapability(),)
 
 #######
 ## options preparation
@@ -111,6 +113,7 @@ class EthicsNotExcluded(ComplianceCheckField):
 
 class EthicsNotExcludedNote(NoteField):
     name = "ethics_not_excluded_note"
+    capabilities = (NoteCapability(),)
 
 class EthicsNotExcludedGroup(Structure):
     class C(CompoundFieldCapability):
@@ -141,13 +144,21 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
     capabilities = (C(),)
 
 class EthicsNoNonStandardMetricsNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.note.is_conditionally_required
+        }
     name = "ethics_no_nonstandard_metrics_note"
+    capabilities = (NC(),)
 
 class EthicsNoNonStandardMetricsGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.ethics_no_nonstandard_metrics.label
         order = ["answer", "note"]
         render_class = GenericCompound
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.group.is_conditionally_required
+        }
 
     name_ = "ethics_no_nonstandard_metrics_group"
     capabilities_ = (C(),)
@@ -179,13 +190,21 @@ class EthicsNoFakeImpact(ComplianceCheckField):
     capabilities = (C(),)
 
 class EthicsNoFakeImpactNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_fake_impact.validation.note.is_conditionally_required
+        }
     name = "ethics_no_fake_impact_note"
+    capabilities = (NC(),)
 
 class EthicsNoFakeImpactGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.ethics_no_fake_impact.label
         order = ["answer", "note"]
         render_class = GenericCompound
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_fake_impact.validation.group.is_conditionally_required
+        }
 
     name_ = "ethics_no_fake_impact_group"
     capabilities_ = (C(),)
@@ -217,13 +236,21 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
     capabilities = (C(),)
 
 class EthicsNoFalseDOAJClaimNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_false_doaj_claim.validation.note.is_conditionally_required
+        }
     name = "ethics_no_false_doaj_claim_note"
+    capabilities = (NC(),)
 
 class EthicsNoFalseDOAJClaimGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.ethics_no_false_doaj_claim.label
         order = ["answer", "note"]
         render_class = GenericCompound
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_false_doaj_claim.validation.group.is_conditionally_required
+        }
 
     name_ = "ethics_no_false_doaj_claim_group"
     capabilities_ = (C(),)
@@ -255,13 +282,21 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
     capabilities = (C(),)
 
 class EthicsNoSuspiciousTiesNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.note.is_conditionally_required
+        }
     name = "ethics_no_suspicious_ties_note"
+    capabilities = (NC(),)
 
 class EthicsNoSuspiciousTiesGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.ethics_no_suspicious_ties.label
         order = ["answer", "note"]
         render_class = GenericCompound
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.group.is_conditionally_required
+        }
 
     name_ = "ethics_no_suspicious_ties_group"
     capabilities_ = (C(),)
@@ -294,13 +329,21 @@ class DatabaseWithdrawn(ComplianceCheckField):
     capabilities = (C(),)
 
 class DatabaseWithdrawnNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.database_withdrawn.validation.note.is_conditionally_required
+        }
     name = "database_withdrawn_note"
+    capabilities = (NC(),)
 
 class DatabaseWithdrawnGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_withdrawn.label
         order = ["answer", "note"]
         render_class = GenericCompound
+        error_messages = {
+            IsConditionallyRequired: T.database_withdrawn.validation.group.is_conditionally_required
+        }
 
     name_ = "database_withdrawn_group"
     capabilities_ = (C(),)
@@ -333,6 +376,7 @@ class DatabaseWithdrawnIgnoreEmbargo(ComplianceCheckField):
 
 class DatabaseWithdrawnIgnoreEmbargoNote(NoteField):
     name = "database_withdrawn_exception_ignore_embargo_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseWithdrawnIgnoreEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
@@ -362,6 +406,7 @@ class DatabaseWithdrawnWebsiteUnavailable(ComplianceCheckField):
 
 class DatabaseWithdrawnWebsiteUnavailableNote(NoteField):
     name = "database_withdrawn_exception_website_unavailable_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseWithdrawnWebsiteUnavailableGroup(Structure):
     class C(CompoundFieldCapability):
@@ -391,6 +436,7 @@ class DatabaseWithdrawnContent(ComplianceCheckField):
 
 class DatabaseWithdrawnContentNote(NoteField):
     name = "database_withdrawn_exception_content_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseWithdrawnContentGroup(Structure):
     class C(CompoundFieldCapability):
@@ -419,13 +465,22 @@ class DatabaseEmbargo(ComplianceCheckField):
     capabilities = (C(),)
 
 class DatabaseEmbargoNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
+        }
+
     name = "database_embargo_note"
+    capabilities = (NC(),)
 
 class DatabaseEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_embargo.label
         order = ["answer", "note"]
         render_class = GenericCompound
+        error_messages = {
+            IsConditionallyRequired: T.database_embargo.validation.group.is_conditionally_required
+        }
 
     name_ = "database_embargo_group"
     capabilities_ = (C(),)
@@ -456,6 +511,7 @@ class DatabaseEmbargoISSN(ComplianceCheckField):
 
 class DatabaseEmbargoISSNNote(NoteField):
     name = "database_embargo_exception_issn_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseEmbargoISSNGroup(Structure):
     class C(CompoundFieldCapability):
@@ -485,6 +541,7 @@ class DatabaseEmbargoManed(ComplianceCheckField):
 
 class DatabaseEmbargoManedNote(NoteField):
     name = "database_embargo_exception_maned_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseEmbargoManedGroup(Structure):
     class C(CompoundFieldCapability):
@@ -514,6 +571,7 @@ class DatabaseEmbargoWebsite(ComplianceCheckField):
 
 class DatabaseEmbargoWebsiteNote(NoteField):
     name = "database_embargo_exception_website_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseEmbargoWebsiteGroup(Structure):
     class C(CompoundFieldCapability):
@@ -543,6 +601,7 @@ class DatabaseEmbargoContent(ComplianceCheckField):
 
 class DatabaseEmbargoContentNote(NoteField):
     name = "database_embargo_exception_content_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseEmbargoContentGroup(Structure):
     class C(CompoundFieldCapability):
@@ -572,6 +631,7 @@ class DatabaseNotListed(ComplianceCheckField):
 
 class DatabaseNotListedNote(NoteField):
     name = "database_not_listed_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseNotListedGroup(Structure):
     class C(CompoundFieldCapability):
@@ -601,6 +661,7 @@ class DatabaseNotDuplicate(ComplianceCheckField):
 
 class DatabaseNotDuplicateNote(NoteField):
     name = "database_not_duplicate_note"
+    capabilities = (NoteCapability(),)
 
 class DatabaseNotDuplicateGroup(Structure):
     class C(CompoundFieldCapability):
@@ -640,7 +701,12 @@ class ISSNAtLeastOne(ComplianceCheckField):
     capabilities = (C(),)
 
 class ISSNAtLeastOneNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
+        }
     name = "issn_at_least_one_note"
+    capabilities = (NC(),)
 
 class EISSN(Field):
     class C(FormFieldCapability):
@@ -649,8 +715,8 @@ class EISSN(Field):
         control_render_class = GenericControl
         render_class = GenericField
         error_messages = {
-            RegexDoesNotMatch: "The ISSN is not of the valid form",
-            FieldsShouldBeDifferent: "The value of the EISSN must be different to the PISSN"
+            RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
         }
 
     name = "eissn"
@@ -665,8 +731,8 @@ class PISSN(Field):
         control_render_class = GenericControl
         render_class = GenericField
         error_messages = {
-            RegexDoesNotMatch: "The ISSN is not of the valid form",
-            FieldsShouldBeDifferent: "The value of the PISSN must be different to the EISSN"
+            RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
         }
 
     name = "pissn"
@@ -685,7 +751,8 @@ class ISSNAtLeastOneGroup(Structure):
         ]
         render_class = GenericCompound
         error_messages = {
-            FieldsShouldBeDifferent: lambda x: f"The values of '{x.field1.get_capability(FieldCapability).label}' and '{x.field2.get_capability(FieldCapability).label}' must be different"
+            IsConditionallyRequired: T.issn_at_least_one.validation.group.is_conditionally_required,
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different
         }
 
     name_ = "issn_at_least_one_group"
@@ -719,7 +786,12 @@ class ISSNTitleMatch(ComplianceCheckField):
     capabilities = (C(),)
 
 class ISSNTitleMatchNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.issn_title_match.validation.note.is_conditionally_required
+        }
     name = "issn_title_match_note"
+    capabilities = (NC(),)
 
 class Title(Field):
     class C(FormFieldCapability):
@@ -727,7 +799,10 @@ class Title(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
-        error_messages = {}
+        error_messages = {
+            DisallowedValue: T.issn_title_match.validation.title.disallowed_value,
+            IsRequired: T.issn_title_match.validation.title.is_required
+        }
 
     name = "eissn"
     coerce = [Unicode(trim_whitespace=True)]
@@ -743,7 +818,9 @@ class ISSNTitleMatchGroup(Structure):
             "note"
         ]
         render_class = GenericCompound
-        error_messages = {}
+        error_messages = {
+            IsConditionallyRequired: T.issn_title_match.validation.group.is_conditionally_required
+        }
 
     name_ = "issn_title_match_group"
     capabilities_ = (C(),)
@@ -774,7 +851,12 @@ class ISSNContinuation(ComplianceCheckField):
     capabilities = (C(),)
 
 class ISSNContinuationNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.issn_continuation.validation.note.is_conditionally_required
+        }
     name = "issn_continuation_note"
+    capabilities = (NC(),)
 
 class Continues(Field):
     class C(FormFieldCapability):
@@ -783,7 +865,7 @@ class Continues(Field):
         control_render_class = GenericControl
         render_class = GenericField
         error_messages = {
-            RegexDoesNotMatch: "regex does not match"
+            RegexDoesNotMatch: T.issn_continuation.validation.continues.regex_not_match
         }
 
     name = "continues"
@@ -800,7 +882,9 @@ class ISSNContinuationGroup(Structure):
             "note"
         ]
         render_class = GenericCompound
-        error_messages = {}
+        error_messages = {
+            IsConditionallyRequired: T.issn_continuation.validation.group.is_conditionally_required
+        }
 
     name_ = "issn_continuation_group"
     capabilities_ = (C(),)
@@ -832,6 +916,7 @@ class WebsiteWorking(ComplianceCheckField):
 
 class WebsiteWorkingNote(NoteField):
     name = "website_working_note"
+    capabilities = (NoteCapability(),)
 
 class WebsiteWorkingGroup(Structure):
     class C(CompoundFieldCapability):
@@ -890,6 +975,7 @@ class WebsiteURL(ComplianceCheckField):
 
 class WebsiteURLNote(NoteField):
     name = "website_url_note"
+    capabilities = (NoteCapability(),)
 
 class WebsiteURLGroup(Structure):
     class C(CompoundFieldCapability):
@@ -918,7 +1004,12 @@ class WebsiteLicensePolicy(ComplianceCheckField):
     capabilities = (C(),)
 
 class WebsiteLicensePolicyNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.website_license_policy.validation.note.is_conditionally_required
+        }
     name = "website_license_policy_note"
+    capabilities = (NC(),)
 
 class License(Field):
     class C(FormFieldCapability):
@@ -938,9 +1029,14 @@ class License(Field):
         ]
         control_render_class = CheckboxRenderer
         render_class = GenericField
+        error_messages = {
+            IsRequired: T.website_license_policy.validation.license.is_required,
+            DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
+        }
 
     name = "license"
     coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
 class LicenseAttribute(Field):
@@ -956,9 +1052,14 @@ class LicenseAttribute(Field):
         ]
         control_render_class = CheckboxRenderer
         render_class = GenericField
+        error_messages = {
+            DisallowedValue: T.website_license_policy.validation.license_attribute.disallowed_value,
+            IsConditionallyRequired: T.website_license_policy.validation.license_attribute.is_conditionally_required
+        }
 
     name = "license_attribute"
     coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
 class LicenseURL(Field):
@@ -967,7 +1068,10 @@ class LicenseURL(Field):
         control_class = URLInput
         control_render_class = GenericControl
         render_class = GenericField
-        error_messages = {}
+        error_messages = {
+            IsRequired: T.website_license_policy.validation.license_url.is_required,
+            DisallowedValue: T.website_license_policy.validation.license_url.disallowed_value
+        }
 
     name = "continues"
     coerce = [Unicode(trim_whitespace=True)]
@@ -985,7 +1089,9 @@ class WebsiteLicensePolicyGroup(Structure):
             "note"
         ]
         render_class = GenericCompound
-        error_messages = {}
+        error_messages = {
+            IsConditionallyRequired: T.website_license_policy.validation.group.is_conditionally_required
+        }
 
     name_ = "website_license_policy_group"
     capabilities_ = (C(),)
@@ -1023,7 +1129,12 @@ class WebsiteCopyright(ComplianceCheckField):
     capabilities = (C(),)
 
 class WebsiteCopyrightNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.website_copyright.validation.note.is_conditionally_required
+        }
     name = "website_copyright_note"
+    capabilities = (NC(),)
 
 class CopyrightAuthorRetains(Field):
     class C(FormFieldCapability):
@@ -1035,9 +1146,14 @@ class CopyrightAuthorRetains(Field):
         ]
         control_render_class = RadioRenderer
         render_class = GenericField
+        error_messages = {
+            DisallowedValue: T.website_copyright.validation.copyright_author_retains.disallowed_value,
+            IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
+        }
 
     name = "copyright_author_retains"
     coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
 class CopyrightURL(Field):
@@ -1046,7 +1162,10 @@ class CopyrightURL(Field):
         control_class = URLInput
         control_render_class = GenericControl
         render_class = GenericField
-        error_messages = {}
+        error_messages = {
+            IsRequired: T.website_copyright.validation.copyright_url.is_required,
+            DisallowedValue: T.website_copyright.validation.copyright_url.disallowed_value
+        }
 
     name = "copyright_url"
     coerce = [Unicode(trim_whitespace=True)]
@@ -1063,7 +1182,9 @@ class WebsiteCopyrightGroup(Structure):
             "note"
         ]
         render_class = GenericCompound
-        error_messages = {}
+        error_messages = {
+            IsConditionallyRequired: T.website_copyright.validation.group.is_conditionally_required
+        }
 
     name_ = "website_copyright_group"
     capabilities_ = (C(),)
@@ -1096,6 +1217,7 @@ class ContentNoLogin(ComplianceCheckField):
 
 class ContentNoLoginNote(NoteField):
     name = "content_no_login_note"
+    capabilities = (NoteCapability(),)
 
 class ContentNoLoginGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1125,6 +1247,7 @@ class ContentNoEmbargo(ComplianceCheckField):
 
 class ContentNoEmbargoNote(NoteField):
     name = "content_no_embargo_note"
+    capabilities = (NoteCapability(),)
 
 class ContentNoEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1154,6 +1277,7 @@ class ContentPublishEnough(ComplianceCheckField):
 
 class ContentPublishEnoughNote(NoteField):
     name = "content_publish_enough_note"
+    capabilities = (NoteCapability(),)
 
 class ContentPublishEnoughGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1183,6 +1307,7 @@ class ContentUniqueLink(ComplianceCheckField):
 
 class ContentUniqueLinkNote(NoteField):
     name = "content_unique_link_note"
+    capabilities = (NoteCapability(),)
 
 class ContentUniqueLinkGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1212,6 +1337,7 @@ class ContentFormat(ComplianceCheckField):
 
 class ContentFormatNote(NoteField):
     name = "content_format_note"
+    capabilities = (NoteCapability(),)
 
 class ContentFormatGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1270,6 +1396,7 @@ class AdminMetadataReview(ComplianceCheckField):
 
 class AdminMetadataReviewNote(NoteField):
     name = "admin_metadata_review_note"
+    capabilities = (NoteCapability(),)
 
 class AdminMetadataReviewGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1299,6 +1426,7 @@ class AdminSpecialException(ComplianceCheckField):
 
 class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
+    capabilities = (NoteCapability(),)
 
 class AdminSpecialExceptionGroup(Structure):
     class C(CompoundFieldCapability):

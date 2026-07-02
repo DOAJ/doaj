@@ -8,9 +8,9 @@
 {% endautoescape %}
 
 <div class="error-container">
-{% if field.errors %}
+{% if field.displayable_errors %}
     Field Errors
-    {% for error in field.errors %}
+    {% for error in field.displayable_errors %}
         <div class="error" style="color: red; font-weight: bold;">
             {{ field.error_message(error) }}
         </div>

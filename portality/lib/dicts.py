@@ -1,6 +1,14 @@
 from collections.abc import Mapping
 
 
+def multidict_2_dict(md):
+    d = {}
+    for k in md.keys():
+        d[k] = md.getlist(k)
+        if len(d[k]) == 1:
+            d[k] = d[k][0]
+    return d
+
 def deep_merge(a, b, overlay=False):
     if isinstance(a, list) and isinstance(b, list):
         for item in b:
