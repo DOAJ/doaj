@@ -133,7 +133,6 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "conditional"
-      has_exception: true
 
     database_withdrawn_exception_ignore_embargo:
       label: "Journal withdrawn - Mg. Ed. note"
@@ -145,6 +144,10 @@ triage:
         "yes": "If Yes See Action"
         "no": "If No See Action"
         later: "Do this later"
+      compliant_answers:
+      - "yes"
+      non_compliant_answers:
+      - "no"
       exception_answers:
       - "yes"
 
@@ -158,6 +161,10 @@ triage:
         "yes": "If Yes See Action"
         "no": "If No See Action"
         later: "Do this later"
+      compliant_answers:
+      - "yes"
+      non_compliant_answers:
+      - "no"
       exception_answers:
       - "yes"
 
@@ -171,6 +178,10 @@ triage:
         "yes": "If Yes See Action"
         "no": "If No See Action"
         later: "Do this later"
+      compliant_answers:
+      - "yes"
+      non_compliant_answers:
+      - "no"
       exception_answers:
       - "yes"
 
@@ -194,7 +205,6 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "conditional"
-      has_exception: true
 
     database_embargo_exception_issn:
       label: "Previous application rejection - uncorfirmed ISSN"
@@ -206,6 +216,10 @@ triage:
         "yes": "If Yes See Action"
         "no": "If No See Action"
         later: "Do this later"
+      compliant_answers:
+      - "yes"
+      non_compliant_answers:
+      - "no"
       exception_answers:
       - "yes"
 
@@ -219,6 +233,10 @@ triage:
         "yes": "If Yes See Action"
         "no": "If No See Action"
         later: "Do this later"
+      compliant_answers:
+      - "yes"
+      non_compliant_answers:
+      - "no"
       exception_answers:
       - "yes"
 
@@ -232,6 +250,10 @@ triage:
         "yes": "If Yes See Action"
         "no": "If No See Action"
         later: "Do this later"
+      compliant_answers:
+      - "yes"
+      non_compliant_answers:
+      - "no"
       exception_answers:
       - "yes"
 
@@ -245,6 +267,10 @@ triage:
         "yes": "If Yes See Action"
         "no": "If No See Action"
         later: "Do this later"
+      compliant_answers:
+      - "yes"
+      non_compliant_answers:
+      - "no"
       exception_answers:
       - "yes"
 

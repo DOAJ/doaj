@@ -134,11 +134,29 @@ class TriageFormProcessor:
         tbj = target.bibjson()
         sbj = partial_application.bibjson()
 
-        # this patcher assumes the eissn and pissn have been provided by the partial.
+        # this patcher assumes all the metadata have been provided by the partial.
         # If it's possible a partial won't have that info, then we need to update this to
         # accommodate
+
+        # EISSN/PISSN
         tbj.eissn = sbj.eissn
         tbj.pissn = sbj.pissn
+
+        # Title
+        tbj.title = sbj.title
+
+        # Continuation
+        tbj.replaces = sbj.replaces
+
+        # License information
+        tbj.remove_licenses()
+        for lic in sbj.licenses:
+            tbj.add_license_obj(lic)
+        tbj.license_terms_url = sbj.license_terms_url
+
+        # Copyright
+        tbj.author_retains_copyright = sbj.author_retains_copyright
+        tbj.copyright_url = sbj.copyright_url
 
         return target
 
@@ -160,20 +178,57 @@ class TriageFormProcessor:
         set_compliance(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
         set_compliance(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
         set_compliance(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+        set_compliance(t.database_withdrawn, R.database_withdrawn)
+        set_compliance(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
+        set_compliance(t.database_withdrawn_exception_website_unavailable, R.database_withdrawn_exception_website_unavailable)
+        set_compliance(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
+        set_compliance(t.database_embargo, R.database_embargo)
+        set_compliance(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
+        set_compliance(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
+        set_compliance(t.database_embargo_exception_website, R.database_embargo_exception_website)
+        set_compliance(t.database_embargo_exception_content, R.database_embargo_exception_content)
+        set_compliance(t.database_not_listed, R.database_not_listed)
+        set_compliance(t.database_not_duplicate, R.database_not_duplicate)
         set_compliance(t.issn_at_least_one, R.issn_at_least_one)
+        set_compliance(t.issn_title_match, R.issn_title_match)
+        set_compliance(t.issn_continuation, R.issn_continuation)
+        set_compliance(t.website_working, R.website_working)
+        set_compliance(t.website_issn, R.website_issn)
+        set_compliance(t.website_url, R.website_url)
+        set_compliance(t.website_license_policy, R.website_license_policy)
+        set_compliance(t.website_copyright, R.website_copyright)
+        set_compliance(t.content_no_login, R.content_no_login)
+        set_compliance(t.content_no_embargo, R.content_no_embargo)
+        set_compliance(t.content_publish_enough, R.content_publish_enough)
+        set_compliance(t.content_unique_link, R.content_unique_link)
+        set_compliance(t.content_format, R.content_format)
+        set_compliance(t.content_new_journal, R.content_new_journal)
+        set_compliance(t.admin_metadata_review, R.admin_metadata_review)
+        set_compliance(t.admin_special_exception, R.admin_special_exception)
+
+        def set_exception(exceptable, rule_source):
+            if exceptable.answer in rule_source.exception_answers:
+                exceptable.exception = True
+            else:
+                exceptable.exception = False
+
+        set_exception(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
+        set_exception(t.database_withdrawn_exception_website_unavailable, R.database_withdrawn_exception_website_unavailable)
+        set_exception(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
+        set_exception(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
+        set_exception(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
+        set_exception(t.database_embargo_exception_website, R.database_embargo_exception_website)
+        set_exception(t.database_embargo_exception_content, R.database_embargo_exception_content)
 
         def set_severity(complyable, rule_source):
             if "severity_value" in rule_source and complyable.compliant is False:
                 complyable.severity_value = rule_source.severity_value
 
-        # Next apply severity values (only to ethics criteria)
-        set_severity(t.ethics_not_excluded, R.ethics_not_excluded)
+        # Next apply severity values
         set_severity(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
         set_severity(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
         set_severity(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
         set_severity(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
-
-        # TODO: exceptions
 
     def render_form(self):
         form_html = self.serialiser.data_to_string(

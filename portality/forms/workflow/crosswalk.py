@@ -235,15 +235,15 @@ class TriageForm2WorkflowControl(object):
         def compliance_field_note(notable, reference):
             nval = form.get(reference.note)
             if nval is not None:
-                notable.add_note(Note(
+                notable.note = Note(
                     note = nval,
                     author_id = account.id,
                     resource_type = WorkflowControl.__type__,
                     resource_id = wfc.id
-                ))
+                )
 
         def str_2_list(form_field, separator=","):
-            value = f.get(form_field)
+            value = form.get(form_field)
             if value is None:
                 return ""
             return [v.strip() for v in value.split(separator)]
@@ -381,7 +381,7 @@ class TriageForm2WorkflowControl(object):
                     nd = LICENSES[ltype]["ND"]
                     sa = LICENSES[ltype]["SA"]
                     lurl = LICENSES[ltype]["url"]
-                elif license_attributes is not None and not len(license_attributes):
+                elif license_attributes is not None and len(license_attributes) > 0:
                     by = True if 'BY' in license_attributes else False
                     nc = True if 'NC' in license_attributes else False
                     nd = True if 'ND' in license_attributes else False
@@ -393,6 +393,8 @@ class TriageForm2WorkflowControl(object):
         compliance_field_note(triage.website_copyright, f.website.copyright)
         car = form.get(f.website.copyright.copyright_author_retains)
         bj.author_retains_copyright = car == "y"
+        curl = form.get(f.website.copyright.copyright_url)
+        bj.copyright_url = curl
 
         #########
         ## Content

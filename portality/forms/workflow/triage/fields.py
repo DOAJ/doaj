@@ -946,6 +946,7 @@ class WebsiteISSN(ComplianceCheckField):
 
 class WebsiteISSNNote(NoteField):
     name = "website_issn_note"
+    capabilities = (NoteCapability(),)
 
 class WebsiteISSNGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1367,6 +1368,7 @@ class ContentNewJournal(ComplianceCheckField):
 
 class ContentNewJournalNote(NoteField):
     name = "content_new_journal_note"
+    capabilities = (NoteCapability(),)
 
 class ContentNewJournalGroup(Structure):
     class C(CompoundFieldCapability):

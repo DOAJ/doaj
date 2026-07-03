@@ -470,7 +470,7 @@ class TriageField(SeamlessMixin):
         if note.id is None:
             note.set_id(note.makeid())
         self._note = note
-        self.__seamless__.set_single("note_id", note.id, unique=True)
+        self.__seamless__.set_single("note_id", note.id)
         if self._parent is not None:
             self._parent.cache_note(note)
 
