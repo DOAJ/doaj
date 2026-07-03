@@ -1,10 +1,8 @@
 import json
-from asyncore import write
 from copy import deepcopy
 
 from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response, flash
 from flask_login import login_required, current_user
-from formulaic.serialise.form.core import FormSerialiser, FormDataParser
 
 from portality import models, constants
 from portality.bll import DOAJ
@@ -13,15 +11,18 @@ from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail
 from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview
-from portality.decorators import ssl_required, write_required
-from portality.forms.workflow.crosswalk import WorkflowControl2TriageForm, TriageForm2WorkflowControl
-from portality.forms.workflow.triage.forms import TriageForm
+from portality.decorators import ssl_required, write_required, restrict_to_role
 from portality.forms.workflow.triage.processors import TriageFormProcessor
 from portality.lib import dicts
 from portality.ui import templates
 from portality.ui.workflow import StateUI
 
 blueprint = Blueprint('workflow', __name__)
+
+# restrict everything in workflow to logged in users with the "admin" role
+@blueprint.before_request
+def restrict():
+    return restrict_to_role(constants.ROLE_ADMIN)
 
 @blueprint.route('/')
 @login_required
@@ -38,6 +39,19 @@ def index():
                            triage_minimal_review=triage_minimal_review,
                            rejected=rejected,
                            admin_page=True)
+
+@blueprint.route('/search', methods=['GET'])
+@login_required
+@ssl_required
+def workflow_search():
+    return render_template(templates.WORKFLOW_SEARCH)
+
+@blueprint.route('/overview/<application_id>', methods=['GET'])
+@login_required
+@ssl_required
+@write_required()
+def workflow_item_overview(application_id):
+    return render_template(templates.WORKFLOW_ITEM_OVERVIEW)
 
 def _apply_event(wfc_id, event_class, onward_route, event_args:dict=None):
     if wfc_id is None:

@@ -458,11 +458,6 @@ class TriageField(SeamlessMixin):
         from portality.models import Note
         if self._note is None and self.note_id is not None:
             self._note = Note.pull(self.note_id)
-        # for nid in self.note_ids:
-        #     if nid not in self._notes:
-        #         # TODO: merge in separate notes code
-        #         self._notes[nid] = Note.pull(nid)
-        # return self._notes
         return self._note
 
     @note.setter
@@ -473,15 +468,6 @@ class TriageField(SeamlessMixin):
         self.__seamless__.set_single("note_id", note.id)
         if self._parent is not None:
             self._parent.cache_note(note)
-
-    # def add_note(self, note:"Note"):
-    #     if note.id is None:
-    #         note.set_id(note.makeid())
-    #     self._notes[note.id] = note
-    #     self.__seamless__.add_to_list("note_ids", note.id, unique=True)
-    #     if self._parent is not None:
-    #         self._parent.cache_note(note)
-
 
 class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT

@@ -1,0 +1,37 @@
+{% extends "management/admin/base.html" %}
+
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block page_title %}Items in the Review Workflow{% endblock %}
+
+{% block admin_content %}
+    <h1 class="sr-only">Items in the Review Workflow</h1>
+    <div id="admin_workflow"></div>
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript">
+        var current_user = {
+            "id": "{{ current_user['id'] }}",
+            "role": {{ current_user['role'] | tojson }}
+        };
+
+        $.extend(true, doaj, {
+            adminWorkflowSearchConfig : {
+                workflowPage : "{{ url_for('workflow.workflow_item_overview', application_id='') }}",
+                searchPath : '/admin_query/workflow/_search'
+            }
+        });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.workflow.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+    <script type="text/javascript">
+
+    </script>
+{% endblock %}

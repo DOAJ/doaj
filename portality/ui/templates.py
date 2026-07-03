@@ -76,6 +76,10 @@ MANED_READ_ONLY_JOURNAL = "management/admin/readonly_journal.html"
 EDITOR_READ_ONLY_JOURNAL = "management/editor/readonly_journal.html"
 MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_journal_bulk_edit.html"
 
+# Workflow entry pages
+WORKFLOW_SEARCH = "management/admin/workflow_search.html"
+WORKFLOW_ITEM_OVERVIEW = "management/admin/workflow_item_overview.html"
+
 # Workflow components
 WORKFLOW_CLAIM_WIDGET = "management/admin/_workflow/includes/claim.html"
 WORKFLOW_ASSIGN_WIDGET = "management/admin/_workflow/includes/assign.html"
