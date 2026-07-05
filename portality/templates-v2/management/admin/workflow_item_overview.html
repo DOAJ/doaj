@@ -1,5 +1,13 @@
 {% extends "management/admin/base.html" %}
 
+{% set wfc = state.workflow_control %}
+{% set application = state.application %}
+{% set event_claim = state.event_claim %}
+{% set event_assign = state.event_assign %}
+{% set event_unclaim = state.event_unclaim %}
+{% set event_unassign = state.event_unassign %}
+{% set event_reassign = state.event_reassign %}
+
 {% block page_title %}Workflow Item Overview{% endblock %}
 
 {% block admin_stylesheets %}
@@ -7,8 +15,66 @@
 {% endblock %}
 
 {% block admin_content %}
-    <h1>Overview of Workflow Item {{ application.bibjson().title }}</h1>
-    TODO
+    <span class="tag tag--featured">{{ wfc.module }}</span>
+    <h1>{{ application.bibjson().title }}</h1>
+
+    {% if event_claim and event_claim.is_available(current_user) %}
+        <div style="margin-left: 25px">
+            {% with event = event_claim %}
+                {% include event_claim.template %}
+            {% endwith %}
+        </div>
+    {% endif %}
+
+    {% if event_assign and event_assign.is_available(current_user) %}
+        <div style="margin-left: 25px">
+            {% with event = event_assign %}
+                {% include event_assign.template %}
+            {% endwith %}
+        </div>
+    {% endif %}
+
+    {% if event_reassign and event_reassign.is_available(current_user) %}
+        <div style="margin-left: 25px">
+            {% with event = event_reassign %}
+                {% include event_reassign.template %}
+            {% endwith %}
+        </div>
+    {% endif %}
+
+{#    {% for event in state.events %}#}
+{#        {% if event.is_available(current_user) %}#}
+{#            <div style="margin-left: 25px">#}
+{#                {% include event.template %}#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
+
+    <div class="row">
+        <div class="col-md-8">
+            Main
+        </div>
+        <div class="col-md-4">
+            {% if wfc.reviewer %}
+                Assigned To: {{ wfc.reviewer.name }} ({{ wfc.reviewer.id }})
+                {% if event_unclaim and wfc.reviewer_id == current_user.id%}
+                    <div style="margin-left: 25px">
+                        {% with event = event_unclaim %}
+                            {% include event_unclaim.template %}
+                        {% endwith %}
+                    </div>
+                {% endif %}
+                {% if event_unassign and wfc.reviewer_id != current_user.id%}
+                    <div style="margin-left: 25px">
+                        {% with event = event_unassign %}
+                            {% include event_unassign.template %}
+                        {% endwith %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block admin_js %}

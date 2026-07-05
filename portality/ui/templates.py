@@ -80,10 +80,10 @@ MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_jour
 WORKFLOW_SEARCH = "management/admin/workflow_search.html"
 WORKFLOW_ITEM_OVERVIEW = "management/admin/workflow_item_overview.html"
 
-# Workflow components
+# Generic Workflow components
 WORKFLOW_CLAIM_WIDGET = "management/admin/_workflow/includes/claim.html"
-WORKFLOW_ASSIGN_WIDGET = "management/admin/_workflow/includes/assign.html"
-WORKFLOW_UNASSIGN_WIDGET = "management/admin/_workflow/includes/unassign.html"
+WORKFLOW_GENERIC_ASSIGN_WIDGET = "management/admin/_workflow/includes/assign.html"
+WORKFLOW_GENERIC_UNASSIGN_WIDGET = "management/admin/_workflow/includes/unassign.html"
 WORKFLOW_UNCLAIM_WIDGET = "management/admin/_workflow/includes/unclaim.html"
 WORKFLOW_MINIMAL_REVIEW_WIDGET = "management/admin/_workflow/includes/minimal_review.html"
 WORKFLOW_FAIL_WIDGET = "management/admin/_workflow/includes/fail.html"
@@ -94,6 +94,7 @@ WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 WORKFLOW_TRIAGE_PAGE = "management/admin/triage.html"
 WORKFLOW_TRIAGE_FORM = "management/admin/_workflow/includes/_triage_form.html"
 WORKFLOW_TRIAGE_FIELD_COMPLIANCE = "management/admin/_workflow/includes/triage_field.html"
+WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_claim.html"
 
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
 WORKFLOW_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_checkbox.html"

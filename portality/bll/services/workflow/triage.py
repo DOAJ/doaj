@@ -51,6 +51,10 @@ class AwaitingTriage(State):
 
     events = [Claim, Assign]
 
+    @classmethod
+    def assignable_users(cls):
+        return Account.find_by_attributes([(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)])
+
     def apply_stage(self):
         wf_control = self.workflow_control
         if wf_control.stage not in MODULE_TRIAGE_STAGES:
@@ -97,6 +101,10 @@ class AwaitingTriage(State):
 
 
 class TriageWorkingState(State):
+    @classmethod
+    def assignable_users(cls):
+        return Account.find_by_attributes([(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)])
+
     def do(self, action:WorkflowAction) -> State:
         if isinstance(action, ApplicationEdit):
             return self.do_edit(action)
