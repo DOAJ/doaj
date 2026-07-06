@@ -1779,6 +1779,8 @@ BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
 
+ANON_EXPORT_SKIP_LIST = ['ris_export', 'cache']
+
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
 HONEYPOT_TIMER_THRESHOLD = 5000
