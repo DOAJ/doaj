@@ -345,10 +345,10 @@ class AttributesQuery:
 
     def query(self):
         musts = []
-        for t, v in self._tup.items():
+        for t, v in self._tup:
             if not isinstance(v, list):
                 v = [v]
-            f = {"terms": {f"attribute.{t}.exact": v}}
+            f = {"terms": {f"attributes.{t}.exact": v}}
             musts.append(f)
 
         q = {

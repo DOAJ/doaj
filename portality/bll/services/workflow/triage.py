@@ -51,10 +51,14 @@ class AwaitingTriage(State):
 
     events = [Claim, Assign]
 
+    @classmethod
+    def assignable_users(cls):
+        return Account.find_by_attributes([(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)])
+
     def apply_stage(self):
         wf_control = self.workflow_control
         if wf_control.stage not in MODULE_TRIAGE_STAGES:
-            if wf_control.triage.has_minimal_review:
+            if wf_control.triage.review_complete:
                 wf_control.stage = MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
             else:
                 wf_control.stage = MODULE_TRIAGE_STAGE_IN_PROGRESS
@@ -90,13 +94,17 @@ class AwaitingTriage(State):
             self.application.remove_editor_group()
         self.application.set_editor(reviewer.id)
 
-        if wfc.triage.has_minimal_review:
+        if wfc.triage.review_complete:
             return self.transition(TriageAssessmentMinimalReview, actor)
         else:
             return self.transition(TriageAssessmentInProgress, actor)
 
 
 class TriageWorkingState(State):
+    @classmethod
+    def assignable_users(cls):
+        return Account.find_by_attributes([(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)])
+
     def do(self, action:WorkflowAction) -> State:
         if isinstance(action, ApplicationEdit):
             return self.do_edit(action)
@@ -202,10 +210,6 @@ class TriageAssessmentInProgress(TriageWorkingState):
     events = [Unclaim, Reassign, Unassign, Fail, MinimalReview]
     actions = [ApplicationEdit]
 
-    def apply(self):
-        super(TriageAssessmentInProgress, self).apply()
-        self.workflow_control.triage.has_minimal_review = False
-
     def do_edit(self, action:ApplicationEdit) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
         wfc = self.workflow_control
         reviewer_permission = wfc.reviewer_id == action.actor_id and wfc.reviewer.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
@@ -213,7 +217,7 @@ class TriageAssessmentInProgress(TriageWorkingState):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         # FIXME: where does has_minimal_review get calculated?
-        if self.workflow_control.triage.has_minimal_review:
+        if self.workflow_control.triage.review_complete:
             return self.event_minimal_review(MinimalReview(action.actor_id))
         else:
             return self
@@ -235,7 +239,6 @@ class TriageAssessmentInProgress(TriageWorkingState):
         if not (reviewer_permission or event.actor.has_role(constants.ROLE_ADMIN)):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
-        wfc.triage.has_minimal_review = True
         return self.transition(TriageAssessmentMinimalReview, event.actor)
 
 
@@ -250,10 +253,6 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
     events = [Triaged, Unclaim, Reassign, Unassign, Fail, RescindMinimalReview]
     actions = [ApplicationEdit]
 
-    def apply(self):
-        super(TriageAssessmentMinimalReview, self).apply()
-        self.workflow_control.triage.has_minimal_review = True
-
     def do_edit(self, action: ApplicationEdit) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
         wfc = self.workflow_control
         reviewer_permission = wfc.reviewer_id == action.actor_id and wfc.reviewer.has_attribute(
@@ -262,7 +261,7 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
         # FIXME: where does has_minimal_review get calculated?
-        if self.workflow_control.triage.has_minimal_review:
+        if self.workflow_control.triage.review_complete:
             return self
         else:
             return self.event_rescind_minimal_review(RescindMinimalReview(action.actor_id))
@@ -284,7 +283,6 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
         if not (reviewer_permission or event.actor.has_role(constants.ROLE_ADMIN)):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
-        wfc.triage.has_minimal_review = False
         return self.transition(TriageAssessmentInProgress, event.actor)
 
     def event_triaged(self, event: Triaged) -> Union["QuickFailAwaitingAssignment", "QualityReviewAwaitingAssignment"]:

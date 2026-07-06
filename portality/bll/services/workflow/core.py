@@ -1,5 +1,6 @@
 from typing import Union
 
+from portality import constants
 from portality.models import Account, WorkflowControl, Application, WorkflowControlStateQuery
 
 
@@ -15,6 +16,13 @@ class WorkflowEvent:
         if isinstance(self._actor, str):
             self._actor = Account.pull(self._actor)
         return self._actor
+
+    @actor.setter
+    def actor(self, actor:Union[str, Account]):
+        if isinstance(actor, str):
+            self._actor = Account.pull(actor)
+        else:
+            self._actor = actor
 
     @property
     def actor_id(self) -> str:
@@ -105,6 +113,10 @@ class State:
     @classmethod
     def query(cls):
         return WorkflowControlStateQuery(cls.module, cls.stage, cls.reviewer)
+
+    @classmethod
+    def assignable_users(cls):
+        return []
 
     @classmethod
     def enter(cls, actor:Union[str, Account],
@@ -227,7 +239,7 @@ class State:
                 return handler(event)
         raise ValueError(f"Unknown event '{event}' for state '{type(self).__name__}'")
 
-    def do(self, action:WorkflowAction):
+    def do(self, action:WorkflowAction) -> "State":
         return self
 
     def get_audit_record(self):

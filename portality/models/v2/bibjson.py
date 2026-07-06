@@ -168,6 +168,9 @@ class JournalLikeBibJSON(SeamlessMixin):
 
         self.__seamless__.add_to_list_with_struct("license", lobj)
 
+    def add_license_obj(self, license_object):
+        self.__seamless__.add_to_list_with_struct("license", license_object)
+
     def remove_licenses(self):
         self.__seamless__.delete("license")
 

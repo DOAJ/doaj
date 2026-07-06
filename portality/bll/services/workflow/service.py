@@ -77,6 +77,18 @@ class WorkflowService:
 
         return None
 
+    def state_for_application(self, application:Union[str, Application]) -> Union[State, None]:
+        if isinstance(application, str):
+            application = Application.pull(application)
+        if application is None:
+            return None
+
+        wfc = WorkflowControl.find_by_application(application.id)
+        if wfc is None:
+            return None
+
+        return self.state_for_workflow_control(wfc, application)
+
     def event(self, state_instance:State, event:WorkflowEvent) -> State:
         if event.__class__ not in state_instance.events:
             raise ValueError(f"Invalid event '{event}' for state '{type(state_instance).__name__}'")

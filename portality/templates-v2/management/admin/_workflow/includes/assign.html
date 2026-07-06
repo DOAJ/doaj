@@ -1,6 +1,21 @@
 <form action="{{ event.get_route() }}" method="post" style="margin-bottom: 0">
+    <input type="hidden" name="workflow_control" value="{{ wfc.id }}">
+    <input type="hidden" name="application" value="{{ application.id }}">
+    <input type="hidden" name="async" value="n">
+    <input type="hidden" name="onward" value="workflow.workflow_search">
+    <label for="assign_to">Assign to:</label>
     <select name="assign_to" id="assign_to">
-        <option value="">Assign to...</option>
+        <option value="">Select User...</option>
+        {% for account in state.assignable_users() %}
+            {% if account.id != wfc.reviewer_id %}
+                <option value="{{ account.id }}">
+                    {{ account.name }}
+                    ({{ account.id }})
+                    {{ account.role }}
+                    {{ account.attributes }}
+                </option>
+            {% endif %}
+        {% endfor %}
     </select>
-    <button class="assign" style="margin: 0 0 0 0">Assign</button>
+    <button type="submit" class="assign" style="margin: 0 0 0 0">Assign</button>
 </form>
