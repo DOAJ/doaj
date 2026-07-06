@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-from formulaic import engine
 from formulaic.serialise.form.core import FormSerialiser, FormDataParser
 from portality.bll import DOAJ
 from portality.bll.services.workflow.core import ApplicationEdit
@@ -10,6 +9,59 @@ from portality.forms.workflow.triage.forms import TriageForm, TriageSubmission
 from portality.models import Application, WorkflowControl
 from formulaic.core import DataProcessingResult
 
+# class TriageReadOnlyProcessor:
+#     def __init__(self, source_application:Application, source_wfc:WorkflowControl):
+#         self._source_application = source_application
+#         self._source_wfc = source_wfc
+#
+#         self.obj2form_xwalk = WorkflowControl2TriageForm()
+#         self.serialiser = FormSerialiser(context_id = "triage-ro")
+#
+#         self._form_inst:TriageSubmission = None
+#
+#         if self._source_application and self._source_wfc:
+#             self.source2forminstance()
+#
+#     ################################
+#     ## accessors
+#
+#     @property
+#     def source_application(self):
+#         return self._source_application
+#
+#     @property
+#     def source_workflow_control(self):
+#         return self._source_wfc
+#
+#     @property
+#     def form_instance(self):
+#         return self._form_inst
+#
+#     @form_instance.setter
+#     def form_instance(self, inst):
+#         self._form_inst = inst
+#
+#     ################################
+#     ## Data transformations
+#
+#     def source2forminstance(self):
+#         if not (self._source_wfc and self._source_application):
+#             raise ValueError("Must provide both source application and workflow control")
+#
+#         self.form_instance = self.obj2form_xwalk.transform(self._source_wfc, self._source_application)
+#
+#     ##########################
+#     ## Form serialisation
+#
+#     def render_form(self):
+#         form_html = self.serialiser.data_to_string(
+#             self.form_instance.data,
+#             self.form_instance.struct,
+#             application=self._source_application,
+#             wfc=self._source_wfc,
+#             errors=self.form_instance.validation_result
+#         )
+#         return form_html
 
 class TriageFormProcessor:
     def __init__(self, source_application:Application, source_wfc:WorkflowControl, raw_formdata:dict=None):
@@ -19,7 +71,7 @@ class TriageFormProcessor:
 
         self.form2obj_xwalk = TriageForm2WorkflowControl()
         self.obj2form_xwalk = WorkflowControl2TriageForm()
-        self.serialiser = FormSerialiser()
+        self.serialiser = FormSerialiser(context_id = "triage-form")
         self.parser = FormDataParser()
 
         self._form_inst:TriageSubmission = None
@@ -229,6 +281,9 @@ class TriageFormProcessor:
         set_severity(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
         set_severity(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
         set_severity(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+
+    ##########################
+    ## Form serialisation
 
     def render_form(self):
         form_html = self.serialiser.data_to_string(
