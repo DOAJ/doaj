@@ -698,6 +698,10 @@ DEFAULT_INDEX_SETTINGS = \
         }
     }
 
+# Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
+# Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
+INDEX_SETTINGS_OVERRIDES = {}
+
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
         {
