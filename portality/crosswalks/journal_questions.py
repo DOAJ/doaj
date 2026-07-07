@@ -252,8 +252,7 @@ class Journal2QuestionXwalk(object):
             return [_.strip() for _ in x.split(',')]
 
         def _comma_to_list_with_other(field_name, other_value="other"):
-            """ Returns a transform function that splits a comma-separated string into a list,
-            detecting values not in the valid choices and mapping them to 'other' + the _other field """
+            """ Detect values not in the valid choices and mapping them to 'other' field """
             valid_choices = [x for x, y in ApplicationFormFactory.choices_for(field_name)]
             def _transform(x):
                 items = [_.strip() for _ in x.split(',')]
