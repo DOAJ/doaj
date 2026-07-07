@@ -70,7 +70,7 @@ triage:
     ethics_no_false_doaj_claim:
       label: "False claim to be indexed in DOAJ"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal </strong>does not</strong> make a false claim to be indexed in DOAJ"
+        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> a false claim to be indexed in DOAJ"
         later: "I don't know - mark for later"
       check: "This journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
@@ -394,7 +394,7 @@ triage:
         - "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
       important: '<ul>
                   <li>Search <strong>both</strong> ISSNs (if available) in the journals admin site</li>
-                  <li>If there is a record in DOAJ that it is not currently indexed, click the <span class="answer action">There is a record in DOAJ that is not currently indexed</strong> and make a note of it (removal date, reasons and record’s URL)</li>
+                  <li>If there is a record in DOAJ that it is not currently indexed, click the <span class="answer action">There is a record in DOAJ that is not currently indexed</span> and make a note of it (removal date, reasons and record’s URL)</li>
                   </ul>'
       instructions: ''
       resources:
@@ -412,9 +412,9 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, this journal application <strong>does not</strong> have an active embargo"
         non_compliant: ""
         later: "I don't know - mark for later"
-        action: "This journal <strong>does have<strong> an active embargo from a previous rejection"
-        conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have<strong> an active embargo from a previous rejection, and <strong>no exceptions are noted</strong>"
-        conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have<strong> an active embargo from a previous rejection, but <strong>exceptions are noted</strong>"
+        action: "This journal <strong>does have</strong> an active embargo from a previous rejection"
+        conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, and <strong>no exceptions are noted</strong>"
+        conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, but <strong>exceptions are noted</strong>"
       check: "This journal <strong>application</strong> does <strong>not</strong> have an active embargo (6 month embargo from previous rejection)"
       exceptions:
         - "This journal was previously rejected due to ISSN not being confirmed and it is now."
@@ -487,7 +487,7 @@ triage:
         non_compliant: "<span class='answer'>Non-compliant</span>, it is a duplicate and <strong>there is a newer application</strong>"
         later: "I don't know - mark for later"
         action: "This is <strong>the most recent duplicate</strong> application"
-      check: ""
+      check: "This application is <strong>not</strong> a duplicate"
       important: "Keep the newest application or the one which is in progress and “Quick Reject” the others as duplicates"
       instructions: ''
       resources:
