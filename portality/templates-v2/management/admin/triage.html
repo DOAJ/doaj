@@ -24,6 +24,17 @@ fieldset > fieldset > legend {
 
 {% block admin_content %}
     <h1>Triage Form for {{ application.bibjson().title }}</h1>
+    {% if wfc.triage.recommendation %}
+        {% set rec = wfc.triage.recommendation %}
+        <p>Current Recommendation: {{ rec.code }}</p>
+        <p>Reasons:
+            <ul>
+            {% for reason in rec.reasons %}
+                <li>{{ reason.question }}: {{ reason.answer }} {% if reason.severity_value %}(SV:{{ reason.severity_value }}){% endif %}</li>
+            {% endfor %}
+            </ul>
+        </p>
+    {% endif %}
     {% autoescape off %}
         {{ form_html }}
     {% endautoescape %}

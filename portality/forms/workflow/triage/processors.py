@@ -136,6 +136,7 @@ class TriageFormProcessor:
         self._target_application = self._patch_application(partial_application)
         self._target_wfc = self._patch_wfc(partial_wfc)
         self._rationalise_answers(self._target_wfc)
+        self._calculate_recommendation(self._target_wfc)
 
     def blank_form(self):
         self.form_instance = TriageSubmission()
@@ -273,14 +274,108 @@ class TriageFormProcessor:
         set_exception(t.database_embargo_exception_content, R.database_embargo_exception_content)
 
         def set_severity(complyable, rule_source):
-            if "severity_value" in rule_source and complyable.compliant is False:
-                complyable.severity_value = rule_source.severity_value
+            if "severity_value" in rule_source:
+                if complyable.answer in rule_source.severity_value:
+                    complyable.severity_value = rule_source.severity_value[complyable.answer]
 
         # Next apply severity values
         set_severity(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
         set_severity(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
         set_severity(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
         set_severity(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+
+    def _calculate_recommendation(self, wfc:WorkflowControl):
+        t = wfc.triage
+        R = app.cms.workflow.triage.fields
+
+        def get_recommendation(field, config):
+            if "recommend" in config:
+                if field.answer is not None and field.answer in config.recommend:
+                    recommend = config.recommend[field.answer]
+                    return [{
+                        "code": recommend,
+                        "reasons": {
+                            "question": field.name,
+                            "answer": field.answer,
+                            "sv": field.severity_value,
+                            "exception": field.exception,
+                        }
+                    }]
+            return []
+
+        recs = []
+        recs += get_recommendation(t.ethics_not_excluded, R.ethics_not_excluded)
+        recs += get_recommendation(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
+        recs += get_recommendation(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
+        recs += get_recommendation(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
+        recs += get_recommendation(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+        recs += get_recommendation(t.database_withdrawn, R.database_withdrawn)
+        recs += get_recommendation(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
+        recs += get_recommendation(t.database_withdrawn_exception_website_unavailable,
+                       R.database_withdrawn_exception_website_unavailable)
+        recs += get_recommendation(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
+        recs += get_recommendation(t.database_embargo, R.database_embargo)
+        recs += get_recommendation(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
+        recs += get_recommendation(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
+        recs += get_recommendation(t.database_embargo_exception_website, R.database_embargo_exception_website)
+        recs += get_recommendation(t.database_embargo_exception_content, R.database_embargo_exception_content)
+        recs += get_recommendation(t.database_not_listed, R.database_not_listed)
+        recs += get_recommendation(t.database_not_duplicate, R.database_not_duplicate)
+        recs += get_recommendation(t.issn_at_least_one, R.issn_at_least_one)
+        recs += get_recommendation(t.issn_title_match, R.issn_title_match)
+        recs += get_recommendation(t.issn_continuation, R.issn_continuation)
+        recs += get_recommendation(t.website_working, R.website_working)
+        recs += get_recommendation(t.website_issn, R.website_issn)
+        recs += get_recommendation(t.website_url, R.website_url)
+        recs += get_recommendation(t.website_license_policy, R.website_license_policy)
+        recs += get_recommendation(t.website_copyright, R.website_copyright)
+        recs += get_recommendation(t.content_no_login, R.content_no_login)
+        recs += get_recommendation(t.content_no_embargo, R.content_no_embargo)
+        recs += get_recommendation(t.content_publish_enough, R.content_publish_enough)
+        recs += get_recommendation(t.content_unique_link, R.content_unique_link)
+        recs += get_recommendation(t.content_format, R.content_format)
+        recs += get_recommendation(t.content_new_journal, R.content_new_journal)
+        recs += get_recommendation(t.admin_metadata_review, R.admin_metadata_review)
+        recs += get_recommendation(t.admin_special_exception, R.admin_special_exception)
+
+        def evaluate_recommendations(recs):
+            r = []
+            qf = []
+            for rec in recs:
+                if rec["code"] == "reject":
+                    r.append(rec["reasons"])
+                elif rec["code"] == "quick_fail":
+                    qf.append(rec["reasons"])
+            return r, qf
+
+        reject, quick_fail = evaluate_recommendations(recs)
+
+        if len(reject) > 0:
+            t.recommend("reject", reject)
+            return
+
+        if len(quick_fail) > 0:
+            t.recommend("quick_fail", quick_fail)
+            return
+
+        severity = t.get_fields_with_non_zero_severity_value()
+        report = [
+            {
+                "question": s.name,
+                "answer": s.answer,
+                "sv": s.severity_value,
+                "exception": s.exception
+            }
+            for s in severity
+        ]
+        sv_total = t.total_severity_value
+
+        if sv_total < 3:
+            t.recommend("normal", report)
+        elif sv_total < 10:
+            t.recommend("maned", report)
+        else:
+            t.recommend("integrity_ethics", report)
 
     ##########################
     ## Form serialisation

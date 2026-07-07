@@ -35,8 +35,26 @@ TRIAGE_STRUCT = {
         "total_sv": {"coerce": "integer"},
         "last_visited_question": {"coerce": "unicode"},
     },
-    "objects": ["questions"],
+    "objects": ["questions", "recommendation"],
     "structs": {
+        "recommendation": {
+            "fields": {
+                "code": {"coerce": "unicode"},
+            },
+            "lists": {
+                "reasons": {"contains": "object"}
+            },
+            "structs": {
+                "reasons": {
+                    "fields": {
+                        "question": {"coerce": "unicode"},
+                        "answer": {"coerce": "unicode"},
+                        "sv": {"coerce": "integer"},
+                        "exception": {"coerce": "bool"}
+                    }
+                }
+            }
+        },
         "questions": {
             "fields": {
                 "admin_special_exception": {"coerce": "unicode"}
@@ -408,10 +426,15 @@ class TriageField(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_FIELD
     __SEAMLESS_COERCE__ = COERCE_MAP
 
-    def __init__(self, raw=None, parent:"Triage"=None, **kwargs):
+    def __init__(self, name, raw=None, parent:"Triage"=None, **kwargs):
         super(TriageField, self).__init__(raw=raw, **kwargs)
+        self._name = name
         self._parent = parent
         self._note = None
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def answer(self) -> str:
@@ -431,7 +454,7 @@ class TriageField(SeamlessMixin):
 
     @property
     def severity_value(self) -> int:
-        return self.__seamless__.get_single("sv")
+        return self.__seamless__.get_single("sv", 0)
 
     @severity_value.setter
     def severity_value(self, val):
@@ -439,7 +462,7 @@ class TriageField(SeamlessMixin):
 
     @property
     def exception(self) -> bool:
-        return self.__seamless__.get_single("exception")
+        return self.__seamless__.get_single("exception", False)
 
     @exception.setter
     def exception(self, val:bool):
@@ -508,12 +531,23 @@ class Triage(SeamlessMixin):
     def review_complete(self, val):
         self.__seamless__.set_single("has_minimal_review", val)
 
+    def recommend(self, code:str, reasons:list[dict]):
+        obj = {
+            "code": code,
+            "reasons": reasons
+        }
+        self.__seamless__.set_with_struct("recommendation", obj)
+
+    @property
+    def recommendation(self):
+        return self.__seamless__.get_single("recommendation")
+
     def _get_triage_field(self, field):
         t = self.__seamless__.get_single(f"questions.{field}")
         if t is None:
             self.__seamless__.set_single(f"questions.{field}", {})
             t = self.__seamless__.get_single(f"questions.{field}")
-        return TriageField(t, self)
+        return TriageField(field, t, self)
 
     def _set_triage_field(self, field:str, val:Union[dict, "TriageField"]):
         # note that if given a TriageField object this copies the contents, as the old
@@ -538,6 +572,14 @@ class Triage(SeamlessMixin):
     @property
     def total_severity_value(self):
         return self.__seamless__.get_single("total_sv")
+
+    def get_fields_with_non_zero_severity_value(self):
+        reg = []
+        questions = self.__seamless__.get_list("questions")
+        for field in questions:
+            if field.get("sv", 0) > 0:
+                reg = self._get_triage_field(field)
+        return reg
 
     def _set_question(self, field:str, value:bool, sv:int=None, exception:bool=None, note:"Note"=None):
         obj = {
