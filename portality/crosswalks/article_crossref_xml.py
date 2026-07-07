@@ -171,6 +171,7 @@ class CrossrefXWalk442(object):
         self.extract_issue(journal, bibjson)
         self.extract_pages(record, journal, bibjson)
         self.extract_doi(record, journal, bibjson)
+        self.extract_identifiers(record, journal, bibjson)
         self.extract_fulltext(record, journal, bibjson)
         self.extract_article_title(record, journal, bibjson)
         self.extract_authors(record, journal, bibjson)
@@ -283,6 +284,37 @@ class CrossrefXWalk442(object):
             doi = _element(d, "x:doi", self.NS)
             if doi is not None:
                 bibjson.add_identifier(bibjson.DOI, doi)
+
+    def extract_identifiers(self, record, journal, bibjson):
+        # this is used to extract item_number such as article number, eLocator, or e-location
+        # and capture other identifiers such as PII, DOI, DAI, report number
+        publisher_item = record.find("x:publisher_item", self.NS)
+        if publisher_item is not None:
+            ans = []
+            ans1 = publisher_item.findall("x:item_number", self.NS)
+            ans2 = publisher_item.findall("x:identifier", self.NS)
+            if ans1 is not None:
+                ans = ans + ans1
+            if ans2 is not None:
+                ans = ans + ans2
+            for an in ans:
+                typ = None
+                typ1 = an.attrib["item_number_type"]
+                typ2 = an.attrib["id_type"]
+                if typ1:
+                    typ = typ1
+                elif typ2:
+                    typ = typ2
+                if typ and typ.lower() in ["eLocator", "e-location"]:
+                    bibjson.add_identifier('e-location', an[0].text.upper())
+                elif typ and typ.lower() in bibjson.IDENTIFIER_TYPES:
+                    bibjson.add_identifier(typ.lower(), an[0].text.upper())
+                elif typ:
+                    # TODO - Do we capture identifiers of other types?
+                    bibjson.add_identifier(typ.lower(), an[0].text.upper())
+                else:
+                    # TODO - Do we capture identifiers of unknown type?
+                    bibjson.add_identifier(typ, an[0].text.upper())
 
     def extract_fulltext(self, record, journal, bibjson):
         d = record.find("x:doi_data", self.NS)

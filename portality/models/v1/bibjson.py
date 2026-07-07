@@ -5,6 +5,7 @@ class GenericBibJSON(dataobj.DataObj):
     # vocab of known identifier types
     P_ISSN = "pissn"
     E_ISSN = "eissn"
+    IDENTIFIER_TYPES = ['handle', 'ark', 'doi', 'urn', 'dor', 'purl', 'e-location']
     DOI = "doi"
 
     # allowable values for the url types
