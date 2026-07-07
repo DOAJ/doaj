@@ -14,7 +14,7 @@
             {{ compound.label }}
         </button>
     </h3>
-    <div id="{{ compound.name }}-body" class="col-md-12 criterion" style="display: none;">
+    <div id="{{ compound.name }}-body" class="col-md-12 criterion">
     {% if compound.capability.subfields %}
     {% set subfields = compound.capability.subfields %}
     {% set check_name = subfields["check"] %}
@@ -33,15 +33,3 @@
     {% endif %}
     </div>
 </section>
-
-<script>
-    window.toggleQuestion = function(wrapper, btn) {
-        if (btn.getAttribute("aria-expanded") === "true") {
-            document.getElementById(wrapper).style.display = 'none';
-            btn.setAttribute("aria-expanded", "false")
-        } else {
-            document.getElementById(wrapper).style.display = 'block';
-            btn.setAttribute("aria-expanded", "true")
-        }
-    }
-</script>

@@ -21,6 +21,9 @@ ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 ########
 ## Compliance check capability, field, and associated renderers
 
+class DummyRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_TRIAGE_DUMMY
+
 class RadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_RADIO
 
@@ -49,13 +52,13 @@ class ComplianceCheckCapability(FormFieldCapability):
     control_render_class = TriageRadioRenderer
     render_class = TriageComplianceCheckFieldRenderer
 
+
 class ComplianceCheckField(Field):
     coerce = [Unicode()]
     validators = [LimitToFormOptions()]
 
 #######
 ## Generic notes capability and field
-
 class NoteCapability(FormFieldCapability):
     label = "Note"
     placeholder = "Add a note ..."
@@ -70,6 +73,9 @@ class NoteCapability(FormFieldCapability):
 class GeneralNoteCapability(NoteCapability):
     label = "Notes (optional)"
     placeholder = "You can add any notes related to this question here..."
+
+class DummyNote(NoteCapability):
+    render_class = DummyRenderer
 
 class NoteField(Field):
     coerce = [Unicode()]
@@ -359,7 +365,7 @@ class DatabaseWithdrawnGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_withdrawn.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.database_withdrawn.validation.group.is_conditionally_required
         }
@@ -389,19 +395,22 @@ class DatabaseWithdrawnIgnoreEmbargo(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "database_withdrawn_exception_ignore_embargo"
     capabilities = (C(),)
 
 class DatabaseWithdrawnIgnoreEmbargoNote(NoteField):
     name = "database_withdrawn_exception_ignore_embargo_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class DatabaseWithdrawnIgnoreEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_withdrawn_exception_ignore_embargo.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "database_withdrawn_exception_ignore_embargo_group"
     capabilities_ = (C(),)
@@ -419,19 +428,22 @@ class DatabaseWithdrawnWebsiteUnavailable(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "database_withdrawn_exception_website_unavailable"
     capabilities = (C(),)
 
 class DatabaseWithdrawnWebsiteUnavailableNote(NoteField):
     name = "database_withdrawn_exception_website_unavailable_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class DatabaseWithdrawnWebsiteUnavailableGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_withdrawn_exception_website_unavailable.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "database_withdrawn_exception_website_unavailable_group"
     capabilities_ = (C(),)
@@ -449,19 +461,22 @@ class DatabaseWithdrawnContent(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "database_withdrawn_exception_content"
     capabilities = (C(),)
 
 class DatabaseWithdrawnContentNote(NoteField):
     name = "database_withdrawn_exception_content_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class DatabaseWithdrawnContentGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_withdrawn_exception_content.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "database_withdrawn_exception_content_group"
     capabilities_ = (C(),)
@@ -496,7 +511,7 @@ class DatabaseEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_embargo.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.database_embargo.validation.group.is_conditionally_required
         }
@@ -524,19 +539,22 @@ class DatabaseEmbargoISSN(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "database_embargo_exception_issn"
     capabilities = (C(),)
 
 class DatabaseEmbargoISSNNote(NoteField):
     name = "database_embargo_exception_issn_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class DatabaseEmbargoISSNGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_embargo_exception_issn.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "database_embargo_exception_issn_group"
     capabilities_ = (C(),)
@@ -554,19 +572,22 @@ class DatabaseEmbargoManed(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "database_embargo_exception_note"
     capabilities = (C(),)
 
 class DatabaseEmbargoManedNote(NoteField):
     name = "database_embargo_exception_maned_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class DatabaseEmbargoManedGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_embargo_exception_maned.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "database_embargo_exception_maned_group"
     capabilities_ = (C(),)
@@ -584,19 +605,22 @@ class DatabaseEmbargoWebsite(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "database_embargo_exception_website"
     capabilities = (C(),)
 
 class DatabaseEmbargoWebsiteNote(NoteField):
     name = "database_embargo_exception_website_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class DatabaseEmbargoWebsiteGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_embargo_exception_website.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "database_embargo_exception_website_group"
     capabilities_ = (C(),)
@@ -614,19 +638,22 @@ class DatabaseEmbargoContent(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "database_embargo_exception_content"
     capabilities = (C(),)
 
 class DatabaseEmbargoContentNote(NoteField):
     name = "database_embargo_exception_content_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class DatabaseEmbargoContentGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_embargo_exception_content.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "database_embargo_exception_content_group"
     capabilities_ = (C(),)
@@ -656,7 +683,7 @@ class DatabaseNotListedGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_not_listed.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "database_not_listed_group"
     capabilities_ = (C(),)
@@ -686,7 +713,7 @@ class DatabaseNotDuplicateGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_not_duplicate.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "database_not_duplicate_group"
     capabilities_ = (C(),)
@@ -732,7 +759,8 @@ class EISSN(Field):
         label = T.issn_at_least_one.edit.eissn
         control_class = TextInput
         control_render_class = GenericControl
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
@@ -748,7 +776,8 @@ class PISSN(Field):
         label = T.issn_at_least_one.edit.pissn
         control_class = TextInput
         control_render_class = GenericControl
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
@@ -830,7 +859,8 @@ class Title(Field):
         label = T.issn_title_match.edit.title
         control_class = TextInput
         control_render_class = GenericControl
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             DisallowedValue: T.issn_title_match.validation.title.disallowed_value,
             IsRequired: T.issn_title_match.validation.title.is_required
@@ -849,7 +879,7 @@ class ISSNTitleMatchGroup(Structure):
             "title",
             "note"
         ]
-        render_class = GenericCompound
+        render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.issn_title_match.validation.group.is_conditionally_required
         }
@@ -895,7 +925,8 @@ class Continues(Field):
         label = T.issn_continuation.edit.continues
         control_class = TextInput
         control_render_class = GenericControl
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             RegexDoesNotMatch: T.issn_continuation.validation.continues.regex_not_match
         }
@@ -913,7 +944,7 @@ class ISSNContinuationGroup(Structure):
             "continues",
             "note"
         ]
-        render_class = GenericCompound
+        render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.issn_continuation.validation.group.is_conditionally_required
         }
@@ -954,7 +985,7 @@ class WebsiteWorkingGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.website_working.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "website_working_group"
     capabilities_ = (C(),)
@@ -984,7 +1015,7 @@ class WebsiteISSNGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.website_issn.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "website_issn_group"
     capabilities_ = (C(),)
@@ -1014,7 +1045,7 @@ class WebsiteURLGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.website_url.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "website_url_group"
     capabilities_ = (C(),)
@@ -1061,7 +1092,8 @@ class License(Field):
             {"label": "Publisher's own license", "value": "Publisher's own license"}
         ]
         control_render_class = CheckboxRenderer
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             IsRequired: T.website_license_policy.validation.license.is_required,
             DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
@@ -1084,7 +1116,8 @@ class LicenseAttribute(Field):
             {"label": "No Commercial Usage", "value": "NC"}
         ]
         control_render_class = CheckboxRenderer
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             DisallowedValue: T.website_license_policy.validation.license_attribute.disallowed_value,
             IsConditionallyRequired: T.website_license_policy.validation.license_attribute.is_conditionally_required
@@ -1100,7 +1133,8 @@ class LicenseURL(Field):
         label = T.website_license_policy.edit.license_url
         control_class = URLInput
         control_render_class = GenericControl
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             IsRequired: T.website_license_policy.validation.license_url.is_required,
             DisallowedValue: T.website_license_policy.validation.license_url.disallowed_value
@@ -1121,7 +1155,7 @@ class WebsiteLicensePolicyGroup(Structure):
             "license_url",
             "note"
         ]
-        render_class = GenericCompound
+        render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.website_license_policy.validation.group.is_conditionally_required
         }
@@ -1178,7 +1212,8 @@ class CopyrightAuthorRetains(Field):
             {"label": "No", "value": "n"}
         ]
         control_render_class = RadioRenderer
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             DisallowedValue: T.website_copyright.validation.copyright_author_retains.disallowed_value,
             IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
@@ -1194,7 +1229,8 @@ class CopyrightURL(Field):
         label = T.website_copyright.edit.copyright_url
         control_class = URLInput
         control_render_class = GenericControl
-        render_class = GenericField
+        # render_class = GenericField
+        render_class = DummyRenderer
         error_messages = {
             IsRequired: T.website_copyright.validation.copyright_url.is_required,
             DisallowedValue: T.website_copyright.validation.copyright_url.disallowed_value
@@ -1214,7 +1250,7 @@ class WebsiteCopyrightGroup(Structure):
             "copyright_url",
             "note"
         ]
-        render_class = GenericCompound
+        render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.website_copyright.validation.group.is_conditionally_required
         }
@@ -1256,7 +1292,7 @@ class ContentNoLoginGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.content_no_login.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "content_no_login_group"
     capabilities_ = (C(),)
@@ -1286,7 +1322,7 @@ class ContentNoEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.content_no_embargo.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "content_no_embargo_group"
     capabilities_ = (C(),)
@@ -1316,7 +1352,7 @@ class ContentPublishEnoughGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.content_publish_enough.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "content_publish_enough_group"
     capabilities_ = (C(),)
@@ -1346,7 +1382,7 @@ class ContentUniqueLinkGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.content_unique_link.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "content_unique_link_group"
     capabilities_ = (C(),)
@@ -1376,7 +1412,7 @@ class ContentFormatGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.content_format.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "content_format_group"
     capabilities_ = (C(),)
@@ -1406,7 +1442,7 @@ class ContentNewJournalGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.content_new_journal.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "content_new_journal_group"
     capabilities_ = (C(),)
@@ -1436,7 +1472,7 @@ class AdminMetadataReviewGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.admin_metadata_review.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        render_class = TriageCompound
 
     name_ = "admin_metadata_review_group"
     capabilities_ = (C(),)
@@ -1454,19 +1490,22 @@ class AdminSpecialException(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        render_class = DummyRenderer
 
     name = "admin_special_exception"
     capabilities = (C(),)
 
 class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
+    capabilities = (DummyNote(),)
 
 class AdminSpecialExceptionGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.admin_special_exception.label
         order = ["answer", "note"]
-        render_class = GenericCompound
+        # render_class = TriageCompound
+        render_class = DummyRenderer
 
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)
