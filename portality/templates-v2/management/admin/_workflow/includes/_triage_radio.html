@@ -54,13 +54,14 @@
     {% set compliance_class="" %}
     {% if input %}
         {% set compliance = input.attrs.value %}
-        {% if compliance == "compliant" %}
+        {% set label = control.label.content %}
+        {% if compliance == "compliant" and label %}
             {% set ns.compliant_answer = control %}
-        {% elif compliance == "non_compliant" %}
+        {% elif compliance == "non_compliant" and label %}
             {% set ns.noncompliant_answer = control %}
-        {% elif compliance == "later" %}
+        {% elif compliance == "later" and label %}
             {% set ns.later_answer = control %}
-        {% elif compliance == "action" %}
+        {% elif compliance == "action" and label %}
             {% set ns.action_answer = control %}
         {% endif %}
     {% endif %}
