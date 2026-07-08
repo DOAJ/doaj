@@ -100,6 +100,7 @@ WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_clai
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
 WORKFLOW_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_checkbox.html"
 WORKFLOW_TRIAGE_CONTROL_RADIO = "management/admin/_workflow/includes/_triage_radio.html"
+WORKFLOW_TRIAGE_EXCEPTIONS_LIST = "management/admin/_workflow/includes/_triage_exceptions_list.html"
 WORKFLOW_TRIAGE_DUMMY = "management/admin/_workflow/includes/dummy.html"
 
 WORKFLOW_GENERIC_FIELDSET = "management/admin/_workflow/includes/_generic_fieldset.html"

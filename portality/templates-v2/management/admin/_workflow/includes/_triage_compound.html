@@ -16,17 +16,21 @@
     </h3>
     <div id="{{ compound.name }}-body" class="col-md-12 criterion">
         {% set els = namespace(
-        check=None,
-        note=None
+            check=None,
+            note=None,
+            action=None
         ) %}
         {% for element in compound.elements %}
         {% if element.capability.role == "check" %}
         {% set els.check = element %}
         {% elif element.capability.role == "note" %}
         {% set els.note = element %}
+        {% elif element.capability.role == "action" %}
+        {% set els.action = element %}
         {% endif %}
         {% endfor %}
         {% autoescape off %}
+        <p style="color: red">{{ els.action.label }}</p>
         <section class="criterion col-md-12">
             <div class="row">
                 <div class="col-md-7">
@@ -79,7 +83,7 @@
                         {% endif %}
 
                         {% if els.note %}
-                        {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}
+                            {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}
                         {% endif %}
                     </aside>
                 </div>
@@ -87,7 +91,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <fieldset class="review-outcome">
+                    <fieldset style="flex-direction: column;">
                         <legend class="sr-only">Review outcome</legend>
                         {% set cr = els.check.capability.get_control_renderer() %}
                         {{ cr.draw(els.check.control) }}
@@ -96,10 +100,9 @@
             </div>
             {% if els.action %}
             <div class="row">
-                <div class="col-md-7">
-                    {{ els.action.renderer.draw(els.action, application=application, wfc=wfc) }}
-                    {% set ar = els.action.capability.get_control_renderer() %}
-                    {{ ar.draw(els.action.control) }}
+
+                <div class="col-md-7" style="background-color: yellow">
+                    {{ els.action.renderer.draw(element, application=application, wfc=wfc) }}
                 </div>
             </div>
             {% endif %}

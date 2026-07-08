@@ -133,7 +133,7 @@ triage:
 
     database_withdrawn_exception_ignore_embargo:
       label: "Journal withdrawn - Mg. Ed. note"
-      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+      check: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
       instructions: ""
       resources:
         - label: "DOAJ Journals database"
@@ -184,6 +184,10 @@ triage:
       - "no"
       exception_answers:
       - "yes"
+
+    database_withdrawn_exceptions:
+      label: "Journal withdrawn exceptions"
+      check: "Do any exceptions apply?"
 
     database_embargo_exception_issn:
       label: "Previous application rejection - uncorfirmed ISSN"

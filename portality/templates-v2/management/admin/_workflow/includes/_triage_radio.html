@@ -45,7 +45,9 @@
     compliant_answer=None,
     noncompliant_answer=None,
     later_answer=None,
-    action_answer=None
+    action_answer=None,
+    conditional_compliant=None,
+    conditional_non_compliant=None,
 ) %}
 
 {% for control in controls %}
@@ -63,6 +65,10 @@
             {% set ns.later_answer = control %}
         {% elif compliance == "action" and label %}
             {% set ns.action_answer = control %}
+        {% elif compliance == "conditional_compliant" and label %}
+            {% set ns.conditional_compliant = control %}
+        {% elif compliance == "conditional_non_compliant" and label %}
+            {% set ns.conditional_non_compliant = control %}
         {% endif %}
     {% endif %}
 
@@ -80,6 +86,7 @@
 {% set action_icon %}
   {% include "management/admin/_workflow/includes/icons/action-answer.html" %}
 {% endset %}
+
 {% if ns.compliant_answer %}
 {% set control = ns.compliant_answer %}
 {% set input = control.control %}
@@ -93,7 +100,7 @@
     {{ control.label.content | safe }}
   </span>
 {% endset %}
-
+<div class="basic-options review-outcome" style="display: flex; flex-direction: row;">
 {% if input.content %}
     {% set content.value=render_content(input.content) %}
 {% endif %}
@@ -168,6 +175,54 @@
         {% endif %}
     </div>
 {% endif %}
+</div>
+<div class="conditional-options review-outcome" style="display: flex; flex-direction: row;">
+    {% if ns.conditional_compliant %}
+{% set control = ns.conditional_compliant %}
+{% set input = control.control %}
+{% set content = {"value": ""} %}
+
+{% set compliant_label %}
+  {{ compliant_icon | safe }}
+  <span class="label-text">
+    {{ control.label.content | safe }}
+  </span>
+{% endset %}
+
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+    <div class="radio-option compliant">
+            {{ make_tag(input, content.value, extra_class="sr-only") }}
+        {% if control.label %}
+            {{ make_tag(control.label, compliant_label) }}
+        {% endif %}
+    </div>
+{% endif %}
+
+{%- if ns.conditional_non_compliant -%}
+{% set control = ns.conditional_non_compliant %}
+{% set input=control.control %}
+{% set noncompliant_label %}
+  {{ noncompliant_icon | safe }}
+  <span class="label-text">
+    {{ control.label.content | safe }}
+  </span>
+{% endset %}
+
+{% set content = {"value": ""} %}
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+    <div class="radio-option noncompliant">
+            {{ make_tag(input, content.value, "sr-only") }}
+        {% if control.label %}
+            {{ make_tag(control.label, noncompliant_label) }}
+        {% endif %}
+    </div>
+{% endif %}
+
+</div>
 
 {% set group_name = input.attrs.name %}
 {% set button_id = input.attrs.name ~ "-change" %}
