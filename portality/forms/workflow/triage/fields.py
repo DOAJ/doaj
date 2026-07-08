@@ -8,7 +8,7 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
-from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, GenericControl, GenericField, \
+from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, GenericControl, GenericField, \
     GenericCompound
 from portality.ui import templates
 
@@ -21,7 +21,7 @@ ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 ########
 ## Compliance check capability, field, and associated renderers
 
-class ExceptionListRenderer(JinjaFieldRenderer):
+class ExceptionListRenderer(JinjaCompoundRenderer):
     template = templates.WORKFLOW_TRIAGE_EXCEPTIONS_LIST
 
 class DummyRenderer(JinjaFieldRenderer):
@@ -33,7 +33,7 @@ class RadioRenderer(JinjaControlRenderer):
 class TriageRadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_TRIAGE_CONTROL_RADIO
 
-class CheckboxRenderer(JinjaControlRenderer):
+class CheckboxRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_CONTROL_CHECKBOX
 
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):

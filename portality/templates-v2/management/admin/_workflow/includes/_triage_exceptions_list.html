@@ -1,1 +1,5 @@
-<h1>Here will be exceptions</h1>
+{% autoescape off %}
+{% for element in compound.elements %}
+{{ element.renderer.draw(element, application=application, wfc=wfc) }}
+{% endfor %}
+{% endautoescape %}

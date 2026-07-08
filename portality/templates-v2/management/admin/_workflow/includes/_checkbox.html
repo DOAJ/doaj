@@ -34,8 +34,7 @@
     {% endif %}
 {%- endmacro %}
 
-    <p style="color: blue">{{ field }}</p>
-    {% set input=controls.control %}
+    {% set input=field.control %}
     {% set content = {"value": ""} %}
     {% if input.content %}
         {% set content.value=render_content(input.content) %}
@@ -44,6 +43,6 @@
     {% autoescape off %}
         {{ make_tag(input, content.value) }}
     {% endautoescape %}
-    {% if controls.label %}
-        {{ make_tag(controls.label, controls.label.content) }}
+    {% if field.label %}
+        {{ make_tag(field.label, field.label.content) }}
     {% endif %}

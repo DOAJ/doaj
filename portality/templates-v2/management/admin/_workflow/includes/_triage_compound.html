@@ -9,7 +9,7 @@
                 class="accordion-btn--secondary col-md-12"
                 aria-expanded="true"
                 aria-controls="{{ compound.name }}-body"
-                onclick="toggleQuestion('{{ compound.name }}-body', this);"
+
         >
             {{ compound.label }}
         </button>
@@ -29,8 +29,8 @@
         {% set els.action = element %}
         {% endif %}
         {% endfor %}
+
         {% autoescape off %}
-        <p style="color: red">{{ els.action.label }}</p>
         <section class="criterion col-md-12">
             <div class="row">
                 <div class="col-md-7">
@@ -74,7 +74,7 @@
                         {% endif %}
 
                         {% if els.check.capability.resources|length > 0 %}
-                        <h5><span data-feather="book" class="icon" aria-hidden="true">></span>Resources</h5>
+                        <h5><span data-feather="book" class="icon" aria-hidden="true"></span>Resources</h5>
                         <ul>
                             {% for resource in els.check.capability.resources %}
                             <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
@@ -100,9 +100,8 @@
             </div>
             {% if els.action %}
             <div class="row">
-
-                <div class="col-md-7" style="background-color: yellow">
-                    {{ els.action.renderer.draw(element, application=application, wfc=wfc) }}
+                <div class="col-md-7">
+                    {{ els.action.renderer.draw(els.action, application=application, wfc=wfc) }}
                 </div>
             </div>
             {% endif %}
