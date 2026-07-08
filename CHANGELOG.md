@@ -2,6 +2,10 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.6.4
+
+Show complete date in Admin background jobs search interface
+
 ### 8.6.3
 
 Fix for JournalCSV - initialise internationalisation in background job processor.

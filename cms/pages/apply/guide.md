@@ -212,7 +212,7 @@ The best practices in this section are about publishing standards based on finda
 Journals should publish a policy on the use of [automated tools](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06080-6) by authors, peer reviewers and editors. This includes generative artificial intelligence (AI) such as large-language models (LLMs, including many chatbots), which create new content based on training data. At a minimum the policy should include:
 
 -  For authors:  
-  - Authors should disclose the use of generatve AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/).
+  - Authors should disclose the use of generative AI in preparing the article, [beyond straightforward language correction, editing and formatting](https://stm-assoc.org/document/stm-generative-ai-paper-2023/).
   - Authors are responsible for checking the validity of the output of any automated tools used in their research and preparing their manuscript.
   - Automated tools cannot be [credited as authors](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools).
   - Generative AI cannot be cited as a source.
@@ -237,8 +237,8 @@ Journals should publish a policy on the use of [automated tools](https://bmcresn
 
 ### Time from submission to decision
 
-The time from submission to decision varies greatly and depends on the responsiveness of the journal contact and/or applicant. Generally, a decision is reached within three months.
-We cannot provide a status update for applications which are less than three months old.
+The time from submission to decision varies greatly and depends on the responsiveness of the journal contact and/or applicant. Generally, a decision is reached within six months.
+We cannot provide a status update for applications which are less than six months old.
 
 
 ---
@@ -313,11 +313,13 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 Our guide to applying is available in several languages. Below is a list of translations, please note that not all translations include the latest changes made to the Guide.
 
-### Version 2.7
-- [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
-- [Chinese](https://docs.google.com/document/d/1SAzNH-RWGQVc_3EMe7t5Gud_813s6m14/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+### Version 2.8
+- [Chinese](https://docs.google.com/document/d/1MwiODuiinngP4fZVufR_RgF9vyztlALy/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 - [Portuguese](https://docs.google.com/document/d/11uNQ6hnFONazdHz-jmVL-fP1uH-yGN-q/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 - [Spanish](https://docs.google.com/document/d/1M1zEdjUXmmHxQT6fZ051N-im2n7e9giz5s9mqoMvkOw/edit?usp=sharing)
+
+### Version 2.7
+- [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 
 ### Version 2.5
 

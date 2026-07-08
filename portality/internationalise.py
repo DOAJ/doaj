@@ -8,7 +8,8 @@ DEFAULT_TIMEZONE = "UTC"
 LANGUAGES = ['en', 'fr']
 INCLUDE_ROUTES = {
         'apply',
-        'account/login'
+        'account/login',
+        'apply/thank-you'
     }
 
 def locale_middleware_with_query_params():

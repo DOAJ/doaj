@@ -1,0 +1,18 @@
+{# templates/email/login_code.txt.jinja2 #}
+
+Hello,
+
+Click the link below to log in securely. This link will expire in {{ expiry_minutes }} minutes.
+
+Log in to your account ( {{ login_url }} )
+
+If the link above doesn't work, copy and paste this link into your browser.
+
+Alternatively you can enter this code on the website:
+
+{{ code }}
+
+If you didn't request this login code, please ignore this email.
+
+Best regards,
+DOAJ Team

@@ -52,7 +52,8 @@ class BackgroundApi(object):
         job = background_task.background_job
         ctx = None
         acc = None
-        internationalise.internationalise(app)
+        if not hasattr(app, 'babel'):
+            internationalise.internationalise(app)
         if job.user is not None:
             ctx = app.test_request_context("/")
             ctx.push()
