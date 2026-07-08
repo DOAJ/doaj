@@ -102,6 +102,41 @@ def triage_form(application_id):
             return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application,
                                    wfc=wfc)
 
+@blueprint.route("/triage-form/<application_id>/async/<wfc_id>", methods=["POST"])
+@login_required
+@ssl_required
+@write_required()
+def triage_form_async(application_id, wfc_id):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+        abort(403)
+
+    application = models.Application.pull(application_id)
+    if application is None:
+        abort(404)
+
+    wfc = models.WorkflowControl.pull(wfc_id)
+    if wfc.application_id != application_id:
+        abort(400)
+
+    formdata = dicts.multidict_2_dict(request.form)
+    processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=formdata)
+    valid = processor.validate()
+    if valid:
+        try:
+            processor.finalise(current_user._get_current_object())
+        except AuthoriseException:
+            abort(401)
+
+        recommendation = processor.recommendation()
+        resp = make_response(json.dumps({"recommendation": recommendation}))
+        resp.mimetype = "application/json"
+        return resp
+
+    else:
+        validation_messages = processor.validation_report()
+        resp = make_response(json.dumps({"validation": validation_messages}))
+        resp.mimetype = "application/json"
+        return resp
 
 ####################################
 ## Workflow actions

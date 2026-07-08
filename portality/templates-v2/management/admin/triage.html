@@ -24,6 +24,7 @@ fieldset > fieldset > legend {
 
 {% block admin_content %}
     <h1>Triage Form for {{ application.bibjson().title }}</h1>
+    <div id="triage-async-response"></div>
     {% if wfc.triage.recommendation %}
         {% set rec = wfc.triage.recommendation %}
         <p>Current Recommendation: {{ rec.code }}</p>
@@ -41,5 +42,9 @@ fieldset > fieldset > legend {
 {% endblock %}
 
 {% block admin_js %}
-
+    <script type="text/javascript" src="/static/js/triage.js"></script>
+    <script type="text/javascript">
+        doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
+        doaj.triage.init();
+    </script>
 {% endblock %}

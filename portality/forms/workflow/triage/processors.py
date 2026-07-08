@@ -389,3 +389,10 @@ class TriageFormProcessor:
             errors=self.form_instance.validation_result
         )
         return form_html
+
+    def validation_report(self):
+        pass
+
+    def recommendation(self):
+         return self.target_workflow_control.triage.recommendation
+
