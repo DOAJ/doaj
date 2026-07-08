@@ -40,6 +40,7 @@ class TriageCompound(GenericCompound):
     template = templates.WORKFLOW_TRIAGE_COMPOUND
 
 class ComplianceCheckCapability(FormFieldCapability):
+    role = "check"
     label = "Compliance"
 
     check = None
@@ -60,6 +61,7 @@ class ComplianceCheckField(Field):
 #######
 ## Generic notes capability and field
 class NoteCapability(FormFieldCapability):
+    role = "note"
     label = "Note"
     placeholder = "Add a note ..."
     repeatable_label = "Notes"
@@ -136,7 +138,7 @@ class EthicsNotExcluded(ComplianceCheckField):
 
 class EthicsNotExcludedNote(NoteField):
     name = "ethics_not_excluded_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (GeneralNoteCapability(),)
 
 class EthicsNotExcludedGroup(Structure):
     class C(CompoundFieldCapability):
