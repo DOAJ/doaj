@@ -10,10 +10,10 @@
                     <span class="data data--url"><a href="{{ application.bibjson().journal_url }}" target="_blank"><span
                             data-feather="link" class="icon"></span>{{ application.bibjson().journal_url }}</a></span>
                     <span class="data data--country"><span data-feather="globe" class="icon"></span><span
-                            class="placeholder">country tag</span></a></span>
-                    <span class="data data--lang"><span><img src="/static/doaj/images/feather-icons/language.svg"
+                            class="placeholder">{{ datasets.get_country_name(application.bibjson().publisher_country) }}</span></span>
+                    <span class="data data--lang"><span><img alt="Language" src="/static/doaj/images/feather-icons/language.svg"
                                                              class="icon" style="height: 1.25rem; width: auto;"/></span><span
-                            class="placeholder">language tag</span></a></span>
+                            class="placeholder">{{ application.bibjson().language_name()|join(", ") }}</span></span>
                 </div>
             </div>
         </div>
