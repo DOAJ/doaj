@@ -79,6 +79,57 @@ tests:
         results:
           - Confirm the metadata of "Success 400" article has not change
 
+  - title: Checking required field validation
+    context:
+      role: Admin
+    depends:
+      - suite: Admin Article Metadata Form
+        testset: Admin Article Metadata Form
+        test: Updating data other then DOI and Fulltext URL
+    steps:
+      - step: Open "Success 400" article metadata form
+      - step: Clear the "Article title" field, leaving everything else unchanged, and
+          click "Update Article" button
+        results:
+          - Error "This field is required." is shown under the Article title field
+          - The article is not updated
+      - step: Restore the title to "Success 400". Clear both the "DOI" and "Full-text URL"
+          fields, then click "Update Article" button
+        results:
+          - Error "You must provide the DOI or the Full-Text URL" is shown under the DOI
+            field
+          - Error "You must provide the Full-Text URL or the DOI" is shown under the
+            Full-text URL field
+          - The article is not updated
+      - step: Restore the DOI to 10.1234/400 and leave the Full-text URL empty. Set both
+          the "Print" and "Online" ISSN dropdowns to the same ISSN (e.g. 1234-5678), then
+          click "Update Article" button
+        results:
+          - Error "The Print and Online ISSNs supplied are identical. If you supply 2
+            ISSNs they must be different." is shown under both the Print and Online ISSN
+            fields
+          - The article is not updated
+      - step: Set the "Print" and "Online" ISSN dropdowns back to two different valid
+          ISSNs (1234-5678 and 9876-5432). Set both dropdowns to "Select an ISSN" (i.e.
+          leave both blank), then click "Update Article" button
+        results:
+          - Error "Either this field or Online ISSN is required" is shown under the Print
+            ISSN field
+          - Error "Either this field or Print ISSN is required" is shown under the Online
+            ISSN field
+          - The article is not updated
+      - step: Restore the Print and Online ISSN fields to valid, different values. Clear
+          the "Name" field of the only author (do not click "Remove Author"), then click
+          "Update Article" button
+        results:
+          - Error "Please provide at least one author" is shown in the Authors section
+          - The article is not updated
+      - step: Fill in a name for the author, and confirm all other fields are valid, then
+          click "Update Article" button
+        results:
+          - Green banner saying "Article created/updated" is shown at the top of the page
+          - The article's data matches what was entered
+
   - title: Change DOI and Fulltext URL
     context:
       role: Admin
