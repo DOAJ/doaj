@@ -698,6 +698,10 @@ DEFAULT_INDEX_SETTINGS = \
         }
     }
 
+# Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
+# Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
+INDEX_SETTINGS_OVERRIDES = {}
+
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
         {
@@ -1778,6 +1782,8 @@ AUTO_ASSIGN_EDITOR_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1EDves
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+ANON_EXPORT_SKIP_LIST = ['ris_export', 'cache']
 
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
