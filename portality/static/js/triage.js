@@ -7,7 +7,12 @@ doaj.triage.init = function() {
     $(document).on("click", "#checkBtn", function (event) {
         event.preventDefault();
         doaj.triage.asyncFormSubmit();
-    })
+    });
+
+    $(document).on("click", "#submitBtn", function (event) {
+        event.preventDefault();
+        doaj.triage.fullFormSubmit(this);
+    });
 }
 
 doaj.triage.asyncFormSubmit = function() {
@@ -39,4 +44,21 @@ doaj.triage.asyncFormSubmit = function() {
         };
         $response.html("<pre>" + JSON.stringify(errorPayload, null, 2) + "</pre>");
     });
+}
+
+doaj.triage.fullFormSubmit = function(submitter) {
+    let $form = $("#triage");
+    let $response = $("#triage-async-response");
+
+    if ($form.length === 0) {
+        $response.html("<pre>Unable to find form with id 'triage'.</pre>");
+        return;
+    }
+
+    // Submit the form directly (button is outside the form)
+    $form[0].submit();
+}
+
+doaj.triage.progress = function() {
+
 }

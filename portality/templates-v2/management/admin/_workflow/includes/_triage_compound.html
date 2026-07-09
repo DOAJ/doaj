@@ -18,16 +18,19 @@
         {% set els = namespace(
             check=None,
             note=None,
-            action=None
+            action=None,
+            specials=[]
         ) %}
         {% for element in compound.elements %}
-        {% if element.capability.role == "check" %}
-        {% set els.check = element %}
-        {% elif element.capability.role == "note" %}
-        {% set els.note = element %}
-        {% elif element.capability.role == "action" %}
-        {% set els.action = element %}
-        {% endif %}
+            {% if element.capability.role == "check" %}
+                {% set els.check = element %}
+            {% elif element.capability.role == "note" %}
+                {% set els.note = element %}
+            {% elif element.capability.role == "action" %}
+                {% set els.action = element %}
+            {% elif element.capability.role == "special" %}
+                {% set els.specials = els.specials + [element] %}
+            {% endif %}
         {% endfor %}
 
         {% autoescape off %}
@@ -37,15 +40,15 @@
                     <header class="criteria-header">
 
                         <div class="progress">
-                            <label for="triage-progress" class="sr-only">
-                                Triage progress: answered 11 of 25
-                            </label>
+{#                            <label for="triage-progress" class="sr-only">#}
+{#                                Triage progress: answered 11 of 25#}
+{#                            </label>#}
 
-                            <progress class="progress" value="95" max="100" id="triage-progress">
-                                60%
+                            <progress class="progress" value="100" max="100" id="triage-progress">
+                                0%
                             </progress>
 
-                            <span class="progress-label is-complete">Answered 11 of 25</span>
+{#                            <span class="progress-label is-complete">Answered 11 of 25</span>#}
                         </div>
                         <nav>
                             <button type="button" class="button button--prev">
@@ -60,6 +63,9 @@
                     {% if els.check.capability.check %}
                     <h4>{{ els.check.capability.check }}</h4>
                     {% endif %}
+                    {% for special in els.specials %}
+                        {{ special.renderer.draw(special, application=application, wfc=wfc) }}
+                    {% endfor %}
                 </div>
                 <div class="col-md-5" style="margin-top: 1.25rem">
                     <aside>

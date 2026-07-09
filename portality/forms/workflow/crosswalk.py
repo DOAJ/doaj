@@ -210,12 +210,14 @@ class WorkflowControl2TriageForm(object):
         ## Admin
 
         # Metadata Review
-        compliance_field_radio(triage.admin_metadata_review, f.admin.metadata_review)
-        compliance_field_note(triage.admin_metadata_review, f.admin.metadata_review)
+        compliance_field_radio(triage.admin_metadata_review, f.metadata_review.metadata_review)
+        compliance_field_note(triage.admin_metadata_review, f.metadata_review.metadata_review)
 
         # Special Exception
-        compliance_field_radio(triage.admin_special_exception, f.admin.special_exception)
-        compliance_field_note(triage.admin_special_exception, f.admin.special_exception)
+        compliance_field_radio(triage.admin_special_exception, f.special_exception.special_exception)
+        compliance_field_note(triage.admin_special_exception, f.special_exception.special_exception)
+        form.set(f.special_exception.special_exception.special_exceptions, triage.admin_special_exception.special_exceptions)
+        form.set(f.special_exception.special_exception.special_exception_other, triage.admin_special_exception.special_exception_other)
 
         return form
 
@@ -331,9 +333,9 @@ class TriageForm2WorkflowControl(object):
         # At least one registered
         compliance_field_radio(triage.issn_at_least_one, f.issn.at_least_one)
         compliance_field_note(triage.issn_at_least_one, f.issn.at_least_one)
-        eissn = form.get(f.issn.at_least_one.eissn)
+        eissn = form.get(f.issn.at_least_one.edited_issns.eissn)
         bj.eissn = eissn
-        pissn = form.get(f.issn.at_least_one.pissn)
+        pissn = form.get(f.issn.at_least_one.edited_issns.pissn)
         bj.pissn = pissn
 
         # Title match
@@ -427,12 +429,16 @@ class TriageForm2WorkflowControl(object):
         ## Admin
 
         # Metadata Review
-        compliance_field_radio(triage.admin_metadata_review, f.admin.metadata_review)
-        compliance_field_note(triage.admin_metadata_review, f.admin.metadata_review)
+        compliance_field_radio(triage.admin_metadata_review, f.metadata_review.metadata_review)
+        compliance_field_note(triage.admin_metadata_review, f.metadata_review.metadata_review)
 
         # Special Exception
-        compliance_field_radio(triage.admin_special_exception, f.admin.special_exception)
-        compliance_field_note(triage.admin_special_exception, f.admin.special_exception)
+        compliance_field_radio(triage.admin_special_exception, f.special_exception.special_exception)
+        compliance_field_note(triage.admin_special_exception, f.special_exception.special_exception)
+        special_exceptions = form.get(f.special_exception.special_exception.special_exceptions)
+        special_exceptions_other = form.get(f.special_exception.special_exception.special_exception_other)
+        triage.admin_special_exception.special_exceptions = special_exceptions
+        triage.admin_special_exception.special_exception_other = special_exceptions_other
 
         return wfc, application
 

@@ -793,13 +793,18 @@ triage:
         compliant: "Continue"
         non_compliant: "Reject this application"
         later: "I don't know - mark for later"
+      edit:
+        special_exceptions: "Special exception"
+        other: "Other special exception"
+      validation:
+        special_exceptions:
+          disallowed_value: "Please select a checkbox"
+        special_exception_other:
+          is_conditionally_required: "The special exception field is required if the answer is 'Reject this application'"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-      resources:
-        - label: ""
-          url: ""
 
     template:
       label: ""
@@ -812,9 +817,6 @@ triage:
       instructions: '<ul>
                   <li></li>
                   </ul>'
-      resources:
-        - label: ""
-          url: ""
       compliant_answers:
         - "compliant"
       non_compliant_answers:

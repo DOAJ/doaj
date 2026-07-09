@@ -30,6 +30,10 @@ TRIAGE_FIELD = {
     }
 }
 
+SPECIAL_EXCEPTION_TRIAGE_FIELD = deepcopy(TRIAGE_FIELD)
+SPECIAL_EXCEPTION_TRIAGE_FIELD["lists"]["special_exceptions"] = {"contains": "field", "coerce": "unicode"}
+SPECIAL_EXCEPTION_TRIAGE_FIELD["fields"]["special_exception_other"] = {"coerce": "unicode"}
+
 TRIAGE_STRUCT = {
     "fields": {
         "total_sv": {"coerce": "integer"},
@@ -135,7 +139,7 @@ TRIAGE_STRUCT = {
                 "content_new_journal": TRIAGE_FIELD,
 
                 "admin_metadata_review": TRIAGE_FIELD,
-                "admin_special_exception": TRIAGE_FIELD
+                "admin_special_exception": SPECIAL_EXCEPTION_TRIAGE_FIELD
             }
         }
     }
@@ -492,6 +496,26 @@ class TriageField(SeamlessMixin):
         if self._parent is not None:
             self._parent.cache_note(note)
 
+class SpecialExceptionTriageField(TriageField):
+    __SEAMLESS_STRUCT__ = SPECIAL_EXCEPTION_TRIAGE_FIELD
+
+    @property
+    def special_exceptions(self):
+        return self.__seamless__.get_list("special_exceptions")
+
+    @special_exceptions.setter
+    def special_exceptions(self, val):
+        self.__seamless__.set_with_struct("special_exceptions", val)
+
+    @property
+    def special_exception_other(self):
+        return self.__seamless__.get_single("special_exception_other")
+
+    @special_exception_other.setter
+    def special_exception_other(self, val):
+        self.__seamless__.set_with_struct("special_exception_other", val)
+
+
 class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
@@ -547,6 +571,10 @@ class Triage(SeamlessMixin):
         if t is None:
             self.__seamless__.set_single(f"questions.{field}", {})
             t = self.__seamless__.get_single(f"questions.{field}")
+
+        if field == "admin_special_exception":
+            return SpecialExceptionTriageField(field, t, self)
+
         return TriageField(field, t, self)
 
     def _set_triage_field(self, field:str, val:Union[dict, "TriageField"]):

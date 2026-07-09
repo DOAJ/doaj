@@ -21,11 +21,24 @@ ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 ########
 ## Compliance check capability, field, and associated renderers
 
+## Compound renderers
+
+class TriageCompound(GenericCompound):
+    template = templates.WORKFLOW_TRIAGE_COMPOUND
+
 class ExceptionListRenderer(JinjaCompoundRenderer):
     template = templates.WORKFLOW_TRIAGE_EXCEPTIONS_LIST
 
+## Field renderers
+
 class DummyRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_DUMMY
+
+class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
+
+
+## Control Renderers
 
 class RadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_RADIO
@@ -33,14 +46,10 @@ class RadioRenderer(JinjaControlRenderer):
 class TriageRadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_TRIAGE_CONTROL_RADIO
 
-class CheckboxRenderer(JinjaFieldRenderer):
+class CheckboxRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_CHECKBOX
 
-class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
-    template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
-
-class TriageCompound(GenericCompound):
-    template = templates.WORKFLOW_TRIAGE_COMPOUND
+#################################
 
 class ComplianceCheckCapability(FormFieldCapability):
     role = "check"
@@ -95,6 +104,9 @@ def options_for(source):
 
 def resource_for(source):
     resources = []
+    if "resources" not in source:
+        return resources
+
     for r in source.resources:
         label = r.label
         if label is None:
@@ -376,7 +388,7 @@ class DatabaseWithdrawnIgnoreEmbargo(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
-        render_class = CheckboxRenderer
+        render_class = GenericField
 
     name = "database_withdrawn_exception_ignore_embargo"
     capabilities = (C(),)
@@ -409,7 +421,7 @@ class DatabaseWithdrawnWebsiteUnavailable(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
-        render_class = CheckboxRenderer
+        render_class = GenericField
 
     name = "database_withdrawn_exception_website_unavailable"
     capabilities = (C(),)
@@ -442,7 +454,7 @@ class DatabaseWithdrawnContent(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
-        render_class = CheckboxRenderer
+        render_class = GenericField
 
     name = "database_withdrawn_exception_content"
     capabilities = (C(),)
@@ -1112,8 +1124,8 @@ class License(Field):
             {"label": "Publisher's own license", "value": "Publisher's own license"}
         ]
         control_render_class = CheckboxRenderer
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
+        # render_class = DummyRenderer
         error_messages = {
             IsRequired: T.website_license_policy.validation.license.is_required,
             DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
@@ -1136,8 +1148,8 @@ class LicenseAttribute(Field):
             {"label": "No Commercial Usage", "value": "NC"}
         ]
         control_render_class = CheckboxRenderer
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
+        # render_class = DummyRenderer
         error_messages = {
             DisallowedValue: T.website_license_policy.validation.license_attribute.disallowed_value,
             IsConditionallyRequired: T.website_license_policy.validation.license_attribute.is_conditionally_required
@@ -1510,26 +1522,68 @@ class AdminSpecialException(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
-        render_class = DummyRenderer
 
     name = "admin_special_exception"
     capabilities = (C(),)
 
 class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
+    capabilities = (NoteCapability(),)
+
+class SpecialExceptions(Field):
+    class C(FormFieldCapability):
+        role = "special"
+        label = T.admin_special_exception.edit.special_exceptions
+        control_class = Checkbox
+        multiple = True
+        options = [
+            {"label": "Option 1", "value": "option_1"},
+            {"label": "Option 2", "value": "option_2"},
+            {"label": "Other", "value": "other"}
+        ]
+        control_render_class = CheckboxRenderer
+        render_class = GenericField
+        error_messages = {
+            DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
+        }
+
+    name = "special_exceptions"
+    coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
+    capabilities = (C(),)
+
+class SpecialExceptionOther(Field):
+    class C(FormFieldCapability):
+        role = "special"
+        label = T.admin_special_exception.edit.other
+        control_class = TextInput
+        control_render_class = GenericControl
+        render_class = GenericField
+        error_messages = {
+            IsConditionallyRequired: T.admin_special_exception.validation.special_exception_other.is_conditionally_required
+        }
+
+    name = "special_exception_other"
+    coerce = [Unicode(trim_whitespace=True)]
+    capabilities = (C(),)
 
 class AdminSpecialExceptionGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.admin_special_exception.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
+        order = ["answer", "special_exceptions", "special_exception_other", "note"]
+        render_class = TriageCompound
 
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)
 
     answer = AdminSpecialException(OPTIONAL, SINGLE)
+    special_exceptions = SpecialExceptions(OPTIONAL, REPEATABLE)
+    special_exception_other = SpecialExceptionOther(OPTIONAL, SINGLE)
     note = AdminSpecialExceptionNote(OPTIONAL, SINGLE)
 
+    validators_ = [
+        RequiredIf(special_exception_other,  # <- this field is required if
+                    special_exceptions,  # <- this field has one of the values
+                    ["other"]  # <- that is non compliant
+                   )
+    ]

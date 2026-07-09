@@ -128,17 +128,28 @@ class Content(Structure):
     format = ContentFormatGroup(OPTIONAL, SINGLE)
     new_journal = ContentNewJournalGroup(OPTIONAL, SINGLE)
 
-class Admin(Structure):
+class SpecialException(Structure):
     class C(FieldsetCapability):
-        label = "Admin"
+        label = "Special Exception"
         order = [
-            "metadata_review",
             "special_exception"
         ]
         render_class = GenericFieldset
 
-    name_ = "admin"
+    name_ = "special_exception"
+    capabilities_ = (C(),)
+
+    special_exception = AdminSpecialExceptionGroup(OPTIONAL, SINGLE)
+
+class MetadataReview(Structure):
+    class C(FieldsetCapability):
+        label = "Admin"
+        order = [
+            "metadata_review"
+        ]
+        render_class = GenericFieldset
+
+    name_ = "metadata_review"
     capabilities_ = (C(),)
 
     metadata_review = AdminMetadataReviewGroup(OPTIONAL, SINGLE)
-    special_exception = AdminSpecialExceptionGroup(OPTIONAL, SINGLE)
