@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from flask import Blueprint, render_template, abort, redirect, url_for, request, make_response
+from flask import Blueprint, render_template, abort, redirect, url_for, request, make_response, session
 from flask_login import current_user
 
 from portality import models
@@ -13,10 +13,22 @@ from portality.ui import templates
 
 blueprint = Blueprint('apply', __name__)
 
+@blueprint.url_value_preprocessor
+def pull_lang(endpoint, values):
+    # Remove 'lang' so it is not passed to the view function
+    if values:
+        lang = values.pop('lang', None)
 
 @blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
-    return render_template(templates.STATIC_PAGE, page_frag="/apply/thank-you.html")
+    lang = session.get("lang", "en")
+
+    if lang not in ("en", "fr"):
+        lang = "en"
+
+    page_frag = "/apply/fr-thank-you.html" if lang == "fr" else "/apply/thank-you.html"
+
+    return render_template(templates.STATIC_PAGE, page_frag=page_frag)
 
 
 @blueprint.route("/draft", methods=["GET"])

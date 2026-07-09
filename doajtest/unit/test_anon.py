@@ -18,7 +18,7 @@ class TestAnon(DoajTestCase):
         self.old_anon_salt = app.config['ANON_SALT']
         app.config['ANON_SALT'] = 'testsalt'
         anon.fake = Faker()
-        anon.fake.seed(1)
+        Faker.seed(1)
 
     def tearDown(self):
         app.config['ANON_SALT'] = self.old_anon_salt

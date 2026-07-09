@@ -51,6 +51,12 @@ def index():
     return render_template(templates.ADMIN_JOURNALS_SEARCH, admin_page=True)
 
 
+@blueprint.route("/status")
+@login_required
+@ssl_required
+def status_ui():
+    return render_template(templates.ADMIN_STATUS)
+
 @blueprint.route("/journals", methods=["GET"])
 @login_required
 @ssl_required

@@ -84,11 +84,11 @@ doaj.af.BaseApplicationForm = class {
         var that = this;
         this.TABS.forEach((tab, i) => {
             if (this.editSectionsFromReview) {
-                review_table.append("<tr class='review-table__header'><th class='label'>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th></tr>");
+                review_table.append("<tr class='review-table__header'><th class='label'>" + doaj.i18n.get(tab.title) + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">"+doaj.i18n.get("Edit this section")+"</a></th></tr>");
                 let sectionSelector = $(".edit_this_section");
                 edges.on(sectionSelector, "click", this, "editSectionClicked");
             } else {
-                review_table.append("<tr class='review-table__header'><th class='label' colspan='2'>" + tab.title + "</th>");
+                review_table.append("<tr class='review-table__header'><th class='label' colspan='2'>" + doaj.i18n.get(tab.title) + "</th>");
             }
 
             tab.fieldsets.forEach((fs) => {
@@ -186,7 +186,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.TABS = [
             {title: "Open access compliance", fieldsets: ["basic_compliance"]},
-            {title: "About the Journal", fieldsets: ["about_the_journal", "publisher", "society_or_institution"]},
+            {title: "About the Journal", fieldsets: ["about_the_journal_extended", "publisher", "society_or_institution"]},
             {title: "Copyright & licensing", fieldsets: ["licensing", "embedded_licensing", "copyright"]},
             {title: "Editorial", fieldsets: ["peer_review", "plagiarism", "editorial"]},
             {title: "Business model", fieldsets: ["apc", "apc_waivers", "other_fees"]},
@@ -268,7 +268,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         } else {
             let nextBtn = this.jq(".nextBtn");
             nextBtn.show();
-            nextBtn.html("Next");
+            nextBtn.html(doaj.i18n.get("Next"));
             submitButton.hide();
             draftButton.show();
         }
@@ -821,7 +821,8 @@ window.Parsley.addValidator("requiredIf", {
         return true;
     },
     messages: {
-        en: 'This field is required, because you answered "%s" to the previous question.'
+        en: doaj.i18n.get('This field is required, because you answered "%s" to the previous question.'),
+        fr: doaj.i18n.get('This field is required, because you answered "%s" to the previous question.'),
     },
     priority: 33
 });
@@ -831,7 +832,8 @@ window.Parsley.addValidator("requiredvalue", {
         return (value === requirement);
     },
     messages: {
-        en: '<p><small>DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.</small></p>'
+        en: `<p><small>${doaj.i18n.get('DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.')}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get('DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.')}</small></p>`,
     },
     priority: 32
 });
@@ -845,7 +847,8 @@ window.Parsley.addValidator("optionalIf", {
         return false;
     },
     messages: {
-        en: 'You need to provide the answer to either this field or %s field (or both)'
+        en: doaj.i18n.get('You need to provide the answer to either this field or %s field (or both)'),
+        fr: doaj.i18n.get('You need to provide the answer to either this field or %s field (or both)'),
     },
     priority: 300
 });
@@ -855,7 +858,8 @@ window.Parsley.addValidator("differentTo", {
       return (!value || ($("[name = " + requirement + "]")).val().toLowerCase() !== value.toLowerCase());
     },
     messages: {
-        en: 'Value of this field and %s field must be different'
+        en: doaj.i18n.get('Value of this field and %s field must be different'),
+        fr: doaj.i18n.get('Value of this field and %s field must be different')
     },
     priority: 1
 });
@@ -908,7 +912,8 @@ window.Parsley.addValidator("onlyIf", {
         }
     },
     messages: {
-        en: 'This only can be set when requirements are met'
+        en: doaj.i18n.get('This only can be set when requirements are met'),
+        fr: doaj.i18n.get('This only can be set when requirements are met')
     },
     priority: 1
 });
@@ -931,7 +936,8 @@ window.Parsley.addValidator("onlyIfExists", {
         }
     },
     messages: {
-        en: 'This only can be set when requirements are met'
+        en: doaj.i18n.get('This only can be set when requirements are met'),
+        fr: doaj.i18n.get('This only can be set when requirements are met')
     },
     priority: 1
 });
@@ -963,7 +969,8 @@ window.Parsley.addValidator("notIf", {
         }
     },
     messages: {
-        en: 'This only can be true when requirements are met'
+        en: doaj.i18n.get('This only can be true when requirements are met'),
+        fr: doaj.i18n.get('This only can be true when requirements are met')
     },
     priority: 1
 });
@@ -974,7 +981,8 @@ window.Parsley.addValidator("noScriptTag", {
 
     },
     messages: {
-        en: 'Script tags are not allowed'
+        en: doaj.i18n.get('Script tags are not allowed'),
+        fr: doaj.i18n.get('Script tags are not allowed')
     },
     priority: 300
     }
@@ -989,7 +997,8 @@ window.Parsley.addValidator("year", {
         return (y >= requirement && y <= new Date().getFullYear())
     },
     messages: {
-        en: '<p><small>This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year<p><small>'
+        en: `<p><small>${doaj.i18n.get("This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year")}<p><small>`,
+        fr: `<p><small>${doaj.i18n.get("This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year")}<p><small>`
     },
     priority: 22
 });
@@ -1012,10 +1021,13 @@ window.Parsley.addValidator("validdate", {
             date.getMonth() === month - 1 &&
             date.getDate() === day
         );
-      },
-      messages: {
-          en: 'Please enter a valid date in YYYY-MM-DD format.'
-      }
+    },
+
+    messages: {
+        en: doaj.i18n.get('Please enter a valid date in YYYY-MM-DD format.'),
+        fr: doaj.i18n.get('Please enter a valid date in YYYY-MM-DD format.')
+    },
+    priority: 22
 })
 
 

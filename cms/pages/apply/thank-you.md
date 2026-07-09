@@ -20,6 +20,6 @@ Your application will be reviewed by an editor. The editor may need to contact y
 - This editor may not be using a doaj.org email address. To confirm that they are authorised to represent DOAJ, please check our [list of volunteers](/about/volunteers) or [email our Help Desk](mailto:helpdesk@doaj.org).
 - Remember to check your Spam folder in case an email about your application has been sent there.
 
-There is more information about the application process on [our page for publishers](https://static.doaj.cottagelabs.com/apply/publisher-responsibilities/#applying-to-doaj). 
+There is more information about the application process on [our page for publishers](/apply/publisher-responsibilities/#applying-to-doaj). 
 
 <a href="/publisher/" class="button">Return to my Publisher dashboard</a>
