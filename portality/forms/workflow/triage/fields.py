@@ -310,6 +310,39 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
 ###########################################################
 
 ##########################################################
+## Ethics: Submission to Publication time
+
+class EthicsPubTime(ComplianceCheckField):
+    class C(ComplianceCheckCapability):
+        S = T.ethics_submission_to_publication_time
+        options = options_for(S)
+        check = S.check
+        instructions = S.instructions
+        resources = resource_for(S)
+
+    name = "ethics_submission_to_publication_time"
+    capabilities = (C(),)
+
+class EthicsPubTimeNote(NoteField):
+    name = "ethics_no_false_doaj_claim_note"
+    capabilities = (NoteCapability(),)
+
+class EthicsPubTimeGroup(Structure):
+    class C(CompoundFieldCapability):
+        label = T.ethics_submission_to_publication_time.label
+        order = ["answer", "note"]
+        render_class = TriageCompound
+        error_messages = {}
+
+    name_ = "ethics_submission_to_publication_time_group"
+    capabilities_ = (C(),)
+
+    answer = EthicsPubTime(OPTIONAL, SINGLE)
+    note = EthicsPubTimeNote(OPTIONAL, SINGLE)
+
+###########################################################
+
+##########################################################
 ## Ethics: No Susplicious Ties
 
 class EthicsNoSuspiciousTies(ComplianceCheckField):

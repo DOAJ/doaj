@@ -15,8 +15,8 @@ class TriageForm(Structure):
             "id",
             "special_exception",
             "ethics",
-            "database",
             "issn",
+            "database",
             "website",
             "content",
             "metadata_review"
@@ -31,8 +31,8 @@ class TriageForm(Structure):
     id = RecordID(OPTIONAL, SINGLE)
     special_exception = SpecialException(OPTIONAL, SINGLE)
     ethics = EthicsCriteria(OPTIONAL, SINGLE)
-    database = Database(OPTIONAL, SINGLE)
     issn = ISSN(OPTIONAL, SINGLE)
+    database = Database(OPTIONAL, SINGLE)
     website = Website(OPTIONAL, SINGLE)
     content = Content(OPTIONAL, SINGLE)
     metadata_review = MetadataReview(OPTIONAL, SINGLE)

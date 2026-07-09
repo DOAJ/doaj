@@ -98,13 +98,12 @@ triage:
     ethics_submission_to_publication_time:
       label: "Time between submission and publication"
       check: "The time between submission and publication is more than 3 weeks"
-      answer:
+      answers:
         compliant: "<span class='answer'>Compliant</span>, the time between submission and publication is <strong>more</strong> than 3 weeks."
         non_compliant: "<span class='answer'>Non-compliant</span>, the time between submission and publication is <strong>less</strong> than 3 weeks."
         later: "I don't know - mark for later"
       remember: ""
       instructions: ""
-      resources: ""
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -805,6 +804,8 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+        non_compliant: "reject"
 
     template:
       label: ""

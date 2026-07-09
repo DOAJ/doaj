@@ -10,7 +10,7 @@ from portality.forms.workflow.triage.fields import EthicsNotExcludedGroup, Ethic
     ISSNTitleMatchGroup, ISSNContinuationGroup, WebsiteWorkingGroup, WebsiteISSNGroup, WebsiteURLGroup, \
     WebsiteLicensePolicyGroup, WebsiteCopyrightGroup, ContentNoLoginGroup, \
     ContentNoEmbargoGroup, ContentPublishEnoughGroup, ContentUniqueLinkGroup, ContentFormatGroup, \
-    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup
+    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTime, EthicsPubTimeGroup
 
 
 class EthicsCriteria(Structure):
@@ -21,6 +21,7 @@ class EthicsCriteria(Structure):
             "no_nonstandard_metrics",
             "no_fake_impact",
             "no_false_doaj_claim",
+            "publication_time",
             "no_suspicious_ties",
         ]
         render_class = GenericFieldset
@@ -32,6 +33,7 @@ class EthicsCriteria(Structure):
     no_nonstandard_metrics = EthicsNoNonStandardMetricsGroup(OPTIONAL, SINGLE)
     no_fake_impact = EthicsNoFakeImpactGroup(OPTIONAL, SINGLE)
     no_false_doaj_claim = EthicsNoFalseDOAJClaimGroup(OPTIONAL, SINGLE)
+    publication_time = EthicsPubTimeGroup(OPTIONAL, SINGLE)
     no_suspicious_ties = EthicsNoSuspiciousTiesGroup(OPTIONAL, SINGLE)
 
 class Database(Structure):
