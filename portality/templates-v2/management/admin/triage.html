@@ -11,13 +11,30 @@
 {% block body_class %}{{ super() }} ew{% endblock %}
 
 {% block admin_content %}
+    <div id="triage-async-response"></div>
+    {% if wfc.triage.recommendation %}
+        {% set rec = wfc.triage.recommendation %}
+        <p>Current Recommendation: {{ rec.code }}</p>
+        <p>Reasons:
+            <ul>
+            {% for reason in rec.reasons %}
+                <li>{{ reason.question }}: {{ reason.answer }} {% if reason.severity_value %}(SV:{{ reason.severity_value }}){% endif %}</li>
+            {% endfor %}
+            </ul>
+        </p>
+    {% endif %}
+
 <div class="ew_body">
     {% autoescape off %}
-    {{ form_html }}
+        {{ form_html }}
     {% endautoescape %}
-    {% endblock %}
 </div>
+{% endblock %}
 
 {% block admin_js %}
-
+    <script type="text/javascript" src="/static/js/triage.js"></script>
+    <script type="text/javascript">
+        doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
+        doaj.triage.init();
+    </script>
 {% endblock %}

@@ -93,6 +93,7 @@ WORKFLOW_TRIAGED_WIDGET = "management/admin/_workflow/includes/triaged.html"
 # Triage workflow components
 WORKFLOW_TRIAGE_PAGE = "management/admin/triage.html"
 WORKFLOW_TRIAGE_FORM = "management/admin/_workflow/includes/_triage_form.html"
+WORKFLOW_TRIAGE_READ_ONLY = "management/admin/_workflow/includes/_triage_overview.html"
 WORKFLOW_TRIAGE_FIELD_COMPLIANCE = "management/admin/_workflow/includes/triage_field.html"
 WORKFLOW_TRIAGE_COMPOUND = "management/admin/_workflow/includes/_triage_compound.html"
 WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_claim.html"

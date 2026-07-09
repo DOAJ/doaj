@@ -19,6 +19,8 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "non_compliant"
+      recommend:
+        non_compliant: "reject"
 
     ethics_no_nonstandard_metrics:
       label: "Non-standard metric services"
@@ -42,7 +44,8 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "non_compliant"
-      severity_value: 1
+      severity_value:
+        non_compliant: 1
 
     ethics_no_fake_impact:
       label: "Fake impact factor values"
@@ -65,7 +68,8 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "non_compliant"
-      severity_value: 3
+      severity_value:
+        non_compliant: 3
 
     ethics_no_false_doaj_claim:
       label: "False claim to be indexed in DOAJ"
@@ -88,7 +92,8 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "non_compliant"
-      severity_value: 3
+      severity_value:
+        non_compliant: 3
 
     ethics_submission_to_publication_time:
       label: "Time between submission and publication"
@@ -129,7 +134,8 @@ triage:
       - "conditional"
       non_compliant_answers:
       - "non_compliant"
-      severity_value: 10
+      severity_value:
+        non_compliant: 10
 
     database_withdrawn_exception_ignore_embargo:
       label: "Journal withdrawn - Mg. Ed. note"
@@ -148,6 +154,8 @@ triage:
       - "no"
       exception_answers:
       - "yes"
+      recommend:
+        "yes": "reject"
 
     database_withdrawn_exception_website_unavailable:
       label: "Journal withdrawn - non-available website"
@@ -166,6 +174,8 @@ triage:
       - "no"
       exception_answers:
       - "yes"
+      recommend:
+        "yes": "reject"
 
     database_withdrawn_exception_content:
       label: "Journal withdrawn - not enough contents"
@@ -184,6 +194,8 @@ triage:
       - "no"
       exception_answers:
       - "yes"
+      recommend:
+        "yes": "reject"
 
     database_embargo_exception_issn:
       label: "Previous application rejection - uncorfirmed ISSN"
@@ -202,6 +214,8 @@ triage:
       - "no"
       exception_answers:
       - "yes"
+      recommend:
+        "yes": "reject"
 
     database_embargo_exception_maned:
       label: "Previous application rejection - Mg. Ed. note"
@@ -238,6 +252,8 @@ triage:
       - "no"
       exception_answers:
       - "yes"
+      recommend:
+        "yes": "reject"
 
     database_embargo_exception_content:
       label: "Previous application rejection - not enough contents"
@@ -256,6 +272,8 @@ triage:
       - "no"
       exception_answers:
       - "yes"
+      recommend:
+        "yes": "reject"
 
     issn_at_least_one:
       label: "ISSN(s)"
@@ -336,6 +354,8 @@ triage:
         - "conditional"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+        non_compliant: "reject"
 
     issn_continuation:
       label: "continuation"
@@ -459,6 +479,8 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+        non_compliant: "reject"
 
     website_working:
       label: "website"
@@ -479,6 +501,8 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+        non_compliant: "reject"
 
     database_not_duplicate:
       label: "Duplicate application"
@@ -497,7 +521,9 @@ triage:
         - "compliant"
         - "conditional"
       non_compliant_answers:
-        - "non_compliant"
+      - "non_compliant"
+      recommend:
+        non_compliant: "reject"
 
     website_issn:
       label: "Correct issn on the website"
