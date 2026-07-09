@@ -10,7 +10,8 @@ from portality.forms.workflow.triage.fields import EthicsNotExcludedGroup, Ethic
     ISSNTitleMatchGroup, ISSNContinuationGroup, WebsiteWorkingGroup, WebsiteISSNGroup, WebsiteURLGroup, \
     WebsiteLicensePolicyGroup, WebsiteCopyrightGroup, ContentNoLoginGroup, \
     ContentNoEmbargoGroup, ContentPublishEnoughGroup, ContentUniqueLinkGroup, ContentFormatGroup, \
-    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTime, EthicsPubTimeGroup
+    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTime, EthicsPubTimeGroup, \
+    ISSNCountryMatch, ISSNCountryMatchGroup
 
 
 class EthicsCriteria(Structure):
@@ -74,6 +75,7 @@ class ISSN(Structure):
         label = "ISSN"
         order = [
             "at_least_one",
+            "country_match",
             "title_match",
             "continuation"
         ]
@@ -83,6 +85,7 @@ class ISSN(Structure):
     capabilities_ = (C(),)
 
     at_least_one = ISSNAtLeastOneGroup(OPTIONAL, SINGLE)
+    country_match = ISSNCountryMatchGroup(OPTIONAL, SINGLE)
     title_match = ISSNTitleMatchGroup(OPTIONAL, SINGLE)
     continuation = ISSNContinuationGroup(OPTIONAL, SINGLE)
 

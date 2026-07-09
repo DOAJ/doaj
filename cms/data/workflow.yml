@@ -333,6 +333,13 @@ triage:
       resources:
         - label: "ISSN portal"
           url: "https://portal.issn.org/"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required"
+      info:
+        country: "Country of publisher"
       compliant_answers:
         - "compliant"
       non_compliant_answers:

@@ -62,6 +62,14 @@
                 <div class="col-md-7">
                     {% if els.check.capability.check %}
                     <h4>{{ els.check.capability.check }}</h4>
+                        {% if els.check.capability.application_info %}
+                            <strong>Application Info</strong>:
+                            <ul>
+                                {% for info in els.check.capability.application_info %}
+                                    <li><strong>{{ info.label }}</strong>: {{ info.lookup(application, wfc) }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     {% endif %}
                     {% for special in els.specials %}
                         {{ special.renderer.draw(special, application=application, wfc=wfc) }}

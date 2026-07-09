@@ -127,8 +127,8 @@ class WorkflowControl2TriageForm(object):
         # At least one registered
         compliance_field_radio(triage.issn_at_least_one, f.issn.at_least_one)
         compliance_field_note(triage.issn_at_least_one, f.issn.at_least_one)
-        # form.set(f.issn.at_least_one.eissn, bj.eissn)
-        # form.set(f.issn.at_least_one.pissn, bj.pissn)
+        form.set(f.issn.at_least_one.edited_issns.eissn, bj.eissn)
+        form.set(f.issn.at_least_one.edited_issns.pissn, bj.pissn)
 
         # Title match
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)

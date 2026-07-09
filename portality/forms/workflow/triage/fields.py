@@ -821,11 +821,11 @@ class ISSNAtLeastOneNote(GeneralNote):
 
 class EISSN(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.issn_at_least_one.edit.eissn
         control_class = TextInput
         control_render_class = GenericControl
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
@@ -838,11 +838,11 @@ class EISSN(Field):
 
 class PISSN(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.issn_at_least_one.edit.pissn
         control_class = TextInput
         control_render_class = GenericControl
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
@@ -855,15 +855,20 @@ class PISSN(Field):
 
 class ISSNAdditionalFields(Structure):
     class C(CompoundFieldCapability):
-        label  = ""
+        role = "special"
+        label  = "ISSNs"
         order = ["eissn", "pissn"]
         error_messages = {
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different
         }
+        render_class = GenericCompound
+
     name_ = "edited_issns"
+    capabilities_ = (C(),)
+
     eissn = EISSN(OPTIONAL, SINGLE)
     pissn = PISSN(OPTIONAL, SINGLE)
-    capabilities = (C(),)
+
     validators_ = [
         Different(eissn, pissn)
     ]
@@ -896,6 +901,60 @@ class ISSNAtLeastOneGroup(Structure):
                    )
     ]
 
+###########################################################
+## ISSN: Country Match
+
+class ISSNCountryMatch(ComplianceCheckField):
+    class C(ComplianceCheckCapability):
+        S = T.issn_country_match
+        options = options_for(S)
+        check = S.check
+        instructions = S.instructions
+        resources = resource_for(S)
+
+        application_info = [
+            {
+                "label": S.info.country,
+                "lookup": lambda application, wfc: application.bibjson().publisher_country_name()
+            }
+        ]
+
+    name = "issn_country_match"
+    capabilities = (C(),)
+
+class ISSNCountryMatchNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.issn_country_match.validation.note.is_conditionally_required
+        }
+    name = "issn_country_match_note"
+    capabilities = (NC(),)
+
+class ISSNCountryMatchGroup(Structure):
+    class C(CompoundFieldCapability):
+        label = T.issn_country_match.label
+        order = [
+            "answer",
+            "note"
+        ]
+        render_class = TriageCompound
+        error_messages = {
+            IsConditionallyRequired: T.issn_country_match.validation.group.is_conditionally_required
+        }
+
+    name_ = "issn_country_match_group"
+    capabilities_ = (C(),)
+
+    answer = ISSNCountryMatch(OPTIONAL, SINGLE)
+    note = ISSNCountryMatchNote(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note,  # <- this field is required if
+                   answer,  # <- this field has one of the values
+                   T.issn_country_match.non_compliant_answers + T.issn_country_match.compliant_answers # <- that has a meaningful answer
+                   )
+    ]
+
 
 ###########################################################
 ## ISSN: Title Match
@@ -924,8 +983,7 @@ class Title(Field):
         label = T.issn_title_match.edit.title
         control_class = TextInput
         control_render_class = GenericControl
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
         error_messages = {
             DisallowedValue: T.issn_title_match.validation.title.disallowed_value,
             IsRequired: T.issn_title_match.validation.title.is_required
@@ -990,8 +1048,7 @@ class Continues(Field):
         label = T.issn_continuation.edit.continues
         control_class = TextInput
         control_render_class = GenericControl
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
         error_messages = {
             RegexDoesNotMatch: T.issn_continuation.validation.continues.regex_not_match
         }
@@ -1158,7 +1215,6 @@ class License(Field):
         ]
         control_render_class = CheckboxRenderer
         render_class = GenericField
-        # render_class = DummyRenderer
         error_messages = {
             IsRequired: T.website_license_policy.validation.license.is_required,
             DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
@@ -1182,7 +1238,6 @@ class LicenseAttribute(Field):
         ]
         control_render_class = CheckboxRenderer
         render_class = GenericField
-        # render_class = DummyRenderer
         error_messages = {
             DisallowedValue: T.website_license_policy.validation.license_attribute.disallowed_value,
             IsConditionallyRequired: T.website_license_policy.validation.license_attribute.is_conditionally_required
@@ -1198,8 +1253,7 @@ class LicenseURL(Field):
         label = T.website_license_policy.edit.license_url
         control_class = URLInput
         control_render_class = GenericControl
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
         error_messages = {
             IsRequired: T.website_license_policy.validation.license_url.is_required,
             DisallowedValue: T.website_license_policy.validation.license_url.disallowed_value
@@ -1277,8 +1331,7 @@ class CopyrightAuthorRetains(Field):
             {"label": "No", "value": "n"}
         ]
         control_render_class = RadioRenderer
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
         error_messages = {
             DisallowedValue: T.website_copyright.validation.copyright_author_retains.disallowed_value,
             IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
@@ -1294,8 +1347,7 @@ class CopyrightURL(Field):
         label = T.website_copyright.edit.copyright_url
         control_class = URLInput
         control_render_class = GenericControl
-        # render_class = GenericField
-        render_class = DummyRenderer
+        render_class = GenericField
         error_messages = {
             IsRequired: T.website_copyright.validation.copyright_url.is_required,
             DisallowedValue: T.website_copyright.validation.copyright_url.disallowed_value
