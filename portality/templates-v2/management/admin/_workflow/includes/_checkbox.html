@@ -34,8 +34,7 @@
     {% endif %}
 {%- endmacro %}
 
-{% for control in controls %}
-    {% set input=control.control %}
+    {% set input=field.control %}
     {% set content = {"value": ""} %}
     {% if input.content %}
         {% set content.value=render_content(input.content) %}
@@ -44,7 +43,6 @@
     {% autoescape off %}
         {{ make_tag(input, content.value) }}
     {% endautoescape %}
-    {% if control.label %}
-        {{ make_tag(control.label, control.label.content) }}
+    {% if field.label %}
+        {{ make_tag(field.label, field.label.content) }}
     {% endif %}
-{% endfor %}

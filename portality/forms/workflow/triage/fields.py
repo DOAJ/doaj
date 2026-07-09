@@ -8,7 +8,7 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
-from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, GenericControl, GenericField, \
+from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, GenericControl, GenericField, \
     GenericCompound
 from portality.ui import templates
 
@@ -21,6 +21,9 @@ ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 ########
 ## Compliance check capability, field, and associated renderers
 
+class ExceptionListRenderer(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_TRIAGE_EXCEPTIONS_LIST
+
 class DummyRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_DUMMY
 
@@ -30,7 +33,7 @@ class RadioRenderer(JinjaControlRenderer):
 class TriageRadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_TRIAGE_CONTROL_RADIO
 
-class CheckboxRenderer(JinjaControlRenderer):
+class CheckboxRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_CONTROL_CHECKBOX
 
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
@@ -40,6 +43,7 @@ class TriageCompound(GenericCompound):
     template = templates.WORKFLOW_TRIAGE_COMPOUND
 
 class ComplianceCheckCapability(FormFieldCapability):
+    role = "check"
     label = "Compliance"
 
     check = None
@@ -60,6 +64,7 @@ class ComplianceCheckField(Field):
 #######
 ## Generic notes capability and field
 class NoteCapability(FormFieldCapability):
+    role = "note"
     label = "Note"
     placeholder = "Add a note ..."
     repeatable_label = "Notes"
@@ -136,7 +141,7 @@ class EthicsNotExcluded(ComplianceCheckField):
 
 class EthicsNotExcludedNote(NoteField):
     name = "ethics_not_excluded_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (GeneralNoteCapability(),)
 
 class EthicsNotExcludedGroup(Structure):
     class C(CompoundFieldCapability):
@@ -361,30 +366,6 @@ class DatabaseWithdrawnNote(NoteField):
     name = "database_withdrawn_note"
     capabilities = (NC(),)
 
-class DatabaseWithdrawnGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_withdrawn.label
-        order = ["answer", "note"]
-        render_class = TriageCompound
-        error_messages = {
-            IsConditionallyRequired: T.database_withdrawn.validation.group.is_conditionally_required
-        }
-
-    name_ = "database_withdrawn_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseWithdrawn(OPTIONAL, SINGLE)
-    note = DatabaseWithdrawnNote(OPTIONAL, SINGLE)
-
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.database_withdrawn.non_compliant_answers + T.database_withdrawn.compliant_answers
-                   # <- that is either compliant or non compliant
-                   )
-    ]
-
-
 ###########################################################
 ## DOAJ Database: Withdrawn: Exception: Ignore Embargo
 
@@ -395,7 +376,7 @@ class DatabaseWithdrawnIgnoreEmbargo(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
-        render_class = DummyRenderer
+        render_class = CheckboxRenderer
 
     name = "database_withdrawn_exception_ignore_embargo"
     capabilities = (C(),)
@@ -428,7 +409,7 @@ class DatabaseWithdrawnWebsiteUnavailable(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
-        render_class = DummyRenderer
+        render_class = CheckboxRenderer
 
     name = "database_withdrawn_exception_website_unavailable"
     capabilities = (C(),)
@@ -461,7 +442,7 @@ class DatabaseWithdrawnContent(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
-        render_class = DummyRenderer
+        render_class = CheckboxRenderer
 
     name = "database_withdrawn_exception_content"
     capabilities = (C(),)
@@ -484,6 +465,45 @@ class DatabaseWithdrawnContentGroup(Structure):
     answer = DatabaseWithdrawnContent(OPTIONAL, SINGLE)
     note = DatabaseWithdrawnContentNote(OPTIONAL, SINGLE)
 
+class DatabaseWithdrawnExceptionsGroup(Structure):
+    class C(CompoundFieldCapability):
+        role = "action"
+        label = T.database_withdrawn_exceptions.label
+        order = ["ignore_embargo", "website_unavailable", "content"]
+        render_class = ExceptionListRenderer
+        control_render_class = TriageRadioRenderer
+
+    name_ = "database_withdrawn_exceptions_group"
+    capabilities_ = (C(),)
+
+    ignore_embargo = DatabaseWithdrawnIgnoreEmbargo(OPTIONAL, SINGLE)
+    website_unavailable = DatabaseWithdrawnWebsiteUnavailable(OPTIONAL, SINGLE)
+    content = DatabaseWithdrawnContent(OPTIONAL, SINGLE)
+
+class DatabaseWithdrawnGroup(Structure):
+    class C(CompoundFieldCapability):
+        role = "action"
+        label = T.database_withdrawn.label
+        order = ["answer", "note", "action"]
+        render_class = TriageCompound
+        error_messages = {
+            IsConditionallyRequired: T.database_withdrawn.validation.group.is_conditionally_required
+        }
+
+    name_ = "database_withdrawn_group"
+    capabilities_ = (C(),)
+
+    answer = DatabaseWithdrawn(OPTIONAL, SINGLE)
+    note = DatabaseWithdrawnNote(OPTIONAL, SINGLE)
+    action = DatabaseWithdrawnExceptionsGroup(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note,  # <- this field is required if
+                   answer,  # <- this field has one of the values
+                   T.database_withdrawn.non_compliant_answers + T.database_withdrawn.compliant_answers
+                   # <- that is either compliant or non compliant
+                   )
+    ]
 ###########################################################
 ## DOAJ Database: Embargo
 
