@@ -4,11 +4,20 @@ $.extend(true, doaj, {
     adminWorkflowSearch : {
         activeEdges : {},
 
-        openWorkflowForm : function(val, resultobj, renderer) {
+        openWorkflowOverview : function(val, resultobj, renderer) {
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
             let overviewUrl = current_scheme + "//" + current_domain + doaj.adminWorkflowSearchConfig.workflowPage + resultobj.application.id;
-            return `<a href="${overviewUrl}">Open</a>`;
+            return `<a href="${overviewUrl}" style="margin-right: 20px;">Manage Item</a>`;
+        },
+
+        openWorkflowForm : function(val, resultobj, renderer) {
+            if (doaj.session.currentUserId === resultobj.state.reviewer) {
+                var current_domain = document.location.host;
+                var current_scheme = window.location.protocol;
+                let overviewUrl = current_scheme + "//" + current_domain + doaj.adminWorkflowSearchConfig.triageForm + resultobj.application.id;
+                return `<a href="${overviewUrl}">Continue Review</a>`;
+            }
         },
 
         init : function(params) {
@@ -59,7 +68,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "reviewer",
                     category: "facet",
-                    field: "stage.reviewer.exact",
+                    field: "state.reviewer.exact",
                     display: "Assigned Reviewer",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -203,6 +212,9 @@ $.extend(true, doaj, {
                         ],
                         bottomRowDisplay: [
                             [
+                                {
+                                    valueFunction: doaj.adminWorkflowSearch.openWorkflowOverview
+                                },
                                 {
                                     valueFunction: doaj.adminWorkflowSearch.openWorkflowForm
                                 }
