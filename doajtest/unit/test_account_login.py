@@ -1,3 +1,4 @@
+import uuid
 from unittest.mock import patch
 
 from portality.app import app
@@ -69,16 +70,23 @@ class TestAccountLogin(DoajTestCase):
     @patch('portality.bll.services.account.AccountService.send_login_code_email')
     def test_04_passwordless_request_link(self, mock_send_email):
         """
-        Each login route needs its own account/email: the passwordless resend
-        backoff (PWLESS_RESEND_MIN_INTERVAL) would otherwise block the
-        2nd and 3rd requests for the same email fired straight after
+        Each login route needs its own account/email: the passwordless
+        resend backoff (PWLESS_RESEND_MIN_INTERVAL) would otherwise block
+        the 2nd and 3rd requests for the same email fired straight after
         the first, which has nothing to do with what's under test here.
+
+        The email also needs to be unique per test *run*, not just per
+        route: the backoff state lives in Redis, keyed by email, and
+        isn't reset by DoajTestCase's per-test ES index isolation - a
+        fixed email would accumulate resend counts across repeated runs
+        and eventually trip the backoff for reasons unrelated to the
+        test itself.
         """
-        #
+        run_id = uuid.uuid4().hex[:8]
         for i, route in enumerate(LOGIN_ROUTES):
             with self.subTest(route=route):
                 mock_send_email.reset_mock()
-                email = f'pwless{i}@example.com'
+                email = f'pwless-{run_id}-{i}@example.com'
                 account = Account.make_account(
                     username=f'pwlessuser{i}', name='Passwordless User', email=email, roles=['user']
                 )
