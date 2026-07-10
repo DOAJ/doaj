@@ -171,6 +171,9 @@ class TriageFormProcessor:
         self._target_application.save()
         self._target_wfc.save()
 
+    ################################
+    ## Internal processing methods
+
     def _patch_wfc(self, partial_wfc:WorkflowControl) -> WorkflowControl:
         target = WorkflowControl(**deepcopy(self._source_wfc.data))
 
@@ -220,55 +223,53 @@ class TriageFormProcessor:
         t = wfc.triage
         R = app.cms.workflow.triage.fields
 
-        def set_compliance(complyable, rule_source):
-            if complyable.answer in rule_source.compliant_answers:
-                complyable.compliant = True
-            elif complyable.answer in rule_source.non_compliant_answers:
-                complyable.compliant = False
-            else:
-                complyable.compliant = None
+        # def set_compliance(complyable, rule_source):
+        #     if complyable.answer in rule_source.compliant_answers:
+        #         complyable.compliant = True
+        #     elif complyable.answer in rule_source.non_compliant_answers:
+        #         complyable.compliant = False
+        #     else:
+        #         complyable.compliant = None
 
         # First compute all the compliance booleans from the supplied answers
-        set_compliance(t.ethics_not_excluded, R.ethics_not_excluded)
-        set_compliance(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
-        set_compliance(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
-        set_compliance(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
-        set_compliance(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
-        set_compliance(t.database_withdrawn, R.database_withdrawn)
-        set_compliance(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
-        set_compliance(t.database_withdrawn_exception_website_unavailable, R.database_withdrawn_exception_website_unavailable)
-        set_compliance(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
-        set_compliance(t.database_embargo, R.database_embargo)
-        set_compliance(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
-        set_compliance(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
-        set_compliance(t.database_embargo_exception_website, R.database_embargo_exception_website)
-        set_compliance(t.database_embargo_exception_content, R.database_embargo_exception_content)
-        set_compliance(t.database_not_listed, R.database_not_listed)
-        set_compliance(t.database_not_duplicate, R.database_not_duplicate)
-        set_compliance(t.issn_at_least_one, R.issn_at_least_one)
-        set_compliance(t.issn_title_match, R.issn_title_match)
-        set_compliance(t.issn_continuation, R.issn_continuation)
-        set_compliance(t.website_working, R.website_working)
-        set_compliance(t.website_issn, R.website_issn)
-        set_compliance(t.website_url, R.website_url)
-        set_compliance(t.website_license_policy, R.website_license_policy)
-        set_compliance(t.website_copyright, R.website_copyright)
-        set_compliance(t.content_no_login, R.content_no_login)
-        set_compliance(t.content_no_embargo, R.content_no_embargo)
-        set_compliance(t.content_publish_enough, R.content_publish_enough)
-        set_compliance(t.content_unique_link, R.content_unique_link)
-        set_compliance(t.content_format, R.content_format)
-        set_compliance(t.content_new_journal, R.content_new_journal)
-        set_compliance(t.admin_metadata_review, R.admin_metadata_review)
-        set_compliance(t.admin_special_exception, R.admin_special_exception)
+        # set_compliance(t.ethics_not_excluded, R.ethics_not_excluded)
+        # set_compliance(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
+        # set_compliance(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
+        # set_compliance(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
+        # set_compliance(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+        # set_compliance(t.database_withdrawn, R.database_withdrawn)
+        # set_compliance(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
+        # set_compliance(t.database_withdrawn_exception_website_unavailable, R.database_withdrawn_exception_website_unavailable)
+        # set_compliance(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
+        #set_compliance(t.database_embargo, R.database_embargo)
+        # set_compliance(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
+        # set_compliance(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
+        # set_compliance(t.database_embargo_exception_website, R.database_embargo_exception_website)
+        # set_compliance(t.database_embargo_exception_content, R.database_embargo_exception_content)
+        # set_compliance(t.database_not_listed, R.database_not_listed)
+        # set_compliance(t.database_not_duplicate, R.database_not_duplicate)
+        # set_compliance(t.issn_at_least_one, R.issn_at_least_one)
+        # set_compliance(t.issn_title_match, R.issn_title_match)
+        # set_compliance(t.issn_continuation, R.issn_continuation)
+        # set_compliance(t.website_working, R.website_working)
+        # set_compliance(t.website_issn, R.website_issn)
+        # set_compliance(t.website_url, R.website_url)
+        # set_compliance(t.website_license_policy, R.website_license_policy)
+        # set_compliance(t.website_copyright, R.website_copyright)
+        # set_compliance(t.content_no_login, R.content_no_login)
+        # set_compliance(t.content_no_embargo, R.content_no_embargo)
+        # set_compliance(t.content_publish_enough, R.content_publish_enough)
+        # set_compliance(t.content_unique_link, R.content_unique_link)
+        # set_compliance(t.content_format, R.content_format)
+        # set_compliance(t.content_new_journal, R.content_new_journal)
+        # set_compliance(t.admin_metadata_review, R.admin_metadata_review)
+        # set_compliance(t.admin_special_exception, R.admin_special_exception)
 
-        def set_exception(exceptable, rule_source):
-            if exceptable.answer in rule_source.exception_answers:
-                exceptable.exception = True
-            else:
-                exceptable.exception = False
-
-        t.database_withdrawn.special_exceptions
+        # def set_exception(exceptable, rule_source):
+        #     if exceptable.answer in rule_source.exception_answers:
+        #         exceptable.exception = True
+        #     else:
+        #         exceptable.exception = False
 
         # set_exception(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
         # set_exception(t.database_withdrawn_exception_website_unavailable, R.database_withdrawn_exception_website_unavailable)
@@ -276,18 +277,24 @@ class TriageFormProcessor:
         # set_exception(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
         # set_exception(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
         # set_exception(t.database_embargo_exception_website, R.database_embargo_exception_website)
-        set_exception(t.database_embargo_exception_content, R.database_embargo_exception_content)
+        # set_exception(t.database_embargo_exception_content, R.database_embargo_exception_content)
 
-        def set_severity(complyable, rule_source):
-            if "severity_value" in rule_source:
-                if complyable.answer in rule_source.severity_value:
-                    complyable.severity_value = rule_source.severity_value[complyable.answer]
+        # def set_severity(complyable, rule_source):
+        #     if "severity_value" in rule_source:
+        #         if complyable.answer in rule_source.severity_value:
+        #             complyable.severity_value = rule_source.severity_value[complyable.answer]
+
+        for question in R.keys():
+            if "severity_value" in R[question]:
+                ans = getattr(t, question).answer
+                if ans in R[question].severity_value:
+                    setattr(t, question, R[question].severity_value[ans])
 
         # Next apply severity values
-        set_severity(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
-        set_severity(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
-        set_severity(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
-        set_severity(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+        # set_severity(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
+        # set_severity(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
+        # set_severity(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
+        # set_severity(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
 
     def _calculate_recommendation(self, wfc:WorkflowControl):
         t = wfc.triage
@@ -321,39 +328,43 @@ class TriageFormProcessor:
             return []
 
         recs = []
-        recs += get_recommendation(t.ethics_not_excluded, R.ethics_not_excluded)
-        recs += get_recommendation(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
-        recs += get_recommendation(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
-        recs += get_recommendation(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
-        recs += get_recommendation(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
-        recs += get_recommendation(t.database_withdrawn, R.database_withdrawn)
-        # recs += get_recommendation(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
-        # recs += get_recommendation(t.database_withdrawn_exception_website_unavailable,
-        #                R.database_withdrawn_exception_website_unavailable)
-        # recs += get_recommendation(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
-        recs += get_recommendation(t.database_embargo, R.database_embargo)
-        recs += get_recommendation(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
-        recs += get_recommendation(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
-        recs += get_recommendation(t.database_embargo_exception_website, R.database_embargo_exception_website)
-        recs += get_recommendation(t.database_embargo_exception_content, R.database_embargo_exception_content)
-        recs += get_recommendation(t.database_not_listed, R.database_not_listed)
-        recs += get_recommendation(t.database_not_duplicate, R.database_not_duplicate)
-        recs += get_recommendation(t.issn_at_least_one, R.issn_at_least_one)
-        recs += get_recommendation(t.issn_title_match, R.issn_title_match)
-        recs += get_recommendation(t.issn_continuation, R.issn_continuation)
-        recs += get_recommendation(t.website_working, R.website_working)
-        recs += get_recommendation(t.website_issn, R.website_issn)
-        recs += get_recommendation(t.website_url, R.website_url)
-        recs += get_recommendation(t.website_license_policy, R.website_license_policy)
-        recs += get_recommendation(t.website_copyright, R.website_copyright)
-        recs += get_recommendation(t.content_no_login, R.content_no_login)
-        recs += get_recommendation(t.content_no_embargo, R.content_no_embargo)
-        recs += get_recommendation(t.content_publish_enough, R.content_publish_enough)
-        recs += get_recommendation(t.content_unique_link, R.content_unique_link)
-        recs += get_recommendation(t.content_format, R.content_format)
-        recs += get_recommendation(t.content_new_journal, R.content_new_journal)
-        recs += get_recommendation(t.admin_metadata_review, R.admin_metadata_review)
-        recs += get_recommendation(t.admin_special_exception, R.admin_special_exception)
+
+        for question in R.keys():
+            recs += get_recommendation(getattr(t, question), R[question])
+
+        # recs += get_recommendation(t.ethics_not_excluded, R.ethics_not_excluded)
+        # recs += get_recommendation(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
+        # recs += get_recommendation(t.ethics_no_fake_impact, R.ethics_no_fake_impact)
+        # recs += get_recommendation(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
+        # recs += get_recommendation(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
+        # recs += get_recommendation(t.database_withdrawn, R.database_withdrawn)
+        # # recs += get_recommendation(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
+        # # recs += get_recommendation(t.database_withdrawn_exception_website_unavailable,
+        # #                R.database_withdrawn_exception_website_unavailable)
+        # # recs += get_recommendation(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
+        # recs += get_recommendation(t.database_embargo, R.database_embargo)
+        # # recs += get_recommendation(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
+        # # recs += get_recommendation(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
+        # # recs += get_recommendation(t.database_embargo_exception_website, R.database_embargo_exception_website)
+        # # recs += get_recommendation(t.database_embargo_exception_content, R.database_embargo_exception_content)
+        # recs += get_recommendation(t.database_not_listed, R.database_not_listed)
+        # recs += get_recommendation(t.database_not_duplicate, R.database_not_duplicate)
+        # recs += get_recommendation(t.issn_at_least_one, R.issn_at_least_one)
+        # recs += get_recommendation(t.issn_title_match, R.issn_title_match)
+        # recs += get_recommendation(t.issn_continuation, R.issn_continuation)
+        # recs += get_recommendation(t.website_working, R.website_working)
+        # recs += get_recommendation(t.website_issn, R.website_issn)
+        # recs += get_recommendation(t.website_url, R.website_url)
+        # recs += get_recommendation(t.website_license_policy, R.website_license_policy)
+        # recs += get_recommendation(t.website_copyright, R.website_copyright)
+        # recs += get_recommendation(t.content_no_login, R.content_no_login)
+        # recs += get_recommendation(t.content_no_embargo, R.content_no_embargo)
+        # recs += get_recommendation(t.content_publish_enough, R.content_publish_enough)
+        # recs += get_recommendation(t.content_unique_link, R.content_unique_link)
+        # recs += get_recommendation(t.content_format, R.content_format)
+        # recs += get_recommendation(t.content_new_journal, R.content_new_journal)
+        # recs += get_recommendation(t.admin_metadata_review, R.admin_metadata_review)
+        # recs += get_recommendation(t.admin_special_exception, R.admin_special_exception)
 
         def evaluate_recommendations(recs):
             r = []

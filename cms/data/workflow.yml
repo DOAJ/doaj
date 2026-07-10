@@ -108,7 +108,8 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-      severity_value: 3
+      severity_value:
+        non_compliant: 3
 
     ethics_no_suspicious_ties:
       label: "Previous exclusions/suspicious publisher or journals"
@@ -135,84 +136,6 @@ triage:
       - "non_compliant"
       severity_value:
         non_compliant: 10
-
-    database_embargo_exception_issn:
-      label: "Previous application rejection - uncorfirmed ISSN"
-      check: "Exception:This journal was previously rejected due to ISSN not being confirmed and it is now."
-      instructions: ""
-      resources:
-        - label: "DOAJ Journals database"
-          url: "https://doaj.org/admin/"
-      answers:
-        "yes": "If Yes See Action"
-        "no": "If No See Action"
-        later: "Do this later"
-      compliant_answers:
-      - "yes"
-      non_compliant_answers:
-      - "no"
-      exception_answers:
-      - "yes"
-      recommend:
-        "yes": "reject"
-
-    database_embargo_exception_maned:
-      label: "Previous application rejection - Mg. Ed. note"
-      check: "Exception: The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
-      instructions: ""
-      resources:
-        - label: "DOAJ Journals database"
-          url: "https://doaj.org/admin/"
-      answers:
-        "yes": "If Yes See Action"
-        "no": "If No See Action"
-        later: "Do this later"
-      compliant_answers:
-      - "yes"
-      non_compliant_answers:
-      - "no"
-      exception_answers:
-      - "yes"
-
-    database_embargo_exception_website:
-      label: "Previous application rejection - non-available website"
-      check: "Exception: The journal was removed previously because the journal website was not available"
-      instructions: ""
-      resources:
-      - label: "DOAJ Journals database"
-        url: "https://doaj.org/admin/"
-      answers:
-        "yes": "If Yes See Action"
-        "no": "If No See Action"
-        later: "Do this later"
-      compliant_answers:
-      - "yes"
-      non_compliant_answers:
-      - "no"
-      exception_answers:
-      - "yes"
-      recommend:
-        "yes": "reject"
-
-    database_embargo_exception_content:
-      label: "Previous application rejection - not enough contents"
-      check: "Exception: The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
-      instructions: ""
-      resources:
-        - label: "DOAJ Journals database"
-          url: "https://doaj.org/admin/"
-      answers:
-        "yes": "If Yes See Action"
-        "no": "If No See Action"
-        later: "Do this later"
-      compliant_answers:
-      - "yes"
-      non_compliant_answers:
-      - "no"
-      exception_answers:
-      - "yes"
-      recommend:
-        "yes": "reject"
 
     issn_at_least_one:
       label: "ISSN(s)"
@@ -745,19 +668,3 @@ triage:
         - "non_compliant"
       recommend:
         non_compliant: "reject"
-
-    template:
-      label: ""
-      compliant: "<span class='answer'>Compliant</span>, "
-      non_compliant: "<span class='answer'>Non-compliant</span>, "
-      later: "I don't know - mark for later"
-      action: ""
-      check: ""
-      remember: ""
-      instructions: '<ul>
-                  <li></li>
-                  </ul>'
-      compliant_answers:
-        - "compliant"
-      non_compliant_answers:
-        - "non_compliant"

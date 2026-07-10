@@ -69,6 +69,7 @@ TRIAGE_STRUCT = {
                 "ethics_no_fake_impact",
                 "ethics_no_false_doaj_claim",
                 "ethics_no_suspicious_ties",
+                "ethics_submission_to_publication_time",
 
                 "database_withdrawn",
                 # "database_withdrawn_exception_ignore_embargo",
@@ -83,6 +84,7 @@ TRIAGE_STRUCT = {
                 "database_not_duplicate",
 
                 "issn_at_least_one",
+                "issn_country_match",
                 "issn_title_match",
                 "issn_continuation",
 
@@ -108,6 +110,7 @@ TRIAGE_STRUCT = {
                 "ethics_no_fake_impact": TRIAGE_FIELD,
                 "ethics_no_false_doaj_claim": TRIAGE_FIELD,
                 "ethics_no_suspicious_ties": TRIAGE_FIELD,
+                "ethics_submission_to_publication_time": TRIAGE_FIELD,
 
                 "database_withdrawn": SPECIAL_EXCEPTION_TRIAGE_FIELD,
                 #"database_withdrawn_exception_ignore_embargo": TRIAGE_FIELD,
@@ -122,6 +125,7 @@ TRIAGE_STRUCT = {
                 "database_not_duplicate": TRIAGE_FIELD,
 
                 "issn_at_least_one": TRIAGE_FIELD,
+                "issn_country_match": TRIAGE_FIELD,
                 "issn_title_match": TRIAGE_FIELD,
                 "issn_continuation": TRIAGE_FIELD,
 
@@ -610,8 +614,8 @@ class Triage(SeamlessMixin):
 
     def get_fields_with_non_zero_severity_value(self):
         reg = []
-        questions = self.__seamless__.get_list("questions")
-        for field in questions:
+        questions = self.__seamless__.get_single("questions")
+        for name, field in questions.items():
             if field.get("sv", 0) > 0:
                 reg = self._get_triage_field(field)
         return reg
@@ -669,6 +673,14 @@ class Triage(SeamlessMixin):
     @ethics_no_suspicious_ties.setter
     def ethics_no_suspicious_ties(self, field:TriageField):
         self._set_triage_field("ethics_no_suspicious_ties", field)
+
+    @property
+    def ethics_submission_to_publication_time(self) -> TriageField:
+        return self._get_triage_field("ethics_submission_to_publication_time")
+
+    @ethics_submission_to_publication_time.setter
+    def ethics_submission_to_publication_time(self, field:TriageField):
+        self._set_triage_field("ethics_submission_to_publication_time", field)
 
     @property
     def database_withdrawn(self):
@@ -761,6 +773,14 @@ class Triage(SeamlessMixin):
     @property
     def issn_at_least_one(self) -> TriageField:
         return self._get_triage_field("issn_at_least_one")
+
+    @property
+    def issn_country_match(self) -> TriageField:
+        return self._get_triage_field("issn_country_match")
+
+    @issn_country_match.setter
+    def issn_country_match(self, field:TriageField):
+        self._set_triage_field("issn_country_match", field)
 
     @property
     def issn_title_match(self) -> TriageField:
