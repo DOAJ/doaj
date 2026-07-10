@@ -1,7 +1,8 @@
 from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent, IsConditionallyRequired, DisallowedValue, \
     IsRequired
 from formulaic.validate.form.validate import LimitToFormOptions
-from formulaic.validate.validate import Regex, Different, RequiredIf, NoScriptTag, IsURL, RegexOnList
+from formulaic.validate.validate import Regex, Different, RequiredIf, NoScriptTag, IsURL, RegexOnList, AllInvalid, \
+    RequiredIfNot
 from portality.core import app
 
 from formulaic.coerce.coerce import Boolean, Unicode
@@ -100,6 +101,11 @@ class NoteField(Field):
 def options_for(source):
     return [
         {"value": k, "label": t} for k, t in source.answers.items()
+    ]
+
+def exception_options_for(source):
+    return [
+        {"value": k, "label": t} for k, t in source.exceptions.items()
     ]
 
 def resource_for(source):
@@ -411,125 +417,30 @@ class DatabaseWithdrawnNote(NoteField):
     name = "database_withdrawn_note"
     capabilities = (NC(),)
 
-###########################################################
-## DOAJ Database: Withdrawn: Exception: Ignore Embargo
-
-class DatabaseWithdrawnIgnoreEmbargo(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
-        S = T.database_withdrawn_exception_ignore_embargo
-        options = options_for(S)
-        check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
+class DatabaseWithdrawnExceptions(Field):
+    class C(FormFieldCapability):
+        role = "special"
+        label = T.database_withdrawn.edit.exceptions
+        control_class = Checkbox
+        multiple = True
+        options = exception_options_for(T.database_withdrawn)
+        control_render_class = CheckboxRenderer
         render_class = GenericField
+        error_messages = {
+            DisallowedValue: T.database_withdrawn.validation.exceptions.disallowed_value,
+        }
 
-    name = "database_withdrawn_exception_ignore_embargo"
+    name = "database_withdrawn_exceptions"
+    coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
-class DatabaseWithdrawnIgnoreEmbargoNote(NoteField):
-    name = "database_withdrawn_exception_ignore_embargo_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
-
-class DatabaseWithdrawnIgnoreEmbargoGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_withdrawn_exception_ignore_embargo.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
-
-    name_ = "database_withdrawn_exception_ignore_embargo_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseWithdrawnIgnoreEmbargo(OPTIONAL, SINGLE)
-    note = DatabaseWithdrawnIgnoreEmbargoNote(OPTIONAL, SINGLE)
-
-###########################################################
-## DOAJ Database: Withdrawn: Exception: Website Unavailable
-
-class DatabaseWithdrawnWebsiteUnavailable(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
-        S = T.database_withdrawn_exception_website_unavailable
-        options = options_for(S)
-        check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
-        render_class = GenericField
-
-    name = "database_withdrawn_exception_website_unavailable"
-    capabilities = (C(),)
-
-class DatabaseWithdrawnWebsiteUnavailableNote(NoteField):
-    name = "database_withdrawn_exception_website_unavailable_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
-
-class DatabaseWithdrawnWebsiteUnavailableGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_withdrawn_exception_website_unavailable.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
-
-    name_ = "database_withdrawn_exception_website_unavailable_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseWithdrawnWebsiteUnavailable(OPTIONAL, SINGLE)
-    note = DatabaseWithdrawnWebsiteUnavailableNote(OPTIONAL, SINGLE)
-
-###########################################################
-## DOAJ Database: Withdrawn: Exception: Content
-
-class DatabaseWithdrawnContent(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
-        S = T.database_withdrawn_exception_content
-        options = options_for(S)
-        check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
-        render_class = GenericField
-
-    name = "database_withdrawn_exception_content"
-    capabilities = (C(),)
-
-class DatabaseWithdrawnContentNote(NoteField):
-    name = "database_withdrawn_exception_content_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
-
-class DatabaseWithdrawnContentGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_withdrawn_exception_content.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
-
-    name_ = "database_withdrawn_exception_content_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseWithdrawnContent(OPTIONAL, SINGLE)
-    note = DatabaseWithdrawnContentNote(OPTIONAL, SINGLE)
-
-class DatabaseWithdrawnExceptionsGroup(Structure):
-    class C(CompoundFieldCapability):
-        role = "action"
-        label = T.database_withdrawn_exceptions.label
-        order = ["ignore_embargo", "website_unavailable", "content"]
-        render_class = ExceptionListRenderer
-        control_render_class = TriageRadioRenderer
-
-    name_ = "database_withdrawn_exceptions_group"
-    capabilities_ = (C(),)
-
-    ignore_embargo = DatabaseWithdrawnIgnoreEmbargo(OPTIONAL, SINGLE)
-    website_unavailable = DatabaseWithdrawnWebsiteUnavailable(OPTIONAL, SINGLE)
-    content = DatabaseWithdrawnContent(OPTIONAL, SINGLE)
+### The main entry point to the Database: Withdrawn question
 
 class DatabaseWithdrawnGroup(Structure):
     class C(CompoundFieldCapability):
-        role = "action"
         label = T.database_withdrawn.label
-        order = ["answer", "note", "action"]
+        order = ["answer", "note", "exceptions"]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.database_withdrawn.validation.group.is_conditionally_required
@@ -540,15 +451,16 @@ class DatabaseWithdrawnGroup(Structure):
 
     answer = DatabaseWithdrawn(OPTIONAL, SINGLE)
     note = DatabaseWithdrawnNote(OPTIONAL, SINGLE)
-    action = DatabaseWithdrawnExceptionsGroup(OPTIONAL, SINGLE)
+    exceptions = DatabaseWithdrawnExceptions(OPTIONAL, REPEATABLE)
 
     validators_ = [
         RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
-                   T.database_withdrawn.non_compliant_answers + T.database_withdrawn.compliant_answers
-                   # <- that is either compliant or non compliant
+                   T.database_withdrawn.non_compliant_answers # <- that is non compliant
                    )
     ]
+
+
 ###########################################################
 ## DOAJ Database: Embargo
 
@@ -572,10 +484,28 @@ class DatabaseEmbargoNote(NoteField):
     name = "database_embargo_note"
     capabilities = (NC(),)
 
+class DatabaseEmbargoExceptions(Field):
+    class C(FormFieldCapability):
+        role = "special"
+        label = T.database_embargo.edit.exceptions
+        control_class = Checkbox
+        multiple = True
+        options = exception_options_for(T.database_embargo)
+        control_render_class = CheckboxRenderer
+        render_class = GenericField
+        error_messages = {
+            DisallowedValue: T.database_embargo.validation.exceptions.disallowed_value,
+        }
+
+    name = "database_embargo_exceptions"
+    coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
+    capabilities = (C(),)
+
 class DatabaseEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.database_embargo.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "exceptions"]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.database_embargo.validation.group.is_conditionally_required
@@ -586,145 +516,7 @@ class DatabaseEmbargoGroup(Structure):
 
     answer = DatabaseEmbargo(OPTIONAL, SINGLE)
     note = DatabaseEmbargoNote(OPTIONAL, SINGLE)
-
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.database_embargo.non_compliant_answers + T.database_embargo.compliant_answers # <- that is either compliant or non compliant
-                   )
-    ]
-
-###########################################################
-## DOAJ Database: Withdrawn: Exception: ISSN
-
-class DatabaseEmbargoISSN(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
-        S = T.database_embargo_exception_issn
-        options = options_for(S)
-        check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
-        render_class = DummyRenderer
-
-    name = "database_embargo_exception_issn"
-    capabilities = (C(),)
-
-class DatabaseEmbargoISSNNote(NoteField):
-    name = "database_embargo_exception_issn_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
-
-class DatabaseEmbargoISSNGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_embargo_exception_issn.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
-
-    name_ = "database_embargo_exception_issn_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseEmbargoISSN(OPTIONAL, SINGLE)
-    note = DatabaseEmbargoISSNNote(OPTIONAL, SINGLE)
-
-###########################################################
-## DOAJ Database: Withdrawn: Exception: Maned Note
-
-class DatabaseEmbargoManed(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
-        S = T.database_embargo_exception_maned
-        options = options_for(S)
-        check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
-        render_class = DummyRenderer
-
-    name = "database_embargo_exception_note"
-    capabilities = (C(),)
-
-class DatabaseEmbargoManedNote(NoteField):
-    name = "database_embargo_exception_maned_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
-
-class DatabaseEmbargoManedGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_embargo_exception_maned.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
-
-    name_ = "database_embargo_exception_maned_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseEmbargoManed(OPTIONAL, SINGLE)
-    note = DatabaseEmbargoManedNote(OPTIONAL, SINGLE)
-
-###########################################################
-## DOAJ Database: Withdrawn: Exception: Website
-
-class DatabaseEmbargoWebsite(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
-        S = T.database_embargo_exception_website
-        options = options_for(S)
-        check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
-        render_class = DummyRenderer
-
-    name = "database_embargo_exception_website"
-    capabilities = (C(),)
-
-class DatabaseEmbargoWebsiteNote(NoteField):
-    name = "database_embargo_exception_website_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
-
-class DatabaseEmbargoWebsiteGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_embargo_exception_website.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
-
-    name_ = "database_embargo_exception_website_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseEmbargoWebsite(OPTIONAL, SINGLE)
-    note = DatabaseEmbargoWebsiteNote(OPTIONAL, SINGLE)
-
-###########################################################
-## DOAJ Database: Embargo: Exception: Journal Content
-
-class DatabaseEmbargoContent(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
-        S = T.database_embargo_exception_content
-        options = options_for(S)
-        check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
-        render_class = DummyRenderer
-
-    name = "database_embargo_exception_content"
-    capabilities = (C(),)
-
-class DatabaseEmbargoContentNote(NoteField):
-    name = "database_embargo_exception_content_note"
-    # capabilities = (NoteCapability(),)
-    capabilities = (DummyNote(),)
-
-class DatabaseEmbargoContentGroup(Structure):
-    class C(CompoundFieldCapability):
-        label = T.database_embargo_exception_content.label
-        order = ["answer", "note"]
-        # render_class = TriageCompound
-        render_class = DummyRenderer
-
-    name_ = "database_embargo_exception_content_group"
-    capabilities_ = (C(),)
-
-    answer = DatabaseEmbargoContent(OPTIONAL, SINGLE)
-    note = DatabaseEmbargoContentNote(OPTIONAL, SINGLE)
+    exceptions = DatabaseEmbargoExceptions(OPTIONAL, REPEATABLE)
 
 ###########################################################
 ## DOAJ Database: Not Listed
@@ -785,6 +577,10 @@ class DatabaseNotDuplicateGroup(Structure):
 
     answer = DatabaseNotDuplicate(OPTIONAL, SINGLE)
     note = DatabaseNotDuplicateNote(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note, answer, T.database_not_duplicate.non_compliant_answers)
+    ]
 
 ###########################################################
 ## ISSN: At Least One Registered ISSN
@@ -967,6 +763,13 @@ class ISSNTitleMatch(ComplianceCheckField):
         instructions = S.instructions
         resources = resource_for(S)
 
+        application_info = [
+            {
+                "label": S.info.title,
+                "lookup": lambda application, wfc: application.bibjson().title
+            }
+        ]
+
     name = "issn_title_match"
     capabilities = (C(),)
 
@@ -980,6 +783,7 @@ class ISSNTitleMatchNote(NoteField):
 
 class Title(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.issn_title_match.edit.title
         control_class = TextInput
         control_render_class = GenericControl
@@ -1045,6 +849,7 @@ class ISSNContinuationNote(NoteField):
 
 class Continues(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.issn_continuation.edit.continues
         control_class = TextInput
         control_render_class = GenericControl
@@ -1082,7 +887,15 @@ class ISSNContinuationGroup(Structure):
         RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
                    T.issn_continuation.non_compliant_answers  # <- that is non compliant
-                   )
+                   ),
+        AllInvalid( # the application IS a continuation AND its preceeding journal is not in DOAJ
+            RequiredIf(note,  # <- this field is required if
+                       answer,  # <- this field has one of the values
+                       T.issn_continuation.compliant_answers  # <- that is compliant
+                       ),
+            RequiredIfNot(note, continues)
+        )
+
     ]
 
 ###########################################################
@@ -1145,6 +958,10 @@ class WebsiteISSNGroup(Structure):
     answer = WebsiteISSN(OPTIONAL, SINGLE)
     note = WebsiteISSNNote(OPTIONAL, SINGLE)
 
+    validators_ = [
+        RequiredIf(note, answer, T.website_issn.non_compliant_answers)
+    ]
+
 ###########################################################
 ## Website: URL
 
@@ -1173,7 +990,11 @@ class WebsiteURLGroup(Structure):
     capabilities_ = (C(),)
 
     answer = WebsiteURL(OPTIONAL, SINGLE)
-    note = WebsiteURLNote(OPTIONAL, SINGLE)    # Note is required in all cases on this question
+    note = WebsiteURLNote(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note, answer, T.website_url.note_required_answers)
+    ]
 
 ###########################################################
 ## Website: License Policy
@@ -1199,6 +1020,7 @@ class WebsiteLicensePolicyNote(NoteField):
 
 class License(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.website_license_policy.edit.license
         control_class = Checkbox
         multiple = True
@@ -1227,6 +1049,7 @@ class License(Field):
 
 class LicenseAttribute(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.website_license_policy.edit.license_attribute
         control_class = Checkbox
         multiple = True
@@ -1250,6 +1073,7 @@ class LicenseAttribute(Field):
 
 class LicenseURL(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.website_license_policy.edit.license_url
         control_class = URLInput
         control_render_class = GenericControl
@@ -1291,7 +1115,7 @@ class WebsiteLicensePolicyGroup(Structure):
     validators_ = [
         RequiredIf(license_attribute,  # <- this field is required if
                    license,  # <- this field has one of the values
-                   "Publisher's own license"  # <- that is non compliant
+                   "Publisher's own license"
                    ),
         RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
@@ -1324,6 +1148,7 @@ class WebsiteCopyrightNote(NoteField):
 
 class CopyrightAuthorRetains(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.website_copyright.edit.copyright_author_retains
         control_class = Radio
         options = [
@@ -1344,6 +1169,7 @@ class CopyrightAuthorRetains(Field):
 
 class CopyrightURL(Field):
     class C(FormFieldCapability):
+        role = "special"
         label = T.website_copyright.edit.copyright_url
         control_class = URLInput
         control_render_class = GenericControl
@@ -1417,6 +1243,10 @@ class ContentNoLoginGroup(Structure):
     answer = ContentNoLogin(OPTIONAL, SINGLE)
     note = ContentNoLoginNote(OPTIONAL, SINGLE)
 
+    validators_ = [
+        RequiredIf(note, answer, T.content_no_login.non_compliant_answers)
+    ]
+
 ###########################################################
 ## Content: No Embargo
 
@@ -1446,6 +1276,10 @@ class ContentNoEmbargoGroup(Structure):
 
     answer = ContentNoEmbargo(OPTIONAL, SINGLE)
     note = ContentNoEmbargoNote(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note, answer, T.content_no_embargo.non_compliant_answers)
+    ]
 
 ###########################################################
 ## Content: Publish Enough
@@ -1477,6 +1311,10 @@ class ContentPublishEnoughGroup(Structure):
     answer = ContentPublishEnough(OPTIONAL, SINGLE)
     note = ContentPublishEnoughNote(OPTIONAL, SINGLE)
 
+    validators_ = [
+        RequiredIf(note, answer, T.content_publish_enough.non_compliant_answers)
+    ]
+
 ###########################################################
 ## Content: Unique Link
 
@@ -1506,6 +1344,10 @@ class ContentUniqueLinkGroup(Structure):
 
     answer = ContentUniqueLink(OPTIONAL, SINGLE)
     note = ContentUniqueLinkNote(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note, answer, T.content_unique_link.non_compliant_answers)
+    ]
 
 ###########################################################
 ## Content: Format
@@ -1537,6 +1379,10 @@ class ContentFormatGroup(Structure):
     answer = ContentFormat(OPTIONAL, SINGLE)
     note = ContentFormatNote(OPTIONAL, SINGLE)
 
+    validators_ = [
+        RequiredIf(note, answer, T.content_format.non_compliant_answers)
+    ]
+
 ###########################################################
 ## Content: Format
 
@@ -1555,10 +1401,28 @@ class ContentNewJournalNote(NoteField):
     name = "content_new_journal_note"
     capabilities = (NoteCapability(),)
 
+class ContentNewJournalExceptions(Field):
+    class C(FormFieldCapability):
+        role = "special"
+        label = T.content_new_journal.edit.exceptions
+        control_class = Checkbox
+        multiple = True
+        options = exception_options_for(T.content_new_journal)
+        control_render_class = CheckboxRenderer
+        render_class = GenericField
+        error_messages = {
+            DisallowedValue: T.content_new_journal.validation.exceptions.disallowed_value,
+        }
+
+    name = "new_journal_exceptions"
+    coerce = [Unicode()]
+    validators = [LimitToFormOptions()]
+    capabilities = (C(),)
+
 class ContentNewJournalGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.content_new_journal.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "exceptions"]
         render_class = TriageCompound
 
     name_ = "content_new_journal_group"
@@ -1566,6 +1430,7 @@ class ContentNewJournalGroup(Structure):
 
     answer = ContentNewJournal(OPTIONAL, SINGLE)
     note = ContentNewJournalNote(OPTIONAL, SINGLE)
+    exceptions = ContentNewJournalExceptions(OPTIONAL, REPEATABLE)
 
 ###########################################################
 ## Admin: Metadata Review

@@ -80,38 +80,40 @@ class WorkflowControl2TriageForm(object):
         # Withdrawn
         compliance_field_radio(triage.database_withdrawn, f.database.withdrawn)
         compliance_field_note(triage.database_withdrawn, f.database.withdrawn)
+        form.set(f.database.withdrawn.exceptions, triage.database_withdrawn.special_exceptions)
 
         # Withdrawn: Ignore Embargo
-        compliance_field_radio(triage.database_withdrawn_exception_ignore_embargo, f.database.withdrawn_exception_ignore_embargo)
-        compliance_field_note(triage.database_withdrawn_exception_ignore_embargo, f.database.withdrawn_exception_ignore_embargo)
+        #compliance_field_radio(triage.database_withdrawn_exception_ignore_embargo, f.database.withdrawn_exception_ignore_embargo)
+        #compliance_field_note(triage.database_withdrawn_exception_ignore_embargo, f.database.withdrawn_exception_ignore_embargo)
 
         # Withdrawn: Website Unavailable
-        compliance_field_radio(triage.database_withdrawn_exception_website_unavailable, f.database.withdrawn_exception_website_unavailable)
-        compliance_field_note(triage.database_withdrawn_exception_website_unavailable, f.database.withdrawn_exception_website_unavailable)
+        #compliance_field_radio(triage.database_withdrawn_exception_website_unavailable, f.database.withdrawn_exception_website_unavailable)
+        #compliance_field_note(triage.database_withdrawn_exception_website_unavailable, f.database.withdrawn_exception_website_unavailable)
 
         # Withdrawn: Content
-        compliance_field_radio(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
-        compliance_field_note(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
+        #compliance_field_radio(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
+        #compliance_field_note(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
 
         # Embargo
         compliance_field_radio(triage.database_embargo, f.database.embargo)
         compliance_field_note(triage.database_embargo, f.database.embargo)
+        form.set(f.database.embargo.exceptions, triage.database_embargo.special_exceptions)
 
         # Embargo: ISSN
-        compliance_field_radio(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
-        compliance_field_note(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
-
-        # Embargo: Maned
-        compliance_field_radio(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
-        compliance_field_note(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
-
-        # Embargo: Website
-        compliance_field_radio(triage.database_embargo_exception_website, f.database.embargo_exception_website)
-        compliance_field_note(triage.database_embargo_exception_website, f.database.embargo_exception_website)
-
-        # Embargo: Content
-        compliance_field_radio(triage.database_embargo_exception_content, f.database.embargo_exception_content)
-        compliance_field_note(triage.database_embargo_exception_content, f.database.embargo_exception_content)
+        # compliance_field_radio(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
+        # compliance_field_note(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
+        #
+        # # Embargo: Maned
+        # compliance_field_radio(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
+        # compliance_field_note(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
+        #
+        # # Embargo: Website
+        # compliance_field_radio(triage.database_embargo_exception_website, f.database.embargo_exception_website)
+        # compliance_field_note(triage.database_embargo_exception_website, f.database.embargo_exception_website)
+        #
+        # # Embargo: Content
+        # compliance_field_radio(triage.database_embargo_exception_content, f.database.embargo_exception_content)
+        # compliance_field_note(triage.database_embargo_exception_content, f.database.embargo_exception_content)
 
         # Not Listed
         compliance_field_radio(triage.database_not_listed, f.database.not_listed)
@@ -205,6 +207,7 @@ class WorkflowControl2TriageForm(object):
         # New Journal
         compliance_field_radio(triage.content_new_journal, f.content.new_journal)
         compliance_field_note(triage.content_new_journal, f.content.new_journal)
+        form.set(f.content.new_journal.exceptions, triage.content_new_journal.special_exceptions)
 
         ##############
         ## Admin
@@ -282,42 +285,44 @@ class TriageForm2WorkflowControl(object):
         # Withdrawn
         compliance_field_radio(triage.database_withdrawn, f.database.withdrawn)
         compliance_field_note(triage.database_withdrawn, f.database.withdrawn)
+        triage.database_withdrawn.special_exceptions = form.get(f.database.withdrawn.exceptions)
 
         # Withdrawn: Ignore Embargo
-        compliance_field_radio(triage.database_withdrawn_exception_ignore_embargo,
-                               f.database.withdrawn_exception_ignore_embargo)
-        compliance_field_note(triage.database_withdrawn_exception_ignore_embargo,
-                              f.database.withdrawn_exception_ignore_embargo)
-
-        # Withdrawn: Website Unavailable
-        compliance_field_radio(triage.database_withdrawn_exception_website_unavailable,
-                               f.database.withdrawn_exception_website_unavailable)
-        compliance_field_note(triage.database_withdrawn_exception_website_unavailable,
-                              f.database.withdrawn_exception_website_unavailable)
-
-        # Withdrawn: Content
-        compliance_field_radio(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
-        compliance_field_note(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
+        # compliance_field_radio(triage.database_withdrawn_exception_ignore_embargo,
+        #                        f.database.withdrawn_exception_ignore_embargo)
+        # compliance_field_note(triage.database_withdrawn_exception_ignore_embargo,
+        #                       f.database.withdrawn_exception_ignore_embargo)
+        #
+        # # Withdrawn: Website Unavailable
+        # compliance_field_radio(triage.database_withdrawn_exception_website_unavailable,
+        #                        f.database.withdrawn_exception_website_unavailable)
+        # compliance_field_note(triage.database_withdrawn_exception_website_unavailable,
+        #                       f.database.withdrawn_exception_website_unavailable)
+        #
+        # # Withdrawn: Content
+        # compliance_field_radio(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
+        # compliance_field_note(triage.database_withdrawn_exception_content, f.database.withdrawn_exception_content)
 
         # Embargo
         compliance_field_radio(triage.database_embargo, f.database.embargo)
         compliance_field_note(triage.database_embargo, f.database.embargo)
+        triage.database_embargo.special_exceptions = form.get(f.database.embargo.exceptions)
 
         # Embargo: ISSN
-        compliance_field_radio(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
-        compliance_field_note(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
-
-        # Embargo: Maned
-        compliance_field_radio(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
-        compliance_field_note(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
-
-        # Embargo: Website
-        compliance_field_radio(triage.database_embargo_exception_website, f.database.embargo_exception_website)
-        compliance_field_note(triage.database_embargo_exception_website, f.database.embargo_exception_website)
-
-        # Embargo: Content
-        compliance_field_radio(triage.database_embargo_exception_content, f.database.embargo_exception_content)
-        compliance_field_note(triage.database_embargo_exception_content, f.database.embargo_exception_content)
+        # compliance_field_radio(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
+        # compliance_field_note(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
+        #
+        # # Embargo: Maned
+        # compliance_field_radio(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
+        # compliance_field_note(triage.database_embargo_exception_maned, f.database.embargo_exception_maned)
+        #
+        # # Embargo: Website
+        # compliance_field_radio(triage.database_embargo_exception_website, f.database.embargo_exception_website)
+        # compliance_field_note(triage.database_embargo_exception_website, f.database.embargo_exception_website)
+        #
+        # # Embargo: Content
+        # compliance_field_radio(triage.database_embargo_exception_content, f.database.embargo_exception_content)
+        # compliance_field_note(triage.database_embargo_exception_content, f.database.embargo_exception_content)
 
         # Not Listed
         compliance_field_radio(triage.database_not_listed, f.database.not_listed)
@@ -424,6 +429,7 @@ class TriageForm2WorkflowControl(object):
         # New Journal
         compliance_field_radio(triage.content_new_journal, f.content.new_journal)
         compliance_field_note(triage.content_new_journal, f.content.new_journal)
+        triage.content_new_journal.special_exceptions = form.get(f.content.new_journal.exceptions)
 
         ##############
         ## Admin

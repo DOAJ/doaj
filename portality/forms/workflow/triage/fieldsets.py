@@ -4,14 +4,11 @@ from portality.forms.workflow.core import GenericFieldset
 from portality.forms.workflow.triage.fields import EthicsNotExcludedGroup, EthicsNoNonStandardMetricsGroup, \
     EthicsNoFakeImpactGroup, EthicsNoFalseDOAJClaimGroup, \
     EthicsNoSuspiciousTiesGroup, ISSNAtLeastOneGroup, \
-    DatabaseWithdrawnGroup, DatabaseWithdrawnIgnoreEmbargoGroup, DatabaseWithdrawnWebsiteUnavailableGroup, \
-    DatabaseWithdrawnContentGroup, DatabaseEmbargoGroup, DatabaseEmbargoISSNGroup, DatabaseEmbargoManedGroup, \
-    DatabaseEmbargoWebsiteGroup, DatabaseEmbargoContentGroup, DatabaseNotListedGroup, DatabaseNotDuplicateGroup, \
+    DatabaseWithdrawnGroup, DatabaseEmbargoGroup, DatabaseNotListedGroup, DatabaseNotDuplicateGroup, \
     ISSNTitleMatchGroup, ISSNContinuationGroup, WebsiteWorkingGroup, WebsiteISSNGroup, WebsiteURLGroup, \
     WebsiteLicensePolicyGroup, WebsiteCopyrightGroup, ContentNoLoginGroup, \
     ContentNoEmbargoGroup, ContentPublishEnoughGroup, ContentUniqueLinkGroup, ContentFormatGroup, \
-    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTime, EthicsPubTimeGroup, \
-    ISSNCountryMatch, ISSNCountryMatchGroup
+    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTimeGroup, ISSNCountryMatchGroup
 
 
 class EthicsCriteria(Structure):
@@ -42,14 +39,14 @@ class Database(Structure):
         label = "DOAJ Database"
         order = [
             "withdrawn",
-            "withdrawn_exception_ignore_embargo",
-            "withdrawn_exception_website_unavailable",
-            "withdrawn_exception_content",
+            #"withdrawn_exception_ignore_embargo",
+            #"withdrawn_exception_website_unavailable",
+            #"withdrawn_exception_content",
             "embargo",
-            "embargo_exception_issn",
-            "embargo_exception_maned",
-            "embargo_exception_website",
-            "embargo_exception_content",
+            # "embargo_exception_issn",
+            # "embargo_exception_maned",
+            # "embargo_exception_website",
+            # "embargo_exception_content",
             "not_listed",
             "not_duplicate"
         ]
@@ -59,14 +56,14 @@ class Database(Structure):
     capabilities_ = (C(),)
 
     withdrawn = DatabaseWithdrawnGroup(OPTIONAL, SINGLE)
-    withdrawn_exception_ignore_embargo = DatabaseWithdrawnIgnoreEmbargoGroup(OPTIONAL, SINGLE)
-    withdrawn_exception_website_unavailable = DatabaseWithdrawnWebsiteUnavailableGroup(OPTIONAL, SINGLE)
-    withdrawn_exception_content = DatabaseWithdrawnContentGroup(OPTIONAL, SINGLE)
+    #withdrawn_exception_ignore_embargo = DatabaseWithdrawnIgnoreEmbargoGroup(OPTIONAL, SINGLE)
+    #withdrawn_exception_website_unavailable = DatabaseWithdrawnWebsiteUnavailableGroup(OPTIONAL, SINGLE)
+    #withdrawn_exception_content = DatabaseWithdrawnContentGroup(OPTIONAL, SINGLE)
     embargo = DatabaseEmbargoGroup(OPTIONAL, SINGLE)
-    embargo_exception_issn = DatabaseEmbargoISSNGroup(OPTIONAL, SINGLE)
-    embargo_exception_maned = DatabaseEmbargoManedGroup(OPTIONAL, SINGLE)
-    embargo_exception_website = DatabaseEmbargoWebsiteGroup(OPTIONAL, SINGLE)
-    embargo_exception_content = DatabaseEmbargoContentGroup(OPTIONAL, SINGLE)
+    # embargo_exception_issn = DatabaseEmbargoISSNGroup(OPTIONAL, SINGLE)
+    # embargo_exception_maned = DatabaseEmbargoManedGroup(OPTIONAL, SINGLE)
+    # embargo_exception_website = DatabaseEmbargoWebsiteGroup(OPTIONAL, SINGLE)
+    # embargo_exception_content = DatabaseEmbargoContentGroup(OPTIONAL, SINGLE)
     not_listed = DatabaseNotListedGroup(OPTIONAL, SINGLE)
     not_duplicate = DatabaseNotDuplicateGroup(OPTIONAL, SINGLE)
 

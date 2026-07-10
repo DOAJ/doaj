@@ -71,14 +71,14 @@ TRIAGE_STRUCT = {
                 "ethics_no_suspicious_ties",
 
                 "database_withdrawn",
-                "database_withdrawn_exception_ignore_embargo",
-                "database_withdrawn_exception_website_unavailable",
-                "database_withdrawn_exception_content",
+                # "database_withdrawn_exception_ignore_embargo",
+                # "database_withdrawn_exception_website_unavailable",
+                # "database_withdrawn_exception_content",
                 "database_embargo",
-                "database_embargo_exception_issn",
-                "database_embargo_exception_maned",
-                "database_embargo_exception_website",
-                "database_embargo_exception_content",
+                # "database_embargo_exception_issn",
+                # "database_embargo_exception_maned",
+                # "database_embargo_exception_website",
+                # "database_embargo_exception_content",
                 "database_not_listed",
                 "database_not_duplicate",
 
@@ -109,15 +109,15 @@ TRIAGE_STRUCT = {
                 "ethics_no_false_doaj_claim": TRIAGE_FIELD,
                 "ethics_no_suspicious_ties": TRIAGE_FIELD,
 
-                "database_withdrawn": TRIAGE_FIELD,
-                "database_withdrawn_exception_ignore_embargo": TRIAGE_FIELD,
-                "database_withdrawn_exception_website_unavailable": TRIAGE_FIELD,
-                "database_withdrawn_exception_content": TRIAGE_FIELD,
-                "database_embargo": TRIAGE_FIELD,
-                "database_embargo_exception_issn": TRIAGE_FIELD,
-                "database_embargo_exception_maned": TRIAGE_FIELD,
-                "database_embargo_exception_website": TRIAGE_FIELD,
-                "database_embargo_exception_content": TRIAGE_FIELD,
+                "database_withdrawn": SPECIAL_EXCEPTION_TRIAGE_FIELD,
+                #"database_withdrawn_exception_ignore_embargo": TRIAGE_FIELD,
+                #"database_withdrawn_exception_website_unavailable": TRIAGE_FIELD,
+                #"database_withdrawn_exception_content": TRIAGE_FIELD,
+                "database_embargo": SPECIAL_EXCEPTION_TRIAGE_FIELD,
+                # "database_embargo_exception_issn": TRIAGE_FIELD,
+                # "database_embargo_exception_maned": TRIAGE_FIELD,
+                # "database_embargo_exception_website": TRIAGE_FIELD,
+                # "database_embargo_exception_content": TRIAGE_FIELD,
                 "database_not_listed": TRIAGE_FIELD,
                 "database_not_duplicate": TRIAGE_FIELD,
 
@@ -136,7 +136,7 @@ TRIAGE_STRUCT = {
                 "content_publish_enough": TRIAGE_FIELD,
                 "content_unique_link": TRIAGE_FIELD,
                 "content_format": TRIAGE_FIELD,
-                "content_new_journal": TRIAGE_FIELD,
+                "content_new_journal": SPECIAL_EXCEPTION_TRIAGE_FIELD,
 
                 "admin_metadata_review": TRIAGE_FIELD,
                 "admin_special_exception": SPECIAL_EXCEPTION_TRIAGE_FIELD
@@ -520,6 +520,13 @@ class Triage(SeamlessMixin):
     __SEAMLESS_STRUCT__ = TRIAGE_STRUCT
     __SEAMLESS_COERCE__ = COERCE_MAP
 
+    EXCEPTION_QUESTIONS = [
+        "admin_special_exception",
+        "database_withdrawn",
+        "database_embargo",
+        "content_new_journal"
+    ]
+
     def __init__(self, raw=None, parent:WorkflowControl=None, **kwargs):
         super(Triage, self).__init__(raw=raw, **kwargs)
         self._parent = parent
@@ -572,7 +579,7 @@ class Triage(SeamlessMixin):
             self.__seamless__.set_single(f"questions.{field}", {})
             t = self.__seamless__.get_single(f"questions.{field}")
 
-        if field == "admin_special_exception":
+        if field in self.EXCEPTION_QUESTIONS:
             return SpecialExceptionTriageField(field, t, self)
 
         return TriageField(field, t, self)
@@ -667,33 +674,33 @@ class Triage(SeamlessMixin):
     def database_withdrawn(self):
         return self._get_triage_field("database_withdrawn")
 
-    @database_withdrawn.setter
-    def database_withdrawn(self, field:TriageField):
-        self._set_triage_field("database_withdrawn", field)
-
-    @property
-    def database_withdrawn_exception_ignore_embargo(self):
-        return self._get_triage_field("database_withdrawn_exception_ignore_embargo")
-
-    @database_withdrawn_exception_ignore_embargo.setter
-    def database_withdrawn_exception_ignore_embargo(self, field:TriageField):
-        self._set_triage_field("database_withdrawn_exception_ignore_embargo", field)
-
-    @property
-    def database_withdrawn_exception_website_unavailable(self):
-        return self._get_triage_field("database_withdrawn_exception_website_unavailable")
-
-    @database_withdrawn_exception_website_unavailable.setter
-    def database_withdrawn_exception_website_unavailable(self, field:TriageField):
-        self._set_triage_field("database_withdrawn_exception_website_unavailable", field)
-
-    @property
-    def database_withdrawn_exception_content(self):
-        return self._get_triage_field("database_withdrawn_exception_content")
-
-    @database_withdrawn_exception_content.setter
-    def database_withdrawn_exception_content(self, field:TriageField):
-        self._set_triage_field("database_withdrawn_exception_content", field)
+    # @database_withdrawn.setter
+    # def database_withdrawn(self, field:TriageField):
+    #     self._set_triage_field("database_withdrawn", field)
+    #
+    # @property
+    # def database_withdrawn_exception_ignore_embargo(self):
+    #     return self._get_triage_field("database_withdrawn_exception_ignore_embargo")
+    #
+    # @database_withdrawn_exception_ignore_embargo.setter
+    # def database_withdrawn_exception_ignore_embargo(self, field:TriageField):
+    #     self._set_triage_field("database_withdrawn_exception_ignore_embargo", field)
+    #
+    # @property
+    # def database_withdrawn_exception_website_unavailable(self):
+    #     return self._get_triage_field("database_withdrawn_exception_website_unavailable")
+    #
+    # @database_withdrawn_exception_website_unavailable.setter
+    # def database_withdrawn_exception_website_unavailable(self, field:TriageField):
+    #     self._set_triage_field("database_withdrawn_exception_website_unavailable", field)
+    #
+    # @property
+    # def database_withdrawn_exception_content(self):
+    #     return self._get_triage_field("database_withdrawn_exception_content")
+    #
+    # @database_withdrawn_exception_content.setter
+    # def database_withdrawn_exception_content(self, field:TriageField):
+    #     self._set_triage_field("database_withdrawn_exception_content", field)
 
     @property
     def database_embargo(self):
@@ -703,37 +710,37 @@ class Triage(SeamlessMixin):
     def database_embargo(self, field:TriageField):
         self._set_triage_field("database_embargo", field)
 
-    @property
-    def database_embargo_exception_issn(self):
-        return self._get_triage_field("database_embargo_exception_issn")
-
-    @database_embargo_exception_issn.setter
-    def database_embargo_exception_issn(self, field:TriageField):
-        self._set_triage_field("database_embargo_exception_issn", field)
-
-    @property
-    def database_embargo_exception_maned(self):
-        return self._get_triage_field("database_embargo_exception_maned")
-
-    @database_embargo_exception_maned.setter
-    def database_embargo_exception_maned(self, field:TriageField):
-        self._set_triage_field("database_embargo_exception_maned", field)
-
-    @property
-    def database_embargo_exception_website(self):
-        return self._get_triage_field("database_embargo_exception_website")
-
-    @database_embargo_exception_website.setter
-    def database_embargo_exception_website(self, field:TriageField):
-        self._set_triage_field("database_embargo_exception_website", field)
-
-    @property
-    def database_embargo_exception_content(self):
-        return self._get_triage_field("database_embargo_exception_content")
-
-    @database_embargo_exception_content.setter
-    def database_embargo_exception_content(self, field:TriageField):
-        self._set_triage_field("database_embargo_exception_content", field)
+    # @property
+    # def database_embargo_exception_issn(self):
+    #     return self._get_triage_field("database_embargo_exception_issn")
+    #
+    # @database_embargo_exception_issn.setter
+    # def database_embargo_exception_issn(self, field:TriageField):
+    #     self._set_triage_field("database_embargo_exception_issn", field)
+    #
+    # @property
+    # def database_embargo_exception_maned(self):
+    #     return self._get_triage_field("database_embargo_exception_maned")
+    #
+    # @database_embargo_exception_maned.setter
+    # def database_embargo_exception_maned(self, field:TriageField):
+    #     self._set_triage_field("database_embargo_exception_maned", field)
+    #
+    # @property
+    # def database_embargo_exception_website(self):
+    #     return self._get_triage_field("database_embargo_exception_website")
+    #
+    # @database_embargo_exception_website.setter
+    # def database_embargo_exception_website(self, field:TriageField):
+    #     self._set_triage_field("database_embargo_exception_website", field)
+    #
+    # @property
+    # def database_embargo_exception_content(self):
+    #     return self._get_triage_field("database_embargo_exception_content")
+    #
+    # @database_embargo_exception_content.setter
+    # def database_embargo_exception_content(self, field:TriageField):
+    #     self._set_triage_field("database_embargo_exception_content", field)
 
     @property
     def database_not_listed(self):

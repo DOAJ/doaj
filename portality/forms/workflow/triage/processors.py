@@ -5,9 +5,12 @@ from portality.bll import DOAJ
 from portality.bll.services.workflow.core import ApplicationEdit
 from portality.core import app
 from portality.forms.workflow.crosswalk import TriageForm2WorkflowControl, WorkflowControl2TriageForm
+from portality.forms.workflow.triage.fields import SpecialExceptions
 from portality.forms.workflow.triage.forms import TriageForm, TriageSubmission
 from portality.models import Application, WorkflowControl
 from formulaic.core import DataProcessingResult
+from portality.models.workflow import TriageField, SpecialExceptionTriageField
+
 
 # class TriageReadOnlyProcessor:
 #     def __init__(self, source_application:Application, source_wfc:WorkflowControl):
@@ -265,12 +268,14 @@ class TriageFormProcessor:
             else:
                 exceptable.exception = False
 
-        set_exception(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
-        set_exception(t.database_withdrawn_exception_website_unavailable, R.database_withdrawn_exception_website_unavailable)
-        set_exception(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
-        set_exception(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
-        set_exception(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
-        set_exception(t.database_embargo_exception_website, R.database_embargo_exception_website)
+        t.database_withdrawn.special_exceptions
+
+        # set_exception(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
+        # set_exception(t.database_withdrawn_exception_website_unavailable, R.database_withdrawn_exception_website_unavailable)
+        # set_exception(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
+        # set_exception(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
+        # set_exception(t.database_embargo_exception_maned, R.database_embargo_exception_maned)
+        # set_exception(t.database_embargo_exception_website, R.database_embargo_exception_website)
         set_exception(t.database_embargo_exception_content, R.database_embargo_exception_content)
 
         def set_severity(complyable, rule_source):
@@ -288,7 +293,7 @@ class TriageFormProcessor:
         t = wfc.triage
         R = app.cms.workflow.triage.fields
 
-        def get_recommendation(field, config):
+        def get_recommendation(field:TriageField, config):
             if "recommend" in config:
                 if field.answer is not None and field.answer in config.recommend:
                     recommend = config.recommend[field.answer]
@@ -298,9 +303,21 @@ class TriageFormProcessor:
                             "question": field.name,
                             "answer": field.answer,
                             "sv": field.severity_value,
-                            "exception": field.exception,
+                            "exception": None,
                         }
                     }]
+            if isinstance(field, SpecialExceptionTriageField):
+                if len(field.special_exceptions) > 0:
+                    return [{
+                        "code": "reject",
+                        "reasons": {
+                            "question": field.name,
+                            "answer": field.answer,
+                            "sv": field.severity_value,
+                            "exception": field.special_exceptions,
+                        }
+                    }]
+
             return []
 
         recs = []
@@ -310,10 +327,10 @@ class TriageFormProcessor:
         recs += get_recommendation(t.ethics_no_false_doaj_claim, R.ethics_no_false_doaj_claim)
         recs += get_recommendation(t.ethics_no_suspicious_ties, R.ethics_no_suspicious_ties)
         recs += get_recommendation(t.database_withdrawn, R.database_withdrawn)
-        recs += get_recommendation(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
-        recs += get_recommendation(t.database_withdrawn_exception_website_unavailable,
-                       R.database_withdrawn_exception_website_unavailable)
-        recs += get_recommendation(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
+        # recs += get_recommendation(t.database_withdrawn_exception_ignore_embargo, R.database_withdrawn_exception_ignore_embargo)
+        # recs += get_recommendation(t.database_withdrawn_exception_website_unavailable,
+        #                R.database_withdrawn_exception_website_unavailable)
+        # recs += get_recommendation(t.database_withdrawn_exception_content, R.database_withdrawn_exception_content)
         recs += get_recommendation(t.database_embargo, R.database_embargo)
         recs += get_recommendation(t.database_embargo_exception_issn, R.database_embargo_exception_issn)
         recs += get_recommendation(t.database_embargo_exception_maned, R.database_embargo_exception_maned)

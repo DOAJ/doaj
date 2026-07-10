@@ -136,70 +136,6 @@ triage:
       severity_value:
         non_compliant: 10
 
-    database_withdrawn_exception_ignore_embargo:
-      label: "Journal withdrawn - Mg. Ed. note"
-      check: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
-      instructions: ""
-      resources:
-        - label: "DOAJ Journals database"
-          url: "https://doaj.org/admin/"
-      answers:
-        "yes": "If Yes See Action"
-        "no": "If No See Action"
-        later: "Do this later"
-      compliant_answers:
-      - "yes"
-      non_compliant_answers:
-      - "no"
-      exception_answers:
-      - "yes"
-      recommend:
-        "yes": "reject"
-
-    database_withdrawn_exception_website_unavailable:
-      label: "Journal withdrawn - non-available website"
-      check: "Exception: The journal was removed previously because the journal website was not available"
-      instructions: ""
-      resources:
-        - label: "DOAJ Journals database"
-          url: "https://doaj.org/admin/"
-      answers:
-        "yes": "If Yes See Action"
-        "no": "If No See Action"
-        later: "Do this later"
-      compliant_answers:
-      - "yes"
-      non_compliant_answers:
-      - "no"
-      exception_answers:
-      - "yes"
-      recommend:
-        "yes": "reject"
-
-    database_withdrawn_exception_content:
-      label: "Journal withdrawn - not enough contents"
-      check: "Exception: The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
-      instructions: ""
-      resources:
-        - label: "DOAJ Journals database"
-          url: "https://doaj.org/admin/"
-      answers:
-        "yes": "If Yes See Action"
-        "no": "If No See Action"
-        later: "Do this later"
-      compliant_answers:
-      - "yes"
-      non_compliant_answers:
-      - "no"
-      exception_answers:
-      - "yes"
-      recommend:
-        "yes": "reject"
-
-    database_withdrawn_exceptions:
-      label: "Journal withdrawn exceptions"
-      check: "Do any exceptions apply?"
-
     database_embargo_exception_issn:
       label: "Previous application rejection - uncorfirmed ISSN"
       check: "Exception:This journal was previously rejected due to ISSN not being confirmed and it is now."
@@ -367,6 +303,8 @@ triage:
       resources:
         - label: "ISSN portal"
           url: "https://portal.issn.org/"
+      info:
+        title: "Title"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
@@ -407,7 +345,7 @@ triage:
         - label: "DOAJ admin journal search"
           url: "https://doaj.org/admin"
       edit:
-        continues: "Continues an <strong>older</strong> journal with the ISSN(s)"
+        continues: "If the preceeding journal is indexed in DOAJ, enter the ISSN(s) here (comma separated list)"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
@@ -435,10 +373,14 @@ triage:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
           is_conditionally_required: "The note field is required"
+        exceptions:
+          disallowed_value: "You must select one of the valid options"
+      edit:
+        exceptions: "Exceptions"
       exceptions:
-        - "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
-        - "The journal was removed previously because the journal website was not available"
-        - "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
+        ignore_embargo: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+        website_unavailable: "The journal was removed previously because the journal website was not available"
+        journal_content: "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
       remember: '<ul>
                   <li>Search <strong>both</strong> ISSNs (if available) in the journals admin site</li>
                   <li>If there is a record in DOAJ that it is not currently indexed, click the <span class="answer action">There is a record in DOAJ that is not currently indexed</span> and make a note of it (removal date, reasons and record’s URL)</li>
@@ -463,11 +405,13 @@ triage:
         action: "This journal <strong>does have</strong> an active embargo from a previous rejection"
         conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, and <strong>no exceptions are noted</strong>"
         conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, but <strong>exceptions are noted</strong>"
+      edit:
+        exceptions: "Exceptions"
       exceptions:
-        - "This journal was previously rejected due to ISSN not being confirmed and it is now."
-        - "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
-        - "The journal was removed previously because the journal website was not available"
-        - "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
+        issn_confirmed: "This journal was previously rejected due to ISSN not being confirmed and it is now."
+        ignore_embargo: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
+        website_unavailable: "The journal was removed previously because the journal website was not available"
+        journal_content: "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
       remember: '<ul>
                   <li>Search both <strong>ISSNs</strong> (if available) in the applications admin site and the UR admin site</li>
                   <li>If there are multiple records, open the most recently updated to see why it was rejected and when.</li>
@@ -483,6 +427,8 @@ triage:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
           is_conditionally_required: "The note field is required"
+        exceptions:
+          disallowed_value: "You must select one of the valid options"
       compliant_answers:
         - "compliant"
         - "conditional_compliant"
@@ -568,7 +514,6 @@ triage:
       non_compliant_answers:
         - "non_compliant"
 
-
     website_url:
       label: "Distinct URLs"
       check: "The application form lists distinct URLs pointing to the correct information for all the answers that require a URL "
@@ -586,6 +531,8 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      note_required_answers:
+        "action"
 
     website_license_policy:
       label: "Licensing policy"
@@ -705,7 +652,6 @@ triage:
       non_compliant_answers:
         - "non_compliant"
 
-
     content_unique_link:
       label: "Unique article links"
       answers:
@@ -746,47 +692,33 @@ triage:
         non_compliant: ""
         later: "I don't know - mark for later"
         action: "<span class='answer'>Yes</span>, this <strong>is</strong> a newly launched or a flipped journal"
+      exceptions:
+        publishing_history: "This journal demonstrates a publishing history of more than one year or has published at least ten open access research articles"
       remember: ""
       instructions: ''
       resources: ""
+      edit:
+        exceptions: "Exceptions"
+      validation:
+        exceptions:
+            disallowed_value: "You must select one of the valid options"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-
-      content_new_publishing_history:
-        label: ""
-        answers:
-          compliant: "<span class='answer'>Compliant</span>, this journal <strong>does</strong> demonstrate a publishing history of more than one year or has published at least ten open access research articles"
-          non_compliant: "<span class='answer'>Non-Compliant</span>, this journal <strong>does not</strong> demonstrate a publishing history of more than one year and <strong>has not</strong> published at least ten open access research articles"
-          later: "I don't know - mark for later"
-          action: ""
-        check: "The new or flipped journal demonstrates a publishing history of more than one year or has published at least ten open access research articles"
-        remember: ""
-        instructions: ''
-        resources:
-          - label: ""
-            url: ""
-        compliant_answers:
-          - "compliant"
-        non_compliant_answers:
-          - "non_compliant"
 
     admin_metadata_review:
       label: "Check Metadata"
       check: "Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , OA URL, Copyright URL and Licensing URL are correct. Incorrect information has been edited"
       instructions: ""
       answers:
-        compliant: "yes"
+        compliant: "Everything is correct"
         non_compliant: "Not acceptable"
         later: "Do this later"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-      resources:
-        - label: ""
-          url: ""
 
     admin_special_exception:
       label: "Special exceptions"
