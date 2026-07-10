@@ -53,8 +53,10 @@ TRIAGE_STRUCT = {
                     "fields": {
                         "question": {"coerce": "unicode"},
                         "answer": {"coerce": "unicode"},
-                        "sv": {"coerce": "integer"},
-                        "exception": {"coerce": "bool"}
+                        "sv": {"coerce": "integer"}
+                    },
+                    "lists": {
+                        "exception": {"contains": "field", "coerce": "unicode"}
                     }
                 }
             }

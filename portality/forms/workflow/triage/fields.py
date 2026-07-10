@@ -744,13 +744,6 @@ class ISSNCountryMatchGroup(Structure):
     answer = ISSNCountryMatch(OPTIONAL, SINGLE)
     note = ISSNCountryMatchNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.issn_country_match.non_compliant_answers + T.issn_country_match.compliant_answers # <- that has a meaningful answer
-                   )
-    ]
-
 
 ###########################################################
 ## ISSN: Title Match
@@ -818,13 +811,6 @@ class ISSNTitleMatchGroup(Structure):
     title = Title(REQUIRED, SINGLE)
     note = ISSNTitleMatchNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.issn_title_match.non_compliant_answers  # <- that is non compliant
-                   )
-    ]
-
 ###########################################################
 ## ISSN: Continuations
 
@@ -884,18 +870,14 @@ class ISSNContinuationGroup(Structure):
     note = ISSNContinuationNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.issn_continuation.non_compliant_answers  # <- that is non compliant
-                   ),
         AllInvalid( # the application IS a continuation AND its preceeding journal is not in DOAJ
             RequiredIf(note,  # <- this field is required if
                        answer,  # <- this field has one of the values
-                       T.issn_continuation.compliant_answers  # <- that is compliant
+                       T.issn_continuation.notes_required_answers  # <- that is compliant
                        ),
-            RequiredIfNot(note, continues)
+            RequiredIfNot(note, continues),
+            error_code=IsConditionallyRequired
         )
-
     ]
 
 ###########################################################
@@ -1486,11 +1468,7 @@ class SpecialExceptions(Field):
         label = T.admin_special_exception.edit.special_exceptions
         control_class = Checkbox
         multiple = True
-        options = [
-            {"label": "Option 1", "value": "option_1"},
-            {"label": "Option 2", "value": "option_2"},
-            {"label": "Other", "value": "other"}
-        ]
+        options = exception_options_for(T.admin_special_exception)
         control_render_class = CheckboxRenderer
         render_class = GenericField
         error_messages = {

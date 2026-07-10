@@ -18,7 +18,10 @@
         <p>Reasons:
             <ul>
             {% for reason in rec.reasons %}
-                <li>{{ reason.question }}: {{ reason.answer }} {% if reason.severity_value %}(SV:{{ reason.severity_value }}){% endif %}</li>
+                <li>{{ reason.question }}: {{ reason.answer }}
+                    {% if reason.severity_value %}(SV:{{ reason.severity_value }}){% endif %}
+                    {% if reason.exception %}(Exception(s): {{ reason.exception|join(", ") }}){% endif %}
+                </li>
             {% endfor %}
             </ul>
         </p>

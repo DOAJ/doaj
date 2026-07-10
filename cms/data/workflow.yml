@@ -175,9 +175,9 @@ triage:
           is_conditionally_required: "The note field is required if the answer is 'Non-Compliant'"
       compliant_answers:
         - "compliant"
+        - "action"
       non_compliant_answers:
         - "non_compliant"
-        - "conditional"
 
     issn_country_match:
       label: "Country in the application matches the title at ISSN portal"
@@ -251,7 +251,6 @@ triage:
       check: "This application is <strong>not</strong> for a continuation of existing journal"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this application <strong>is not</strong> for a continuation"
-        non_compliant: ""
         later: "I don't know - mark for later"
         action: "This application <strong>is</strong> for a continuation"
       remember: "If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage"
@@ -273,13 +272,15 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "The note field is required if the application is for a continuation, and the preceding journal is not currently indexed in DOAJ"
         continues:
           regex_not_match: "ISSN(s) must be of the valid form, separated by commas"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
-        - "conditional"
+        - ""
+      notes_required_answers:
+        - "action"  # <- in this case only when no continuation ISSN is provided
 
     database_withdrawn:
       label: "Journal withdrawn"
@@ -654,6 +655,10 @@ triage:
         compliant: "Continue"
         non_compliant: "Reject this application"
         later: "I don't know - mark for later"
+      exceptions:
+        option_1: "Option 1"
+        option_2: "Option 2"
+        other: "Other"
       edit:
         special_exceptions: "Special exception"
         other: "Other special exception"
@@ -661,7 +666,7 @@ triage:
         special_exceptions:
           disallowed_value: "Please select a checkbox"
         special_exception_other:
-          is_conditionally_required: "The special exception field is required if the answer is 'Reject this application'"
+          is_conditionally_required: "If you select 'Other', please provide a description of the special exception"
       compliant_answers:
         - "compliant"
       non_compliant_answers:

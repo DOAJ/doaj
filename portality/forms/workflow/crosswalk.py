@@ -74,6 +74,10 @@ class WorkflowControl2TriageForm(object):
         compliance_field_radio(triage.ethics_no_suspicious_ties, f.ethics.no_suspicious_ties)
         compliance_field_note(triage.ethics_no_suspicious_ties, f.ethics.no_suspicious_ties)
 
+        # publication time
+        compliance_field_radio(triage.ethics_submission_to_publication_time, f.ethics.publication_time)
+        compliance_field_note(triage.ethics_submission_to_publication_time, f.ethics.publication_time)
+
         ############
         ## Database fields
 
@@ -131,6 +135,10 @@ class WorkflowControl2TriageForm(object):
         compliance_field_note(triage.issn_at_least_one, f.issn.at_least_one)
         form.set(f.issn.at_least_one.edited_issns.eissn, bj.eissn)
         form.set(f.issn.at_least_one.edited_issns.pissn, bj.pissn)
+
+        # Country match
+        compliance_field_radio(triage.issn_country_match, f.issn.country_match)
+        compliance_field_note(triage.issn_country_match, f.issn.country_match)
 
         # Title match
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
@@ -249,9 +257,9 @@ class TriageForm2WorkflowControl(object):
 
         def str_2_list(form_field, separator=","):
             value = form.get(form_field)
-            if value is None:
-                return ""
-            return [v.strip() for v in value.split(separator)]
+            if not value:
+                return None
+            return [v.strip() for v in value.split(separator) if v.strip() != ""]
 
         # Record ID
         wfc.set_id(f.id)
@@ -278,6 +286,10 @@ class TriageForm2WorkflowControl(object):
         # No suspicious ties
         compliance_field_radio(triage.ethics_no_suspicious_ties, f.ethics.no_suspicious_ties)
         compliance_field_note(triage.ethics_no_suspicious_ties, f.ethics.no_suspicious_ties)
+
+        # publication time
+        compliance_field_radio(triage.ethics_submission_to_publication_time, f.ethics.publication_time)
+        compliance_field_note(triage.ethics_submission_to_publication_time, f.ethics.publication_time)
 
         ############
         ## Database fields
@@ -343,6 +355,10 @@ class TriageForm2WorkflowControl(object):
         pissn = form.get(f.issn.at_least_one.edited_issns.pissn)
         bj.pissn = pissn
 
+        # Country match
+        compliance_field_radio(triage.issn_country_match, f.issn.country_match)
+        compliance_field_note(triage.issn_country_match, f.issn.country_match)
+
         # Title match
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
@@ -352,7 +368,11 @@ class TriageForm2WorkflowControl(object):
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)
         compliance_field_note(triage.issn_continuation, f.issn.continuation)
-        bj.replaces = str_2_list(f.issn.continuation.continues)
+        issn_list = str_2_list(f.issn.continuation.continues)
+        if issn_list:
+            bj.replaces = issn_list
+        else:
+            del bj.replaces
 
         ##########
         ## Website

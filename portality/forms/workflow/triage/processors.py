@@ -286,9 +286,10 @@ class TriageFormProcessor:
 
         for question in R.keys():
             if "severity_value" in R[question]:
-                ans = getattr(t, question).answer
+                triage_field = getattr(t, question)
+                ans = triage_field.answer
                 if ans in R[question].severity_value:
-                    setattr(t, question, R[question].severity_value[ans])
+                    triage_field.severity_value = R[question].severity_value[ans]
 
         # Next apply severity values
         # set_severity(t.ethics_no_nonstandard_metrics, R.ethics_no_nonstandard_metrics)
