@@ -9,7 +9,7 @@ from doajtest.helpers import DoajTestCase
 # The account blueprint is registered twice - once at /account, and once
 # locale-prefixed at /<lang>/account (name "locale_account"). Both must
 # behave the same way.
-LOGIN_ROUTES = ('/account/login', '/en/account/login','/fr/account/login')
+LOGIN_ROUTES = ('/account/login', '/en/account/login', '/fr/account/login')
 
 
 class TestAccountLogin(DoajTestCase):
@@ -91,3 +91,25 @@ class TestAccountLogin(DoajTestCase):
                 ), follow_redirects=True)
                 self.assertEqual(resp.status_code, 200)
                 mock_send_email.assert_called_once()
+
+    def test_05_apply_redirect_login_includes_password_toggle_script(self):
+        """
+        Regression test: /account/login?redirected=apply renders the
+        login_to_apply template, which shares the login form markup
+        (including the "Prefer to use a password?" link) with the plain
+        login page via _login_form.html, but didn't carry over the JS
+        that binds the toggle click handler - so on the apply flow the
+        link was inert and never revealed the password field, even
+        though it worked fine on the plain /login page.
+        """
+        for route in LOGIN_ROUTES:
+            with self.subTest(route=route):
+                plain_resp = self.app_client.get(route, follow_redirects=True)
+                apply_resp = self.app_client.get(f'{route}?redirected=apply', follow_redirects=True)
+
+                for resp in (plain_resp, apply_resp):
+                    self.assertEqual(resp.status_code, 200)
+                    # the toggle link/markup should be present on both...
+                    self.assertIn(b'id="show-password"', resp.data)
+                    # ...and so should the script that makes it work
+                    self.assertIn(b"$('#show-password').on('click'", resp.data)

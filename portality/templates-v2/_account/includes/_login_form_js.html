@@ -1,0 +1,18 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#show-password').on('click', function (e) {
+            e.preventDefault();
+            $('#password-section').slideDown();
+            $('#login-link-btn').hide();
+            $('#toggle-to-password').hide();
+        });
+
+        $('#show-login-link').on('click', function (e) {
+            e.preventDefault();
+            $('#password-section').slideUp();
+            $('#login-link-btn').show();
+            $('#toggle-to-password').show();
+            $('#password-section input[type="password"]').val('');
+        });
+    });
+</script>
