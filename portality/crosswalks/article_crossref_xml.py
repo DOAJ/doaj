@@ -286,8 +286,10 @@ class CrossrefXWalk442(object):
                 bibjson.add_identifier(bibjson.DOI, doi)
 
     def extract_identifiers(self, record, journal, bibjson):
-        # this is used to extract item_number such as article number, eLocator, or e-location
-        # and capture other identifiers such as PII, DOI, DAI, report number
+        # This is used to extract item_number such as article number, eLocator, or e-location
+        # and capture other identifiers such as handle, ark, doi, urn, dor and purl
+        # Both item_number and identifier have a type attribute which is free text.
+        # ToDO - Do we need to differentiate between item_number and other identifiers?
         publisher_item = record.find("x:publisher_item", self.NS)
         if publisher_item is not None:
             ans = []
@@ -306,7 +308,7 @@ class CrossrefXWalk442(object):
                 elif typ2:
                     typ = typ2
                 if typ and typ.lower() in ["eLocator", "e-location"]:
-                    bibjson.add_identifier('e-location', an[0].text.upper())
+                    bibjson.add_identifier(bibjson.ELOCATION, an[0].text.upper())
                 elif typ and typ.lower() in bibjson.IDENTIFIER_TYPES:
                     bibjson.add_identifier(typ.lower(), an[0].text.upper())
                 elif typ:
@@ -314,7 +316,7 @@ class CrossrefXWalk442(object):
                     bibjson.add_identifier(typ.lower(), an[0].text.upper())
                 else:
                     # TODO - Do we capture identifiers of unknown type?
-                    bibjson.add_identifier(typ, an[0].text.upper())
+                    bibjson.add_identifier('other', an[0].text.upper())
 
     def extract_fulltext(self, record, journal, bibjson):
         d = record.find("x:doi_data", self.NS)

@@ -91,6 +91,15 @@ class ArticleFormXWalk(object):
         end = form.end.data
         if end is not None and end != "":
             bibjson.end_page = end
+        elocation_id = form.elocation_id.data
+        if elocation_id is not None and elocation_id != "":
+            bibjson.add_identifier(bibjson.ELOCATION, elocation_id)
+        for subfield in form.other_identifiers:
+            if (subfield.form.type.data is not None and subfield.form.type.data != "" and
+                subfield.form.id.data is not None and subfield.form.id.data != ""):
+                id_typ = subfield.form.type.data
+                id_val = subfield.form.id.data
+                bibjson.add_identifier(id_typ, id_val)
 
         # add the journal info if requested
         if add_journal_info:
@@ -153,4 +162,25 @@ class ArticleFormXWalk(object):
             form.end.data = bibjson.end_page
         if bibjson.abstract:
             form.abstract.data = bibjson.abstract
+        elocation_id = bibjson.get_one_identifier("elocation")
+        if elocation_id:
+            form.elocation_id.data = elocation_id
+        other_identifiers = []
+        for each_id in bibjson.get_identifiers():
+            if not each_id['type'] in bibjson.NAMED_IDENTIFIERS:
+                other_identifiers.append(each_id)
+        if other_identifiers:
+            for i in range(len(form.other_identifiers)):
+                form.other_identifiers.pop_entry()
+            for i in other_identifiers:
+                id_form = OtherIdentifierForm()
+                if "type" in i:
+                    id_form.type = i["type"]
+                else:
+                    id_form.type = ""
+                if "id" in i:
+                    id_form.id = i["id"]
+                else:
+                    id_form.id = ""
+                form.other_identifiers.append_entry(id_form)
 

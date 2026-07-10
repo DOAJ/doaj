@@ -14,6 +14,7 @@ from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.forms.fields import DOAJSelectField, TagListField
 from portality.forms.validate import OptionalIf, ThisOrThat, NoScriptTag, DifferentTo
 from portality.lib import dates
+from portality.models.v1 import bibjson
 from portality.ui.messages import Messages
 from portality.ui import templates
 
@@ -561,6 +562,15 @@ class AuthorForm(Form):
     orcid_id = StringField("ORCID iD", [validators.Optional(), validators.Regexp(regex=regex.ORCID_COMPILED, message=ORCID_ERROR)])
 
 
+class OtherIdentifierForm(Form):
+    """
+    ~~->$ OtherIdentifiers:Form~~
+    """
+    id_types = type = DOAJSelectField("Type of identifier", [validators.Optional()], choices=bibjson.GenericBibJSON.IDENTIFIER_TYPES, default="" )
+    type = StringField("type", [validators.Optional(), NoScriptTag()])
+    id = StringField("id", [validators.Optional(), NoScriptTag()])
+
+
 class ArticleForm(Form):
     title = StringField("Article title <em>(required)</em>", [validators.DataRequired(), NoScriptTag()])
     doi = StringField("DOI", [OptionalIf("fulltext", "You must provide the DOI or the Full-Text URL"), validators.Regexp(regex=regex.DOI_COMPILED, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
@@ -583,6 +593,8 @@ class ArticleForm(Form):
     number = StringField("Issue", [validators.Optional(), NoScriptTag()])
     start = StringField("Start", [validators.Optional(), NoScriptTag()])
     end = StringField("End", [validators.Optional(), NoScriptTag()])
+    elocation_id = StringField("eLocation ID", [validators.Optional(), NoScriptTag()])
+    other_identifiers = FieldList(FormField(OtherIdentifierForm), min_entries=1)
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
@@ -597,7 +609,6 @@ class ArticleForm(Form):
             # not logged in, and current_user is broken
             # probably you are loading the class from the command line
             app.logger.exception(str(e))
-
 
 
 #########################################
@@ -626,6 +637,7 @@ class MetadataForm(FormContext):
     def __init__(self, source, form_data, user):
         self.user = user
         self.author_error = False
+        self.other_identifier_error = False
         super(MetadataForm, self).__init__(source=source, form_data=form_data)
 
     def _set_choices(self):
@@ -671,6 +683,48 @@ class MetadataForm(FormContext):
                 counted += 1
         return counted >= 1
 
+    def modify_other_identifiers_if_required(self, request_data):
+
+        more_ids = request_data.get("more_other_identifiers")
+        remove_id = None
+        for v in list(request.values.keys()):
+            if v.startswith("remove_other_identifiers"):
+                remove_id = v.split("-")[1]
+
+        # if the user wants more ids, add an extra entry
+        if more_ids:
+            return self.render_template(more_other_identifiers=True)
+
+        # if the user wants to remove an author, do the various back-flips required
+        if remove_id is not None:
+            return self.render_template(remove_other_identifiers=remove_id)
+
+    def _check_for_other_identifier_errors(self, **kwargs):
+
+        if "more_other_identifiers" in kwargs and kwargs["more_other_identifiers"] == True:
+            self.form.other_identifiers.append_entry()
+        if "remove_other_identifiers" in kwargs:
+            keep = []
+            while len(self.form.other_identifiers.entries) > 0:
+                entry = self.form.other_identifiers.pop_entry()
+                if entry.short_name == "other_identifiers-" + kwargs["remove_other_identifier"]:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                self.form.other_identifiers.append_entry(keep.pop().data)
+
+    def _validate_other_identifiers(self):
+        errors = 0
+        for entry in self.form.other_identifiers.entries:
+            typ = entry.data.get("type")
+            id = entry.data.get("id")
+            if typ is not None and typ != "" and (id is None or id == "") :
+                errors += 1
+            elif id is not None and id != "" and (typ is None or typ == ""):
+                errors += 1
+        return errors == 0
+
     def blank_form(self):
         self.form = ArticleForm()
         self._set_choices()
@@ -690,6 +744,8 @@ class MetadataForm(FormContext):
     def validate(self):
         if not self._validate_authors():
             self.author_error = True
+        if not self._validate_other_identifiers():
+            self.other_identifier_error = True
         if not self.form.validate():
             return False
         return True
@@ -720,9 +776,11 @@ class PublisherMetadataForm(MetadataForm):
 
     def render_template(self, **kwargs):
         self._check_for_author_errors(**kwargs)
+        self._check_for_other_identifier_errors(**kwargs)
         if "validated" in kwargs and kwargs["validated"] == True:
             self.blank_form()
-        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error,
+                               other_identifier_error=self.other_identifier_error)
 
 
 class AdminMetadataArticleForm(MetadataForm):
@@ -737,4 +795,6 @@ class AdminMetadataArticleForm(MetadataForm):
 
     def render_template(self, **kwargs):
         self._check_for_author_errors(**kwargs)
-        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
+        self._check_for_other_identifier_errors()
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error,
+                               other_identifier_error=self.other_identifier_error)
