@@ -1,11 +1,20 @@
+import time
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+# jQuery's slideDown()/slideUp() run on a fixed 400ms duration. display
+# flips and element_to_be_clickable can both report "ready" mid-animation,
+# so wait out the animation itself before touching anything inside the
+# container - scrolling/clicking mid-flight hits stale geometry and gets
+# intercepted.
+ANIMATION_SETTLE_SECONDS = 0.5
+
 from doajtest import selenium_helpers
 from doajtest.fixtures import AccountFixtureFactory
-from doajtest.selenium_helpers import SeleniumTestCase
+from doajtest.selenium_helpers import SeleniumTestCase, scroll_and_click
 from portality import models
 
 
@@ -46,15 +55,18 @@ class LoginSTC(SeleniumTestCase):
         assert login_link_btn.get_attribute('disabled') is None
         assert password_btn.get_attribute('disabled') is not None
 
-        self.selenium.find_element(By.ID, 'show-password').click()
+        scroll_and_click(self.selenium, self.selenium.find_element(By.ID, 'show-password'))
         wait.until(EC.visibility_of(password_section))
+        time.sleep(ANIMATION_SETTLE_SECONDS)
 
         assert password_section.is_displayed()
         assert login_link_btn.get_attribute('disabled') is not None
         assert password_btn.get_attribute('disabled') is None
 
-        self.selenium.find_element(By.ID, 'show-login-link').click()
+        show_login_link = self.selenium.find_element(By.ID, 'show-login-link')
+        scroll_and_click(self.selenium, show_login_link)
         wait.until(lambda d: not password_section.is_displayed())
+        time.sleep(ANIMATION_SETTLE_SECONDS)
 
         assert login_link_btn.get_attribute('disabled') is None
         assert password_btn.get_attribute('disabled') is not None
@@ -87,8 +99,9 @@ class LoginSTC(SeleniumTestCase):
         user_field.send_keys(publisher.email)
 
         password_section = self.selenium.find_element(By.ID, 'password-section')
-        self.selenium.find_element(By.ID, 'show-password').click()
+        scroll_and_click(self.selenium, self.selenium.find_element(By.ID, 'show-password'))
         wait.until(EC.visibility_of(password_section))
+        time.sleep(ANIMATION_SETTLE_SECONDS)
 
         password_field = self.selenium.find_element(By.ID, 'password')
         password_field.send_keys(password)
