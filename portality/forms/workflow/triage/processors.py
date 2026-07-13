@@ -1,6 +1,7 @@
 from copy import deepcopy
 
-from formulaic.serialise.form.core import FormSerialiser, FormDataParser
+from formulaic.serialise.form.core import FormSerialiser, FormDataParser, GenericFormStructureCapability, \
+    FormFieldCapability
 from portality.bll import DOAJ
 from portality.bll.services.workflow.core import ApplicationEdit
 from portality.core import app
@@ -8,7 +9,7 @@ from portality.forms.workflow.crosswalk import TriageForm2WorkflowControl, Workf
 from portality.forms.workflow.triage.fields import SpecialExceptions
 from portality.forms.workflow.triage.forms import TriageForm, TriageSubmission
 from portality.models import Application, WorkflowControl
-from formulaic.core import DataProcessingResult
+from formulaic.core import DataProcessingResult, ErrorCode, Structure
 from portality.models.workflow import TriageField, SpecialExceptionTriageField
 
 
@@ -80,7 +81,6 @@ class TriageFormProcessor:
         self._form_inst:TriageSubmission = None
         self._target_application:Application = None
         self._target_wfc:WorkflowControl = None
-        self._validation_report:DataProcessingResult = None
 
         if self._raw_formdata is not None:
             self.rawform2forminstance()
@@ -420,7 +420,56 @@ class TriageFormProcessor:
         return form_html
 
     def validation_report(self):
-        pass
+        def code2msg(error_code:ErrorCode, field):
+            # field = error_code.error.field
+            if isinstance(field, Structure):
+                field = field.ref_
+
+            cap = None
+            if field.has_capability(GenericFormStructureCapability):
+                cap = field.get_capability(GenericFormStructureCapability)
+            elif field.has_capability(FormFieldCapability):
+                cap = field.get_capability(FormFieldCapability)
+
+            msg = cap.error_message(error_code)
+            return msg
+
+        # get the raw validation dict
+        d = self.form_instance.validation_result.as_dict(code2msg)
+
+        # enhance it for form usage
+        if "errors" not in d:
+            return d
+
+        for e in d["errors"]:
+            e["field_id"] = self.serialiser.make_id(self.form_instance.struct, e["path"], e["data_context"])
+            if "relevant_to" in e:
+                for r in e["relevant_to"]:
+                    r["field_id"] = self.serialiser.make_id(self.form_instance.struct, r["path"])
+
+        # now let's flatten it to make it simpler for the front end
+        f = []
+        for e in d["errors"]:
+            if "msg" in e["code"] and e["code"]["msg"] != "":
+                f.append({
+                    "field_id": e["field_id"],
+                    "code": e["code"]
+                })
+
+            for rt in e.get("relevant_to", []):
+                if "msg" in rt["code"] and rt["code"]["msg"] != "":
+                    f.append({
+                        "field_id": rt["field_id"],
+                        "code": rt["code"]
+                    })
+
+        m = {
+            "valid": d["valid"],
+            "errors": f,
+            "full_error_trace": d["errors"]
+        }
+
+        return m
 
     def recommendation(self):
          return self.target_workflow_control.triage.recommendation
