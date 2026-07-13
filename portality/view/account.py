@@ -1,6 +1,6 @@
 import uuid, json
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
+from flask import Blueprint, request, url_for, flash, redirect, make_response, g, current_app
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form
@@ -21,9 +21,19 @@ blueprint = Blueprint('account', __name__)
 
 @blueprint.url_value_preprocessor
 def pull_lang(endpoint, values):
-    # Remove 'lang' so it is not passed to the view function
+    # Remove 'lang' so it is not passed to the view function, but keep it
+    # around so url_for can still fill it in when building urls for
+    # endpoints (eg .forgot) that require it, since it's otherwise lost
+    # from request.view_args once popped below.
     if values:
         lang = values.pop('lang', None)
+        if lang:
+            g.lang = lang
+
+@blueprint.url_defaults
+def add_lang(endpoint, values):
+    if 'lang' not in values and current_app.url_map.is_endpoint_expecting(endpoint, 'lang'):
+        values['lang'] = g.get('lang')
 
 @blueprint.route('/')
 @login_required
@@ -238,8 +248,11 @@ def _handle_pwless_login(user, form, redirected: str = ""):
     try:
         svc = DOAJ.accountService()
         code = svc.initiate_login_code(user)
-        svc.send_login_code_email(user, code, redirected or "")
+        login_url = svc.send_login_code_email(user, code, redirected or "")
         Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
+
+        if app.config.get('DEBUG', False):
+            util.flash_with_url('Debug mode - url for login link is <a href={0}>{0}</a>'.format(login_url))
     except bll_exc.ArgumentException:
         Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_ERROR)
 
