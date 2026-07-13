@@ -248,8 +248,11 @@ def _handle_pwless_login(user, form, redirected: str = ""):
     try:
         svc = DOAJ.accountService()
         code = svc.initiate_login_code(user)
-        svc.send_login_code_email(user, code, redirected or "")
+        login_url = svc.send_login_code_email(user, code, redirected or "")
         Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
+
+        if app.config.get('DEBUG', False):
+            util.flash_with_url('Debug mode - url for login link is <a href={0}>{0}</a>'.format(login_url))
     except bll_exc.ArgumentException:
         Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_ERROR)
 
