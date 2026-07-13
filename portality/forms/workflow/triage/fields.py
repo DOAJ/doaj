@@ -563,8 +563,12 @@ class DatabaseNotDuplicate(ComplianceCheckField):
     capabilities = (C(),)
 
 class DatabaseNotDuplicateNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.database_not_duplicate.validation.note.is_conditionally_required
+        }
     name = "database_not_duplicate_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class DatabaseNotDuplicateGroup(Structure):
     class C(CompoundFieldCapability):
@@ -925,8 +929,12 @@ class WebsiteISSN(ComplianceCheckField):
     capabilities = (C(),)
 
 class WebsiteISSNNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
+        }
     name = "website_issn_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class WebsiteISSNGroup(Structure):
     class C(CompoundFieldCapability):
@@ -959,8 +967,12 @@ class WebsiteURL(ComplianceCheckField):
     capabilities = (C(),)
 
 class WebsiteURLNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.website_url.validation.note.is_conditionally_required
+        }
     name = "website_url_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class WebsiteURLGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1098,12 +1110,7 @@ class WebsiteLicensePolicyGroup(Structure):
         RequiredIf(license_attribute,  # <- this field is required if
                    license,  # <- this field has one of the values
                    "Publisher's own license"
-                   ),
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.website_license_policy.compliant_answers + T.website_license_policy.non_compliant_answers # <- that is one of the compliant or non compliant answers
                    )
-
     ]
 
 ###########################################################
@@ -1188,12 +1195,6 @@ class WebsiteCopyrightGroup(Structure):
     copyright_url = CopyrightURL(REQUIRED, SINGLE)
     note = WebsiteCopyrightNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.website_copyright.compliant_answers + T.website_copyright.non_compliant_answers  # <- that is one of the compliant or non compliant answers
-                   )
-    ]
 
 ###########################################################
 ## Content: No Login
@@ -1210,8 +1211,12 @@ class ContentNoLogin(ComplianceCheckField):
     capabilities = (C(),)
 
 class ContentNoLoginNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.content_no_login.validation.note.is_conditionally_required
+        }
     name = "content_no_login_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class ContentNoLoginGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1244,8 +1249,12 @@ class ContentNoEmbargo(ComplianceCheckField):
     capabilities = (C(),)
 
 class ContentNoEmbargoNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.content_no_embargo.validation.note.is_conditionally_required
+        }
     name = "content_no_embargo_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class ContentNoEmbargoGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1278,8 +1287,12 @@ class ContentPublishEnough(ComplianceCheckField):
     capabilities = (C(),)
 
 class ContentPublishEnoughNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.content_publish_enough.validation.note.is_conditionally_required
+        }
     name = "content_publish_enough_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class ContentPublishEnoughGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1312,8 +1325,12 @@ class ContentUniqueLink(ComplianceCheckField):
     capabilities = (C(),)
 
 class ContentUniqueLinkNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.content_unique_link.validation.note.is_conditionally_required
+        }
     name = "content_unique_link_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class ContentUniqueLinkGroup(Structure):
     class C(CompoundFieldCapability):
@@ -1346,8 +1363,12 @@ class ContentFormat(ComplianceCheckField):
     capabilities = (C(),)
 
 class ContentFormatNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.content_format.validation.note.is_conditionally_required
+        }
     name = "content_format_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (NC(),)
 
 class ContentFormatGroup(Structure):
     class C(CompoundFieldCapability):

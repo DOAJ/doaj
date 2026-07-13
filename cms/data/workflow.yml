@@ -315,9 +315,8 @@ triage:
           url: "https://doaj.org/admin"
       compliant_answers:
         - "compliant"
-        - "conditional_compliant"
       non_compliant_answers:
-        - "conditional_non_compliant"
+        - "non_compliant"
 
     database_embargo:
       label: "Previous application rejection"
@@ -414,9 +413,14 @@ triage:
       resources:
         - label: "DOAJ admin applications search"
           url: "https://doaj.org/admin/applications"
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
         - "compliant"
-        - "conditional"
+        - "action"
       non_compliant_answers:
       - "non_compliant"
       recommend:
@@ -433,6 +437,11 @@ triage:
       remember: ""
       instructions: ""
       resources: ""
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -451,8 +460,14 @@ triage:
                   <li>If all URLs are identical but the required information is not actually available at that URL (e.g. all links point to the homepage), select <span class="answer noncompliant">Non-compliant</span></li>
                   </ul>'
       resources: ""
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "Enter a note to support the assertion that the same URL is acceptable for all the information."
       compliant_answers:
         - "compliant"
+        - "action"
       non_compliant_answers:
         - "non_compliant"
       note_required_answers:
@@ -539,6 +554,11 @@ triage:
       remember: ""
       instructions: ''
       resources: ""
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "Enter more details"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -555,6 +575,11 @@ triage:
       remember: "This criterion does <strong>not</strong> apply to journal content in <strong>print</strong> format"
       instructions: ""
       resources: ""
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "Enter more details"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -569,6 +594,11 @@ triage:
         later: "I don't know - mark for later"
         action: ""
       remember: ""
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "Enter more details"
       instructions: ''
       resources: ""
       compliant_answers:
@@ -587,6 +617,11 @@ triage:
       remember: ""
       instructions: ''
       resources: ""
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "Enter more details"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -603,6 +638,11 @@ triage:
       remember: ""
       instructions: ''
       resources: ""
+      validation:
+        group:
+          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
+        note:
+          is_conditionally_required: "Enter more details"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
