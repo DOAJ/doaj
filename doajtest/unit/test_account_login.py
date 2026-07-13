@@ -57,6 +57,34 @@ class TestAccountLogin(DoajTestCase):
                 self.assertEqual(resp.status_code, 200)
                 self.assertIn(b'password you entered is incorrect', resp.data)
 
+    def test_02b_incorrect_password_reveals_password_section(self):
+        """
+        Regression test: the "incorrect password" error is attached to
+        form.password.errors, which renders inside #password-section -
+        but that div was unconditionally rendered with
+        style="display: none;", so the error was left invisible unless
+        the user happened to click "prefer to use a password?" again.
+        _login_form.html now starts in password mode (section visible,
+        buttons' disabled state flipped to match) whenever
+        form.password.errors is set, so the error is visible on the
+        very page it's rendered on.
+        """
+        for route in LOGIN_ROUTES:
+            with self.subTest(route=route):
+                # baseline: a plain GET has no error, so it should still
+                # start collapsed
+                fresh_resp = self.app_client.get(route, follow_redirects=True)
+                self.assertIn(b'id="password-section" style="display: none;"', fresh_resp.data)
+
+                resp = self.app_client.post(route, data=dict(
+                    user=self.test_account.email, password='wrong-password', action='password_login'
+                ), follow_redirects=True)
+                self.assertEqual(resp.status_code, 200)
+                # the section itself is no longer hidden...
+                self.assertNotIn(b'id="password-section" style="display: none;"', resp.data)
+                # ...and the buttons' disabled state has flipped to match
+                self.assertIn(b'style="display: none;" disabled', resp.data)
+
     def test_03_unrecognised_account(self):
         """ Check the message reaches the frontend when the account isn't found"""
         for route in LOGIN_ROUTES:
