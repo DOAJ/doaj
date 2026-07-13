@@ -649,7 +649,7 @@ triage:
         - "non_compliant"
 
     content_new_journal:
-      label: ""
+      label: "New or Flipped Journal"
       check: "This is a newly launched journal or a flipped journal"
       answers:
         compliant: "<span class='answer'>No</span>, this is <strong>not</strong> a newly launched or a flipped journal"

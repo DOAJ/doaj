@@ -129,6 +129,7 @@ USER_ATTR__ALL = [
 
 EWF__TRIAGE = "Triage"
 EWF__QUICK_FAIL = "Quick Fail"
+EWF__QUICK_FAIL_MANED = "Quick Fail (ManEd)"
 EWF__QUALITY_REVIEW = "Quality Review"
 
 EWF__ALL_STAGES = [

@@ -91,6 +91,15 @@ class TriageStateUI(StateUI):
     def event_reassign(self):
         return self._event_by_class(TriageReassignUI)
 
+    @property
+    def event_reject(self):
+        return self._event_by_class(TriageFailUI)
+
+    @property
+    def event_triaged(self):
+        return self._event_by_class(TriageTriagedUI)
+
+
 class TriageClaimUI(EventUI):
     template = templates.WORKFLOW_TRIAGE_CLAIM_WIDGET
     route_id = "workflow.claim"

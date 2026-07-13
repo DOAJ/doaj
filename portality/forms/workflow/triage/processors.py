@@ -224,11 +224,19 @@ class TriageFormProcessor:
         R = app.cms.workflow.triage.fields
 
         for question in R.keys():
+            triage_field = getattr(t, question)
+            ans = triage_field.answer
+
             if "severity_value" in R[question]:
-                triage_field = getattr(t, question)
-                ans = triage_field.answer
                 if ans in R[question].severity_value:
                     triage_field.severity_value = R[question].severity_value[ans]
+
+            if ans in R[question].compliant_answers:
+                triage_field.compliant = True
+            elif ans in R.non_compliant_answers:
+                triage_field.compliant = False
+            else:
+                triage_field.compliant = None
 
     def _calculate_recommendation(self, wfc:WorkflowControl):
         t = wfc.triage
@@ -377,10 +385,15 @@ class TriageFormProcessor:
             return None
 
         rec = workflow_control.triage.recommendation
+        if rec is None:
+            return None
+
         localised = []
         for entry in rec.get("reasons", []):
             reference = self.obj2form_xwalk.structure_map(entry["question"])
-            # field_id = self.serialiser.make_id(self.form_instance.struct, reference.path)
+            if reference is None:
+                continue
+
             label = entry["question"]
             path = None
             if isinstance(reference, Structure):
@@ -389,6 +402,7 @@ class TriageFormProcessor:
             elif isinstance(reference, Field):
                 label = reference.get_capability(FormFieldCapability).label
                 path = reference.path
+
             field_id = self.serialiser.make_id(self.form_instance.struct, path)
 
             localised.append({

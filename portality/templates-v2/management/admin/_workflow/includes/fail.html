@@ -1,9 +1,12 @@
 <form action="{{ event.get_route() }}" method="post" style="margin-bottom: 0">
     <input type="hidden" name="workflow_control" value="{{ wfc.id }}">
-    {% if onward %}
-        <input type="hidden" name="onward" value="{{ onward }}">
-    {% endif %}
-    <input type="text" name="note" placeholder="Note">
+    <input type="hidden" name="application" value="{{ application.id }}">
+    <input type="hidden" name="async" value="n">
+    <input type="hidden" name="onward" value="workflow.workflow_search">
+
+    <label for="note">Enter a note</label>
+    <textarea name="note" id="note" rows="3" cols="50" placeholder="Note"></textarea>
+    <label for="embargo_end">Enter an embargo end date</label>
     <input type="date" name="embargo_end" placeholder="Embargo End Date">
-    <button type="submit" style="margin: 0 0 0 0">Fail</button>
+    <button type="submit" style="margin: 0 0 0 0">Reject this application</button>
 </form>

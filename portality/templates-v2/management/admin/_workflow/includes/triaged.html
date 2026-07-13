@@ -1,11 +1,14 @@
 <form action="{{ event.get_route() }}" method="post" style="margin-bottom: 0">
-    {% if onward %}
-        <input type="hidden" name="onward" value="{{ onward }}">
-    {% endif %}
-    <select name="send_to" id="send_to">
-        <option value="">Label...</option>
-        <option name="{{ constants.EWF__QUICK_FAIL }}">Quick Fail</option>
-        <option name="{{ constants.EWF__QUALITY_REVIEW }}">Quality Review</option>
+    <input type="hidden" name="workflow_control" value="{{ wfc.id }}">
+    <input type="hidden" name="application" value="{{ application.id }}">
+    <input type="hidden" name="async" value="n">
+    <input type="hidden" name="onward" value="workflow.workflow_search">
+    <label for="label">Send to:</label>
+    <select name="label" id="label">
+        <option value="">Select destination...</option>
+        <option value="{{ constants.EWF__QUICK_FAIL }}">Normal Editorial Review (SV < 3)</option>
+        <option value="{{ constants.EWF__QUICK_FAIL_MANED }}">Managing Editor Review (3 >= SV < 10)</option>
+        <option value="{{ constants.EWF__EDITORIAL_REVIEW }}">Integrity and Ethics Review (SV >= 10)</option>
     </select>
     <button class="assign" style="margin: 0 0 0 0">Complete Triage</button>
 </form>

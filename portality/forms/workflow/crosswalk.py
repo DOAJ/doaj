@@ -7,7 +7,33 @@ from portality.models.workflow import TriageField
 class WorkflowControl2TriageForm(object):
 
     MAP = {
+        "ethics_not_excluded": TriageSubmission.struct.ethics.not_excluded,
         "ethics_no_nonstandard_metrics": TriageSubmission.struct.ethics.no_nonstandard_metrics,
+        "ethics_no_fake_impact": TriageSubmission.struct.ethics.no_fake_impact,
+        "ethics_no_false_doaj_claim": TriageSubmission.struct.ethics.no_false_doaj_claim,
+        "ethics_no_suspicious_ties": TriageSubmission.struct.ethics.no_suspicious_ties,
+        "ethics_submission_to_publication_time": TriageSubmission.struct.ethics.publication_time,
+        "database_withdrawn": TriageSubmission.struct.database.withdrawn,
+        "database_embargo": TriageSubmission.struct.database.embargo,
+        "database_not_listed": TriageSubmission.struct.database.not_listed,
+        "database_not_duplicate": TriageSubmission.struct.database.not_duplicate,
+        "issn_at_least_one": TriageSubmission.struct.issn.at_least_one,
+        "issn_country_match": TriageSubmission.struct.issn.country_match,
+        "issn_title_match": TriageSubmission.struct.issn.title_match,
+        "issn_continuation": TriageSubmission.struct.issn.continuation,
+        "website_working": TriageSubmission.struct.website.working,
+        "website_issn": TriageSubmission.struct.website.issn,
+        "website_url": TriageSubmission.struct.website.url,
+        "website_license_policy": TriageSubmission.struct.website.license_policy,
+        "website_copyright": TriageSubmission.struct.website.copyright,
+        "content_no_login": TriageSubmission.struct.content.no_login,
+        "content_no_embargo": TriageSubmission.struct.content.no_embargo,
+        "content_publish_enough": TriageSubmission.struct.content.publish_enough,
+        "content_unique_link": TriageSubmission.struct.content.unique_link,
+        "content_format": TriageSubmission.struct.content.format,
+        "content_new_journal": TriageSubmission.struct.content.new_journal,
+        "admin_metadata_review": TriageSubmission.struct.metadata_review.metadata_review,
+        "admin_special_exception": TriageSubmission.struct.special_exception.special_exception
     }
 
     def structure_map(self, triage_field_name: TriageField):

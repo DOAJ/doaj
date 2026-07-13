@@ -5,6 +5,9 @@ $.extend(true, doaj, {
         activeEdges : {},
 
         openWorkflowOverview : function(val, resultobj, renderer) {
+            if (resultobj.state.module !== "triage") {
+                return `<strong>This item is not currently in the new workflow, please use the legacy workflow</strong>`;
+            }
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
             let overviewUrl = current_scheme + "//" + current_domain + doaj.adminWorkflowSearchConfig.workflowPage + resultobj.application.id;
@@ -18,6 +21,16 @@ $.extend(true, doaj, {
                 let overviewUrl = current_scheme + "//" + current_domain + doaj.adminWorkflowSearchConfig.triageForm + resultobj.application.id;
                 return `<a href="${overviewUrl}">Continue Review</a>`;
             }
+        },
+
+        openInLegacy : function(val, resultobj, renderer) {
+            if (resultobj.state.module === "triage") {
+                return ``;
+            }
+            var current_domain = document.location.host;
+            var current_scheme = window.location.protocol;
+            let overviewUrl = current_scheme + "//" + current_domain + doaj.adminWorkflowSearchConfig.adminForm + resultobj.application.id;
+            return `<a href="${overviewUrl}" style="margin-right: 20px;">Open in Legacy Admin Form</a>`;
         },
 
         init : function(params) {
@@ -208,6 +221,12 @@ $.extend(true, doaj, {
                                     "pre" : "Reviewer: ",
                                     "field" : "state.reviewer"
                                 }
+                            ],
+                            [
+                                {
+                                    "pre": "Label(s): ",
+                                    field: "labels"
+                                }
                             ]
                         ],
                         bottomRowDisplay: [
@@ -217,6 +236,11 @@ $.extend(true, doaj, {
                                 },
                                 {
                                     valueFunction: doaj.adminWorkflowSearch.openWorkflowForm
+                                }
+                            ],
+                            [
+                                {
+                                    valueFunction: doaj.adminWorkflowSearch.openInLegacy
                                 }
                             ]
                         ]
@@ -228,9 +252,9 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "state.module" : "Module",
-                        "state.stage" : "Stage",
-                        "state.reviewer" : "Reviewer",
+                        "state.module.exact" : "Module",
+                        "state.stage.exact" : "Stage",
+                        "state.reviewer.exact" : "Reviewer",
                         "created_date" : "Created Date",
                         "last_updated" : "Last Updated"
                     },

@@ -10,7 +10,7 @@ from portality.bll.exceptions import AuthoriseException
 from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail, Assign, Reassign
 from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
-    TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview
+    TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview, Triaged
 from portality.decorators import ssl_required, write_required, restrict_to_role
 from portality.forms.workflow.triage.processors import TriageFormProcessor
 from portality.lib import dicts
@@ -51,10 +51,30 @@ def workflow_search():
 @ssl_required
 @write_required()
 def workflow_item_overview(application_id):
+    application = models.Application.pull(application_id)
+    if application is None:
+        abort(404)
+
+    # NOTE: this hack lets us `pull` the worfklow control object, avoiding any re-indexing
+    # latency when redirecting to this page after a save
+    wfc_id = request.values.get("wfc")
+    if wfc_id is not None:
+        wfc = models.WorkflowControl.pull(wfc_id)
+        if wfc.application_id != application_id:
+            abort(400)
+    else:
+        wfc = models.WorkflowControl.find_by_application(application_id)
+    if wfc is None:
+        abort(404)
+
     svc = DOAJ.workflowService()
     state = svc.state_for_application(application_id)
     ui = StateUIFactory.get(state)
-    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui)
+
+    processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
+    rec = processor.recommendation(wfc)
+
+    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec)
 
 @blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
 @login_required
@@ -241,23 +261,30 @@ def unassign():
 @ssl_required
 def fail():
     wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
     onward = request.form.get("onward")
     note = request.form.get("note")
     embargo = request.form.get("embargo_end")
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
 
-    return _apply_event(wfc_id, Fail, onward, event_args={"note": note, "embargo_end": embargo})
-
-@blueprint.route("/minimal_review", methods=["POST"])
-@login_required
-@ssl_required
-def minimal_review():
-    pass
+    return _apply_event(wfc_id, Fail(current_user, note, embargo), async_request, onward)
 
 @blueprint.route("/triaged", methods=["POST"])
 @login_required
 @ssl_required
 def triaged():
-    pass
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    label = request.form.get("label")
+    if label is None or label == "":
+        abort(400)
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+    return _apply_event(wfc_id, Triaged(current_user, label), async_request, onward)
 
 @blueprint.route("/edit/<application_id>", methods=["GET"])
 @login_required

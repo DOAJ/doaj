@@ -7,6 +7,8 @@
 {% set event_unclaim = state.event_unclaim %}
 {% set event_unassign = state.event_unassign %}
 {% set event_reassign = state.event_reassign %}
+{% set event_reject = state.event_reject %}
+{% set event_triaged = state.event_triaged %}
 
 {% block page_title %}Workflow Item Overview{% endblock %}
 
@@ -17,6 +19,10 @@
 {% block admin_content %}
     <span class="tag tag--featured">{{ wfc.module }}</span>
     <h1>{{ application.bibjson().title }}</h1>
+
+    {% if wfc.reviewer_id == current_user.id %}
+    <a href="{{ url_for("workflow.triage_form", application_id=application.id) }}" class="button button--cta">Continue Working on this Item</a>
+    {% endif %}
 
     {% if event_claim and event_claim.is_available(current_user) %}
         <div style="margin-left: 25px">
@@ -44,7 +50,39 @@
 
     <div class="row">
         <div class="col-md-8">
-            Main
+            {% if recommendation %}
+                <p>Current Recommendation: {{ recommendation.code }}</p>
+                <p>Reasons:
+                    <ul>
+                    {% for reason in recommendation.reasons %}
+                        <li>{{ reason.question.text }} ({{ reason.question.name }}) [{{ reason.question.field_id }}]: {{ reason.answer }}
+                            {% if reason.sv %}(SV:{{ reason.sv }}){% endif %}
+                            {% if reason.exception %}(Exception(s): {{ reason.exception|join(", ") }}){% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </p>
+
+                {% if recommendation.code == "reject" %}
+                    {% if event_reject and event_reject.is_available(current_user) %}
+                        {% with event = event_reject %}
+                            {% include event_reject.template %}
+                        {% endwith %}
+                    {% endif %}
+                {% else  %}
+                    {% if event_triaged and event_triaged.is_available(current_user) %}
+                        {% with event = event_triaged %}
+                            {% include event_triaged.template %}
+                        {% endwith %}
+                    {% endif %}
+                {% endif %}
+
+            {% endif %}
+
+            <p>There will be a read-only quick reference view of the Triage form here at some point.</p>
+
+            <p>In the meantime, the workflow control buttons on this page all work, and if you are
+                assigned to the workflow item, you can continue to work on it</p>
         </div>
         <div class="col-md-4">
             {% if wfc.reviewer %}

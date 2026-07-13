@@ -216,7 +216,6 @@ class TriageAssessmentInProgress(TriageWorkingState):
         if not (reviewer_permission or action.actor.has_role(constants.ROLE_ADMIN)):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
-        # FIXME: where does has_minimal_review get calculated?
         if self.workflow_control.triage.review_complete:
             return self.event_minimal_review(MinimalReview(action.actor_id))
         else:

@@ -74,14 +74,7 @@ TRIAGE_STRUCT = {
                 "ethics_submission_to_publication_time",
 
                 "database_withdrawn",
-                # "database_withdrawn_exception_ignore_embargo",
-                # "database_withdrawn_exception_website_unavailable",
-                # "database_withdrawn_exception_content",
                 "database_embargo",
-                # "database_embargo_exception_issn",
-                # "database_embargo_exception_maned",
-                # "database_embargo_exception_website",
-                # "database_embargo_exception_content",
                 "database_not_listed",
                 "database_not_duplicate",
 
@@ -115,14 +108,7 @@ TRIAGE_STRUCT = {
                 "ethics_submission_to_publication_time": TRIAGE_FIELD,
 
                 "database_withdrawn": SPECIAL_EXCEPTION_TRIAGE_FIELD,
-                #"database_withdrawn_exception_ignore_embargo": TRIAGE_FIELD,
-                #"database_withdrawn_exception_website_unavailable": TRIAGE_FIELD,
-                #"database_withdrawn_exception_content": TRIAGE_FIELD,
                 "database_embargo": SPECIAL_EXCEPTION_TRIAGE_FIELD,
-                # "database_embargo_exception_issn": TRIAGE_FIELD,
-                # "database_embargo_exception_maned": TRIAGE_FIELD,
-                # "database_embargo_exception_website": TRIAGE_FIELD,
-                # "database_embargo_exception_content": TRIAGE_FIELD,
                 "database_not_listed": TRIAGE_FIELD,
                 "database_not_duplicate": TRIAGE_FIELD,
 

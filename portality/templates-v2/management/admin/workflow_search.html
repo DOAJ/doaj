@@ -23,6 +23,7 @@
         $.extend(true, doaj, {
             adminWorkflowSearchConfig : {
                 workflowPage : "{{ url_for('workflow.workflow_item_overview', application_id='') }}",
+                adminForm: "{{ url_for('admin.application', application_id='') }}",
                 triageForm: "{{ url_for('workflow.triage_form', application_id='') }}",
                 searchPath : '/admin_query/workflow/_search'
             }
