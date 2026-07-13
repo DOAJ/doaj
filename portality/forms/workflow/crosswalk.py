@@ -1,8 +1,18 @@
 from portality.forms.workflow.triage.forms import TriageSubmission
 from portality.models import WorkflowControl, Note, Application
 from portality.datasets import licenses as LICENSES
+from portality.models.workflow import TriageField
+
 
 class WorkflowControl2TriageForm(object):
+
+    MAP = {
+        "ethics_no_nonstandard_metrics": TriageSubmission.struct.ethics.no_nonstandard_metrics,
+    }
+
+    def structure_map(self, triage_field_name: TriageField):
+        return self.MAP.get(triage_field_name)
+
     def transform(self, wfc:WorkflowControl, application:Application) -> TriageSubmission:
         triage = wfc.triage
         bj = application.bibjson()

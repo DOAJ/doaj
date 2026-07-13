@@ -464,7 +464,7 @@ class TriageField(SeamlessMixin):
 
     @property
     def severity_value(self) -> int:
-        return self.__seamless__.get_single("sv", 0)
+        return self.__seamless__.get_single("sv", default=0)
 
     @severity_value.setter
     def severity_value(self, val):
@@ -472,7 +472,7 @@ class TriageField(SeamlessMixin):
 
     @property
     def exception(self) -> bool:
-        return self.__seamless__.get_single("exception", False)
+        return self.__seamless__.get_single("exception", default=[])
 
     @exception.setter
     def exception(self, val:bool):
@@ -605,21 +605,22 @@ class Triage(SeamlessMixin):
 
     def _calculate_severity_value(self):
         total = 0
-        for k, v in self.__seamless__.get_single("questions", []).items():
+        for k, v in self.__seamless__.get_single("questions", default=[]).items():
             if "sv" in v:
                 total += v["sv"]
         self.__seamless__.set_with_struct("total_sv", total)
 
     @property
     def total_severity_value(self):
-        return self.__seamless__.get_single("total_sv")
+        self._calculate_severity_value()
+        return self.__seamless__.get_single("total_sv", default=0)
 
     def get_fields_with_non_zero_severity_value(self):
         reg = []
         questions = self.__seamless__.get_single("questions")
         for name, field in questions.items():
             if field.get("sv", 0) > 0:
-                reg = self._get_triage_field(field)
+                reg.append(self._get_triage_field(name))
         return reg
 
     def _set_question(self, field:str, value:bool, sv:int=None, exception:bool=None, note:"Note"=None):

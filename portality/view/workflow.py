@@ -83,7 +83,8 @@ def triage_form(application_id):
     if request.method == "GET":
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
         form_html = processor.render_form()
-        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc)
+        rec = processor.recommendation(wfc)
+        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc, recommendation=rec)
 
     elif request.method == "POST":
         formdata = dicts.multidict_2_dict(request.form)
@@ -100,7 +101,7 @@ def triage_form(application_id):
         else:
             form_html = processor.render_form()
             return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application,
-                                   wfc=wfc)
+                                   wfc=wfc) # note we don't include the recommendation, as the form is invalid
 
 @blueprint.route("/triage-form/<application_id>/async/<wfc_id>", methods=["POST"])
 @login_required
