@@ -260,7 +260,7 @@ class TestSendLoginCodeEmail(TestCase):
         self.test_account.save()
         self.test_account.refresh()
 
-    @patch('portality.app_email.send_mail')
+    @patch('portality.bll.services.account.send_mail')
     def test_send_login_code_email(self, mock_send_mail):
         """Test the send_login_code_email function"""
         with app.test_request_context():
