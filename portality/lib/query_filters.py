@@ -32,7 +32,7 @@ def prefix_wildcard_validator(q):
     raw = q.as_dict()
     query_string = _extract_query_string(raw)
     if query_string is not None:
-        rx = r'(?:^|[\s:(])[\*\?]'
+        rx = r'(?:^|[\s:(])[\*\?\.\+]'
         if re.search(rx, query_string):
             return False
     return True

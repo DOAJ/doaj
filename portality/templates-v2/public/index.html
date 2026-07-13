@@ -44,7 +44,7 @@
                     document.getElementById("homepage-search-form").addEventListener("submit", function (e) {
                         var keywords = document.getElementById("keywords").value;
                         var warning = document.getElementById("prefix-wildcard-warning");
-                        if (/^[*?]/.test(keywords)) {
+                        if (/^[*?.+]/.test(keywords)) {
                             e.preventDefault();
                             warning.innerHTML = doaj.prefixWildcardWarningMessage;
                             warning.style.display = "block";

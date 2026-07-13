@@ -3284,7 +3284,7 @@ $.extend(true, doaj, {
 
             this.hasPrefixWildcard = function (query) {
                 if (!query) return false;
-                return /^[*?]/.test(query);
+                return /^[*?.+]/.test(query);
             };
 
             this.showPrefixWildcardWarning = function () {
@@ -3294,8 +3294,7 @@ $.extend(true, doaj, {
                 this.component.jq(warningSelector).remove();
                 // add warning message
                 var warning = '<div class="' + warningClass + ' alert alert-warning" role="alert">' +
-                    'Prefix wildcard searches (e.g. <code>*term</code> or <code>?term</code>) are not allowed as they are computationally expensive. ' +
-                    'Please remove the wildcard from the beginning of your search term.' +
+                    doaj.prefixWildcardWarningMessage +
                     '</div>';
                 this.component.context.prepend(warning);
             };
