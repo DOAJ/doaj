@@ -106,15 +106,22 @@ class TestPasswordlessLogin(DoajTestCase):
         """Test login code expiry"""
         code = '123456'
 
-        # Set a code with a very short timeout (1 second)
-        self.test_account.set_login_code(code, timeout=1)
+        # is_login_code_valid() is a pure in-memory check (expires >
+        # dates.now()), computed against the expiry set the moment
+        # set_login_code() ran - self.save() below is a real ES write
+        # that sits between that and the "still valid" assertion, so a
+        # timeout of 1 second left ~zero margin and made this flaky
+        # under any real write latency (e.g. CI under load). 5 seconds
+        # gives that write comfortable headroom while still keeping the
+        # test fast.
+        self.test_account.set_login_code(code, timeout=5)
         self.test_account.save()
 
         # Code should be valid initially
         self.assertTrue(self.test_account.is_login_code_valid(code))
 
         # Wait for the code to expire
-        time.sleep(2)
+        time.sleep(6)
 
         # Code should now be invalid due to expiry
         self.assertFalse(self.test_account.is_login_code_valid(code))
