@@ -3284,6 +3284,7 @@ $.extend(true, doaj, {
 
             this.hasPrefixWildcard = function (query) {
                 if (!query) return false;
+                if (query.trim() === '*') return false;
                 return /^[*?.+]/.test(query);
             };
 
