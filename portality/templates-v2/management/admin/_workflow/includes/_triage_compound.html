@@ -54,6 +54,19 @@
                             <button type="button" class="button button--prev">
                                 Previous question
                             </button>
+                            {#
+                                Placeholder "Next question" button, standing in until the
+                                wizard-style navigation UI is designed. Whoever builds that
+                                UI should feel free to replace/restyle this button entirely -
+                                the only contract JS relies on is the "js-triage-next-question"
+                                class and the "data-question-id" attribute (see triage.js).
+                            #}
+                            <button type="button"
+                                    class="button button--next js-triage-next-question"
+                                    id="{{ compound.name }}-next"
+                                    data-question-id="{{ compound.name }}">
+                                Next question
+                            </button>
                         </nav>
                     </header>
                     </div>

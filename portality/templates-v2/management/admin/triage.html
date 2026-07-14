@@ -3,6 +3,86 @@
 {% block page_title %}Triage Form{% endblock %}
 
 {% block admin_stylesheets %}
+    {#
+        Placeholder styling for the async field-save error messages injected
+        by triage.js (see doaj.triage.errors). Feel free to replace this
+        entirely once the real triage UI/error design exists - the only
+        contract JS relies on is the "triage-field-error" class plus the
+        "--soft" / "--blocking" severity modifiers.
+    #}
+    <style type="text/css">
+        .triage-field-error {
+            display: block;
+            margin: 0.35rem 0 1rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            border-left: 4px solid transparent;
+            border-radius: 3px;
+        }
+
+        /* A blur-triggered save came back with errors - expected mid-answer,
+           shown as a mild "something needs fixing" hint, not an alarm. */
+        .triage-field-error--soft {
+            color: #7a5b00;
+            background-color: #fff8e6;
+            border-left-color: #f0ad4e;
+        }
+
+        /* The "Next question" hard gate came back with errors - this is
+           actively blocking the user, so it reads as a proper error. */
+        .triage-field-error--blocking {
+            color: #a94442;
+            background-color: #fdecea;
+            border-left-color: #d9534f;
+            font-weight: 600;
+        }
+
+        /*
+            Placeholder styling for the error summary injected by
+            doaj.triage.summary (see triage.js). This is what answers "a way
+            to find the invalid fields to review" - a running list of every
+            outstanding issue, each linking straight to its field, kept
+            visible via position:sticky since the triage form is long.
+            Replace freely - the only contract JS relies on is
+            "triage-error-summary-host" plus the link/list classes below.
+        */
+        .triage-error-summary-host:not(:empty) {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background-color: #ffffff;
+            border: 1px solid #d9534f;
+            border-radius: 3px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .triage-error-summary__heading {
+            margin: 0 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .triage-error-summary__list {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .triage-error-summary__link {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .triage-error-summary__link--soft {
+            color: #7a5b00;
+        }
+
+        .triage-error-summary__link--blocking {
+            color: #a94442;
+            font-weight: 600;
+        }
+    </style>
 {% endblock %}
 
 {% block admin_header %}
