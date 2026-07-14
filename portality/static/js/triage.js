@@ -23,13 +23,23 @@ doaj.triage.selectors = {
 
     // The placeholder "Next question" button lives in _triage_compound.html.
     // Only the class/data-attribute contract below is relied on here.
-    nextQuestionButton: ".js-triage-next-question"
+    nextQuestionButton: ".js-triage-next-question",
+
+    // _triage_form.html already renders an (otherwise unused) error
+    // container as the first child of the form - the ">" combinator picks
+    // that one out specifically, since the same "error-container" class
+    // also appears deeper in the DOM (one per fieldset/note field) and
+    // those are not ours to touch.
+    summaryContainer: "#triage > .error-container",
+    summaryLink: "[data-field-error-summary-for]"
 };
 
 // Class + data attribute used to tag error messages we inject next to a
-// field, so a later render pass can find and remove them again.
+// field, so a later render pass can find, update or remove them again.
 doaj.triage.errorNodeClass = "triage-field-error";
 doaj.triage.errorNodeDataAttr = "data-field-error-for";
+doaj.triage.summaryHostClass = "triage-error-summary-host";
+doaj.triage.summaryLinkDataAttr = "data-field-error-summary-for";
 
 /* ============================================================
  * init
@@ -78,6 +88,41 @@ doaj.triage.init = function () {
             }
         });
     });
+
+    // Findability: clicking an entry in the error summary (see
+    // doaj.triage.summary) jumps straight to the field it's about, instead
+    // of making the user hunt for it down a very long form.
+    $(document).on("click", doaj.triage.selectors.summaryLink, function (event) {
+        event.preventDefault();
+        var fieldId = $(event.currentTarget).attr(doaj.triage.summaryLinkDataAttr);
+        doaj.triage.scrollToField(fieldId);
+    });
+};
+
+/* ============================================================
+ * scrollToField
+ *
+ * Shared by the error summary (click a listed issue) - scrolls the field's
+ * control(s) into view and focuses it, the way jumping to a real anchor
+ * would, but working for radio/checkbox groups too (which have no single
+ * element whose id equals field_id).
+ * ============================================================ */
+
+doaj.triage.scrollToField = function (fieldId) {
+    var $fields = $('[name="' + fieldId + '"]');
+    if ($fields.length === 0) {
+        return;
+    }
+
+    // For a radio/checkbox group, focus whichever option is actually
+    // selected (most relevant to the user) rather than always the first.
+    var $target = $fields.filter(":checked").first();
+    if ($target.length === 0) {
+        $target = $fields.first();
+    }
+
+    $target.get(0).scrollIntoView({ behavior: "smooth", block: "center" });
+    $target.trigger("focus");
 };
 
 /* ============================================================
@@ -194,6 +239,15 @@ doaj.triage._handleSaveResponse = function (data, options) {
  *  - "blocking"    - the "Next question" hard gate came back with errors.
  *                    These are shown as a firm "fix this before continuing"
  *                    message, since they're actively stopping the user.
+ *
+ * render() is a diff against what's currently displayed (doaj.triage.errors
+ * ._current), not a blind clear-and-rebuild: a field whose error hasn't
+ * actually changed keeps its existing DOM node untouched. This matters
+ * because each node carries role="alert" - rebuilding every node on every
+ * save (even ones triggered by a completely unrelated field) would make a
+ * screen reader re-announce every outstanding error on every edit, not just
+ * the ones that changed. Confirmed as a real (now fixed) issue during live
+ * verification on 2026-07-14 - see TRIAGE_ASYNC_SAVE.md.
  * ============================================================ */
 
 doaj.triage.errors = {};
@@ -208,15 +262,36 @@ doaj.triage.severityLabel = {
     blocking: "Fix this before continuing: "
 };
 
-doaj.triage.errors.render = function (errorList, severity) {
-    doaj.triage.errors.clearAll();
+// field_id -> {message, severity} for whatever is currently displayed.
+doaj.triage.errors._current = {};
 
+doaj.triage.errors.render = function (errorList, severity) {
+    var incoming = {};
     errorList.forEach(function (error) {
         var message = error.code && error.code.msg;
         if (error.field_id && message) {
-            doaj.triage.errors._renderOne(error.field_id, message, severity);
+            incoming[error.field_id] = { message: message, severity: severity };
         }
     });
+
+    // Drop anything that no longer has an error.
+    Object.keys(doaj.triage.errors._current).forEach(function (fieldId) {
+        if (!incoming[fieldId]) {
+            doaj.triage.errors._removeOne(fieldId);
+        }
+    });
+
+    // Create or update only entries that are new or genuinely changed.
+    Object.keys(incoming).forEach(function (fieldId) {
+        var next = incoming[fieldId];
+        var current = doaj.triage.errors._current[fieldId];
+        if (!current || current.message !== next.message || current.severity !== next.severity) {
+            doaj.triage.errors._renderOne(fieldId, next.message, next.severity);
+        }
+    });
+
+    doaj.triage.errors._current = incoming;
+    doaj.triage.summary.render(incoming);
 };
 
 doaj.triage.errors._renderOne = function (fieldId, message, severity) {
@@ -229,6 +304,21 @@ doaj.triage.errors._renderOne = function (fieldId, message, severity) {
     }
 
     var label = doaj.triage.severityLabel[severity] || "";
+    var $existing = $("[" + doaj.triage.errorNodeDataAttr + "=\"" + fieldId + "\"]");
+
+    if ($existing.length > 0) {
+        // Update the existing node in place rather than replace it, so an
+        // unrelated screen-reader announcement isn't triggered for a field
+        // whose error text/severity is unchanged (that check already
+        // happened in render() - by the time we get here, something about
+        // this field's error really did change).
+        $existing
+            .removeClass(doaj.triage.errorNodeClass + "--" + doaj.triage.severity.SOFT)
+            .removeClass(doaj.triage.errorNodeClass + "--" + doaj.triage.severity.BLOCKING)
+            .addClass(doaj.triage.errorNodeClass + "--" + severity)
+            .text(label + message);
+        return;
+    }
 
     var $error = $("<p></p>")
         .addClass(doaj.triage.errorNodeClass)
@@ -249,8 +339,66 @@ doaj.triage.errors._renderOne = function (fieldId, message, severity) {
     $anchor.after($error);
 };
 
+doaj.triage.errors._removeOne = function (fieldId) {
+    $("[" + doaj.triage.errorNodeDataAttr + "=\"" + fieldId + "\"]").remove();
+};
+
 doaj.triage.errors.clearAll = function () {
     $("[" + doaj.triage.errorNodeDataAttr + "]").remove();
+    doaj.triage.errors._current = {};
+    doaj.triage.summary.render({});
+};
+
+/* ============================================================
+ * Error summary ("a way to find the invalid fields to review")
+ *
+ * Renders a list of every currently outstanding error into the (otherwise
+ * unused) error container _triage_form.html already places at the top of
+ * the form, each entry linking to its field via scrollToField(). Unlike the
+ * inline per-field errors, this is rebuilt in full on every render() call:
+ * it's a single aria-live="polite" region rather than one role="alert" per
+ * field, so a full rebuild here doesn't cause the same re-announcement
+ * problem - "polite" is coalesced/queued by assistive tech rather than
+ * interrupting, and it's the one place a changed *count* genuinely is the
+ * thing worth announcing.
+ * ============================================================ */
+
+doaj.triage.summary = {};
+
+doaj.triage.summary.render = function (errorsByFieldId) {
+    var $container = $(doaj.triage.selectors.summaryContainer).first();
+    if ($container.length === 0) {
+        return;
+    }
+
+    $container.addClass(doaj.triage.summaryHostClass).attr("aria-live", "polite");
+
+    var fieldIds = Object.keys(errorsByFieldId);
+    if (fieldIds.length === 0) {
+        $container.empty();
+        return;
+    }
+
+    var heading = fieldIds.length === 1
+        ? "1 question still needs attention:"
+        : fieldIds.length + " questions still need attention:";
+
+    var $list = $("<ul></ul>").addClass("triage-error-summary__list");
+    fieldIds.forEach(function (fieldId) {
+        var entry = errorsByFieldId[fieldId];
+        var $link = $("<a></a>")
+            .attr("href", "#")
+            .addClass("triage-error-summary__link")
+            .addClass("triage-error-summary__link--" + entry.severity)
+            .attr(doaj.triage.summaryLinkDataAttr, fieldId)
+            .text(entry.message);
+        $list.append($("<li></li>").append($link));
+    });
+
+    $container
+        .empty()
+        .append($("<p></p>").addClass("triage-error-summary__heading").text(heading))
+        .append($list);
 };
 
 /* ============================================================

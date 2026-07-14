@@ -37,6 +37,51 @@
             border-left-color: #d9534f;
             font-weight: 600;
         }
+
+        /*
+            Placeholder styling for the error summary injected by
+            doaj.triage.summary (see triage.js). This is what answers "a way
+            to find the invalid fields to review" - a running list of every
+            outstanding issue, each linking straight to its field, kept
+            visible via position:sticky since the triage form is long.
+            Replace freely - the only contract JS relies on is
+            "triage-error-summary-host" plus the link/list classes below.
+        */
+        .triage-error-summary-host:not(:empty) {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background-color: #ffffff;
+            border: 1px solid #d9534f;
+            border-radius: 3px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .triage-error-summary__heading {
+            margin: 0 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .triage-error-summary__list {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .triage-error-summary__link {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .triage-error-summary__link--soft {
+            color: #7a5b00;
+        }
+
+        .triage-error-summary__link--blocking {
+            color: #a94442;
+            font-weight: 600;
+        }
     </style>
 {% endblock %}
 
