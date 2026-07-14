@@ -713,6 +713,14 @@ ass_ed:
   country: China
   language: Chinese
 
+- name: Siamak Pedrammehr
+  area: Library Science
+  year_since:
+  city: Tehran
+  country: Iran
+  language: Farsi, English
+  photo: "Siamak Pedrammehr.jpg"
+
 - name: Souleymane Sogoba
   area: Information and Communication Sciences
   year_since:
