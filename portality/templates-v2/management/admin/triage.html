@@ -12,19 +12,7 @@
 
 {% block admin_content %}
     <div id="triage-async-response"></div>
-    {% if recommendation %}
-        <p>Current Recommendation: {{ recommendation.code }}</p>
-        <p>Reasons:
-            <ul>
-            {% for reason in recommendation.reasons %}
-                <li>{{ reason.question.text }} ({{ reason.question.name }}) [{{ reason.question.field_id }}]: {{ reason.answer }}
-                    {% if reason.sv %}(SV:{{ reason.sv }}){% endif %}
-                    {% if reason.exception %}(Exception(s): {{ reason.exception|join(", ") }}){% endif %}
-                </li>
-            {% endfor %}
-            </ul>
-        </p>
-    {% endif %}
+    {% include 'management/admin/_workflow/includes/_recommend.html' %}
 
 <div class="ew_body">
     {% autoescape off %}

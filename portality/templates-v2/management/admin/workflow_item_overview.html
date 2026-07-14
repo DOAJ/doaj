@@ -50,34 +50,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            {% if recommendation %}
-                <p>Current Recommendation: {{ recommendation.code }}</p>
-                <p>Reasons:
-                    <ul>
-                    {% for reason in recommendation.reasons %}
-                        <li>{{ reason.question.text }} ({{ reason.question.name }}) [{{ reason.question.field_id }}]: {{ reason.answer }}
-                            {% if reason.sv %}(SV:{{ reason.sv }}){% endif %}
-                            {% if reason.exception %}(Exception(s): {{ reason.exception|join(", ") }}){% endif %}
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </p>
-
-                {% if recommendation.code == "reject" %}
-                    {% if event_reject and event_reject.is_available(current_user) %}
-                        {% with event = event_reject %}
-                            {% include event_reject.template %}
-                        {% endwith %}
-                    {% endif %}
-                {% else  %}
-                    {% if event_triaged and event_triaged.is_available(current_user) %}
-                        {% with event = event_triaged %}
-                            {% include event_triaged.template %}
-                        {% endwith %}
-                    {% endif %}
-                {% endif %}
-
-            {% endif %}
+            {% include 'management/admin/_workflow/includes/_recommend.html' %}
 
             <p>There will be a read-only quick reference view of the Triage form here at some point.</p>
 
