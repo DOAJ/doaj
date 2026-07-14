@@ -233,7 +233,7 @@ class TriageFormProcessor:
 
             if ans in R[question].compliant_answers:
                 triage_field.compliant = True
-            elif ans in R.non_compliant_answers:
+            elif ans in R[question].non_compliant_answers:
                 triage_field.compliant = False
             else:
                 triage_field.compliant = None
