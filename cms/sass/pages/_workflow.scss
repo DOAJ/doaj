@@ -65,6 +65,9 @@ body.dashboard {
         }
 
         .ew_header {
+            position: sticky;
+            top: 75px;
+            z-index: 1000;
             display: flex;
             flex-direction: row;
             align-items: flex-start;
