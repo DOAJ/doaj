@@ -6,11 +6,32 @@
 </fieldset>
 <fieldset>
     <legend>Identifiers</legend>
-    <ul id="identifier-list">
+    <div id="identifier-list">
+
         {% for subfield in form.other_identifiers %}
-            <li class="identifier-item">
+            <div class="identifier-item" id="{{subfield.short_name}}-container">
+                {% set typ = None %}
                 {% for field in subfield.form %}
-                    {{ field }}
+                    {% if field.label.text == "Type of identifier" %}
+                        {% set typ = field.data %}
+                    {% endif %}
+                {% endfor %}
+                {% for field in subfield.form %}
+                    {% if field.label.text == "Type" %}
+                        <div class="id_typ" {% if typ != "other" %}style="display: none"{% endif %}>
+                            {{ field(placeholder="Type of identifier") }}
+                        </div>
+                    {% elif field.label.text == "ID" %}
+                        {{ field(placeholder="Identifier value") }}
+                    {% else %}
+                        <select name="{{field.short_name}}" class="{{field.short_name}}">
+                            {% for choice in field.choices %}
+                                <option value="{{ choice[0] }}" {% if choice[1] == field.data %}selected{% endif %}>
+                                    {{ choice[0] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
                 {% endfor %}
                 {% for error in subfield.errors %}
                     <div class="alert alert--danger">
@@ -22,7 +43,7 @@
                 <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="remove_field__button button button--tertiary">
                     Remove Identifier
                 </button>
-            </li>
+            </div>
         {% endfor %}
         <p class="add_field__button_div">
             <button type="submit" class="add_field__button button button--primary" name="more_other_identifiers">
@@ -32,11 +53,11 @@
         {% if other_identifier_error %}
             <div class="alert alert--danger">
                 <ul>
-                     <li>Please provide both the type and the identifier valuer</li>
+                     <li>Please provide both the type and the identifier value</li>
                 </ul>
             </div>
         {% endif %}
-    </ul>
+    </div>
 </fieldset>
 
 <fieldset>
@@ -124,7 +145,7 @@
 </fieldset>
 
 <fieldset>
-    <h3 class="form__header">Page(s)</h3>
+    <h3 class="form__header">Location(s)</h3>
     <div class="form__question">
         <div class="input-group">
             <div class="input-group__input">
@@ -132,6 +153,9 @@
             </div>
             <div class="input-group__input">
                 {{ render_field_horizontal(form.end) }}
+            </div>
+            <div class="input-group__input">
+                {{ render_field_horizontal(form.elocation) }}
             </div>
         </div>
     </div>

@@ -132,4 +132,19 @@ $(document).ready(function() {
     $("#article_metadata_form").on("submit", function(event) {
         $("button[type=submit]").prop("disabled", true);
     })
+
+    $(".id_types").on("change", (e) => {
+            e.preventDefault();
+            var selected_val = $(this).text();
+            console.log(selected_val);
+            if (selected_val === "Other") {
+                console.log("Parent: ", $(this).parents(".identifier-item").class);
+                $(this).parents(".identifier-item").css({"color": "red", "border": "2px solid red"})
+                // $(".id_type",parent(".identifier-item")).show();
+            } else {
+                console.log("Parent: ", $(this).parents(".identifier-item").class);
+                $(this).parents(".identifier-item").css({"color": "blue", "border": "2px solid red"})
+               // $(".id_type",parent(".identifier-item")).hide();
+            }
+        });
  })

@@ -566,9 +566,12 @@ class OtherIdentifierForm(Form):
     """
     ~~->$ OtherIdentifiers:Form~~
     """
-    id_types = type = DOAJSelectField("Type of identifier", [validators.Optional()], choices=bibjson.GenericBibJSON.IDENTIFIER_TYPES, default="" )
-    type = StringField("type", [validators.Optional(), NoScriptTag()])
-    id = StringField("id", [validators.Optional(), NoScriptTag()])
+    choices = [('Select type', '')]
+    choices += [(i.upper(), i) for i in bibjson.GenericBibJSON.IDENTIFIER_TYPES]
+    choices += [('Other', 'other')]
+    id_types = DOAJSelectField("Type of identifier", [validators.Optional()], choices=choices, default="" )
+    type = StringField("Type", [validators.Optional(), NoScriptTag()])
+    id = StringField("ID", [validators.Optional(), NoScriptTag()])
 
 
 class ArticleForm(Form):
@@ -593,7 +596,7 @@ class ArticleForm(Form):
     number = StringField("Issue", [validators.Optional(), NoScriptTag()])
     start = StringField("Start", [validators.Optional(), NoScriptTag()])
     end = StringField("End", [validators.Optional(), NoScriptTag()])
-    elocation_id = StringField("eLocation ID", [validators.Optional(), NoScriptTag()])
+    elocation = StringField("eLocation ID", [validators.Optional(), NoScriptTag()])
     other_identifiers = FieldList(FormField(OtherIdentifierForm), min_entries=1)
 
     def __init__(self, *args, **kwargs):
