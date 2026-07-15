@@ -9,7 +9,7 @@
                 class="accordion-btn--secondary col-md-12"
                 aria-expanded="true"
                 aria-controls="{{ compound.name }}-body"
-
+                onclick="doaj.triage.toggleSection('{{ compound.name }}-body', this);"
         >
             {{ compound.label }}
         </button>

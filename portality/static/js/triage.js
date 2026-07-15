@@ -463,8 +463,8 @@ doaj.triage.fullFormSubmit = function(submitter) {
     $form[0].submit();
 }
 
-doaj.triage.toggleQuestionGroup = function(group, btn) {
-    const $section = $(`#${group}`);
+doaj.triage.toggleSection = function(section, btn) {
+    const $section = $(`#${section}`);
     const $btn = $(btn);
     const expanded = $btn.attr("aria-expanded") === "true";
     $section._toggle();
