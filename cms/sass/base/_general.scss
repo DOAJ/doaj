@@ -333,3 +333,8 @@ fieldset {
   height: 1em;
   width: auto;
 }
+
+/* hidden state should never be overwritten */
+[hidden] {
+    display: none !important;
+}

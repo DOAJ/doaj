@@ -103,6 +103,7 @@
 
 {% block admin_js %}
     <script type="text/javascript" src="/static/js/triage.js"></script>
+    <script type="text/javascript" src="/static/js/custom_jquery.js"></script>
     <script type="text/javascript">
         doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
         doaj.triage.init();
