@@ -22,8 +22,8 @@ $(document).ready(function() {
                 // reset the value
                 if (reset) {
                     if (ce.is('select')) {
-                        // selects may have no blank option, so val('') can leave nothing selected;
-                        // default to the first option instead
+                        // val('') can leave nothing visibly selected if there's no blank
+                        // option; selectedIndex always lands on a real, visible option
                         ce.prop('selectedIndex', 0);
                     } else {
                         ce.val('');

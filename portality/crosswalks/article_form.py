@@ -91,9 +91,9 @@ class ArticleFormXWalk(object):
         end = form.end.data
         if end is not None and end != "":
             bibjson.end_page = end
-        elocation_id = form.elocation_id.data
-        if elocation_id is not None and elocation_id != "":
-            bibjson.add_identifier(bibjson.ELOCATION, elocation_id)
+        elocation = form.elocation.data
+        if elocation is not None and elocation != "":
+            bibjson.add_identifier(bibjson.ELOCATION, elocation)
         for subfield in form.other_identifiers:
             if (subfield.form.type.data is not None and subfield.form.type.data != "" and
                 subfield.form.id.data is not None and subfield.form.id.data != ""):
@@ -162,9 +162,9 @@ class ArticleFormXWalk(object):
             form.end.data = bibjson.end_page
         if bibjson.abstract:
             form.abstract.data = bibjson.abstract
-        elocation_id = bibjson.get_one_identifier("elocation")
-        if elocation_id:
-            form.elocation_id.data = elocation_id
+        elocation = bibjson.get_one_identifier(bibjson.ELOCATION)
+        if elocation:
+            form.elocation.data = elocation
         other_identifiers = []
         for each_id in bibjson.get_identifiers():
             if not each_id['type'] in bibjson.NAMED_IDENTIFIERS:
