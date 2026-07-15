@@ -795,6 +795,6 @@ class AdminMetadataArticleForm(MetadataForm):
 
     def render_template(self, **kwargs):
         self._check_for_author_errors(**kwargs)
-        self._check_for_other_identifier_errors()
+        self._check_for_other_identifier_errors(**kwargs)
         return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error,
                                other_identifier_error=self.other_identifier_error)
