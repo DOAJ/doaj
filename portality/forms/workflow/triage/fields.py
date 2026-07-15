@@ -1,3 +1,5 @@
+from flask import render_template
+
 from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent, IsConditionallyRequired, DisallowedValue, \
     IsRequired
 from formulaic.validate.form.validate import LimitToFormOptions
@@ -7,8 +9,8 @@ from portality.core import app
 
 from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
-from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput
-from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability
+from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput, Buttons
+from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability, GenericFormStructureCapability
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, GenericControl, GenericField, \
     GenericCompound
 from portality.ui import templates
@@ -38,7 +40,6 @@ class DummyRenderer(JinjaFieldRenderer):
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
 
-
 ## Control Renderers
 
 class RadioRenderer(JinjaControlRenderer):
@@ -49,6 +50,15 @@ class TriageRadioRenderer(JinjaControlRenderer):
 
 class CheckboxRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_CHECKBOX
+
+class TriageCheckboxRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_TRIAGE_CONTROL_CHECKBOX
+
+class TriageCheckboxListRenderer(GenericCompound):
+    template = templates.WORKFLOW_TRIAGE_CHECKBOX_QUESTION
+
+class ButtonsRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_BUTTONS
 
 #################################
 
@@ -66,10 +76,28 @@ class ComplianceCheckCapability(FormFieldCapability):
     control_render_class = TriageRadioRenderer
     render_class = TriageComplianceCheckFieldRenderer
 
+class ButtonsCapability(FormFieldCapability):
+    role = "check"
+    label = "Compliance"
+
+    check = None
+    remember = None
+    instructions = None
+    resources = []
+    application_info = []
+
+    control_class = Buttons
+    control_render_class = ButtonsRenderer
+
 
 class ComplianceCheckField(Field):
     coerce = [Unicode()]
     validators = [LimitToFormOptions()]
+
+class CheckboxQuestionCapability(CompoundFieldCapability):
+    list_render_class = TriageCheckboxListRenderer
+    render_class = TriageCheckboxListRenderer
+    sr_only_legend = False
 
 #######
 ## Generic notes capability and field
@@ -1469,9 +1497,25 @@ class AdminMetadataReviewGroup(Structure):
 ## Admin: Special Exceptions
 
 class AdminSpecialException(ComplianceCheckField):
-    class C(ComplianceCheckCapability):
+    class C(ButtonsCapability):
         S = T.admin_special_exception
-        options = options_for(S)
+        options = [
+            {
+                "class": "compliant",
+                "label": T.admin_special_exception.answers.compliant,
+                "onclick": "doaj.triage.continue()",
+                "type": "button",
+                "role": "compliant"
+             },
+            {
+                "class": "non-compliant",
+                "label": T.admin_special_exception.answers.non_compliant,
+                "onclick": "doaj.triage.reject()",
+                "type": "button",
+                "role": "non_compliant"
+            },
+
+        ]
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
@@ -1481,16 +1525,16 @@ class AdminSpecialException(ComplianceCheckField):
 
 class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
-    capabilities = (NoteCapability(),)
+    capabilities = (GeneralNoteCapability(),)
 
 class SpecialExceptions(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role="options"
         label = T.admin_special_exception.edit.special_exceptions
         control_class = Checkbox
         multiple = True
         options = exception_options_for(T.admin_special_exception)
-        control_render_class = CheckboxRenderer
+        control_render_class = TriageCheckboxRenderer
         render_class = GenericField
         error_messages = {
             DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
@@ -1503,7 +1547,7 @@ class SpecialExceptions(Field):
 
 class SpecialExceptionOther(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "other"
         label = T.admin_special_exception.edit.other
         control_class = TextInput
         control_render_class = GenericControl
@@ -1517,10 +1561,9 @@ class SpecialExceptionOther(Field):
     capabilities = (C(),)
 
 class AdminSpecialExceptionGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(CheckboxQuestionCapability):
         label = T.admin_special_exception.label
         order = ["answer", "special_exceptions", "special_exception_other", "note"]
-        render_class = TriageCompound
         ui = [
             {
                 "conditional": {
@@ -1552,6 +1595,7 @@ class AdminSpecialExceptionGroup(Structure):
 
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)
+    sr_only_legend = True
 
     answer = AdminSpecialException(OPTIONAL, SINGLE)
     special_exceptions = SpecialExceptions(OPTIONAL, REPEATABLE)

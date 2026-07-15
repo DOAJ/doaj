@@ -470,3 +470,7 @@ doaj.triage.toggleSection = function(section, btn) {
     $section._toggle();
     $btn.attr("aria-expanded", !expanded.toString());
 }
+
+doaj.triage.reject = function() {
+    console.log("rejecting application")
+}

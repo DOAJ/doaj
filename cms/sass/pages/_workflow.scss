@@ -242,12 +242,56 @@ body.dashboard {
             flex-wrap: wrap;
             gap: $spacing-04;
             justify-content: space-between;
+            &.justify-start {
+                justify-content: flex-start !important;
+            }
+            button {
+                display: flex;
+                align-items: flex-start;
+                gap: .5rem;
+                padding: $spacing-02 $spacing-03;
+                border-radius: 0;
+                cursor: pointer;
+                transition: all 0.15s ease;
+
+                border: 2px solid $dark-grey;
+                background-color: white;
+                color: $warm-black;
+
+                box-shadow: $spacing-01 $spacing-02 0 0 $dark-grey;
+                margin-bottom: 0;
+
+                @include font-sans;
+                font-size: .9rem;
+                text-transform: none;
+
+                &.compliant {
+                    color: $dark-green;
+                    border-color: $dark-green;
+                    box-shadow: $spacing-01 $spacing-02 0 0 $dark-green;
+                    &:hover {
+                        background: $dark-green;
+                        color: $white;
+                        box-shadow: none;
+                    }
+                }
+                &.non-compliant {
+                    color: $sanguine;
+                    box-shadow: $spacing-01 $spacing-02 0 0 $sanguine;
+                    border-color: $sanguine;
+                    &:hover {
+                        background: $sanguine;
+                        color: $white;
+                        box-shadow: none;
+                    }
+                }
+            }
             .radio-option {
                 display: flex;
                 flex: 1 1 0;
 
                 label.review-outcome-answer,
-                button.review-outcome-answer{
+                button.review-outcome-answer {
                     display: flex;
                     align-items: flex-start;
                     gap: .5rem;
@@ -255,7 +299,6 @@ body.dashboard {
                     padding: $spacing-02 $spacing-03;
                     border-radius: 0;
                     cursor: pointer;
-                    user-select: none;
                     transition: all 0.15s ease;
 
                     border: 2px solid $dark-grey;
