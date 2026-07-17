@@ -38,7 +38,6 @@
                 {% set els.specials = els.specials + [element] %}
             {% endif %}
         {% endfor %}
-        <p style="color: green">{{ els.other }}</p>
         {% autoescape off %}
         <section class="criterion col-md-12">
             <div class="row">
@@ -91,7 +90,8 @@
                         {% endif %}
                     {% endif %}
                     {% if els.options %}
-                        {{ els.options.renderer.draw(els.options, application=application, wfc=wfc, other=els.other, kot="kot") }}
+                        {% set options_renderer = els.options.capability.get_control_renderer() %}
+                        {{ options_renderer.draw(els.options.control, application=application, wfc=wfc, other=els.other) }}
                     {% endif %}
                 </div>
                 <div class="col-md-5" style="margin-top: 1.25rem">

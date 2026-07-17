@@ -21,11 +21,14 @@
     {%- endif -%}
 {%- endmacro %}
 
-{% macro make_tag(spec, content) %}
+{% macro make_tag(spec, content, onclick, onclick_params) %}
     {% set attrs = spec.attrs %}
     <{{ spec.tag }}
         {% if attrs %}
             {% for k, v in spec.attrs.items() %}{{ k }}="{{ v }}" {% endfor %}
+        {% endif %}
+        {% if onclick %}
+            onclick="{{ onclick }}( {% if onclick_params %}{{ onclick_params }} {% endif %} )"
         {% endif %}
         {% if not spec.close %}/{% endif %}>
             {{ content }}
@@ -34,9 +37,27 @@
     {% endif %}
 {%- endmacro %}
 
-<p style="color: blue">Other: {{ other }}</p>
-<p style="color: deeppink">Kot: {{ kot }}</p>
+{% set checkboxes = namespace(
+            options=[],
+            other=None,
+            none=None
+        ) %}
+
 {% for control in controls %}
+    {% set input = control.control %}
+    {% if "attrs" in input and "value" in input.attrs %}
+        {% set value = input.attrs.value %}
+        {% if value == "none" %}
+            {% set checkboxes.none = control %}
+        {% elif value == "other" %}
+            {% set checkboxes.other = control %}
+        {% else %}
+            {% set checkboxes.options = checkboxes.options + [control] %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% for control in checkboxes.options %}
     {% set input=control.control %}
     {% set content = {"value": ""} %}
     {% if input.content %}
@@ -50,3 +71,37 @@
         {{ make_tag(control.label, control.label.content) }}
     {% endif %}
 {% endfor %}
+
+{% if checkboxes.other %}
+{% set control = checkboxes.other %}
+{% set input=control.control %}
+    {% set content = {"value": ""} %}
+    {% if input.content %}
+        {% set content.value=render_content(input.content) %}
+    {% endif %}
+
+    {% autoescape off %}
+        {{ make_tag(input, content.value) }}
+    {% endautoescape %}
+    {% if control.label %}
+        {{ make_tag(control.label, control.label.content) }}
+    {% endif %}
+{% endif %}
+
+<p style="color: deeppink" hidden>{{ other }}</p>
+
+{% if checkboxes.none %}
+{% set control = checkboxes.none %}
+{% set input=control.control %}
+{% set content = {"value": ""} %}
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+
+{% autoescape off %}
+    {{ make_tag(input, content.value) }}
+{% endautoescape %}
+{% if control.label %}
+    {{ make_tag(control.label, control.label.content) }}
+{% endif %}
+{% endif %}

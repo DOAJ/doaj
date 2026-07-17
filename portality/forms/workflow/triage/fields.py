@@ -1535,7 +1535,6 @@ class SpecialExceptions(Field):
         multiple = True
         options = exception_options_for(T.admin_special_exception)
         control_render_class = TriageCheckboxRenderer
-        render_class = GenericField
         error_messages = {
             DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
         }
