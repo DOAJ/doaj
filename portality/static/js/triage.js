@@ -31,7 +31,11 @@ doaj.triage.selectors = {
     // also appears deeper in the DOM (one per fieldset/note field) and
     // those are not ours to touch.
     summaryContainer: "#triage > .error-container",
-    summaryLink: "[data-field-error-summary-for]"
+    summaryLink: "[data-field-error-summary-for]",
+
+    // Host for the "reject" recommendation panel - see triage.html. Rebuilt
+    // in full on every save response, same approach as errors.summary.
+    recommendationHost: "#triage-recommendation"
 };
 
 // Class + data attribute used to tag error messages we inject next to a
@@ -213,6 +217,7 @@ doaj.triage._handleSaveResponse = function (data, options) {
 
     // No "validation" key means the form validated and has been saved.
     doaj.triage.errors.clearAll();
+    doaj.triage.recommendation.render(data.recommendation);
 
     if (typeof options.onSuccess === "function") {
         options.onSuccess(data);
@@ -399,6 +404,46 @@ doaj.triage.summary.render = function (errorsByFieldId) {
         .empty()
         .append($("<p></p>").addClass("triage-error-summary__heading").text(heading))
         .append($list);
+};
+
+/* ============================================================
+ * Recommendation panel
+ *
+ * Kept in sync with every save response - only ever shown for a "reject"
+ * recommendation (confirmed with user: nothing else is worth surfacing at
+ * the top of the form while triage is still in progress). Rebuilt in full
+ * each time, same approach as errors.summary above.
+ * ============================================================ */
+
+doaj.triage.recommendation = {};
+
+doaj.triage.recommendation.render = function (recommendation) {
+    var $host = $(doaj.triage.selectors.recommendationHost);
+    if ($host.length === 0) {
+        return;
+    }
+
+    if (!recommendation || recommendation.code !== "reject") {
+        $host.empty();
+        return;
+    }
+
+    var $reasons = $("<ul></ul>");
+    (recommendation.reasons || []).forEach(function (reason) {
+        var text = reason.question.text + " (" + reason.question.name + ") [" + reason.question.field_id + "]: " + reason.answer;
+        if (reason.sv) {
+            text += " (SV:" + reason.sv + ")";
+        }
+        if (reason.exception) {
+            text += " (Exception(s): " + reason.exception.join(", ") + ")";
+        }
+        $reasons.append($("<li></li>").text(text));
+    });
+
+    $host
+        .empty()
+        .append($("<p></p>").text("Current Recommendation: " + recommendation.code))
+        .append($("<p></p>").text("Reasons:").append($reasons));
 };
 
 /* ============================================================
