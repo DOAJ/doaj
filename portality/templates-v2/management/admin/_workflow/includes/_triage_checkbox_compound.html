@@ -19,6 +19,8 @@
             check=None,
             note=None,
             action=None,
+            other = None,
+            options = None,
             specials=[]
         ) %}
         {% for element in compound.elements %}
@@ -28,11 +30,14 @@
                 {% set els.note = element %}
             {% elif element.capability.role == "action" %}
                 {% set els.action = element %}
+            {% elif element.capability.role == "other" %}
+                {% set els.other = element %}
+            {% elif element.capability.role == "options" %}
+                {% set els.options = element %}
             {% elif element.capability.role == "special" %}
                 {% set els.specials = els.specials + [element] %}
             {% endif %}
         {% endfor %}
-
         {% autoescape off %}
         <section class="criterion col-md-12">
             <div class="row">
@@ -84,9 +89,10 @@
                             </ul>
                         {% endif %}
                     {% endif %}
-                    {% for special in els.specials %}
-                        {{ special.renderer.draw(special, application=application, wfc=wfc) }}
-                    {% endfor %}
+                    {% if els.options %}
+                        {% set options_renderer = els.options.capability.get_control_renderer() %}
+                        {{ options_renderer.draw(els.options.control, application=application, wfc=wfc, other=els.other) }}
+                    {% endif %}
                 </div>
                 <div class="col-md-5" style="margin-top: 1.25rem">
                     <aside>
@@ -118,11 +124,8 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <fieldset style="flex-direction: column;">
-                        <legend class="sr-only">Review outcome</legend>
-                        {% set cr = els.check.capability.get_control_renderer() %}
-                        {{ cr.draw(els.check.control) }}
-                    </fieldset>
+                    {% set cr = els.check.capability.get_control_renderer() %}
+                    {{ cr.draw(els.check.control) }}
                 </div>
             </div>
             {% if els.action %}

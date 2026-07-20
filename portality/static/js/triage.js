@@ -507,3 +507,39 @@ doaj.triage.fullFormSubmit = function(submitter) {
     // Submit the form directly (button is outside the form)
     $form[0].submit();
 }
+
+doaj.triage.show = function(elements) {
+    $(elements)._show();
+}
+
+doaj.triage.hide = function(elements) {
+    $(elements)._hide();
+}
+
+doaj.triage.toggle = function(elements) {
+    $(elements)._toggle();
+}
+
+doaj.triage.toggleSection = function(section, btn) {
+    const $section = $(`#${section}`);
+    const $btn = $(btn);
+    const expanded = $btn.attr("aria-expanded") === "true";
+    $section._toggle();
+    $btn.attr("aria-expanded", !expanded.toString());
+}
+
+doaj.triage.toggleInput = function(input_id, trigger) {
+    console.log("toggle")
+    const $input = $(`#${input_id}`);
+    const $trigger = $(trigger);
+    $input._toggle();
+    $input.attr("hidden") === "true" ? $input.focus() : $trigger.focus();
+}
+
+doaj.triage.continue = function() {
+    console.log("continue")
+}
+
+doaj.triage.reject = function() {
+    console.log("reject")
+}

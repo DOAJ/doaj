@@ -1,0 +1,30 @@
+{% macro make_button(spec, label, icon) %}
+    {% set attrs = spec.attrs %}
+    <{{ spec.tag }}
+        {% if attrs %}
+            {% for k, v in spec.attrs.items() %}{% if k != "role" %} {{ k }}="{{ v }}" {% endif %}{% endfor %}
+        {% endif %}>
+            {% if icon %} {{ icon }} {% endif %} {{ label }}
+        </{{spec.tag}}>
+{%- endmacro %}
+
+<div class="justify-start review-outcome">
+    {% for control in controls %}
+        {% set input=control.control %}
+        {% set label=control.label.content %}
+        {% if "role" in input.attrs %}
+            {% if input.attrs.role == "compliant" %}
+                {% set icon %}
+                  {% include "management/admin/_workflow/includes/icons/compliant-answer.html" %}
+                {% endset %}
+            {% elif input.attrs.role == "non_compliant" %}
+                {% set icon %}
+                  {% include "management/admin/_workflow/includes/icons/noncompliant-answer.html" %}
+                {% endset %}
+            {% endif %}
+        {% endif %}
+        {% autoescape off %}
+            {{ make_button(input, label, icon) }}
+        {% endautoescape %}
+    {% endfor %}
+</div>

@@ -92,29 +92,7 @@
 
 {% block admin_content %}
     <div id="triage-async-response"></div>
-    {#
-        Kept in sync with the async save response by doaj.triage.recommendation
-        (see triage.js) - only ever shown for a "reject" recommendation, per
-        the same rule the JS applies: nothing else is worth surfacing here.
-        The server-rendered content below is just the initial state for page
-        load / no-JS; every save after that re-renders this host from
-        data.recommendation.
-    #}
-    <div id="triage-recommendation" class="triage-recommendation-host">
-        {% if recommendation and recommendation.code == "reject" %}
-            <p>Current Recommendation: {{ recommendation.code }}</p>
-            <p>Reasons:
-                <ul>
-                {% for reason in recommendation.reasons %}
-                    <li>{{ reason.question.text }} ({{ reason.question.name }}) [{{ reason.question.field_id }}]: {{ reason.answer }}
-                        {% if reason.sv %}(SV:{{ reason.sv }}){% endif %}
-                        {% if reason.exception %}(Exception(s): {{ reason.exception|join(", ") }}){% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-            </p>
-        {% endif %}
-    </div>
+    {% include 'management/admin/_workflow/includes/_recommend.html' %}
 
 <div class="ew_body">
     {% autoescape off %}
@@ -125,6 +103,7 @@
 
 {% block admin_js %}
     <script type="text/javascript" src="/static/js/triage.js"></script>
+    <script type="text/javascript" src="/static/js/custom_jquery.js"></script>
     <script type="text/javascript">
         doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
         doaj.triage.init();

@@ -1,0 +1,107 @@
+{% macro render_content(content_list) -%}
+    {%- if content_list is string -%}
+        {{- content_list -}}
+
+    {%- elif content_list is iterable and content_list is not string and content_list is not mapping -%}
+        {%- for ic in content_list -%}
+            {%- set ic_content = ic.content -%}
+            {%- set rendered_content = render_content(ic_content) -%}
+            {% autoescape off %}
+            {{ make_tag(ic, rendered_content) }}
+            <{{ ic.tag }} {% for k, v in ic.attrs %}{{ k }}="{{ v }}" {% endfor %} {% if not ic.close %}/{% endif %}>
+                {{ rendered_content }}
+            {% if ic.close %}
+                </{{ic.tag}}>
+            {% endif %}
+            {% endautoescape %}
+        {%- endfor -%}
+
+    {%- else -%}
+        {{- content_list -}}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro make_tag(spec, content, onclick, onclick_params) %}
+    {% set attrs = spec.attrs %}
+    <{{ spec.tag }}
+        {% if attrs %}
+            {% for k, v in spec.attrs.items() %}{{ k }}="{{ v }}" {% endfor %}
+        {% endif %}
+        {% if onclick %}
+            onclick="{{ onclick }}( {% if onclick_params %}{{ onclick_params }} {% endif %} )"
+        {% endif %}
+        {% if not spec.close %}/{% endif %}>
+            {{ content }}
+    {% if spec.close %}
+        </{{spec.tag}}>
+    {% endif %}
+{%- endmacro %}
+
+{% set checkboxes = namespace(
+            options=[],
+            other=None,
+            none=None
+        ) %}
+
+{% for control in controls %}
+    {% set input = control.control %}
+    {% if "attrs" in input and "value" in input.attrs %}
+        {% set value = input.attrs.value %}
+        {% if value == "none" %}
+            {% set checkboxes.none = control %}
+        {% elif value == "other" %}
+            {% set checkboxes.other = control %}
+        {% else %}
+            {% set checkboxes.options = checkboxes.options + [control] %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% for control in checkboxes.options %}
+    {% set input=control.control %}
+    {% set content = {"value": ""} %}
+    {% if input.content %}
+        {% set content.value=render_content(input.content) %}
+    {% endif %}
+
+    {% autoescape off %}
+        {{ make_tag(input, content.value) }}
+    {% endautoescape %}
+    {% if control.label %}
+        {{ make_tag(control.label, control.label.content) }}
+    {% endif %}
+{% endfor %}
+
+{% if checkboxes.other %}
+{% set control = checkboxes.other %}
+{% set input=control.control %}
+    {% set content = {"value": ""} %}
+    {% if input.content %}
+        {% set content.value=render_content(input.content) %}
+    {% endif %}
+
+    {% autoescape off %}
+        {{ make_tag(input, content.value) }}
+    {% endautoescape %}
+    {% if control.label %}
+        {{ make_tag(control.label, control.label.content) }}
+    {% endif %}
+{% endif %}
+
+<p style="color: deeppink" hidden>{{ other }}</p>
+
+{% if checkboxes.none %}
+{% set control = checkboxes.none %}
+{% set input=control.control %}
+{% set content = {"value": ""} %}
+{% if input.content %}
+    {% set content.value=render_content(input.content) %}
+{% endif %}
+
+{% autoescape off %}
+    {{ make_tag(input, content.value) }}
+{% endautoescape %}
+{% if control.label %}
+    {{ make_tag(control.label, control.label.content) }}
+{% endif %}
+{% endif %}

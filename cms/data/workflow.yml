@@ -687,20 +687,20 @@ triage:
     admin_special_exception:
       label: "Special exceptions"
       check: "Is this application is reviewed under a special exception?"
-      instructions: "Application may be triaged with a special exception at the discretion of the Triage user. If 
-        true then it should be added into the box provided. A special exception lies outside the regular triage 
+      instructions: "Application may be triaged with a special exception at the discretion of the Triage user. A special exception lies outside the regular triage 
         workflow checks. For eg. 'application is from Africa' or 'application is from a journal where publisher name 
-        does not match the (dedicated) publisher account'"
+        does not match the (dedicated) publisher account.'"
       answers:
-        compliant: "Continue"
+        compliant: "Continue triage"
         non_compliant: "Reject this application"
         later: "I don't know - mark for later"
       exceptions:
         option_1: "Option 1"
         option_2: "Option 2"
         other: "Other"
+        none: "No exceptions apply"
       edit:
-        special_exceptions: "Special exception"
+        special_exceptions: "Special exceptions"
         other: "Other special exception"
       validation:
         special_exceptions:
