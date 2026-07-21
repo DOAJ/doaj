@@ -34,6 +34,9 @@ doaj.triage.selectors = {
     summaryLink: "[data-field-error-summary-for]",
     checkboxOther: "input[type='checkbox'][value='other']",
     checkboxNone: "input[type='checkbox'][value='none']",
+    answers: "input[type='radio'][data-role='answer']",
+    answersContainer: "fieldset.review_outcome-container",
+    clearAnswersButton: "button[data-role='change_answers']",
 
     // Host for the "reject" recommendation panel - see triage.html. Rebuilt
     // in full on every save response, same approach as errors.summary.
@@ -102,6 +105,12 @@ doaj.triage.init = function () {
     $(document).on("change", doaj.triage.selectors.checkboxNone, function (event) {
         doaj.triage.setupNone($(event.target))
     })
+    $(document).on("change", doaj.triage.selectors.answers, function (event) {
+        doaj.triage.setupAnswers($(event.target))
+    })
+    $(document).on("click", doaj.triage.selectors.clearAnswersButton, function (event) {
+        doaj.triage.clearAnswers($(event.target))
+    })
     // Findability: clicking an entry in the error summary (see
     // doaj.triage.summary) jumps straight to the field it's about, instead
     // of making the user hunt for it down a very long form.
@@ -120,6 +129,14 @@ doaj.triage.setupUI = function () {
     $(doaj.triage.selectors.checkboxNone).each(function () {
         doaj.triage.setupNone($(this));
     })
+    $(doaj.triage.selectors.answersContainer).each(function () {
+        if ($(this).find("input[type='radio']:checked").length > 0) {
+            const $checkedAnswer = $(this).find("input[type=radio]:checked");
+            const $changeButtonContainer = $(this).find(doaj.triage.selectors.clearAnswersButton).parent()
+            $(this).find("input[type='radio']").not($checkedAnswer).parent()._hide();
+            $changeButtonContainer._show();
+        }
+    });
 }
 
 /* ============================================================
@@ -143,6 +160,29 @@ doaj.triage.setupNone = function ($that) {
         $fieldset.find("input").not($that)
             .prop("disabled", false);
     }
+}
+doaj.triage.setupAnswers = function($that) {
+    const $fieldset = $that.closest("fieldset");
+    let $that_label = $(`label[for="${$that.attr("id")}"]`);
+    const $changeButtonContainer = $fieldset.find(doaj.triage.selectors.clearAnswersButton).parent()
+    if ($that.is(":checked")) {
+        $fieldset.find("label").not($that_label).parent()._hide();
+        $changeButtonContainer._show();
+    }
+    else {
+        $fieldset.find("label").not($that_label).parent()._show();
+        $changeButtonContainer._hide();
+    }
+    doaj.triage.requestSave();
+}
+
+doaj.triage.clearAnswers = function($that) {
+    const $fieldset = $that.closest("fieldset");
+    const $answers = $fieldset.find("input[type='radio']");
+    $answers.parent()._show()
+    $answers.prop("checked", false);
+    $that.parent()._hide();
+    doaj.triage.requestSave();
 }
 
 doaj.triage.setupOther = function ($that) {
