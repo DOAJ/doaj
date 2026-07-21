@@ -1,3 +1,13 @@
+{#
+    #triage-recommendation is always rendered, even when empty, so that
+    doaj.triage.recommendation.render() (triage.js) always has somewhere to
+    write into after an async save - it rebuilds this div's contents from
+    data.recommendation, mirroring the "reject" half of the gating below.
+    It only ever covers the text/reasons - the action widgets further down
+    (fail.html / triaged.html) are left alone by the JS and stay
+    server-rendered / correct as of last full page load.
+#}
+<div id="triage-recommendation">
 {% if recommendation %}
     {# Only display the recommendation if it is a reject, or if the review is complete #}
     {# as all other recommendations should only be acted on once triage has answered all questions #}
@@ -13,7 +23,12 @@
             {% endfor %}
             </ul>
         </p>
+    {% endif %}
+{% endif %}
+</div>
 
+{% if recommendation %}
+    {% if recommendation.code == "reject" or wfc.triage.review_complete %}
         {% if recommendation.code == "reject" %}
             {% if event_reject and event_reject.is_available(current_user) %}
                 {% with event = event_reject %}
