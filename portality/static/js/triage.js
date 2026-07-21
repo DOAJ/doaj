@@ -31,7 +31,10 @@ doaj.triage.selectors = {
     // also appears deeper in the DOM (one per fieldset/note field) and
     // those are not ours to touch.
     summaryContainer: "#triage > .error-container",
-    summaryLink: "[data-field-error-summary-for]"
+    summaryLink: "[data-field-error-summary-for]",
+    checkboxOther: "input[type='checkbox'][value='other']",
+    checkboxNone: "input[type='checkbox'][value='none']"
+
 };
 
 // Class + data attribute used to tag error messages we inject next to a
@@ -51,6 +54,7 @@ doaj.triage.summaryLinkDataAttr = "data-field-error-summary-for";
  * ============================================================ */
 
 doaj.triage.init = function () {
+
     $(document).on("click", "#checkBtn", function (event) {
         event.preventDefault();
         doaj.triage.asyncFormSubmit();
@@ -89,6 +93,12 @@ doaj.triage.init = function () {
         });
     });
 
+    $(document).on("change", doaj.triage.selectors.checkboxOther, function (event) {
+        doaj.triage.setupOther($(event.target))
+    })
+    $(document).on("change", doaj.triage.selectors.checkboxNone, function (event) {
+        doaj.triage.setupNone($(event.target))
+    })
     // Findability: clicking an entry in the error summary (see
     // doaj.triage.summary) jumps straight to the field it's about, instead
     // of making the user hunt for it down a very long form.
@@ -97,7 +107,17 @@ doaj.triage.init = function () {
         var fieldId = $(event.currentTarget).attr(doaj.triage.summaryLinkDataAttr);
         doaj.triage.scrollToField(fieldId);
     });
+    doaj.triage.setupUI();
 };
+
+doaj.triage.setupUI = function () {
+    $(doaj.triage.selectors.checkboxOther).each(function () {
+        doaj.triage.setupOther($(this));
+    })
+    $(doaj.triage.selectors.checkboxNone).each(function () {
+        doaj.triage.setupNone($(this));
+    })
+}
 
 /* ============================================================
  * scrollToField
@@ -107,6 +127,39 @@ doaj.triage.init = function () {
  * would, but working for radio/checkbox groups too (which have no single
  * element whose id equals field_id).
  * ============================================================ */
+
+doaj.triage.setupNone = function ($that) {
+    const $fieldset = $that.closest("fieldset");
+    if ($that.is(":checked")) {
+        $fieldset.find("input").not($that)
+            .prop("checked", false)
+            .trigger("change")
+            .prop("disabled", true);
+    }
+    else {
+        $fieldset.find("input").not($that)
+            .prop("disabled", false);
+    }
+}
+
+doaj.triage.setupOther = function ($that) {
+    let $input = $that.is("label")
+            ? $($that[0].control)
+            : $that;
+        const controls_id = $input.data("controls");
+        if (controls_id.length > 0) {
+            let $details = $(`#${controls_id}`)
+            let $details_label = $(`label[for="${$details.attr("id")}"]`);
+            if ($input.is(":checked")) {
+                $details._show();
+                $details_label._show();
+            }
+            else {
+                $details._hide();
+                $details_label._hide();
+            }
+        }
+}
 
 doaj.triage.scrollToField = function (fieldId) {
     var $fields = $('[name="' + fieldId + '"]');

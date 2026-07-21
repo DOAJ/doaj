@@ -90,8 +90,11 @@
                         {% endif %}
                     {% endif %}
                     {% if els.options %}
+                        <fieldset style="flex-direction: column;">
+                            <legend class="sr-only">Special exceptions</legend>
                         {% set options_renderer = els.options.capability.get_control_renderer() %}
                         {{ options_renderer.draw(els.options.control, application=application, wfc=wfc, other=els.other) }}
+                        </fieldset>
                     {% endif %}
                 </div>
                 <div class="col-md-5" style="margin-top: 1.25rem">

@@ -27,11 +27,9 @@
         {% if attrs %}
             {% for k, v in spec.attrs.items() %}{{ k }}="{{ v }}" {% endfor %}
         {% endif %}
-        {% if not spec.close %}/{% endif %}>
-            {% autoescape off %}
+        {% if spec.tag != "label" and not spec.close %}/{% endif %}>
             {{ content }}
-            {% endautoescape %}
-    {% if spec.close %}
+    {% if spec.tag == "label" or spec.close %}
         </{{spec.tag}}>
     {% endif %}
 {%- endmacro %}
