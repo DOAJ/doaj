@@ -121,14 +121,14 @@
                     <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container" style="flex-direction: column;">
                         <legend class="sr-only">Review outcome</legend>
                         {% set cr = els.check.capability.get_control_renderer() %}
-                        {{ cr.draw(els.check.control, group=compound.name) }}
+                        {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}
                     </fieldset>
                 </div>
             </div>
             {% if els.action %}
             <div class="row">
                 <div class="col-md-5" id="{{ compound.name }}-action" hidden>
-                    <p class="your-answer" id="{{ compound.name }}-your_answer">Your answer: <span class="answer action"></span></p>
+                    <p class="your-answer" id="{{ compound.name }}-your_answer">Your answer: <span class="answer {{ compound.capability.action.button }}"></span></p>
                     {{ els.action.renderer.draw(els.action, application=application, wfc=wfc) }}
                 </div>
             </div>

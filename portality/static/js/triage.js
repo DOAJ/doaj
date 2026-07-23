@@ -44,7 +44,7 @@ doaj.triage.selectors = {
     answers: "input[type='radio'][data-role='answer']",
     answersContainer: "fieldset.review_outcome-container",
     clearAnswersButton: "button[data-role='change_answers']",
-    actionButton: "button[data-role='change_answers'][value='action']",
+    actionButton: "button[data-controls]",
 
     // Host for the "reject" recommendation panel - see triage.html. Rebuilt
     // in full on every save response, same approach as errors.summary.
@@ -173,9 +173,8 @@ doaj.triage.setupNone = function ($that) {
 doaj.triage.setupAnswers = function($that) {
     const $fieldset = $that.closest("fieldset");
     let $that_label = $(`label[for="${$that.attr("id")}"]`);
-    let value = $that.val()
     const $changeButtonContainer = $fieldset.find(doaj.triage.selectors.clearAnswersButton).parent()
-    if (value === "action"){
+    if ($that.is("[data-controls]")){
         $fieldset.find("label").parent()._hide();
         doaj.triage.setupAction($that);
     }
@@ -199,6 +198,11 @@ doaj.triage.setupAction = function ($that) {
     let $that_label = $(`label[for="${$that.attr("id")}"]`).find(".label-text");
     $action_section._show();
     $answer_paragraph.text($that_label.text());
+    $action_section.find("input").each(function () {
+        if ($(`label[for="${$(this).attr("id")}"]`).length === 0) {
+            $(this).attr("aria-describedby", $answer_paragraph.attr("id"));
+        }
+    })
     let $action_inputs = $action_section.find("input")
     if ($action_inputs.length > 0) {
         $action_inputs[0].focus()
@@ -669,7 +673,7 @@ doaj.triage.toggleInput = function(input_id, trigger) {
 }
 
 doaj.triage.continue = function() {
-    console.log("continue")
+    doaj.triage.requestSave();
 }
 
 doaj.triage.reject = function() {

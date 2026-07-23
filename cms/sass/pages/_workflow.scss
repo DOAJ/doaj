@@ -425,11 +425,11 @@ body.dashboard {
         font-weight: bold;
         text-transform: capitalize;
 
-        &.compliant {
+        &.non_compliant {
             color: $sanguine;
         }
 
-        &.noncompliant {
+        &.compliant {
             color: $dark-green;
         }
 

@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from flask import render_template
 
 from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent, IsConditionallyRequired, DisallowedValue, \
@@ -17,6 +19,8 @@ from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
 ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
+
+
 
 #####################################################
 ## Common infrastructure/reused components
@@ -64,6 +68,43 @@ class SimpleCompoundRenderer(GenericCompound):
     template = templates.WORKFLOW_SIMPLE_COMPOUND
 
 #################################
+class TriageFormButtons:
+    cont = {
+        "label": "Continue triage",
+        "attrs": {
+            "class": "button compliant",
+            "onclick": "doaj.triage.continue()",
+            "type": "button",
+            "role": "compliant"
+        }
+    }
+
+    change_btn = {
+        "label": "Change my answer",
+        "attrs": {
+            "class": "button",
+            "type": "button",
+            "role": "non_compliant",
+            "data-controls": "",
+            "data-role": "change_answers"
+        }
+    }
+
+    @classmethod
+    def contb(cls, attrs=None):
+        contb = deepcopy(cls.cont)
+        if attrs:
+            for k, v in attrs.items():
+                contb["attrs"][k] = v
+        return contb
+
+    @classmethod
+    def changeb(cls, attrs=None):
+        changeb = deepcopy(cls.change_btn)
+        if attrs:
+            for k, v in attrs.items():
+                changeb["attrs"][k] = v
+        return changeb
 
 class ComplianceCheckCapability(FormFieldCapability):
     role = "check"
@@ -102,6 +143,9 @@ class CheckboxQuestionCapability(CompoundFieldCapability):
     render_class = TriageCheckboxListRenderer
     sr_only_legend = False
 
+class TriageCompoundFieldCapability(CompoundFieldCapability):
+    action = {}
+
 #######
 ## Generic notes capability and field
 class NoteCapability(FormFieldCapability):
@@ -125,6 +169,8 @@ class DummyNote(NoteCapability):
 
 class NoteField(Field):
     coerce = [Unicode()]
+    capabilities = (NoteCapability(),)
+
 
 class SimpleCompoundCapability(CompoundFieldCapability):
     render_class = SimpleCompoundRenderer
@@ -192,12 +238,11 @@ class EthicsNotExcluded(ComplianceCheckField):
     name = "ethics_not_excluded"
     capabilities = (C(),)
 
-class EthicsNotExcludedNote(NoteField):
+class EthicsNotExcludedNote(GeneralNote):
     name = "ethics_not_excluded_note"
-    capabilities = (GeneralNoteCapability(),)
 
 class EthicsNotExcludedGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.ethics_not_excluded.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -225,32 +270,57 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
     name = "ethics_no_nonstandard_metrics"
     capabilities = (C(),)
 
-class EthicsNoNonStandardMetricsNote(NoteField):
+class EthicsNoNonStandardMetricsNote(GeneralNote):
+    name = "ethics_no_nonstandard_metrics_note"
+
+class EthicsNonStandardMetricsNonCompliantNote(NoteField):
+    # TODO: how to add it to the crosswalk?
+    # TODO: how to add an attribute to this note? `aria-describedby = T.ethics_no_nonstandard_metrics.action.instruction`
     class NC(NoteCapability):
+        label = "some label"
+        required = True
         error_messages = {
             IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.note.is_conditionally_required
         }
-    name = "ethics_no_nonstandard_metrics_note"
+
+    name = "ethics_nonstandard_metrics_noncompliant_note"
     capabilities = (NC(),)
 
+class EthicsNonStandardMetricsActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "ethics_no_nonstandard_metrics_group"})]
+        order = ["note"]
+        label = "Some label"
+
+    name_ = "ethics_no_nonstandard_metrics_action_group"
+    capabilities_ = (C(),)
+    note = EthicsNonStandardMetricsNonCompliantNote(OPTIONAL, SINGLE)
+
 class EthicsNoNonStandardMetricsGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.ethics_no_nonstandard_metrics.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "action"]
         render_class = TriageCompound
+        action = {
+            "button": T.ethics_no_nonstandard_metrics.action.button,
+            "instruction": T.ethics_no_nonstandard_metrics.action.instruction,
+            "controls": "ethics_no_nonstandard_metrics_action_group"
+        }
         error_messages = {
             IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.group.is_conditionally_required
         }
 
     name_ = "ethics_no_nonstandard_metrics_group"
     capabilities_ = (C(),)
-
     answer = EthicsNoNonStandardMetrics(OPTIONAL, SINGLE)
     note = EthicsNoNonStandardMetricsNote(OPTIONAL, SINGLE)
+    action = EthicsNonStandardMetricsActionGroup(OPTIONAL, SINGLE)
+    action_note = EthicsNonStandardMetricsNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(note, # <- this field is required if
-                  answer,        # <- this field has one of the values
+        RequiredIf(action.note, # <- this field is required if
+                  action_note,        # <- this field has one of the values
                   T.ethics_no_nonstandard_metrics.non_compliant_answers # <- that is non compliant
                   )
     ]
@@ -281,7 +351,7 @@ class EthicsNoFakeImpactNote(NoteField):
     capabilities = (NC(),)
 
 class EthicsNoFakeImpactGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.ethics_no_fake_impact.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -327,7 +397,7 @@ class EthicsNoFalseDOAJClaimNote(NoteField):
     capabilities = (NC(),)
 
 class EthicsNoFalseDOAJClaimGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.ethics_no_false_doaj_claim.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -369,7 +439,7 @@ class EthicsPubTimeNote(NoteField):
     capabilities = (NoteCapability(),)
 
 class EthicsPubTimeGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.ethics_submission_to_publication_time.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -417,29 +487,9 @@ class EthicsNoSuspiciousTiesActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
         S = T.ethics_no_suspicious_ties
+        label = S.edit.instruction
         order = ["note_action"]
-        control_btns = [
-            {
-                "label": S.edit.compliant,
-                "attrs": {
-                    "class": "button compliant",
-                    "onclick": "doaj.triage.continue()",
-                    "type": "button",
-                    "role": "compliant"
-                }
-            },
-            {
-                "label": "Change my answer",
-                "attrs": {
-                    "class": "button",
-                    "onclick": "doaj.triage.reject()",
-                    "type": "button",
-                    "role": "non_compliant",
-                    "data-controls": "ethics_no_suspicious_ties_group",
-                    "data-role": "change_answers"
-                }
-            }
-        ]
+        control_btns = [ TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "ethics_no_suspicious_ties_group"}) ]
 
     name_  ="ethics_no_suspicious_ties_action_group"
     capabilities_ = (C(),)
@@ -447,7 +497,7 @@ class EthicsNoSuspiciousTiesActionGroup(Structure):
     note_action = EthicsNoSuspiciousTiesActionNote(OPTIONAL, SINGLE)
 
 class EthicsNoSuspiciousTiesGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.ethics_no_suspicious_ties.label
         order = ["answer", "note", "action"]
         render_class = TriageCompound
@@ -496,7 +546,7 @@ class DatabaseWithdrawnNote(NoteField):
 
 class DatabaseWithdrawnExceptions(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.database_withdrawn.edit.exceptions
         control_class = Checkbox
         multiple = True
@@ -515,7 +565,7 @@ class DatabaseWithdrawnExceptions(Field):
 ### The main entry point to the Database: Withdrawn question
 
 class DatabaseWithdrawnGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.database_withdrawn.label
         order = ["answer", "note", "exceptions"]
         render_class = TriageCompound
@@ -563,7 +613,7 @@ class DatabaseEmbargoNote(NoteField):
 
 class DatabaseEmbargoExceptions(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.database_embargo.edit.exceptions
         control_class = Checkbox
         multiple = True
@@ -580,7 +630,7 @@ class DatabaseEmbargoExceptions(Field):
     capabilities = (C(),)
 
 class DatabaseEmbargoGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.database_embargo.label
         order = ["answer", "note", "exceptions"]
         render_class = TriageCompound
@@ -614,7 +664,7 @@ class DatabaseNotListedNote(NoteField):
     capabilities = (NoteCapability(),)
 
 class DatabaseNotListedGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.database_not_listed.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -648,7 +698,7 @@ class DatabaseNotDuplicateNote(NoteField):
     capabilities = (NC(),)
 
 class DatabaseNotDuplicateGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.database_not_duplicate.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -698,7 +748,7 @@ class ISSNAtLeastOneNote(GeneralNote):
 
 class EISSN(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.issn_at_least_one.edit.eissn
         control_class = TextInput
         control_render_class = GenericControl
@@ -715,7 +765,7 @@ class EISSN(Field):
 
 class PISSN(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.issn_at_least_one.edit.pissn
         control_class = TextInput
         control_render_class = GenericControl
@@ -731,14 +781,14 @@ class PISSN(Field):
     validators = [Regex(ISSN)]
 
 class ISSNAdditionalFields(Structure):
-    class C(CompoundFieldCapability):
-        role = "special"
+    class C(SimpleCompoundCapability):
+        role = "action"
         label  = "ISSNs"
         order = ["eissn", "pissn"]
+        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
         error_messages = {
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different
         }
-        render_class = GenericCompound
 
     name_ = "edited_issns"
     capabilities_ = (C(),)
@@ -751,7 +801,7 @@ class ISSNAdditionalFields(Structure):
     ]
 
 class ISSNAtLeastOneGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.issn_at_least_one.label
         order = [
             "answer",
@@ -808,7 +858,7 @@ class ISSNCountryMatchNote(NoteField):
     capabilities = (NC(),)
 
 class ISSNCountryMatchGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.issn_country_match.label
         order = [
             "answer",
@@ -857,7 +907,7 @@ class ISSNTitleMatchNote(NoteField):
 
 class Title(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.issn_title_match.edit.title
         control_class = TextInput
         control_render_class = GenericControl
@@ -872,12 +922,23 @@ class Title(Field):
     capabilities = (C(),)
     validators = [NoScriptTag()]
 
+class ISSNTitleMatchActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        label = T.issn_title_match.edit.title
+        order = ["title"]
+        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_title_match_group"})]
+
+    name_ = "issn_title_match_action_group"
+    capabilities_ = (C(),)
+    title = Title(REQUIRED, SINGLE)
+
 class ISSNTitleMatchGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.issn_title_match.label
         order = [
             "answer",
-            "title",
+            "action_group",
             "note"
         ]
         render_class = TriageCompound
@@ -889,7 +950,7 @@ class ISSNTitleMatchGroup(Structure):
     capabilities_ = (C(),)
 
     answer = ISSNTitleMatch(OPTIONAL, SINGLE)
-    title = Title(REQUIRED, SINGLE)
+    action_group = ISSNTitleMatchActionGroup(OPTIONAL, SINGLE)
     note = ISSNTitleMatchNote(OPTIONAL, SINGLE)
 
 ###########################################################
@@ -916,7 +977,7 @@ class ISSNContinuationNote(NoteField):
 
 class Continues(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.issn_continuation.edit.continues
         control_class = TextInput
         control_render_class = GenericControl
@@ -930,12 +991,21 @@ class Continues(Field):
     capabilities = (C(),)
     validators = [RegexOnList(ISSN)]
 
+class ISSNContinuationActionGroup(Structure):
+    class C(TriageCompoundFieldCapability):
+        role = "action"
+        label = T.issn_continuation.edit.continues
+        order = ["continue"]
+        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_continuation_group"})]
+
+    continues = Continues(REQUIRED, SINGLE)
+
 class ISSNContinuationGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.issn_continuation.label
         order = [
             "answer",
-            "continues",
+            "action_group",
             "note"
         ]
         render_class = TriageCompound
@@ -947,19 +1017,19 @@ class ISSNContinuationGroup(Structure):
     capabilities_ = (C(),)
 
     answer = ISSNContinuation(OPTIONAL, SINGLE)
-    continues = Continues(OPTIONAL, SINGLE)
+    action_group = ISSNContinuationActionGroup(OPTIONAL, SINGLE)
     note = ISSNContinuationNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        AllInvalid( # the application IS a continuation AND its preceeding journal is not in DOAJ
-            RequiredIf(note,  # <- this field is required if
-                       answer,  # <- this field has one of the values
-                       T.issn_continuation.notes_required_answers  # <- that is compliant
-                       ),
-            RequiredIfNot(note, continues),
-            error_code=IsConditionallyRequired
-        )
-    ]
+    # validators_ = [
+    #     AllInvalid( # the application IS a continuation AND its preceeding journal is not in DOAJ
+    #         RequiredIf(note,  # <- this field is required if
+    #                    answer,  # <- this field has one of the values
+    #                    T.issn_continuation.notes_required_answers  # <- that is compliant
+    #                    ),
+    #         RequiredIfNot(note, action_group.continues),
+    #         error_code=IsConditionallyRequired
+    #     )
+    # ]
 
 ###########################################################
 ## Website: Working
@@ -980,7 +1050,7 @@ class WebsiteWorkingNote(NoteField):
     capabilities = (NoteCapability(),)
 
 class WebsiteWorkingGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.website_working.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1014,7 +1084,7 @@ class WebsiteISSNNote(NoteField):
     capabilities = (NC(),)
 
 class WebsiteISSNGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.website_issn.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1052,7 +1122,7 @@ class WebsiteURLNote(NoteField):
     capabilities = (NC(),)
 
 class WebsiteURLGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.website_url.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1091,7 +1161,7 @@ class WebsiteLicensePolicyNote(NoteField):
 
 class License(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.website_license_policy.edit.license
         control_class = Checkbox
         multiple = True
@@ -1120,7 +1190,7 @@ class License(Field):
 
 class LicenseAttribute(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.website_license_policy.edit.license_attribute
         control_class = Checkbox
         multiple = True
@@ -1144,7 +1214,7 @@ class LicenseAttribute(Field):
 
 class LicenseURL(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.website_license_policy.edit.license_url
         control_class = URLInput
         control_render_class = GenericControl
@@ -1160,7 +1230,7 @@ class LicenseURL(Field):
     validators = [IsURL()]
 
 class WebsiteLicensePolicyGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.website_license_policy.label
         order = [
             "answer",
@@ -1214,7 +1284,7 @@ class WebsiteCopyrightNote(NoteField):
 
 class CopyrightAuthorRetains(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.website_copyright.edit.copyright_author_retains
         control_class = Radio
         options = [
@@ -1235,7 +1305,7 @@ class CopyrightAuthorRetains(Field):
 
 class CopyrightURL(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.website_copyright.edit.copyright_url
         control_class = URLInput
         control_render_class = GenericControl
@@ -1251,7 +1321,7 @@ class CopyrightURL(Field):
     validators = [IsURL()]
 
 class WebsiteCopyrightGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.website_copyright.label
         order = [
             "answer",
@@ -1296,7 +1366,7 @@ class ContentNoLoginNote(NoteField):
     capabilities = (NC(),)
 
 class ContentNoLoginGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.content_no_login.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1334,7 +1404,7 @@ class ContentNoEmbargoNote(NoteField):
     capabilities = (NC(),)
 
 class ContentNoEmbargoGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.content_no_embargo.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1372,7 +1442,7 @@ class ContentPublishEnoughNote(NoteField):
     capabilities = (NC(),)
 
 class ContentPublishEnoughGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.content_publish_enough.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1410,7 +1480,7 @@ class ContentUniqueLinkNote(NoteField):
     capabilities = (NC(),)
 
 class ContentUniqueLinkGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.content_unique_link.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1448,7 +1518,7 @@ class ContentFormatNote(NoteField):
     capabilities = (NC(),)
 
 class ContentFormatGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.content_format.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1483,7 +1553,7 @@ class ContentNewJournalNote(NoteField):
 
 class ContentNewJournalExceptions(Field):
     class C(FormFieldCapability):
-        role = "special"
+        role = "action"
         label = T.content_new_journal.edit.exceptions
         control_class = Checkbox
         multiple = True
@@ -1500,7 +1570,7 @@ class ContentNewJournalExceptions(Field):
     capabilities = (C(),)
 
 class ContentNewJournalGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.content_new_journal.label
         order = ["answer", "note", "exceptions"]
         render_class = TriageCompound
@@ -1531,7 +1601,7 @@ class AdminMetadataReviewNote(NoteField):
     capabilities = (NoteCapability(),)
 
 class AdminMetadataReviewGroup(Structure):
-    class C(CompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.admin_metadata_review.label
         order = ["answer", "note"]
         render_class = TriageCompound

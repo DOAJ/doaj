@@ -14,7 +14,7 @@
 {%- endif -%}
 {%- endmacro %}
 
-{% macro make_tag(spec, content, extra_class="", role="answer") %}
+{% macro make_tag(spec, content, extra_class="", role="answer", extra_attrs = "") %}
 {% set attrs = spec.attrs or {} %}
 
 {% set base_class = "review-outcome-answer" %}
@@ -30,6 +30,11 @@
 {% endfor %}
 class="{{ class_value }}"
 data-role="{{ role }}"
+{% if extra_attrs %}
+{% for k, v in extra_attrs.items() %}
+{{ k }}="{{ v }}"
+{% endfor %}
+{% endif %}
 {% if not spec.close %}/{% endif %}
 >
 {% autoescape off %}
@@ -105,8 +110,11 @@ conditional_non_compliant=None,
     {% if input.content %}
     {% set content.value=render_content(input.content) %}
     {% endif %}
+    {% if action and action.button == "compliant" %}
+        {% set extra_attrs = {"data-controls": action.controls} %}
+    {% endif %}
     <div class="radio-option compliant">
-        {{ make_tag(input, content.value, extra_class="sr-only") }}
+        {{ make_tag(input, content.value, extra_class="sr-only", extra_attrs=extra_attrs) }}
         {% if control.label %}
         {{ make_tag(control.label, compliant_label, role="label") }}
         {% endif %}
@@ -126,8 +134,11 @@ conditional_non_compliant=None,
     {% if input.content %}
     {% set content.value=render_content(input.content) %}
     {% endif %}
+    {% if action and action.button == "action" %}
+        {% set extra_attrs = {"data-controls": action.controls} %}
+    {% endif %}
     <div class="radio-option action">
-        {{ make_tag(input, content.value, "sr-only") }}
+        {{ make_tag(input, content.value, "sr-only", extra_attrs=extra_attrs) }}
         {% if control.label %}
         {{ make_tag(control.label, action_label, role="label") }}
         {% endif %}
@@ -148,8 +159,11 @@ conditional_non_compliant=None,
     {% if input.content %}
     {% set content.value=render_content(input.content) %}
     {% endif %}
+    {% if action and action.button == "non_compliant" %}
+        {% set extra_attrs = {"data-controls": action.controls} %}
+    {% endif %}
     <div class="radio-option noncompliant">
-        {{ make_tag(input, content.value, "sr-only") }}
+        {{ make_tag(input, content.value, "sr-only", extra_attrs=extra_attrs) }}
         {% if control.label %}
         {{ make_tag(control.label, noncompliant_label, role="label") }}
         {% endif %}
@@ -183,53 +197,6 @@ conditional_non_compliant=None,
                 data-role="change_answers">Change my answer
         </button>
     </div>
-</div>
-<div class="conditional-options review-outcome" style="display: flex; flex-direction: row;">
-    {% if ns.conditional_compliant %}
-    {% set control = ns.conditional_compliant %}
-    {% set input = control.control %}
-    {% set content = {"value": ""} %}
-
-    {% set compliant_label %}
-    {{ compliant_icon | safe }}
-    <span class="label-text">
-    {{ control.label.content | safe }}
-  </span>
-    {% endset %}
-
-    {% if input.content %}
-    {% set content.value=render_content(input.content) %}
-    {% endif %}
-    <div class="radio-option compliant">
-        {{ make_tag(input, content.value, extra_class="sr-only", role="conditional_answer") }}
-        {% if control.label %}
-        {{ make_tag(control.label, compliant_label, role="label") }}
-        {% endif %}
-    </div>
-    {% endif %}
-
-    {%- if ns.conditional_non_compliant -%}
-    {% set control = ns.conditional_non_compliant %}
-    {% set input=control.control %}
-    {% set noncompliant_label %}
-    {{ noncompliant_icon | safe }}
-    <span class="label-text">
-    {{ control.label.content | safe }}
-  </span>
-    {% endset %}
-
-    {% set content = {"value": ""} %}
-    {% if input.content %}
-    {% set content.value=render_content(input.content) %}
-    {% endif %}
-    <div class="radio-option noncompliant">
-        {{ make_tag(input, content.value, "sr-only", role="conditional_answer") }}
-        {% if control.label %}
-        {{ make_tag(control.label, noncompliant_label, role="label") }}
-        {% endif %}
-    </div>
-    {% endif %}
-
 </div>
 {% block admin_js %}
 {% endblock %}

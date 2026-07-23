@@ -35,6 +35,9 @@ triage:
       resources:
         - label: "Quality Review Tool for Triage only"
           url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+      action:
+        button: "non_compliant"
+        instruction: "Provide more information on non-standard metric services this journal references"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
@@ -52,7 +55,7 @@ triage:
       check: "The journal <strong>does not</strong> display fake impact factor values in texts or/and images"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> display fake impact factor values"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> fake impact factor values"
+        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> display fake impact factor values"
         later: "I don't know - mark for later"
       remember: ""
       instructions: ""
@@ -125,7 +128,7 @@ triage:
         - label: "Excluded publishers spreadsheet"
           url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8"
       edit:
-        instruction: "Please provide more details (required)"
+        instruction: "Please provide more details"
         compliant: "Continue triage"
       validation:
         group:
@@ -150,7 +153,7 @@ triage:
         action: "ISSN needs to be changed"
       remember: "Search <strong>both</strong> ISSNs (if available)"
       instructions: '<ul>
-                  <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is <span class="answer noncompliant">Non-compliant</span></li>
+                  <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is <span class="answer non_compliant">Non-compliant</span></li>
                   <li>If any of the ISSNs is unregistered, provisional, unreported or listed as ceased, click <span class="answer action">Changes to ISSNs are required</span>, remove it, and add a note</li>
                   <li>If you cannot find the ISSN in the ISSN portal or the search result is a different journal, try to search the ISSN portal by the title or see if you can find the correct ISSN in the journal’s website. If this is the case, click <span class="answer action">Changes to ISSNs are required</span>, make the change, and add a note</li>
                   <li>If the application contains only one ISSN but there are two confirmed and active in the ISSN Portal, click <span class="answer action">Changes to ISSNs are required</span>, add the second ISSN, and add a note</li>
@@ -391,7 +394,7 @@ triage:
       action: ""
       remember: "If the website doesn’t work now remember to check it again later at least once, in case these are temporary issues."
       instructions: '<ul>
-                  <li>Open the homepage URL and make sure it is working. If not, check it again later and if it is still not working, the answer is <span class="answer noncompliant">Non-compliant</span></li>
+                  <li>Open the homepage URL and make sure it is working. If not, check it again later and if it is still not working, the answer is <span class="answer non_compliant">Non-compliant</span></li>
                   </ul>'
       resources:
         - label: "https://downforeveryoneorjustme.com/"
@@ -460,7 +463,7 @@ triage:
         action: "Same URL acceptable. All required information is correctly provided under a single URL due to the website structure."
       remember: "If the website is structured so that all required information is correctly available under a single URL, select <span answer='answer action'>Same URL acceptable. All required information is correctly provided under a single URL due to the website structure.</span>"
       instructions: '<ul>
-                  <li>If all URLs are identical but the required information is not actually available at that URL (e.g. all links point to the homepage), select <span class="answer noncompliant">Non-compliant</span></li>
+                  <li>If all URLs are identical but the required information is not actually available at that URL (e.g. all links point to the homepage), select <span class="answer non_compliant">Non-compliant</span></li>
                   </ul>'
       resources: ""
       validation:
@@ -486,7 +489,7 @@ triage:
         action: "Changes to licensing information are required"
       remember: "If the exclusion does <strong>not</strong> relate to <all> journals from a publisher, an application for another journal from that publisher should <strong>not</strong> be rejected at this stage"
       instructions: '<ul>
-                  <li>If the licensing information in the website/articles is contradictory, the answer if <span class="answer noncompliant">Non-compliant</span></li>
+                  <li>If the licensing information in the website/articles is contradictory, the answer if <span class="answer non_compliant">Non-compliant</span></li>
                   <li>If the licensing policy is stated in a <strong>different URL</strong> and not in the one provided, click <span class="answer action">Changes to licensing information is required</span> and provide correct URL</li>
                   <li>If the license stated in the application form is incorrect based on the information given in the website, click <span class="answer action">Changes to licensing information is required</span> and provide correct  licensing information </li>
                   </ul>'
@@ -523,7 +526,7 @@ triage:
         non_compliant: "<span class='answer'>Non-compliant</span>, copyright information <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
         later: "I don't know - mark for later"
         action: "Changes to copyright terms information is required"
-      remember: "If the copyright information in the website/articles is contradictory, the answer is <span class='answer noncompliant'>Non-compliant</span>"
+      remember: "If the copyright information in the website/articles is contradictory, the answer is <span class='answer non_compliant'>Non-compliant</span>"
       instructions: ''
       resources: ""
       edit:
