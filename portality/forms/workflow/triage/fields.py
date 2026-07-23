@@ -60,6 +60,9 @@ class TriageCheckboxListRenderer(GenericCompound):
 class ButtonsRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_BUTTONS
 
+class SimpleCompoundRenderer(GenericCompound):
+    template = templates.WORKFLOW_SIMPLE_COMPOUND
+
 #################################
 
 class ComplianceCheckCapability(FormFieldCapability):
@@ -122,6 +125,10 @@ class DummyNote(NoteCapability):
 
 class NoteField(Field):
     coerce = [Unicode()]
+
+class SimpleCompoundCapability(CompoundFieldCapability):
+    render_class = SimpleCompoundRenderer
+    control_btns = []
 
 #######
 ## options preparation
@@ -385,23 +392,64 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
         options = options_for(S)
         check = S.check
         instructions = S.instructions
+        remember = S.remember
         resources = resource_for(S)
 
     name = "ethics_no_suspicious_ties"
     capabilities = (C(),)
 
 class EthicsNoSuspiciousTiesNote(NoteField):
+    name = "ethics_no_suspicious_ties_note"
+    capabilities = (GeneralNoteCapability(),)
+
+
+class EthicsNoSuspiciousTiesActionNote(NoteField):
     class NC(NoteCapability):
+        S = T.ethics_no_suspicious_ties
+        label = S.edit.instruction
         error_messages = {
             IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.note.is_conditionally_required
         }
-    name = "ethics_no_suspicious_ties_note"
+    name = "ethics_no_suspicious_ties_action_note"
     capabilities = (NC(),)
+
+class EthicsNoSuspiciousTiesActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        S = T.ethics_no_suspicious_ties
+        order = ["note_action"]
+        control_btns = [
+            {
+                "label": S.edit.compliant,
+                "attrs": {
+                    "class": "button compliant",
+                    "onclick": "doaj.triage.continue()",
+                    "type": "button",
+                    "role": "compliant"
+                }
+            },
+            {
+                "label": "Change my answer",
+                "attrs": {
+                    "class": "button",
+                    "onclick": "doaj.triage.reject()",
+                    "type": "button",
+                    "role": "non_compliant",
+                    "data-controls": "ethics_no_suspicious_ties_group",
+                    "data-role": "change_answers"
+                }
+            }
+        ]
+
+    name_  ="ethics_no_suspicious_ties_action_group"
+    capabilities_ = (C(),)
+
+    note_action = EthicsNoSuspiciousTiesActionNote(OPTIONAL, SINGLE)
 
 class EthicsNoSuspiciousTiesGroup(Structure):
     class C(CompoundFieldCapability):
         label = T.ethics_no_suspicious_ties.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "action"]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.group.is_conditionally_required
@@ -412,6 +460,7 @@ class EthicsNoSuspiciousTiesGroup(Structure):
 
     answer = EthicsNoSuspiciousTies(OPTIONAL, SINGLE)
     note = EthicsNoSuspiciousTiesNote(OPTIONAL, SINGLE)
+    action = EthicsNoSuspiciousTiesActionGroup(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note,  # <- this field is required if

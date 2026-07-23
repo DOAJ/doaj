@@ -1,4 +1,4 @@
-{% macro make_button(spec, label, icon) %}
+{% macro make_button(spec, label, icon, extra_attrs = "") %}
     {% set attrs = spec.attrs %}
     <{{ spec.tag }}
         {% if attrs %}

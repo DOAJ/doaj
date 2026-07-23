@@ -97,6 +97,7 @@ WORKFLOW_TRIAGE_READ_ONLY = "management/admin/_workflow/includes/_triage_overvie
 WORKFLOW_TRIAGE_FIELD_COMPLIANCE = "management/admin/_workflow/includes/triage_field.html"
 WORKFLOW_BUTTONS = "management/admin/_workflow/includes/_triage_buttons.html"
 WORKFLOW_TRIAGE_COMPOUND = "management/admin/_workflow/includes/_triage_compound.html"
+WORKFLOW_SIMPLE_COMPOUND = "management/admin/_workflow/includes/_simple_compound.html"
 WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_claim.html"
 
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"

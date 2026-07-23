@@ -11,6 +11,13 @@ doaj.triage = {};
 
 doaj.triage.asyncURL = null;
 
+// strings that are used consistently in the templates
+doaj.triage.magicStrings = {
+    reviewOutcomeFieldset: "-review_outcome",
+    actionSection: "-action",
+    yourAnswer: "-your_answer"
+}
+
 doaj.triage.selectors = {
     form: "#triage",
     response: "#triage-async-response",
@@ -37,6 +44,7 @@ doaj.triage.selectors = {
     answers: "input[type='radio'][data-role='answer']",
     answersContainer: "fieldset.review_outcome-container",
     clearAnswersButton: "button[data-role='change_answers']",
+    actionButton: "button[data-role='change_answers'][value='action']",
 
     // Host for the "reject" recommendation panel - see triage.html. Rebuilt
     // in full on every save response, same approach as errors.summary.
@@ -132,9 +140,10 @@ doaj.triage.setupUI = function () {
     $(doaj.triage.selectors.answersContainer).each(function () {
         if ($(this).find("input[type='radio']:checked").length > 0) {
             const $checkedAnswer = $(this).find("input[type=radio]:checked");
-            const $changeButtonContainer = $(this).find(doaj.triage.selectors.clearAnswersButton).parent()
-            $(this).find("input[type='radio']").not($checkedAnswer).parent()._hide();
-            $changeButtonContainer._show();
+            // const $changeButtonContainer = $(this).find(doaj.triage.selectors.clearAnswersButton).parent()
+            // $(this).find("input[type='radio']").not($checkedAnswer).parent()._hide();
+            // $changeButtonContainer._show();
+            doaj.triage.setupAnswers($checkedAnswer);
         }
     });
 }
@@ -164,24 +173,55 @@ doaj.triage.setupNone = function ($that) {
 doaj.triage.setupAnswers = function($that) {
     const $fieldset = $that.closest("fieldset");
     let $that_label = $(`label[for="${$that.attr("id")}"]`);
+    let value = $that.val()
     const $changeButtonContainer = $fieldset.find(doaj.triage.selectors.clearAnswersButton).parent()
-    if ($that.is(":checked")) {
-        $fieldset.find("label").not($that_label).parent()._hide();
-        $changeButtonContainer._show();
+    if (value === "action"){
+        $fieldset.find("label").parent()._hide();
+        doaj.triage.setupAction($that);
     }
     else {
-        $fieldset.find("label").not($that_label).parent()._show();
-        $changeButtonContainer._hide();
+         if ($that.is(":checked")) {
+            $fieldset.find("label").not($that_label).parent()._hide();
+            $changeButtonContainer._show();
+        }
+        else {
+            $fieldset.find("label").not($that_label).parent()._show();
+            $changeButtonContainer._hide();
+        }
     }
     doaj.triage.requestSave();
 }
 
-doaj.triage.clearAnswers = function($that) {
-    const $fieldset = $that.closest("fieldset");
-    const $answers = $fieldset.find("input[type='radio']");
-    $answers.parent()._show()
+doaj.triage.setupAction = function ($that) {
+    const compound_name = $that.closest("fieldset").attr("id").replace(doaj.triage.magicStrings.reviewOutcomeFieldset, "");
+    const $action_section = $(`#${compound_name}${doaj.triage.magicStrings.actionSection}`);
+    const $answer_paragraph = $(`#${compound_name}${doaj.triage.magicStrings.yourAnswer}`).find("span.answer");
+    let $that_label = $(`label[for="${$that.attr("id")}"]`).find(".label-text");
+    $action_section._show();
+    $answer_paragraph.text($that_label.text());
+    let $action_inputs = $action_section.find("input")
+    if ($action_inputs.length > 0) {
+        $action_inputs[0].focus()
+    }
+
+}
+
+doaj.triage.hideAction = function ($action_section) {
+    $action_section.find("input").val("");
+    $action_section._hide();
+}
+
+doaj.triage.clearAnswers = function($clearBtn) {
+    const compound_name = $clearBtn.data("controls");
+    const answers = $clearBtn.data("controls")+doaj.triage.magicStrings.reviewOutcomeFieldset;
+    const $answers = $(`#${answers}`).find("input");
+    $answers.parent()._show();
     $answers.prop("checked", false);
-    $that.parent()._hide();
+    if ($clearBtn.hasClass("review-outcome-answer")) {
+        $clearBtn.parent()._hide();
+    }
+    const $action_section = $(`#${compound_name}${doaj.triage.magicStrings.actionSection}`);
+    doaj.triage.hideAction($action_section);
     doaj.triage.requestSave();
 }
 

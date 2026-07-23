@@ -124,6 +124,9 @@ triage:
       resources:
         - label: "Excluded publishers spreadsheet"
           url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8"
+      edit:
+        instruction: "Please provide more details (required)"
+        compliant: "Continue triage"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing

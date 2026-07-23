@@ -179,7 +179,7 @@ conditional_non_compliant=None,
     {% set group_name = input.attrs.name %}
     {% set button_id = input.attrs.name ~ "-change" %}
     <div class="radio-option" hidden>
-        <button type="button" id="{{ button_id }}" data-group="{{ group_name }}" class="review-outcome-answer"
+        <button type="button" id="{{ button_id }}" data-controls="{{ group }}" class="review-outcome-answer"
                 data-role="change_answers">Change my answer
         </button>
     </div>
