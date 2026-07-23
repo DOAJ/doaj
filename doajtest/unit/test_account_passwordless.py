@@ -1,6 +1,5 @@
 import time
 import unittest
-from unittest import TestCase
 from unittest.mock import patch, MagicMock
 import random
 from datetime import datetime, timedelta
@@ -38,6 +37,9 @@ class TestPasswordlessLogin(DoajTestCase):
         self.app.testing = True
         self.url_crypto = Encryption()
 
+    def tearDown(self):
+        self.ctx.pop()
+        super(TestPasswordlessLogin, self).tearDown()
 
     def test_account_set_login_code(self):
         """Test setting and retrieving login code"""
@@ -251,7 +253,7 @@ class TestPasswordlessLoginEndpoints(DoajTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Invalid or expired verification code', response.data)
 
-class TestSendLoginCodeEmail(TestCase):
+class TestSendLoginCodeEmail(DoajTestCase):
 
     def setUp(self):
         super(TestSendLoginCodeEmail, self).setUp()
@@ -266,6 +268,10 @@ class TestSendLoginCodeEmail(TestCase):
         self.test_account.set_password('password123')
         self.test_account.save()
         self.test_account.refresh()
+
+    def tearDown(self):
+        self.ctx.pop()
+        super(TestSendLoginCodeEmail, self).tearDown()
 
     @patch('portality.bll.services.account.send_mail')
     def test_send_login_code_email(self, mock_send_mail):
