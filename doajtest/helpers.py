@@ -265,9 +265,10 @@ class DoajTestCase(TestCase):
     @contextmanager
     def _make_and_push_test_context_manager(self, path="/", acc=None):
         ctx = self._make_and_push_test_context(path=path, acc=acc)
-        yield ctx
-
-        ctx.pop()
+        try:
+            yield ctx
+        finally:
+            ctx.pop()
 
     @staticmethod
     def fix_es_mapping():
