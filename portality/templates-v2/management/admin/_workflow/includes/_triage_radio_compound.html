@@ -1,0 +1,15 @@
+{% extends "/management/admin/_workflow/includes/_triage_compound_base.html" %}
+
+{% block renderer %}
+{% autoescape off %}
+<div class="row">
+    <div class="col-md-12">
+        <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container" style="flex-direction: column;">
+            <legend class="sr-only">Review outcome</legend>
+            {% set cr = els.check.capability.get_control_renderer() %}
+            {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}
+        </fieldset>
+    </div>
+</div>
+{% endautoescape %}
+{% endblock %}

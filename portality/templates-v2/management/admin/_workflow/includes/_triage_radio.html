@@ -110,8 +110,8 @@ conditional_non_compliant=None,
     {% if input.content %}
     {% set content.value=render_content(input.content) %}
     {% endif %}
-    {% if action and action.button == "compliant" %}
-        {% set extra_attrs = {"data-controls": action.controls} %}
+    {% if action and "compliant" in action %}
+        {% set extra_attrs = {"data-controls": action.compliant.controls} %}
     {% endif %}
     <div class="radio-option compliant">
         {{ make_tag(input, content.value, extra_class="sr-only", extra_attrs=extra_attrs) }}
@@ -134,8 +134,8 @@ conditional_non_compliant=None,
     {% if input.content %}
     {% set content.value=render_content(input.content) %}
     {% endif %}
-    {% if action and action.button == "action" %}
-        {% set extra_attrs = {"data-controls": action.controls} %}
+    {% if action and "action" in action %}
+        {% set extra_attrs = {"data-controls": action.action.controls} %}
     {% endif %}
     <div class="radio-option action">
         {{ make_tag(input, content.value, "sr-only", extra_attrs=extra_attrs) }}
@@ -159,8 +159,8 @@ conditional_non_compliant=None,
     {% if input.content %}
     {% set content.value=render_content(input.content) %}
     {% endif %}
-    {% if action and action.button == "non_compliant" %}
-        {% set extra_attrs = {"data-controls": action.controls} %}
+    {% if action and "non_compliant" in action %}
+        {% set extra_attrs = {"data-controls": action.non_compliant.controls} %}
     {% endif %}
     <div class="radio-option noncompliant">
         {{ make_tag(input, content.value, "sr-only", extra_attrs=extra_attrs) }}

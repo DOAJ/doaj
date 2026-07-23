@@ -14,7 +14,6 @@ doaj.triage.asyncURL = null;
 // strings that are used consistently in the templates
 doaj.triage.magicStrings = {
     reviewOutcomeFieldset: "-review_outcome",
-    actionSection: "-action",
     yourAnswer: "-your_answer"
 }
 
@@ -45,6 +44,7 @@ doaj.triage.selectors = {
     answersContainer: "fieldset.review_outcome-container",
     clearAnswersButton: "button[data-role='change_answers']",
     actionButton: "button[data-controls]",
+    actionSection: "div[data-role='action']",
 
     // Host for the "reject" recommendation panel - see triage.html. Rebuilt
     // in full on every save response, same approach as errors.summary.
@@ -192,9 +192,8 @@ doaj.triage.setupAnswers = function($that) {
 }
 
 doaj.triage.setupAction = function ($that) {
-    const compound_name = $that.closest("fieldset").attr("id").replace(doaj.triage.magicStrings.reviewOutcomeFieldset, "");
-    const $action_section = $(`#${compound_name}${doaj.triage.magicStrings.actionSection}`);
-    const $answer_paragraph = $(`#${compound_name}${doaj.triage.magicStrings.yourAnswer}`).find("span.answer");
+    const $action_section = $(`#${$that.data("controls")}-container`);
+    const $answer_paragraph = $action_section.find("span.answer");
     let $that_label = $(`label[for="${$that.attr("id")}"]`).find(".label-text");
     $action_section._show();
     $answer_paragraph.text($that_label.text());
@@ -210,11 +209,6 @@ doaj.triage.setupAction = function ($that) {
 
 }
 
-doaj.triage.hideAction = function ($action_section) {
-    $action_section.find("input").val("");
-    $action_section._hide();
-}
-
 doaj.triage.clearAnswers = function($clearBtn) {
     const compound_name = $clearBtn.data("controls");
     const answers = $clearBtn.data("controls")+doaj.triage.magicStrings.reviewOutcomeFieldset;
@@ -224,8 +218,8 @@ doaj.triage.clearAnswers = function($clearBtn) {
     if ($clearBtn.hasClass("review-outcome-answer")) {
         $clearBtn.parent()._hide();
     }
-    const $action_section = $(`#${compound_name}${doaj.triage.magicStrings.actionSection}`);
-    doaj.triage.hideAction($action_section);
+    const $action_section = $(`[data-group="${compound_name}"][data-role="additional_info"]`);
+    $action_section._hide();
     doaj.triage.requestSave();
 }
 
@@ -282,7 +276,23 @@ doaj.triage._saving = false;
 doaj.triage._queuedOptions = null;
 
 doaj.triage.requestSave = function (options) {
-    options = options || {};
+    console.log("requestSave");
+    const defaultOptions = {
+        onSuccess: function () {
+            console.log("success");
+            $('#triage-save-notification-error')._hide();
+            $('#triage-save-notification-success')
+                .stop(true, true)
+                ._show()
+                .delay(3000)
+                .fadeOut('slow');
+        },
+        onFailure: function () {
+            console.log("failure");
+            $('#triage-save-notification-error')._show();
+        }
+    }
+    options = options || defaultOptions;
 
     if (doaj.triage._saving) {
         doaj.triage._queuedOptions = doaj.triage._mergeQueuedOptions(doaj.triage._queuedOptions, options);
@@ -290,6 +300,7 @@ doaj.triage.requestSave = function (options) {
     }
 
     doaj.triage._runSave(options);
+    console.log("runSave finished")
 };
 
 // Combine a newly-requested save with one already queued, so neither gets
@@ -593,6 +604,7 @@ doaj.triage.recommendation.render = function (recommendation) {
 
 doaj.triage.advanceQuestion = function ($button) {
     var questionId = $button.data("question-id");
+    console.log("advanceQuestion")
     $(document).trigger("doaj:triage:question-advanced", { questionId: questionId });
 };
 
@@ -673,6 +685,7 @@ doaj.triage.toggleInput = function(input_id, trigger) {
 }
 
 doaj.triage.continue = function() {
+    console.log("continue clicked")
     doaj.triage.requestSave();
 }
 

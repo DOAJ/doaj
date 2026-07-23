@@ -91,6 +91,8 @@
 {% block body_class %}{{ super() }} ew{% endblock %}
 
 {% block admin_content %}
+    <div class="save-notification success" id="triage-save-notification-success" hidden><span>SAVED</span></div>
+    <div class="save-notification error" id="triage-save-notification-error" hidden><span>ERROR WHILE SAVING</span></div>
     <div id="triage-async-response"></div>
     {% include 'management/admin/_workflow/includes/_recommend.html' %}
 

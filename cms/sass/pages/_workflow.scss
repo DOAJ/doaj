@@ -1,5 +1,23 @@
 body.dashboard {
     &.ew {
+        .save-notification {
+            position: fixed;
+            top: 75px;
+            right: 0;
+            z-index: 1000;
+            padding: 0.5rem;
+            font-weight: bold;
+            background-color: $white;
+            &.error * {
+                background-color: rgba($sanguine, 0.2);
+                color: $sanguine;
+            }
+            &.success * {
+                background-color: rgba($light-green, 0.2);
+                color: $dark-green;
+            }
+
+        }
         .question-group {
             padding: 0;
             margin-top: 0.375rem;
@@ -419,6 +437,26 @@ body.dashboard {
                 max-width: 100%;
             }
         }
+    }
+
+    .action-container {
+        padding-left: 1rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        border-left: 4px solid;
+        &.action {
+            border-color: $grapefruit;
+        }
+        &.non_compliant {
+            border-color: $sanguine;
+        }
+    }
+
+    strong.highlight {
+        display: block;
+        font-weight: normal !important;
+        padding: .25rem;
+        background-color: rgba($sanguine, 0.2)
     }
 
     span.answer {

@@ -1,3 +1,4 @@
+{% block triage_compound_base %}
 <section
         id="{{ compound.name }}"
         {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}
@@ -18,8 +19,9 @@
         {% set els = namespace(
             check=None,
             note=None,
-            action=None,
-            specials=[]
+            action=[],
+            other = None,
+            options = None
         ) %}
         {% for element in compound.elements %}
             {% if element.capability.role == "check" %}
@@ -27,9 +29,11 @@
             {% elif element.capability.role == "note" %}
                 {% set els.note = element %}
             {% elif element.capability.role == "action" %}
-                {% set els.action = element %}
-            {% elif element.capability.role == "special" %}
-                {% set els.specials = els.specials + [element] %}
+                {% set els.action = els.action + [element] %}
+            {% elif element.capability.role == "other" %}
+                {% set els.other = element %}
+            {% elif element.capability.role == "options" %}
+                {% set els.options = element %}
             {% endif %}
         {% endfor %}
 
@@ -76,17 +80,21 @@
                     {% if els.check.capability.check %}
                     <h4>{{ els.check.capability.check }}</h4>
                         {% if els.check.capability.application_info %}
-                            <strong>Application Info</strong>:
-                            <ul>
+                            <h5>Information provided by the applicant</h5>
+                            <ul style="padding-left: 0">
                                 {% for info in els.check.capability.application_info %}
-                                    <li><strong>{{ info.label }}</strong>: {{ info.lookup(application, wfc) }}</li>
+                                    <li style="list-style-type: none;">{{ info.label }}: <strong>{{ info.lookup(application, wfc) }}</strong></li>
                                 {% endfor %}
                             </ul>
                         {% endif %}
                     {% endif %}
-                    {% for special in els.specials %}
-                        {{ special.renderer.draw(special, application=application, wfc=wfc) }}
-                    {% endfor %}
+                    {% if els.options %}
+                        <fieldset style="flex-direction: column;" class="subquestion">
+                            <legend class="sr-only">Special exceptions</legend>
+                        {% set options_renderer = els.options.capability.get_control_renderer() %}
+                        {{ options_renderer.draw(els.options.control, application=application, wfc=wfc, other=els.other) }}
+                        </fieldset>
+                    {% endif %}
                 </div>
                 <div class="col-md-5" style="margin-top: 1.25rem">
                     <aside>
@@ -116,25 +124,23 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container" style="flex-direction: column;">
-                        <legend class="sr-only">Review outcome</legend>
-                        {% set cr = els.check.capability.get_control_renderer() %}
-                        {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}
-                    </fieldset>
-                </div>
-            </div>
+            {% block renderer scoped %}
+
+            {% endblock %}
+
             {% if els.action %}
-            <div class="row">
-                <div class="col-md-5" id="{{ compound.name }}-action" hidden>
-                    <p class="your-answer" id="{{ compound.name }}-your_answer">Your answer: <span class="answer {{ compound.capability.action.button }}"></span></p>
-                    {{ els.action.renderer.draw(els.action, application=application, wfc=wfc) }}
+                {% for action in els.action %}
+                <div class="row">
+                    <div class="col-md-7 action-container {{ action.capability.trigger_btn }} " id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info" hidden>
+                        <p class="your-answer" id="{{ compound.name }}-your_answer">Your answer: <span class="answer {{ action.capability.trigger_btn }}"></span></p>
+                        {{ action.renderer.draw(action, application=application, wfc=wfc) }}
+                    </div>
                 </div>
-            </div>
+                {% endfor %}
             {% endif %}
         </section>
         {% endautoescape %}
 
     </div>
 </section>
+{% endblock %}
