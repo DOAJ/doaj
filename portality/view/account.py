@@ -49,32 +49,6 @@ def index():
         abort(401)
     return render_template(templates.USER_LIST)
 
-class RedirectForm(Form):
-    next = HiddenField()
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        if not self.next.data:
-            self.next.data = get_redirect_target() or ''
-
-    def redirect(self, endpoint='index', **values):
-        if self.next.data == util.is_safe_url(self.next.data):
-            return redirect(self.next.data)
-        target = get_redirect_target()
-        return redirect(target or url_for(endpoint, **values))
-
-
-class LoginForm(RedirectForm):
-    user = StringField('Email address or username', [validators.DataRequired()])
-    password = PasswordField('Password', [validators.DataRequired()])
-
-class ResetForm(Form):
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
-
 class UserEditForm(Form):
 
     # Let's not allow anyone to change IDs - there lies madness and destruction (referential integrity)
@@ -269,6 +243,34 @@ def get_redirect_target(form=None, acc=None):
             return url_for(dest)
 
     return url_for(app.config.get("DEFAULT_LOGIN_DESTINATION"))
+
+
+class RedirectForm(Form):
+    next = HiddenField()
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+        if not self.next.data:
+            self.next.data = get_redirect_target() or ''
+
+    def redirect(self, endpoint='index', **values):
+        if self.next.data == util.is_safe_url(self.next.data):
+            return redirect(self.next.data)
+        target = get_redirect_target()
+        return redirect(target or url_for(endpoint, **values))
+
+
+class LoginForm(RedirectForm):
+    user = StringField('Email address or username', [validators.DataRequired()])
+    password = PasswordField('Password', [validators.DataRequired()])
+
+class ResetForm(Form):
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
