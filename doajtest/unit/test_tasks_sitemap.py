@@ -1,5 +1,7 @@
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, StoreLocalPatcher
 from doajtest.unit_tester import bgtask_tester
+from portality import dao, models
 from portality.background import BackgroundApi
 from portality.constants import BgjobOutcomeStatus
 from portality.core import app
@@ -16,6 +18,14 @@ class TestSitemap(DoajTestCase):
         self.store_local_patcher.setUp(self.app_test)
         self.container_id = app.config.get("STORE_CACHE_CONTAINER")
         self.mainStore = StoreFactory.get("cache")
+
+        # Force mappings via a throwaway write, same pattern as DoajTestCase.fix_es_mapping().
+        for m in [
+            models.Journal(**JournalFixtureFactory.make_journal_source()),
+            models.Article(**ArticleFixtureFactory.make_article_source()),
+        ]:
+            m.save(blocking=True)
+            dao.DomainObject.delete(m)
 
     def tearDown(self):
         super(TestSitemap, self).tearDown()
