@@ -332,6 +332,59 @@ class Account(DomainObject, UserMixin):
         # is here to replicate the behaviour in the code it replaces
         return app.config.get("ENABLE_PUBLISHER_EMAIL", False)
 
+    @property
+    def login_code(self):
+        return self.data.get('login_code')
+
+    @property
+    def login_code_expires(self):
+        return self.data.get('login_code_expires')
+
+    def set_login_code(self, code, timeout=600):  # default 10 minutes
+        if code:
+            expires = dates.now() + timedelta(seconds=timeout)
+            self.data["login_code"] = code
+            self.data["login_code_expires"] = expires.strftime(FMT_DATETIME_STD)
+
+    def remove_login_code(self):
+        if "login_code" in self.data:
+            del self.data["login_code"]
+        if "login_code_expires" in self.data:
+            del self.data["login_code_expires"]
+
+    def is_login_code_valid(self, code):
+        if code is None:
+            return False
+        if not self.login_code or not self.login_code_expires:
+            return False
+        if self.login_code != code:
+            return False
+        expires = dates.parse(self.login_code_expires)
+        return expires > dates.now()
+
+    @classmethod
+    def pull_by_login_code(cls, code):
+        if code is None:
+            return None
+        q = LoginCodeQuery(code)
+        res = cls.object_query(q.query())
+        if len(res) > 0:
+            return res[0]
+        return None
+
+class LoginCodeQuery:
+    def __init__(self, code):
+        self.code = code
+
+    def query(self):
+        return {
+            "query": {
+                "term": {
+                    "login_code.exact": self.code
+                }
+            }
+        }
+
     @classmethod
     def find_by_attributes(cls, attribute_types_and_values:list[tuple[str, str]], limit=1000):
         q = AttributesQuery(attribute_types_and_values, limit)

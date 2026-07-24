@@ -973,8 +973,8 @@ class FieldDefinitions:
             {"required": {"message": lazy_gettext("Enter the Year (YYYY).")}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {
-                "message": lazy_gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}").format(
-                    app.config.get('MINIMAL_OA_START_DATE', 1900))}}
+                "message": lazy_gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than %(min_year)s",
+                    min_year=app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
             "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
@@ -2134,10 +2134,16 @@ class FieldSetDefinitions:
             FieldDefinitions.JOURNAL_URL["name"],
             FieldDefinitions.PISSN["name"],
             FieldDefinitions.EISSN["name"],
-            FieldDefinitions.KEYWORDS["name"],
-            FieldDefinitions.LANGUAGE["name"]
+            FieldDefinitions.LANGUAGE["name"],
         ]
     }
+
+    ABOUT_THE_JOURNAL_EXTENDED = {
+        "name": "about_the_journal_extended",
+        "label": "About the journal",
+        "fields": ABOUT_THE_JOURNAL["fields"] + [FieldDefinitions.KEYWORDS["name"]]
+    }
+
 
     # ~~->$ Publisher:FieldSet~~
     PUBLISHER = {
@@ -2219,8 +2225,14 @@ class FieldSetDefinitions:
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
-            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]
+            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"],
         ]
+    }
+
+    SUBJECT_AND_KEYWORDS = {
+        "name": "subject_and_keywords",
+        "label": lazy_gettext("Keywords and Subject"),
+        "fields": [FieldDefinitions.KEYWORDS["name"], FieldDefinitions.SUBJECT["name"]]
     }
 
     # ~~->$ APC:FieldSet~~
@@ -2359,15 +2371,6 @@ class FieldSetDefinitions:
         ]
     }
 
-    # ~~->$ Subject:FieldSet~~
-    SUBJECT = {
-        "name": "subject",
-        "label": lazy_gettext("Subject classification"),
-        "fields": [
-            FieldDefinitions.SUBJECT["name"]
-        ]
-    }
-
     # ~~->$ Notes:FieldSet~~
     NOTES = {
         "name": "notes",
@@ -2427,11 +2430,11 @@ class ApplicationContextDefinitions:
     # ~~->$ NewApplication:FormContext~~
     # ~~^-> ApplicationForm:Crosswalk~~
     # ~~^-> NewApplication:FormProcessor~~
+
     PUBLIC = {
         "name": "public",
         "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
-            FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
             FieldSetDefinitions.PUBLISHER["name"],
             FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"],
             FieldSetDefinitions.LICENSING["name"],
@@ -2439,10 +2442,10 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.COPYRIGHT["name"],
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.PLAGIARISM["name"],
-            FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.APC["name"],
             FieldSetDefinitions.APC_WAIVERS["name"],
             FieldSetDefinitions.OTHER_FEES["name"],
+            FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
@@ -2481,7 +2484,6 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -2495,7 +2497,6 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -2513,12 +2514,19 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
+    # add about the journal and editorial fields that differ between the contexts
+    public_context = [PUBLIC, READ_ONLY, UPDATE]
+    for pc in public_context:
+        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"]]
+
+    editorial_context = [ASSOCIATE, EDITOR, MANED]
+    for ec in editorial_context:
+        ec["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL["name"], FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"]]
 
 class JournalContextDefinitions:
     # ~~->$ ReadOnlyJournal:FormContext~~
@@ -2537,12 +2545,14 @@ class JournalContextDefinitions:
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.PLAGIARISM["name"],
             FieldSetDefinitions.EDITORIAL["name"],
+            FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
             FieldSetDefinitions.APC["name"],
             FieldSetDefinitions.APC_WAIVERS["name"],
             FieldSetDefinitions.OTHER_FEES["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
-            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
+
         ],
         "templates": {
             "form": templates.MANED_READ_ONLY_JOURNAL,
@@ -2566,7 +2576,6 @@ class JournalContextDefinitions:
     # ~~^-> AssEdJournal:FormProcessor~~
     ASSOCIATE = deepcopy(ADMIN_READ_ONLY)
     ASSOCIATE["fieldsets"] += [
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["name"] = "associate_editor"
@@ -2933,16 +2942,16 @@ class IntRangeBuilder:
         default_msg = ""
         if "gte" in settings and "lte" in settings:
             html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
-            default_msg = lazy_gettext("This value should be between {min} and {max}").format(
+            default_msg = lazy_gettext("This value should be between %(min)s and %(max)s",
                 min=str(settings.get("gte")), max=str(settings.get("lte")))
         else:
             if "gte" in settings:
                 html_attrs["data-parsley-min"] = settings.get("gte")
-                default_msg = lazy_gettext("This value should be bigger than {gte}").format(
+                default_msg = lazy_gettext("This value should be bigger than %(gte)s",
                     gte=str(settings.get("gte")))
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
-                default_msg = lazy_gettext("This value should be smaller than {lte}").format(
+                default_msg = lazy_gettext("This value should be smaller than %(lte)s",
                     lte=str(settings.get("lte")))
         html_attrs["data-parsley-range-message"] = "<p><small>" + settings.get("message", default_msg) + "</p></small>"
 
