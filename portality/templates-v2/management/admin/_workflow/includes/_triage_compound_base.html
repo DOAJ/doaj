@@ -21,7 +21,8 @@
             note=None,
             action=[],
             other = None,
-            options = None
+            options = [],
+            not_classified = []
         ) %}
         {% for element in compound.elements %}
             {% if element.capability.role == "check" %}
@@ -33,10 +34,11 @@
             {% elif element.capability.role == "other" %}
                 {% set els.other = element %}
             {% elif element.capability.role == "options" %}
-                {% set els.options = element %}
+                {% set els.options = els.options + [element] %}
+            {% else %}
+                {% set els.not_classified = els.not_classified + [element] %}
             {% endif %}
         {% endfor %}
-
         {% autoescape off %}
         <section class="criterion col-md-12">
             <div class="row">
@@ -91,8 +93,10 @@
                     {% if els.options %}
                         <fieldset style="flex-direction: column;" class="subquestion">
                             <legend class="sr-only">Special exceptions</legend>
-                        {% set options_renderer = els.options.capability.get_control_renderer() %}
-                        {{ options_renderer.draw(els.options.control, application=application, wfc=wfc, other=els.other) }}
+                            {% for option in els.options %}
+                                {% set options_renderer = option.capability.get_control_renderer() %}
+                                {{ options_renderer.draw(option.control, application=application, wfc=wfc, other=els.other) }}
+                            {% endfor %}
                         </fieldset>
                     {% endif %}
                 </div>

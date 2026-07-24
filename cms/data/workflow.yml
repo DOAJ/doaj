@@ -1,8 +1,8 @@
 triage:
   fields:
     ethics_not_excluded:
-      label: "Current exclusions"
-      check: "This application is from a journal or publisher that is <strong>not</strong> 
+      label: "2. Current exclusions"
+      check: "2. This application is from a journal or publisher that is <strong>not</strong> 
                   currently excluded."
       answers:
         compliant: '<span class="answer">Compliant</span>, this application is from a journal or publisher that <strong>is not</strong> currently excluded.'
@@ -12,7 +12,7 @@ triage:
         button: "non_compliant"
         instruction: "Provide more information on non-standard metric services this journal references"
       remember: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage.'
-      instructions: '     <ul><li>If there is a current publisher exclusion, the answer is <span class="answer compliant">Compliant</span></li>
+      instructions: '<ul><li>If there is a current publisher exclusion, the answer is <span class="answer compliant">Compliant</span></li>
             <li> if there is a current journal exclusion for the journal we triage, the answer is <span class="answer compliant">Compliant</span></li>
             <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is <span class="answer non-compliant">Non-compliant</span></li></ul>'
       resources:
@@ -24,6 +24,9 @@ triage:
       - "non_compliant"
       recommend:
         non_compliant: "reject"
+      edit:
+        publisher: "Publisher"
+        title: "Journal's title"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
@@ -31,13 +34,16 @@ triage:
           is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
 
     ethics_no_nonstandard_metrics:
-      label: "Non-standard metric services"
-      check: "The journal <strong>does not</strong> display any references  (images, links, logos) to non-standard 
+      label: "3. Non-standard metric services"
+      check: "3. The journal <strong>does not</strong> display any references  (images, links, logos) to non-standard 
                   metric services"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> display references to non standard services"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> display references to non standard services"
         later: "I don't know - mark for later"
+      edit:
+        publisher: "Publisher"
+        title: "Journal's title"
       remember: ""
       instructions: ""
       resources:
@@ -59,8 +65,8 @@ triage:
         non_compliant: 1
 
     ethics_no_fake_impact:
-      label: "Fake impact factor values"
-      check: "The journal <strong>does not</strong> display fake impact factor values in texts or/and images"
+      label: "4. Fake impact factor values"
+      check: "4. The journal <strong>does not</strong> display fake impact factor values in texts or/and images"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> display fake impact factor values"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> fake impact factor values"
@@ -68,6 +74,9 @@ triage:
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
+      edit:
+        publisher: "Publisher"
+        title: "Journal's title"
       remember: ""
       instructions: ""
       resources:
@@ -86,8 +95,8 @@ triage:
         non_compliant: 3
 
     ethics_no_false_doaj_claim:
-      label: "False claim to be indexed in DOAJ"
-      check: "This journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
+      label: "5. False claim to be indexed in DOAJ"
+      check: "5. This journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> a false claim to be indexed in DOAJ"
@@ -95,6 +104,8 @@ triage:
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
+      edit:
+        title: "Journal's title"
       instructions: ""
       remember: ""
       resources:
@@ -113,8 +124,8 @@ triage:
         non_compliant: 3
 
     ethics_submission_to_publication_time:
-      label: "Time between submission and publication"
-      check: "The time between submission and publication is more than 3 weeks"
+      label: "6. Time between submission and publication"
+      check: "6. The time between submission and publication is more than 3 weeks"
       answers:
         compliant: "<span class='answer'>Compliant</span>, the time between submission and publication is <strong>more</strong> than 3 weeks."
         non_compliant: "<span class='answer'>Non-compliant</span>, the time between submission and publication is <strong>less</strong> than 3 weeks."
@@ -134,8 +145,8 @@ triage:
         non_compliant: 3
 
     ethics_no_suspicious_ties:
-      label: "Previous exclusions/suspicious publisher or journals"
-      check: "The publisher/journal <strong>does not</strong> have links to previously excluded publishers and/or list of suspicious publishers"
+      label: "7. Previous exclusions/suspicious publisher or journals"
+      check: "7. The publisher/journal <strong>does not</strong> have links to previously excluded publishers and/or list of suspicious publishers"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this publisher/journal <strong>does not</strong> have any such links"
         non_compliant: "<span class='answer'>Non-compliant</span>, this publisher/journal <strong>does</strong> have such links"
@@ -154,6 +165,8 @@ triage:
       edit:
         instruction: "Please provide more details"
         compliant: "Continue triage"
+        publisher: "Publisher"
+        title: "Journal's title"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
@@ -169,8 +182,8 @@ triage:
         non_compliant: 10
 
     issn_at_least_one:
-      label: "ISSN(s)"
-      check: "This journal has <strong>at least one</strong> ISSN (International Standard Serial Number) that is registered, active and confirmed at portal.issn.org"
+      label: "8. ISSN(s)"
+      check: "8. This journal has <strong>at least one</strong> ISSN (International Standard Serial Number) that is registered, active and confirmed at portal.issn.org"
       answers:
         compliant: "Compliant, this journal has at least one ISSN"
         non_compliant: "Non-compliant, this record has no active or confirmed ISSNs"
@@ -217,16 +230,16 @@ triage:
         - "non_compliant"
 
     issn_country_match:
-      label: "Country in the application matches the title at ISSN portal"
-      check: "Country in the application matches the title at issn.portal.org"
+      label: "9. Country match"
+      check: "9. Country in the application matches the country at ISSN portal"
       answers:
         compliant: "<span class='answer'>Compliant</span>, the country in the application <strong>does</strong> match the title at issn.portal.org"
         non_compliant: "<span class='answer'>Non-compliant</span>, the country in the application <strong>does not</strong> match the title at issn.portal.org"
         later: "I don't know - mark for later"
         action: ""
       action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+        non_compliant:
+          instruction: "Provide more information about the publisher's country"
       remember: ""
       instructions: ''
       resources:
@@ -238,6 +251,8 @@ triage:
         note:
           is_conditionally_required: "The note field is required"
       info:
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
         country: "Country of publisher"
       compliant_answers:
         - "compliant"
@@ -245,17 +260,19 @@ triage:
         - "non_compliant"
 
     issn_title_match:
-      label: "Title in the application/website matches the title at ISSN portal"
-      check: "The journal's title in the application form and on the website match what is shown at issn.org"
+      label: "10. Title match"
+      check: "10. The journal's title and alternative title in the application form and on the website match what is shown at issn.org"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal’s title in the application, on the website and at ISSN portal <strong>does</strong> match each other"
-        non_compliant: "<span class='answer'>Non-compliant</span>, No, this journal’s name in the application or on the website <strong>does not</strong>  match the ISSN portal"
+        compliant: "<span class='answer'>Compliant</span>, this journal’s title and alternative title in the application, on the website and at ISSN portal <strong>does</strong> match each other"
+        non_compliant: "<span class='answer'>Non-compliant</span>, No, this journal’s title or the alternative title in the application or on the website <strong>does not</strong>  match the ISSN portal"
         later: "I don't know - mark for later"
-        action: "Journal's title needs to be changed"
+        action: "Journal's title or alternative needs to be changed"
       action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      remember: "If you need to edit the title always use the <strong>Online</strong> ISSN record (if available) "
+        non_compliant:
+          instruction: "Provide more information about this jornal's title"
+        action:
+          instruction: "Provide correct title and/or alternative title in the relevant input below. Add more information on the change (eg. why this change is required) in the notes input.<strong class=highlight warning>Titles must not contain an HTML script tag</span>"
+      remember: "<ul><li>Check both title and alternative title</li><li>If you need to edit the title always use the <strong>Online</strong> ISSN record (if available).</li></ul>"
       instructions: '<ul>
                   <li>If the title on the website matches the key-title or title proper at portal.issn.org but not the title provided in the application form, click <span class="answer action">Journal’s title needs to be changed</span>, provide the correct title and add a note </li>
                   <li>It is OK if there are some <strong>minor discrepancies</strong> between the title on the website and the one at portal.issn.org (e.g. a change from singular to plural of words, minor punctuation changes etc.)</li>
@@ -270,7 +287,10 @@ triage:
         - label: "ISSN portal"
           url: "https://portal.issn.org/"
       info:
-        title: "Title"
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
+        title_label: "Title"
+        alttitle_label: "Alternative title"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
@@ -279,10 +299,12 @@ triage:
         title:
           disallowed_value: "Title must not contain an HTML script tag"
           is_required: "Title is required"
+          note: "Provide more information about what change in the title you are making and why"
       edit:
         title: "Title"
       compliant_answers:
         - "compliant"
+      action_answers:
         - "conditional"
       non_compliant_answers:
         - "non_compliant"
@@ -290,15 +312,18 @@ triage:
         non_compliant: "reject"
 
     issn_continuation:
-      label: "continuation"
-      check: "This application is <strong>not</strong> for a continuation of existing journal"
+      label: "11. Continuation"
+      check: "11. This application is <strong>not</strong> for a continuation of existing journal"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this application <strong>is not</strong> for a continuation"
         later: "I don't know - mark for later"
         action: "This application <strong>is</strong> for a continuation"
+      info:
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
       action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+        action:
+          instruction: "In the input below provide preceding journal's ISSNs, separated by comma"
       remember: "If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage"
       instructions: '<ul>
                   <li>If your search at ISSN portal returns <strong>3 or more journals</strong> then it is likely that the answer is <span class="answer compliant">Yes</span>.</li>
@@ -329,18 +354,21 @@ triage:
         - "action"  # <- in this case only when no continuation ISSN is provided
 
     database_withdrawn:
-      label: "Journal withdrawn"
-      check: "This journal has <strong>not</strong> been removed from DOAJ earlier and does <strong>not</strong> have an embargo (6 months or otherwise)"
+      label: "12. Journal withdrawn"
+      check: "12. This journal has <strong>not</strong> been removed from DOAJ earlier and does <strong>not</strong> have an embargo (6 months or otherwise)"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>has not</strong> been removed and <strong>does not</strong> have an embargo"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>has</strong> either been removed or <strong>has</strong> embargo."
+        action: "<span class='answer'>Non-compliant</span>, this journal <strong>has</strong> either been removed or <strong>has</strong> the embargo."
         later: "I don't know - mark for later"
-        action: "There is a record in DOAJ that is not currently indexed"
-        conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong>, and <strong>no</strong> exceptions are noted"
-        conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong> but exceptions are noted"
+      info:
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
       action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+        action:
+          instruction: "Does any of those exceptions apply?"
+          answers:
+            compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong> but exceptions are noted"
+            non_compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong>, and <strong>no</strong> exceptions are noted"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
@@ -354,6 +382,7 @@ triage:
         ignore_embargo: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
         website_unavailable: "The journal was removed previously because the journal website was not available"
         journal_content: "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
+        none: "No special exceptions noted"
       remember: '<ul>
                   <li>Search <strong>both</strong> ISSNs (if available) in the journals admin site</li>
                   <li>If there is a record in DOAJ that it is not currently indexed, click the <span class="answer action">There is a record in DOAJ that is not currently indexed</span> and make a note of it (removal date, reasons and record’s URL)</li>
@@ -368,8 +397,9 @@ triage:
         - "non_compliant"
 
     database_embargo:
-      label: "Previous application rejection"
-      check: "This journal has <strong>not</strong> been removed from DOAJ earlier and does <strong>not</strong> have an embargo (6 months or otherwise)"
+      label: "13. Previous application rejection"
+      check: "13. This journal <strong>application</strong> does <strong>not</strong> 
+      does <strong>not</strong> have an embargo (6 months or otherwise)"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal application <strong>does not</strong> have an active embargo"
         non_compliant: ""
@@ -377,6 +407,9 @@ triage:
         action: "This journal <strong>does have</strong> an active embargo from a previous rejection"
         conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, and <strong>no exceptions are noted</strong>"
         conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, but <strong>exceptions are noted</strong>"
+      info:
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -411,13 +444,16 @@ triage:
         - "conditional_non_compliant"
 
     database_not_listed:
-      label: "Not indexed in DOAJ"
-      check: "This journal is not currently listed in DOAJ "
+      label: "14. Not indexed in DOAJ"
+      check: "14. This journal is not currently listed in DOAJ "
       answers:
         compliant: "<span class='answer'>Compliant</span>, this record <strong>is not</strong> listed in DOAJ"
         non_compliant: "<span class='answer'>Non-compliant</span>, this record <strong>is</strong> currently listed in DOAJ"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -434,13 +470,15 @@ triage:
         non_compliant: "reject"
 
     website_working:
-      label: "website"
-      check: "This journal has a working website"
+      label: "16. Website"
+      check: "16. This journal has a working website"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does</strong> have a working website"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does not</strong> have a working website"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -459,13 +497,16 @@ triage:
         non_compliant: "reject"
 
     database_not_duplicate:
-      label: "Duplicate application"
-      check: "This application is <strong>not</strong> a duplicate"
+      label: "15. Duplicate application"
+      check: "15. This application is <strong>not</strong> a duplicate"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this application <strong>is not</strong> a duplicate"
         non_compliant: "<span class='answer'>Non-compliant</span>, it is a duplicate and <strong>there is a newer application</strong>"
         later: "I don't know - mark for later"
         action: "This is <strong>the most recent duplicate</strong> application"
+      info:
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -488,13 +529,17 @@ triage:
         non_compliant: "reject"
 
     website_issn:
-      label: "Correct issn on the website"
-      check: "Correct ISSN is displayed on the website"
+      label: "17. Correct issn on the website"
+      check: "17. Correct ISSN is displayed on the website"
       answers:
         compliant: "<span class='answer'>Compliant</span>, The correct ISSN <strong>is</strong> displayed on the website"
         non_compliant: "<span class='answer'>Non-compliant</span>, there is <strong>no issn</strong> displayed on the website"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        www: "Journal's homepage"
+        pissn: "Print ISSN"
+        eissn: "Electronic ISSN"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -512,13 +557,26 @@ triage:
         - "non_compliant"
 
     website_url:
-      label: "Distinct URLs"
-      check: "The application form lists distinct URLs pointing to the correct information for all the answers that require a URL "
+      label: "18. Distinct URLs"
+      check: "18. The application form lists distinct URLs pointing to the correct information for all the answers that require a URL "
       answers:
         compliant: "<span class='answer'>Compliant</span>, All required URLs in the application are distinct and point to the correct information."
         non_compliant: "<span class='answer'>Non-compliant</span>, All URLs in the application are the same and do not point to the correct information."
         later: "I don't know - mark for later"
         action: "Same URL acceptable. All required information is correctly provided under a single URL due to the website structure."
+      info:
+        www: "Journal's homepage"
+        oa: "Open Access licensing policy"
+        oa_www: "Link to Open Access licensing policy"
+        copyright: "Copyright policy"
+        license_www: "Link to copyright policy"
+        peer_review: "Peer review policy"
+        peer_review_www: "Link to peer review policy"
+        aims_www: "Link to the journal's Aims & Scope"
+        editorial_www: "Link to journal's Editorial Board"
+        apc: "Does this journal charge APCs?"
+        apc_max: "Highest fee charged"
+        apc_www: "Link to publishing charge fees"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -541,13 +599,13 @@ triage:
         "action"
 
     website_license_policy:
-      label: "Licensing policy"
-      check: "OA License policy is present and the same in all parts of the journal website, including the license page, submission page, instructions for authors, article abstracts, HTML pages, PDFs, website footer, and copyright forms."
+      label: "19. OA policy"
+      check: "19. Open access policy is present and the same in all parts of the journal website, including the license page, submission page, instructions for authors, article abstracts, HTML pages, PDFs, website footer, and copyright forms."
       answers:
-        compliant: "<span class='answer'>Compliant</span>, OA License policy <strong>is</strong> present and the same in all parts of the journal website"
-        non_compliant: "<span class='answer'>Non-compliant</span>, OA License policy <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
+        compliant: "<span class='answer'>Compliant</span>, OA policy <strong>is</strong> present and the same in all parts of the journal website"
+        non_compliant: "<span class='answer'>Non-compliant</span>, OA policy <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
         later: "I don't know - mark for later"
-        action: "Changes to licensing information are required"
+        action: "Changes to open access policy information are required"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -558,8 +616,12 @@ triage:
                   <li>If the license stated in the application form is incorrect based on the information given in the website, click <span class="answer action">Changes to licensing information is required</span> and provide correct  licensing information </li>
                   </ul>'
       resources: ""
-      edit:
+      info:
+        www: "Journal's homepage"
         license: "License"
+        license_attribute: "License attributes"
+        license_url: "License URL"
+      edit:
         license_attribute: "License attributes"
         license_url: "License URL"
       validation:
@@ -583,8 +645,8 @@ triage:
         - "conditional"
 
     website_copyright:
-      label: "Copyright terms"
-      check: "Copyright terms are the same in all parts of the journal website, including the copyright page, article abstracts, HTML pages, PDFs, and copyright forms."
+      label: "20. Copyright terms"
+      check: "20. Copyright terms are the same in all parts of the journal website, including the copyright page, article abstracts, HTML pages, PDFs, and copyright forms."
       answers:
         compliant: "<span class='answer'>Compliant</span>, copyright information <strong>is</strong> present and the same in all parts of the journal website"
         non_compliant: "<span class='answer'>Non-compliant</span>, copyright information <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
@@ -596,6 +658,10 @@ triage:
       remember: "If the copyright information in the website/articles is contradictory, the answer is <span class='answer non_compliant'>Non-compliant</span>"
       instructions: ''
       resources: ""
+      info:
+        www: "Journal's homepage"
+        copyright_author_retains: "Author retains copyright"
+        copyright_url: "Copyright URL"
       edit:
         copyright_author_retains: "Author retains copyright"
         copyright_url: "Copyright URL"
@@ -617,13 +683,15 @@ triage:
         - "conditional"
 
     content_no_login:
-      label: "Login and registration"
-      check: "Login or registration <strong>are not required</strong> to access, read and download the articles"
+      label: "21. Login and registration"
+      check: "21. Login or registration <strong>are not required</strong> to access, read and download the articles"
       answers:
         compliant: "<span class='answer'>Compliant</span>, login and registration <strong>are not</strong> required"
         non_compliant: "<span class='answer'>Non-compliant</span>, login and registration <strong>are</strong> required"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -641,13 +709,15 @@ triage:
         - "non_compliant"
 
     content_no_embargo:
-      label: "No embargo on full text"
-      check: "All content is immediately freely available in full text with no embargo, paywall. "
+      label: "22. No embargo"
+      check: "22. All content is immediately freely available in full text with no embargo, paywall. "
       answers:
         compliant: "<span class='answer'>Compliant</span>, all content is immediately and freely <strong>available</strong> in full text "
         non_compliant: "<span class='answer'>Non-compliant</span>, some content is <strong>hidden</strong> behind embargo or paywall"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -665,13 +735,15 @@ triage:
         - "non_compliant"
 
     content_publish_enough:
-      label: "5 research articles per year"
-      check: "The journal publishes <strong>at least five</strong> research articles per year"
+      label: "23. 5 research articles per year"
+      check: "23. The journal publishes <strong>at least five</strong> research articles per year"
       answers:
         compliant: "<span class='answer'>Compliant</span>, the journal publishes <strong>at least five</strong> research articles per year"
         non_compliant: "<span class='answer'>Non-compliant</span>, the journal publishes <strong>less than five</strong> research articles per year"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -689,16 +761,18 @@ triage:
         - "non_compliant"
 
     content_unique_link:
-      label: "Unique article links"
+      label: "24. Unique article links"
+      check: "24. Each article has a unique link"
       answers:
         compliant: "<span class='answer'>Compliant</span>, each article <strong>does have</strong> a unique link"
         non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>do not</strong> have unique links"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
-      check: "Each article has a unique link"
       remember: ""
       instructions: ''
       resources: ""
@@ -713,13 +787,15 @@ triage:
         - "non_compliant"
 
     content_format:
-      label: "Full text available in HTML or PDF"
-      check: "Articles are available in HTML or PDF format as a minimum"
+      label: "25. Full text format"
+      check: "25. Articles are available in HTML or PDF format as a minimum"
       answers:
         compliant: "<span class='answer'>Compliant</span>, articles <strong>are</strong> available in HTML or PDF"
         non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>are not</strong> available in HTML or PDF"
         later: "I don't know - mark for later"
         action: ""
+      info:
+        www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -737,8 +813,8 @@ triage:
         - "non_compliant"
 
     content_new_journal:
-      label: "New or Flipped Journal"
-      check: "This is a newly launched journal or a flipped journal"
+      label: "26. New or Flipped Journal"
+      check: "26. This is a newly launched journal or a flipped journal"
       answers:
         compliant: "<span class='answer'>No</span>, this is <strong>not</strong> a newly launched or a flipped journal"
         non_compliant: ""
@@ -747,6 +823,8 @@ triage:
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
+      info:
+        www: "Journal's homepage"
       exceptions:
         publishing_history: "This journal demonstrates a publishing history of more than one year or has published at least ten open access research articles"
       remember: ""
@@ -763,13 +841,26 @@ triage:
         - "non_compliant"
 
     admin_metadata_review:
-      label: "Check Metadata"
-      check: "Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , OA URL, Copyright URL and Licensing URL are correct. Incorrect information has been edited"
+      label: "27. Check Metadata"
+      check: "27. Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , OA URL, Copyright URL and Licensing URL are correct. Incorrect information has been edited"
       instructions: ""
       answers:
         compliant: "Everything is correct"
         non_compliant: "Not acceptable"
         later: "Do this later"
+      info:
+        www: "Journal's homepage"
+        oa: "Open Access licensing policy"
+        oa_www: "Link to Open Access licensing policy"
+        copyright: "Copyright policy"
+        license_www: "Link to copyright policy"
+        peer_review: "Peer review policy"
+        peer_review_www: "Link to peer review policy"
+        aims_www: "Link to the journal's Aims & Scope"
+        editorial_www: "Link to journal's Editorial Board"
+        apc: "Does this journal charge APCs?"
+        apc_max: "Highest fee charged"
+        apc_www: "Link to publishing charge fees"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -779,8 +870,8 @@ triage:
         - "non_compliant"
 
     admin_special_exception:
-      label: "Special exceptions"
-      check: "Is this application is reviewed under a special exception?"
+      label: "1. Special exceptions"
+      check: "1. Is this application is reviewed under a special exception?"
       instructions: "Application may be triaged with a special exception at the discretion of the Triage user. A special exception lies outside the regular triage 
         workflow checks. For eg. 'application is from Africa' or 'application is from a journal where publisher name 
         does not match the (dedicated) publisher account.'"

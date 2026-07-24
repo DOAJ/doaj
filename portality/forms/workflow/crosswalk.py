@@ -120,7 +120,9 @@ class WorkflowControl2TriageForm(object):
         # Withdrawn
         compliance_field_radio(triage.database_withdrawn, f.database.withdrawn)
         compliance_field_note(triage.database_withdrawn, f.database.withdrawn)
-        form.set(f.database.withdrawn.exceptions, triage.database_withdrawn.special_exceptions)
+        form.set(f.database.withdrawn.exceptions_group.exceptions, triage.database_withdrawn.special_exceptions)
+        # form.set(f.database.withdrawn.exceptions_group.note, triage.database_withdrawn.exceptions_note)
+
 
         # Withdrawn: Ignore Embargo
         #compliance_field_radio(triage.database_withdrawn_exception_ignore_embargo, f.database.withdrawn_exception_ignore_embargo)
