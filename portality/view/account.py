@@ -1,4 +1,5 @@
 import uuid, json
+import random
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response, g, current_app
 from flask import render_template, abort
@@ -9,8 +10,7 @@ from portality import util
 from portality import constants
 from portality.core import app
 from portality.datasets import language_options, country_options
-from portality.decorators import ssl_required, write_required, restrict_to_role
-from portality.forms.application_forms import MultiSelectBuilder, iso_language_list
+from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged, \
     CurrentISOLanguage
@@ -45,6 +45,20 @@ def add_lang(endpoint, values):
         lang = getattr(g, 'lang', None)
         if lang:
             values.setdefault('lang', lang)
+
+class RedirectForm(Form):
+    next = HiddenField()
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+        if not self.next.data:
+            self.next.data = get_redirect_target() or ''
+
+    def redirect(self, endpoint='index', **values):
+        if self.next.data == util.is_safe_url(self.next.data):
+            return redirect(self.next.data)
+        target = get_redirect_target()
+        return redirect(target or url_for(endpoint, **values))
 
 @blueprint.route('/')
 @login_required
@@ -250,25 +264,11 @@ def get_redirect_target(form=None, acc=None):
     return url_for(app.config.get("DEFAULT_LOGIN_DESTINATION"))
 
 
-class RedirectForm(Form):
-    next = HiddenField()
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        if not self.next.data:
-            self.next.data = get_redirect_target() or ''
-
-    def redirect(self, endpoint='index', **values):
-        if self.next.data == util.is_safe_url(self.next.data):
-            return redirect(self.next.data)
-        target = get_redirect_target()
-        return redirect(target or url_for(endpoint, **values))
-
-
 class LoginForm(RedirectForm):
     user = StringField('Email address or username', [validators.DataRequired()])
     password = PasswordField('Password', [validators.Optional()])
     action = StringField('Action', [validators.DataRequired()])
+
 
 class LoginCodeForm(RedirectForm):
     code = StringField('Code', [validators.DataRequired()])
