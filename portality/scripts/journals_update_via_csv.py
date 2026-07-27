@@ -65,7 +65,7 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-a", "--account", help="Account ID of the user to import as")
     group.add_argument('-s', '--sys', help="Validate and create URs using the system user (for admin / batch uploads)", action='store_true')
-    group.add_argument('-p', '--prefix', help="Read the account by splitting the filename (supplied as e.g. 12341234.publisher_doajupload.csv)", action='store_true')
+    group.add_argument('-p', '--prefix', help="Read the account by splitting the filename (supplied as e.g. 12341234~~publisher_doajupload.csv or ABCD-DEFG~~journal-update.csv)", action='store_true')
 
     parser.add_argument("-d", "--dry-run", help="Run this script without actually making index changes", action='store_true')
     parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     if args.sys:
         acc = sys_acc
     else:
-        found_account_name = re.split(r'[._-]', os.path.basename(args.infile))[0] if args.prefix else args.account
+        found_account_name = re.split(r'~~', os.path.basename(args.infile))[0] if args.prefix else args.account
         print(f'Creating Update Requests as account {found_account_name}')
 
         acc = Account.pull(found_account_name)
