@@ -460,7 +460,7 @@ def handle_500(e):
 @app.errorhandler(elasticsearch.exceptions.RequestError)
 def handle_es_request_error(e):
     app.logger.exception(e)
-    return render_template(templates.ERROR_400), 400
+    return render_template(templates.ERROR_500, description=Messages.DEFAULT_500_DESCRIPTION), 500
 
 
 is_dev_log_setup_completed = False

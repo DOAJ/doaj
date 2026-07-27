@@ -2,6 +2,12 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.6.9
+
+Bugfixes to login form and fix ES error code
+
+### TODO
+
 ### 8.6.4
 
 Show complete date in Admin background jobs search interface
