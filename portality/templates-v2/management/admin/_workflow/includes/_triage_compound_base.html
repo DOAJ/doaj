@@ -99,6 +99,27 @@
                             {% endfor %}
                         </fieldset>
                     {% endif %}
+
+                    {% if els.action %}
+                        {% for action in els.action %}
+                        <div class="row">
+                            <div class="col-md-7 action-container {{ action.capability.trigger_btn }} " id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info" hidden>
+                                <p class="your-answer" id="{{ compound.name }}-your_answer">Your answer: <span class="answer {{ action.capability.trigger_btn }}"></span></p>
+                                {{ action.renderer.draw(action, application=application, wfc=wfc) }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if els.not_classified %}
+                        {% for nc in els.not_classified %}
+                            <div class="row">
+                                <div class="col-md-7 action-container" id="{{nc.name}}-container">
+                                    {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
                 <div class="col-md-5" style="margin-top: 1.25rem">
                     <aside>
@@ -130,26 +151,7 @@
 
             {% block renderer scoped %}{% endblock %}
 
-            {% if els.action %}
-                {% for action in els.action %}
-                <div class="row">
-                    <div class="col-md-7 action-container {{ action.capability.trigger_btn }} " id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info" hidden>
-                        <p class="your-answer" id="{{ compound.name }}-your_answer">Your answer: <span class="answer {{ action.capability.trigger_btn }}"></span></p>
-                        {{ action.renderer.draw(action, application=application, wfc=wfc) }}
-                    </div>
-                </div>
-                {% endfor %}
-            {% endif %}
 
-            {% if els.not_classified %}
-                {% for nc in els.not_classified %}
-                    <div class="row">
-                        <div class="col-md-7 action-container" id="{{nc.name}}-container">
-                            {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
 
         </section>
         {% endautoescape %}

@@ -8,7 +8,7 @@ triage:
         compliant: '<span class="answer">Compliant</span>, this application is from a journal or publisher that <strong>is not</strong> currently excluded.'
         non_compliant: "<span class='answer'>Non-compliant</span>, this application is from a journal or publisher that <strong>is</strong> currently excluded."
         later: "I don't know - mark for later"
-      action:
+      action: # not used here, should be removed
         button: "non_compliant"
         instruction: "Provide more information on non-standard metric services this journal references"
       remember: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage.'
@@ -31,7 +31,7 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Provide more information on non-standard metric services this journal references"
 
     ethics_no_nonstandard_metrics:
       label: "3. Non-standard metric services"
@@ -49,14 +49,14 @@ triage:
       resources:
         - label: "Quality Review Tool for Triage only"
           url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
-      action:
+      action: # not used here, should be removed
         button: "non_compliant"
         instruction: "Provide more information on non-standard metric services this journal references"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Provide more information on non-standard metric services this journal references"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -86,7 +86,7 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Instruction placeholder"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -115,7 +115,7 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Instruction placeholder"
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -171,7 +171,7 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required"
+          is_conditionally_required: "Add more details about suspicious or excluded publishers/journals, or why this publisher or journal are no longer questionable (if applicable)"
       compliant_answers:
       - "compliant"
       action_answers:
@@ -190,7 +190,7 @@ triage:
         later: "I don't know - mark for later"
         action: "ISSN needs to be changed"
       action:
-        non_compliant:
+        non_compliant:  # not currently used, should be removed
           instruction: "Add more detail about this records ISSNs"
         action:
           instruction: 'Make changes to PISSN and/or EISSN in the relevant fields below. Add more information on what changes to ISSN you are making and why in the Notes field. <strong class="highlight warning">PISSN and EISSN must be different</strong>'
@@ -221,7 +221,7 @@ triage:
           regex_not_match: "The ISSN is not of the valid form"
           fields_should_be_different: "The value of the PISSN must be different to the EISSN"
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-Compliant'"
+          is_conditionally_required: "Add more detail about this record's ISSNs, or add more information on what changes to ISSN you are making and why (if applicable)"
       compliant_answers:
         - "compliant"
       action_answers:
@@ -237,7 +237,7 @@ triage:
         non_compliant: "<span class='answer'>Non-compliant</span>, the country in the application <strong>does not</strong> match the title at issn.portal.org"
         later: "I don't know - mark for later"
         action: ""
-      action:
+      action: # not currently used, should be removed
         non_compliant:
           instruction: "Provide more information about the publisher's country"
       remember: ""
@@ -249,7 +249,7 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required"
+          is_conditionally_required: "Provide more information about the publisher's country"
       info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
@@ -269,7 +269,7 @@ triage:
         action: "Journal's title or alternative needs to be changed"
       action:
         non_compliant:
-          instruction: "Provide more information about this jornal's title"
+          instruction: "Provide more information about this journal's title"
         action:
           instruction: "Provide correct title and/or alternative title in the relevant input below. Add more information on the change (eg. why this change is required) in the notes input.<strong class=highlight warning>Titles must not contain an HTML script tag</span>"
       remember: "<ul><li>Check both title and alternative title</li><li>If you need to edit the title always use the <strong>Online</strong> ISSN record (if available).</li></ul>"
@@ -295,17 +295,17 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Provide more information about this journal's title, and any information on the change you have made (if applicable)"
         title:
           disallowed_value: "Title must not contain an HTML script tag"
           is_required: "Title is required"
-          note: "Provide more information about what change in the title you are making and why"
+          # note: "Provide more information about what change in the title you are making and why"
       edit:
         title: "Title"
       compliant_answers:
         - "compliant"
       action_answers:
-        - "conditional"
+        - "action"
       non_compliant_answers:
         - "non_compliant"
       recommend:

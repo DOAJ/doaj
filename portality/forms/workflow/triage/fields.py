@@ -146,6 +146,10 @@ class CheckboxCompoundCapability(CompoundFieldCapability):
 class TriageCompoundFieldCapability(CompoundFieldCapability):
     action = {}
 
+class SimpleCompoundCapability(CompoundFieldCapability):
+    render_class = SimpleCompoundRenderer
+    control_btns = []
+
 #######
 ## Generic notes capability and field
 class NoteCapability(FormFieldCapability):
@@ -169,12 +173,10 @@ class DummyNote(NoteCapability):
 
 class NoteField(Field):
     coerce = [Unicode()]
-    capabilities = (NoteCapability(),)
 
-
-class SimpleCompoundCapability(CompoundFieldCapability):
-    render_class = SimpleCompoundRenderer
-    control_btns = []
+class GeneralNote(Field):
+    coerce = [Unicode()]
+    capabilities = (GeneralNoteCapability(),)
 
 #######
 ## options preparation
@@ -206,9 +208,7 @@ def resource_for(source):
         })
     return resources
 
-class GeneralNote(Field):
-    coerce = [Unicode()]
-    capabilities = (GeneralNoteCapability(),)
+
 
 #####################################################
 ## Record ID (hidden field required for identification)
@@ -249,44 +249,64 @@ class EthicsNotExcluded(ComplianceCheckField):
     name = "ethics_not_excluded"
     capabilities = (C(),)
 
-class EthicsNotExcludedNote(GeneralNote):
-    name = "ethics_not_excluded_note"
+# class EthicsNotExcludedNote(NoteField):
+#     class NC(NoteCapability):
+#         error_messages = {
+#             IsConditionallyRequired: T.ethics_not_excluded.validation.note.is_conditionally_required
+#         }
+#
+#     name = "ethics_not_excluded_note"
+#     capabilities = (NC(),)
 
-class EthicsNotExcludedNonCompliantNote(NoteField):
+class EthicsNotExcludedNote(NoteField):
     class NC(NoteCapability):
-        label = ""
         error_messages = {
             IsConditionallyRequired: T.ethics_not_excluded.validation.note.is_conditionally_required
         }
 
-    name = "ethics_not_excluded_noncompliant_note"
+    name = "ethics_not_excluded_note"
     capabilities = (NC(),)
 
-class EthicsNotExcludedActionGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        control_btns = [
-            TriageFormButtons.contb(),
-            TriageFormButtons.changeb({"data-controls": "ethics_not_excluded_group"})
-        ]
-        order = ["note"]
-        label = ""
+# RJ: I have removed these as they overcomplicated the implementation, and having 2 notes fields in one
+# question added complexity both to the interface and the back-end.  If this is a requirement it can be
+# revisited when time permits, otherwise the Note field on the question will become required if the
+# appropriate value is selected
+#
+# class EthicsNotExcludedNonCompliantNote(NoteField):
+#     class NC(NoteCapability):
+#         label = ""
+#         error_messages = {
+#             IsConditionallyRequired: T.ethics_not_excluded.validation.note.is_conditionally_required
+#         }
+#
+#     name = "ethics_not_excluded_noncompliant_note"
+#     capabilities = (NC(),)
 
-    name_ = "ethics_not_excluded_action_group"
-    capabilities_ = (C(),)
-    note = EthicsNotExcludedNonCompliantNote(OPTIONAL, SINGLE)
+# class EthicsNotExcludedActionGroup(Structure):
+#     class C(SimpleCompoundCapability):
+#         role = "action"
+#         control_btns = [
+#             TriageFormButtons.contb(),
+#             TriageFormButtons.changeb({"data-controls": "ethics_not_excluded_group"})
+#         ]
+#         order = ["note"]
+#         label = ""
+#
+#     name_ = "ethics_not_excluded_action_group"
+#     capabilities_ = (C(),)
+#     note = EthicsNotExcludedNonCompliantNote(OPTIONAL, SINGLE)
 
 class EthicsNotExcludedGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_not_excluded.label
-        order = ["answer", "note", "action"]
+        order = ["answer", "note"]
         render_class = TriageCompound
-        action = {
-            "non_compliant": {
-                "instruction": T.ethics_not_excluded.action.instruction,
-                "controls": "ethics_not_excluded_action_group"
-            }
-        }
+        # action = {
+        #     "non_compliant": {
+        #         "instruction": T.ethics_not_excluded.action.instruction,
+        #         "controls": "ethics_not_excluded_action_group"
+        #     }
+        # }
         error_messages = {
             IsConditionallyRequired: T.ethics_not_excluded.validation.group.is_conditionally_required
         }
@@ -296,12 +316,12 @@ class EthicsNotExcludedGroup(Structure):
 
     answer = EthicsNotExcluded(OPTIONAL, SINGLE)
     note = EthicsNotExcludedNote(OPTIONAL, SINGLE)
-    action = EthicsNotExcludedActionGroup(OPTIONAL, SINGLE)
-    action_note = EthicsNotExcludedNonCompliantNote(OPTIONAL, SINGLE)
+    # action = EthicsNotExcludedActionGroup(OPTIONAL, SINGLE)
+    # action_note = EthicsNotExcludedNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(
-            action.note,  # <- this field is required if
+            note,  # <- this field is required if
             answer,       # <- this field has one of the values
             T.ethics_not_excluded.non_compliant_answers  # <- that is non compliant
         )
@@ -334,43 +354,25 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
     name = "ethics_no_nonstandard_metrics"
     capabilities = (C(),)
 
-class EthicsNoNonStandardMetricsNote(GeneralNote):
-    name = "ethics_no_nonstandard_metrics_note"
-
-class EthicsNonStandardMetricsNonCompliantNote(NoteField):
-    # TODO: how to add it to the crosswalk?
-    # TODO: how to add an attribute to this note instead of the label? `aria-describedby = T.ethics_no_nonstandard_metrics.action.instruction`
+class EthicsNoNonStandardMetricsNote(NoteField):
     class NC(NoteCapability):
-        label = ""
         error_messages = {
             IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.note.is_conditionally_required
         }
-
-    name = "ethics_nonstandard_metrics_noncompliant_note"
+    name = "ethics_no_nonstandard_metrics_note"
     capabilities = (NC(),)
-
-class EthicsNonStandardMetricsActionGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "ethics_no_nonstandard_metrics_group"})]
-        order = ["note"]
-        label = ""
-
-    name_ = "ethics_no_nonstandard_metrics_action_group"
-    capabilities_ = (C(),)
-    note = EthicsNonStandardMetricsNonCompliantNote(OPTIONAL, SINGLE)
 
 class EthicsNoNonStandardMetricsGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_no_nonstandard_metrics.label
-        order = ["answer", "note", "action"]
+        order = ["answer", "note"]
         render_class = TriageCompound
-        action = {
-            "non_compliant": {
-                "instruction": T.ethics_no_nonstandard_metrics.action.instruction,
-                "controls": "ethics_no_nonstandard_metrics_action_group"
-            }
-        }
+        # action = {
+        #     "non_compliant": {
+        #         "instruction": T.ethics_no_nonstandard_metrics.action.instruction,
+        #         "controls": "ethics_no_nonstandard_metrics_action_group"
+        #     }
+        # }
         error_messages = {
             IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.group.is_conditionally_required
         }
@@ -379,11 +381,11 @@ class EthicsNoNonStandardMetricsGroup(Structure):
     capabilities_ = (C(),)
     answer = EthicsNoNonStandardMetrics(OPTIONAL, SINGLE)
     note = EthicsNoNonStandardMetricsNote(OPTIONAL, SINGLE)
-    action = EthicsNonStandardMetricsActionGroup(OPTIONAL, SINGLE)
-    action_note = EthicsNonStandardMetricsNonCompliantNote(OPTIONAL, SINGLE)
+    # action = EthicsNonStandardMetricsActionGroup(OPTIONAL, SINGLE)
+    # action_note = EthicsNonStandardMetricsNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(action.note, # <- this field is required if
+        RequiredIf(note, # <- this field is required if
                   answer,        # <- this field has one of the values
                   T.ethics_no_nonstandard_metrics.non_compliant_answers # <- that is non compliant
                   )
@@ -416,42 +418,25 @@ class EthicsNoFakeImpact(ComplianceCheckField):
     name = "ethics_no_fake_impact"
     capabilities = (C(),)
 
-class EthicsNoFakeImpactNote(GeneralNote):
-    name = "ethics_no_fake_impact_note"
-
-class EthicsNoFakeImpactNonCompliantNote(NoteField):
+class EthicsNoFakeImpactNote(NoteField):
     class NC(NoteCapability):
-        label = ""
         error_messages = {
-            IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.note.is_conditionally_required
+            IsConditionallyRequired: T.ethics_no_fake_impact.validation.note.is_conditionally_required
         }
-
-    name = "ethics_no_fake_impact_noncompliant_note"
+    name = "ethics_no_fake_impact_note"
     capabilities = (NC(),)
-
-class EthicsNoFakeImpactActionGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "ethics_no_fake_impact_group"})]
-        order = ["note"]
-        label = ""
-
-    name_ = "ethics_no_fake_impact_metrics_action_group"
-    capabilities_ = (C(),)
-    note = EthicsNoFakeImpactNonCompliantNote(OPTIONAL, SINGLE)
-
 
 class EthicsNoFakeImpactGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_no_fake_impact.label
-        order = ["answer", "note", "action"]
+        order = ["answer", "note"]
         render_class = TriageCompound
-        action = {
-            "non_compliant": {
-                "instruction": T.ethics_no_fake_impact.action.instruction,
-                "controls": "ethics_no_fake_impact_metrics_action_group"
-            }
-        }
+        # action = {
+        #     "non_compliant": {
+        #         "instruction": T.ethics_no_fake_impact.action.instruction,
+        #         "controls": "ethics_no_fake_impact_metrics_action_group"
+        #     }
+        # }
         error_messages = {
             IsConditionallyRequired: T.ethics_no_fake_impact.validation.group.is_conditionally_required
         }
@@ -461,11 +446,11 @@ class EthicsNoFakeImpactGroup(Structure):
 
     answer = EthicsNoFakeImpact(OPTIONAL, SINGLE)
     note = EthicsNoFakeImpactNote(OPTIONAL, SINGLE)
-    action = EthicsNoFakeImpactActionGroup(OPTIONAL, SINGLE)
-    action_note = EthicsNoFakeImpactNonCompliantNote(OPTIONAL, SINGLE)
+    # action = EthicsNoFakeImpactActionGroup(OPTIONAL, SINGLE)
+    # action_note = EthicsNoFakeImpactNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(action.note,  # <- this field is required if
+        RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
                    T.ethics_no_fake_impact.non_compliant_answers  # <- that is non compliant
                    )
@@ -493,44 +478,24 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
     name = "ethics_no_false_doaj_claim"
     capabilities = (C(),)
 
-class EthicsNoFalseDOAJClaimNote(GeneralNote):
-    name = "ethics_no_false_doaj_claim_note"
-
-class EthicsNoFalseDOAJClaimNonCompliantNote(NoteField):
+class EthicsNoFalseDOAJClaimNote(NoteField):
     class NC(NoteCapability):
-        label = ""
         error_messages = {
             IsConditionallyRequired: T.ethics_no_false_doaj_claim.validation.note.is_conditionally_required
         }
-
-    name = "ethics_no_false_doaj_claim_noncompliant_note"
+    name = "ethics_no_false_doaj_claim_note"
     capabilities = (NC(),)
-
-class EthicsNoFalseDOAJClaimActionGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        control_btns = [
-            TriageFormButtons.contb(),
-            TriageFormButtons.changeb({"data-controls": "ethics_no_false_doaj_claim_group"})
-        ]
-        order = ["note"]
-        label = ""
-
-    name_ = "ethics_no_false_doaj_claim_action_group"
-    capabilities_ = (C(),)
-    note = EthicsNoFalseDOAJClaimNonCompliantNote(OPTIONAL, SINGLE)
-
 class EthicsNoFalseDOAJClaimGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_no_false_doaj_claim.label
-        order = ["answer", "note", "action"]
+        order = ["answer", "note"]
         render_class = TriageCompound
-        action = {
-            "non_compliant": {
-                "instruction": T.ethics_no_false_doaj_claim.action.instruction,
-                "controls": "ethics_no_false_doaj_claim_action_group"
-            }
-        }
+        # action = {
+        #     "non_compliant": {
+        #         "instruction": T.ethics_no_false_doaj_claim.action.instruction,
+        #         "controls": "ethics_no_false_doaj_claim_action_group"
+        #     }
+        # }
         error_messages = {
             IsConditionallyRequired: T.ethics_no_false_doaj_claim.validation.group.is_conditionally_required
         }
@@ -540,12 +505,12 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
 
     answer = EthicsNoFalseDOAJClaim(OPTIONAL, SINGLE)
     note = EthicsNoFalseDOAJClaimNote(OPTIONAL, SINGLE)
-    action = EthicsNoFalseDOAJClaimActionGroup(OPTIONAL, SINGLE)
-    action_note = EthicsNoFalseDOAJClaimNonCompliantNote(OPTIONAL, SINGLE)
+    # action = EthicsNoFalseDOAJClaimActionGroup(OPTIONAL, SINGLE)
+    # action_note = EthicsNoFalseDOAJClaimNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(
-            action.note,  # <- this field is required if
+            note,  # <- this field is required if
             answer,       # <- this field has one of the values
             T.ethics_no_false_doaj_claim.non_compliant_answers  # <- that is non compliant
         )
@@ -575,7 +540,7 @@ class EthicsPubTime(ComplianceCheckField):
 
 class EthicsPubTimeNote(GeneralNote):
     name = "ethics_no_false_doaj_claim_note"
-    capabilities = (NoteCapability(),)
+    # capabilities = (NoteCapability(),)
 
 class EthicsPubTimeGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -617,96 +582,54 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
     name = "ethics_no_suspicious_ties"
     capabilities = (C(),)
 
-class EthicsNoSuspiciousTiesNote(GeneralNote):
+class EthicsNoSuspiciousTiesNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.note.is_conditionally_required
+        }
     name = "ethics_no_suspicious_ties_note"
-
-
-class EthicsNoSuspiciousTiesActionNote(NoteField):
-    class NC(NoteCapability):
-        S = T.ethics_no_suspicious_ties
-        error_messages = {
-            IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.note.is_conditionally_required
-        }
-    name = "ethics_no_suspicious_ties_action_note"
     capabilities = (NC(),)
-
-class EthicsNoSuspiciousTiesActionGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        S = T.ethics_no_suspicious_ties
-        label = S.action.action.instruction
-        order = ["note_action"]
-        control_btns = [ TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "ethics_no_suspicious_ties_group"}) ]
-        trigger_btn = "action"
-
-    name_  ="ethics_no_suspicious_ties_action_group"
-    capabilities_ = (C(),)
-
-    note_action = EthicsNoSuspiciousTiesActionNote(OPTIONAL, SINGLE)
-
-class EthicsNoSuspiciousTiesNonCompliantNote(NoteField):
-    class NC(NoteCapability):
-        S = T.ethics_no_suspicious_ties
-        error_messages = {
-            IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.note.is_conditionally_required
-        }
-    name = "ethics_no_suspicious_ties_noncompliant_note"
-    capabilities = (NC(),)
-
-class EthicsNoSuspiciousTiesNonCompliantGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        S = T.ethics_no_suspicious_ties
-        label = S.action.non_compliant.instruction
-        order = ["noncompliant_note"]
-        control_btns = [ TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "ethics_no_suspicious_ties_group"}) ]
-        trigger_btn = "non_compliant"
-
-    name_  ="ethics_no_suspicious_ties_noncompliant_group"
-    capabilities_ = (C(),)
-
-    noncompliant_note = EthicsNoSuspiciousTiesNonCompliantNote(OPTIONAL, SINGLE)
 
 class EthicsNoSuspiciousTiesGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_no_suspicious_ties.label
-        order = ["answer", "note", "action", "non_compliant_group"]
+        order = ["answer", "note"]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.group.is_conditionally_required
         }
-        action = {
-            "action": {
-                "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
-                "controls": "ethics_no_suspicious_ties_action_group"
-            },
-            "non_compliant": {
-                "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
-                "controls": "ethics_no_suspicious_ties_noncompliant_group"
-            }
-        }
+        # action = {
+        #     "action": {
+        #         "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
+        #         "controls": "ethics_no_suspicious_ties_action_group"
+        #     },
+        #     "non_compliant": {
+        #         "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
+        #         "controls": "ethics_no_suspicious_ties_noncompliant_group"
+        #     }
+        # }
 
     name_ = "ethics_no_suspicious_ties_group"
     capabilities_ = (C(),)
 
     answer = EthicsNoSuspiciousTies(OPTIONAL, SINGLE)
     note = EthicsNoSuspiciousTiesNote(OPTIONAL, SINGLE)
-    action = EthicsNoSuspiciousTiesActionGroup(OPTIONAL, SINGLE)
-    action_note = EthicsNoSuspiciousTiesActionNote(OPTIONAL, SINGLE)
-    non_compliant_group = EthicsNoSuspiciousTiesNonCompliantGroup(OPTIONAL, SINGLE)
-    non_compliant_note = EthicsNoSuspiciousTiesNonCompliantNote(OPTIONAL, SINGLE)
+    # action = EthicsNoSuspiciousTiesActionGroup(OPTIONAL, SINGLE)
+    # action_note = EthicsNoSuspiciousTiesActionNote(OPTIONAL, SINGLE)
+    # non_compliant_group = EthicsNoSuspiciousTiesNonCompliantGroup(OPTIONAL, SINGLE)
+    # non_compliant_note = EthicsNoSuspiciousTiesNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(action_note,  # <- this field is required if
+        RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
-                   T.ethics_no_suspicious_ties.action_answers
+                   T.ethics_no_suspicious_ties.action_answers + T.ethics_no_suspicious_ties.non_compliant_answers
                    # <- that is either compliant or non compliant
-                   ),
-        RequiredIf(non_compliant_note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.ethics_no_suspicious_ties.non_compliant_answers
-                   # <- that is either compliant or non compliant
-                   ),
+                   )#,
+        # RequiredIf(note,  # <- this field is required if
+        #            answer,  # <- this field has one of the values
+        #            T.ethics_no_suspicious_ties.non_compliant_answers
+        #            # <- that is either compliant or non compliant
+        #            ),
     ]
 
 ###########################################################
@@ -992,31 +915,13 @@ class ISSNAtLeastOne(ComplianceCheckField):
     name = "issn_at_least_one"
     capabilities = (C(),)
 
-class ISSNAtLeastOneNote(GeneralNote):
-    name = "issn_at_least_one_note"
-
-class ISSNNonCompliantNote(NoteField):
-    class GNC(GeneralNoteCapability):
+class ISSNAtLeastOneNote(NoteField):
+    class NC(NoteCapability):
         error_messages = {
-            IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
+            IsConditionallyRequired: T.issn_at_least_one.validation.note.is_conditionally_required
         }
-
-    name = "issn_non_compliant_note"
-    capabilities = (GNC(),)
-
-class ISSNNonCompliantGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        label = T.issn_at_least_one.action.non_compliant.instruction
-        order = ["noncompliant_note"]
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
-        trigger_btn = "non_compliant"
-
-    name_ = "issn_non_compliant_group"
-    capabilities_ = (C(),)
-
-    noncompliant_note = ISSNNonCompliantNote(OPTIONAL, SINGLE)
+    name = "issn_at_least_one_note"
+    capabilities = (NC(),)
 
 class EISSN(Field):
     class C(FormFieldCapability):
@@ -1050,20 +955,20 @@ class PISSN(Field):
     capabilities = (C(),)
     validators = [Regex(ISSN)]
 
-class ISSNActionNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
-        }
-
-    name = "issn_at_least_one_action_note"
-    capabilities = (NC(),)
+# class ISSNActionNote(NoteField):
+#     class NC(NoteCapability):
+#         error_messages = {
+#             IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
+#         }
+#
+#     name = "issn_at_least_one_action_note"
+#     capabilities = (NC(),)
 
 class ISSNAdditionalFields(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
         label  = T.issn_at_least_one.action.action.instruction
-        order = ["eissn", "pissn", "action_note"]
+        order = ["eissn", "pissn"]
         control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
         error_messages = {
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different
@@ -1075,7 +980,7 @@ class ISSNAdditionalFields(Structure):
 
     eissn = EISSN(OPTIONAL, SINGLE)
     pissn = PISSN(OPTIONAL, SINGLE)
-    action_note = ISSNActionNote(OPTIONAL, SINGLE)
+    # action_note = ISSNActionNote(OPTIONAL, SINGLE)
 
     validators_ = [
         Different(eissn, pissn),
@@ -1087,8 +992,8 @@ class ISSNAtLeastOneGroup(Structure):
         order = [
             "answer",
             "edited_issns",
-            "note",
-            "noncompliant_group"
+            "note"#,
+            #"noncompliant_group"
         ]
         action_group = ["edited_issns"]
         render_class = TriageCompound
@@ -1099,10 +1004,6 @@ class ISSNAtLeastOneGroup(Structure):
             "action": {
                 "instruction": T.issn_at_least_one.action.action.instruction,
                 "controls": "edited_issns"
-            },
-            "non_compliant": {
-                "instruction": T.issn_at_least_one.action.non_compliant.instruction,
-                "controls": "issn_non_compliant_group"
             }
         }
 
@@ -1112,19 +1013,19 @@ class ISSNAtLeastOneGroup(Structure):
     answer = ISSNAtLeastOne(OPTIONAL, SINGLE)
     note = ISSNAtLeastOneNote(OPTIONAL, SINGLE)
     edited_issns = ISSNAdditionalFields(OPTIONAL, SINGLE)
-    action_note = ISSNActionNote(OPTIONAL, SINGLE)
-    noncompliant_group = ISSNNonCompliantGroup(OPTIONAL, SINGLE)
-    noncompliant_note = ISSNNonCompliantNote(OPTIONAL, SINGLE)
+    # action_note = ISSNActionNote(OPTIONAL, SINGLE)
+    # noncompliant_group = ISSNNonCompliantGroup(OPTIONAL, SINGLE)
+    # noncompliant_note = ISSNNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(noncompliant_note,  # <- this field is required if
+        RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
-                   T.issn_at_least_one.action_answers # <- that is non compliant
-                   ),
-        RequiredIf(action_note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.issn_at_least_one.non_compliant_answers  # <- that is non compliant
-                   )
+                   T.issn_at_least_one.action_answers + T.issn_at_least_one.non_compliant_answers # <- that is non compliant
+                   )#,
+        # RequiredIf(action_note,  # <- this field is required if
+        #            answer,  # <- this field has one of the values
+        #            T.issn_at_least_one.non_compliant_answers  # <- that is non compliant
+        #            )
     ]
 
 ###########################################################
@@ -1148,60 +1049,42 @@ class ISSNCountryMatch(ComplianceCheckField):
     name = "issn_country_match"
     capabilities = (C(),)
 
-class ISSNCountryMatchNote(GeneralNote):
-    name = "issn_country_match_note"
-
-class ISSNCountryMatchNonCompliantNote(NoteField):
+class ISSNCountryMatchNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.issn_country_match.validation.note.is_conditionally_required
         }
-    name = "issn_country_match_non_compliant_note"
+    name = "issn_country_match_note"
     capabilities = (NC(),)
-
-class ISSNCountryMatchNonCompliantGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        label = T.issn_country_match.action.non_compliant.instruction
-        order = ["noncompliant_note"]
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "issn_country_match_group"})]
-        trigger_btn = "non_compliant"
-
-    name_ = "issn_country_match_non_compliant_group"
-    capabilities_ = (C(),)
-
-    noncompliant_note = ISSNCountryMatchNonCompliantNote(OPTIONAL, SINGLE)
 
 class ISSNCountryMatchGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.issn_country_match.label
         order = [
             "answer",
-            "note",
-            "noncompliant_group"
+            "note"
         ]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.issn_country_match.validation.group.is_conditionally_required
         }
-        action = {
-            "non_compliant": {
-                "instruction": T.issn_country_match.action.non_compliant.instruction,
-                "controls": "issn_country_match_non_compliant_group"
-            }
-        }
+        # action = {
+        #     "non_compliant": {
+        #         "instruction": T.issn_country_match.action.non_compliant.instruction,
+        #         "controls": "issn_country_match_non_compliant_group"
+        #     }
+        # }
 
     name_ = "issn_country_match_group"
     capabilities_ = (C(),)
 
     answer = ISSNCountryMatch(OPTIONAL, SINGLE)
     note = ISSNCountryMatchNote(OPTIONAL, SINGLE)
-    noncompliant_group = ISSNCountryMatchNonCompliantGroup(OPTIONAL, SINGLE)
-    noncompliant_note = ISSNCountryMatchNonCompliantNote(OPTIONAL, SINGLE)
+    # noncompliant_group = ISSNCountryMatchNonCompliantGroup(OPTIONAL, SINGLE)
+    # noncompliant_note = ISSNCountryMatchNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(noncompliant_note,  # <- this field is required if
+        RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
                    T.issn_at_least_one.non_compliant_answers  # <- that is non compliant
                    )
@@ -1232,32 +1115,13 @@ class ISSNTitleMatch(ComplianceCheckField):
     name = "issn_title_match"
     capabilities = (C(),)
 
-class ISSNTitleMatchNote(GeneralNote):
-    name = "issn_title_match_note"
-
-class TitleMatchNonCompliantNote(NoteField):
-    class GNC(NoteCapability):
+class ISSNTitleMatchNote(NoteField):
+    class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.issn_title_match.validation.note.is_conditionally_required
         }
-
-    name = "issn_title_match_non_compliant_note"
-    capabilities = (GNC(),)
-
-class TitleMatchNonCompliantGroup(Structure):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        label = T.issn_at_least_one.action.non_compliant.instruction
-        order = ["noncompliant_note"]
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "issn_title_match_group"})]
-        trigger_btn = "non_compliant"
-
-    name_ = "issn_title_match_non_compliant_group"
-    capabilities_ = (C(),)
-
-    noncompliant_note = TitleMatchNonCompliantNote(OPTIONAL, SINGLE)
-
+    name = "issn_title_match_note"
+    capabilities = (NC(),)
 
 class Title(Field):
     class C(FormFieldCapability):
@@ -1275,27 +1139,19 @@ class Title(Field):
     capabilities = (C(),)
     validators = [NoScriptTag()]
 
-class ISSNTitleMatchActionNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            IsConditionallyRequired: T.issn_title_match.validation.title.note
-        }
-
-    name = "issn_title_match_action_note"
-    capabilities = (NC(),)
-
 class ISSNTitleMatchActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
         label = T.issn_title_match.edit.title
-        order = ["title", "action_note"]
+        order = ["title"]
         control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_title_match_group"})]
         trigger_btn = "action"
 
     name_ = "issn_title_match_action_group"
     capabilities_ = (C(),)
+
     title = Title(REQUIRED, SINGLE)
-    action_note = ISSNTitleMatchActionNote(OPTIONAL, SINGLE)
+    # action_note = ISSNTitleMatchActionNote(OPTIONAL, SINGLE)
 
 class ISSNTitleMatchGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1303,18 +1159,13 @@ class ISSNTitleMatchGroup(Structure):
         order = [
             "answer",
             "action_group",
-            "note",
-            "noncompliant_group"
+            "note"
         ]
         render_class = TriageCompound
         action = {
             "action": {
                 "instruction": T.issn_title_match.action.action.instruction,
                 "controls": "issn_title_match_action_group"
-            },
-            "non_compliant": {
-                "instruction": T.issn_title_match.action.non_compliant.instruction,
-                "controls": "issn_title_match_non_compliant_group"
             }
         }
         error_messages = {
@@ -1326,19 +1177,15 @@ class ISSNTitleMatchGroup(Structure):
 
     answer = ISSNTitleMatch(OPTIONAL, SINGLE)
     action_group = ISSNTitleMatchActionGroup(OPTIONAL, SINGLE)
-    action_note = ISSNTitleMatchActionNote(OPTIONAL, SINGLE)
+    #action_note = ISSNTitleMatchActionNote(OPTIONAL, SINGLE)
     note = ISSNTitleMatchNote(OPTIONAL, SINGLE)
-    noncompliant_group = TitleMatchNonCompliantGroup(OPTIONAL, SINGLE)
-    noncompliant_note = TitleMatchNonCompliantNote(OPTIONAL, SINGLE)
+    # noncompliant_group = TitleMatchNonCompliantGroup(OPTIONAL, SINGLE)
+    # noncompliant_note = TitleMatchNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(noncompliant_note,  # <- this field is required if
+        RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
-                   T.issn_title_match.action_answers  # <- that is non compliant
-                   ),
-        RequiredIf(action_note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.issn_title_match.non_compliant_answers  # <- that is non compliant
+                   T.issn_title_match.action_answers + T.issn_title_match.non_compliant_answers  # <- that is non compliant
                    )
     ]
 
