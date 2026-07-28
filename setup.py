@@ -35,7 +35,7 @@ setup(
         "huey~=2.5.2",
         "libsass==0.23.0",
         "LinkHeader==0.4.3",
-        "lxml==5.3.0",
+        "lxml==6.1.0",
         "Markdown==3.7.0",
         "markdown-full-yaml-metadata==2.2.1",
         "markdown-link-attr-modifier==0.2.1",
