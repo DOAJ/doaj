@@ -128,9 +128,7 @@
                 </div>
             </div>
 
-            {% block renderer scoped %}
-
-            {% endblock %}
+            {% block renderer scoped %}{% endblock %}
 
             {% if els.action %}
                 {% for action in els.action %}
@@ -142,6 +140,17 @@
                 </div>
                 {% endfor %}
             {% endif %}
+
+            {% if els.not_classified %}
+                {% for nc in els.not_classified %}
+                    <div class="row">
+                        <div class="col-md-7 action-container" id="{{nc.name}}-container">
+                            {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
         </section>
         {% endautoescape %}
 

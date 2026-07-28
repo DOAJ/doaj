@@ -335,7 +335,7 @@ class TriageForm2WorkflowControl(object):
         # Withdrawn
         compliance_field_radio(triage.database_withdrawn, f.database.withdrawn)
         compliance_field_note(triage.database_withdrawn, f.database.withdrawn)
-        triage.database_withdrawn.special_exceptions = form.get(f.database.withdrawn.exceptions)
+        triage.database_withdrawn.special_exceptions = form.get(f.database.withdrawn.exceptions_group.exceptions)
 
         # Withdrawn: Ignore Embargo
         # compliance_field_radio(triage.database_withdrawn_exception_ignore_embargo,
@@ -400,13 +400,13 @@ class TriageForm2WorkflowControl(object):
         # Title match
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
-        title = form.get(f.issn.title_match.title)
+        title = form.get(f.issn.title_match.action_group.title)
         bj.title = title
 
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)
         compliance_field_note(triage.issn_continuation, f.issn.continuation)
-        issn_list = str_2_list(f.issn.continuation.continues)
+        issn_list = str_2_list(f.issn.continuation.action_group.continues)
         if issn_list:
             bj.replaces = issn_list
         else:

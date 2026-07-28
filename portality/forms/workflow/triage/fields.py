@@ -1394,8 +1394,8 @@ class ISSNContinuationActionGroup(Structure):
 
     name_ = "issn_continuation_action_group"
     capabilities_ = (C(),)
-    continues = Continues(REQUIRED, SINGLE)
-    note = ISSNContinuationActionNote(REQUIRED, SINGLE)
+    continues = Continues(OPTIONAL, SINGLE)
+    note = ISSNContinuationActionNote(OPTIONAL, SINGLE)
 
 class ISSNContinuationGroup(Structure):
     # TO DO: add further groups and actions - see triage workflow
