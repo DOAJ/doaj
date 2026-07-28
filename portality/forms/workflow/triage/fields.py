@@ -637,10 +637,10 @@ class EthicsNoSuspiciousTiesGroup(Structure):
 ###########################################################
 ## DOAJ Database: Withdrawn
 
-class ExceptionsNoteOptions:
-    on_exception = "on_exception"
-    if_no_exceptions = "if_no_exceptions"
-    always = "always"
+# class ExceptionsNoteOptions:
+#     on_exception = "on_exception"
+#     if_no_exceptions = "if_no_exceptions"
+#     always = "always"
 
 class DatabaseWithdrawn(ComplianceCheckField):
     class C(ComplianceCheckCapability):
@@ -663,21 +663,27 @@ class DatabaseWithdrawn(ComplianceCheckField):
     name = "database_withdrawn"
     capabilities = (C(),)
 
-class DatabaseWithdrawnNote(GeneralNote):
+class DatabaseWithdrawnNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.database_withdrawn.validation.note.is_conditionally_required
+        }
     name = "database_withdrawn_note"
+    capabilities = (NC(),)
 
-class DatabaseWithdrawnExceptionsRadioWrapper(Field):
-    class C(FormFieldCapability):
-        S = T.database_withdrawn.action.action
-        label = " "
-        options = options_for(T.database_withdrawn.action.action)
-        control_class = Radio
-        control_render_class = TriageRadioRenderer
 
-        check = " "
-
-    name = "database_withdrawn_exceptions_radio_wrapper"
-    capabilities = (C(),)
+# class DatabaseWithdrawnExceptionsRadioWrapper(Field):
+#     class C(FormFieldCapability):
+#         S = T.database_withdrawn.action.action
+#         label = " "
+#         options = options_for(T.database_withdrawn.action.action)
+#         control_class = Radio
+#         control_render_class = TriageRadioRenderer
+#
+#         check = " "
+#
+#     name = "database_withdrawn_exceptions_radio_wrapper"
+#     capabilities = (C(),)
 
 class DatabaseWithdrawnExceptions(Field):
     class C(FormFieldCapability):
@@ -698,49 +704,45 @@ class DatabaseWithdrawnExceptions(Field):
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
-class DatabaseWithdrawnExceptionsNote(NoteField):
-    class NC(NoteCapability):
-        role = "options"
-        error_messages = {
-            IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
-        }
-    name = "database_withdrawn_exception_note"
-    capabilities = (NC(),)
+# class DatabaseWithdrawnExceptionsNote(NoteField):
+#     class NC(NoteCapability):
+#         role = "options"
+#         error_messages = {
+#             IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
+#         }
+#     name = "database_withdrawn_exception_note"
+#     capabilities = (NC(),)
 
 class DatabaseWithdrawnExceptionsGroup(Structure):
     class C(SimpleCompoundCapability):
         label = " "
         role = "action"
         S = T.database_withdrawn
-        order = ["exceptions", "note", "radio_wrapper"]
-        note_required = ExceptionsNoteOptions.on_exception
-        widget = {
-            "conditional_answer": {
-                "compliant": {
-                    "database_withdrawn_exceptions": ["ignore_embargo", "website_unavailable", "journal_content"],
-                },
-                "non_compliant": {
-                    "database_withdrawn_exceptions": ["none"],
-                },
-            },
-            "show_field_on_check": {
-                "show": "database_withdrawn_exception_note",
-                "on": "database_withdrawn_exceptions"
-            }
-        }
+        order = ["exceptions"]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "database_withdrawn_group"})]
+        # note_required = ExceptionsNoteOptions.on_exception
+        # widget = {
+        #     "conditional_answer": {
+        #         "compliant": {
+        #             "database_withdrawn_exceptions": ["ignore_embargo", "website_unavailable", "journal_content"],
+        #         },
+        #         "non_compliant": {
+        #             "database_withdrawn_exceptions": ["none"],
+        #         },
+        #     },
+        #     "show_field_on_check": {
+        #         "show": "database_withdrawn_exception_note",
+        #         "on": "database_withdrawn_exceptions"
+        #     }
+        # }
 
     name_ = "database_withdrawn_exceptions_group"
     capabilities_ = (C(),)
-    radio_wrapper = DatabaseWithdrawnExceptionsRadioWrapper(OPTIONAL, SINGLE)
-    exceptions = DatabaseWithdrawnExceptions(OPTIONAL, REPEATABLE)
-    note = DatabaseWithdrawnExceptionsNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   exceptions,  # <- this field has one of the values
-                   ["ignore_embargo", "website_unavailable", "journal_content"]  # <- that is non compliant
-                   )
-    ]
+    #radio_wrapper = DatabaseWithdrawnExceptionsRadioWrapper(OPTIONAL, SINGLE)
+    exceptions = DatabaseWithdrawnExceptions(OPTIONAL, REPEATABLE)
+    #note = DatabaseWithdrawnExceptionsNote(OPTIONAL, SINGLE)
 
 ### The main entry point to the Database: Withdrawn question
 class DatabaseWithdrawnGroup(Structure):
@@ -764,6 +766,13 @@ class DatabaseWithdrawnGroup(Structure):
     answer = DatabaseWithdrawn(OPTIONAL, SINGLE)
     note = DatabaseWithdrawnNote(OPTIONAL, SINGLE)
     exceptions_group = DatabaseWithdrawnExceptionsGroup(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note,  # <- this field is required if
+                   exceptions_group.exceptions,  # <- this field has one of the values
+                   T.database_withdrawn.note_required_exceptions  # <- that is one of the relevant exceptions
+                   )
+    ]
 
 
 ###########################################################
@@ -1204,8 +1213,13 @@ class ISSNContinuation(ComplianceCheckField):
     name = "issn_continuation"
     capabilities = (C(),)
 
-class ISSNContinuationNote(GeneralNote):
+class ISSNContinuationNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.issn_continuation.validation.note.is_conditionally_required
+        }
     name = "issn_continuation_note"
+    capabilities = (NC(),)
 
 class Continues(Field):
     class C(FormFieldCapability):
@@ -1222,27 +1236,27 @@ class Continues(Field):
     capabilities = (C(),)
     validators = [RegexOnList(ISSN)]
 
-class ISSNContinuationActionNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            IsConditionallyRequired: T.issn_continuation.validation.note.is_conditionally_required
-        }
-
-    name = "issn_continuation_action_note"
-    capabilities = (NC(),)
+# class ISSNContinuationActionNote(NoteField):
+#     class NC(NoteCapability):
+#         error_messages = {
+#             IsConditionallyRequired: T.issn_continuation.validation.note.is_conditionally_required
+#         }
+#
+#     name = "issn_continuation_action_note"
+#     capabilities = (NC(),)
 
 class ISSNContinuationActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
         label = T.issn_continuation.edit.continues
-        order = ["continues", "note"]
+        order = ["continues"]
         control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_continuation_group"})]
         trigger_btn = "action"
 
     name_ = "issn_continuation_action_group"
     capabilities_ = (C(),)
     continues = Continues(OPTIONAL, SINGLE)
-    note = ISSNContinuationActionNote(OPTIONAL, SINGLE)
+    # note = ISSNContinuationActionNote(OPTIONAL, SINGLE)
 
 class ISSNContinuationGroup(Structure):
     # TO DO: add further groups and actions - see triage workflow
@@ -1269,8 +1283,19 @@ class ISSNContinuationGroup(Structure):
 
     answer = ISSNContinuation(OPTIONAL, SINGLE)
     action_group = ISSNContinuationActionGroup(OPTIONAL, SINGLE)
-    action_note = ISSNContinuationActionNote(OPTIONAL, SINGLE)
+    # action_note = ISSNContinuationActionNote(OPTIONAL, SINGLE)
     note = ISSNContinuationNote(OPTIONAL, SINGLE)
+
+    validators_ = [
+        AllInvalid( # the application IS a continuation AND its preceeding journal is not in DOAJ
+            RequiredIf(note,  # <- this field is required if
+                       answer,  # <- this field has one of the values
+                       T.issn_continuation.notes_required_answers  # <- that is compliant
+                       ),
+            RequiredIfNot(note, action_group.continues),
+            error_code=IsConditionallyRequired
+        )
+    ]
 
 ###########################################################
 ## Website: Working

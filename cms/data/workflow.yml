@@ -365,7 +365,7 @@ triage:
         eissn: "Electronic ISSN"
       action:
         action:
-          instruction: "Does any of those exceptions apply?"
+          instruction: "Do any of these exceptions apply?"
           answers:
             compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong> but exceptions are noted"
             non_compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong>, and <strong>no</strong> exceptions are noted"
@@ -373,7 +373,7 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required"
+          is_conditionally_required: "The note field is required when one or more exception options are selected"
         exceptions:
           disallowed_value: "You must select one of the valid options"
       edit:
@@ -395,6 +395,10 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      note_required_exceptions:
+      - ignore_embargo
+      - website_unavailable
+      - journal_content
 
     database_embargo:
       label: "13. Previous application rejection"
