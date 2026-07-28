@@ -2002,31 +2002,46 @@ class AdminMetadataReviewGroup(Structure):
 ## Admin: Special Exceptions
 
 class AdminSpecialException(ComplianceCheckField):
-    class C(ButtonsCapability):
+    class C(ComplianceCheckCapability):
         S = T.admin_special_exception
-        options = [
-            {
-                "class": "compliant",
-                "label": T.admin_special_exception.answers.compliant,
-                "onclick": "doaj.triage.continue()",
-                "type": "button",
-                "role": "compliant"
-             },
-            {
-                "class": "non-compliant",
-                "label": T.admin_special_exception.answers.non_compliant,
-                "onclick": "doaj.triage.reject()",
-                "type": "button",
-                "role": "non_compliant"
-            },
-
-        ]
+        options = options_for(S)
         check = S.check
         instructions = S.instructions
+        # remember = S.remember
         resources = resource_for(S)
 
     name = "admin_special_exception"
     capabilities = (C(),)
+
+# RJ: I have removed this because the button approach was not properly abstracted or wired in
+# and was at odds with the other mechanisms on the form.  Instead, I have used the usual approach
+# and a recommendation to reject will be raised which takes the user to the rejection process
+#
+# class AdminSpecialException(ComplianceCheckField):
+#     class C(ButtonsCapability):
+#         S = T.admin_special_exception
+#         options = [
+#             {
+#                 "class": "compliant",
+#                 "label": S.answers.compliant,
+#                 "onclick": "doaj.triage.continue()",
+#                 "type": "button",
+#                 "role": "compliant"
+#             },
+#             {
+#                 "class": "non-compliant",
+#                 "label": S.answers.non_compliant,
+#                 "onclick": "doaj.triage.reject()",
+#                 "type": "button",
+#                 "role": "non_compliant"
+#             }
+#         ]
+#         check = S.check
+#         instructions = S.instructions
+#         resources = resource_for(S)
+#
+#     name = "admin_special_exception"
+#     capabilities = (C(),)
 
 class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
@@ -2068,38 +2083,38 @@ class AdminSpecialExceptionGroup(Structure):
     class C(CheckboxCompoundCapability):
         label = T.admin_special_exception.label
         order = ["answer", "special_exceptions", "special_exception_other", "note"]
-        ui = [
-            {
-                "conditional": {
-                    "field": "special_exceptions",
-                    "conditions": [
-                        {
-                            "field": "answer",
-                            "any_of": [T.admin_special_exception.non_compliant_answers]
-                        }
-                    ]
-                }
-            },
-            {
-                "conditional": {
-                    "field": "special_exception_other",
-                    "conditions": [
-                        {
-                            "field": "answer",
-                            "any_of": [T.admin_special_exception.non_compliant_answers]
-                        },
-                        {
-                            "field": "special_exceptions",
-                            "any_of": ["other"]
-                        }
-                    ]
-                }
-            }
-        ]
+        # ui = [
+        #     {
+        #         "conditional": {
+        #             "field": "special_exceptions",
+        #             "conditions": [
+        #                 {
+        #                     "field": "answer",
+        #                     "any_of": [T.admin_special_exception.non_compliant_answers]
+        #                 }
+        #             ]
+        #         }
+        #     },
+        #     {
+        #         "conditional": {
+        #             "field": "special_exception_other",
+        #             "conditions": [
+        #                 {
+        #                     "field": "answer",
+        #                     "any_of": [T.admin_special_exception.non_compliant_answers]
+        #                 },
+        #                 {
+        #                     "field": "special_exceptions",
+        #                     "any_of": ["other"]
+        #                 }
+        #             ]
+        #         }
+        #     }
+        # ]
 
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)
-    sr_only_legend = True
+    # sr_only_legend = True
 
     answer = AdminSpecialException(OPTIONAL, SINGLE)
     special_exceptions = SpecialExceptions(OPTIONAL, REPEATABLE)

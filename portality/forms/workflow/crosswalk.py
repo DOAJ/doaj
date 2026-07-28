@@ -65,13 +65,6 @@ class WorkflowControl2TriageForm(object):
 
             form.set(reference.note, note.note)
 
-            # for id, nobj in notes.items():
-            #     if nobj is None:    # This shouldn't happen, but in development it certainly can
-            #         continue
-            #     # FIXME: we have a model which can handle multiple notes, and a form which cannot
-            #     # FIXME: how do we handle the updating of referenced notes (do we need to remember their ids)?
-            #     form.set(reference, nobj.note)
-
         def bool_2_y_n(reference, value):
             if value is None:
                 return
