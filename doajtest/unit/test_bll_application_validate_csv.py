@@ -99,3 +99,10 @@ class TestApplicationValidateCSV(DoajTestCase):
         app_svc = DOAJ.applicationService()
         validation_response = app_svc.validate_update_csv(test_file, self.artefacts["account"])
         assert validation_response.has_errors_or_warnings() is False
+
+    def test_05_other_values_in_list_fields(self):
+        """Test that 'Other' free-text values in list fields like deposit_policy are accepted"""
+        test_file = os.path.join(EXAMPLE_FILES_DIR, "publisher_csv_other_values.csv")
+        app_svc = DOAJ.applicationService()
+        validation_response = app_svc.validate_update_csv(test_file, self.artefacts["account"])
+        assert validation_response.has_errors() is False
