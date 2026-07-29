@@ -471,6 +471,19 @@ class TestModels(DoajTestCase):
 
     @patch_history_dir("ARTICLE_HISTORY_DIR")
     def test_06_article_deletes(self):
+        # each article below needs a matching journal, otherwise deleting
+        # it can't find an owner and Article.get_owner() raises
+        # NoValidOwnerException instead of tombstoning
+        for i in range(5):
+            j = models.Journal()
+            j.set_in_doaj(True)
+            jbj = j.bibjson()
+            jbj.title = "Test Journal {x}".format(x=i)
+            jbj.add_identifier(jbj.P_ISSN, "{x}000-0000".format(x=i))
+            jbj.publisher = "Test Publisher {x}".format(x=i)
+            j.set_owner("test_owner_{x}".format(x=i))
+            j.save(blocking=True)
+
         # populate the index with some articles
         for i in range(5):
             a = models.Article()
@@ -1856,6 +1869,20 @@ class TestModels(DoajTestCase):
         assert t2.bibjson().subjects()[0].get("code") == "KM22"
 
     def test_42_make_article_tombstone(self):
+        # the articles below all use ArticleFixtureFactory's default
+        # pissn/eissn (1234-5678 / 9876-5432); without a matching journal,
+        # Article.get_owner() can't find an owner and _tombstone() raises
+        # NoValidOwnerException instead of succeeding
+        j = models.Journal()
+        j.set_in_doaj(True)
+        jbj = j.bibjson()
+        jbj.title = "Test Journal for Tombstone"
+        jbj.add_identifier(jbj.P_ISSN, "1234-5678")
+        jbj.add_identifier(jbj.E_ISSN, "9876-5432")
+        jbj.publisher = "Test Publisher"
+        j.set_owner("test_owner")
+        j.save(blocking=True)
+
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
         a.set_id(a.makeid())
 

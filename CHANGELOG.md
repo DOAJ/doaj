@@ -4,9 +4,32 @@
 
 ### 8.6.9
 
-Bugfixes to login form and fix ES error code
+Bugfixes to login form and change ES error code 400 to 500
 
-### TODO
+https://github.com/DOAJ/doajPM/issues/4120
+https://github.com/DOAJ/doajPM/issues/4394
+https://github.com/DOAJ/doajPM/issues/4395
+https://github.com/DOAJ/doajPM/issues/4396
+
+### 8.6.8
+
+Nginx routing update
+
+### 8.6.7
+
+Bugfixes for passwordless login
+
+### 8.6.6
+
+Passwordless login method
+
+https://github.com/DOAJ/doajPM/issues/3942
+
+### 8.6.5
+
+Rearrange editorial form
+
+https://github.com/DOAJ/doajPM/issues/4102
 
 ### 8.6.4
 
