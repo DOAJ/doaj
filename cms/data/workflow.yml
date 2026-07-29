@@ -663,6 +663,8 @@ triage:
         later: "I don't know - mark for later"
         action: "Changes to copyright terms information is required"
       action:
+        action:
+          instruction: "Update the license information as needed"
         button: "non_compliant"
         instruction: "Instruction placeholder"
       remember: "If the copyright information in the website/articles is contradictory, the answer is <span class='answer non_compliant'>Non-compliant</span>"
@@ -673,6 +675,7 @@ triage:
         copyright_author_retains: "Author retains copyright"
         copyright_url: "Copyright URL"
       edit:
+        copyright: "Copyright Information"
         copyright_author_retains: "Author retains copyright"
         copyright_url: "Copyright URL"
       validation:

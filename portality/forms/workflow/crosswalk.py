@@ -217,8 +217,8 @@ class WorkflowControl2TriageForm(object):
         # Copyright
         compliance_field_radio(triage.website_copyright, f.website.copyright)
         compliance_field_note(triage.website_copyright, f.website.copyright)
-        bool_2_y_n(f.website.copyright.copyright_author_retains, bj.author_retains_copyright)
-        form.set(f.website.copyright.copyright_url, bj.copyright_url)
+        bool_2_y_n(f.website.copyright.action_group.copyright_author_retains, bj.author_retains_copyright)
+        form.set(f.website.copyright.action_group.copyright_url, bj.copyright_url)
 
         #########
         ## Content
@@ -449,9 +449,9 @@ class TriageForm2WorkflowControl(object):
         # Copyright
         compliance_field_radio(triage.website_copyright, f.website.copyright)
         compliance_field_note(triage.website_copyright, f.website.copyright)
-        car = form.get(f.website.copyright.copyright_author_retains)
+        car = form.get(f.website.copyright.action_group.copyright_author_retains)
         bj.author_retains_copyright = car == "y"
-        curl = form.get(f.website.copyright.copyright_url)
+        curl = form.get(f.website.copyright.action_group.copyright_url)
         bj.copyright_url = curl
 
         #########

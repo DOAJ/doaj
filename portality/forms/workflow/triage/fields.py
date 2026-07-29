@@ -1543,10 +1543,6 @@ class WebsiteLicensePolicyActionGroup(Structure):
                         TriageFormButtons.changeb({"data-controls": "website_license_policy_group"})]
         trigger_btn = "action"
 
-        attributes = {
-            "data-conditional": ""
-        }
-
     name_ = "website_license_policy_action_group"
     capabilities_ = (C(),)
 
@@ -1647,26 +1643,48 @@ class CopyrightURL(Field):
     capabilities = (C(),)
     validators = [IsURL()]
 
+class WebsiteCopyrightActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        label = T.website_copyright.edit.copyright
+        order = [
+            "copyright_author_retains",
+            "copyright_url"
+        ]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "website_copyright_group"})]
+        trigger_btn = "action"
+
+    name_ = "website_copyright_action_group"
+    capabilities_ = (C(),)
+
+    copyright_author_retains = CopyrightAuthorRetains(REQUIRED, SINGLE)
+    copyright_url = CopyrightURL(REQUIRED, SINGLE)
+
 class WebsiteCopyrightGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.website_copyright.label
         order = [
             "answer",
-            "copyright_author_retains",
-            "copyright_url",
+            "action_group",
             "note"
         ]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.website_copyright.validation.group.is_conditionally_required
         }
+        action = {
+            "action": {
+                "instruction": T.website_copyright.action.action.instruction,
+                "controls": "website_copyright_action_group",
+            },
+        }
 
     name_ = "website_copyright_group"
     capabilities_ = (C(),)
 
     answer = WebsiteCopyright(OPTIONAL, SINGLE)
-    copyright_author_retains = CopyrightAuthorRetains(REQUIRED, SINGLE)
-    copyright_url = CopyrightURL(REQUIRED, SINGLE)
+    action_group = WebsiteCopyrightActionGroup(OPTIONAL, SINGLE)
     note = WebsiteCopyrightNote(OPTIONAL, SINGLE)
 
 
