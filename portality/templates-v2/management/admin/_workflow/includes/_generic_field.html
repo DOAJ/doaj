@@ -1,5 +1,9 @@
 {% if field.control|length > 1 %}
-    <fieldset>
+    <fieldset id="{{ field.prefix }}"
+        {% if field.capability.fieldset_attributes %}
+            {% for k, v in field.capability.fieldset_attributes.items() %}{{ k }}="{{ v }}" {% endfor %}
+        {% endif %}
+    >
     <legend>{{ field.label}}</legend>
 {% endif %}
 

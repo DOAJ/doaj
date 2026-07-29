@@ -614,6 +614,8 @@ triage:
         later: "I don't know - mark for later"
         action: "Changes to open access policy information are required"
       action:
+        action:
+          instruction: "Update the license information as needed"
         button: "non_compliant"
         instruction: "Instruction placeholder"
       remember: "If the exclusion does <strong>not</strong> relate to <all> journals from a publisher, an application for another journal from that publisher should <strong>not</strong> be rejected at this stage"
@@ -629,6 +631,7 @@ triage:
         license_attribute: "License attributes"
         license_url: "License URL"
       edit:
+        licences: "License Information"
         license_attribute: "License attributes"
         license_url: "License URL"
       validation:

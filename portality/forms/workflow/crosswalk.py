@@ -210,9 +210,9 @@ class WorkflowControl2TriageForm(object):
                 if l.get("NC"): las.append("NC")
                 if l.get("ND"): las.append("ND")
 
-        form.set(f.website.license_policy.license, ltypes)
-        form.set(f.website.license_policy.license_attribute, las)
-        form.set(f.website.license_policy.license_url, bj.license_terms_url)
+        form.set(f.website.license_policy.action_group.license, ltypes)
+        form.set(f.website.license_policy.action_group.license_attribute, las)
+        form.set(f.website.license_policy.action_group.license_url, bj.license_terms_url)
 
         # Copyright
         compliance_field_radio(triage.website_copyright, f.website.copyright)
@@ -424,12 +424,12 @@ class TriageForm2WorkflowControl(object):
         compliance_field_radio(triage.website_license_policy, f.website.license_policy)
         compliance_field_note(triage.website_license_policy, f.website.license_policy)
 
-        lurl = form.get(f.website.license_policy.license_url)
+        lurl = form.get(f.website.license_policy.action_group.license_url)
         if lurl is not None:
             bj.license_terms_url = lurl
 
-        licenses = form.get(f.website.license_policy.license)
-        license_attributes = form.get(f.website.license_policy.license_attribute)
+        licenses = form.get(f.website.license_policy.action_group.license)
+        license_attributes = form.get(f.website.license_policy.action_group.license_attribute)
         if license_attributes is not None:
             for ltype in licenses:
                 by, nc, nd, sa = None, None, None, None
