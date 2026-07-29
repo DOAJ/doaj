@@ -36,7 +36,7 @@ setup(
         "libsass==0.23.0",
         "LinkHeader==0.4.3",
         "lxml==5.3.0",
-        "Markdown==3.7.0",
+        "Markdown==3.8.1",
         "markdown-full-yaml-metadata==2.2.1",
         "markdown-link-attr-modifier==0.2.1",
         "mdx_truly_sane_lists==1.3",
