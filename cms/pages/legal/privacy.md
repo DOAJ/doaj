@@ -58,7 +58,7 @@ It is only technically possible for some emails, generated as part of the review
 
 Gmail automatically saves copies of all emails that we send. Our use of Gmail and the protection of your personal data within it is governed by [Google's Privacy Policy](https://policies.google.com/privacy/update), [Data Processing Amendment for G Suite](https://gsuite.google.com/terms/dpa_terms.html), and [Data Processing and Security Terms for Google Cloud Platform](https://cloud.google.com/terms/data-processing-term).
 
-We will never discuss the details of your account or journal applications with anyone apart from you.
+We will never discuss the details of your journal applications with anyone apart from you or someone that we can easily verify is connected to your journal or to your journal's publisher.
 
 #### 1b Volunteer applications
 

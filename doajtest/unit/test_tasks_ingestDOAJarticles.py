@@ -8,6 +8,8 @@ from lxml import etree
 
 from doajtest import helpers
 from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.bll_article import BLLArticleMockFactory
@@ -61,9 +63,23 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
 
+        pub1 = models.Account(**AccountFixtureFactory.make_publisher_source())
+        pub1.set_id("pub1")
+        pub1.save(blocking=True)
+
+        source = JournalFixtureFactory.make_journal_source()
+        source["bibjson"]["pissn"] = '2233-5678'
+        source["bibjson"]["eissn"] = '1122-5678'
+        journal = models.Journal(**source)
+        journal.set_owner("pub1")
+        journal.save(blocking=True)
+
         # push an article to initialise the mappings
-        source = ArticleFixtureFactory.make_article_source()
-        article = models.Article(**source)
+        article_source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**article_source)
+        article.data['admin'] = {'owner': 'pub1'}
+        article.data['bibjson']['identifier'][1]['id'] = '2233-5678'
+        article.data['bibjson']['identifier'][2]['id'] = '1122-5678'
         article.save(blocking=True)
         article.delete()
         models.Article.blockdeleted(article.id)
@@ -1041,6 +1057,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with open(path, "wb") as f:
             f.write(stream.read())
 
+        time.sleep(0.2)
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 

@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='8.6.1',
+    version='8.6.9',
     python_requires='>=3.10', # EOL October 2026
     packages=find_packages(),
     install_requires=[
@@ -13,9 +13,10 @@ setup(
         "bagit==1.8.1",
         "beautifulsoup4",
         "boto3==1.35.25",
+        "cryptography~=42.0",
         "elastic-apm==6.24.0",
         "elasticsearch==7.13.0",
-        "Faker==2.0.3",
+        "faker==40.15.0",
         "feedparser==6.0.11",
         "jinja2~=3.1.4",
         "jsonpath-ng~=1.6",

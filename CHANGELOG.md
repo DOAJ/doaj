@@ -2,6 +2,30 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.6.9
+
+Bugfixes to login form and fix ES error code
+
+### TODO
+
+### 8.6.4
+
+Show complete date in Admin background jobs search interface
+
+### 8.6.3
+
+Fix for JournalCSV - initialise internationalisation in background job processor.
+
+### 8.6.2
+
+Fix for the logout button found on admin forms not working.
+
+https://github.com/DOAJ/doajPM/issues/4350
+
+### 8.6.1
+
+Update to static pages & translation fixes
+
 ### 8.6.0
 
 French translation of application form, introducing numerous internationalisation features.

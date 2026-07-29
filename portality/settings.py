@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.1"
+DOAJ_VERSION = "8.6.9"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -24,7 +24,7 @@ SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 CMS_BUILD_ASSETS_ON_STARTUP = False
 # Cookies security
-SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = True
 REMEMBER_COOKIE_SECURE = True
 
@@ -32,6 +32,9 @@ REMEMBER_COOKIE_SECURE = True
 # Testdrive for setting up the test environment.
 # CAUTION - this can modify the index so should NEVER be used in production!
 TESTDRIVE_ENABLED = False
+
+# List of script names which can be executed via the testdrive.
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications"]
 
 ####################################
 # Debug Mode
@@ -293,6 +296,18 @@ LOGIN_VIA_ACCOUNT_ID = True
 PASSWORD_RESET_TIMEOUT = 86400
 # amount of time a reset token for a new account is valid for
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
+# amount of time a login through login-link is valid for
+LOGIN_LINK_TIMEOUT = 600
+# Encryption key for passwordless login. Must be 32 url-safe
+# base64-encoded bytes, e.g. generated with:
+#   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# The placeholder below is not a valid key - set a real one as a secret
+# in your overriding app.cfg or dev.cfg, or requesting a passwordless
+# login link will fail with
+# "Fernet key must be 32 url-safe base64-encoded bytes."
+# (password-reset emails use a separate uuid-based reset token and are
+# unaffected by this setting)
+PASSWORDLESS_ENCRYPTION_KEY = "Passwordless login encryption key"
 
 # "api" top-level role is added to all accounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = [
@@ -464,6 +479,8 @@ HUEY_SCHEDULE = {
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
     "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
+    # Weekly notification to publishers about deleted articles (Article Tombstones)
+    "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
 }
 
 
@@ -688,6 +705,10 @@ DEFAULT_INDEX_SETTINGS = \
           }
         }
     }
+
+# Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
+# Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
+INDEX_SETTINGS_OVERRIDES = {}
 
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
@@ -1472,6 +1493,7 @@ _MIN = 60
 _HOUR = 3600
 _DAY = 24 * _HOUR
 _WEEK = 7 * _DAY
+_YEAR = 52 * _WEEK + _DAY  # unless it's a leap year
 
 # Configures the age of the last completed job on the queue before the queue is marked as unstable
 # (in seconds)
@@ -1599,16 +1621,16 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _WEEK + _DAY
     },
     'check_latest_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'datalog_journal_added_update': {
-        'last_run_successful_in': _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'find_discontinued_soon': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'harvest': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'journal_csv': {
         'last_run_successful_in': 2 * _HOUR
@@ -1620,7 +1642,7 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'prune_es_backups': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'public_data_dump': {
         'last_run_successful_in': 32 * _DAY
@@ -1632,10 +1654,10 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'request_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'sitemap': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     }
 }
 
@@ -1768,6 +1790,8 @@ AUTO_ASSIGN_EDITOR_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1EDves
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+ANON_EXPORT_SKIP_LIST = ['ris_export', 'cache']
 
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
