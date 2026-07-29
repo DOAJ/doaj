@@ -7,6 +7,7 @@ from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.models import Article, Journal, Account
 from portality.lib.paths import rel2abs
+from portality import dao
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_discover_duplicates"), "discover_duplicates", "test_id",
@@ -108,11 +109,15 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
                 article_ids.append(article.id)
                 aids_block.append((article.id, article.last_updated))
         else:
-            # push an article to initialise the mappings
+            # push an article to initialise the mappings. This fixture
+            # has no matching journal (that's the point of this branch -
+            # owner_arg is "none"/"no_articles"), so bypass Article.
+            # delete()'s tombstoning: it looks up the owning journal by
+            # ISSN, which finds none here and raises NoValidOwnerException
             source = ArticleFixtureFactory.make_article_source()
             article = Article(**source)
             article.save(blocking=True)
-            article.delete()
+            dao.DomainObject.delete(article)
             Article.blockdeleted(article.id)
 
         # generate our incoming article
