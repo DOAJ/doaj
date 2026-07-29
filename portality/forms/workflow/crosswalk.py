@@ -132,7 +132,7 @@ class WorkflowControl2TriageForm(object):
         # Embargo
         compliance_field_radio(triage.database_embargo, f.database.embargo)
         compliance_field_note(triage.database_embargo, f.database.embargo)
-        form.set(f.database.embargo.exceptions, triage.database_embargo.special_exceptions)
+        form.set(f.database.embargo.exceptions_group.exceptions, triage.database_embargo.special_exceptions)
 
         # Embargo: ISSN
         # compliance_field_radio(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)
@@ -349,7 +349,7 @@ class TriageForm2WorkflowControl(object):
         # Embargo
         compliance_field_radio(triage.database_embargo, f.database.embargo)
         compliance_field_note(triage.database_embargo, f.database.embargo)
-        triage.database_embargo.special_exceptions = form.get(f.database.embargo.exceptions)
+        triage.database_embargo.special_exceptions = form.get(f.database.embargo.exceptions_group.exceptions)
 
         # Embargo: ISSN
         # compliance_field_radio(triage.database_embargo_exception_issn, f.database.embargo_exception_issn)

@@ -406,15 +406,17 @@ triage:
       does <strong>not</strong> have an embargo (6 months or otherwise)"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal application <strong>does not</strong> have an active embargo"
-        non_compliant: ""
+        # non_compliant: ""
         later: "I don't know - mark for later"
         action: "This journal <strong>does have</strong> an active embargo from a previous rejection"
-        conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, and <strong>no exceptions are noted</strong>"
-        conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, but <strong>exceptions are noted</strong>"
+        # conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, and <strong>no exceptions are noted</strong>"
+        # conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, but <strong>exceptions are noted</strong>"
       info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
       action:
+        action:
+          instruction: "Do any of these exceptions apply?"
         button: "non_compliant"
         instruction: "Instruction placeholder"
       edit:
@@ -424,6 +426,7 @@ triage:
         ignore_embargo: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
         website_unavailable: "The journal was removed previously because the journal website was not available"
         journal_content: "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
+        none: "No special exceptions noted"
       remember: '<ul>
                   <li>Search both <strong>ISSNs</strong> (if available) in the applications admin site and the UR admin site</li>
                   <li>If there are multiple records, open the most recently updated to see why it was rejected and when.</li>

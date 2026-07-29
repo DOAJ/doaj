@@ -785,6 +785,16 @@ class DatabaseEmbargo(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        application_info = [
+            {
+                "label": S.info.pissn,
+                "lookup": lambda application, wfc: application.bibjson().pissn
+            },
+            {
+                "label": S.info.eissn,
+                "lookup": lambda application, wfc: application.bibjson().eissn
+            },
+        ]
 
     name = "database_embargo"
     capabilities = (C(),)
@@ -800,28 +810,50 @@ class DatabaseEmbargoNote(NoteField):
 
 class DatabaseEmbargoExceptions(Field):
     class C(FormFieldCapability):
+        role = "options"
         label = T.database_embargo.edit.exceptions
         control_class = Checkbox
         multiple = True
         options = exception_options_for(T.database_embargo)
-        control_render_class = CheckboxRenderer
-        render_class = GenericField
+        control_render_class = TriageCheckboxRenderer
+        # render_class = GenericField
         error_messages = {
             DisallowedValue: T.database_embargo.validation.exceptions.disallowed_value,
         }
+        trigger_btn = "action"
 
     name = "database_embargo_exceptions"
     coerce = [Unicode()]
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
+class DatabaseEmbargoExceptionsGroup(Structure):
+    class C(SimpleCompoundCapability):
+        label = " "
+        role = "action"
+        S = T.database_embargo
+        order = ["exceptions"]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "database_embargo_group"})]
+
+    name_ = "database_embargo_exceptions_group"
+    capabilities_ = (C(),)
+
+    exceptions = DatabaseEmbargoExceptions(OPTIONAL, REPEATABLE)
+
 class DatabaseEmbargoGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.database_embargo.label
-        order = ["answer", "note", "exceptions"]
+        order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.database_embargo.validation.group.is_conditionally_required
+        }
+        action = {
+            "action": {
+                "instruction": T.database_embargo.action.action.instruction,
+                "controls": "database_embargo_exceptions_group"
+            }
         }
 
     name_ = "database_embargo_group"
@@ -829,7 +861,7 @@ class DatabaseEmbargoGroup(Structure):
 
     answer = DatabaseEmbargo(OPTIONAL, SINGLE)
     note = DatabaseEmbargoNote(OPTIONAL, SINGLE)
-    exceptions = DatabaseEmbargoExceptions(OPTIONAL, REPEATABLE)
+    exceptions_group = DatabaseEmbargoExceptionsGroup(OPTIONAL, SINGLE)
 
 ###########################################################
 ## DOAJ Database: Not Listed
