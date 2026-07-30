@@ -27,9 +27,14 @@ doaj.triage.selectors = {
     saveableFields: 'input[type="text"], input[type="url"], input[type="number"], ' +
                      'input[type="radio"], input[type="checkbox"], select, textarea',
 
-    // The placeholder "Next question" button lives in _triage_compound.html.
-    // Only the class/data-attribute contract below is relied on here.
+    // Every question carries its own Prev/Next (see
+    // _triage_compound_base.html) - only the currently-expanded one is ever
+    // visible/interactive, but the selector matches all of them.
     nextQuestionButton: ".js-triage-next-question",
+    prevQuestionButton: ".js-triage-prev-question",
+
+    // One <section> per question - see doaj.triage.questions below.
+    questionWrapper: ".criterion-wrapper",
 
     // _triage_form.html already renders an (otherwise unused) error
     // container as the first child of the form - the ">" combinator picks
@@ -97,14 +102,22 @@ doaj.triage.init = function () {
     // errors in place rather than letting the user move on.
     $(document).on("click", doaj.triage.selectors.nextQuestionButton, function (event) {
         event.preventDefault();
-        var $button = $(event.currentTarget);
+        var questionId = $(event.currentTarget).closest(doaj.triage.selectors.questionWrapper).attr("id");
 
         doaj.triage.requestSave({
             blocking: true,
             onSuccess: function () {
-                doaj.triage.advanceQuestion($button);
+                doaj.triage.advanceQuestion(questionId);
             }
         });
+    });
+
+    // "Previous question" never gates on validation - soft save already
+    // persists edits made so far, so this just navigates back.
+    $(document).on("click", doaj.triage.selectors.prevQuestionButton, function (event) {
+        event.preventDefault();
+        var questionId = $(event.currentTarget).closest(doaj.triage.selectors.questionWrapper).attr("id");
+        doaj.triage.questions.goPrev(questionId);
     });
 
     $(document).on("change", doaj.triage.selectors.checkboxOther, function (event) {
@@ -127,6 +140,14 @@ doaj.triage.init = function () {
         var fieldId = $(event.currentTarget).attr(doaj.triage.summaryLinkDataAttr);
         doaj.triage.scrollToField(fieldId);
     });
+
+    // "Question X of N" (in the fixed top banner) doubles as a "jump back
+    // to the question you're actually on" button.
+    $(document).on("click", "#triage-progress-label", function (event) {
+        event.preventDefault();
+        doaj.triage.questions.scrollToActive();
+    });
+
     doaj.triage.setupUI();
 };
 
@@ -146,6 +167,7 @@ doaj.triage.setupUI = function () {
             doaj.triage.setupAnswers($checkedAnswer);
         }
     });
+    doaj.triage.questions.setupInit();
 }
 
 /* ============================================================
@@ -596,15 +618,156 @@ doaj.triage.recommendation.render = function (recommendation) {
 /* ============================================================
  * Question navigation
  *
- * There is no wizard/pagination UI yet - "Next question" is currently just
- * a placeholder button (see _triage_compound.html). Once the save behind it
- * succeeds, there's nothing further for us to do here, so we notify the DOM
- * in case a future navigation implementation wants to react to it.
+ * Exactly one .criterion-wrapper (question) is ever expanded - "active" -
+ * at a time; everything else stays collapsed. A question only ever changes
+ * on an explicit click - either its own accordion header, or its own
+ * Prev/Next buttons (each question carries its own, see
+ * _triage_compound_base.html - only the active one's are ever visible).
+ * There is deliberately no scroll-driven auto-expand: the question list
+ * scrolls like any normal list, and only clicking changes what's open.
  * ============================================================ */
 
-doaj.triage.advanceQuestion = function ($button) {
-    var questionId = $button.data("question-id");
-    console.log("advanceQuestion")
+doaj.triage.questions = {};
+doaj.triage.questions.activeQuestionId = null;
+
+// Flattened, DOM-order list of every question id on the page - Prev/Next
+// navigate purely by position in this list, so fieldset grouping/nesting
+// above the question level is irrelevant to them.
+doaj.triage.questions._ids = function () {
+    return $(doaj.triage.selectors.questionWrapper).map(function () {
+        return this.id;
+    }).get();
+};
+
+doaj.triage.questions._isAnswered = function ($wrapper) {
+    var answered = false;
+    $wrapper.find(doaj.triage.selectors.saveableFields).each(function () {
+        var $field = $(this);
+        if ($field.is(":checkbox, :radio")) {
+            if ($field.is(":checked")) {
+                answered = true;
+            }
+        } else if ($.trim($field.val() || "") !== "") {
+            answered = true;
+        }
+    });
+    return answered;
+};
+
+// Each question carries its own Prev/Next (see _triage_compound_base.html)
+// - only the currently-active one is ever visible, but keep its buttons'
+// disabled state correct regardless (first question: no Prev, last: no Next).
+doaj.triage.questions._updateOwnButtons = function (questionId) {
+    var ids = doaj.triage.questions._ids();
+    var index = ids.indexOf(questionId);
+    $(`#${questionId}-prev`).prop("disabled", index <= 0);
+    $(`#${questionId}-next`).prop("disabled", index === -1 || index >= ids.length - 1);
+};
+
+// The progress bar/label is the one thing still shared (lives in the fixed
+// banner at the top - see triage.html), so it's kept in sync separately.
+doaj.triage.questions._updateProgress = function (questionId) {
+    var ids = doaj.triage.questions._ids();
+    var index = ids.indexOf(questionId);
+    if (index !== -1) {
+        $("#triage-progress").attr({ value: index + 1, max: ids.length });
+        $("#triage-progress-label").text("Question " + (index + 1) + " of " + ids.length);
+    }
+};
+
+// The progress label (#triage-progress-label) is a button, not just text -
+// clicking it scrolls the question list to bring the currently active
+// question back into view. Needed because each question's Prev/Next now
+// scrolls away with its own content (previewing a distant question via its
+// header, without using Prev/Next, leaves no other way back to "the one
+// I'm actually on").
+doaj.triage.questions.scrollToActive = function () {
+    var questionId = doaj.triage.questions.activeQuestionId;
+    if (!questionId) {
+        return;
+    }
+    var $target = $(`#${questionId}`);
+    if ($target.length > 0) {
+        $target.get(0).scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+};
+
+// Collapses whichever question was previously active, expands questionId,
+// and keeps its own Prev/Next plus the shared progress bar in sync.
+// Scrolling is opt-in via options.scroll: Prev/Next and the initial
+// auto-opened question scroll their target into view within the scrollable
+// question list; a manual header click doesn't need to (the user already
+// clicked something visible).
+doaj.triage.questions.activate = function (questionId, options) {
+    options = options || {};
+    var $target = $(`#${questionId}`);
+    if ($target.length === 0 || questionId === doaj.triage.questions.activeQuestionId) {
+        return;
+    }
+
+    var previousId = doaj.triage.questions.activeQuestionId;
+    if (previousId) {
+        $(`#${previousId}-body`)._hide();
+        $(`#${previousId}-header`).attr("aria-expanded", "false");
+        $(`#${previousId}`).removeClass("is-active");
+    }
+
+    $(`#${questionId}-body`)._show();
+    $(`#${questionId}-header`).attr("aria-expanded", "true");
+    $target.addClass("is-active");
+
+    doaj.triage.questions.activeQuestionId = questionId;
+    doaj.triage.questions._updateOwnButtons(questionId);
+    doaj.triage.questions._updateProgress(questionId);
+
+    if (options.scroll) {
+        $target.get(0).scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+};
+
+doaj.triage.questions.goNext = function (questionId) {
+    var ids = doaj.triage.questions._ids();
+    var index = ids.indexOf(questionId);
+    if (index === -1 || index >= ids.length - 1) {
+        return;
+    }
+    doaj.triage.questions.activate(ids[index + 1], { scroll: true });
+};
+
+doaj.triage.questions.goPrev = function (questionId) {
+    var ids = doaj.triage.questions._ids();
+    var index = ids.indexOf(questionId);
+    if (index <= 0) {
+        return;
+    }
+    doaj.triage.questions.activate(ids[index - 1], { scroll: true });
+};
+
+// Runs once on page load: opens the first not-yet-answered question so a
+// reviewer resumes where they left off (falls back to the last question if
+// everything is already answered).
+doaj.triage.questions.setupInit = function () {
+    var ids = doaj.triage.questions._ids();
+    if (ids.length === 0) {
+        return;
+    }
+
+    var targetId = ids[ids.length - 1];
+    for (var i = 0; i < ids.length; i++) {
+        if (!doaj.triage.questions._isAnswered($(`#${ids[i]}`))) {
+            targetId = ids[i];
+            break;
+        }
+    }
+
+    doaj.triage.questions.activate(targetId, { scroll: true });
+};
+
+// There is no wizard/pagination UI beyond the accordion above, so "advance"
+// here just means "go to the next question" plus notifying the DOM in case
+// a future implementation wants to react to it too.
+doaj.triage.advanceQuestion = function (questionId) {
+    doaj.triage.questions.goNext(questionId);
     $(document).trigger("doaj:triage:question-advanced", { questionId: questionId });
 };
 

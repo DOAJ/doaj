@@ -8,14 +8,15 @@
                 type="button"
                 id="{{ compound.name }}-header"
                 class="accordion-btn--secondary col-md-12"
-                aria-expanded="true"
+                aria-expanded="false"
                 aria-controls="{{ compound.name }}-body"
-                onclick="doaj.triage.toggleSection('{{ compound.name }}-body', this);"
+                data-question-id="{{ compound.name }}"
+                onclick="doaj.triage.questions.activate(this.dataset.questionId, { scroll: false });"
         >
             {{ compound.label }}
         </button>
     </h3>
-    <div id="{{ compound.name }}-body" class="col-md-12 criterion">
+    <div id="{{ compound.name }}-body" class="col-md-12 criterion" hidden>
         {% set els = namespace(
             check=None,
             note=None,
@@ -41,42 +42,6 @@
         {% endfor %}
         {% autoescape off %}
         <section class="criterion col-md-12">
-            <div class="row">
-                <div class="col-md-7">
-                    <header class="criteria-header">
-
-                        <div class="progress">
-{#                            <label for="triage-progress" class="sr-only">#}
-{#                                Triage progress: answered 11 of 25#}
-{#                            </label>#}
-
-                            <progress class="progress" value="100" max="100" id="triage-progress">
-                                0%
-                            </progress>
-
-{#                            <span class="progress-label is-complete">Answered 11 of 25</span>#}
-                        </div>
-                        <nav>
-                            <button type="button" class="button button--prev">
-                                Previous question
-                            </button>
-                            {#
-                                Placeholder "Next question" button, standing in until the
-                                wizard-style navigation UI is designed. Whoever builds that
-                                UI should feel free to replace/restyle this button entirely -
-                                the only contract JS relies on is the "js-triage-next-question"
-                                class and the "data-question-id" attribute (see triage.js).
-                            #}
-                            <button type="button"
-                                    class="button button--next js-triage-next-question"
-                                    id="{{ compound.name }}-next"
-                                    data-question-id="{{ compound.name }}" hidden>
-                                Next question
-                            </button>
-                        </nav>
-                    </header>
-                    </div>
-                </div>
             <div class="row">
                 <div class="col-md-7">
                     {% if els.check.capability.check %}
@@ -151,7 +116,29 @@
 
             {% block renderer scoped %}{% endblock %}
 
-
+            {#
+                Prev/Next belong to this question specifically - normal
+                in-flow content at the end of it (not sticky/shared), so
+                they scroll away with the question like everything else in
+                it and the same pattern repeats consistently for every
+                question.
+            #}
+            <div class="row">
+                <div class="col-md-7">
+                    <nav class="criterion-nav">
+                        <button type="button"
+                                class="button button--prev js-triage-prev-question"
+                                id="{{ compound.name }}-prev">
+                            Previous question
+                        </button>
+                        <button type="button"
+                                class="button button--next js-triage-next-question"
+                                id="{{ compound.name }}-next">
+                            Next question
+                        </button>
+                    </nav>
+                </div>
+            </div>
 
         </section>
         {% endautoescape %}

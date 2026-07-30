@@ -94,13 +94,42 @@
     <div class="save-notification success" id="triage-save-notification-success" hidden><span>SAVED</span></div>
     <div class="save-notification error" id="triage-save-notification-error" hidden><span>ERROR WHILE SAVING</span></div>
     <div id="triage-async-response"></div>
-    {% include 'management/admin/_workflow/includes/_recommend.html' %}
 
-<div class="ew_body">
-    {% autoescape off %}
-        {{ form_html }}
-    {% endautoescape %}
-</div>
+    {#
+        Fixed-height panel: recommendation banner + progress bar (never
+        scroll, always visible at the top), then the question list as its
+        own scroll region. Prev/Next are not here - each question
+        (_triage_compound_base.html) carries its own, as normal in-flow
+        content at the end of it, so the same pattern repeats consistently
+        for every question rather than one detached shared control.
+    #}
+    <div class="triage-panel">
+        <div class="triage-panel__banner">
+            {% include 'management/admin/_workflow/includes/_recommend.html' %}
+
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="progress">
+                        <label for="triage-progress" class="sr-only">Question progress</label>
+                        <progress class="progress" value="0" max="1" id="triage-progress">0%</progress>
+                    </div>
+                    {#
+                        Not just a label - clicking it scrolls the question
+                        list to whichever question is currently active, so
+                        there's always a quick way back to it after
+                        previewing other (collapsed) questions further away.
+                    #}
+                    <button type="button" class="progress-label" id="triage-progress-label"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ew_body triage-panel__questions">
+            {% autoescape off %}
+                {{ form_html }}
+            {% endautoescape %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block admin_js %}

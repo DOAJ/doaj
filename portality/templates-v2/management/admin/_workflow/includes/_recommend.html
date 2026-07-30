@@ -7,8 +7,7 @@
     (fail.html / triaged.html) are left alone by the JS and stay
     server-rendered / correct as of last full page load.
 #}
-<div id="triage-recommendation">
-{% if recommendation %}
+<div id="triage-recommendation">{%- if recommendation %}
     {# Only display the recommendation if it is a reject, or if the review is complete #}
     {# as all other recommendations should only be acted on once triage has answered all questions #}
     {% if recommendation.code == "reject" or wfc.triage.review_complete %}
@@ -24,8 +23,7 @@
             </ul>
         </p>
     {% endif %}
-{% endif %}
-</div>
+{%- endif %}</div>
 
 {% if recommendation %}
     {% if recommendation.code == "reject" or wfc.triage.review_complete %}
