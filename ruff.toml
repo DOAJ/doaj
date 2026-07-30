@@ -1,0 +1,7 @@
+[lint]
+# Minimum: syntax errors (E9) + pyflakes (F = undefined names, unused imports, etc.)
+select = ["E9", "F"]
+
+[lint.per-file-ignores]
+# Tests commonly import for side-effects and use intentional bare assignments
+"doajtest/**" = ["F401", "F841"]
