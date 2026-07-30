@@ -637,6 +637,21 @@ class EthicsNoSuspiciousTiesGroup(Structure):
 ###########################################################
 ## DOAJ Database: Withdrawn
 
+class RequiredIfNestedException(RequiredIf):
+    """
+    Same as RequiredIf, except depends_on_field is resolved via get_path()
+    instead of by_name() - needed specifically for DatabaseWithdrawnGroup's
+    validator below, whose depends_on_field (the exceptions checkbox) is
+    nested one level down inside DatabaseWithdrawnExceptionsGroup rather
+    than being a direct sibling of the validator's own structure, which is
+    all the base RequiredIf's by_name()-based lookup can reach.
+    """
+    def _bind_fields(self):
+        self._conditionally_required_field = self._reference.ref_.by_name(self._conditionally_required_field_name)
+        self._depends_on_field = self._reference.ref_.get_path(
+            "database_withdrawn_exceptions_group.database_withdrawn_exceptions"
+        )
+
 # class ExceptionsNoteOptions:
 #     on_exception = "on_exception"
 #     if_no_exceptions = "if_no_exceptions"
@@ -767,8 +782,22 @@ class DatabaseWithdrawnGroup(Structure):
     note = DatabaseWithdrawnNote(OPTIONAL, SINGLE)
     exceptions_group = DatabaseWithdrawnExceptionsGroup(OPTIONAL, SINGLE)
 
+    # RequiredIf resolves both its fields via a single-level by_name() lookup
+    # (formulaic.validate.validate.RequiredIf._bind_fields), which only finds
+    # *direct* children of the structure the validator is attached to
+    # (here, database_withdrawn_group: answer/note/exceptions_group). "note"
+    # is a direct child so that resolves fine, but the actual checkbox field
+    # lives one level deeper, inside exceptions_group
+    # (DatabaseWithdrawnExceptionsGroup.exceptions) - by_name() can never
+    # reach it, so this crashed *every* validate() call on the whole form
+    # (confirmed: db-withdrawn_exceptions_group.exceptions.name ==
+    # "database_withdrawn_exceptions", not a direct child of dwg, so
+    # by_name("database_withdrawn_exceptions") always returned None).
+    # RequiredIfNestedException below is a minimal local override that
+    # resolves the nested field via get_path() instead, which can walk into
+    # sub-structures - "note" still resolves the normal way.
     validators_ = [
-        RequiredIf(note,  # <- this field is required if
+        RequiredIfNestedException(note,  # <- this field is required if
                    exceptions_group.exceptions,  # <- this field has one of the values
                    T.database_withdrawn.note_required_exceptions  # <- that is one of the relevant exceptions
                    )
@@ -1253,6 +1282,21 @@ class ISSNContinuationNote(NoteField):
     name = "issn_continuation_note"
     capabilities = (NC(),)
 
+class RequiredIfNotNestedException(RequiredIfNot):
+    """
+    Same issue as RequiredIfNestedException above, for RequiredIfNot:
+    ISSNContinuationGroup's validator below depends on "continues", which
+    lives inside ISSNContinuationActionGroup - one level below
+    ISSNContinuationGroup itself, which is all RequiredIfNot's default
+    by_name()-based lookup can reach. Resolves depends_on_field via
+    get_path() instead, which can walk into sub-structures.
+    """
+    def _bind_fields(self):
+        self._conditionally_required_field = self._reference.ref_.by_name(self._conditionally_required_field_name)
+        self._depends_on_field = self._reference.ref_.get_path(
+            "issn_continuation_action_group.continues"
+        )
+
 class Continues(Field):
     class C(FormFieldCapability):
         label = T.issn_continuation.edit.continues
@@ -1324,7 +1368,7 @@ class ISSNContinuationGroup(Structure):
                        answer,  # <- this field has one of the values
                        T.issn_continuation.notes_required_answers  # <- that is compliant
                        ),
-            RequiredIfNot(note, action_group.continues),
+            RequiredIfNotNestedException(note, action_group.continues),
             error_code=IsConditionallyRequired
         )
     ]
