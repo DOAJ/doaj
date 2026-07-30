@@ -237,8 +237,8 @@ Journals should publish a policy on the use of [automated tools](https://bmcresn
 
 ### Time from submission to decision
 
-The time from submission to decision varies greatly and depends on the responsiveness of the journal contact and/or applicant. Generally, a decision is reached within three months.
-We cannot provide a status update for applications which are less than three months old.
+The time from submission to decision varies greatly and depends on the responsiveness of the journal contact and/or applicant. Generally, a decision is reached within six months.
+We cannot provide a status update for applications which are less than six months old.
 
 
 ---
@@ -355,7 +355,7 @@ Our guide to applying is available in several languages. Below is a list of tran
 
 ## Version history
 
-This is Version 2.8 of the DOAJ Guide to applying.
+This is Version 2.9 of the DOAJ Guide to applying.
 
 For previous versions see the [Change Log](https://docs.google.com/document/d/1DW4rwQZ-16Y7M9jYOv7jVgOEUHhU0cZRhSM8lLDtwzU/edit?tab=t.0)
 

@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.8"
+DOAJ_VERSION = "8.6.10"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -298,7 +298,15 @@ PASSWORD_RESET_TIMEOUT = 86400
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 # amount of time a login through login-link is valid for
 LOGIN_LINK_TIMEOUT = 600
-# Encryption key for passwordless login
+# Encryption key for passwordless login. Must be 32 url-safe
+# base64-encoded bytes, e.g. generated with:
+#   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# The placeholder below is not a valid key - set a real one as a secret
+# in your overriding app.cfg or dev.cfg, or requesting a passwordless
+# login link will fail with
+# "Fernet key must be 32 url-safe base64-encoded bytes."
+# (password-reset emails use a separate uuid-based reset token and are
+# unaffected by this setting)
 PASSWORDLESS_ENCRYPTION_KEY = "Passwordless login encryption key"
 
 # "api" top-level role is added to all accounts on creation; it can be revoked per account by removal of the role.
@@ -697,6 +705,10 @@ DEFAULT_INDEX_SETTINGS = \
           }
         }
     }
+
+# Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
+# Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
+INDEX_SETTINGS_OVERRIDES = {}
 
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
@@ -1778,6 +1790,8 @@ AUTO_ASSIGN_EDITOR_GOOGLE_SHEET = "https://docs.google.com/spreadsheets/d/1EDves
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+ANON_EXPORT_SKIP_LIST = ['ris_export', 'cache']
 
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)

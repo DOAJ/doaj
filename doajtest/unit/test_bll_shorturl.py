@@ -111,14 +111,16 @@ class TestUrlshortRoute(DoajTestCase):
 
     def test_create_shorten_url__limit_reached(self):
         orig_config = patch_config(self.app_test, {'URLSHORT_LIMIT': 1})
-        data = {'url': 'http://localhost:5004/search/journals'}
-        with self.app_test.test_client() as c:
-            rv = c.post(url_for('doajservices.shorten'), json=data)
-            assert rv.status_code != 429
+        try:
+            data = {'url': 'http://localhost:5004/search/journals'}
+            with self.app_test.test_client() as c:
+                rv = c.post(url_for('doajservices.shorten'), json=data)
+                assert rv.status_code != 429
 
-            wait_until(wait_any_url_shortener)
+                wait_until(wait_any_url_shortener)
 
-            rv = c.post(url_for('doajservices.shorten'), json=data)
-            assert rv.status_code == 429
+                rv = c.post(url_for('doajservices.shorten'), json=data)
+                assert rv.status_code == 429
 
-        patch_config(self.app_test, orig_config)
+        finally:
+            patch_config(self.app_test, orig_config)
