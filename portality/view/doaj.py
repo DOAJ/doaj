@@ -10,19 +10,17 @@ from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 
 from portality.ui import exceptions as ui_exceptions
-from portality.bll import exceptions, exceptions as bll_exceptions
+from portality.bll import exceptions as bll_exceptions
 from portality import constants
 from portality import dao
 from portality import models
-from portality import store
 from portality.bll import DOAJ
 from portality.core import app
-from portality.decorators import ssl_required, api_key_required
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
 from portality.ui import templates
-from portality.bll import DOAJ
+from portality.view.account import LoginForm
 
 # ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
@@ -325,14 +323,15 @@ def toc(identifier=None):
     if journal.is_in_doaj() is False:
         raise ui_exceptions.JournalWithdrawn()
 
-    # journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
+    current_info = {'next': url_for('publisher.update_request', journal_id=journal.id)}
+    form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if real_identifier:
-        return redirect(url_for('doaj.toc', identifier=real_identifier), 301)
+        return redirect(url_for('doaj.toc', identifier=real_identifier, form=form), 301)
     else:
         # now render all that information
-        return render_template(templates.PUBLIC_TOC_MAIN, journal=journal, bibjson=bibjson, tab="main")
+        return render_template(templates.PUBLIC_TOC_MAIN, journal=journal, bibjson=bibjson, tab="main", form=form)
 
 
 @blueprint.route("/toc/articles/<identifier>")

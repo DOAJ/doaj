@@ -1,0 +1,66 @@
+.drawer.is-open {
+    transform: translateX(0);
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    max-width: 25rem;
+    width: 100%;
+    height: 100vh;
+    background-color: #F6F4F4;
+    padding: calc(90px + 1.5rem) 1.5rem 1.5rem;
+
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    will-change: transform;
+    z-index: 1000;
+
+    h1 {
+        font-family: 'Source Sans Pro', sans-serif;
+        line-height: 1.4;
+        font-weight: 400;
+        font-size: 1.2rem;
+        margin: 1rem 0 0 0;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #282624;
+    }
+
+    .drawer__close {
+        border: none;
+        position: absolute;
+        top: 5rem;
+        right: 1rem;
+    }
+
+    .drawer__content {
+        p.intro-text {
+            margin-top: 1rem;
+            font-size: .9rem;
+        }
+
+        p.closing-text {
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        form {
+            margin-bottom: 0;
+            .form__question {
+                margin: 0;
+                label {
+                    font-size: 1rem;
+                    margin: 0 0 .25rem 0;
+                }
+
+                input {
+                    width: 100%;
+                    margin: 0 0 1rem 0;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,20 @@
+<div class="drawer" id="drawer-login" tabindex="-1" role="dialog" aria-labelledby="Log in to submit update request">
+    <header class="flex-space-between drawer__heading">
+        <h1>Keep your journal record accurate and visible!</h1>
+        <button class="drawer__close" data-dismiss="drawer-login"><span
+                class="sr-only">Close</span><span data-feather="x"></span>
+        </button>
+    </header>
+    <div class="drawer__content">
+        <p class="intro-text">Help readers, authors, and indexers by keeping your journal's information up to date. You
+            can do this by
+            submitting an update request.</p>
+        <p class="intro-text">Login with the email address linked to your DOAJ account to continue.</p>
+        {% from "includes/_formhelpers.html" import render_field %}
+        {% set ur_url = base_url + url_for('publisher.update_request', journal_id=journal.id) %}
+        {% include "_account/includes/_login_form.html" %}
+        <p class="closing-text">We look forward to hearing from you!</p>
+        <button class="button button--tertiary" data-dismiss="drawer-login">Cancel</span>
+        </button>
+    </div>
+</div>

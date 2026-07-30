@@ -1005,7 +1005,7 @@ var formulaic = {
                 let flagDetailsText_deadline = "";
 
                 if ($assigneeInput.is(":disabled")) {
-                    if ($assigneeInput.val() === doaj.session.currentUserId) {
+                    if ($assigneeInput.val() === doaj.current_user.id) {
                         flagDetailsText += this.fullFlagHTML();
                     }
                     else {
@@ -1041,7 +1041,7 @@ var formulaic = {
                     if ($(".flag").length > 0) {
                         $(".flag").remove();
                     }
-                    if ($assigneeInput.val() === doaj.session.currentUserId) {
+                    if ($assigneeInput.val() === doaj.current_user.id) {
                         if ($(".flag").length > 0) {
                             $(".flag").remove();
                         }
