@@ -309,7 +309,7 @@ doaj.triage.scrollToField = function (fieldId) {
         doaj.triage.questions.activate(questionId, { scroll: false });
     }
 
-    $target.get(0).scrollIntoView({ behavior: "smooth", block: "center" });
+    doaj.triage.questions._scrollWithHeaderOffset($target, "center");
     $target.trigger("focus");
 };
 
@@ -720,8 +720,45 @@ doaj.triage.questions.scrollToActive = function () {
     }
     var $target = $(`#${questionId}`);
     if ($target.length > 0) {
-        $target.get(0).scrollIntoView({ behavior: "smooth", block: "start" });
+        doaj.triage.questions._scrollWithHeaderOffset($target, "start");
     }
+};
+
+// How long the collapse/expand slide takes - meant to read as a smooth
+// transition rather than a showpiece animation, but slow enough to actually
+// be felt (200ms read as barely different from instant).
+doaj.triage.questions.ANIMATION_MS = 350;
+
+// Both the site nav and .ew_header (the workflow item's title/status
+// banner) are position:sticky and sit above the question content at a
+// higher z-index, so a plain scrollIntoView({block:"start"}) can leave the
+// top chunk of the target tucked underneath them - the browser only
+// guarantees the element's edge reaches the *viewport* edge, it has no
+// idea a sticky element is floating on top of that same edge. This
+// measures where .ew_header actually currently sits on screen (it moves
+// as you scroll, and its height itself isn't fixed) and scrolls just far
+// enough to clear it, rather than assuming a fixed pixel offset.
+doaj.triage.questions._scrollWithHeaderOffset = function ($target, block) {
+    var el = $target && $target.get(0);
+    if (!el) {
+        return;
+    }
+    var clearance = 16;
+    var $stickyHeader = $(".ew_header");
+    var safeTop = clearance;
+    if ($stickyHeader.length > 0) {
+        safeTop = $stickyHeader.get(0).getBoundingClientRect().bottom + clearance;
+    }
+
+    var targetRect = el.getBoundingClientRect();
+    var delta;
+    if (block === "center") {
+        var safeHeight = window.innerHeight - safeTop;
+        delta = targetRect.top - safeTop - Math.max(0, (safeHeight - targetRect.height) / 2);
+    } else {
+        delta = targetRect.top - safeTop;
+    }
+    window.scrollBy({ top: delta, behavior: "smooth" });
 };
 
 // Collapses whichever question was previously active, expands questionId,
@@ -730,6 +767,35 @@ doaj.triage.questions.scrollToActive = function () {
 // auto-opened question scroll their target into view within the scrollable
 // question list; a manual header click doesn't need to (the user already
 // clicked something visible).
+//
+// The collapse/expand itself is animated (slideUp/slideDown) rather than
+// the instant hidden-attribute toggle _hide()/_show() do elsewhere - with
+// an instant toggle, the whole page layout jumps in one frame *before* the
+// smooth scroll even starts, so the scroll ends up animating across an
+// already-changed layout, which is what read as a jarring "blur" rather
+// than a smooth transition. Sliding the height open/closed over the same
+// short window the scroll animates in makes the two feel like one movement
+// instead of a snap followed by a scroll.
+//
+// The global `[hidden] { display: none !important }` rule (see
+// _workflow.scss) would otherwise fight jQuery's own inline height/display
+// styles for the whole animation, so the `hidden` attribute is only ever
+// applied once a collapse has *finished* (not before), and removed before
+// an expand *starts* (not after) - it's never present while an animation
+// is actually running.
+//
+// IMPORTANT: scrollIntoView() only runs in the slideDown *callback*, once
+// the expand has fully finished - not synchronously alongside it. Calling
+// it immediately (tried first) computes the scroll target against a layout
+// that's still actively changing: the question above is still shrinking
+// out from under it for the next ~200ms, so the browser's smooth-scroll
+// commits to a fixed pixel offset that's correct for the *starting* layout
+// but not the *final* one - once the collapse finishes and the page is
+// genuinely shorter, that same offset lands much further down the (now
+// shorter) document than intended. Live-confirmed as a real bug this way:
+// clicking Next from question 6 landed on question 27. Waiting for the
+// slide to finish before measuring where to scroll fixes it at the root,
+// rather than trying to compensate for a moving target.
 doaj.triage.questions.activate = function (questionId, options) {
     options = options || {};
     var $target = $(`#${questionId}`);
@@ -739,22 +805,26 @@ doaj.triage.questions.activate = function (questionId, options) {
 
     var previousId = doaj.triage.questions.activeQuestionId;
     if (previousId) {
-        $(`#${previousId}-body`)._hide();
+        var $prevBody = $(`#${previousId}-body`);
         $(`#${previousId}-header`).attr("aria-expanded", "false");
         $(`#${previousId}`).removeClass("is-active");
+        $prevBody.stop(true, true).slideUp(doaj.triage.questions.ANIMATION_MS, function () {
+            $prevBody.prop("hidden", true).css({ display: "", height: "" });
+        });
     }
 
-    $(`#${questionId}-body`)._show();
+    var $newBody = $(`#${questionId}-body`);
+    $newBody.prop("hidden", false).hide().stop(true, true).slideDown(doaj.triage.questions.ANIMATION_MS, function () {
+        if (options.scroll) {
+            doaj.triage.questions._scrollWithHeaderOffset($target, "start");
+        }
+    });
     $(`#${questionId}-header`).attr("aria-expanded", "true");
     $target.addClass("is-active");
 
     doaj.triage.questions.activeQuestionId = questionId;
     doaj.triage.questions._updateOwnButtons(questionId);
     doaj.triage.questions._updateProgress(questionId);
-
-    if (options.scroll) {
-        $target.get(0).scrollIntoView({ behavior: "smooth", block: "start" });
-    }
 };
 
 doaj.triage.questions.goNext = function (questionId) {
