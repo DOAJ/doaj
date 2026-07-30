@@ -693,6 +693,18 @@ def user_autocomplete():
     resp.mimetype = "application/json"
     return resp
 
+@blueprint.route("/autocomplete/user_tags")
+@login_required
+@ssl_required
+def user_tags_autocomplete():
+    q = request.values.get("q")
+    s = request.values.get("s", 10)
+    ac = models.Account.autocomplete("attributes." + constants.USER_ATTR__TAG + ".exact", q, size=s)
+
+    # return a json response
+    resp = make_response(json.dumps({"suggestions": ac}))
+    resp.mimetype = "application/json"
+    return resp
 
 # Route which returns the associate editor account names within a given editor group
 @blueprint.route("/dropdown/eg_associates")

@@ -113,6 +113,27 @@ ROLE_PREMIUM_CSV = "premium_csv"
 # TODO add ultra_bulk_delete and refactor view to use constants
 ROLE_ADMIN_REPORT_WITH_NOTES = "ultra_admin_reports_with_notes"  # MUST start with ultra_ so that superusers don't gain
 
+USER_ATTR__WORKFLOW = "workflow"
+USER_ATTR__LANGUAGE = "language"
+USER_ATTR__COUNTRY = "country"
+USER_ATTR__TAG = "tag"
+
+USER_ATTR__ALL = [
+    USER_ATTR__WORKFLOW,
+    USER_ATTR__LANGUAGE,
+    USER_ATTR__COUNTRY,
+    USER_ATTR__TAG
+]
+
+EWF__TRIAGE = "Triage"
+EWF__QUICK_FAIL = "Quick Fail"
+EWF__QUALITY_REVIEW = "Quality Review"
+
+EWF__ALL_STAGES = [
+    EWF__TRIAGE,
+    EWF__QUICK_FAIL,
+    EWF__QUALITY_REVIEW
+]
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
