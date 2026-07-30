@@ -1,0 +1,24 @@
+suite: Article Deletion Notifications
+testset: Article Deletion Notifications
+
+tests:
+  - title: Article Deletion Notification Generation
+    context:
+      role: admin
+    steps:
+      - step: Run the testdrive for deleted_articles to set up the fixtures for this test
+        path: /testdrive/deleted_articles
+      - step: Log in to the system as an administrator
+      - step: Go to the admin notifications page
+        path: /admin/notifications
+        results:
+        - There are no notifications listed for either user account supplied in the testdrive
+      - step: Go to the testdrive page without reloading it, and click the button marked "Run background task".
+        results:
+        - The text beneath the button confirms that the script executed successfully
+      - step: Return to the admin notifications page
+        results:
+          - A new notification is present with the title "Deleted articles in your journal(s) this week".
+          - The notification content lists the titles and details of the deleted articles.
+          - There is only one notification for the first publisher listed on the testdrive.  The second publisher
+            does not have a notification
