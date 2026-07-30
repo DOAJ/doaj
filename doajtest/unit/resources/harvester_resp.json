@@ -40,7 +40,7 @@
                     "journalIssueId": 111111,
                     "dateOfPublication": "2010 Apr",
                     "monthOfPublication": 1,
-                    "yearOfPublication": 2010,
+                    "yearOfPublication": 2013,
                     "printPublicationDate": "2010-01-01",
                     "journal": {
                         "title": "My Journal",
@@ -51,7 +51,7 @@
                         "nlmid": "123456789"
                     }
                 },
-                "pubYear": "2010",
+                "pubYear": "2013",
                 "pageInfo": "1",
                 "affiliation": "aga@cottagelabs.com",
                 "publicationStatus": "publish",
@@ -136,9 +136,9 @@
                     "issue": "1",
                     "volume": "1",
                     "journalIssueId": 111111,
-                    "dateOfPublication": "2010 Apr",
+                    "dateOfPublication": "2013 Apr",
                     "monthOfPublication": 1,
-                    "yearOfPublication": 2010,
+                    "yearOfPublication": 2013,
                     "printPublicationDate": "2010-01-01",
                     "journal": {
                         "title": "My Journal",
@@ -149,7 +149,7 @@
                         "nlmid": "123456789"
                     }
                 },
-                "pubYear": "2010",
+                "pubYear": "2013",
                 "pageInfo": "1",
                 "affiliation": "aga@cottagelabs.com",
                 "publicationStatus": "publish",
