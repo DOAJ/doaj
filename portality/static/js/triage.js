@@ -297,6 +297,18 @@ doaj.triage.scrollToField = function (fieldId) {
         $target = $fields.first();
     }
 
+    // Only the active question's body is ever visible - if this field's
+    // question isn't the active one (e.g. the user has since opened a
+    // different question), it's sitting inside a hidden accordion body,
+    // and scrollIntoView()/focus() on a display:none element are silent
+    // no-ops. Expand the right question first so there's actually
+    // something visible to scroll to.
+    var $question = $target.closest(doaj.triage.selectors.questionWrapper);
+    var questionId = $question.attr("id");
+    if (questionId && questionId !== doaj.triage.questions.activeQuestionId) {
+        doaj.triage.questions.activate(questionId, { scroll: false });
+    }
+
     $target.get(0).scrollIntoView({ behavior: "smooth", block: "center" });
     $target.trigger("focus");
 };

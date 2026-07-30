@@ -193,22 +193,47 @@ body.dashboard {
                 min-height: 4rem;
                 min-width: 100%;
             }
+        }
 
-            button.button.button--prev {
-                border: none;
-                padding: 0;
-                margin: 0;
-                font-size: .8rem;
-                font-weight: normal;
-                text-decoration: underline;
-                text-transform: lowercase;
-                letter-spacing: 0;
+        // The whole page scrolls normally (like every other admin page) -
+        // recommendation banner, progress bar, and the question list are
+        // all just plain in-flow content, one after another. No
+        // sticky/fixed positioning and no separate scroll region here
+        // deliberately - an earlier version pinned the banner/progress and
+        // gave the question list its own internal scrollbar, which needed
+        // increasingly elaborate overflow:hidden/JS workarounds to stop the
+        // outer page from scrolling too (which also pushed the page's
+        // trailing Logout/Settings row out of its normal place). Simpler to
+        // just not fight the browser: normal page, normal scroll, Logout/
+        // Settings ends up exactly where it is on every other page - after
+        // all the content, reached by scrolling to the end.
+        .triage-panel {
+            &__banner {
+                // Breathing room around the recommendation + progress bar -
+                // previously had none, so they sat flush against the page
+                // edges and the header above.
+                padding: 1rem 0.5rem 0;
 
-                &:hover {
-                    background-color: transparent;
-                    color: $grapefruit;
+                @media screen and (min-width: 769px) {
+                    padding: 1rem;
+                }
+
+                .progress {
+                    margin-top: 0.5rem;
                 }
             }
+        }
+
+        // Prev/Next belong to the question they're in (see
+        // _triage_compound_base.html) - plain in-flow content at the end of
+        // each question, not sticky/shared, so the same pattern repeats
+        // consistently for every question. Prev and Next are equally
+        // weighted actions here, so both are left as plain .button-sized
+        // buttons - no special link-like treatment for Prev - and disabled
+        // state comes from the global .button[disabled] rule
+        // (components/_buttons.scss), same as everywhere else.
+        .criterion-nav {
+            margin-top: 1.5rem;
         }
 
         $progress-gradient: linear-gradient(
@@ -241,16 +266,31 @@ body.dashboard {
             }
         }
 
+        // A <button> (see triage.html) rather than the plain text it used
+        // to be - clicking it scrolls the question list to whichever
+        // question is currently active. Sits below the bar as normal flow
+        // content now, not layered on top of it via absolute positioning.
+        // Resets the generic button styling from components/_buttons.scss
+        // (border/padding/uppercase) since this should read as a plain
+        // text link, not a bordered button.
         .progress-label {
-            position: absolute;
-            right: 2.5rem;
-            color: black;
+            display: block;
+            margin: 0.35rem 0 0;
+            border: none;
+            background: transparent;
+            padding: 0;
+            color: $warm-black;
+            text-decoration: underline;
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 0.875rem;
+            cursor: pointer;
             white-space: nowrap;
 
-            &.is-complete {
-                left: auto;
-                right: 4rem;
-                color: white;
+            &:hover, &:focus, &:active {
+                border: none;
+                background-color: transparent;
+                color: $grapefruit;
             }
         }
 
@@ -437,6 +477,21 @@ body.dashboard {
                 max-width: 100%;
             }
         }
+    }
+
+    // Keeps the "Current Recommendation" panel compact regardless of how
+    // many reasons/exceptions accumulate, so the question area below it
+    // (.ew_body) keeps the majority of the available vertical space. A
+    // solid background + left accent bar (rather than just a thin border)
+    // is what makes it read as a banner rather than plain text.
+    #triage-recommendation:not(:empty) {
+        max-height: 12rem;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0.75rem;
+        background-color: $light-grey;
+        border-left: 4px solid $grapefruit;
+        border-radius: 3px;
     }
 
     .action-container {
