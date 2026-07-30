@@ -584,9 +584,14 @@ def ambassadors():
     return render_template(templates.STATIC_PAGE, page_frag="/about/ambassadors.html")
 
 
-@blueprint.route("/about/advisory-board-council/")
+@blueprint.route("/about/foundation-advisory-board/")
 def abc():
     return render_template(templates.STATIC_PAGE, page_frag="/about/advisory-board-council.html")
+
+
+@blueprint.route("/about/advisory-board-council/")
+def abc_redirect():
+    return redirect("/about/foundation-advisory-board/", code=301)
 
 
 @blueprint.route("/about/editorial-policy-advisory-group/")
