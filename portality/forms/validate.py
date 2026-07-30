@@ -333,6 +333,42 @@ class StopWords(object):
                 raise validators.StopValidation(self.message.format(stop_word=v))
 
 
+class NotValue(object):
+    """
+    ~~NotValue:FormValidator~~
+    Rejects if the field value equals a forbidden string (case-insensitive).
+    """
+    def __init__(self, value, message=None):
+        self.forbidden = value
+        if not message:
+            message = "'{value}' is not a valid answer for this question. Leave blank.".format(value=value)
+        self.message = message
+
+    def __call__(self, form, field):
+        if self.forbidden is None:
+            return
+        if field.data and field.data.strip().lower() == self.forbidden.strip().lower():
+            raise validators.ValidationError(self.message)
+
+
+class ForbiddenWord(object):
+    """
+    ~~ForbiddenWord:FormValidator~~
+    Rejects if the field value contains a forbidden word (case-insensitive).
+    """
+    def __init__(self, word, message=None):
+        self.word = word
+        if not message:
+            message = "You may not enter '{word}' in this field".format(word=word)
+        self.message = message
+
+    def __call__(self, form, field):
+        if self.word is None:
+            return
+        if field.data and self.word.lower() in field.data.lower():
+            raise validators.ValidationError(self.message)
+
+
 class DifferentTo(MultiFieldValidator):
     """
     ~~DifferentTo:FormValidator~~
