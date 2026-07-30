@@ -1,29 +1,20 @@
 {#
-    #triage-recommendation is always rendered, even when empty, so that
-    doaj.triage.recommendation.render() (triage.js) always has somewhere to
-    write into after an async save - it rebuilds this div's contents from
-    data.recommendation, mirroring the "reject" half of the gating below.
-    It only ever covers the text/reasons - the action widgets further down
-    (fail.html / triaged.html) are left alone by the JS and stay
-    server-rendered / correct as of last full page load.
+    #triage-recommendation is always rendered empty here - never filled in
+    by Jinja. Its content only ever comes from
+    doaj.triage.recommendation.render() (triage.js), called both right after
+    page load (fed doaj.triage.initialRecommendation, the same data this
+    template used to render statically) and after every async save (fed the
+    response's data.recommendation). Routing both through one function means
+    one gate decides "is there anything worth showing" (currently:
+    recommendation.code === "reject" only) - previously this template had
+    its own, looser gate (reject OR wfc.triage.review_complete, itself a
+    persisted flag), so a fresh page load could show content that no
+    subsequent live save would ever reproduce. It only ever covers the
+    text/reasons - the action widgets further down (fail.html / triaged.html)
+    are left alone by the JS and stay server-rendered / correct as of last
+    full page load.
 #}
-<div id="triage-recommendation">{%- if recommendation %}
-    {# Only display the recommendation if it is a reject, or if the review is complete #}
-    {# as all other recommendations should only be acted on once triage has answered all questions #}
-    {% if recommendation.code == "reject" or wfc.triage.review_complete %}
-        <p>Current Recommendation: {{ recommendation.code }}</p>
-        <p>Reasons:
-            <ul>
-            {% for reason in recommendation.reasons %}
-                <li>{{ reason.question.text }} ({{ reason.question.name }}) [{{ reason.question.field_id }}]: {{ reason.answer }}
-                    {% if reason.sv %}(SV:{{ reason.sv }}){% endif %}
-                    {% if reason.exception %}(Exception(s): {{ reason.exception|join(", ") }}){% endif %}
-                </li>
-            {% endfor %}
-            </ul>
-        </p>
-    {% endif %}
-{%- endif %}</div>
+<div id="triage-recommendation"></div>
 
 {% if recommendation %}
     {% if recommendation.code == "reject" or wfc.triage.review_complete %}

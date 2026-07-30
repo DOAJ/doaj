@@ -11,6 +11,12 @@ doaj.triage = {};
 
 doaj.triage.asyncURL = null;
 
+// The same recommendation data _recommend.html used to render statically -
+// injected from the page template (triage.html) so setupUI() can feed it
+// through doaj.triage.recommendation.render(), the exact function every
+// later async save also uses. See _recommend.html for why.
+doaj.triage.initialRecommendation = null;
+
 // strings that are used consistently in the templates
 doaj.triage.magicStrings = {
     reviewOutcomeFieldset: "-review_outcome",
@@ -36,12 +42,13 @@ doaj.triage.selectors = {
     // One <section> per question - see doaj.triage.questions below.
     questionWrapper: ".criterion-wrapper",
 
-    // _triage_form.html already renders an (otherwise unused) error
-    // container as the first child of the form - the ">" combinator picks
-    // that one out specifically, since the same "error-container" class
-    // also appears deeper in the DOM (one per fieldset/note field) and
-    // those are not ours to touch.
-    summaryContainer: "#triage > .error-container",
+    // Dedicated host in the fixed top banner (triage.html) - moved there
+    // (previously the first, otherwise-unused child of the form itself) so
+    // it sits alongside the recommendation/progress bar instead of scrolling
+    // away with the question list, and no longer needs its own
+    // position:sticky (which fought with the site header - see
+    // _workflow.scss's removal of that rule).
+    summaryContainer: "#triage-error-summary",
     summaryLink: "[data-field-error-summary-for]",
     checkboxOther: "input[type='checkbox'][value='other']",
     checkboxNone: "input[type='checkbox'][value='none']",
@@ -188,6 +195,7 @@ doaj.triage.setupUI = function () {
         }
     });
     doaj.triage.questions.setupInit();
+    doaj.triage.recommendation.render(doaj.triage.initialRecommendation);
 }
 
 /* ============================================================

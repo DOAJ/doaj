@@ -121,7 +121,7 @@ def triage_form(application_id):
         else:
             form_html = processor.render_form()
             return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application,
-                                   wfc=wfc) # note we don't include the recommendation, as the form is invalid
+                                   wfc=wfc, recommendation=None)  # form is invalid, so no recommendation to show
 
 @blueprint.route("/triage-form/<application_id>/async/<wfc_id>", methods=["POST"])
 @login_required

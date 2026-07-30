@@ -42,16 +42,16 @@
             Placeholder styling for the error summary injected by
             doaj.triage.summary (see triage.js). This is what answers "a way
             to find the invalid fields to review" - a running list of every
-            outstanding issue, each linking straight to its field, kept
-            visible via position:sticky since the triage form is long.
+            outstanding issue, each linking straight to its field. Lives in
+            the fixed top banner (triage.html) as plain in-flow content, same
+            as the rest of the banner - no position:sticky here any more, it
+            used to stick to the literal viewport top and collide with the
+            site header/ew_header (both also sticky, both above it).
             Replace freely - the only contract JS relies on is
             "triage-error-summary-host" plus the link/list classes below.
         */
         .triage-error-summary-host:not(:empty) {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            margin-bottom: 1rem;
+            margin: 0 0 1rem;
             padding: 0.75rem 1rem;
             background-color: #ffffff;
             border: 1px solid #d9534f;
@@ -105,6 +105,15 @@
     #}
     <div class="triage-panel">
         <div class="triage-panel__banner">
+            {#
+                Dedicated host for the "needs attention" error summary (see
+                doaj.triage.summary / doaj.triage.selectors.summaryContainer
+                in triage.js) - lives in the banner, alongside the
+                recommendation and progress bar, rather than scrolling away
+                with the question list.
+            #}
+            <div id="triage-error-summary" class="error-container"></div>
+
             {% include 'management/admin/_workflow/includes/_recommend.html' %}
 
             <div class="row">
@@ -137,6 +146,7 @@
     <script type="text/javascript" src="/static/js/custom_jquery.js"></script>
     <script type="text/javascript">
         doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
+        doaj.triage.initialRecommendation = {{ recommendation|tojson }};
         doaj.triage.init();
     </script>
 {% endblock %}
