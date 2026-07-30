@@ -149,7 +149,27 @@ doaj.triage.init = function () {
     });
 
     doaj.triage.setupUI();
+
+    // quick implementation of a dependent question within an action group
+    $("[data-dependency-trigger]").on("change", function(event) {
+        const $trigger = $(event.currentTarget);
+        doaj.triage.setupDependents($trigger);
+    });
+    $("[data-dependency-trigger]").each(function() {
+        doaj.triage.setupDependents($(this));
+    })
 };
+
+doaj.triage.setupDependents = function($trigger) {
+    const key = $trigger.attr("data-dependency-trigger");
+    const target = $(`[data-dependency-key="${key}"]`)
+    const hidden = target.attr("hidden")
+    if (hidden) {
+        target.removeAttr("hidden");
+    } else {
+        target.attr("hidden", "true");
+    }
+}
 
 doaj.triage.setupUI = function () {
     $(doaj.triage.selectors.checkboxOther).each(function () {

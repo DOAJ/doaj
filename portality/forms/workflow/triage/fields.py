@@ -1515,7 +1515,8 @@ class License(Field):
             {"label": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"label": "CC0", "value": "CC0"},
             {"label": "Public domain", "value": "Public domain"},
-            {"label": "Publisher's own license", "value": "Publisher's own license"}
+            # FIXME: this dependency bit is a hack, it should not be here, but I don't know where yet
+            {"label": "Publisher's own license", "value": "Publisher's own license", "attrs": {"data-dependency-trigger": "license_attribute"}},
         ]
         control_render_class = CheckboxRenderer
         render_class = GenericField
@@ -1540,6 +1541,11 @@ class LicenseAttribute(Field):
             {"label": "No Derivatives", "value": "ND"},
             {"label": "No Commercial Usage", "value": "NC"}
         ]
+        # FIXME: this dependency bit is a hack, it should not be here, but I don't know where yet
+        fieldset_attributes = {
+            "data-dependency-key": "license_attribute",
+            "hidden": "true"
+        }
         control_render_class = CheckboxRenderer
         render_class = GenericField
         error_messages = {
@@ -1563,34 +1569,30 @@ class LicenseURL(Field):
             DisallowedValue: T.website_license_policy.validation.license_url.disallowed_value
         }
 
-    name = "continues"
+    name = "license_url"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
     validators = [IsURL()]
 
-class WebsiteLicensePolicyGroup(Structure):
-    class C(TriageCompoundFieldCapability):
-        label = T.website_license_policy.label
+class WebsiteLicensePolicyActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        label = T.website_license_policy.edit.licences
         order = [
-            "answer",
             "license",
             "license_attribute",
-            "license_url",
-            "note"
+            "license_url"
         ]
-        render_class = TriageCompound
-        error_messages = {
-            IsConditionallyRequired: T.website_license_policy.validation.group.is_conditionally_required
-        }
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "website_license_policy_group"})]
+        trigger_btn = "action"
 
-    name_ = "website_license_policy_group"
+    name_ = "website_license_policy_action_group"
     capabilities_ = (C(),)
 
-    answer = WebsiteLicensePolicy(OPTIONAL, SINGLE)
     license = License(REQUIRED, REPEATABLE)
     license_attribute = LicenseAttribute(OPTIONAL, REPEATABLE)
     license_url = LicenseURL(REQUIRED, SINGLE)
-    note = WebsiteLicensePolicyNote(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(license_attribute,  # <- this field is required if
@@ -1598,6 +1600,34 @@ class WebsiteLicensePolicyGroup(Structure):
                    "Publisher's own license"
                    )
     ]
+
+class WebsiteLicensePolicyGroup(Structure):
+    class C(TriageCompoundFieldCapability):
+        label = T.website_license_policy.label
+        order = [
+            "answer",
+            "action_group",
+            "note"
+        ]
+        render_class = TriageCompound
+        error_messages = {
+            IsConditionallyRequired: T.website_license_policy.validation.group.is_conditionally_required
+        }
+        action = {
+            "action": {
+                "instruction": T.website_license_policy.action.action.instruction,
+                "controls": "website_license_policy_action_group",
+            },
+        }
+
+    name_ = "website_license_policy_group"
+    capabilities_ = (C(),)
+
+    answer = WebsiteLicensePolicy(OPTIONAL, SINGLE)
+    action_group = WebsiteLicensePolicyActionGroup(OPTIONAL, SINGLE)
+    note = WebsiteLicensePolicyNote(OPTIONAL, SINGLE)
+
+
 
 ###########################################################
 ## Website: Copyright Policy
@@ -1657,26 +1687,48 @@ class CopyrightURL(Field):
     capabilities = (C(),)
     validators = [IsURL()]
 
+class WebsiteCopyrightActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        label = T.website_copyright.edit.copyright
+        order = [
+            "copyright_author_retains",
+            "copyright_url"
+        ]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "website_copyright_group"})]
+        trigger_btn = "action"
+
+    name_ = "website_copyright_action_group"
+    capabilities_ = (C(),)
+
+    copyright_author_retains = CopyrightAuthorRetains(REQUIRED, SINGLE)
+    copyright_url = CopyrightURL(REQUIRED, SINGLE)
+
 class WebsiteCopyrightGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.website_copyright.label
         order = [
             "answer",
-            "copyright_author_retains",
-            "copyright_url",
+            "action_group",
             "note"
         ]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.website_copyright.validation.group.is_conditionally_required
         }
+        action = {
+            "action": {
+                "instruction": T.website_copyright.action.action.instruction,
+                "controls": "website_copyright_action_group",
+            },
+        }
 
     name_ = "website_copyright_group"
     capabilities_ = (C(),)
 
     answer = WebsiteCopyright(OPTIONAL, SINGLE)
-    copyright_author_retains = CopyrightAuthorRetains(REQUIRED, SINGLE)
-    copyright_url = CopyrightURL(REQUIRED, SINGLE)
+    action_group = WebsiteCopyrightActionGroup(OPTIONAL, SINGLE)
     note = WebsiteCopyrightNote(OPTIONAL, SINGLE)
 
 
