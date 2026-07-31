@@ -6,7 +6,7 @@
 	"types" : {
 		"account" : {"import" : true, "limit" : -1, "download_test_users": true},
 		"application" : {"import" : true, "limit" : -1},
-		"background_job" : {"import" : true, "limit" : -1},
+		"background_job" : {"import" : true, "limit" : 10000},
 		"cache" : {"import" : true, "limit" : -1},
 		"draft_application" : {"import" : true, "limit" : -1},
 		"editor_group" : {"import" : true, "limit" : -1},
@@ -19,7 +19,7 @@
 		"preserve" : {"import" : true, "limit" : -1},
 		"provenance" : {"import" : true, "limit" : -1},
 		"upload" : {"import" : true, "limit" : -1},
-		"article" : {"import" : true, "limit" : -1},
+		"article" : {"import" : true, "limit" : 2000000},
 		"note": {"import":  true, "limit":  -1}
 	}
 }

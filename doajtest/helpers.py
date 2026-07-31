@@ -80,7 +80,10 @@ class WithES:
         source = ArticleFixtureFactory.make_article_source()
         article = Article(**source)
         article.save(blocking=True)
-        article.delete()
+        # bypass Article.delete()'s tombstoning (see fix_es_mapping for
+        # the same fix and why): this fixture has no real journal, so
+        # get_owner() finds none and raises NoValidOwnerException
+        dao.DomainObject.delete(article)
         Article.blockdeleted(article.id)
 
     def warmArticleTombstone(self):
@@ -90,7 +93,10 @@ class WithES:
         source = ArticleFixtureFactory.make_article_source()
         article = ArticleTombstone(**source)
         article.save(blocking=True)
-        article.delete()
+        # ArticleTombstone extends Article, so it inherits the same
+        # tombstoning delete() override - bypass it here too (see
+        # warmArticle above)
+        dao.DomainObject.delete(article)
         ArticleTombstone.blockdeleted(article.id)
 
 
@@ -121,7 +127,7 @@ def create_index(index_type):
 
 def dao_proxy(dao_method, type="class"):
     if type == "class":
-        @classmethod
+        @classmethod   # noqa
         @functools.wraps(dao_method)
         def proxy_method(cls, *args, **kwargs):
             create_index(cls.__type__)
@@ -259,9 +265,10 @@ class DoajTestCase(TestCase):
     @contextmanager
     def _make_and_push_test_context_manager(self, path="/", acc=None):
         ctx = self._make_and_push_test_context(path=path, acc=acc)
-        yield ctx
-
-        ctx.pop()
+        try:
+            yield ctx
+        finally:
+            ctx.pop()
 
     @staticmethod
     def fix_es_mapping():
@@ -276,7 +283,8 @@ class DoajTestCase(TestCase):
              models.Application(**ApplicationFixtureFactory.make_application_source()),
         ]:
             m.save(blocking=True)
-            m.delete()
+            # Bypass Article.delete()'s tombstoning, since we're actually cleaning up (no effect on Application)
+            dao.DomainObject.delete(m)
         models.Notification().save()
 
 
@@ -514,7 +522,7 @@ def assert_expected_dict(test_case: TestCase, target, expected: dict):
 
 def login(app_client, email, password, follow_redirects=True):
     return app_client.post(url_for('account.login'),
-                           data=dict(user=email, password=password),
+                           data=dict(user=email, password=password, action='password_login'),
                            follow_redirects=follow_redirects)
 
 

@@ -182,6 +182,16 @@ class DOAJ(object):
         return admin_alerts.AdminAlertsService()
 
     @classmethod
+    def accountService(cls):
+        """
+        Obtain an instance of the AccountSrvice ~~->AccountService:Service~~
+        :return: AccountService
+        """
+        from portality.bll.services import account
+        return account.AccountService()
+
+
+    @classmethod
     def workflowService(cls):
         from portality.bll.services.workflow import service
         return service.WorkflowService()
