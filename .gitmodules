@@ -3,4 +3,4 @@
 	url = https://github.com/CottageLabs/edges.git
 [submodule "modules/formulaic"]
 	path = modules/formulaic
-	url = git@github.com:CottageLabs/formulaic.git
+	url = https://github.com/CottageLabs/formulaic.git
