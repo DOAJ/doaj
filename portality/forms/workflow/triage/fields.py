@@ -647,7 +647,10 @@ class RequiredIfNestedException(RequiredIf):
     all the base RequiredIf's by_name()-based lookup can reach.
     """
     def _bind_fields(self):
-        self._conditionally_required_field = self._reference.ref_.by_name(self._conditionally_required_field_name)
+        # FIXME: there is a mechanism on the Validator for binding fields which are nested,
+        # we should update this to use that mechanism (or just update RequiredIf)
+        # In fact, RequiredIf has that mechanism already, so this might be obsolete already
+        self._conditionally_required_field = self._reference.ref_.by_name(self._conditionally_required_field.name)
         self._depends_on_field = self._reference.ref_.get_path(
             "database_withdrawn_exceptions_group.database_withdrawn_exceptions"
         )
@@ -1292,7 +1295,8 @@ class RequiredIfNotNestedException(RequiredIfNot):
     get_path() instead, which can walk into sub-structures.
     """
     def _bind_fields(self):
-        self._conditionally_required_field = self._reference.ref_.by_name(self._conditionally_required_field_name)
+        # FIXME: this problem has been resolved in RequiredIfNot
+        self._conditionally_required_field = self._reference.ref_.by_name(self._conditionally_required_field.name)
         self._depends_on_field = self._reference.ref_.get_path(
             "issn_continuation_action_group.continues"
         )
