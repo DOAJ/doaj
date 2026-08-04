@@ -31,6 +31,7 @@ We know some parts of this website may not be fully accessible:
 
 We have recently fixed:
 
+- Added alt text to the 'Skip to main content' button
 - Made sure all navbars are accessible for keyboard-only users
 - Radio buttons in the application form are now focusable
 - Search facets are configured for screenreaders to indicate their state
