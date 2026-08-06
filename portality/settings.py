@@ -34,7 +34,7 @@ REMEMBER_COOKIE_SECURE = True
 TESTDRIVE_ENABLED = False
 
 # List of script names which can be executed via the testdrive.
-TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications"]
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications", "approaching_flag_deadline"]
 
 ####################################
 # Debug Mode
@@ -481,6 +481,7 @@ HUEY_SCHEDULE = {
     "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
     # Weekly notification to publishers about deleted articles (Article Tombstones)
     "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
+    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
 }
 
 
@@ -1629,6 +1630,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
     'find_discontinued_soon': {
         'last_run_successful_in': _DAY + 2 * _HOUR
     },
+    'approaching_flag_deadline': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
     'harvest': {
         'last_run_successful_in': _DAY + 2 * _HOUR
     },
@@ -1680,6 +1684,12 @@ PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 # report journals that discontinue in ... days (eg. 1 = tomorrow)
 DISCONTINUED_DATE_DELTA = 0
+
+####################################################
+# Flag management
+
+# find approaching deadlines in ... days (eg. 1 = tomorrow)
+FLAG_APPROACHING_DEADLINE_DELTA = 7
 
 ##################################################
 # Feature tours currently active
