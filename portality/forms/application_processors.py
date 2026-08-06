@@ -421,6 +421,20 @@ class AdminApplication(ApplicationProcessor):
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             j = applicationService.accept_application(self.target, account)
+
+            # Record the current time as last full review, if mark as full review has been selected
+            if (self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST and
+                    self.form.mark_as_full_review.data):
+                now = dates.now_str()
+                # Add last full review note to update request application
+                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
+                self.target.add_note(n, date=now, author_id=account.id)
+                self.target.save()
+                # Add last full review note to journal
+                j.last_full_review = now
+                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
+                j.add_note(n, date=now, author_id=account.id)
+                j.save()
             # record the url the journal is available at in the admin are and alert the user
             if has_request_context():       # fixme: if we handle alerts via a notification service we won't have to toggle on request context
                 jurl = url_for("doaj.toc", identifier=j.toc_id)

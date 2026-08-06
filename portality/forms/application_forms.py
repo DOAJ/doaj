@@ -2107,6 +2107,12 @@ class FieldDefinitions:
         ]
     }
 
+    MARK_AS_FULL_REVIEW = {
+        "name": "mark_as_full_review",
+        "label": "This update request constitutes a full review of the journal",
+        "input": "checkbox"
+    }
+
 
 ##########################################################
 # Define our fieldsets
@@ -2340,6 +2346,14 @@ class FieldSetDefinitions:
         ]
     }
 
+    MARK_AS_FULL_REVIEW = {
+        "name": "mark_as_full_review",
+        "label": "Mark as full review",
+        "fields": [
+            FieldDefinitions.MARK_AS_FULL_REVIEW["name"]
+        ]
+    }
+
     # ~~->$ Status:FieldSet~~
     STATUS = {
         "name": "status",
@@ -2515,6 +2529,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.MARK_AS_FULL_REVIEW["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
