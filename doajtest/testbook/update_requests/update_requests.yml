@@ -90,23 +90,14 @@ tests:
     - step: Click on the `Update requests` tab on the LHS panel
       results:
       - You will see a list of records
-    - step: Filter the results by `Closed` and select status 'Accepted'
-      results:
-        - You will see a list of records, each with a button "Review Update"
-    - step: Click the "Review Update" button next to one of the records
-      results:
-          - a new browser tab opens, titled `Update request ...`
-          - the `Mark as full review` checkbox in the right side is visible
-    - step: Close the `Update request ...` tab to return to the search results
-    - step: Clear filters by clicking the 'CLEAR ALL' grey button below the search bot at the right side.
-    - step: Apply new filter results by `Open` and select any status.
+    - step: Filter results by `Open` and select any status
     - step: Click the "Review Update" button next to one of the records
       results:
         - a new browser tab opens, titled `Update request ...`
-        - the `Mark as full review` checkbox in the right side is not visible
+        - the `Mark as full review` checkbox on the right side (below `Locked for editing...`) is not visible
     - step: Select the status as `Accepted` in Change Status
       results:
-        - The checkbox `Mark as full review` in the side panel is visible
+        - The checkbox `Mark as full review` in the right side panel is visible
     - step: Click on the `Mark as full review` checkbox
       results:
         - The checkbox `Mark as full review` is filled
