@@ -101,6 +101,7 @@ This website was last tested on **14 April 2025**. An independent organisation, 
 
 ## Changes to this document 
 
+- 4 August 2026: Added alt text to the 'Skip to main content' button
 - 11 September 2025: made radio buttons on search focusable
 - 4 August 2025: added the VPAT statement and updated the last tested date
 - 28 September 2024: moved the ReCAPTCHA work to completed and added a problem with radio buttons in search to the in progress list
