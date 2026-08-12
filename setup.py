@@ -20,7 +20,7 @@ setup(
         "feedparser==6.0.11",
         "jinja2~=3.1.4",
         "jsonpath-ng~=1.6",
-        "flask==3.1.2",
+        "flask==3.1.3",
         "Werkzeug~=3.1",
         "Flask-Babel==4.0.0",
         "Flask-Cors==6.0.0",
