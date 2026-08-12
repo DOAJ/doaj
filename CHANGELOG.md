@@ -2,6 +2,21 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.6.11
+
+Adds a 'Last Full Review' checkbox to the admin update request form.
+https://github.com/DOAJ/doajPM/issues/4287
+
+Required fields assignee and deadline for flagged journals, notifications on flags.
+https://github.com/DOAJ/doajPM/issues/4202
+https://github.com/DOAJ/doajPM/issues/4203
+
+Fix for API article validation errors failing to reach the user due to translation
+
+### 8.6.10
+
+Static pages release and upgrade some dependencies, move advisory board page path.
+
 ### 8.6.9
 
 Bugfixes to login form and change ES error code 400 to 500
