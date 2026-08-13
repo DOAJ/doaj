@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='8.6.9',
+    version='8.6.12',
     python_requires='>=3.12',
     packages=find_packages(),
     install_requires=[
@@ -20,10 +20,10 @@ setup(
         "feedparser==6.0.11",
         "jinja2~=3.1.4",
         "jsonpath-ng~=1.6",
-        "flask<3",
-        "Werkzeug<3.0",   # FIXME: we have passwords using plain sha1 that are undecodable after 3.0
+        "flask==3.1.3",
+        "Werkzeug~=3.1",
         "Flask-Babel==4.0.0",
-        "Flask-Cors==5.0.0",
+        "Flask-Cors==6.0.0",
         "Flask-DebugToolbar==0.15.1",
         "Flask-Login==0.6.3",
         "Flask-Mail==0.10.0",
@@ -36,7 +36,7 @@ setup(
         "libsass==0.23.0",
         "LinkHeader==0.4.3",
         "lxml==5.3.0",
-        "Markdown==3.7.0",
+        "Markdown==3.8.1",
         "markdown-full-yaml-metadata==2.2.1",
         "markdown-link-attr-modifier==0.2.1",
         "mdx_truly_sane_lists==1.3",

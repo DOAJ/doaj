@@ -2,7 +2,7 @@ from portality.core import app
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask
 from portality.background import BackgroundApi
 from portality.models.background import StdOutBackgroundJob
-from werkzeug import FileStorage
+from werkzeug.datastructures import FileStorage
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
