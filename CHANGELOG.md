@@ -2,6 +2,11 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.6.12
+
+Flask v3 upgrade - some password migration required to support later Werkzeug.
+https://github.com/DOAJ/doajPM/issues/4181
+
 ### 8.6.11
 
 Adds a 'Last Full Review' checkbox to the admin update request form.
