@@ -66,7 +66,7 @@ setup(
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
 
-    ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
+    ] + (["setproctitle==1.3.7"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
         "test": ["pytest~=8.3.3",
