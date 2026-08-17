@@ -28,10 +28,10 @@ jobs:
           token: ${{ secrets.STEVE_PAT_DOAJ_ACTIONS_DOCS }}
           fetch-depth: 0
 
-      - name: set up a python 3.10 environment
+      - name: set up a python 3.12 environment
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
         
       - name: install opensearch
         uses: esmarkowski/opensearch-github-action@v1.0.0

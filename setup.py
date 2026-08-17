@@ -6,7 +6,7 @@ import sys
 setup(
     name='doaj',
     version='8.6.12',
-    python_requires='>=3.10', # EOL October 2026
+    python_requires='>=3.12',
     packages=find_packages(),
     install_requires=[
         "awscli==1.34.25",
@@ -48,10 +48,11 @@ setup(
         #"pycountry @ git+https://github.com/DOAJ/pycountry.git@caf24adc255bccc968a16d44702e8cd6a115dd50#egg=pycountry",
         "python-dateutil",  # something else already installs this; note we need it without an explicit version freeze
         "pytz==2024.2",
-        "redis==3.3.11",
+        "redis==7.4.0",
         "requests~=2.32.3",
         "responses==0.10.6",
         "rstr~=3.2.2",
+        "setuptools<81",  # FIXME setuptools has removed pkg_resources. ModuleNotFoundError: No module named 'pkg_resources'
         "tzlocal~=5.2.0",
         "Unidecode~=1.3.8",
 
@@ -61,11 +62,11 @@ setup(
         # priorities list generation
         'gspread~=5.10.0',
         'oauth2client~=4.1.3',
-        'pandas~=2.0.1',  # pandas lets us generate URLs for linkcheck
+        'pandas~=2.2.0',  # pandas lets us generate URLs for linkcheck
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
 
-    ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
+    ] + (["setproctitle==1.3.7"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
         "test": ["pytest~=8.3.3",
