@@ -7,9 +7,11 @@
     <div class="textarea-with-counter-wrapper">
     <textarea
             id="{{ f.name }}"
-            name="additional_comments"
+            name="{{ f.name }}"
             rows="1"
-            maxlength="{{ f.maxlength }}"
+            {%- if f.maxlength -%}
+                maxlength="{{ f.maxlength }}"
+            {%- endif -%}
             class="textarea-with-counter"
     ></textarea>
 
@@ -18,7 +20,7 @@
                 class="character-counter"
                 aria-hidden="true"
         >
-      0/{{ f.maxlength }}
+      0/{%- if f.maxlength -%}{{ f.maxlength }}{%- endif -%}
     </span>
     </div>
 </div>

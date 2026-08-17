@@ -797,7 +797,9 @@ var formulaic = {
             this.updateTextarea = function() {
                 const textarea = this.$textarea[0];
                 this.$counter.text(
-                    `${textarea.value.length}/${textarea.maxLength}`
+                textarea.maxLength >= 0
+                    ? `${textarea.value.length}/${textarea.maxLength}`
+                    : textarea.value.length
                 );
                 textarea.style.height = "auto";
                 textarea.style.height = `${textarea.scrollHeight}px`;
