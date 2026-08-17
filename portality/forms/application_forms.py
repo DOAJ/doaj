@@ -2133,7 +2133,7 @@ class FieldDefinitions:
         "input": "textarea",
         "template": templates.TEXTAREA_WITH_COUNTER,
         "optional": True,
-        "maxlength": 300,
+        "maxlength": 200,
         "widgets": [
             "textarea_with_counter"
         ],
