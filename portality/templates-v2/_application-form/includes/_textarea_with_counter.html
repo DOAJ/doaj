@@ -1,0 +1,71 @@
+<style>
+    .textarea-wrapper {
+        position: relative;
+    }
+
+    .textarea-wrapper textarea {
+        box-sizing: border-box;
+        display: block;
+        width: 100%;
+        min-height: calc(2lh + 1.5rem);
+
+        /* Space for the counter */
+        padding: 0.75rem 0.75rem 2rem;
+
+        overflow-y: hidden;
+        resize: none;
+    }
+
+    .character-counter {
+        position: absolute;
+        right: 0.75rem;
+        bottom: 0.5rem;
+
+        color: #595959;
+        font-size: 0.875rem;
+        line-height: 1;
+        pointer-events: none;
+    }
+</style>
+<div class="form__question">
+    <label for="{{ f.name }}">
+        {% autoescape off %}{{ f.label }}{% endautoescape%}
+        {% if f.optional %}<span class="form__question--optional">({{ _("Optional") }})</span>{% endif %}
+    </label>
+
+    <div class="textarea-wrapper">
+    <textarea
+            id="{{ f.name }}"
+            name="additional_comments"
+            rows="1"
+            maxlength="300"
+    ></textarea>
+
+        <span
+                id="{{ f.name }}-counter"
+                class="character-counter"
+                aria-hidden="true"
+        >
+      0/300
+    </span>
+    </div>
+</div>
+
+<script>
+    const fname = "{{ f.name }}";
+    console.log(fname);
+    const textarea = document.querySelector("#" + fname);
+    const counter = document.querySelector("#" + fname + "-counter");
+
+    function updateTextarea() {
+        counter.textContent =
+            `${textarea.value.length}/${textarea.maxLength}`;
+
+        // Reset first so the textarea can also shrink when text is deleted.
+        textarea.style.height = "auto";
+        textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+
+    textarea.addEventListener("input", updateTextarea);
+    updateTextarea();
+</script>

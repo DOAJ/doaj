@@ -63,7 +63,8 @@
   }
 
   input[type="checkbox"] + label,
-  input[type="radio"] + label {
+  input[type="radio"] + label,
+  label:has(+ .textarea-wrapper > textarea) {
     font-size: 1rem;
   }
 
