@@ -2127,8 +2127,8 @@ class FieldDefinitions:
         "input": "checkbox"
     }
 
-    PUBLISHERS_COMMENTS = {
-        "name": "publishers_comment",
+    PUBLISHER_COMMENTS = {
+        "name": "publisher_comment",
         "label": lazy_gettext("Add here any extra information to support your application. Maximum 200 characters."),
         "input": "textarea",
         "template": templates.TEXTAREA_WITH_COUNTER,
@@ -2461,10 +2461,10 @@ class FieldSetDefinitions:
         ]
     }
 
-    PUBLISHERS_COMMENTS = {
-        "name": "publishers_comment",
+    PUBLISHER_COMMENTS = {
+        "name": "publisher_comment",
         "fields": [
-            FieldDefinitions.PUBLISHERS_COMMENTS["name"]
+            FieldDefinitions.PUBLISHER_COMMENTS["name"]
         ]
     }
 
@@ -2517,7 +2517,7 @@ class ApplicationContextDefinitions:
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
     UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
     UPDATE["fieldsets"] += [
-        FieldSetDefinitions.PUBLISHERS_COMMENTS["name"]
+        FieldSetDefinitions.PUBLISHER_COMMENTS["name"]
     ]
 
     # ~~->$ ReadOnlyApplication:FormContext~~
@@ -2577,7 +2577,7 @@ class ApplicationContextDefinitions:
 
     publisher_context = [PUBLIC, UPDATE]
     for pc in publisher_context:
-        pc["fieldsets"] += [FieldSetDefinitions.PUBLISHERS_COMMENTS["name"]]
+        pc["fieldsets"] += [FieldSetDefinitions.PUBLISHER_COMMENTS["name"]]
 
     editorial_context = [ASSOCIATE, EDITOR, MANED]
     for ec in editorial_context:
