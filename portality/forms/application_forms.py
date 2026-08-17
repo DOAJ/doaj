@@ -2133,7 +2133,10 @@ class FieldDefinitions:
         "input": "textarea",
         "template": templates.TEXTAREA_WITH_COUNTER,
         "optional": True,
-        "maxlength": 300
+        "maxlength": 300,
+        "widgets": [
+            "textarea_with_counter"
+        ],
     }
 
 
@@ -3416,7 +3419,8 @@ JAVASCRIPT_FUNCTIONS = {
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
-    "date_picker": "formulaic.widgets.newDatePicker"  # ~~-> DatePicker:FormWidget~~
+    "date_picker": "formulaic.widgets.newDatePicker",  # ~~-> DatePicker:FormWidget~~
+    "textarea_with_counter": "formulaic.widgets.newTextareaWithCounter"
 
 }
 
