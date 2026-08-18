@@ -280,6 +280,11 @@ class JournalGenericXWalk(object):
     @classmethod
     def form2admin(cls, form, obj):
         import re
+
+        publisher_comment = getattr(form, "publisher_comment", None)
+        if publisher_comment:
+            obj.add_note(publisher_comment.data)
+
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
                 if formnote["note"]:

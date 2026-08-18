@@ -10,12 +10,12 @@ DATA = {
     "admin": {
         "username": "DrVesperCeleste",
         "email": "c.vesper@moonlightecology.example.org",
-        "role": constants.ROLE_PUBLISHER,
+        "roles": [constants.ROLE_ADMIN],
     },
     "publisher": {
         "username": "QuillMartin",
         "email": "martin.quill@scholarlyindex.example.org",
-        "role": [constants.ROLE_ADMIN],
+        "roles": [constants.ROLE_PUBLISHER],
     },
     "draft": {
         "title": "Journal of Nocturnal Pollination Studies",
@@ -61,15 +61,17 @@ class PublisherComment(TestDrive):
         s = self.seeded
         # admin
         admin_username = s(DATA["admin"]["username"])
+        admin_email = s(DATA["admin"]["email"])
         admin_password = self.create_random_str()
-        self.admin = models.Account.make_account(DATA["admin"]["email"], admin_username, f"{admin_username}(Admin)", [DATA["admin"]["role"]])
+        self.admin = models.Account.make_account(admin_email, admin_username, f"{admin_username}(Admin)", DATA["admin"]["roles"])
         self.admin.set_password(admin_password)
         self.admin.save()
 
         # publisher
         publisher_username = s(DATA["publisher"]["username"])
+        publisher_email = s(DATA["publisher"]["email"])
         publisher_password = self.create_random_str()
-        self.publisher = models.Account.make_account(DATA["publisher"]["email"], publisher_username, f"{publisher_username}(Publisher)", [DATA["publisher"]["role"]])
+        self.publisher = models.Account.make_account(publisher_email, publisher_username, f"{publisher_username}(Publisher)", DATA["publisher"]["roles"])
         self.publisher.set_password(publisher_password)
         self.publisher.save()
 
@@ -77,7 +79,7 @@ class PublisherComment(TestDrive):
         source = ApplicationFixtureFactory.make_application_source()
         self.draft = models.DraftApplication(**source)
         self.draft.set_id(self.draft.makeid())
-        self.draft.set_application_status("draft")
+        self.draft.set_application_status(constants.APPLICATION_STATUS_DRAFT)
         self.draft.set_owner(self.publisher.id)
         self.draft.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
         self.draft.remove_related_journal()
@@ -91,7 +93,7 @@ class PublisherComment(TestDrive):
         self.draft.save()
 
         # journal
-        source = JournalFixtureFactory.make_journal_source()
+        source = JournalFixtureFactory.make_journal_source(in_doaj=True)
         self.journal = models.Journal(**source)
         self.journal.set_id(self.journal.makeid())
         self.journal.set_owner(self.publisher.id)
@@ -105,13 +107,15 @@ class PublisherComment(TestDrive):
         self.journal.save()
 
         # update_request
-
-        # new draft application
-        source = ApplicationFixtureFactory.make_update_request_source()
+        source = ApplicationFixtureFactory.make_update_request_source() # d26b75791093403b8c3c6d20df591a38
+        #del(source["admin"]["application_status"])
         self.ur = models.Application(**source)
-        self.ur.set_id(self.draft.makeid())
+        self.ur.set_id(self.ur.makeid())
         self.ur.set_current_journal(self.journal.id)
+        self.journal.set_current_application(self.ur.id)
+        self.journal.save()
         self.ur.set_owner(self.journal.owner)
+        self.ur.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
         self.ur.application_type = constants.APPLICATION_TYPE_UPDATE_REQUEST
         self.ur.date_applied = dates.now_str()
         bj = self.ur.bibjson()
@@ -121,7 +125,7 @@ class PublisherComment(TestDrive):
         bj.pissn = jbj.pissn
         bj.eissn = jbj.eissn
         bj.publisher_name = jbj.publisher_name
-        bj.set_keywords([*DATA["update_request"]["keywords"], [DATA["update_request"]["new_keyword"]]])
+        bj.set_keywords([*DATA["update_request"]["keywords"], DATA["update_request"]["new_keyword"]])
         self.ur.save()
 
         return {
@@ -129,34 +133,46 @@ class PublisherComment(TestDrive):
             "accounts": {
                 "admin": {
                     "username": self.admin.id,
+                    "email": self.admin.email,
                     "password": admin_password
                 },
                 "publisher": {
                     "username": self.publisher.id,
+                    "email": self.publisher.email,
                     "password": publisher_password
                 }
             },
             "new_application":  {
                 "id": self.draft.id,
                 "title": self.draft.bibjson().title,
-                "url": f"{app.config.get('BASE_URL', '')}/apply/{self.draft.id}",
+                # "current journal": self.draft.current_journal,
+                # "Publisher url": f"{app.config.get('BASE_URL', '')}/apply/{self.draft.id}",
+                # "Admin url": f"{app.config.get('BASE_URL', '')}/admin/application/{self.draft.id}",
                 "comment": DATA["draft"]["comment"],
             },
             "update_request": {
                 "id": self.ur.id,
                  "title": self.ur.bibjson().title,
-                 "url": f"{app.config.get('BASE_URL', '')}/publisher/update_request/{self.ur.id}",
-                "comment": DATA["update_request"]["comment"],
+                 "url": f"{app.config.get('BASE_URL', '')}/publisher/update_request/{self.journal.id}",
+                 "comment": DATA["update_request"]["comment"],
+            },
+            "journal": {
+                "id": self.journal.id,
+                # "current_application": self.journal.current_application,
             },
             "non_renderable": {
-                "journal": self.journal.id
+                "journal": self.journal.id,
+                "draft": self.draft.id,
+                "ur": self.ur.id,
+                "admin": self.admin.id,
+                "publisher": self.publisher.id,
             }
         }
 
     def teardown(self, params):
-        models.Account.remove_by_id(params["accounts"]["admin"]["username"])
-        models.Account.remove_by_id(params["accounts"]["publisher"]["username"])
+        models.Account.remove_by_id(params["non_renderable"]["admin"])
+        models.Account.remove_by_id(params["non_renderable"]["publisher"])
         models.Journal.remove_by_id(params["non_renderable"]["journal"])
-        models.Application.remove_by_id(params["new_application"]["id"])
-        models.Application.remove_by_id(params["update_request"]["id"])
+        models.Application.remove_by_id(params["non_renderable"]["draft"])
+        models.Application.remove_by_id(params["non_renderable"]["ur"])
         return {"status": "success"}
