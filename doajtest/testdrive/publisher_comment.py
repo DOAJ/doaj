@@ -20,12 +20,13 @@ DATA = {
     "draft": {
         "title": "Journal of Nocturnal Pollination Studies",
         "alternative_title": "Nocturnal Pollination Research",
+        "url": "https://moonlightecology.example.org/",
         "comment": (
-            "This journal was established to address a persistent gap in "
-            "pollination research: a considerable proportion of fieldwork "
-            "concludes shortly before the moths arrive. The first issue is "
-            "scheduled for October 2026."
+            "This journal addresses a persistent gap in pollination research: much "
+            "fieldwork concludes shortly before the moths arrive. The first issue is "
+            "planned for October 2026."
         ),
+        "comment_extension": "Further details will emerge when the moths do."
     },
     "update_request": {
         "title": "International Review of Applied Hibernation",
@@ -46,6 +47,8 @@ DATA = {
         "new_keyword": "torpor economics",
     }
 }
+
+BASE_URL = app.config.get('BASE_URL', '')
 
 class PublisherComment(TestDrive):
     admin: models.Account
@@ -87,6 +90,7 @@ class PublisherComment(TestDrive):
         bj = self.draft.bibjson()
         bj.title = s(DATA["draft"]["title"])
         bj.alternative_title = DATA["draft"]["alternative_title"]
+        bj.journal_url = s(DATA["draft"]["url"])
         bj.pissn = self.generate_unique_issn()
         bj.eissn = self.generate_unique_issn()
         bj.publisher_name = DATA["publisher_name"]
@@ -131,36 +135,38 @@ class PublisherComment(TestDrive):
         return {
             "id": self.run_seed,
             "accounts": {
-                "admin": {
-                    "username": self.admin.id,
-                    "email": self.admin.email,
-                    "password": admin_password
-                },
                 "publisher": {
                     "username": self.publisher.id,
-                    "email": self.publisher.email,
-                    "password": publisher_password
-                }
-            },
-            "new_application":  {
-                "id": self.draft.id,
-                "title": self.draft.bibjson().title,
-                # "current journal": self.draft.current_journal,
-                # "Publisher url": f"{app.config.get('BASE_URL', '')}/apply/{self.draft.id}",
-                # "Admin url": f"{app.config.get('BASE_URL', '')}/admin/application/{self.draft.id}",
-                "comment": DATA["draft"]["comment"],
-            },
-            "update_request": {
-                "id": self.ur.id,
-                 "title": self.ur.bibjson().title,
-                 "url": f"{app.config.get('BASE_URL', '')}/publisher/update_request/{self.journal.id}",
-                 "comment": DATA["update_request"]["comment"],
-            },
-            "journal": {
-                "id": self.journal.id,
-                # "current_application": self.journal.current_application,
+                    "password": publisher_password,
+                    "new_application":  {
+                        "title": self.draft.bibjson().title,
+                        "url": f"{BASE_URL}/apply/{self.draft.id}",
+                        "comment": DATA["draft"]["comment"],
+                        "comment_extension": DATA["draft"]["comment_extension"],
+                    },
+                    "update_request": {
+                        "title": self.ur.bibjson().title,
+                        "url": f"{BASE_URL}/publisher/update_request/{self.journal.id}",
+                        "comment": DATA["update_request"]["comment"],
+                    }
+                },
+                "admin": {
+                    "username": self.admin.id,
+                    "password": admin_password,
+                    "new_application": {
+                        "title": self.draft.bibjson().title,
+                        "url": f"{BASE_URL}/admin/application/{self.draft.id}",
+                        "comment": DATA["draft"]["comment"],
+                    },
+                    "update_request": {
+                        "title": self.ur.bibjson().title,
+                        "url": f"{BASE_URL}/admin/application/{self.ur.id}",
+                        "comment": DATA["update_request"]["comment"],
+                    }
+                },
             },
             "non_renderable": {
+                "run_seed": self.run_seed,
                 "journal": self.journal.id,
                 "draft": self.draft.id,
                 "ur": self.ur.id,

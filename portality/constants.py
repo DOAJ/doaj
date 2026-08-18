@@ -141,6 +141,8 @@ ERROR_RECORD_JOURNAL = "journal"
 ERROR_410_WITHDRAWN = "withdrawn"
 ERROR_410_TOMBSTONE = "tombstone"
 
+MAX_PUBLISHER_COMMENT_LENGTH = 200
+
 
 class ConstantList:
     @classmethod

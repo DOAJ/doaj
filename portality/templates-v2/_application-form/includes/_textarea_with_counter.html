@@ -3,7 +3,7 @@
         {% autoescape off %}{{ f.label }}{% endautoescape%}
         {% if f.optional %}<span class="form__question--optional">({{ _("Optional") }})</span>{% endif %}
     </label>
-
+    <p class="form__short-help"><small>{{ f.help("short_help") | safe }}</small></p>
     <div class="textarea-with-counter-wrapper">
     <textarea
             id="{{ f.name }}"
