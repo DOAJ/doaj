@@ -111,8 +111,7 @@ class PublisherComment(TestDrive):
         self.journal.save()
 
         # update_request
-        source = ApplicationFixtureFactory.make_update_request_source() # d26b75791093403b8c3c6d20df591a38
-        #del(source["admin"]["application_status"])
+        source = ApplicationFixtureFactory.make_update_request_source()
         self.ur = models.Application(**source)
         self.ur.set_id(self.ur.makeid())
         self.ur.set_current_journal(self.journal.id)

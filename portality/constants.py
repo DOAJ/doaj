@@ -143,7 +143,6 @@ ERROR_410_TOMBSTONE = "tombstone"
 
 MAX_PUBLISHER_COMMENT_LENGTH = 200
 
-
 class ConstantList:
     @classmethod
     def all_constants(cls):
