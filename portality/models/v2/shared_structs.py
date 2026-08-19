@@ -203,6 +203,7 @@ SHARED_JOURNAL_LIKE = {
                 },
                 "publisher_comment": {
                   "fields": {
+                      "id": {"coerce": "unicode"},
                       "comment": {"coerce" : "unicode"},
                       "date" : {"coerce" : "utcdatetime"},
                       "author_id": {"coerce" : "unicode"}, # account_id of the comment's author

@@ -14,7 +14,7 @@ from flask_babel import lazy_gettext
 from portality import constants
 from portality import regex
 from portality.core import app
-from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk, PublisherApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.datasets import language_options, country_options, currency_options
 from portality.forms import application_processors
@@ -2575,13 +2575,14 @@ class ApplicationContextDefinitions:
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
     # add about the journal and editorial fields that differ between the contexts
-    public_context = [PUBLIC, READ_ONLY, UPDATE]
-    for pc in public_context:
-        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"]]
-
-    publisher_context = [PUBLIC, UPDATE]
+    publisher_context = [PUBLIC, READ_ONLY, UPDATE]
     for pc in publisher_context:
-        pc["fieldsets"] += [FieldSetDefinitions.PUBLISHER_COMMENT["name"]]
+        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"],
+                            FieldSetDefinitions.PUBLISHER_COMMENT["name"]]
+        pc["crosswalks"] = {
+            "obj2form": PublisherApplicationFormXWalk.obj2form,
+            "form2obj": PublisherApplicationFormXWalk.form2obj
+        }
 
     editorial_context = [ASSOCIATE, EDITOR, MANED]
     for ec in editorial_context:

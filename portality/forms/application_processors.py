@@ -23,7 +23,6 @@ class ApplicationProcessor(FormProcessor):
         super().patch_target()
 
         self._patch_target_note_id()
-        self._patch_publisher_comment()
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -231,8 +230,7 @@ class ApplicationProcessor(FormProcessor):
             pc = self.target.publisher_comment
             if not pc.get("date"):
                 pc["date"] = dates.today()
-            comment_date = dates.parse(pc['date'])
-            if not pc.get('author_id') and comment_date > dates.before_now(60):
+            if not pc.get('author_id'):
                     try:
                         pc['author_id'] = current_user.id
                     except AttributeError:
@@ -306,6 +304,7 @@ class NewApplication(ApplicationProcessor):
 
     def finalise(self, account, save_target=True, email_alert=True, id=None):
         super(NewApplication, self).finalise()
+        self._patch_publisher_comment()
 
         # set some administrative data
         now = dates.now_str()
@@ -781,6 +780,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherUpdateRequest, self).finalise()
+        self._patch_publisher_comment()
 
         # set the status to post submission review (will be updated again later after the review job runs)
         if app.config.get("AUTOCHECK_INCOMING", False):

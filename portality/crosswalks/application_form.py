@@ -1,4 +1,4 @@
-from portality import models, lcc
+from portality import models, lcc, constants
 from portality.crosswalks.journal_form import JournalGenericXWalk, JournalFormXWalk
 
 
@@ -130,3 +130,19 @@ class ApplicationFormXWalk(JournalGenericXWalk):
                 diff = cls.form_diff(jform, aform)
 
         return diff, cj
+
+class PublisherApplicationFormXWalk(ApplicationFormXWalk):
+    @classmethod
+    def admin2form(cls, obj, forminfo):
+        super().admin2form(obj, forminfo)
+        if obj.publisher_comment:
+            forminfo["publisher_comment"] = obj.publisher_comment["comment"]
+
+    @classmethod
+    def form2admin(cls, form, obj):
+        super().form2admin(form, obj)
+        publisher_comment = getattr(form, "publisher_comment", None)
+        if publisher_comment:
+            max_length = constants.MAX_PUBLISHER_COMMENT_LENGTH
+            shortened = publisher_comment.data[:max_length]
+            obj.set_publisher_comment(comment=shortened)

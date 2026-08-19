@@ -281,15 +281,9 @@ class JournalGenericXWalk(object):
     @classmethod
     def form2admin(cls, form, obj):
         import re
-
-        publisher_comment = getattr(form, "publisher_comment", None)
-        if publisher_comment:
-            max_length = constants.MAX_PUBLISHER_COMMENT_LENGTH
-            shortened = publisher_comment.data[:max_length]
-            obj.set_publisher_comment(comment=shortened, author_id=None, date=None)
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
-                if formnote["note"]:
+                if formnote["note"] and formnote["note_id"] != obj.get_publisher_comment_id():
                     note_date = formnote["note_date"]
                     note_id = formnote["note_id"]
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
@@ -493,6 +487,18 @@ class JournalGenericXWalk(object):
     @classmethod
     def admin2form(cls, obj, forminfo):
         forminfo['notes'] = []
+        # add publisher comment as a note:
+        if obj.publisher_comment:
+            comment_id = obj.get_publisher_comment_id()
+            comment_author = obj.publisher_comment.get('author_id', '')
+            comment_author_name = f'{Account.get_name_safe(comment_author)} ({comment_author})' if comment_author else ''
+            comment_date = obj.publisher_comment['date']
+            comment_note = cls._comment2note(obj.publisher_comment['comment'])
+            comment_obj = {'note': comment_note, 'note_date': comment_date, 'note_id': comment_id,
+                        'note_author': comment_author_name,
+                        'note_author_id': comment_author,
+                        }
+            forminfo['notes'].append(comment_obj)
         for n in obj.ordered_notes_except_flags:
             author_id = n.get('author_id', '')
             note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
@@ -528,6 +534,9 @@ class JournalGenericXWalk(object):
         if getattr(obj, "last_full_review", None):
             forminfo["last_full_review"] = obj.last_full_review
 
+    @classmethod
+    def _comment2note(self, comment):
+        return constants.PUBLISHER_COMMENT_NOTE.replace("<comment>", comment)
 
 class JournalFormXWalk(JournalGenericXWalk):
 
