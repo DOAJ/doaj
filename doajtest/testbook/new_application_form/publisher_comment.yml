@@ -10,7 +10,7 @@ tests:
       - "All data in the Testdrive dashboard includes a copy button. You can use it to quickly copy the correct value and use it in the relevant place in the test."
       - "Open a new session in a different browser or a private (incognito) window. Do not close the Testdrive page."
     steps:
-      - step: Log in as QuillMartin__<id> (publisher) using the credentials provided in Testdrive
+      - step: Log in as QuillMartin__<id> (publisher) using the credentials provided in Testdrive (use "Log in with password" option)
         results:
           - The publisher dashboard is displayed
       - step: Open the "My applications" tab and click "Edit" for the draft application Journal of Nocturnal Pollination Studies__<id>. Alternatively, open the URL provided under publisher -> new_application in the Testdrive
@@ -46,7 +46,7 @@ tests:
         results:
           - The update request is submitted successfully
       - step: Log out of the publisher account
-      - step: Log in as DrVesperCeleste__<id> (admin) using the credentials provided in Testdrive
+      - step: Log in as DrVesperCeleste__<id> (admin) using the credentials provided in Testdrive (use "Log in with password" option)
       - step: Open the admin application for Journal of Nocturnal Pollination Studies__<id> using the URL provided under admin -> new_application -> url
         results:
           - The admin application for Journal of Nocturnal Pollination Studies__<id> is displayed
