@@ -286,7 +286,7 @@ class JournalGenericXWalk(object):
         if publisher_comment:
             max_length = constants.MAX_PUBLISHER_COMMENT_LENGTH
             shortened = publisher_comment.data[:max_length]
-            obj.add_note(shortened)
+            obj.set_publisher_comment(comment=shortened, author_id=None, date=None)
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
                 if formnote["note"]:

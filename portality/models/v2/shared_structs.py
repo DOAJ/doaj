@@ -186,13 +186,13 @@ SHARED_JOURNAL_LIKE = {
                 "owner" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
-                "date_applied": {"coerce": "utcdatetime"},
+                "date_applied": {"coerce": "utcdatetime"}
             },
             "lists" : {
                 "notes" : {"contains" : "object"}
             },
             "objects" : [
-                "contact"
+                "contact", "publisher_comment"
             ],
             "structs" : {
                 "contact" : {
@@ -200,6 +200,13 @@ SHARED_JOURNAL_LIKE = {
                         "email" : {"coerce" : "unicode"},
                         "name" : {"coerce" : "unicode"}
                     }
+                },
+                "publisher_comment": {
+                  "fields": {
+                      "comment": {"coerce" : "unicode"},
+                      "date" : {"coerce" : "utcdatetime"},
+                      "author_id": {"coerce" : "unicode"}, # account_id of the comment's author
+                  }
                 },
                 "notes" : {
                     "fields" : {

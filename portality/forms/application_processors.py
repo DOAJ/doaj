@@ -23,6 +23,7 @@ class ApplicationProcessor(FormProcessor):
         super().patch_target()
 
         self._patch_target_note_id()
+        self._patch_publisher_comment()
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -221,6 +222,19 @@ class ApplicationProcessor(FormProcessor):
                 if not note.get('author_id') and note_date > dates.before_now(60):
                     try:
                         note['author_id'] = current_user.id
+                    except AttributeError:
+                        # Skip if we don't have a current_user
+                        pass
+
+    def _patch_publisher_comment(self):
+        if self.target.publisher_comment:
+            pc = self.target.publisher_comment
+            if not pc.get("date"):
+                pc["date"] = dates.today()
+            comment_date = dates.parse(pc['date'])
+            if not pc.get('author_id') and comment_date > dates.before_now(60):
+                    try:
+                        pc['author_id'] = current_user.id
                     except AttributeError:
                         # Skip if we don't have a current_user
                         pass

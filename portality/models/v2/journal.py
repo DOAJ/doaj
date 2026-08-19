@@ -417,7 +417,17 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             ordered += clusters[key]
         return ordered
 
-    #### end of notes methods
+    #### publisher comment
+
+    @property
+    def publisher_comment(self):
+        return self.__seamless__.get_single("admin.publisher_comment")
+
+    def set_publisher_comment(self, comment, author_id, date):
+        if not date:
+            date = dates.now_str()
+        obj = {"comment": comment, "author_id": author_id, "date": date}
+        self.__seamless__.set_with_struct("admin.publisher_comment", obj)
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
