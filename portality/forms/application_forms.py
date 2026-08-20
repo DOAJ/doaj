@@ -3440,6 +3440,51 @@ class ListWidgetWithSubfields(object):
         return HTMLString(''.join(html))
 
 
+class RepeatableFieldListWidget(object):
+    """
+    Renders a repeatable single-value field (FieldList of e.g. StringField,
+    DateField, TextAreaField or SelectField) as a `ul` list.
+
+    WTForms' stock ListWidget (the default widget for FieldList) only ever
+    applies the HTML attributes it's called with to the wrapping `<ul>`, not
+    to the individual subfields it renders - so attributes generated from a
+    field's `validate` config (e.g. `data-parsley-not-value`,
+    `data-parsley-required-if`) never reached the actual `<input>` elements,
+    and Parsley silently skipped validating them. This widget applies those
+    same attributes to each subfield too, while leaving the `<ul>` itself
+    unchanged, and without clobbering each subfield's own unique id/name.
+
+    Only the first entry represents the field's "at least one" requirement;
+    every later entry is an optional extra the user may leave blank (see
+    formulaic.js, which already strips the plain `required` attribute from
+    entries after the first for this exact reason). So a `required_if` rule
+    is applied to the first entry only - carrying it over to the later,
+    usually-empty-and-hidden entries would make Parsley block navigation
+    over a field the user was never asked to fill in.
+    """
+
+    def __init__(self, html_tag='ul', prefix_label=True):
+        assert html_tag in ('ol', 'ul')
+        self.html_tag = html_tag
+        self.prefix_label = prefix_label
+
+    def __call__(self, field, **kwargs):
+        kwargs.pop("formulaic", None)
+        container_attrs = dict(kwargs)
+        container_attrs.setdefault('id', field.id)
+        later_entry_kwargs = {k: v for k, v in kwargs.items() if not k.startswith("data-parsley-required-if")}
+
+        html = ['<%s %s>' % (self.html_tag, html_params(**container_attrs))]
+        for idx, subfield in enumerate(field):
+            subfield_kwargs = kwargs if idx == 0 else later_entry_kwargs
+            if self.prefix_label:
+                html.append('<li>%s %s</li>' % (subfield.label, subfield(**subfield_kwargs)))
+            else:
+                html.append('<li>%s %s</li>' % (subfield(**subfield_kwargs), subfield.label))
+        html.append('</%s>' % self.html_tag)
+        return HTMLString(''.join(html))
+
+
 ##########################################################
 # Mapping from configurations to WTForms builders
 ##########################################################
@@ -3491,7 +3536,8 @@ class SelectBuilder(WTFormsBuilder):
             wtfargs['label'] = field["repeatable"]["label"]
         sf = SelectField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
 
         return sf
 
@@ -3517,7 +3563,8 @@ class TextBuilder(WTFormsBuilder):
             wtfargs["filters"] = (lambda x: x.strip() if x is not None else x,)
         sf = StringField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
         return sf
 
 class DateBuilder(WTFormsBuilder):
@@ -3530,7 +3577,8 @@ class DateBuilder(WTFormsBuilder):
         wtfargs["widget"] = widgets.Input(input_type="date")
         sf = DateField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
         return sf
 
 class TextAreaBuilder(WTFormsBuilder):
@@ -3542,7 +3590,8 @@ class TextAreaBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         sf = TextAreaField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
         return sf
 
 
