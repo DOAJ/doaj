@@ -392,11 +392,19 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             let errFirst = $(errFields.first()[0].element);
             // The Firefox does not handle focus on hidden fields and select2 does not implement this after autofocus on select2 fields
             // it resolves this issue and fixes: https://github.com/DOAJ/doajPM/issues/2626
+            let errScrollTarget;
             if ($(errFirst).attr("type") !== "radio"){
                 errFirst.triggerHandler("focus");
+                errScrollTarget = errFirst;
             }
             else {
-                errFirst.closest("li[tabindex='0']").focus();
+                errScrollTarget = errFirst.closest("li[tabindex='0']");
+                errScrollTarget.focus();
+            }
+            // triggerHandler("focus") above does not invoke the browser's native focus behaviour,
+            // so it will not scroll the field into view by itself - do that explicitly here.
+            if (errScrollTarget.length > 0) {
+                errScrollTarget[0].scrollIntoView({block: "center"});
             }
             //$(".nextBtn").blur();
             if (showEvenIfInvalid){
