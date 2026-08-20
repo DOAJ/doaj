@@ -294,15 +294,7 @@ ass_ed:
   city: Surabaya
   country: Indonesia
   language: Bahasa Indonesia, English
-  photo: "dh.jpg"  
-  
-- name: Dumitru Lisnic
-  area: History and Religious Studies, Ethnography, Anthropology
-  year_since:
-  city: Balți
-  country: Republic of Moldova
-  language: Romanian, Russian, Ukrainian, English
-  photo: "Dumitru.jpg"  
+  photo: "dh.jpg"    
 
 - name: Dwi Fajar Saputra
   area: Library Science
@@ -475,6 +467,14 @@ ass_ed:
   language: Spanish, English
   photo: "Penabad.png"
 
+- name: Licínia Ferreira
+  area: Information Science, Arts
+  year_since:
+  city: Coimbra
+  country: Portugal
+  language: Portuguese, English, Italian
+  photo: 
+
 - name: Lilly Hammond
   area: Library Science
   year_since:
@@ -613,14 +613,6 @@ ass_ed:
   country: Algeria
   language: Arabic, French, English, Kabyle
   photo: "nourelhouda.png"
-
-- name: Octavian Andronic 
-  area: Medicine
-  year_since:
-  city: Bucharest
-  country: Romania
-  language: Romanian, English
-  photo: "Octav.jpg"
   
 - name: Oleksii Vasyliev
   area: Science, Technology
@@ -682,13 +674,6 @@ ass_ed:
   city: New Brunswick, NJ
   country: USA
   language: English
-
-- name: Roberto Sarmiento
-  area: Engineering
-  year_since:
-  city: San Luis Potosi
-  country: Mexico
-  language: Spanish, English
 
 - name: S. Mohammad Amini
   area: Science
