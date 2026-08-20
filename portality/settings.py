@@ -1067,21 +1067,22 @@ ADMIN_NOTES_SEARCH_MAPPING = {
 }
 
 ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
+ASCII_FOLDED_ALL_META = {**ASCII_FOLDED, "copy_to": ["all_meta"]}
 
 JOURNAL_EXCEPTION_MAPPING = {
-    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ARTICLE_EXCEPTION_MAPPING = {
-    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ####################################################
