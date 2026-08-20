@@ -1264,7 +1264,7 @@ DISCOVERY_MAX_RECORDS_SIZE = 1000
 # ~~->ArticleBibJSON:Model~~
 DISCOVERY_ARTICLE_SEARCH_SUBS = {
     "title": "bibjson.title",
-    "doi": "bibjson.identifier.id.exact",
+    "doi": "index.doi.exact",
     "issn": "index.issn.exact",
     "publisher": "bibjson.journal.publisher",
     "journal": "bibjson.journal.title",
