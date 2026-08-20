@@ -8,6 +8,8 @@ from lxml import etree
 
 from doajtest import helpers
 from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.bll_article import BLLArticleMockFactory
@@ -61,9 +63,23 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
 
+        pub1 = models.Account(**AccountFixtureFactory.make_publisher_source())
+        pub1.set_id("pub1")
+        pub1.save(blocking=True)
+
+        source = JournalFixtureFactory.make_journal_source()
+        source["bibjson"]["pissn"] = '2233-5678'
+        source["bibjson"]["eissn"] = '1122-5678'
+        journal = models.Journal(**source)
+        journal.set_owner("pub1")
+        journal.save(blocking=True)
+
         # push an article to initialise the mappings
-        source = ArticleFixtureFactory.make_article_source()
-        article = models.Article(**source)
+        article_source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**article_source)
+        article.data['admin'] = {'owner': 'pub1'}
+        article.data['bibjson']['identifier'][1]['id'] = '2233-5678'
+        article.data['bibjson']['identifier'][2]['id'] = '1122-5678'
         article.save(blocking=True)
         article.delete()
         models.Article.blockdeleted(article.id)
@@ -90,6 +106,25 @@ class TestIngestArticlesDoajXML(DoajTestCase):
             path = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
             if os.path.exists(path):
                 os.remove(path)
+
+        # Most test methods here create articles/journals via shared
+        # article_upload_tester helpers rather than tracking IDs
+        # themselves, and several reuse the exact same fixture content
+        # (e.g. testowner / pissn 1234-5678, or
+        # DoajXmlArticleFixtureFactory.upload_1_issn_correct()). setUp()
+        # doesn't reset ES between test methods (only setUpClass does),
+        # so under pytest-randomly's shuffled order, a later test can
+        # find an earlier test's article already indexed and get
+        # classified as an update instead of a new import - wipe both
+        # indices after every test so each one starts clean regardless
+        # of run order.
+        models.Article.delete_by_query({"query": {"match_all": {}}})
+        models.Journal.delete_by_query({"query": {"match_all": {}}})
+        # force a refresh so the next test's queries don't still see
+        # these documents mid-deletion (ES delete_by_query isn't
+        # immediately visible to search without one)
+        models.Article.refresh()
+        models.Journal.refresh()
 
         for path in self.cleanup_paths:
             if os.path.exists(path):
@@ -1041,6 +1076,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with open(path, "wb") as f:
             f.write(stream.read())
 
+        time.sleep(0.2)
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 

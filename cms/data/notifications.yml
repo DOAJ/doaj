@@ -83,7 +83,7 @@ application:publisher:created:notify:
 
     Thank you for your application submitted to DOAJ on {application_date}.
 
-    Due to the many applications we receive, our average review time is 3 months. You may request a status update only after three months since you applied. We cannot reply to emails requesting a status update within 3 months of application.
+    Due to the many applications we receive, our average review time is 6 months. You may request a status update only after six months since you applied. We cannot reply to emails requesting a status update within 6 months of application.
     
     You may get an email from us during the review if we have questions. One of our volunteer editors who will not be using a DOAJ email address might contact you. These emails might be in your spam folder, so please check it regularly.
     You can see our volunteers listed here: [{volunteers_url}]({volunteers_url})
@@ -128,11 +128,49 @@ bg:job:admin_reports:export_available:
   short:
     Report "{name}" ready for download
 
+bg:job:article_deletion_notifications:publisher:
+  long: |
+    This is an automated email to inform you that article metadata has been deleted from one or several of the journals connected to your DOAJ account:
+    
+    {list_of_articles}
+    
+    Article metadata can be deleted for <a href="https://doaj.org/docs/faq/#occasionally-we-will-delete-article-metadata">several reasons</a>, including any of the following:
+    
+    1. A user alerted us that links in the article metadata were broken. (This is in accordance with our policy for article metadata with broken links.) 
+    2. Someone from your organisation got in touch and asked us to delete some article metadata.
+    3. Someone from your organisation deleted the articles via the API.
+    4. We noticed that some article metadata was duplicated and we deleted those.
+    
+    Please <a href="https://doaj.org/docs/faq/#uploading-article-metadata">upload</a> replacement article metadata if appropriate.
+    
+    If you are not responsible for your journal article metadata, please forward this email to the right person.
+
+  short:
+    Deleted articles in your journal(s) this week
+
+bg:job:approaching_flag_deadline:notify:
+  long: |
+    "The deadline for the flag in "{journal_title}" (id: {id}) is in 7 days."
+  short:
+    Deadline reminder
+
+flag:assigned:notify:
+  long: |
+    "A new flag in "{journal_title}" (id: {id}) has been assigned to you"
+  short:
+    New flag
+
 journal:assed:assigned:notify:
   long: |
     The journal **{journal_name}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.
   short:
     New journal ({issns}) assigned to you
+
+journal:maned:discontinuing_soon:notify:
+  long: |
+    Journal "{title}" (id: {id}) will discontinue in {days} days.
+  short:
+     Journal discontinuing
 
 journal:editor_group:assigned:notify:
   long: |
@@ -186,9 +224,3 @@ update_request:publisher:submitted:notify:
     **This is an automated message.**
   short:
     Your update request ({issns}) has been submitted
-
-journal:maned:discontinuing_soon:notify:
-  long: |
-    Journal "{title}" (id: {id}) will discontinue in {days} days.
-  short:
-     Journal discontinuing

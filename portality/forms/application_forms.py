@@ -29,6 +29,7 @@ from portality.forms.validate import (
     JournalURLInPublicDOAJ,
     DifferentTo,
     RequiredIfOtherValue,
+    RequiredIfActive,
     OnlyIf,
     OnlyIfExists,
     NotIf,
@@ -42,7 +43,7 @@ from portality.forms.validate import (
     Year,
     CurrentISOCurrency,
     CurrentISOLanguage,
-    DateInThePast
+    DateInThePast, StopValidationOnOtherValue
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -973,8 +974,8 @@ class FieldDefinitions:
             {"required": {"message": lazy_gettext("Enter the Year (YYYY).")}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {
-                "message": lazy_gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}").format(
-                    app.config.get('MINIMAL_OA_START_DATE', 1900))}}
+                "message": lazy_gettext("OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than %(min_year)s",
+                    min_year=app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
             "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
@@ -1978,11 +1979,6 @@ class FieldDefinitions:
         "name": "flags",
         "input": "group",
         "label": "Flags",
-        "repeatable": {
-            "initial": 2,
-            "add_button_placement": "top",
-            "add_field_permission": ["admin"]
-        },
         "subfields": [
             "flag_setter",
             "flag_created_date",
@@ -1992,13 +1988,10 @@ class FieldDefinitions:
             "flag_note_id",
             "flag_resolved"
         ],
-        "template": templates.FLAGS_LIST,
-        "entry_template": templates.FLAG_ENTRY_GROUP,
+        "template": templates.FLAG_ENTRY_GROUP,
         "widgets": [
-            "multiple_field",
             "flag_manager"
-        ],
-        "merge_disabled": "merge_disabled_notes"
+        ]
     }
 
     FLAG_RESOLVED = {
@@ -2014,7 +2007,6 @@ class FieldDefinitions:
         "name": "flag_setter",
         "group": "flags",
         "input": "hidden",
-        "disabled": True
     }
 
     # ~~->$ NoteDate:FormField~~
@@ -2023,16 +2015,24 @@ class FieldDefinitions:
         "name": "flag_created_date",
         "group": "flags",
         "input": "hidden",
-        "disabled": True
     }
 
     FLAG_DEADLINE = {
         "subfield": True,
-        "optional": True,
         "label": "Deadline",
         "name": "flag_deadline",
         "validate": [
-            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)"}}
+            {"bigenddate": {"message": "This must be a valid date in the BigEnd format (YYYY-MM-DD)", "ignore_empty": True}},
+            {"stop_validation_on_other_value": {
+                "field": "flag_resolved",
+                "value": "true"
+            }},
+            {"required_if": {
+                "field": "flag_note",
+                "not_empty": True,
+                "message": "The flag must have a deadline",
+                "skip_disabled": True
+            }}
         ],
         "help": {
             "placeholder": "deadline (YYYY-MM-DD)",
@@ -2048,6 +2048,11 @@ class FieldDefinitions:
         "name": "flag_note",
         "group": "flags",
         "input": "textarea",
+        "validate": [
+            {"required_if_active": {
+                "message": lazy_gettext("Flag requires a note")},
+            }
+        ]
     }
 
     # ~~->$ NoteID:FormField~~
@@ -2061,15 +2066,24 @@ class FieldDefinitions:
     FLAG_ASSIGNEE = {
         "subfield": True,
         "name": "flag_assignee",
-        "label": "Assign a user",
+        "label": "Assign an admin",
         "help": {
-            "placeholder": "assigned_to",
-            "short_help": "A Flag must be assigned to a user. The Flag not assigned to a user will be automatically converted to a note",
+            "placeholder": "Username"
         },
         "group": "flags",
         "validate": [
             "reserved_usernames",
-            "owner_exists"
+            "owner_exists",
+            {"stop_validation_on_other_value": {
+                "field": "flag_resolved",
+                "value": "true"
+            }},
+            {"required_if": {
+                "field": "flag_note",
+                "not_empty": True,
+                "message": "The flag must be assigned to someone",
+                "skip_disabled": True
+            }}
         ],
         "widgets": [
             {"autocomplete": {"type": "admin", "include": False, "allow_clear_input": False}},
@@ -2107,6 +2121,12 @@ class FieldDefinitions:
         ]
     }
 
+    MARK_AS_FULL_REVIEW = {
+        "name": "mark_as_full_review",
+        "label": "This update request constitutes a full review of the journal",
+        "input": "checkbox"
+    }
+
 
 ##########################################################
 # Define our fieldsets
@@ -2134,10 +2154,16 @@ class FieldSetDefinitions:
             FieldDefinitions.JOURNAL_URL["name"],
             FieldDefinitions.PISSN["name"],
             FieldDefinitions.EISSN["name"],
-            FieldDefinitions.KEYWORDS["name"],
-            FieldDefinitions.LANGUAGE["name"]
+            FieldDefinitions.LANGUAGE["name"],
         ]
     }
+
+    ABOUT_THE_JOURNAL_EXTENDED = {
+        "name": "about_the_journal_extended",
+        "label": "About the journal",
+        "fields": ABOUT_THE_JOURNAL["fields"] + [FieldDefinitions.KEYWORDS["name"]]
+    }
+
 
     # ~~->$ Publisher:FieldSet~~
     PUBLISHER = {
@@ -2219,8 +2245,14 @@ class FieldSetDefinitions:
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
-            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]
+            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"],
         ]
+    }
+
+    SUBJECT_AND_KEYWORDS = {
+        "name": "subject_and_keywords",
+        "label": lazy_gettext("Keywords and Subject"),
+        "fields": [FieldDefinitions.KEYWORDS["name"], FieldDefinitions.SUBJECT["name"]]
     }
 
     # ~~->$ APC:FieldSet~~
@@ -2328,6 +2360,14 @@ class FieldSetDefinitions:
         ]
     }
 
+    MARK_AS_FULL_REVIEW = {
+        "name": "mark_as_full_review",
+        "label": "Mark as full review",
+        "fields": [
+            FieldDefinitions.MARK_AS_FULL_REVIEW["name"]
+        ]
+    }
+
     # ~~->$ Status:FieldSet~~
     STATUS = {
         "name": "status",
@@ -2356,15 +2396,6 @@ class FieldSetDefinitions:
             FieldDefinitions.CONTINUES["name"],
             FieldDefinitions.CONTINUED_BY["name"],
             FieldDefinitions.DISCONTINUED_DATE["name"]
-        ]
-    }
-
-    # ~~->$ Subject:FieldSet~~
-    SUBJECT = {
-        "name": "subject",
-        "label": lazy_gettext("Subject classification"),
-        "fields": [
-            FieldDefinitions.SUBJECT["name"]
         ]
     }
 
@@ -2427,11 +2458,11 @@ class ApplicationContextDefinitions:
     # ~~->$ NewApplication:FormContext~~
     # ~~^-> ApplicationForm:Crosswalk~~
     # ~~^-> NewApplication:FormProcessor~~
+
     PUBLIC = {
         "name": "public",
         "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
-            FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
             FieldSetDefinitions.PUBLISHER["name"],
             FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"],
             FieldSetDefinitions.LICENSING["name"],
@@ -2439,10 +2470,10 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.COPYRIGHT["name"],
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.PLAGIARISM["name"],
-            FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.APC["name"],
             FieldSetDefinitions.APC_WAIVERS["name"],
             FieldSetDefinitions.OTHER_FEES["name"],
+            FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
@@ -2481,7 +2512,6 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -2495,7 +2525,6 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -2513,12 +2542,20 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.MARK_AS_FULL_REVIEW["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
+    # add about the journal and editorial fields that differ between the contexts
+    public_context = [PUBLIC, READ_ONLY, UPDATE]
+    for pc in public_context:
+        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"]]
+
+    editorial_context = [ASSOCIATE, EDITOR, MANED]
+    for ec in editorial_context:
+        ec["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL["name"], FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"]]
 
 class JournalContextDefinitions:
     # ~~->$ ReadOnlyJournal:FormContext~~
@@ -2537,12 +2574,14 @@ class JournalContextDefinitions:
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.PLAGIARISM["name"],
             FieldSetDefinitions.EDITORIAL["name"],
+            FieldSetDefinitions.SUBJECT_AND_KEYWORDS["name"],
             FieldSetDefinitions.APC["name"],
             FieldSetDefinitions.APC_WAIVERS["name"],
             FieldSetDefinitions.OTHER_FEES["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
-            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
+
         ],
         "templates": {
             "form": templates.MANED_READ_ONLY_JOURNAL,
@@ -2566,7 +2605,6 @@ class JournalContextDefinitions:
     # ~~^-> AssEdJournal:FormProcessor~~
     ASSOCIATE = deepcopy(ADMIN_READ_ONLY)
     ASSOCIATE["fieldsets"] += [
-        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["name"] = "associate_editor"
@@ -2894,12 +2932,32 @@ class RequiredBuilder:
             html_attrs["data-parsley-required-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
             html_attrs["data-parsley-required-message"] = "<p><small>" + lazy_gettext("This answer is required") + "</p></small>"
+        if settings.get("skip_disabled"):
+            html_attrs["data-parsley-validate-if-disabled"] = "false"
         html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
     def wtforms(field, settings):
         return CustomRequired(message=settings.get("message"))
 
+class RequiredIfActiveBuilder:
+    """
+        ~~->$ RequiredIfActive:FormValidator~~
+        """
+
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-required-if-active"] = ""
+        if "message" in settings:
+            html_attrs["data-parsley-required-if-active-message"] = "<p><small>" + settings["message"] + "</small></p>"
+        else:
+            html_attrs["data-parsley-required-if-active-message"] = "<p><small>" + lazy_gettext(
+                "This answer is required") + "</p></small>"
+        html_attrs["data-parsley-validate-if-empty"] = "true"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return RequiredIfActive(message=settings.get("message"))
 
 class IsURLBuilder:
     # ~~->$ IsURL:FormValidator~~
@@ -2933,16 +2991,16 @@ class IntRangeBuilder:
         default_msg = ""
         if "gte" in settings and "lte" in settings:
             html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
-            default_msg = lazy_gettext("This value should be between {min} and {max}").format(
+            default_msg = lazy_gettext("This value should be between %(min)s and %(max)s",
                 min=str(settings.get("gte")), max=str(settings.get("lte")))
         else:
             if "gte" in settings:
                 html_attrs["data-parsley-min"] = settings.get("gte")
-                default_msg = lazy_gettext("This value should be bigger than {gte}").format(
+                default_msg = lazy_gettext("This value should be bigger than %(gte)s",
                     gte=str(settings.get("gte")))
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
-                default_msg = lazy_gettext("This value should be smaller than {lte}").format(
+                default_msg = lazy_gettext("This value should be smaller than %(lte)s",
                     lte=str(settings.get("lte")))
         html_attrs["data-parsley-range-message"] = "<p><small>" + settings.get("message", default_msg) + "</p></small>"
 
@@ -3077,12 +3135,20 @@ class RequiredIfBuilder:
     # ~~->$ RequiredIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
-        val = settings.get("value")
+        val = settings.get("value", "")
         if isinstance(val, list):
             val = ",".join(val)
 
+        if settings.get("skip_disabled"):
+            html_attrs["data-parsley-validate-if-disabled"] = "false"
+
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = val
+
+        ne = settings.get("not_empty", False)
+        if ne:
+            html_attrs["data-parsley-required-if-not-empty"] = "true"
+
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
         if "message" in settings:
             html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</small></p>"
@@ -3091,8 +3157,21 @@ class RequiredIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return RequiredIfOtherValue(settings.get("field") or field, settings.get("value"), settings.get("message"))
+        set_field = settings.get("field", field)
+        val = settings.get("value")
+        ne = settings.get("not_empty", False)
+        return RequiredIfOtherValue(set_field, val, ne, settings.get("message"))
 
+class StopValidationOnOtherValueBuilder:
+    # ~~->$ StopValidationOnOtherValue:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        # no action required here, this is back-end only
+        return
+
+    @staticmethod
+    def wtforms(field, settings):
+        return StopValidationOnOtherValue(settings.get("field", field), settings.get("value"))
 
 class OnlyIfBuilder:
     # ~~->$ OnlyIf:FormValidator~~
@@ -3168,6 +3247,8 @@ class BigEndDateBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-validdate"] = ""
+        ignore_empty = settings.get("ignore_empty", False)
+        html_attrs["data-parsley-validdate-ignore_empty"] = "true" if ignore_empty else "false"
         html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
@@ -3240,6 +3321,7 @@ PYTHON_FUNCTIONS = {
     "validate": {
         "render": {
             "required": RequiredBuilder.render,
+            "required_if_active": RequiredIfActiveBuilder.render,
             "is_url": IsURLBuilder.render,
             "int_range": IntRangeBuilder.render,
             "issn_in_public_doaj": ISSNInPublicDOAJBuilder.render,
@@ -3257,10 +3339,12 @@ PYTHON_FUNCTIONS = {
             "bigenddate": BigEndDateBuilder.render,
             "no_script_tag": NoScriptTagBuilder.render,
             "year": YearBuilder.render,
-            "date_in_the_past": DateInThePastBuilder.render
+            "date_in_the_past": DateInThePastBuilder.render,
+            "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.render,
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
+            "required_if_active": RequiredIfActiveBuilder.wtforms,
             "is_url": IsURLBuilder.wtforms,
             "max_tags": MaxTagsBuilder.wtforms,
             "int_range": IntRangeBuilder.wtforms,
@@ -3284,7 +3368,8 @@ PYTHON_FUNCTIONS = {
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
             "current_iso_language": CurrentISOLanguageBuilder.wtforms,
-            "date_in_the_past": DateInThePastBuilder.wtforms
+            "date_in_the_past": DateInThePastBuilder.wtforms,
+            "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.wtforms
         }
     }
 }
