@@ -2,6 +2,11 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.6.13
+
+Prompt for withdrawing a continued journal when an application is rejected.
+https://github.com/DOAJ/doajPM/issues/4145
+
 ### 8.6.12
 
 Flask v3 upgrade - some password migration required to support later Werkzeug.
