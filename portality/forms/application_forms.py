@@ -2135,8 +2135,7 @@ class FieldDefinitions:
         "optional": True,
         "maxlength": constants.MAX_PUBLISHER_COMMENT_LENGTH,
         "widgets": [
-            "textarea_with_counter",
-            ""
+            "textarea_with_counter"
         ],
         "help": {
             "short_help": "This comment won't be saved in your draft."
@@ -3598,7 +3597,13 @@ class TextAreaBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        sf = TextAreaField(**wtfargs)
+        render_kw = {
+            "rows": field.get("rows", 1),
+            "maxlength": field.get("maxlength", "")
+        }
+        if "textarea_with_counter" in field.get("widgets"):
+            render_kw["class"] = "textarea-with-counter"
+        sf = TextAreaField(render_kw=render_kw, **wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
         return sf

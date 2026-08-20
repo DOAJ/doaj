@@ -5,16 +5,7 @@
     </label>
     <p class="form__short-help"><small>{{ f.help("short_help") | safe }}</small></p>
     <div class="textarea-with-counter-wrapper">
-    <textarea
-            id="{{ f.name }}"
-            name="{{ f.name }}"
-            rows="1"
-            {%- if f.maxlength -%}
-                maxlength="{{ f.maxlength }}"
-            {%- endif -%}
-            class="textarea-with-counter"
-    ></textarea>
-
+        {{ f.render_form_control() }}
         <span
                 id="{{ f.name }}-counter"
                 class="character-counter"

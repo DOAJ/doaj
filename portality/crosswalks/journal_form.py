@@ -489,20 +489,18 @@ class JournalGenericXWalk(object):
         forminfo['notes'] = []
         # add publisher comment as a note:
         if obj.publisher_comment:
-            comment_id = obj.get_publisher_comment_id()
-            comment_author = obj.publisher_comment.get('author_id', '')
-            comment_author_name = f'{Account.get_name_safe(comment_author)} ({comment_author})' if comment_author else ''
-            comment_date = obj.publisher_comment['date']
-            comment_note = cls._comment2note(obj.publisher_comment['comment'])
-            comment_obj = {'note': comment_note, 'note_date': comment_date, 'note_id': comment_id,
-                        'note_author': comment_author_name,
-                        'note_author_id': comment_author,
-                        }
-            forminfo['notes'].append(comment_obj)
-        for n in obj.ordered_notes_except_flags:
+            note_fields = sorted(
+                [*obj.ordered_notes_except_flags, obj.publisher_comment],
+                key=lambda note: note["date"],
+                reverse=True,
+            )
+        else:
+            note_fields = obj.ordered_notes_except_flags
+        for n in note_fields:
             author_id = n.get('author_id', '')
             note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
-            note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
+            note_obj = {'note': n["note"] if "note" in n else cls._comment2note(n["comment"]),
+                        'note_date': n['date'], 'note_id': n['id'],
                         'note_author': note_author_name,
                         'note_author_id': author_id,
                         }

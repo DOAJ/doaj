@@ -439,7 +439,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         self.__seamless__.set_with_struct("admin.publisher_comment", obj)
 
     def get_publisher_comment_id(self):
-        return self.publisher_comment.get("id")
+        if self.publisher_comment and "id" in self.publisher_comment:
+            return self.publisher_comment["id"]
+        return None
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
