@@ -17,6 +17,11 @@
 
 {% if formulaic_context.name == "public" or formulaic_context.name == "update_request" %}
     <div class="form__question">
+        {% set fs = formulaic_context.fieldset("publisher_comment") %}
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
         <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
         <label for="reviewed">{{ _("I've reviewed the answers in this form and confirm that the journal meets DOAJ's basic criteria. I understand that if rejected, the journal may be embargoed anywhere between 6 months and 3 years.") }}</label>
     </div>

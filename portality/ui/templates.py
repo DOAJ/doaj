@@ -81,6 +81,7 @@ AF_FIELD = "_application-form/includes/_field.html"
 AF_GROUP = "_application-form/includes/_group.html"
 AF_LIST = "_application-form/includes/_list.html"
 FLAG_ENTRY_GROUP = "_application-form/includes/_flag_entry.html"
+TEXTAREA_WITH_COUNTER = "_application-form/includes/_textarea_with_counter.html"
 
 # Publisher area
 PUBLISHER_DRAFTS = "public/publisher/drafts.html"

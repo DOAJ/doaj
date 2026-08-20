@@ -1,3 +1,4 @@
+from portality import constants
 from werkzeug.datastructures import MultiDict
 
 from portality import models, lcc
@@ -282,7 +283,7 @@ class JournalGenericXWalk(object):
         import re
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
-                if formnote["note"]:
+                if formnote["note"] and formnote["note_id"] != obj.get_publisher_comment_id():
                     note_date = formnote["note_date"]
                     note_id = formnote["note_id"]
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
@@ -486,10 +487,20 @@ class JournalGenericXWalk(object):
     @classmethod
     def admin2form(cls, obj, forminfo):
         forminfo['notes'] = []
-        for n in obj.ordered_notes_except_flags:
+        # add publisher comment as a note:
+        if obj.publisher_comment:
+            note_fields = sorted(
+                [*obj.ordered_notes_except_flags, obj.publisher_comment],
+                key=lambda note: note["date"],
+                reverse=True,
+            )
+        else:
+            note_fields = obj.ordered_notes_except_flags
+        for n in note_fields:
             author_id = n.get('author_id', '')
             note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
-            note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
+            note_obj = {'note': n["note"] if "note" in n else cls._comment2note(n["comment"]),
+                        'note_date': n['date'], 'note_id': n['id'],
                         'note_author': note_author_name,
                         'note_author_id': author_id,
                         }
@@ -521,6 +532,9 @@ class JournalGenericXWalk(object):
         if getattr(obj, "last_full_review", None):
             forminfo["last_full_review"] = obj.last_full_review
 
+    @classmethod
+    def _comment2note(self, comment):
+        return constants.PUBLISHER_COMMENT_NOTE.replace("<comment>", comment)
 
 class JournalFormXWalk(JournalGenericXWalk):
 
