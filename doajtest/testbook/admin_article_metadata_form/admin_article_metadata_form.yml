@@ -5,16 +5,21 @@ tests:
   - title: Preparation
     context:
       role: Admin
+      testdrive: admin_article_metadata_form
     setup:
-      - Ensure you own a journal with ISSNs 1234-5678 and 9876-5432 and no articles
-        attached
-      - Ensure you are an owner of a journal with ISSN 0000-0000 that is not in
-        DOAJ
+      - Use the admin_article_metadata_form testdrive to set up for this test at
+        /testdrive/admin_article_metadata_form
+      - This creates a journal with ISSNs 1234-5678 and 9876-5432 holding 3 test
+        articles ("Success 100", "Success 200" and "Success 300"), and a second
+        journal with ISSN 0000-0000 that is not in DOAJ - both owned by the same
+        (non-admin) account
+      - At the end of the test suite, use the 'teardown' link provided by the
+        testdrive to remove the test assets from the system
     steps:
-      - step: Upload set of test articles
-        resource: /xml_upload_test_package/admin_metadata_form_test_pack.xml
+      - step: Log in as the 'admin' account supplied by the testdrive
         results:
-          - 3 Articles are uploaded and attached to the journal
+          - 3 articles ("Success 100", "Success 200" and "Success 300") are attached
+            to the "Successful" journal
 
   - title: Updating data other then DOI and Fulltext URL
     context:
