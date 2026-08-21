@@ -3395,12 +3395,9 @@ PYTHON_FUNCTIONS = {
             "no_script_tag": NoScriptTagBuilder.render,
             "year": YearBuilder.render,
             "date_in_the_past": DateInThePastBuilder.render,
-<<<<<<< HEAD
             "not_value": NotValueBuilder.render,
-            "forbidden_word": ForbiddenWordBuilder.render
-=======
+            "forbidden_word": ForbiddenWordBuilder.render,
             "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.render,
->>>>>>> 2b82c143dde9f6e519f4a6a37a2da037ba509123
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -3429,12 +3426,9 @@ PYTHON_FUNCTIONS = {
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
             "current_iso_language": CurrentISOLanguageBuilder.wtforms,
             "date_in_the_past": DateInThePastBuilder.wtforms,
-<<<<<<< HEAD
             "not_value": NotValueBuilder.wtforms,
-            "forbidden_word": ForbiddenWordBuilder.wtforms
-=======
+            "forbidden_word": ForbiddenWordBuilder.wtforms,
             "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.wtforms
->>>>>>> 2b82c143dde9f6e519f4a6a37a2da037ba509123
         }
     }
 }
