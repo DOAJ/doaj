@@ -168,6 +168,14 @@ ass_ed:
   country: Italy
   language: Italian, English
   photo: "Andrea Collivignarelli.jpg" 
+
+- name: Andrii Havrysh
+  area: Food technologies, hospitality industry, library science, scientometrics
+  year_since:
+  city: Kyiv 
+  country: Ukraine
+  language: Ukrainian, English, Russian
+  photo:  
   
 - name: Annarita Barbaro
   area: Humanities
