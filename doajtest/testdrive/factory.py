@@ -175,10 +175,11 @@ class TestDrive:
             j.save(blocking=block)
         return j
 
-    def application(self, title=None, editor=None, status=None, save=True, block=False):
-        """ Build a standalone application - e.g. to link from a journal's
+    def application(self, title=None, editor=None, editor_group=None, status=None, save=True, block=False):
+        """ Build a standalone new application - e.g. to link from a journal's
         related_applications, so an admin/editor "Related Record" link has something
-        real to find. """
+        real to find, or to populate an editor/associate editor's assigned-applications
+        search. """
         source = ApplicationFixtureFactory.make_application_source()
         a = models.Application(**source)
         a.remove_current_journal()
@@ -187,6 +188,8 @@ class TestDrive:
         a.set_id(a.makeid())
         a.bibjson().title = title or f"Application {self.run_seed} {self.create_random_str(4)}"
 
+        if editor_group is not None:
+            a.set_editor_group(editor_group)
         if status is not None:
             a.set_application_status(status)
         if editor is not None:
