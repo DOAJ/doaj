@@ -145,17 +145,21 @@ class TestDrive:
         return articles
 
     def journal(self, in_doaj=True, title=None, owner=None, editor_group=None, editor=None,
-                license_type=None, has_apc=None, notes=None, save=True, block=False):
+                license_type=None, has_apc=None, notes=None, pissn=None, eissn=None,
+                save=True, block=False):
         """ Build a single journal, exposing the facet-relevant fields that journal-search
         testdrives (admin/editor/associate/publisher) need to vary: DOAJ status, owner,
-        editor group / assigned editor, licence type, APC, and searchable notes. """
+        editor group / assigned editor, licence type, APC, and searchable notes.
+        pissn/eissn default to freshly generated unique values, but can be pinned to a
+        fixed value instead - e.g. to match a static XML upload fixture file that has
+        specific ISSNs hardcoded into it. """
         source = JournalFixtureFactory.make_journal_source(in_doaj=in_doaj)
         j = models.Journal(**source)
         j.remove_current_application()
         j.set_id(j.makeid())
         j.bibjson().title = title or f"Journal {self.run_seed} {self.create_random_str(4)}"
-        j.bibjson().eissn = self.generate_unique_issn()
-        j.bibjson().pissn = self.generate_unique_issn()
+        j.bibjson().eissn = eissn or self.generate_unique_issn()
+        j.bibjson().pissn = pissn or self.generate_unique_issn()
 
         if owner is not None:
             j.set_owner(owner)
