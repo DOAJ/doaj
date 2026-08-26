@@ -45,6 +45,11 @@ tests:
       - step: Select the confirmation checkbox and click "Submit"
         results:
           - The update request is submitted successfully
+      - step: Go back to your publisher's dashboard -> My update requests
+      - step: Click on the International Review of Applied Hibernation__<id> title
+        results:
+          - the read only form for International Review of Applied Hibernation__<id> is displayed
+          - at the end there is a "Publisher comment" section and your comment is displayed
       - step: Log out of the publisher account
       - step: Log in as DrVesperCeleste__<id> (admin) using the credentials provided in Testdrive (use "Log in with password" option)
       - step: Open the admin application for Journal of Nocturnal Pollination Studies__<id> using the URL provided under admin -> new_application -> url
