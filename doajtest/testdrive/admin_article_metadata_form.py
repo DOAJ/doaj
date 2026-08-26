@@ -29,9 +29,12 @@ class AdminArticleMetadataForm(TestDrive):
         owner_acc.set_password(owner_pw)
         owner_acc.save(blocking=True)
 
+        other_owner_acc, other_owner_pw = self.publisher_account()
+
         pissn = self.generate_unique_issn()
         eissn = self.generate_unique_issn()
         excluded_pissn = self.generate_unique_issn()
+        other_owner_pissn = self.generate_unique_issn()
 
         # Journal in DOAJ that owns the test articles below - the ISSN dropdowns on
         # the admin article metadata form should offer these two ISSNs
@@ -55,6 +58,19 @@ class AdminArticleMetadataForm(TestDrive):
         excluded_journal.bibjson().title = "Not In DOAJ " + self.run_seed
         excluded_journal.bibjson().pissn = excluded_pissn
         excluded_journal.save(blocking=True)
+
+        # In DOAJ, but owned by a different account entirely - the ISSN dropdown is
+        # scoped by the *article's* owner (see choices_for_article_issns() in
+        # portality/forms/article_forms.py), not just by DOAJ status, so this ISSN
+        # must not appear either, even though the journal is in DOAJ
+        source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        other_owner_journal = models.Journal(**source)
+        other_owner_journal.remove_current_application()
+        other_owner_journal.set_id(other_owner_journal.makeid())
+        other_owner_journal.set_owner(other_owner_acc.id)
+        other_owner_journal.bibjson().title = "Other Publisher's Journal " + self.run_seed
+        other_owner_journal.bibjson().pissn = other_owner_pissn
+        other_owner_journal.save(blocking=True)
 
         base = app.config.get("BASE_URL", "")
         articles = {}
@@ -83,20 +99,27 @@ class AdminArticleMetadataForm(TestDrive):
         return {
             "notes": [
                 "Log in as the 'admin' account to test the admin article metadata form.",
-                "The 'owner' account owns both journals below - you do not need to log into it.",
+                "The 'owner' account owns 'Successful ...' and 'Not In DOAJ ...' below; "
+                "'other_owner' owns 'Other Publisher's Journal ...' - you do not need to log "
+                "into either.",
                 "'Successful ...' is in DOAJ and holds the 3 test articles.",
                 "'Not In DOAJ ...' is owned by the same account, but is not in DOAJ - its ISSN "
                 "must not appear in the article form's ISSN dropdowns.",
+                "'Other Publisher's Journal ...' is in DOAJ, but owned by a completely "
+                "different account - its ISSN must not appear either, proving the dropdown "
+                "is scoped to the article's own owner, not every in-DOAJ journal.",
                 "ISSNs, DOIs and fulltext URLs are freshly generated every run - always use the "
                 "values shown below, not any hardcoded numbers from an old test script.",
             ],
             "accounts": {
                 "admin": {"username": admin_acc.id, "password": admin_pw},
                 "owner": {"username": owner_acc.id, "password": owner_pw},
+                "other_owner": {"username": other_owner_acc.id, "password": other_owner_pw},
             },
             "journals": {
                 "Successful": {"id": journal.id, "pissn": pissn, "eissn": eissn},
                 "Not In DOAJ": {"id": excluded_journal.id, "pissn": excluded_pissn},
+                "Other Publisher's Journal": {"id": other_owner_journal.id, "pissn": other_owner_pissn},
             },
             "articles": articles,
         }
@@ -104,6 +127,7 @@ class AdminArticleMetadataForm(TestDrive):
     def teardown(self, params) -> dict:
         models.Account.remove_by_id(params["accounts"]["admin"]["username"])
         models.Account.remove_by_id(params["accounts"]["owner"]["username"])
+        models.Account.remove_by_id(params["accounts"]["other_owner"]["username"])
         for j in params["journals"].values():
             models.Journal.remove_by_id(j["id"])
         for article in params["articles"].values():

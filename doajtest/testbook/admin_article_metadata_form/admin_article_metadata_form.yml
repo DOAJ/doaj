@@ -10,10 +10,11 @@ tests:
       - Use the admin_article_metadata_form testdrive to set up for this test at
         /testdrive/admin_article_metadata_form
       - This creates a journal (in DOAJ) holding 3 test articles ("Success 100",
-        "Success 200" and "Success 300"), and a second journal (not in DOAJ) -
-        both owned by the same non-admin account. All ISSNs, DOIs and fulltext
-        URLs are generated fresh each run - use the values shown in the testdrive
-        result throughout this test, not any specific numbers written here
+        "Success 200" and "Success 300"), a second journal (not in DOAJ) owned by
+        the same non-admin account, and a third journal (in DOAJ) owned by a
+        different account entirely. All ISSNs, DOIs and fulltext URLs are
+        generated fresh each run - use the values shown in the testdrive result
+        throughout this test, not any specific numbers written here
       - The testdrive's 'owner' account can be used later for the "log in as
         publisher" step in "Check button linking to the article's page"
       - At the end of the test suite, use the 'teardown' link provided by the
@@ -45,6 +46,10 @@ tests:
           ISSNs (shown in the testdrive result) as options
       - step: Check that the PISSN and EISSN dropdowns do NOT offer the "Not In DOAJ ..."
           journal's ISSN (shown in the testdrive result) as an option
+      - step: Check that the PISSN and EISSN dropdowns do NOT offer the "Other Publisher's
+          Journal ..." journal's ISSN (shown in the testdrive result) as an option, even
+          though that journal is in DOAJ - it belongs to a different account, so it must
+          not appear in this owner's dropdown
       - step: Check the Authors section
         results:
           - There is only one author and no "Remove Author" button
