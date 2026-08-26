@@ -788,6 +788,9 @@ var formulaic = {
             this.init = function() {
                 this.fieldName = this.fieldDef.name;
                 this.$textarea = $(`#${this.fieldName}`);
+                if (!this.$textarea.length) {
+                    return;
+                }
                 this.$counter = $(`#${this.fieldName}-counter`);
 
                 this.$textarea.on("input", () => this.updateTextarea());

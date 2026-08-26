@@ -2130,7 +2130,7 @@ class FieldDefinitions:
     PUBLISHER_COMMENT = {
         "name": "publisher_comment",
         "input": "textarea",
-        "label": lazy_gettext("Add here any extra information to support your application. Maximum 200 characters, longer comments will be shortened."),
+        "label": lazy_gettext("Add here any extra information to support your application."),
         "template": templates.TEXTAREA_WITH_COUNTER,
         "optional": True,
         "maxlength": constants.MAX_PUBLISHER_COMMENT_LENGTH,
@@ -2138,7 +2138,7 @@ class FieldDefinitions:
             "textarea_with_counter"
         ],
         "help": {
-            "short_help": "This comment won't be saved in your draft."
+            "short_help": "Maximum 200 characters, longer comments will be shortened."
         },
     }
 

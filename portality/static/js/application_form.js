@@ -128,7 +128,7 @@ doaj.af.BaseApplicationForm = class {
         for (let i = 0; i < inputs.length; i++) {
             let input = $(inputs[i]);
             let type = input.attr("type");
-            if (type === "text" || type === "number" || type === "url") {
+            if (type === "text" || type === "number" || type === "url" || input.is("textarea")) {
                 result.push(input.val());
             }
             else if (type === "radio") {
@@ -695,6 +695,9 @@ doaj.af.ReadOnlyApplicationForm = class extends doaj.af.TabbedApplicationForm {
     constructor(params) {
         super(params);
         this.editSectionsFromReview = false;
+        this.$publisher_comment = $("#publisher-comment-section--read-only");
+        this.TABS.splice(this.TABS.length, 0, {title: "Publisher Comment", fieldsets: ["publisher_comment"]})
+        this.$publisher_comment.hide();
         this.showTab(this.tabs.length - 1);
         $(".prevBtn").hide();
         $(".af-pager").hide();

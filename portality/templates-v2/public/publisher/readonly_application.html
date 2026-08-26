@@ -24,7 +24,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <section class="col-md-8">
                 <section class="page-content">
                     <form id="{{ form_id }}"
                           data-context = "{{ formulaic_context.name }}"
@@ -35,6 +35,10 @@
                           data-formulaic-after="{{ formulaic_after }}">
 
                         {% include "_application-form/includes/_public_fieldsets.html" %}
+                        <!-- add publisher comment for the review table to read its value; it will be hidden alongside other tabs -->
+                        <section id="publisher-comment-section--read-only" class="tab form-section">
+                            {% include "_application-form/includes/_fieldset_publisher-comment.html" %}
+                        </section>
 
                         <div class="tab form-section">
                             {% include "public/_application-form/includes/_review.html" %}
