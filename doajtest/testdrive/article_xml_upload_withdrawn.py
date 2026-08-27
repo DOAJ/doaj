@@ -41,5 +41,5 @@ class ArticleXmlUploadWithdrawn(TestDrive):
         models.Account.remove_by_id(params["accounts"]["publisher"]["username"])
         for j in params["journals"].values():
             models.Journal.remove_by_id(j["id"])
-        models.Article.delete_by_issns([PISSN])
+        self.safe_delete_by_issns([PISSN])
         return self.SUCCESS

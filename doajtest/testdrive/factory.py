@@ -97,6 +97,21 @@ class TestDrive:
         for tid in report.get("article_tombstones", []):
             models.ArticleTombstone.remove_by_id(tid)
 
+    def safe_delete_by_issns(self, issns):
+        """ Best-effort article cleanup by ISSN, for use in teardown.
+
+        Article.delete_by_issns aborts the whole batch (including ISSNs that matched
+        cleanly) if it hits an article whose ownership can't be resolved - e.g. a fixed
+        test ISSN that happens to collide with real articles already in the index (many
+        journals use "0000-0000" as a placeholder for a missing eissn). Rather than let
+        that crash the teardown page, swallow it here and move on; call this once per
+        ISSN group that needs to succeed independently of the others. """
+        from portality.models.article import NoValidOwnerException
+        try:
+            models.Article.delete_by_issns(issns)
+        except NoValidOwnerException:
+            pass
+
     ### Useful factory methods
 
     def publisher_account(self, save=True, block=False):

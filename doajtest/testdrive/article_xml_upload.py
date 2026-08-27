@@ -91,6 +91,11 @@ class ArticleXmlUpload(TestDrive):
         for j in params["journals"].values():
             models.Journal.remove_by_id(j["id"])
         # sweep up any articles the live upload tests created against these fixed
-        # ISSNs, regardless of which journal "version" they were matched to at the time
-        models.Article.delete_by_issns([PISSN, EISSN, THIRD_PARTY_PISSN_DOAJ, THIRD_PARTY_PISSN_CROSSREF, THIRD_PARTY_EISSN])
+        # ISSNs, regardless of which journal "version" they were matched to at the time.
+        # Split into two calls so a collision on the third-party ISSNs (unrelated real
+        # articles can share these, e.g. "0000-0000" is a common placeholder for a missing
+        # eissn) can't block clearing PISSN/EISSN, which the "successful"/"update" tests
+        # depend on being article-free between runs.
+        self.safe_delete_by_issns([PISSN, EISSN])
+        self.safe_delete_by_issns([THIRD_PARTY_PISSN_DOAJ, THIRD_PARTY_PISSN_CROSSREF, THIRD_PARTY_EISSN])
         return self.SUCCESS

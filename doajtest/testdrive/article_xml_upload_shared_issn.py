@@ -62,5 +62,5 @@ class ArticleXmlUploadSharedIssn(TestDrive):
         models.Account.remove_by_id(params["non_renderable"]["other_account"])
         for j in params["journals"].values():
             models.Journal.remove_by_id(j["id"])
-        models.Article.delete_by_issns([PISSN, EISSN])
+        self.safe_delete_by_issns([PISSN, EISSN])
         return self.SUCCESS
