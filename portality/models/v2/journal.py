@@ -532,10 +532,13 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         is_it_there = self.__seamless__.get_single("admin.flag")
         return flag
 
-    def resolve_flag(self, flag_id, updated_note):
+    def resolve_flag(self, flag_id, updated_note, date, author):
         flag = self.get_note_by_id(flag_id)
-        self.remove_note_by_id(flag_id)
-        return self.add_note(updated_note, flag.get("date"), flag_id, flag.get("author_id"))
+        if flag:
+            self.remove_note_by_id(flag_id)
+            return self.add_note(updated_note, flag.get("date"), flag_id, flag.get("author_id"))
+        else:
+            return None
 
     def delete_flag_and_note(self):
         nid = self.flag_note_id

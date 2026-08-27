@@ -1,3 +1,5 @@
+import json
+
 from werkzeug.datastructures import MultiDict
 
 from doajtest.helpers import DoajTestCase, create_random_str
@@ -118,7 +120,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
         assert self.journal.ordered_notes[0]["flag"]["deadline"] ==  short_deadline, "More urgent flag should be first"
         assert self.journal.most_urgent_flag_deadline == short_deadline, "The most urgent flag not identified correctly"
 
-        self.journal.resolve_flag(flag_id=second_flag.id, updated_note=RESOLVED_NOTE)
+        self.journal.resolve_flag(flag_id=second_flag.id, updated_note=RESOLVED_NOTE, date=dates.today(), author=self.admin.id)
 
         assert len(self.journal.flags) == 0, "Flag not set"
         assert len(self.journal.notes) == 3, "We expect 3 notes: all without flags, including the one that used to be a flag."
@@ -127,7 +129,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
 
     def test_setFlagWithCorrectDeadline(self):
         with self._make_and_push_test_context_manager(acc=self.admin):
-            fsource = JournalFixtureFactory.make_journal_form(flag=True, assignee=self.admin.id, setter=self.admin.id, deadline=short_deadline, note="Flag with a correct deadline")
+            fsource = JournalFixtureFactory.make_journal_form(flag=True, assignee=self.admin.id, setter="({})".format(self.admin.id), deadline=short_deadline, note="Flag with a correct deadline")
             form = self.pc.wtform(MultiDict(fsource))
             app = JournalFormXWalk.form2obj(form)
             app.save()
@@ -183,27 +185,35 @@ class TestJournalLikeFlagsModel(DoajTestCase):
             journal = JournalFixtureFactory.make_legacy_journal_object()
             journal.remove_notes()
 
-            # Construct an application form
+            flag_note_id = create_random_str()
+            flag_created = dates.today()
+            journal.add_note(ftext, date=flag_created, id=flag_note_id, author_id=self.admin.id,
+                             assigned_to=self.another_admin.id, deadline=short_deadline)
+            journal.save(blocking=True)
+
+            # Construct an admin form for the journal, and mark the existing flag as resolved,
+            # the way the flag_manager JS widget does (see resolveFlag in formulaic.js)
             fc = JournalFormFactory.context("admin")
             processor = fc.processor(source=journal)
-            processor.form.flags.entries.clear()
-            # Make changes to the application status via the form
-            processor.form.flags.append_entry(
-                {
-                    "flag_note_id": create_random_str(),
-                    "flag_deadline": "",
-                    "flag_assignee": self.another_admin.id,
-                    "flag_note": ftext,
-                    "flag_resolved": "true"
-                })
+            resolved_flag = {
+                "assignee": self.another_admin.id,
+                "deadline": short_deadline,
+                "note": ftext,
+                "author": self.admin.id,
+                "created": flag_created
+            }
+            processor.form.flags.flag_note_id.data = flag_note_id
+            processor.form.flags.flag_resolved.data = json.dumps(resolved_flag)
 
             # Emails are sent during the finalise stage, and requires the app context to build URLs
             processor.finalise(current_user)
-            # app = ApplicationFormXWalk.form2obj(processor.form)
-            # app.save(blocking=True)
             app = processor.target
             assert app.is_flagged == False, "Flag hasn't been resolved"
             msg = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                created_date=dates.human_date(resolved_flag["created"]),
+                author=resolved_flag["author"],
+                assignee=resolved_flag["assignee"],
+                deadline=resolved_flag["deadline"],
                 date=dates.today(),
                 username=current_user.id,
                 note=ftext
