@@ -440,6 +440,9 @@ class TestCrudApplication(DoajTestCase):
         assert "editor" not in oa.data.get("admin", {})
         assert "related_journal" not in oa.data.get("admin", {})
 
+        # publisher comment is retrieved correctly
+        assert oa.data.get("admin", {}).get("publisher_comment", None) == data["admin"]["publisher_comment"]["comment"]
+
         # check that it does contain admin information that it should
         assert oa.data.get("admin", {}).get("current_journal") is not None
 

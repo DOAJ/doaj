@@ -295,7 +295,7 @@ class NewApplication(ApplicationProcessor):
             self.resetDefaults(self.form)
 
         self.form2target()
-        self._patch_publisher_comment()
+        self._patch_publisher_comment(account.id)
         # ~~-> DraftApplication:Model~~
         draft_application = models.DraftApplication(**self.target.data)
         if id is not None:

@@ -31,17 +31,6 @@ OUTGOING_APPLICATION_STRUCT = {
                 "date_applied" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"},
                 "publisher_comment": {"coerce" : "unicode"}
-            },
-            "objects": ["publisher_comment"],
-            "structs": {
-                "publisher_comment": {
-                    "fields": {
-                        "id": {"coerce": "unicode"},
-                        "comment": {"coerce" : "unicode"},
-                        "date" : {"coerce" : "utcdatetime"},
-                        "author_id": {"coerce" : "unicode"}, # account_id of the comment's author
-                    }
-                }
             }
         }
     }
