@@ -3632,13 +3632,7 @@ class TextBuilder(WTFormsBuilder):
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         if "filters" not in wtfargs:
-            def func(x):
-                if x is not None:
-                    return x.strip()
-                else:
-                    return x
-            # wtfargs["filters"] = (lambda x: x.strip() if x is not None else x,)
-            wtfargs["filters"] = (func,)
+            wtfargs["filters"] = (lambda x: x.strip() if x is not None else x,)
         sf = StringField(**wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
