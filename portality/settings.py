@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.13"
+DOAJ_VERSION = "8.7.0"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -1838,4 +1838,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
-SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = True
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False
