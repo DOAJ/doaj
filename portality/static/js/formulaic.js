@@ -783,15 +783,16 @@ var formulaic = {
         },
         TextareaWithCounter: function(params) {
             this.fieldDef = params.fieldDef;
-            this.namespace = "formulaic-textareawithcounter-" + this.fieldDef.name;
+            this.namespace = `formulaic-textareawithcounter-${this.groupName}-${this.fieldDef.name}`;
 
             this.init = function() {
                 this.fieldName = this.fieldDef.name;
-                this.$textarea = $(`#${this.fieldName}`);
+                this.groupName = params.fieldDef.group;
+                this.$textarea = $(`#${this.groupName}-${this.fieldName}`);
                 if (!this.$textarea.length) {
                     return;
                 }
-                this.$counter = $(`#${this.fieldName}-counter`);
+                this.$counter = $(`#${this.groupName}-${this.fieldName}-counter`);
 
                 this.$textarea.on("input", () => this.updateTextarea());
                 this.updateTextarea();
