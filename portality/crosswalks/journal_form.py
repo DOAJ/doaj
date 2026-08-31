@@ -509,6 +509,7 @@ class JournalGenericXWalk(object):
         if obj.publisher_comment:
             forminfo['publisher_comment_admin'] = json.dumps(obj.publisher_comment)
             # but also add it as a note:
+            print(obj.publisher_comment)
             note_fields = sorted(
                 [*obj.ordered_notes_except_flags, obj.publisher_comment],
                 key=lambda note: note["date"],

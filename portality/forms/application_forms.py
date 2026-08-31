@@ -3662,12 +3662,9 @@ class TextAreaBuilder(WTFormsBuilder):
             "rows": field.get("rows", 1)
         }
         if field.get("maxlength"):
-            print("1: ", render_kw)
             render_kw["maxlength"] = field.get("maxlength")
-            print("2: ", render_kw)
         if "textarea_with_counter" in field.get("widgets", []):
             render_kw["class"] = "textarea-with-counter"
-        print("3: ", render_kw)
         sf = TextAreaField(render_kw=render_kw, **wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))

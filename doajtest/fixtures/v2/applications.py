@@ -85,7 +85,7 @@ class ApplicationFixtureFactory(object):
         return deepcopy(APPLICATION_FORM_EXPANDED)
 
     @classmethod
-    def incoming_application(cls, full_publisher_comment=True):
+    def incoming_application(cls):
         '''Incoming application contains only publisher's comment content - this is later patched in the ApplicationCrudApi.create
         with a date, id and author's id.
         set full_publisher_comment=True to include "patched" publisher comment - compatible with IncomingApplication Object
@@ -93,16 +93,7 @@ class ApplicationFixtureFactory(object):
         creating IncomingApplication object
         '''
         source = deepcopy(INCOMING_SOURCE)
-        if full_publisher_comment:
-            pc = {
-                "comment": source["admin"]["publisher_comment"],
-                "author_id": "test",
-                "date": dates.today(),
-                "id": "publisher_comment_id"
-            }
-            source["admin"]["publisher_comment"] = pc
         return source
-
 
     @classmethod
     def make_application_spread(cls, desired_output, period):
@@ -162,6 +153,9 @@ APPLICATION_SOURCE = {
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234", 'author_id': 'fake_account_id__b'},
             {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd", 'author_id': 'fake_account_id__a'},
         ],
+        "publisher_comment": {
+            "comment": "Please note that this application was completed during a building-wide fire drill.",
+            "date": "2014-05-21T14:02:45Z", "id": "pub_comment_fixture", "author_id": "Chuck Norris"},
         "owner" : "publisher",
         "related_journal" : "987654321123456789",
         "date_applied" : "2003-01-01T00:00:00Z",
@@ -184,7 +178,7 @@ INCOMING_SOURCE = {
     "bibjson": _isbj,
     "admin" : {
         "current_journal" : "1234567890",
-        "publisher_comment": "Please note that this application was completed during a building-wide fire drill. Any inconsistencies should be interpreted as evidence of editorial continuity under unusual conditions."
+        "publisher_comment": "Please note that this application was completed during a building-wide fire drill."
     }
 }
 

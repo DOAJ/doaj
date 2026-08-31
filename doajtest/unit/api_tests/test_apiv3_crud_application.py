@@ -3,7 +3,7 @@ import json
 from flask import url_for
 from flask_babel import lazy_gettext
 from portality import constants, models
-from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory, VERY_LONG_STRING
 from doajtest.fixtures import AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error
@@ -40,8 +40,11 @@ class TestCrudApplication(DoajTestCase):
 
         # make one from an incoming application model fixture
         data = ApplicationFixtureFactory.incoming_application()
-        # we need to patch the publisher comment
-        ApplicationsCrudApi._prepare_publisher_comment(data, "test")
+        ia = IncomingApplication(data)
+
+        # no publisher comment - it's optional
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["publisher_comment"]
         ia = IncomingApplication(data)
 
         # make application with <script> tag
@@ -118,7 +121,7 @@ class TestCrudApplication(DoajTestCase):
 
     def test_02_create_application_success(self):
         # set up all the bits we need
-        data = ApplicationFixtureFactory.incoming_application(full_publisher_comment=False)
+        data = ApplicationFixtureFactory.incoming_application()
         del data["admin"]["current_journal"]
         data["admin"]["application_status"] = "on_hold"
         data["admin"]["owner"] = "someaccount"
@@ -154,7 +157,7 @@ class TestCrudApplication(DoajTestCase):
 
         # check publisher comment
         pc = a.publisher_comment
-        assert "building-wide fire drill" in pc["comment"]
+        assert data["admin"]["publisher_comment"] == pc["comment"]
         assert "test" == pc["author_id"]
         assert pc["id"] is not None
         assert pc["date"] is not None
@@ -169,15 +172,12 @@ class TestCrudApplication(DoajTestCase):
 
     def test_02a_create_application_success_variations(self):
         # set up all the bits we need
-        data = ApplicationFixtureFactory.incoming_application(full_publisher_comment=False)
+        data = ApplicationFixtureFactory.incoming_application()
         del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
-
-        # publisher's comment in optional
-        del data["admin"]["publisher_comment"]
 
         # try with only one issn
         data["bibjson"]["pissn"] = "1234-5678"
@@ -192,7 +192,6 @@ class TestCrudApplication(DoajTestCase):
 
         s = models.Application.pull(a.id)
         assert s is not None
-        assert s.publisher_comment is None
 
 
     def test_03_create_application_fail(self):
@@ -248,6 +247,15 @@ class TestCrudApplication(DoajTestCase):
 
         with self.assertRaises(Api400Error):
             publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                raise
+
+        # publisher's comment too long
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            data["admin"]["publisher_comment"] = VERY_LONG_STRING
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
@@ -452,6 +460,7 @@ class TestCrudApplication(DoajTestCase):
         # check that we got back the object we expected
         assert isinstance(a, OutgoingApplication)
         assert a.data["id"] == ap.id
+        assert a.data["admin"]["publisher_comment"] == data["admin"]["publisher_comment"]["comment"]
 
     def test_07_retrieve_application_fail(self):
         # set up all the bits we need
