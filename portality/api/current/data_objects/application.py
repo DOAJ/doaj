@@ -3,7 +3,7 @@ from datetime import datetime
 
 from portality.api.current.data_objects.common import _check_for_script
 from portality.lib import swagger, seamless, coerce, dates, dataobj
-from portality import models
+from portality import models, constants
 from copy import deepcopy
 
 from portality.api.current.data_objects.common_journal_application import OutgoingCommonJournalApplication, _SHARED_STRUCT
@@ -29,7 +29,19 @@ OUTGOING_APPLICATION_STRUCT = {
                 "application_status" : {"coerce" : "unicode"},
                 "current_journal" : {"coerce" : "unicode"},
                 "date_applied" : {"coerce" : "unicode"},
-                "owner" : {"coerce" : "unicode"}
+                "owner" : {"coerce" : "unicode"},
+
+            },
+            "objects": ["publisher_comment"],
+            "structs": {
+                "publisher_comment": {
+                    "fields": {
+                        "id": {"coerce": "unicode"},
+                        "comment": {"coerce" : "unicode"},
+                        "date" : {"coerce" : "utcdatetime"},
+                        "author_id": {"coerce" : "unicode"}, # account_id of the comment's author
+                    }
+                }
             }
         }
     }
@@ -205,6 +217,9 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if len(self.data["bibjson"]["keywords"]) > 6:
             raise seamless.SeamlessException("bibjson.keywords may only contain a maximum of 6 keywords")
 
+        if len(self.data["admin"]["publisher_comment"]) > constants.MAX_PUBLISHER_COMMENT_LENGTH:
+            raise seamless.SeamlessException(Messages.PUBLISHER_COMMENT_TOO_LONG__EXCEPTION.format(max_length=constants.MAX_PUBLISHER_COMMENT_LENGTH))
+
     def _normalise_issn(self, issn):
         issn = issn.upper()
         if len(issn) > 8: return issn
@@ -347,6 +362,21 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
             clusters[key].reverse()
             ordered += clusters[key]
         return ordered
+
+    @property
+    def publisher_comment(self):
+        return self.__seamless__.get_single("admin.publisher_comment")
+
+    def set_publisher_comment(self, comment, id=None, author_id=None, date=None):
+        if not id:
+            id = uuid.uuid4()
+        obj = {"id": id, "comment": comment, "author_id": author_id, "date": date}
+        self.__seamless__.set_with_struct("admin.publisher_comment", obj)
+
+    def get_publisher_comment_id(self):
+        if self.publisher_comment and "id" in self.publisher_comment:
+            return self.publisher_comment["id"]
+        return None
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")

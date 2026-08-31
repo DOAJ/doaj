@@ -72,6 +72,13 @@
             {% endfor %}
         {% endif %}
     </fieldset>
+    {%- set fs = formulaic_context.fieldset("publisher_comment_admin") -%}
+    {% if fs %}
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {% include field_template %}
+        {% endfor %}
+    {% endif %}
     <fieldset>
         {% set fs = formulaic_context.fieldset("notes") %}
         {% if fs %}

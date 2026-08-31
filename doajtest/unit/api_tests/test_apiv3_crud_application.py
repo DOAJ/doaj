@@ -9,6 +9,7 @@ from doajtest.helpers import DoajTestCase
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error
 from portality.api.current.crud.applications import ApplicationsCrudApi
 from portality.api.current.data_objects.application import IncomingApplication, OutgoingApplication
+from portality.lib import dates
 from portality.lib.dataobj import ScriptTagFoundException
 from portality.lib.seamless import SeamlessException
 from portality.forms.application_processors import ApplicationProcessor
@@ -39,6 +40,8 @@ class TestCrudApplication(DoajTestCase):
 
         # make one from an incoming application model fixture
         data = ApplicationFixtureFactory.incoming_application()
+        # we need to patch the publisher comment
+        ApplicationsCrudApi._prepare_publisher_comment(data, "test")
         ia = IncomingApplication(data)
 
         # make application with <script> tag
@@ -115,7 +118,7 @@ class TestCrudApplication(DoajTestCase):
 
     def test_02_create_application_success(self):
         # set up all the bits we need
-        data = ApplicationFixtureFactory.incoming_application()
+        data = ApplicationFixtureFactory.incoming_application(full_publisher_comment=False)
         del data["admin"]["current_journal"]
         data["admin"]["application_status"] = "on_hold"
         data["admin"]["owner"] = "someaccount"
@@ -149,6 +152,13 @@ class TestCrudApplication(DoajTestCase):
         assert "LOCKSS" in preservation.get("service")
         assert "A safe place" in preservation.get("service")
 
+        # check publisher comment
+        pc = a.publisher_comment
+        assert "building-wide fire drill" in pc["comment"]
+        assert "test" == pc["author_id"]
+        assert pc["id"] is not None
+        assert pc["date"] is not None
+
         # check the stuff that should not be processed through
         assert a.bibjson().labels == []
 
@@ -159,12 +169,15 @@ class TestCrudApplication(DoajTestCase):
 
     def test_02a_create_application_success_variations(self):
         # set up all the bits we need
-        data = ApplicationFixtureFactory.incoming_application()
+        data = ApplicationFixtureFactory.incoming_application(full_publisher_comment=False)
         del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+
+        # publisher's comment in optional
+        del data["admin"]["publisher_comment"]
 
         # try with only one issn
         data["bibjson"]["pissn"] = "1234-5678"
@@ -179,6 +192,7 @@ class TestCrudApplication(DoajTestCase):
 
         s = models.Application.pull(a.id)
         assert s is not None
+        assert s.publisher_comment is None
 
 
     def test_03_create_application_fail(self):

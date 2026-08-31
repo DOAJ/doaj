@@ -1,5 +1,6 @@
 # ~~APICrudApplications:Feature->APICrud:Feature~~
 import json
+import uuid
 
 from portality.api.current.crud.common import CrudApi
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
@@ -60,6 +61,9 @@ class ApplicationsCrudApi(CrudApi):
         # we are good to proceed
         if account is None:
             raise Api401Error()
+
+        # if publisher_comment is provided let's patch its structure
+        cls._prepare_publisher_comment(data, account.id)
 
         # first thing to do is a structural validation by instantiating the data object
         try:
@@ -142,7 +146,7 @@ class ApplicationsCrudApi(CrudApi):
             if fc.validate():
                 try:
                     save_target = not dry_run
-                    fc.finalise(save_target=save_target, email_alert=False)
+                    fc.finalise(account=account.id, save_target=save_target, email_alert=False)
                     return fc.target
                 except Exception as e:
                     raise Api400Error(str(e))
@@ -406,3 +410,17 @@ class ApplicationsCrudApi(CrudApi):
             fieldName = ApplicationFormXWalk.formField2objectField(fieldName)
             msg += fieldName + " : " + "; ".join(errorMessages)
         return msg
+
+    @staticmethod
+    def _prepare_publisher_comment(data, account_id):
+        comment = data["admin"].get("publisher_comment")
+
+        if not comment:
+            data["admin"]["publisher_comment"] = {}
+            return
+
+        data["admin"]["publisher_comment"] = {
+            "id": uuid.uuid4().hex,
+            "comment": comment,
+
+        }

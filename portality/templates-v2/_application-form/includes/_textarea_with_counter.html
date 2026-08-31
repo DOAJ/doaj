@@ -1,17 +1,28 @@
-<div class="form__question">
-    <label for="{{ f.name }}">
-        {% autoescape off %}{{ f.label }}{% endautoescape%}
-        {% if f.optional %}<span class="form__question--optional">({{ _("Optional") }})</span>{% endif %}
-    </label>
-    <p class="form__short-help"><small>{{ f.help("short_help") | safe }}</small></p>
-    <div class="textarea-with-counter-wrapper">
-        {{ f.render_form_control() }}
-        <span
-                id="{{ f.name }}-counter"
-                class="character-counter"
-                aria-hidden="true"
-        >
-      0/{%- if f.maxlength -%}{{ f.maxlength }}{%- endif -%}
-    </span>
-    </div>
+<div class="{{ f.name }}__container form__question">
+    {% for subfield in f.group_subfields() %}
+        {% if subfield.label %}
+            <label for="{{ subfield.name }}">
+                {% autoescape off %}{{ subfield.label }}{% endautoescape%}
+                {% if subfield.optional %}<span class="form__question--optional">({{ _("Optional") }})</span>{% endif %}
+            </label>
+        {% endif %}
+        {% if subfield.help("short_help") %}
+            <p class="form__short-help"><small>{{ subfield.help("short_help") | safe }}</small></p>
+        {% endif %}
+        {% if "widget" in subfield and subfield.widget.has("textarea_with_counter") %}
+            <div class="textarea-with-counter-wrapper">
+                {{ subfield.render_form_control() }}
+                <span
+                        id="{{ f.name }}-counter"
+                        class="character-counter"
+                        aria-hidden="true"
+                >
+              0/{%- if subfield.maxlength -%}{{ subfield.maxlength }}{%- endif -%}
+            </span>
+            </div>
+        {% else %}
+            <p style="color: red">{{ subfield.name }}</p>
+            {{ subfield.render_form_control() }}
+        {% endif %}
+    {% endfor %}
 </div>

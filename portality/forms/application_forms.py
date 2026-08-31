@@ -2131,15 +2131,62 @@ class FieldDefinitions:
         "name": "publisher_comment",
         "input": "textarea",
         "label": lazy_gettext("Add here any extra information to support your application."),
-        "template": templates.TEXTAREA_WITH_COUNTER,
         "optional": True,
         "maxlength": constants.MAX_PUBLISHER_COMMENT_LENGTH,
+        "subfield": True,
+        "group": "publisher_comment_group",
         "widgets": [
             "textarea_with_counter"
         ],
         "help": {
             "short_help": "Maximum 200 characters, longer comments will be shortened."
         },
+    }
+
+    PUBLISHER_COMMENT_ID = {
+        "name": "publisher_comment_id",
+        # "input": "hidden",
+        "input": "text",
+        "subfield": True,
+        "group": "publisher_comment_group",
+        "optional": True
+    }
+
+    PUBLISHER_COMMENT_AUTHOR = {
+        "name": "publisher_comment_author",
+        # "input": "hidden",
+        "input": "text",
+        "subfield": True,
+        "group": "publisher_comment_group",
+        "optional": True
+    }
+
+    PUBLISHER_COMMENT_DATE = {
+        "name": "publisher_comment_date",
+        # "input": "hidden",
+        "input": "text",
+        "subfield": True,
+        "group": "publisher_comment_group",
+        "optional": True
+    }
+
+    PUBLISHER_COMMENT_GROUP = {
+        "name": "publisher_comment_group",
+        "input": "group",
+        "subfields": [
+            "publisher_comment_id",
+            "publisher_comment_author",
+            "publisher_comment_date",
+            "publisher_comment"
+        ],
+        "template": templates.TEXTAREA_WITH_COUNTER
+    }
+
+    PUBLISHER_COMMENT_ADMIN = {
+        "name": "publisher_comment_admin",
+        "label": "publisher_comment_admin",
+        #"input": "hidden"
+        "input": "text"
     }
 
 
@@ -2467,7 +2514,18 @@ class FieldSetDefinitions:
     PUBLISHER_COMMENT = {
         "name": "publisher_comment",
         "fields": [
+            FieldDefinitions.PUBLISHER_COMMENT_GROUP["name"],
+            FieldDefinitions.PUBLISHER_COMMENT_ID["name"],
+            FieldDefinitions.PUBLISHER_COMMENT_AUTHOR["name"],
+            FieldDefinitions.PUBLISHER_COMMENT_DATE["name"],
             FieldDefinitions.PUBLISHER_COMMENT["name"]
+        ]
+    }
+
+    PUBLISHER_COMMENT_ADMIN = {
+        "name": "publisher_comment_admin",
+        "fields": [
+            FieldDefinitions.PUBLISHER_COMMENT_ADMIN["name"],
         ]
     }
 
@@ -2537,7 +2595,8 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
     ASSOCIATE["templates"]["form"] = templates.ASSED_APPLICATION_FORM
@@ -2550,7 +2609,8 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
     EDITOR["templates"]["form"] = templates.EDITOR_APPLICATION_FORM
@@ -2568,6 +2628,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"],
         FieldSetDefinitions.MARK_AS_FULL_REVIEW["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
@@ -3571,7 +3632,13 @@ class TextBuilder(WTFormsBuilder):
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         if "filters" not in wtfargs:
-            wtfargs["filters"] = (lambda x: x.strip() if x is not None else x,)
+            def func(x):
+                if x is not None:
+                    return x.strip()
+                else:
+                    return x
+            # wtfargs["filters"] = (lambda x: x.strip() if x is not None else x,)
+            wtfargs["filters"] = (func,)
         sf = StringField(**wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
@@ -3598,10 +3665,11 @@ class TextAreaBuilder(WTFormsBuilder):
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         render_kw = {
-            "rows": field.get("rows", 1),
-            "maxlength": field.get("maxlength", "")
+            "rows": field.get("rows", 1)
         }
-        if "textarea_with_counter" in field.get("widgets"):
+        if field.get("maxlength"):
+            render_kw["maxlength"]: field.get("maxlength")
+        if "textarea_with_counter" in field.get("widgets", []):
             render_kw["class"] = "textarea-with-counter"
         sf = TextAreaField(render_kw=render_kw, **wtfargs)
         if "repeatable" in field:
