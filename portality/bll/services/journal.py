@@ -67,7 +67,7 @@ class JournalService(object):
 
         # copy all the relevant information from the journal to the application
         bj = journal.bibjson()
-        notes = journal.notes
+        notes = journal.get_detached_notes()
 
         application = models.Suggestion()   # ~~-> Application:Model~~
         application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
