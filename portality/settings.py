@@ -1206,6 +1206,7 @@ CACHE_DIR = os.path.join(ROOT_DIR, "cache")
 # ~~->JournalHistory:Feature~~
 ARTICLE_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "article")
 JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
+APPLICATION_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "application")
 
 #################################################
 # Sitemap settings
