@@ -34,6 +34,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         gap: .25rem;
+        color: $warm-black !important;
         line-height: 1;
         font-size: .889em;
         width: 100%;
@@ -56,20 +57,6 @@
         background: transparent;
         color: $grapefruit;
       }
-
-      > .username {
-        position: relative;
-        > .signed-in-as {
-          position: absolute;
-          left: 0;
-          bottom: -0.7rem;
-          margin-bottom: 0.25rem;
-          font-size: 0.75em;
-          font-weight: normal;
-          white-space: nowrap;
-          text-transform: uppercase;
-        }
-      }
     }
 
     a {
@@ -91,4 +78,47 @@
 .nav-bar__link {
   display: block;
   line-height: 75px;
+}
+
+nav {
+  .dropdown {
+    button.dropdown__trigger {
+      > .username {
+        position: relative;
+
+        > .signed-in-as {
+          position: absolute;
+          left: 0;
+          bottom: -0.7rem;
+          margin-bottom: 0.25rem;
+          font-size: 0.75em;
+          font-weight: normal;
+          white-space: nowrap;
+          text-transform: uppercase;
+        }
+      }
+    }
+    ul.dropdown__menu {
+      width: unset;
+      height: fit-content;
+      font-size: .889em;
+      left: 1.5rem;
+      min-width: calc(100% - 3rem);
+      .nav-bar__logout-form {
+        margin-bottom: 0;
+        button.dropdown__link.btn-logout {
+          margin-bottom: 0;
+          width: 100%;
+          color: white;
+          border: none;
+          text-align: start;
+          &:hover,
+          &:focus,
+          &:active {
+            color: $warm-black;
+          }
+        }
+      }
+    }
+  }
 }

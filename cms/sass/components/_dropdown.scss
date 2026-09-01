@@ -38,7 +38,8 @@
 }
 
 .dropdown__link {
-  display: block;
+  display: flex;
+  gap: .25rem;
   padding: $spacing-03;
   clear: both;
   white-space: nowrap;

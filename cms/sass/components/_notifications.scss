@@ -1,12 +1,13 @@
 .notifications {
+  width: 300px !important;
   overflow-y: scroll;
-  height: fit-content;
-  width: 300px;
   @include typescale-06;
 }
 
 .notifications__item {
+  display: block;
   a {
+    display: block;
     white-space: normal;
   }
 }
