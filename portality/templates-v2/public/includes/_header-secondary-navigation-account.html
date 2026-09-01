@@ -1,56 +1,38 @@
 {% set extraClasses = "" %}
 {% if mobile %}
-    {% set extraClasses = "secondary-nav__item_mobile" %}
+{% set extraClasses = "secondary-nav__item_mobile" %}
 {% endif %}
-
 {% if not current_user.is_anonymous %}
-    <li class="dropdown {{ extraClasses }}" role="menuitem">
-            <button class="dropdown__trigger nav-bar__link label" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dashboard
-                <span data-feather="chevron-down" aria-hidden="true"></span>
-            </button>
-        <ul class="dropdown__menu" aria-labelledby="menu-account">
-            {% if current_user.has_role("admin") %}
-                <li>
-                    <a href="{{ url_for('dashboard.top_todo') }}" class="dropdown__link">
-                        Managing Editor
-                    </a>
-                </li>
-            {% endif %}
-            {% if (current_user.has_role("editor") or current_user.has_role("associate_editor")) and not current_user.has_role("admin") %}
-                <li>
-                    <a href="{{ url_for('editor.index') }}" class="dropdown__link">
-                        Editor
-                    </a>
-                </li>
-            {% endif %}
-            {% if current_user.has_role("publisher") %}
-                <li>
-                    <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
-                        Publisher dashboard
-                    </a>
-                </li>
-            {% endif %}
-            <li>
-                <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
-                    My Account
-                </a>
-            </li>
-        </ul>
-    </li>
-{% endif %}
-<li class="{{ extraClasses }}" role="menuitem">
-    {% if current_user.is_anonymous %}
-        <a href="{{ url_for('account.login') }}" class="nav-bar__link">
-            Login
-            <span data-feather="log-in" aria-hidden="true"></span>
-        </a>
-    {% else %}
-        <form method="POST" action="{{ url_for('account.logout') }}" class="nav-bar__logout-form">
-            <button type="submit" class="nav-bar__link btn-logout">
-                Logout
-                <span data-feather="log-out" aria-hidden="true"></span>
-            </button>
-        </form>
-    {% endif %}
+<li class="dropdown {{ extraClasses }}" role="menuitem">
+    <button class="dropdown__trigger nav-bar__link label" id="menu-dashboard" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+        Dashboard
+        <span data-feather="chevron-down" aria-hidden="true"></span>
+    </button>
+    <ul class="dropdown__menu" aria-labelledby="menu-dashboard">
+        {% if current_user.has_role("admin") %}
+        <li>
+            <a href="{{ url_for('dashboard.top_todo') }}" class="dropdown__link">
+                Managing Editor
+            </a>
+        </li>
+        {% endif %}
+        {% if (current_user.has_role("editor") or current_user.has_role("associate_editor")) and not
+        current_user.has_role("admin") %}
+        <li>
+            <a href="{{ url_for('editor.index') }}" class="dropdown__link">
+                Editor
+            </a>
+        </li>
+        {% endif %}
+        {% if current_user.has_role("publisher") %}
+        <li>
+            <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
+                Publisher dashboard
+            </a>
+        </li>
+        {% endif %}
+    </ul>
 </li>
+{% endif %}
+{% include 'public/includes/_account_dropdown.html' with context %}

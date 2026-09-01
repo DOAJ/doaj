@@ -1,0 +1,43 @@
+{% if current_user.is_anonymous %}
+<li class="{{ extraClasses }}" role="menuitem">
+    <a href="{{ url_for('account.login') }}" class="nav-bar__link">
+        Login
+        <span data-feather="log-in" aria-hidden="true"></span>
+    </a>
+</li>
+{% else %}
+<li class="dropdown {{ extraClasses }}" role="menuitem">
+    <button
+            id="menu-account"
+            class="dropdown__trigger nav-bar__link label"
+            aria-expanded="false"
+            aria-haspopup="menu"
+            role="button">
+        <span class="username">
+            <span class="signed-in-as">Signed in as</span>
+            {{ current_user.id }}
+            {% if current_user.has_role("admin") %}
+                (Managing Editor)
+            {% elif current_user.has_role("editor") %}
+                (Editor)
+            {% elif current_user.has_role("associate_editor") %}
+                (Associate Editor)
+            {% endif %}
+            <span data-feather="chevron-down" aria-hidden="true"></span>
+        </span>
+    </button>
+    <ul class="dropdown__menu" aria-labelledby="menu-account">
+        <form method="POST" action="{{ url_for('account.logout') }}" class="nav-bar__logout-form">
+            <button type="submit" class="dropdown__link btn-logout">
+                Logout
+                <span data-feather="log-out" aria-hidden="true"></span>
+            </button>
+        </form>
+        <li>
+            <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
+                My Account <span data-feather="user" aria-hidden="true"></span>
+            </a>
+        </li>
+    </ul>
+</li>
+{% endif %}
