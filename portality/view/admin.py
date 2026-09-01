@@ -26,6 +26,7 @@ from portality.lib.query_filters import remove_search_limits, update_request, no
 from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete, admin_reports
+from portality.tasks.journal_in_out_doaj import find_matching_issns_in_doaj
 from portality.ui.messages import Messages
 from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
@@ -49,6 +50,12 @@ def restrict():
 def index():
     return render_template(templates.ADMIN_JOURNALS_SEARCH, admin_page=True)
 
+
+@blueprint.route("/status")
+@login_required
+@ssl_required
+def status_ui():
+    return render_template(templates.ADMIN_STATUS)
 
 @blueprint.route("/journals", methods=["GET"])
 @login_required
@@ -292,7 +299,15 @@ def create_cont_list(continuations: Iterable[Journal],
 @ssl_required
 @write_required()
 def journal_activate(journal_id):
-    job = journal_in_out_doaj.change_in_doaj([journal_id], True)
+    matching_issns = find_matching_issns_in_doaj(journal_id)
+    if not matching_issns:
+        job = journal_in_out_doaj.change_in_doaj([journal_id], True)
+    else:
+        flash_with_url(
+            Messages.CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS.format(ids=", ".join(matching_issns)),
+            "error")
+        return redirect(url_for('.journal_page', journal_id=journal_id))
+
     return redirect(url_for('.journal_page', journal_id=journal_id, job=job.id))
 
 
@@ -422,7 +437,7 @@ def update_requests():
 @write_required()
 @login_required
 @ssl_required
-def application(application_id):
+def application(application_id, **kwargs):
     auth_svc = DOAJ.authorisationService()
     application_svc = DOAJ.applicationService()
 
@@ -448,8 +463,15 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
+
+        continuation_info = {"initial_warning": request.args.get("info") == constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED}
+        replaces = Journal.find_by_issn(ap.bibjson().replaces)
+        if replaces:
+            continuation_info["journal"] = replaces[0]
+
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks,
+                                  continuation_info=continuation_info)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -464,7 +486,7 @@ def application(application_id):
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done', info=processor.info))
             except Exception as e:
                 flash("unexpected field " + str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
@@ -533,7 +555,7 @@ def application_quick_reject(application_id):
     flash(msg, "success")
 
     # redirect the user back to the edit page
-    return redirect(url_for('.application', application_id=application_id))
+    return redirect(url_for('admin.application', application_id=application_id, info=constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED))
 
 
 @blueprint.route("/admin_site_search", methods=["GET"])
@@ -926,6 +948,50 @@ def admin_alerts():
 @login_required
 def autoassign_search():
     return render_template(templates.ADMIN_AUTOASSIGN_SEARCH)
+
+@blueprint.route("/journal-csv", methods=["GET"])
+@login_required
+def journal_csv_search():
+    svc = DOAJ.journalService()
+    free = svc.get_free_csv()
+    premium = svc.get_premium_csv()
+    return render_template(templates.ADMIN_JOURNAL_CSV_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/journal-csv/delete", methods=["POST"])
+@write_required()
+@login_required
+def journal_csv_delete():
+    svc = DOAJ.journalService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_csv(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)
+
+@blueprint.route("/pdd", methods=["GET"])
+@login_required
+def pdd_search():
+    svc = DOAJ.publicDataDumpService()
+    free = svc.get_free_dump()
+    premium = svc.get_premium_dump()
+    return render_template(templates.ADMIN_PDD_SEARCH, free=free, premium=premium)
+
+@blueprint.route("/pdd/delete", methods=["POST"])
+@write_required()
+@login_required
+def pdd_delete():
+    svc = DOAJ.publicDataDumpService()
+    id = request.values.get("id")
+    if id is None:
+        abort(400)
+    try:
+        svc.delete_pdd(id)
+        return make_json_resp({"status": "success"}, status_code=200)
+    except:
+        abort(400)
 
 @blueprint.route("/ris", methods=["GET"])
 @login_required

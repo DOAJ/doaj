@@ -1,9 +1,11 @@
+import unittest
 from doajtest.helpers import DoajTestCase
 from urllib.parse import quote_plus, urlparse
 
 
 class TestCookieConsent(DoajTestCase):
 
+    @unittest.skip("cookie_consent backend route commented out in bf0408cc9 - replaced with JS-only implementation")
     def test_01_cookie_consent_permitted_domains(self):
         """ Ensure we only redirect to our own domain via cookie consent """
 
@@ -20,6 +22,7 @@ class TestCookieConsent(DoajTestCase):
             assert permitted_redirect_params.status_code == 302
             assert permitted_redirect_params.location == '/apply?errors=numerous'
 
+    @unittest.skip("cookie_consent backend route commented out in bf0408cc9 - replaced with JS-only implementation")
     def test_02_cookie_consent_invalid_domains(self):
         """ Any redirect to another domain is rejected via cookie consent """
 

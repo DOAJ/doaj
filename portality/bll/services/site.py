@@ -8,6 +8,7 @@ from portality.core import app
 from portality.lib import nav, dates
 from portality.lib.argvalidate import argvalidate
 from portality.lib.dates import FMT_DATETIME_SHORT, FMT_DATETIME_STD
+from portality.models import Cache, JournalArticle
 from portality.store import StoreFactory, prune_container
 from portality.util import get_full_url_safe
 from collections.abc import Iterable
@@ -257,3 +258,26 @@ class SiteService(object):
         action_register.append(f"Article URLs count : {total_articles_count}")
 
         return index_files, action_register
+
+    def site_statistics(self):
+        """
+        Get the site statistics
+        ~~SiteStatistics:Feature~~
+        :return:
+        """
+        # First check the cache, if it's there (stale or not), return it. Otherwise, calculate and return.
+        stats = Cache.get_site_statistics()
+        if stats is not None:
+            return stats
+
+        return JournalArticle.site_statistics()
+
+    def cache_site_statistics(self):
+        """
+        Cache the site statistics
+        ~~SiteStatisticsCache:Feature~~
+        :return:
+        """
+        stats = JournalArticle.site_statistics()
+        Cache.cache_site_statistics(stats)
+        return stats

@@ -11,6 +11,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 from portality.tasks.redis_huey import scheduled_short_queue  # noqa
 
 # now import the tasks that will bind to those queues
+from portality.tasks.approaching_flag_deadline import scheduled_approaching_flag_deadline, approaching_flag_deadline  # noqa
 from portality.tasks.async_workflow_notifications import async_workflow_notifications  # noqa
 from portality.tasks.check_latest_es_backup import scheduled_check_latest_es_backup, check_latest_es_backup  # noqa
 from portality.tasks.datalog_journal_added_update import scheduled_datalog_journal_added_update, datalog_journal_added_update  # noqa
@@ -22,4 +23,6 @@ from portality.tasks.prune_es_backups import scheduled_prune_es_backups, prune_e
 from portality.tasks.read_news import scheduled_read_news, read_news  # noqa
 from portality.tasks.reporting import scheduled_reports, run_reports  # noqa
 from portality.tasks.request_es_backup import scheduled_request_es_backup, request_es_backup  # noqa
-from portality.tasks.auto_assign_editor_group_data import scheduled_auto_assign_editor_group_data, auto_assign_editor_group_data
+from portality.tasks.article_deletion_notifications import scheduled_article_deletion_notifications, execute_article_deletion_notifications #noqa
+from portality.tasks.auto_assign_editor_group_data import scheduled_auto_assign_editor_group_data, auto_assign_editor_group_data # noqa
+from portality.tasks.site_statistics import scheduled_site_statistics, site_statistics  # noqa

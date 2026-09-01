@@ -3,22 +3,23 @@ orbs:
   python: circleci/python@2.1.1
   browser-tools: circleci/browser-tools@1.2.3
 
-jobs:
-  build-and-test:
-
+executors:
+  test-executor:
     docker:
       - image: cimg/python:3.10
         environment:
           DOAJENV: test
       - image: cimg/redis:6.2.14
-      - image: elasticsearch:7.10.1
+      - image: opensearchproject/opensearch:1.3.20
         environment:
-          - xpack.security.enabled: false
+          - plugins.security.disabled: true
           - transport.host: localhost
           - discovery.type: single-node
+    working_directory: ~/doaj
 
-    parallelism: 4
-
+commands:
+  install-and-prepare:
+    description: "Install dependencies and prepare the doaj test env"
     steps:
       - checkout
       - run: git submodule update --init --recursive
@@ -27,22 +28,33 @@ jobs:
           pip-dependency-file: setup.py
           path-args: .[test]
       - run:
-          name: Prepare doaj env for unittests
+          name: Prepare doaj env for tests
           command: |
             echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
             echo "DEFAULT_INDEX_SETTINGS = { 'number_of_shards': 1, 'number_of_replicas': 0, 'analysis': { 'analyzer': { 'ascii_folded': { 'tokenizer': 'standard', 'filter': ['lowercase', 'asciifolding'] } } } }" >> test.cfg
+            echo "PASSWORDLESS_ENCRYPTION_KEY = 'KaqSOF70jLVn8E9Pjq4PXO_TNbR_K-96J2dYwzhRJDo='" >> test.cfg
             python portality/cms/build_fragments.py
             python portality/cms/build_sass.py
 
+jobs:
+  unit-tests:
+    executor: test-executor
+    parallelism: 4
+    steps:
+      - install-and-prepare
       - run:
           name: Run unit tests
           command: |
             TESTS=$(circleci tests glob "doajtest/unit/**/*.py" | circleci tests split)
             pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
-
       - store_test_results:
           path: test-results
 
+  selenium-tests:
+    executor: test-executor
+    parallelism: 1
+    steps:
+      - install-and-prepare
       - run:
           name: Env for selenium
           command: |
@@ -50,28 +62,28 @@ jobs:
             echo "SELENIUM_DOAJ_HOST = 'localhost'" >> test.cfg
             echo "SELENIUM_HEADLESS = True" >> test.cfg
       - browser-tools/install-chrome
-
       - run:
-            name: List current env
-            command: |
-                cat test.cfg
-                google-chrome --version
-
+          name: List current env
+          command: |
+            cat test.cfg
+            google-chrome --version
       - run:
           name: Run selenium tests
           command: |
-            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
+            TESTS=$(circleci tests glob "doajtest/seleniumtest/*.py" | circleci tests split)
             pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
-
       - store_test_results:
           path: test-results
-    working_directory: ~/doaj
-
 
 workflows:
-  unit_tests:
+  tests:
     jobs:
-      - build-and-test:
+      - unit-tests:
+          filters:
+            branches:
+              ignore:
+                - static_pages
+      - selenium-tests:
           filters:
             branches:
               ignore:

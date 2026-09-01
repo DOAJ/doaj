@@ -11,7 +11,22 @@ featuremap:
 
 ---
 
-Journal records are announced in the feed when they are added or removed.
+There are two versions of our OAI-PMH metadata service.
+
+## All users
+For all users, the OAI-PMH feed is up-to-date to within 30 days of the current data in the system. This version of the feed is open to everyone and does not require a login.
+
+## Premium metadata service users
+
+The OAI-PMH feed available to Premium metadata service users updates immediately as records are added or withdrawn. To access and download the Premium version of the feed, you must be logged into your DOAJ account and have an active Premium metadata services account. Premium metadata service users should supply an `api_key` parameter to their OAI-PMH requests.
+
+If you would like access to more up-to-date metadata and to know more about our Premium Metadata Services, please see the [Premium Metadata Services](/docs/premium) page.
+
+If you are accessing the OAI-PMH feed machine-to-machine, you can include your API key in the URL. For example:
+
+https://doaj.org/oai.article?verb=ListRecords&metadataPrefix=oai_dc&from=2026-03-26&api_key=[REDACTED]
+
+Technical support for Premium Service users is available by sending an email to [helpdesk@doaj.org](mailto:helpdesk@doaj.org?subject=Premium%20Metadata%20Service)
 
 ## Journal feed
 
@@ -101,6 +116,9 @@ The metadata held by us is mapped to Dublin Core in the OAI-PMH feed, with the f
 ---
 
 ## Article feed
+
+Premium users should supply an `api_key` parameter to their OAI-PMH requests to access the premium feed with the most up-to-date information.
+
 
 {:.tabular-list}
 - `Identify`

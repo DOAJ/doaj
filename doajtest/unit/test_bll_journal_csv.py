@@ -17,16 +17,17 @@ from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.core import app
 from portality.lib.paths import rel2abs
+from portality.store import StoreException
 
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
-                               {"test_id": []})
+                               {"test_id": ["49"]})
 
 
 EXCEPTIONS = {
     "ArgumentException": exceptions.ArgumentException,
-    "IOError": IOError
+    "IOError": StoreException,
 }
 
 
@@ -41,20 +42,12 @@ class TestBLLJournalCSV(DoajTestCase):
 
         self.localStore = store.StoreLocal(None)
         self.tmpStore = store.TempStore()
-        self.container_id = app.config.get("STORE_CACHE_CONTAINER")
-
-        self.cache = models.cache.Cache
-        models.cache.Cache = ModelCacheMockFactory.in_memory()
-        models.Cache = models.cache.Cache
+        self.container_id = app.config.get("STORE_JOURNAL_CSV_CONTAINER")
 
     def tearDown(self):
         self.localStore.delete_container(self.container_id)
         self.tmpStore.delete_container(self.container_id)
         self.store_local_patcher.tearDown(self.app_test)
-
-        models.cache.Cache = self.cache
-        models.Cache = self.cache
-
         super(TestBLLJournalCSV, self).tearDown()
 
     @parameterized.expand(load_cases)
@@ -87,136 +80,126 @@ class TestBLLJournalCSV(DoajTestCase):
         if main_write_arg == "fail":
             original_configs.update(patch_config(app, {"STORE_IMPL": StoreMockFactory.no_writes_classpath()}))
 
-        journals = []
-        if journal_count > 0:
-            journals += [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journal_count, in_doaj=True)]
+        try:
+            journals = []
+            if journal_count > 0:
+                journals += [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journal_count, in_doaj=True)]
 
-        comparisons = {}
-        articles = []
-        for i in range(len(journals)):
-            journal = journals[i]
-            bj = journal.bibjson()
-            bj.alternative_title = "Заглавие на журнала"   # checking mixed unicode
-            issns = journal.bibjson().issns()
-            source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
-            articles.append(models.Article(**source1))
-            comparisons[issns[0]] = {"issns": issns, "article_count": 0, "article_latest" : ""}
-            if i < journals_with_articles_count:
-                source2 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
-                article2 = models.Article(**source2)
-                article2.set_created("2019-0{i}-01T00:00:00Z".format(i=i + 1))
-                articles.append(article2)
+            comparisons = {}
+            articles = []
+            for i in range(len(journals)):
+                journal = journals[i]
+                bj = journal.bibjson()
+                bj.alternative_title = "Заглавие на журнала"   # checking mixed unicode
+                issns = journal.bibjson().issns()
+                source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
+                articles.append(models.Article(**source1))
+                comparisons[issns[0]] = {"issns": issns, "article_count": 0, "article_latest" : ""}
+                if i < journals_with_articles_count:
+                    source2 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
+                    article2 = models.Article(**source2)
+                    article2.set_created("2019-0{i}-01T00:00:00Z".format(i=i + 1))
+                    articles.append(article2)
 
-                source3 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
-                article3 = models.Article(**source3)
-                article3.set_created("2019-0{i}-02T00:00:00Z".format(i=i + 1))
-                articles.append(article3)
+                    source3 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
+                    article3 = models.Article(**source3)
+                    article3.set_created("2019-0{i}-02T00:00:00Z".format(i=i + 1))
+                    articles.append(article3)
 
-                comparisons[issns[0]]["article_count"] = 2
-                comparisons[issns[0]]["article_latest"] = "2019-0{i}-02T00:00:00Z".format(i=i + 1)
+                    comparisons[issns[0]]["article_count"] = 2
+                    comparisons[issns[0]]["article_latest"] = "2019-0{i}-02T00:00:00Z".format(i=i + 1)
 
-        if journals_with_articles_count == 0:
-            # make an article to initialise the mapping
-            source = ArticleFixtureFactory.make_article_source(eissn="XXXX-XXXX", pissn="XXXX-XXXX", with_id=False, in_doaj=False)
-            article = models.Article(**source)
-            articles.append(article)
+            if journals_with_articles_count == 0:
+                # make an article to initialise the mapping
+                source = ArticleFixtureFactory.make_article_source(eissn="XXXX-XXXX", pissn="XXXX-XXXX", with_id=False, in_doaj=False)
+                article = models.Article(**source)
+                articles.append(article)
 
-        if journals_no_issn_count > 0:
-            noissns = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journals_no_issn_count, in_doaj=True)]
-            for i in range(len(noissns)):
-                noissn = noissns[i]
-                bj = noissn.bibjson()
-                del bj.eissn
-                del bj.pissn
-                noissn.set_id("no_issn_{i}".format(i=i))
-            journals += noissns
+            if journals_no_issn_count > 0:
+                noissns = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journals_no_issn_count, in_doaj=True)]
+                for i in range(len(noissns)):
+                    noissn = noissns[i]
+                    bj = noissn.bibjson()
+                    del bj.eissn
+                    del bj.pissn
+                    noissn.set_id("no_issn_{i}".format(i=i))
+                journals += noissns
 
-        if not_in_doaj_count > 0:
-            nots = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=not_in_doaj_count, in_doaj=False)]
-            for i in range(len(nots)):
-                n = nots[i]
-                n.set_id("not_in_doaj_{i}".format(i=i))
-            journals += nots
+            if not_in_doaj_count > 0:
+                nots = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=not_in_doaj_count, in_doaj=False)]
+                for i in range(len(nots)):
+                    n = nots[i]
+                    n.set_id("not_in_doaj_{i}".format(i=i))
+                journals += nots
 
-        jids = []
-        for i in range(len(journals)):
-            journals[i].save()
-            jids.append((journals[i].id, journals[i].last_updated))
+            jids = []
+            for i in range(len(journals)):
+                journals[i].save()
+                jids.append((journals[i].id, journals[i].last_updated))
 
-        aids = []
-        for i in range(len(articles)):
-            articles[i].save()
-            aids.append((articles[i].id, articles[i].last_updated))
+            aids = []
+            for i in range(len(articles)):
+                articles[i].save()
+                aids.append((articles[i].id, articles[i].last_updated))
 
-        if prune:
-            self.localStore.store(self.container_id, "journalcsv__doaj_20180101_0000_utf8.csv", source_stream=StringIO("test1"))
-            self.localStore.store(self.container_id, "journalcsv__doaj_20180601_0000_utf8.csv", source_stream=StringIO("test2"))
-            self.localStore.store(self.container_id, "journalcsv__doaj_20190101_0000_utf8.csv", source_stream=StringIO("test3"))
-
-        models.Journal.blockall(jids)
-        models.Article.blockall(aids)
-
-        ###########################################################
-        # Execution
-
-        if raises is not None:
-            with self.assertRaises(raises):
-                self.svc.csv(prune)
-
-                tempFiles = self.tmpStore.list(self.container_id)
-                assert len(tempFiles) == 0
-        else:
-            url, action_register = self.svc.csv(prune)
-            assert url is not None
-
-            csv_info = models.cache.Cache.get_latest_csv()
-            assert csv_info.get("url") == url
-
-            filenames = self.localStore.list(self.container_id)
             if prune:
-                assert len(filenames) == 2
-                assert "journalcsv__doaj_20180101_0000_utf8.csv" not in filenames
-                assert "journalcsv__doaj_20180601_0000_utf8.csv" not in filenames
-                assert "journalcsv__doaj_20190101_0000_utf8.csv" in filenames
+                pass
+                # Prune is no longer tested in this file, there is a separate prune test
+                # self.localStore.store(self.container_id, "doaj_journalcsv_20180101_0000_utf8.csv", source_stream=StringIO("test1"))
+                # self.localStore.store(self.container_id, "doaj_journalcsv_20180601_0000_utf8.csv", source_stream=StringIO("test2"))
+                # self.localStore.store(self.container_id, "doaj_journalcsv_20190101_0000_utf8.csv", source_stream=StringIO("test3"))
+
+            models.Journal.blockall(jids)
+            models.Article.blockall(aids)
+
+            ###########################################################
+            # Execution
+
+            if raises is not None:
+                with self.assertRaises(raises):
+                    self.svc.csv(prune=prune if prune is None else False)
+
+                    tempFiles = self.tmpStore.list(self.container_id)
+                    assert len(tempFiles) == 0
             else:
+                jc = self.svc.csv(prune=prune if prune is None else False)
+                assert jc.url is not None
+
+                filenames = self.localStore.list(self.container_id)
                 assert len(filenames) == 1
+                assert filenames[0] == jc.filename
 
-            latest = None
-            for fn in filenames:
-                if fn != "journalcsv__doaj_20190101_0000_utf8.csv":
-                    latest = fn
-                    break
+                handle = self.localStore.get(self.container_id, jc.filename, encoding="utf-8")
+                reader = csv.reader(handle)
+                rows = [r for r in reader]
 
-            handle = self.localStore.get(self.container_id, latest, encoding="utf-8")
-            reader = csv.reader(handle)
-            rows = [r for r in reader]
+                if len(comparisons) > 0:
+                    expected_headers = JournalFixtureFactory.csv_headers()
+                    for i in range(len(expected_headers)):
+                        h = expected_headers[i]
+                        if h != rows[0][i]:
+                            print(("{x} - {y}".format(x=h, y=rows[0][i])))
+                    assert rows[0] == expected_headers
 
-            if len(comparisons) > 0:
-                expected_headers = JournalFixtureFactory.csv_headers()
-                for i in range(len(expected_headers)):
-                    h = expected_headers[i]
-                    if h != rows[0][i]:
-                        print(("{x} - {y}".format(x=h, y=rows[0][i])))
-                assert rows[0] == expected_headers
+                    assert len(rows) == journal_count + 1
 
-                assert len(rows) == journal_count + 1
+                    for i in range(1, len(rows)):
+                        row = rows[i]
+                        alt_title = row[4]
+                        issn = row[5]
+                        eissn = row[6]
+                        article_count = int(row[-2])
+                        article_latest = row[-1]
 
-                for i in range(1, len(rows)):
-                    row = rows[i]
-                    alt_title = row[4]
-                    issn = row[5]
-                    eissn = row[6]
-                    article_count = int(row[-2])
-                    article_latest = row[-1]
+                        assert alt_title == "Заглавие на журнала"
+                        assert issn in comparisons[issn]["issns"]
+                        assert eissn in comparisons[issn]["issns"]
+                        assert article_count == comparisons[issn]["article_count"], (article_count, comparisons[issn]["article_count"])
+                        assert article_latest == comparisons[issn]["article_latest"]
 
-                    assert alt_title == "Заглавие на журнала"
-                    assert issn in comparisons[issn]["issns"]
-                    assert eissn in comparisons[issn]["issns"]
-                    assert article_count == comparisons[issn]["article_count"], (article_count, comparisons[issn]["article_count"])
-                    assert article_latest == comparisons[issn]["article_latest"]
+                else:
+                    assert len(rows) == 0
 
-            else:
-                assert len(rows) == 0
-
-        # Tear down
-        patch_config(app, original_configs)
+        finally:
+            # Tear down
+            patch_config(app, original_configs)

@@ -84,11 +84,11 @@ doaj.af.BaseApplicationForm = class {
         var that = this;
         this.TABS.forEach((tab, i) => {
             if (this.editSectionsFromReview) {
-                review_table.append("<tr class='review-table__header'><th class='label'>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th></tr>");
+                review_table.append("<tr class='review-table__header'><th class='label'>" + doaj.i18n.get(tab.title) + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">"+doaj.i18n.get("Edit this section")+"</a></th></tr>");
                 let sectionSelector = $(".edit_this_section");
                 edges.on(sectionSelector, "click", this, "editSectionClicked");
             } else {
-                review_table.append("<tr class='review-table__header'><th class='label' colspan='2'>" + tab.title + "</th>");
+                review_table.append("<tr class='review-table__header'><th class='label' colspan='2'>" + doaj.i18n.get(tab.title) + "</th>");
             }
 
             tab.fieldsets.forEach((fs) => {
@@ -186,7 +186,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.TABS = [
             {title: "Open access compliance", fieldsets: ["basic_compliance"]},
-            {title: "About the Journal", fieldsets: ["about_the_journal", "publisher", "society_or_institution"]},
+            {title: "About the Journal", fieldsets: ["about_the_journal_extended", "publisher", "society_or_institution"]},
             {title: "Copyright & licensing", fieldsets: ["licensing", "embedded_licensing", "copyright"]},
             {title: "Editorial", fieldsets: ["peer_review", "plagiarism", "editorial"]},
             {title: "Business model", fieldsets: ["apc", "apc_waivers", "other_fees"]},
@@ -268,7 +268,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         } else {
             let nextBtn = this.jq(".nextBtn");
             nextBtn.show();
-            nextBtn.html("Next");
+            nextBtn.html(doaj.i18n.get("Next"));
             submitButton.hide();
             draftButton.show();
         }
@@ -456,6 +456,12 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         this.sections.each((idx, sec) => {
             $(sec).show();
         });
+
+        $("#cont_confirmation").click(function() {
+            $(this).parent().removeClass("focus");
+            $(this).hide();
+            $("#focus-overlay").hide();
+        })
 
         var that = this;
         $("#unlock").click(function(event) {
@@ -718,6 +724,15 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             $("#modal-quick_reject").show();
         });
 
+        $("#application_status").on("change", (e) => {
+            e.preventDefault();
+            if ($("#application_status").val() === "accepted") {
+                $("#mark_as_full_review_div").show();
+            } else {
+               $("#mark_as_full_review_div").hide();
+            }
+        });
+
         let that = this;
         $("#submit_quick_reject").on("click", function(event) {
             if ($("#quick_reject").val() === "" && $("#quick_reject_details").val() === "") {
@@ -791,31 +806,87 @@ doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
     }
 };
 
+// value required if the field is not disabled
+window.Parsley.addValidator("requiredIfActive", {
+    validateString : function(value, requirement, parsleyInstance) {
+        console.log("requiredIfActive")
+        if (parsleyInstance.$element[0].disabled) {
+            return true;
+        }
+        return !!value;
+    }
+})
+
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
+        let thisElementId = parsleyInstance.$element[0].id;
+        // console.log(thisElementId)
+
+        const getGroupWithIndexFromInputId = (inputId) => {
+          const match = inputId.match(/^([^-]+-\d+-)|^([^-]+)/);
+          return match ? (match[1] || match[2]) : "";
+        }
+
+        let skipIfDisabled  = parsleyInstance.$element.attr("data-parsley-validate-if-disabled") === "false";
+        if (skipIfDisabled && parsleyInstance.$element[0].disabled) {
+            return true;
+        }
+
         let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+
+        // determine if this is the "not empty" value
+        let ne = parsleyInstance.$element.attr("data-parsley-required-if-not-empty")
+        if (ne === "true") {
+            ne = true;
+        } else {
+            ne = false;
+        }
+
         if (typeof requirement !== "string") {
             requirement = requirement.toString();
         }
-
         let requirements = requirement.split(",");
 
-        let other = $("[name='" + field + "']");
-        let type = other.attr("type");
-        if (type === "checkbox" || type === "radio") {
-            let otherVal = other.filter(":checked").val();
-            if ($.inArray(otherVal, requirements) > -1) {
-                return !!value;
-            }
-        } else {
-            if ($.inArray(other.val(), requirements) > -1) {
-                return !!value;
-            }
+        let prefix = getGroupWithIndexFromInputId(thisElementId)
+        let other = $("[name='" + (prefix ? (prefix + "-") : "") + field + "']");
+
+        // there's a chance `other` is not present in the form.  If so, we should not fail validation, as the field
+        // that triggers the requirement is not present, so we return true
+        if (other.length === 0) {
+            return true;
         }
+
+        let type = other.attr("type");
+
+        // get the value from the other field
+        const otherVal = (type === "checkbox" || type === "radio")
+            ? other.filter(":checked").val()
+            : other.val();
+
+        if (ne) {
+            // if the other value is not empty, then this field is required
+            if (otherVal !== undefined && otherVal !== null && otherVal !== "") {
+                // other value is not empty, so this field is required, so we return true if this field is not empty
+                if (value !== undefined && value !== null && value !== "") {
+                    return true;
+                }
+                return false;
+            }
+
+            // if the other value is empty, this field is not required
+            return true;
+        }
+
+        // otherwise check that the otherVal is in our requirements
+        if ($.inArray(otherVal, requirements) > -1) {
+            return !!value;
+        }
+
         return true;
     },
     messages: {
-        en: 'This field is required, because you answered "%s" to the previous question.'
+        en: doaj.i18n.get('This field is required, because you answered "%s" to the previous question.'),
+        fr: doaj.i18n.get('This field is required, because you answered "%s" to the previous question.'),
     },
     priority: 33
 });
@@ -825,7 +896,8 @@ window.Parsley.addValidator("requiredvalue", {
         return (value === requirement);
     },
     messages: {
-        en: '<p><small>DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.</small></p>'
+        en: `<p><small>${doaj.i18n.get('DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.')}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get('DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.')}</small></p>`,
     },
     priority: 32
 });
@@ -839,7 +911,8 @@ window.Parsley.addValidator("optionalIf", {
         return false;
     },
     messages: {
-        en: 'You need to provide the answer to either this field or %s field (or both)'
+        en: doaj.i18n.get('You need to provide the answer to either this field or %s field (or both)'),
+        fr: doaj.i18n.get('You need to provide the answer to either this field or %s field (or both)'),
     },
     priority: 300
 });
@@ -849,7 +922,8 @@ window.Parsley.addValidator("differentTo", {
       return (!value || ($("[name = " + requirement + "]")).val().toLowerCase() !== value.toLowerCase());
     },
     messages: {
-        en: 'Value of this field and %s field must be different'
+        en: doaj.i18n.get('Value of this field and %s field must be different'),
+        fr: doaj.i18n.get('Value of this field and %s field must be different')
     },
     priority: 1
 });
@@ -902,7 +976,8 @@ window.Parsley.addValidator("onlyIf", {
         }
     },
     messages: {
-        en: 'This only can be set when requirements are met'
+        en: doaj.i18n.get('This only can be set when requirements are met'),
+        fr: doaj.i18n.get('This only can be set when requirements are met')
     },
     priority: 1
 });
@@ -925,7 +1000,8 @@ window.Parsley.addValidator("onlyIfExists", {
         }
     },
     messages: {
-        en: 'This only can be set when requirements are met'
+        en: doaj.i18n.get('This only can be set when requirements are met'),
+        fr: doaj.i18n.get('This only can be set when requirements are met')
     },
     priority: 1
 });
@@ -957,7 +1033,8 @@ window.Parsley.addValidator("notIf", {
         }
     },
     messages: {
-        en: 'This only can be true when requirements are met'
+        en: doaj.i18n.get('This only can be true when requirements are met'),
+        fr: doaj.i18n.get('This only can be true when requirements are met')
     },
     priority: 1
 });
@@ -968,7 +1045,8 @@ window.Parsley.addValidator("noScriptTag", {
 
     },
     messages: {
-        en: 'Script tags are not allowed'
+        en: doaj.i18n.get('Script tags are not allowed'),
+        fr: doaj.i18n.get('Script tags are not allowed')
     },
     priority: 300
     }
@@ -983,14 +1061,19 @@ window.Parsley.addValidator("year", {
         return (y >= requirement && y <= new Date().getFullYear())
     },
     messages: {
-        en: '<p><small>This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year<p><small>'
+        en: `<p><small>${doaj.i18n.get("This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year")}<p><small>`,
+        fr: `<p><small>${doaj.i18n.get("This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year")}<p><small>`
     },
     priority: 22
 });
 
 window.Parsley.addValidator("validdate", {
-    validateString : function(value) {
+    validateString : function(value, requirements, parsleyInstance) {
         // Check if the value matches the YYYY-MM-DD format
+        const ignore_empty = parsleyInstance.$element.attr("data-parsley-validdate-ignore_empty");
+        if (ignore_empty && !value) {
+            return true;
+        }
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!regex.test(value)) {
           return false; // Invalid format
@@ -1006,10 +1089,13 @@ window.Parsley.addValidator("validdate", {
             date.getMonth() === month - 1 &&
             date.getDate() === day
         );
-      },
-      messages: {
-          en: 'Please enter a valid date in YYYY-MM-DD format.'
-      }
+    },
+
+    messages: {
+        en: doaj.i18n.get('Please enter a valid date in YYYY-MM-DD format.'),
+        fr: doaj.i18n.get('Please enter a valid date in YYYY-MM-DD format.')
+    },
+    priority: 22
 })
 
 

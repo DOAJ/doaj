@@ -202,7 +202,6 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             assert j.bibjson().country == "AF"
             assert j.owner == "test1"
 
-
     def test_06_bulk_edit_formcontext(self):
         source = JournalFixtureFactory.make_bulk_edit_data()
 

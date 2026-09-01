@@ -1,17 +1,17 @@
 id,labels,columns
 HP/DaR,"Priority: High, Type: Data at Risk",
 HP/bug,"Priority: High, bug",
-HP/rev,Priority: High,Review
-Deadline,Priority: Deadline,"Review, In progress, To Do"
-HP/PfL,"Prioroty: High, Workflow: Pending for Live",Review
+HP/rev,Priority: High,"Awaiting PR Review, Test/Release"
+Deadline,Priority: Deadline,"Awaiting PR Review, Test/Release, In progress, To Do"
+HP/PfL,"Prioroty: High, Workflow: Pending for Live","Awaiting PR Review, Test/Release"
 HP/sup,"Priority: High, Origin: Support",
-Test1,Workflow: On Test,Review
-Test2,Workflow: On Test 2,Review
-HP/PfT,"Priority: High, Workflow: Pending for Test",Review
-PfT,Workflow: Pending for Test,Review
-PfL,Workflow: Pending for Live,Review
-Inv,Workflow: Initial Investigation,"Review, In progress, To Do"
-Rev,,Review
+Test1,Workflow: On Test,"Awaiting PR Review, Test/Release"
+Test2,Workflow: On Test 2,"Awaiting PR Review, Test/Release"
+HP/PfT,"Priority: High, Workflow: Pending for Test","Awaiting PR Review, Test/Release"
+PfT,Workflow: Pending for Test,"Awaiting PR Review, Test/Release"
+PfL,Workflow: Pending for Live,"Awaiting PR Review, Test/Release"
+Inv,Workflow: Initial Investigation,"Awaiting PR Review, Test/Release, In progress, To Do"
+Rev,,"Awaiting PR Review, Test/Release"
 Near,Scale: Nearly Finished,
 Sch,Priority: Scheduled,
 HP/IP,Priority: High,In progress

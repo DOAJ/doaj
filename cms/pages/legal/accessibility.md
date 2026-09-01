@@ -31,6 +31,7 @@ We know some parts of this website may not be fully accessible:
 
 We have recently fixed:
 
+- Added alt text to the 'Skip to main content' button
 - Made sure all navbars are accessible for keyboard-only users
 - Radio buttons in the application form are now focusable
 - Search facets are configured for screenreaders to indicate their state
@@ -39,10 +40,10 @@ We have recently fixed:
 - Removed ReCAPTCHA from our login process
 - Radio buttons on search (and throughout the website) are now focusable
 
-Fixes that are in progress now after a review of the changes laid out in WCAG 2.2:
+Fixes that are in progress after a review of the changes laid out in WCAG 2.2:
 
 - on our forms, start using 'aria-describedby' for hint/help text
-- Font-size zooming via browser settings is now enabled.
+- Font-size zooming via browser settings.
 
 We are continuing to update this document as we find and fix accessibility issues.
 
@@ -100,6 +101,7 @@ This website was last tested on **14 April 2025**. An independent organisation, 
 
 ## Changes to this document 
 
+- 4 August 2026: Added alt text to the 'Skip to main content' button
 - 11 September 2025: made radio buttons on search focusable
 - 4 August 2025: added the VPAT statement and updated the last tested date
 - 28 September 2024: moved the ReCAPTCHA work to completed and added a problem with radio buttons in search to the in progress list

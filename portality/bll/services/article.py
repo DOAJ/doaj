@@ -261,9 +261,9 @@ class ArticleService(object):
 
     def is_acceptable(self, article: models.Article):
         """
-        conduct some deep validation on the article to make sure we will accept it
-        this just means making sure it has a DOI and a fulltext, and that its ISSNs
-        match a single journal
+        Conduct some deep validation on the article to make sure we will accept it
+        this just means making sure it has a DOI or fulltext, and that its ISSNs
+        match a single journal that is in DOAJ.
         """
         try:
             bj = article.bibjson()
@@ -277,11 +277,12 @@ class ArticleService(object):
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
         self._validate_issns(bj)
-        journal = self.match_journal_with_validation(bj)
 
-        # is journal in doaj (we do this check last as it has more performance impact)
-        if journal is None or not journal.is_in_doaj():
-            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
+        try:
+            self.match_journal_with_validation(bj)
+        except exceptions.ArticleNotAcceptable:
+            raise
+
 
     @staticmethod
     def match_journal_with_validation(article_bibjson: models.ArticleBibJSON):
@@ -295,18 +296,28 @@ class ArticleService(object):
         if eissn is not None:
             issns.append(eissn)
 
-        # Find an exact match, whether in_doaj or not
-        journal = models.Journal.find_by_issn_exact(issns)
+        # Find an exact match that is in DOAJ
+        journal = models.Journal.find_by_issn_exact(issns, in_doaj=True)
 
-        # check if only one journal matches pissn and eissn and if they are in the correct fields
-        # no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
-        if len(journal) != 1:
-            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
-        if pissn is not None:
-            if journal[0].bibjson().pissn != pissn:
-                raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
-        if eissn is not None:
-            if journal[0].bibjson().eissn != eissn:
+        match len(journal):
+            case 0:
+                # Nothing back from in_doaj search, determine if withdrawn or nonexistent
+                if len(models.Journal.find_by_issn_exact(issns, in_doaj=False)) > 0:
+                    raise exceptions.ArticleNotAcceptable(
+                        message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
+                else:
+                    raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+            case 1:
+                # check if only one journal matches pissn and eissn and if they are in the correct fields
+                # no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
+                if pissn is not None:
+                    if journal[0].bibjson().pissn != pissn:
+                        raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+                if eissn is not None:
+                    if journal[0].bibjson().eissn != eissn:
+                        raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+            case _:
+                # >1
                 raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
 
         return journal[0]

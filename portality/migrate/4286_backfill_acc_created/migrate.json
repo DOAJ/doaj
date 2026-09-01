@@ -1,0 +1,24 @@
+{
+  "batch": 500,
+  "types": [
+    {
+      "type": "account",
+      "init_with_model": false,
+      "keepalive": "5m",
+      "functions": [
+        "portality.migrate.4286_backfill_acc_created.functions.set_created_date"
+      ],
+      "query": {
+        "query": {
+          "bool": {
+            "must_not": {
+              "exists": {
+                "field": "created_date"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

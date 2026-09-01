@@ -4,6 +4,7 @@ import hashlib
 import logging
 import os
 import shutil
+import warnings
 from contextlib import contextmanager
 import time
 from glob import glob
@@ -80,7 +81,10 @@ class WithES:
         source = ArticleFixtureFactory.make_article_source()
         article = Article(**source)
         article.save(blocking=True)
-        article.delete()
+        # bypass Article.delete()'s tombstoning (see fix_es_mapping for
+        # the same fix and why): this fixture has no real journal, so
+        # get_owner() finds none and raises NoValidOwnerException
+        dao.DomainObject.delete(article)
         Article.blockdeleted(article.id)
 
     def warmArticleTombstone(self):
@@ -90,7 +94,10 @@ class WithES:
         source = ArticleFixtureFactory.make_article_source()
         article = ArticleTombstone(**source)
         article.save(blocking=True)
-        article.delete()
+        # ArticleTombstone extends Article, so it inherits the same
+        # tombstoning delete() override - bypass it here too (see
+        # warmArticle above)
+        dao.DomainObject.delete(article)
         ArticleTombstone.blockdeleted(article.id)
 
 
@@ -112,12 +119,16 @@ def create_index(index_type):
         if it in CREATED_INDICES:
             return
         core.initialise_index(app, core.es_connection, only_mappings=[it])
+        # Wait for the cluster state to fully settle after creating a new index+alias.
+        # Without this, a subsequent ES.get on a different alias can transiently fail
+        # with NotFoundError while the cluster state update is still propagating.
+        core.es_connection.cluster.health(wait_for_events='languid', timeout='5s', request_timeout=10)
         CREATED_INDICES.append(it)
 
 
 def dao_proxy(dao_method, type="class"):
     if type == "class":
-        @classmethod
+        @classmethod   # noqa
         @functools.wraps(dao_method)
         def proxy_method(cls, *args, **kwargs):
             create_index(cls.__type__)
@@ -132,6 +143,22 @@ def dao_proxy(dao_method, type="class"):
             return dao_method(self, *args, **kwargs)
 
         return proxy_method
+
+
+# Wrap DAO methods once at import time so every test class shares the same proxied methods.
+# Doing this here (rather than in setUpClass) avoids re-wrapping on each class setup, which
+# would stack wrappers and is not safe under parallel (threaded) test execution.
+dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
+dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
+dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
+dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
+dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
+dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
+dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
+dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
+dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
+dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
+dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
 
 
 def create_es_db_prefix(_cls):
@@ -171,14 +198,32 @@ class DoajTestCase(TestCase):
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
             "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
-            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1']
+            "SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS": False,
+            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1'],
+            'PREMIUM_MODE': False
         }
 
     @classmethod
     def setUpClass(cls) -> None:
         import portality.app  # noqa, needed to registing routes
 
-        cls.originals = patch_config(app, cls.create_app_patch())
+        patch = cls.create_app_patch()
+        cls.originals = patch_config(app, patch)
+
+        # JournalLikeObject reads these from app.config once at import time, so patching
+        # app.config here has no effect on them - a mismatch means the value actually needed
+        # for CI/tests must be set directly in test.cfg (or dev.cfg for local runs) instead.
+        for key, actual in (
+                ("SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE", models.JournalLikeObject.__SEAMLESS_SILENT_PRUNE__),
+                ("SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS", models.JournalLikeObject.__SEAMLESS_ALLOW_OTHER_FIELDS__),
+        ):
+            if key in patch and patch[key] != actual:
+                warnings.warn(
+                    f"{key} is patched to {patch[key]!r} in create_app_patch(), but "
+                    f"JournalLikeObject already read {actual!r} from app.config at import time "
+                    f"and won't see this change. Set {key}={patch[key]!r} directly in test.cfg "
+                    f"(or dev.cfg for local runs) instead."
+                )
 
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
@@ -187,18 +232,6 @@ class DoajTestCase(TestCase):
         events_queue.immediate = True
         scheduled_short_queue.immediate = True
         scheduled_long_queue.immediate = True
-
-        dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
-        dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
-        dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
-        dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
-        dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
-        dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
-        dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
-        dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
-        dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
-        dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
-        dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
 
         # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
@@ -217,7 +250,11 @@ class DoajTestCase(TestCase):
                 os.remove(f)
             except FileNotFoundError:
                 pass  # could be removed by other thread / process
-        shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
+
+        tmp = paths.rel2abs(__file__, "..", "tmp")
+        shutil.rmtree(tmp, ignore_errors=True)
+        while os.path.exists(tmp):
+            time.sleep(0.1)
 
         self.reset_db_record()
 
@@ -246,9 +283,10 @@ class DoajTestCase(TestCase):
     @contextmanager
     def _make_and_push_test_context_manager(self, path="/", acc=None):
         ctx = self._make_and_push_test_context(path=path, acc=acc)
-        yield ctx
-
-        ctx.pop()
+        try:
+            yield ctx
+        finally:
+            ctx.pop()
 
     @staticmethod
     def fix_es_mapping():
@@ -263,7 +301,8 @@ class DoajTestCase(TestCase):
              models.Application(**ApplicationFixtureFactory.make_application_source()),
         ]:
             m.save(blocking=True)
-            m.delete()
+            # Bypass Article.delete()'s tombstoning, since we're actually cleaning up (no effect on Application)
+            dao.DomainObject.delete(m)
         models.Notification().save()
 
 
@@ -501,7 +540,7 @@ def assert_expected_dict(test_case: TestCase, target, expected: dict):
 
 def login(app_client, email, password, follow_redirects=True):
     return app_client.post(url_for('account.login'),
-                           data=dict(user=email, password=password),
+                           data=dict(user=email, password=password, action='password_login'),
                            follow_redirects=follow_redirects)
 
 

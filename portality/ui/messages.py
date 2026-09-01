@@ -18,6 +18,46 @@ class Messages(object):
     ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
         Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
 
+    # Account-related flash messages (from portality/view/account.py)
+    ACCOUNT__PWLESS__RESEND_RATE_LIMIT = (
+        "You requested a code recently. Please wait {wait} before trying again.",
+        "error",
+    )
+    ACCOUNT__PWLESS__EMAIL_SENT = (
+        "A login link along with login code has been sent to your email.",
+        "success",
+    )
+    ACCOUNT__PWLESS__EMAIL_ERROR = (
+        "There was a problem generating the login email.",
+        "error",
+    )
+    ACCOUNT__EMAIL_REQUIRED_FOR_RESEND = (
+        "Email address is required to resend the code.",
+        "error",
+    )
+    ACCOUNT__NOT_RECOGNISED = "Account not recognised."
+    ACCOUNT__REQUIRED_PARAMS_NOT_AVAILABLE = "Required parameters not available."
+    ACCOUNT__INVALID_OR_EXPIRED_CODE = "Invalid or expired verification code"
+    ACCOUNT__WELCOME_BACK = ("Welcome back.", "success")
+    ACCOUNT__STATUS_LOGIN_FAILED = ("Login could not be completed due to account status.", "error")
+    ACCOUNT__REQUEST_PROBLEM = ("There was a problem with your request.", "error")
+    ACCOUNT__RESET_EMAIL_SENT = "Instructions to reset your password have been sent to you. Please check your emails."
+    ACCOUNT__PASSWORDS_NOT_MATCH = ("Passwords do not match - please try again", "error")
+    ACCOUNT__PASSWORD_SET_AND_LOGGED_IN = ("New password has been set and you're now logged in.", "success")
+    ACCOUNT__LOGGED_OUT = ("You are now logged out", "success")
+    ACCOUNT__VERIFY_EMAIL_TO_SET_PASSWORD = (
+        "Thank you, please verify email address {email} to set your password and verify your account.",
+        "success",
+    )
+    ACCOUNT__PLEASE_CORRECT_ERRORS = ("Please correct the errors", "error")
+    ACCOUNT__CONFIRM_CHECKBOX_REQUIRED = ("Check the box to confirm you really mean it!", "error")
+    ACCOUNT__DELETED = "Account {id} deleted"
+    ACCOUNT__RECORD_UPDATED = "Record updated"
+    ACCOUNT__EMAIL_UPDATED_LOGGED_OUT = (
+        "Email address updated. You have been logged out for email address verification.",
+        "success",
+    )
+
     CONCURRENT_UPDATE_REQUEST = """You have submitted an Update Request for the same journal in a short period of time.  If this is in error, you don't need to do anything, your first request is being processed.  If this was intentional, please try again in a moment."""
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent notification to '{user}' to tell them that their journal was accepted."""
@@ -74,9 +114,15 @@ class Messages(object):
     EXCEPTION_EDITING_DELETED_JOURNAL = "This journal has been deleted, update request cannot be accepted."
     EXCEPTION_EDITING_NON_EXISTING_APPLICATION = "You cannot edit a not-existent application"
 
-    EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
+    EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id `{x}` not found"
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
     EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
+
+    EXCEPTION_NOTIFICATION_JOURNAL_NOT_FOUND = "Journal with id {x} not found"
+
+    EXCEPTION_UNABLE_TO_CONSTRUCT_JOURNAL = "Unable to construct Journal from supplied source - data structure validation error, {x}"
+    EXCEPTION_UNABLE_TO_CONSTRUCT_ACCOUNT = "Unable to construct Account from supplied source - data structure validation error, {x}"
+
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
@@ -98,6 +144,8 @@ class Messages(object):
 
     ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
 
+    CANNOT_CHANGE_THE_STATUS__OTHER_JOURNAL_IN_DOAJ_EXISTS = "The journal could not be reinstated because at least one other record with matching ISSN(s) already exists in DOAJ"
+
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID = "Update request {urid} automatically rejected"
     NO_UPDATE_REQUESTS = "No update requests found."
@@ -117,6 +165,10 @@ class Messages(object):
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_SENT_LOG = "Notification with journals discontinuing soon sent."
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
     NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
+
+    JOURNALS_WITH_APPROACHING_DEADLINES_FOUND = "Journal with deadline in {delta} days found: {id}"
+    JOURNALS_WITH_APPROACHING_DEADLINES_FOUND_NOTIFICATION_SENT_LOG = "Notification with approaching deadlines sent."
+    NO_JOURNALS_WITH_APPROACHING_DEADLINES_FOUND_LOG = "No approaching deadlines found."
 
     FORMS__APPLICATION_STATUS__PENDING = "Pending"
     FORMS__APPLICATION_STATUS__IN_PROGRESS = 'In Progress'
@@ -148,7 +200,7 @@ class Messages(object):
     AUTOASSIGN__NOTE__EDITOR_GROUP_MISSING = "Autoassign: Editor group '{target}' does not exist, cannot auto assign"
     AUTOASSIGN__NOTE__ASSIGN = "Autoassign: Editor group auto assigned to '{target}' because {reason}"
 
-    FORMS__APPLICATION_FLAG__RESOLVED = "This flag was resolved on {date} by {username};\n Original note: {note}"
+    FORMS__APPLICATION_FLAG__RESOLVED = "Flag resolved on {date} by {username}; \n Original flag: created on {created_date}, by {author}, assigned to {assignee}, deadline {deadline}. \n Note: {note}"
     FORMS_APPLICATION_FLAG__PAST_DEADLINE_WARNING = "Provided deadline is in the past. Is it correct?"
 
     ARTICLE_BELONGS_TO_TOO_MANY_JOURNALS = "Article found that belongs to more than 1 journal. Article's id: {article_id}"

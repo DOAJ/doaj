@@ -28,6 +28,8 @@ APPLICATION_STATUSES_ALL = [
 APPLICATION_TYPE_UPDATE_REQUEST = "update_request"
 APPLICATION_TYPE_NEW_APPLICATION = "new_application"
 
+APP_PROCESSOR_INFO_IS_BEING_REJECTED = "is_being_rejected"
+
 INDEX_RECORD_TYPE_UPDATE_REQUEST_UNFINISHED = "Update Request (in progress)"
 INDEX_RECORD_TYPE_UPDATE_REQUEST_FINISHED = "Update Request (finished)"
 INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED = "Application (in progress)"
@@ -85,6 +87,7 @@ EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
 EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
 EVENT_JOURNAL_DISCONTINUING_SOON = "journal:discontinuing_soon"
 EVENT_ARTICLE_SAVE = "article:save"
+EVENT_FLAG_ASSIGNED = "flag:assigned"
 
 NOTIFICATION_CLASSIFICATION_STATUS = "alert"
 NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
@@ -105,8 +108,14 @@ ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
 ROLE_API = "api"
+ROLE_PREMIUM = "premium"
+ROLE_PREMIUM_OAI = "premium_oai"
+ROLE_PREMIUM_PDD = "premium_pdd"
+ROLE_PREMIUM_CSV = "premium_csv"
+
 # TODO add ultra_bulk_delete and refactor view to use constants
 ROLE_ADMIN_REPORT_WITH_NOTES = "ultra_admin_reports_with_notes"  # MUST start with ultra_ so that superusers don't gain
+
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
@@ -119,8 +128,6 @@ BGJOB_STATUS_COMPLETE = 'complete'
 
 # BackgroundJob.queue_id
 # ~~->BackgroundTasks:Feature~~
-BGJOB_QUEUE_ID_LONG = 'long_running'
-BGJOB_QUEUE_ID_MAIN = 'main_queue'
 BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
 BGJOB_QUEUE_ID_EVENTS = "events"
 BGJOB_QUEUE_ID_SCHEDULED_SHORT = "scheduled_short"
@@ -163,6 +170,7 @@ class BaseArticlesUploadStatus(ConstantList):
 
 # Storage scopes
 STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
+STORE__SCOPE__JOURNAL_CSV = "journal_csv"
 
 # OAI
 SUBJECTS_SCHEMA = "LCC:"

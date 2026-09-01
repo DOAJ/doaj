@@ -39,7 +39,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ### Copyright
 
 1. Copyright of this site and the intellectual property contained in it is owned by DOAJ Fonden, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, Denmark and defaults to all rights reserved unless otherwise specified.
-2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.  The DOAJ Foundation has adopted [a patent non-assertion policy](https://docs.google.com/document/d/1YclBTZEdSq2sw5ZlCB-e8KoVzuxJ071BydobEy0fSoE/edit?usp=sharing).
+2. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by DOAJ Foundation.
 3. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in DOAJ Fonden or other third parties.
 
 ### Patent non-assertion pledge
@@ -57,7 +57,7 @@ A [copy of our patent non-assertion pledge](https://docs.google.com/document/d/1
 
 11. The name 'Directory of Open Access Journals' and the acronym 'DOAJ' are protected as trade names owned by DOAJ Fonden. Neither the name, the acronym, nor the look and feel of the DOAJ website may be reproduced without the express prior written permission of the [DOAJ Managing Director](mailto:helpdesk@doaj.org).
 
-12. In no event shall DOAJ Fonden, or its employees, ambassadors, volunteers or contractors be liable for any damages of any nature, including without limitation any consequential loss, loss of income or profit, loss of or damage to property, claims of third parties, or any other loss, cost, claim or expense of any kind or character arising out of or in connection with the use of this website, its content or any website with which it is linked. This exclusion and limitation only applies to the extent permitted by law and does not apply to liability for death or personal injury caused by the negligence of IS4OA, its employees, ambassadors, volunteers or contractors.
+12. In no event shall DOAJ Fonden, or its employees, ambassadors, volunteers or contractors be liable for any damages of any nature, including without limitation any consequential loss, loss of income or profit, loss of or damage to property, claims of third parties, or any other loss, cost, claim or expense of any kind or character arising out of or in connection with the use of this website, its content or any website with which it is linked. This exclusion and limitation only applies to the extent permitted by law and does not apply to liability for death or personal injury caused by the negligence of DOAJ Fonden, its employees, ambassadors, volunteers or contractors.
 
 13. DOAJ Fonden reserves the right to change these Terms and Conditions by posting changes on this page of this website and you will be deemed to have accepted such changes if you use this website after those changes are posted.
 
@@ -65,8 +65,8 @@ A [copy of our patent non-assertion pledge](https://docs.google.com/document/d/1
 
 ---
 
-### Licensing terms for content published on DOAJ News Service
-15. DOAJ News Service is the DOAJ blog, hosted on WordPress: https://blog.doaj.org
+### Licensing terms for content published on the DOAJ Blog
+15. DOAJ's blog is hosted on WordPress: https://blog.doaj.org
 
 16. All content posted on the blog is licensed under the CC BY-NC Creative Commons license. See the blog footer for full details.
 

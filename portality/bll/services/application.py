@@ -542,7 +542,8 @@ class ApplicationService(object):
         # * editor_group
         # * owner
         # * application date
-        notes = application.notes
+        # notes = application.notes
+        notes = application.get_detached_notes()
 
         if application.editor is not None:
             journal.set_editor(application.editor)
@@ -579,7 +580,7 @@ class ApplicationService(object):
                 journal.set_created(cj.created_date)
 
                 # bring forward any notes from the old journal record
-                old_notes = cj.notes
+                old_notes = cj.get_detached_notes()
                 for note in old_notes:
                     journal.add_note_by_dict(note)
 
@@ -857,6 +858,11 @@ class ApplicationService(object):
                             continue
                         now = row.get(question)
                         was = [v for q, v in journal_questions if q == question][0]
+                        # If both the CSV value and the journal's current value are blank/null,
+                        # this is not actionable by the publisher - they haven't changed this field.
+                        # Suppress it as a false positive, similar to fields not in the CSV headers above.
+                        if not now and not was:
+                            continue
                         if isinstance(v[0], dict):
                             for sk, sv in v[0].items():
                                 validation.value(validation.ERROR, row_ix, pos, ". ".join([str(x) for x in sv]),

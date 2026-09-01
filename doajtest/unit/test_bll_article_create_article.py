@@ -266,4 +266,48 @@ class TestBLLArticleCreateArticle(DoajTestCase):
                 assert original is not None
 
 
+    def test_02_create_article_2_journals(self):
+        EISSN = "1234-5678"
+        PISSN = "9876-5432"
 
+        acc = Account()
+        acc.set_id("test")
+        acc.set_role("publisher")
+        acc.save(blocking=True)
+
+
+        wsource = JournalFixtureFactory.make_journal_source(in_doaj=False, overlay={
+            "admin": {
+                "owner": "test"
+            },
+            "bibjson": {
+                "title": "Withdrawn Journal",
+                "pissn": PISSN,
+                "eissn": EISSN
+            }
+        })
+        withdrawn = Journal(**wsource)
+        withdrawn.set_id(withdrawn.makeid())
+        withdrawn.save(blocking=True)
+
+        isource = JournalFixtureFactory.make_journal_source(in_doaj=True, overlay={
+            "admin": {
+                "owner": "test"
+            },
+            "bibjson": {
+                "title": "Live Journal",
+                "pissn": PISSN,
+                "eissn": EISSN
+            }
+        })
+        in_doaj = Journal(**isource)
+        in_doaj.set_id(in_doaj.makeid())
+        in_doaj.save(blocking=True)
+
+        asource = ArticleFixtureFactory.make_article_source(eissn=EISSN, pissn=PISSN, with_journal_info=False)
+        article = Article(**asource)
+
+        svc = DOAJ.articleService()
+        result = svc.create_article(article, acc, add_journal_info=True)
+
+        assert result["success"] == 1

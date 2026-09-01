@@ -42,7 +42,7 @@
                 <section class="row row--scrollable">
                     <h2 class="sr-only">DOAJ in numbers</h2>
                     <p class="col-md-2 stat">
-                        <span class="stat__number">91</span>
+                        <span class="stat__number">92</span>
                         <span class="stat__description">languages</span>
                     </p>
                     <p class="col-md-2 stat">
@@ -83,8 +83,8 @@
                 <div class="row">
                     <article class="col-sm-6">
                         <h2 class="label">About the directory</h2>
-                        <p>DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, and is committed to ensuring quality content is freely available online for everyone.</p>
-                        <p>DOAJ is committed to keeping its services free of charge, including being indexed, and its data freely available.</p>
+                        <p>DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, and is committed to ensuring quality content is openly available online for everyone.</p>
+                        <p>DOAJ is committed to keeping its services as open as possible and its data openly available.</p>
                         <p>&rarr; <a href="{{ url_for('doaj.about') }}">About DOAJ</a></p>
                         <p>&rarr; <a href="{{ url_for('doaj.guide') }}">How to apply</a></p>
                         <p>
@@ -125,7 +125,7 @@
         <!-- Blog -->
         <section class="hero homepage__blog">
             <div class="container">
-                <h2 class="label label--secondary">News Service</h2>
+                <h2 class="label label--secondary">Blog</h2>
 
                 <div class="row">
                     {# Latest posts #}
@@ -229,7 +229,7 @@
                             {# TODO: Make sure these links work #}
                             <p>&rarr; <a href="{{ url_for('atom.feed') }}">See Atom feed</a></p>
                             <p>&rarr; <a href="https://docs.google.com/spreadsheets/d/1Kv3MbgFSgtSDnEGkA2JacrSjunRu0umHeZCtcMeqO5E/edit?usp=sharing">A log of journals added (and withdrawn)</a></p>
-                            <p>&rarr; <a href="{{ url_for('doaj.csv_data') }}">DOWNLOAD all journals as CSV</a></p>
+                            <p>&rarr; <a href="{{ url_for('doaj.journal_csv') }}">DOWNLOAD all journals as CSV</a></p>
                         </div>
                     </header>
                     <div class="col-sm-8">

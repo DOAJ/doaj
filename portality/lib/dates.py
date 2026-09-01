@@ -88,6 +88,9 @@ def now() -> datetime:
     """ standard now function for DOAJ  """
     return datetime.utcnow()
 
+def now_in_sec() -> int:
+    return int(now().timestamp())
+
 
 def now_str(fmt=FMT_DATETIME_STD) -> str:
     return format(now(), format=fmt)
@@ -189,6 +192,15 @@ def is_before(mydate, comparison=None):
     if isinstance(comparison, str):
         comparison = parse(comparison)
     return mydate < comparison
+
+def is_after(mydate, comparison=None):
+    if comparison is None:
+        comparison = datetime.utcnow()
+    if isinstance(mydate, str):
+        mydate = parse(mydate)
+    if isinstance(comparison, str):
+        comparison = parse(comparison)
+    return mydate > comparison
 
 def timestruct2datetime(ts):
     return datetime.fromtimestamp(time.mktime(ts))

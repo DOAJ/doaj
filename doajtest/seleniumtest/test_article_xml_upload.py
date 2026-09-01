@@ -36,9 +36,10 @@ class ArticleXmlUploadCommonSTC(SeleniumTestCase):
     don't put test cases in this class
     """
 
-    def goto_upload_page(self, acc: models.Account = None):
+    def goto_upload_page(self, acc: models.Account = None, login=True):
         publisher = acc or create_publisher_a()
-        selenium_helpers.login_by_acc(self.selenium, publisher)
+        if login:
+            selenium_helpers.login_by_acc(self.selenium, publisher)
         selenium_helpers.goto(self.selenium, URL_PUBLISHER_UPLOADFILE)
         return publisher
 
@@ -294,21 +295,21 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
         self.step_upload_success(publisher, ARTICLE_UPLOAD_SUCCESSFUL, journal.bibjson().eissn, 'Success!')
 
         """ Successfully upload a file containing an updated article """
-        self.step_upload_success(publisher, ARTICLE_UPLOAD_UPDATE, journal.bibjson().eissn, 'Updated!')
+        self.step_upload_success(publisher, ARTICLE_UPLOAD_UPDATE, journal.bibjson().eissn, 'Updated!', login=False)
 
         """ Successfully upload a file by reference containing a new or updated article """
-        self.step_upload_success(publisher, ARTICLE_UPLOAD_SUCCESSFUL, journal.bibjson().eissn, 'Success!')
+        self.step_upload_success(publisher, ARTICLE_UPLOAD_SUCCESSFUL, journal.bibjson().eissn, 'Success!', login=False)
 
         """ Logout from Publisher account """
         selenium_helpers.logout(self.selenium)
 
-        # FIXME Aug 2025 - there's a bug where chrome becomes unresponsive when logging back in, we can't check success
+        # FIXME Aug 2025 & Mar 2026 - there's a bug where chrome becomes unresponsive when logging back in, we can't check success
         """ Check Outcome Status of "Successfully upload a file containing a new article" """
         #self.assert_outcome_status('success')
 
-    def step_upload_success(self, publisher, article_xml_path, journal_issn, expected_title):
+    def step_upload_success(self, publisher, article_xml_path, journal_issn, expected_title, login=True):
         article_title_selector = 'h3.search-results__heading a'
-        self.goto_upload_page(acc=publisher)
+        self.goto_upload_page(acc=publisher, login=login)
         latest_history_row = self.upload_pending_wait_bgjob(article_xml_path,
                                                             FileUploadStatus.Processed,
                                                             XML_FORMAT_DOAJ)
