@@ -1,6 +1,6 @@
 # ~~ AdminArticleMetadata:FunctionalTest -> AdminArticleMetadata:Page~~
-suite: Admin Article Metadata Form
-testset: Admin Article Metadata Form
+suite: Navigation bars
+testset: Navigation bars
 tests:
   - title: Test Authenticated Navigation and Account Actions
     context:
