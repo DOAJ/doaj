@@ -54,7 +54,7 @@ ARTICLE_METADATA_VALID_FORM = {
     'abstract': 'This abstract has been edited',
     'keywords': 'edited-1,edited-2, edited-3',
     'publication_month': '10',
-    'publication_year': '1987',
+    'publication_year': '2013',
     #'pissn': '1234-5678',
     #'eissn': '9876-5432',
     'volume': '1',
