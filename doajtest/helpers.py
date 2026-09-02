@@ -4,6 +4,7 @@ import hashlib
 import logging
 import os
 import shutil
+import warnings
 from contextlib import contextmanager
 import time
 from glob import glob
@@ -80,7 +81,10 @@ class WithES:
         source = ArticleFixtureFactory.make_article_source()
         article = Article(**source)
         article.save(blocking=True)
-        article.delete()
+        # bypass Article.delete()'s tombstoning (see fix_es_mapping for
+        # the same fix and why): this fixture has no real journal, so
+        # get_owner() finds none and raises NoValidOwnerException
+        dao.DomainObject.delete(article)
         Article.blockdeleted(article.id)
 
     def warmArticleTombstone(self):
@@ -90,7 +94,10 @@ class WithES:
         source = ArticleFixtureFactory.make_article_source()
         article = ArticleTombstone(**source)
         article.save(blocking=True)
-        article.delete()
+        # ArticleTombstone extends Article, so it inherits the same
+        # tombstoning delete() override - bypass it here too (see
+        # warmArticle above)
+        dao.DomainObject.delete(article)
         ArticleTombstone.blockdeleted(article.id)
 
 
@@ -121,7 +128,7 @@ def create_index(index_type):
 
 def dao_proxy(dao_method, type="class"):
     if type == "class":
-        @classmethod
+        @classmethod   # noqa
         @functools.wraps(dao_method)
         def proxy_method(cls, *args, **kwargs):
             create_index(cls.__type__)
@@ -191,6 +198,7 @@ class DoajTestCase(TestCase):
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
             "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
+            "SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS": False,
             'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1'],
             'PREMIUM_MODE': False
         }
@@ -199,7 +207,23 @@ class DoajTestCase(TestCase):
     def setUpClass(cls) -> None:
         import portality.app  # noqa, needed to registing routes
 
-        cls.originals = patch_config(app, cls.create_app_patch())
+        patch = cls.create_app_patch()
+        cls.originals = patch_config(app, patch)
+
+        # JournalLikeObject reads these from app.config once at import time, so patching
+        # app.config here has no effect on them - a mismatch means the value actually needed
+        # for CI/tests must be set directly in test.cfg (or dev.cfg for local runs) instead.
+        for key, actual in (
+                ("SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE", models.JournalLikeObject.__SEAMLESS_SILENT_PRUNE__),
+                ("SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS", models.JournalLikeObject.__SEAMLESS_ALLOW_OTHER_FIELDS__),
+        ):
+            if key in patch and patch[key] != actual:
+                warnings.warn(
+                    f"{key} is patched to {patch[key]!r} in create_app_patch(), but "
+                    f"JournalLikeObject already read {actual!r} from app.config at import time "
+                    f"and won't see this change. Set {key}={patch[key]!r} directly in test.cfg "
+                    f"(or dev.cfg for local runs) instead."
+                )
 
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
@@ -259,9 +283,10 @@ class DoajTestCase(TestCase):
     @contextmanager
     def _make_and_push_test_context_manager(self, path="/", acc=None):
         ctx = self._make_and_push_test_context(path=path, acc=acc)
-        yield ctx
-
-        ctx.pop()
+        try:
+            yield ctx
+        finally:
+            ctx.pop()
 
     @staticmethod
     def fix_es_mapping():
@@ -276,7 +301,8 @@ class DoajTestCase(TestCase):
              models.Application(**ApplicationFixtureFactory.make_application_source()),
         ]:
             m.save(blocking=True)
-            m.delete()
+            # Bypass Article.delete()'s tombstoning, since we're actually cleaning up (no effect on Application)
+            dao.DomainObject.delete(m)
         models.Notification().save()
 
 

@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.9"
+DOAJ_VERSION = "8.7.0"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -34,7 +34,7 @@ REMEMBER_COOKIE_SECURE = True
 TESTDRIVE_ENABLED = False
 
 # List of script names which can be executed via the testdrive.
-TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications"]
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications", "approaching_flag_deadline"]
 
 ####################################
 # Debug Mode
@@ -481,6 +481,7 @@ HUEY_SCHEDULE = {
     "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
     # Weekly notification to publishers about deleted articles (Article Tombstones)
     "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
+    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
 }
 
 
@@ -528,6 +529,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
+    "portality.models.note.Note"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -1018,9 +1020,13 @@ QUERY_FILTERS = {
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
 PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
+    # old protections for notes
+    # TODO: these MUST remain in place for the duration of deployment, they can be removed post migration
     "admin.notes.note",
     "admin.notes.id",
-    "admin.notes.author_id"
+    "admin.notes.author_id",
+    # New protections for notes
+    "admin.index.notes"
 ]
 
 ADMIN_NOTES_INDEX_ONLY_FIELDS = {
@@ -1035,8 +1041,12 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
     }
 }
 
+# These mappings prevent the notes and flags from being indexed in all_meta (the default for text fields)
 ADMIN_NOTES_SEARCH_MAPPING = {
-    "admin.notes.id": {
+    "admin.index.notes": {
+        "type": "text"
+    },
+    "admin.flag.note_id": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1045,16 +1055,7 @@ ADMIN_NOTES_SEARCH_MAPPING = {
             }
         }
     },
-    "admin.notes.note": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
-    },
-    "admin.notes.author_id": {
+    "admin.flag.assigned_to": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1629,6 +1630,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
     'find_discontinued_soon': {
         'last_run_successful_in': _DAY + 2 * _HOUR
     },
+    'approaching_flag_deadline': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
     'harvest': {
         'last_run_successful_in': _DAY + 2 * _HOUR
     },
@@ -1680,6 +1684,12 @@ PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 # report journals that discontinue in ... days (eg. 1 = tomorrow)
 DISCONTINUED_DATE_DELTA = 0
+
+####################################################
+# Flag management
+
+# find approaching deadlines in ... days (eg. 1 = tomorrow)
+FLAG_APPROACHING_DEADLINE_DELTA = 7
 
 ##################################################
 # Feature tours currently active
@@ -1828,3 +1838,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False

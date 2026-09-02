@@ -49,7 +49,7 @@ Or any other inappropriate behaviours that breach our code of conduct.
 
 ### Reporting issues
 
-If you have concerns about someone’s behaviour, please contact the Operations Manager, Lene (lene@doaj.org). Lene will:
+If you have concerns about someone’s behaviour, please contact the Deputy Director, Dominic (dominic@doaj.org). Dominic will:
 
 - refer the incident to our Executive Team (who will decide on further action)
 - follow up with all those involved and provide you with an update
