@@ -779,7 +779,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
 
-    def finalise(self, account, save_target=True, email_alert=True):
+    def finalise(self, save_target=True, email_alert=True):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
@@ -787,7 +787,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherUpdateRequest, self).finalise()
-        self._patch_publisher_comment(account.id)
+        self._patch_publisher_comment(current_user.id)
 
         # set the status to post submission review (will be updated again later after the review job runs)
         if app.config.get("AUTOCHECK_INCOMING", False):
