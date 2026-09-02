@@ -29,7 +29,6 @@ doaj.tourist.init = function(params) {
 
         $(".trigger_tour").on("click", doaj.tourist.triggerTour);
         navContainer.show();
-        // navContainer.hoverIntent(doaj.tourist.showDropdown, doaj.tourist.hideDropdown);
         const desktopNav = window.matchMedia('(min-width: 1024px)');
         navContainer.hoverIntent(
             event => {
