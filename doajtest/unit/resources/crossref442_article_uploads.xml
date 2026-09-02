@@ -2170,5 +2170,54 @@
             </journal_article>
         </journal>
 
+        <!-- a record with JATS rich-text formatting in abstract and title -->
+        <journal>
+            <journal_metadata>
+                <full_title>JATS Rich Text Abstract</full_title>
+                <abbrev_title>JRTA</abbrev_title>
+                <issn media_type="electronic">2190-4286</issn>
+            </journal_metadata>
+            <journal_issue>
+                <publication_date media_type="online">
+                    <year>2021</year>
+                </publication_date>
+                <journal_volume>
+                    <volume>12</volume>
+                </journal_volume>
+            </journal_issue>
+            <journal_article publication_type="full_text" language="en">
+                <titles>
+                    <title>TiO<i><sub>x</sub></i>/Pt<sub>3</sub>Ti(111) surface article</title>
+                </titles>
+                <contributors>
+                    <person_name contributor_role="author" sequence="first">
+                        <given_name>Marco</given_name>
+                        <surname>Moors</surname>
+                        <ORCID>https://orcid.org/0000-0002-3340-9756</ORCID>
+                    </person_name>
+                    <person_name contributor_role="author" sequence="additional">
+                        <given_name>Yun</given_name>
+                        <surname>An</surname>
+                    </person_name>
+                </contributors>
+                <jats:abstract>
+                    <jats:p>Highly ordered titanium oxide films grown on a Pt<jats:sub>3</jats:sub>Ti(111) alloy surface. Two stable oxide phases, z&#8217;-TiO<jats:italic><jats:sub>x</jats:sub></jats:italic> and w&#8217;-TiO<jats:italic><jats:sub>x</jats:sub></jats:italic>, were produced. W<jats:sub>3</jats:sub>O<jats:sub>9</jats:sub> clusters formed from WO<jats:sub>3</jats:sub> powder.</jats:p>
+                </jats:abstract>
+                <publication_date media_type="online">
+                    <month>02</month>
+                    <day>16</day>
+                    <year>2021</year>
+                </publication_date>
+                <pages>
+                    <first_page>203</first_page>
+                    <last_page>212</last_page>
+                </pages>
+                <doi_data>
+                    <doi>10.3762/bjnano.12.16</doi>
+                    <resource>https://www.beilstein-journals.org/bjnano/articles/12/16</resource>
+                </doi_data>
+            </journal_article>
+        </journal>
+
     </body>
 </doi_batch>
