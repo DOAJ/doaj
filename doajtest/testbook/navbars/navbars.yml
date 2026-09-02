@@ -1,0 +1,248 @@
+# ~~ AdminArticleMetadata:FunctionalTest -> AdminArticleMetadata:Page~~
+suite: Admin Article Metadata Form
+testset: Admin Article Metadata Form
+tests:
+  - title: Test Authenticated Navigation and Account Actions
+    context:
+      role: admin
+    steps:
+    - step: Open the DOAJ homepage on the test server
+      results:
+      - A "Login" link is displayed in the top-right corner
+    - step: Click "Login" and log in using the usual admin credentials
+      results:
+      - The admin dashboard is displayed
+      - The greeting "Hi, [username]!" is displayed in the top-left corner
+      - No user tag is displayed above the greeting
+    - step: Inspect the primary black navigation bar
+      results:
+      - The "Feature Tours" link is displayed and remains unchanged from the current live version
+      - The "Notifications" link is displayed and remains unchanged from the current live version
+      - The "System data" dropdown is displayed and remains unchanged from the current live version
+      - The "Quick links" dropdown is displayed
+      - The "Account actions" dropdown is displayed
+    - step: Open the "Quick links" dropdown by hovering over it
+      results:
+      - A link to the "Admin dashboard" is displayed
+      - A link to "DOAJ home" is displayed
+    - step: Open each link in the "Quick links" dropdown, returning to the dashboard after checking each destination
+      results:
+      - The "Admin dashboard" link opens the admin dashboard
+      - The "DOAJ home" link opens the DOAJ homepage
+    - step: Return to the admin dashboard and inspect the "Account actions" dropdown button
+      results:
+      - The button displays "Signed in as [username] (admin)"
+    - step: Open the "Account actions" dropdown
+      results:
+      - A "My account" link is displayed
+      - A "Log out" button is displayed
+    - step: Click "My account"
+      results:
+      - The authenticated admin's account page is displayed
+    - step: Navigate to the DOAJ homepage while remaining logged in
+      results:
+      - The secondary white navigation bar is displayed
+    - step: Open the "Dashboard" dropdown in the secondary white navigation bar
+      results:
+      - The dashboard links available in the current live version are displayed
+      - The "My account" link is not displayed
+    - step: Inspect the control next to the "Dashboard" dropdown
+      results:
+      - An "Account actions" dropdown is displayed
+      - The dropdown button displays "Signed in as [username] (admin)"
+    - step: Open the "Account actions" dropdown
+      results:
+      - A "My account" link is displayed
+      - A "Log out" button is displayed
+    - step: Click "My account"
+      results:
+      - The authenticated admin's account page is displayed
+    - step: Return to the DOAJ homepage, open the "Account actions" dropdown and click "Log out"
+      results:
+      - The user is logged out
+      - The DOAJ homepage is displayed
+      - The "Login" link is displayed in the top-right corner
+
+  - title: Test Authenticated Navigation Below 1024 Pixels
+    context:
+      role: admin
+    setup:
+      - "Perform the test on a tablet with a viewport width below 1024 pixels, or emulate this viewport in a desktop browser."
+      - "To emulate the viewport in Chrome or Edge, open Developer Tools, select the device toolbar, choose a tablet or responsive mode, set the viewport width to a value below 1024 pixels, and refresh the page."
+    steps:
+      - step: Open the DOAJ homepage at a viewport width below 1024 pixels
+        results:
+          - A "MENU" hamburger button is displayed
+          - The navigation links and dropdowns are hidden while the menu is closed
+      - step: Open the "MENU" hamburger menu
+        results:
+          - The "Login" link is displayed inside the expanded menu
+      - step: Click "Login" and log in using the usual admin credentials
+        results:
+          - The admin dashboard is displayed
+          - The greeting "Hi, [username]!" is displayed
+          - No user tag is displayed above the greeting
+          - A "MENU" hamburger button is displayed
+          - The dashboard navigation links and dropdowns are hidden while the menu is closed
+      - step: Open the "MENU" hamburger menu on the admin dashboard
+        results:
+          - The "Feature Tours" link is displayed and remains unchanged from the current live version
+          - The "Notifications" link is displayed; on click it navigates to "All Notifications" page and doesn't show a dropdown
+          - The "System data" dropdown is displayed and remains unchanged from the current live version
+          - The "Quick links" dropdown control is displayed
+          - The "Account actions" dropdown control displays "Signed in as [username] (admin)"
+      - step: Hover over the "Quick links" dropdown control without clicking it
+        results:
+          - The dropdown does not open
+      - step: Click the "Quick links" dropdown control
+        results:
+          - The dropdown opens
+          - A link to the "Admin dashboard" is displayed
+          - A link to "DOAJ home" is displayed
+      - step: Open each link in the "Quick links" dropdown, returning to the dashboard and reopening the "MENU" hamburger menu after checking each destination
+        results:
+          - The "Admin dashboard" link opens the admin dashboard
+          - The "DOAJ home" link opens the DOAJ homepage
+      - step: Return to the admin dashboard, open the "MENU" hamburger menu and hover over the "Signed in as Signed in as [username] (admin)" Account actions dropdown control without clicking it
+        results:
+          - The dropdown does not open
+      - step: Click the "Signed in as Signed in as [username] (admin)" "Account actions" dropdown control
+        results:
+          - The dropdown opens
+          - A "My account" link is displayed
+          - A "Log out" button is displayed
+      - step: Click "My account"
+        results:
+          - Your account page is displayed
+      - step: Navigate to the DOAJ homepage while remaining logged in
+        results:
+          - A "MENU" hamburger button is displayed
+          - The links and dropdowns are hidden while the menu is closed
+      - step: Open the "MENU" hamburger menu
+        results:
+          - The "Dashboard" dropdown control is displayed
+          - The "Account actions" dropdown control displays "Signed in as [username] (admin)"
+      - step: Hover over the "Dashboard" dropdown control without clicking it
+        results:
+          - The dropdown does not open
+      - step: Click the "Dashboard" dropdown control
+        results:
+          - The dropdown opens
+          - The dashboard links available in the current live version are displayed
+          - The "My account" link is not displayed
+      - step: Open each link in the "Dashboard" dropdown, returning to the DOAJ homepage and reopening the "MENU" hamburger menu after checking each destination
+        results:
+          - Each link opens its expected dashboard
+      - step: Hover over the "Account actions" dropdown control without clicking it
+        results:
+          - The dropdown does not open
+      - step: Click the "Account actions" dropdown control
+        results:
+          - The dropdown opens
+          - A "My account" link is displayed
+          - A "Log out" button is displayed
+      - step: Click "My account"
+        results:
+          - The account page is displayed
+      - step: Return to the DOAJ homepage, open the "MENU" hamburger menu, open the "Account actions" dropdown and click "Log out"
+        results:
+          - The user is logged out
+          - The DOAJ homepage is displayed
+          - The authenticated navigation options are no longer displayed
+          - The "Login" link is available inside the "MENU" hamburger menu
+  - title: Test Keyboard Navigation and Dropdown Focus Behaviour
+    context:
+      role: admin
+    setup:
+      - "Use a viewport width of at least 1280 pixels so that the full navigation is displayed."
+      - "Complete the navigation checks using only the keyboard. Use Tab to move forwards, Shift+Tab to move backwards, Enter to activate a link or button, and Escape to close an open dropdown."
+      - "To begin navigating from the start of a page, reload it and do not click anywhere in the page. Press Tab. If focus remains in the browser controls, press F6 on Windows or Control+F6 on macOS until focus moves into the webpage, then press Tab. On some keyboards, the Fn key must be held while pressing F6."
+    steps:
+      - step: Open the DOAJ homepage, place focus at the beginning of the page and use Tab to reach the "Login" link
+        results:
+          - A visible focus indicator identifies each focused link or button
+          - Focus moves through the interactive elements in a logical order
+      - step: Press Enter while the "Login" link is focused and log in using the usual admin credentials
+        results:
+          - The login page opens when Enter is pressed
+          - After authentication, the admin dashboard is displayed
+      - step: Place focus at the beginning of the admin dashboard and repeatedly press Tab while all dropdowns are closed
+        results:
+          - A visible focus indicator identifies each focused link and button
+          - Focus moves through the primary navigation links and dropdown buttons
+          - Hidden dropdown menu items are not included in the Tab order
+      - step: Focus the "Feature Tours" and "Notifications" links in turn and press Enter, returning to the admin dashboard after checking each destination
+        results:
+          - Each link opens its expected destination when Enter is pressed
+      - step: Use Tab to focus the "Quick links" dropdown button and press Enter
+        results:
+          - A visible focus indicator is displayed on the dropdown button
+          - The "Quick links" dropdown opens
+          - The "Admin dashboard" and "DOAJ home" links are displayed
+      - step: Press Tab while the "Quick links" dropdown is open
+        results:
+          - The links inside the open dropdown are included in the Tab order
+          - A visible focus indicator identifies the focused dropdown link
+      - step: Focus the "Admin dashboard" link inside the dropdown and press Enter
+        results:
+          - The admin dashboard opens
+      - step: Return focus to the "Quick links" dropdown button, press Enter to open it and then press Escape
+        results:
+          - The dropdown closes
+          - Its menu links are removed from the Tab order
+          - Focus remains on or returns to the "Quick links" dropdown button
+      - step: Press Tab after closing the "Quick links" dropdown
+        results:
+          - Focus moves to the next visible link or button after the dropdown
+          - Focus does not move to a hidden dropdown menu item
+      - step: Use Tab to focus the "Account actions" dropdown button and press Enter
+        results:
+          - A visible focus indicator is displayed on the dropdown button
+          - The dropdown opens
+          - The "My account" link and "Log out" button are displayed
+      - step: Press Tab while the "Account actions" dropdown is open
+        results:
+          - The "My account" link and "Log out" button are included in the Tab order
+          - A visible focus indicator identifies each focused dropdown item
+      - step: Focus the "My account" link and press Enter
+        results:
+          - The authenticated admin's account page opens
+      - step: Return to the admin dashboard, open the "Account actions" dropdown using Enter and press Escape
+        results:
+          - The dropdown closes
+          - Its menu items are removed from the Tab order
+          - Focus remains on or returns to the "Account actions" dropdown button
+      - step: Navigate to the DOAJ homepage while remaining logged in, place focus at the beginning of the page and repeatedly press Tab while all dropdowns are closed
+        results:
+          - A visible focus indicator identifies each focused link and button
+          - Focus moves through the links and dropdown buttons in the secondary navigation
+          - Hidden dropdown menu items are not included in the Tab order
+      - step: Use Tab to focus the "Dashboard" dropdown button and press Enter
+        results:
+          - The "Dashboard" dropdown opens
+          - Its dashboard links are displayed
+      - step: Press Tab while the "Dashboard" dropdown is open
+        results:
+          - The links inside the open dropdown are included in the Tab order
+          - A visible focus indicator identifies the focused dropdown link
+      - step: Focus one of the dashboard links and press Enter
+        results:
+          - The expected dashboard opens
+      - step: Return to the DOAJ homepage, focus the "Dashboard" dropdown button, press Enter to open it and then press Escape
+        results:
+          - The dropdown closes
+          - Its links are removed from the Tab order
+          - Focus remains on or returns to the "Dashboard" dropdown button
+      - step: Press Tab after closing the "Dashboard" dropdown
+        results:
+          - Focus moves to the next visible link or button
+          - Focus does not move to a hidden dropdown menu item
+      - step: Use Tab to focus the "Account actions" dropdown button and press Enter
+        results:
+          - The "Account actions" dropdown opens
+          - The "My account" link and "Log out" button are displayed
+      - step: Press Tab through the open dropdown and press Enter while "My account" is focused
+        results:
+          - The open dropdown items are included in the Tab order
+          - A visible focus indicator identifies each focused item
+          - The authenticated admin's account page opens when Enter is pressed

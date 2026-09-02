@@ -87,11 +87,13 @@ nav {
         position: relative;
 
         > .signed-in-as {
-          position: absolute;
+          @media (min-width: 1024px) {
+            position: absolute;
+            font-size: 0.75em;
+          }
           left: 0;
           bottom: -0.7rem;
           margin-bottom: 0.25rem;
-          font-size: 0.75em;
           font-weight: normal;
           white-space: nowrap;
           text-transform: uppercase;

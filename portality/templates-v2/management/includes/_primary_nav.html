@@ -1,0 +1,404 @@
+<style>
+.primary-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.primary-nav__items {
+    display: flex;
+    align-items: center;
+}
+
+.primary-nav__toggle,
+.primary-nav__close,
+.primary-nav__mobile-header {
+    display: none;
+}
+
+.primary-nav__backdrop {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .primary-nav__toggle {
+        display: inline-flex;
+        align-items: center;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0 2rem;
+        margin: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    svg.feather.feather-menu {
+        position: static;
+        top: auto;
+        height: 1rem;
+    }
+
+    .primary-nav__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        display: block;
+        background: rgb(0 0 0 / 55%);
+    }
+
+    .primary-nav__backdrop[hidden] {
+        display: none;
+    }
+
+    .primary-nav__panel {
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        right: 0;
+        width: min(24rem, 100vw);
+        height: 100vh;
+        height: 100dvh;
+        overflow-y: auto;
+        background: #000;
+        color: #fff;
+        box-shadow: -0.25rem 0 1rem rgb(0 0 0 / 30%);
+        transform: translateX(100%);
+        visibility: hidden;
+        transition:
+            transform 200ms ease,
+            visibility 200ms;
+    }
+
+    .primary-nav__panel.is-open {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .primary-nav__mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-height: 4rem;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgb(255 255 255 / 25%);
+        background: #000;
+    }
+
+    .primary-nav__close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.5rem;
+        margin-bottom: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .primary-nav__items {
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    .primary-nav__items > li {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid rgb(255 255 255 / 20%);
+    }
+
+    .primary-nav__items > li > a,
+    .primary-nav__items > li > button {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        min-height: 3.5rem;
+        padding: 0.75rem 1rem;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        text-align: left;
+    }
+
+    .primary-nav__panel .dropdown__menu {
+        position: static;
+        width: 100%;
+        margin: 0;
+        padding: 0 0 0.5rem;
+        border: 0;
+        background: rgb(255 255 255 / 8%);
+        box-shadow: none;
+    }
+
+    .primary-nav__panel .dropdown__link {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 44px;
+        padding: 0.65rem 1rem 0.65rem 2rem;
+        color: inherit;
+        text-align: left;
+    }
+
+    .primary-nav__panel .nav-bar__logout-form {
+        margin: 0;
+    }
+
+    body.primary-nav-open {
+        overflow: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .primary-nav__panel {
+        transition: none;
+    }
+}
+</style>
+
+<nav class="primary-nav" id="primary-nav">
+    <a href="{% if current_user.has_role('admin') %}/dashboard/{% elif current_user.has_role('editor') or current_user.has_role('associate_editor') %}/editor/{% endif %}"
+       class="logo">
+        {% include "includes/svg/doaj-icon.svg" %}
+    </a>
+
+    <button
+        type="button"
+        class="primary-nav__toggle"
+        id="primary-nav-toggle"
+        aria-controls="primary-nav-menu"
+        aria-expanded="false"
+        aria-label="Open navigation">
+        Menu &nbsp;
+        <span data-feather="menu" aria-hidden="true"></span>
+    </button>
+
+    <div class="primary-nav__backdrop" id="primary-nav-backdrop" hidden></div>
+
+    <div class="primary-nav__panel" id="primary-nav-menu">
+        <div class="primary-nav__mobile-header">
+
+            <button
+                type="button"
+                class="primary-nav__close"
+                id="primary-nav-close"
+                aria-label="Close navigation">
+                <span data-feather="x" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <ul class="primary-nav__items unstyled-list">
+            {% include "_tourist/includes/_tourist_nav.html" %}
+
+            <li class="dropdown dropdown--notifications" id="notifications_nav">
+                <a href="/dashboard/notifications"
+                   class="dropdown__trigger label notifications__item"
+                   id="dropdown__trigger--notifications"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    <span>
+                        <span data-feather="bell" aria-hidden="true"></span>
+                        Notifications
+                        <span class="js-notifications-count"></span>
+                    </span>
+                </a>
+
+                <ul class="dropdown__menu dropdown--notifications notifications"
+                    id="top_notifications"></ul>
+            </li>
+
+            {% if (current_user.has_role("editor") or current_user.has_role("associate_editor"))
+                  and not current_user.has_role("admin") %}
+                <li>
+                    <a href="{{ url_for('editor.index') }}" class="label">
+                        <span data-feather="list" aria-hidden="true"></span>
+                        Editor dashboard
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if current_user.has_role("admin") %}
+                <li class="dropdown" id="system_nav">
+                    <button
+                        type="button"
+                        class="dropdown__trigger label"
+                        id="menu-system"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <span data-feather="aperture" aria-hidden="true"></span>
+                        &nbsp;System Data
+                    </button>
+
+                    <ul class="dropdown__menu" aria-labelledby="menu-system">
+                        <li>
+                            <a href="{{ url_for('admin.autoassign_search') }}"
+                               class="dropdown__link">
+                                Autoassign
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin.ris_search') }}"
+                               class="dropdown__link">
+                                Article RIS
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin.pdd_search') }}"
+                               class="dropdown__link">
+                                Public Data Dumps
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin.journal_csv_search') }}"
+                               class="dropdown__link">
+                                Journal CSVs
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown" id="quick_links_nav">
+                    <button
+                        type="button"
+                        class="dropdown__trigger label"
+                        id="menu-quick-links"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <span data-feather="list" aria-hidden="true"></span>
+                         &nbsp;Quick Links
+                    </button>
+
+                    <ul class="dropdown__menu" aria-labelledby="menu-quick-links">
+                        <li>
+                            <a href="{{ url_for('dashboard.top_todo') }}"
+                               class="dropdown__link">
+                                <span data-feather="list" aria-hidden="true"></span>
+                                Admin dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/" class="dropdown__link">
+                                <span data-feather="home" aria-hidden="true"></span>
+                                DOAJ home
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <button
+                        type="button"
+                        id="menu-account"
+                        class="dropdown__trigger label"
+                        data-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-haspopup="true">
+                        <span class="username">
+                            <span class="signed-in-as">Signed in as</span>
+                            {{ current_user.id }}
+                            (Managing Editor)
+                            <span data-feather="chevron-down" aria-hidden="true"></span>
+                        </span>
+                    </button>
+
+                    <ul class="dropdown__menu" aria-labelledby="menu-account">
+                        <li>
+                            <a href="{{ url_for('account.username', username=current_user.id) }}"
+                               class="dropdown__link">
+                                My Account
+                                <span data-feather="user" aria-hidden="true"></span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <form method="POST"
+                                  action="{{ url_for('account.logout') }}"
+                                  class="nav-bar__logout-form">
+                                <button type="submit" class="dropdown__link btn-logout">
+                                    Logout
+                                    <span data-feather="log-out" aria-hidden="true"></span>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+{% block management_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.querySelector('#primary-nav-toggle');
+    const close = document.querySelector('#primary-nav-close');
+    const panel = document.querySelector('#primary-nav-menu');
+    const backdrop = document.querySelector('#primary-nav-backdrop');
+
+    function openMenu() {
+        panel.classList.add('is-open');
+        backdrop.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('primary-nav-open');
+        close.focus();
+    }
+
+    function closeMenu({ restoreFocus = false } = {}) {
+        panel.classList.remove('is-open');
+        backdrop.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('primary-nav-open');
+
+        if (restoreFocus) {
+            toggle.focus();
+        }
+    }
+
+    toggle.addEventListener('click', () => {
+        if (panel.classList.contains('is-open')) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+
+    close.addEventListener('click', () => {
+        closeMenu({ restoreFocus: true });
+    });
+
+    backdrop.addEventListener('click', () => {
+        closeMenu({ restoreFocus: true });
+    });
+
+    document.addEventListener('keydown', event => {
+        if (
+            event.key === 'Escape' &&
+            panel.classList.contains('is-open')
+        ) {
+            closeMenu({ restoreFocus: true });
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (
+            window.innerWidth >= 1024 &&
+            panel.classList.contains('is-open')
+        ) {
+            closeMenu();
+        }
+    });
+});
+    </script>
+{% endblock %}
