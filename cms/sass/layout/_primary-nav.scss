@@ -54,10 +54,9 @@
   &--scrolled {
     height: 40px;
 
-    .logo,
-    .logo svg {
-      height: 20px;
+    .logo, .logo svg {
       padding: 0;
+      height: 20px;
       line-height: 1;
     }
 
