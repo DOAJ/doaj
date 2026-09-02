@@ -286,9 +286,11 @@ class JournalGenericXWalk(object):
 
         publisher_comment_id = None
         if getattr(form, "publisher_comment_admin", None):
-            pc = json.loads(form.publisher_comment_admin.data)
-            publisher_comment_id = pc["id"]
-            obj.set_publisher_comment(pc["comment"], author_id=pc["author_id"], id=publisher_comment_id, date=pc["date"])
+            pc_data = form.publisher_comment_admin.data
+            if pc_data:
+                pc = json.loads(form.publisher_comment_admin.data)
+                publisher_comment_id = pc["id"]
+                obj.set_publisher_comment(pc["comment"], author_id=pc["author_id"], id=publisher_comment_id, date=pc["date"])
 
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
@@ -508,8 +510,6 @@ class JournalGenericXWalk(object):
         forminfo['publisher_comment_admin'] = ""
         if obj.publisher_comment:
             forminfo['publisher_comment_admin'] = json.dumps(obj.publisher_comment)
-            # but also add it as a note:
-            print(obj.publisher_comment)
             note_fields = sorted(
                 [*obj.ordered_notes_except_flags, obj.publisher_comment],
                 key=lambda note: note["date"],
