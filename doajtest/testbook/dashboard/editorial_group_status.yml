@@ -5,11 +5,17 @@ tests:
 - title: Editorial Group Status for ManEds - Record Counts
   context:
     role: admin
+    testdrive: editorial_group_status
+  setup:
+  - Use the editorial_group_status testdrive to set up for this test, OR follow the next step
+  - To prepare to do this test manually, set up at least 2 editorial groups with multiple
+    members and a good selection of applications assigned to a number of associate
+    editors.  You should set yourself as the managing editor of those groups
   steps:
-  - step: To prepare to do this test set up at least 2 editorial groups with multiple
-      members and a good selection of applications assigned to a number of associate
-      editors.  You should set yourself as the managing editor of those groups
-  - step: Go to your ManEd Dashboard page (/dashboard)
+  - step: Log in as the admin account supplied by the testdrive setup, then go to your ManEd
+      Dashboard page (open it in a separate tab and leave the testdrive tab open, so the
+      testdrive data is not torn down)
+    path: /dashboard
   - step: Scroll to the bottom of the dashbaord page, after your TODO list items
     results:
     - The editorial groups you manage are listed under the heading Activity
@@ -58,11 +64,17 @@ tests:
 - title: Editorial Group Status for ManEds - Updating Editors
   context:
     role: admin
+    testdrive: editorial_group_status
+  setup:
+  - Use the editorial_group_status testdrive to set up for this test, OR follow the next step
+  - To prepare to do this test manually, set up at least 2 editorial groups with multiple
+    members and a good selection of applications assigned to a number of associate
+    editors.  You should set yourself as the managing editor of those groups
   steps:
-  - step: To prepare to do this test set up at least 2 editorial groups with multiple
-      members and a good selection of applications assigned to a number of associate
-      editors.  You should set yourself as the managing editor of those groups
-  - step: Go to your ManEd Dashboard page (/dashboard)
+  - step: Log in as the admin account supplied by the testdrive setup, then go to your ManEd
+      Dashboard page (open it in a separate tab and leave the testdrive tab open, so the
+      testdrive data is not torn down)
+    path: /dashboard
   - step: Select an editorial group to see its status information
   - step: Take a note of the number of applications assigned to one of your editors
   - step: Click on the count of applications next to the "unassigned" tag
@@ -80,11 +92,17 @@ tests:
 - title: Editorial Group Status for ManEds - Changing Status
   context:
     role: admin
+    testdrive: editorial_group_status
+  setup:
+  - Use the editorial_group_status testdrive to set up for this test, OR follow the next step
+  - To prepare to do this test manually, set up at least 2 editorial groups with multiple
+    members and a good selection of applications assigned to a number of associate
+    editors.  You should set yourself as the managing editor of those groups
   steps:
-  - step: To prepare to do this test set up at least 2 editorial groups with multiple
-      members and a good selection of applications assigned to a number of associate
-      editors.  You should set yourself as the managing editor of those groups
-  - step: Go to your ManEd Dashboard page (/dashboard)
+  - step: Log in as the admin account supplied by the testdrive setup, then go to your ManEd
+      Dashboard page (open it in a separate tab and leave the testdrive tab open, so the
+      testdrive data is not torn down)
+    path: /dashboard
   - step: Select an editorial group to see its status information
   - step: Take a note of the number of applications assigned to a specific status
       (e.g. in progress)
