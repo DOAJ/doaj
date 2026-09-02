@@ -11,57 +11,57 @@ tests:
       - A "Login" link is displayed in the top-right corner
     - step: Click "Login" and log in using the usual admin credentials
       results:
-      - The admin dashboard is displayed
-      - The greeting "Hi, [username]!" is displayed in the top-left corner
-      - No user tag is displayed above the greeting
+        - The admin dashboard is displayed
+        - The greeting "Hi, [username]!" is displayed in the top-left corner
+        - No user tag is displayed above the greeting
     - step: Inspect the primary black navigation bar
       results:
-      - The "Feature Tours" link is displayed and remains unchanged from the current live version
-      - The "Notifications" link is displayed and remains unchanged from the current live version
-      - The "System data" dropdown is displayed and remains unchanged from the current live version
-      - The "Quick links" dropdown is displayed
-      - The "Account actions" dropdown is displayed
+        - The "Feature Tours" link is displayed and remains unchanged from the current live version
+        - The "Notifications" link is displayed and remains unchanged from the current live version
+        - The "System data" dropdown is displayed and remains unchanged from the current live version
+        - The "Quick links" dropdown is displayed
+        - The "Account actions" dropdown is displayed
     - step: Open the "Quick links" dropdown by hovering over it
       results:
-      - A link to the "Admin dashboard" is displayed
-      - A link to "DOAJ home" is displayed
+        - A link to the "Admin dashboard" is displayed
+        - A link to "DOAJ home" is displayed
     - step: Open each link in the "Quick links" dropdown, returning to the dashboard after checking each destination
       results:
-      - The "Admin dashboard" link opens the admin dashboard
-      - The "DOAJ home" link opens the DOAJ homepage
+        - The "Admin dashboard" link opens the admin dashboard
+        - The "DOAJ home" link opens the DOAJ homepage
     - step: Return to the admin dashboard and inspect the "Account actions" dropdown button
       results:
-      - The button displays "Signed in as [username] (admin)"
+        - The button displays "Signed in as [username] (admin)"
     - step: Open the "Account actions" dropdown
       results:
-      - A "My account" link is displayed
-      - A "Log out" button is displayed
+        - A "My account" link is displayed
+        - A "Log out" button is displayed
     - step: Click "My account"
       results:
-      - The authenticated admin's account page is displayed
+        - The authenticated admin's account page is displayed
     - step: Navigate to the DOAJ homepage while remaining logged in
       results:
-      - The secondary white navigation bar is displayed
+        - The secondary white navigation bar is displayed
     - step: Open the "Dashboard" dropdown in the secondary white navigation bar
       results:
-      - The dashboard links available in the current live version are displayed
-      - The "My account" link is not displayed
+        - The dashboard links available in the current live version are displayed
+        - The "My account" link is not displayed
     - step: Inspect the control next to the "Dashboard" dropdown
       results:
-      - An "Account actions" dropdown is displayed
-      - The dropdown button displays "Signed in as [username] (admin)"
+        - An "Account actions" dropdown is displayed
+        - The dropdown button displays "Signed in as [username] (admin)"
     - step: Open the "Account actions" dropdown
       results:
-      - A "My account" link is displayed
-      - A "Log out" button is displayed
+        - A "My account" link is displayed
+        - A "Log out" button is displayed
     - step: Click "My account"
       results:
-      - The authenticated admin's account page is displayed
+        - The authenticated admin's account page is displayed
     - step: Return to the DOAJ homepage, open the "Account actions" dropdown and click "Log out"
       results:
-      - The user is logged out
-      - The DOAJ homepage is displayed
-      - The "Login" link is displayed in the top-right corner
+        - The user is logged out
+        - The DOAJ homepage is displayed
+        - The "Login" link is displayed in the top-right corner
 
   - title: Test Authenticated Navigation Below 1024 Pixels
     context:

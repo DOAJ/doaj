@@ -101,7 +101,7 @@ tests:
         results:
           - At the top navbar "Notifications" indicate a new notification
       - step: Hover over Notifications button
-        result:
+        results:
           - At the top of the list new notification "New flag" is listed
       - step: Click on the "New flag" notification
         results:
@@ -115,7 +115,7 @@ tests:
           - The long description says "A new flag in 'Feline Aerodynamics Review __<id>' has been assigned to you"
       - step: Open the testdrive/flags page <b>do not close the page where you are logged in</b>
       - step: Click "Run background task" button located at the bottom of the testdrive page, wait for the task to execute
-        result:
+        results:
           - Message "Script executed successfully!" is displayed
       - step: Go back to the tab where you are logged as ProfessorQuibbleton
       - step: refresh the page
@@ -129,85 +129,85 @@ tests:
           - Feline Aerodynamics Review journal form is opened in a new tab
       - step: Unlock & Close the form, close the tab
 
-- title: Admin - Flags Notifications
-  context:
-    role: Admin
-  setup:
-  - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following all the steps; otherwise you may omit steps 2-9
-  steps:
-  - step: Navigate to /testdrive/flags
-  - step: In a separate tab login as LordWiggleworth__<id> (admin)
-  - step: Feline Aerodynamics Review - an update request assigned to you, with no flags
-  - step: Click Add Flag button
-  - step: Assign "ProfessorQuibbleton__<id>"
-  - step: Add deadline in exactly 1 week
-  - step: In the text area add the flag's note (any text)
-  - step: Save application, Unlock & Close the form
-  - step: Log out
-  - step: In a separate tab log in as "ProfessorQuibbleton__<id>"
-    results:
-    - At the top navbar "Notifications" indicate a new notification
-  - step: Hover over Notifications button
-    result:
-    - At the top of the list new notification "New flag" is listed
-  - step: Click on the "New flag" notification
-    results:
-    - The form of the "Feline Aerodynamics Review __<id>" journal is opened in a new tab
-    - On the right the flag is displayed and assigned to you ("ProfessorQuibbleton__<id>")
-  - step: Unlock & Close the form, close the tab
-  - step: Click the Notifications button at the top navigation bar
-    results:
-    - /dashboard/notifications opens
-    - At the top of the list "New flag" notification is displayed.
-    - The long description says "A new flag in 'Feline Aerodynamics Review __<id>' has been assigned to you"
-  - step: Open the testdrive/flags page <b>do not close the page where you are logged in</b>
-  - step: Click "Run background task" button located at the bottom of the testdrive page, wait for the task to execute
-    result:
-    - Message "Script executed successfully!" is displayed
-  - step: Go back to the tab where you are logged as ProfessorQuibbleton
-  - step: refresh the page
-  - step: navigate to /dashboard/notifications if not already there
-    results:
-    - At the top of the notifications list a new notification "Deadline reminder" is listed
-    - Long description says "The deadline for the flag in 'Feline Aerodynamics Review__<id>' is in 7 days."
-    - At the top navbar Notifications button has a new notification marked
-  - step: Click "See action" link at the right of the new "Deadline reminder" notification
-    results:
-    - Feline Aerodynamics Review journal form is opened in a new tab
-  - step: Unlock & Close the form, close the tab
+  - title: Admin - Flags Notifications
+    context:
+      role: Admin
+    setup:
+    - If you haven't performed previous test (Admin - Add, Edit, Resolve) prepare the Journal by following all the steps; otherwise you may omit steps 2-9
+    steps:
+    - step: Navigate to /testdrive/flags
+    - step: In a separate tab login as LordWiggleworth__<id> (admin)
+    - step: Feline Aerodynamics Review - an update request assigned to you, with no flags
+    - step: Click Add Flag button
+    - step: Assign "ProfessorQuibbleton__<id>"
+    - step: Add deadline in exactly 1 week
+    - step: In the text area add the flag's note (any text)
+    - step: Save application, Unlock & Close the form
+    - step: Log out
+    - step: In a separate tab log in as "ProfessorQuibbleton__<id>"
+      results:
+      - At the top navbar "Notifications" indicate a new notification
+    - step: Hover over Notifications button
+      results:
+      - At the top of the list new notification "New flag" is listed
+    - step: Click on the "New flag" notification
+      results:
+      - The form of the "Feline Aerodynamics Review __<id>" journal is opened in a new tab
+      - On the right the flag is displayed and assigned to you ("ProfessorQuibbleton__<id>")
+    - step: Unlock & Close the form, close the tab
+    - step: Click the Notifications button at the top navigation bar
+      results:
+      - /dashboard/notifications opens
+      - At the top of the list "New flag" notification is displayed.
+      - The long description says "A new flag in 'Feline Aerodynamics Review __<id>' has been assigned to you"
+    - step: Open the testdrive/flags page <b>do not close the page where you are logged in</b>
+    - step: Click "Run background task" button located at the bottom of the testdrive page, wait for the task to execute
+      results:
+      - Message "Script executed successfully!" is displayed
+    - step: Go back to the tab where you are logged as ProfessorQuibbleton
+    - step: refresh the page
+    - step: navigate to /dashboard/notifications if not already there
+      results:
+      - At the top of the notifications list a new notification "Deadline reminder" is listed
+      - Long description says "The deadline for the flag in 'Feline Aerodynamics Review__<id>' is in 7 days."
+      - At the top navbar Notifications button has a new notification marked
+    - step: Click "See action" link at the right of the new "Deadline reminder" notification
+      results:
+      - Feline Aerodynamics Review journal form is opened in a new tab
+    - step: Unlock & Close the form, close the tab
 
-- title: Admin - Dashboard [NOT CURRENTLY USED]
-  context:
-    role: Admin
-  steps:
-  - step: Navigate to /testdrive/flags
-  - step: Login as an admin
-    results:
-    - You are presented with your dashboard
-    - The following records are displayed in your dashboard
-    - Journal of Intergalactic Diplomacy - an application flagged to you with an urgent deadline (within 7 days), assigned to an associate in a group you are not a member of, marked as Flagged to you (Urgent Deadline)
-    - Journal of Quantum Homeopathy - an update request flagged to you with an urgent deadline (within 7 days), assigned to an associate from your group, marked as Flagged to you (Urgent Deadline)
-    - The Mars Agricultural Review - an application with a non-urgent flag (deadline in more than 7 days), marked as Flagged to you
-    - Cryptid Behavioral Studies Quarterly - an update request with a non-urgent flag (with no deadline), marked as Flagged to you
-    - The Bermuda Triangle Journal of Lost and Found - an application assigned to an editor from your group, flagged to someone else, NOT marked as flagged
-    - Feline Aerodynamics Review - an update request assigned to you, with no flags
-    - You DO NOT see the Applied Alchemy & Unstable Chemistry update request (flagged to someone else and not assigned to your group)
-    - Records with deadlines are ordered from the most urgent to the least urgent
-  - step: Open Cryptid Behavioral Studies Quarterly journal
-  - step: Change the deadline of the flag to the past (e.g., 2020-01-01)
-  - step: Save the record and then unlock and close
-  - step: Go back to your dashboard and refresh the page
-    results:
-    - Cryptid Behavioral Studies Quarterly is now displayed first as the most urgent, and it is marked as Flagged to you (Urgent Deadline)
-  - step: Click on the New Applications filter
-    results:
-    - Records Journal of Intergalactic Diplomacy and The Mars Agricultural Review are listed
-  - step: Click on the Update Requests filter
-    results:
-    - Records Cryptid Behavioral Studies Quarterly, Journal of Quantum Homeopathy and Feline Aerodynamics Review are displayed
-  - step: Click on the On Hold filter
-    results:
-    - Record The Bermuda Triangle Journal of Lost and Found is listed
+  - title: Admin - Dashboard [NOT CURRENTLY USED]
+    context:
+      role: Admin
+    steps:
+    - step: Navigate to /testdrive/flags
+    - step: Login as an admin
+      results:
+      - You are presented with your dashboard
+      - The following records are displayed in your dashboard
+      - Journal of Intergalactic Diplomacy - an application flagged to you with an urgent deadline (within 7 days), assigned to an associate in a group you are not a member of, marked as Flagged to you (Urgent Deadline)
+      - Journal of Quantum Homeopathy - an update request flagged to you with an urgent deadline (within 7 days), assigned to an associate from your group, marked as Flagged to you (Urgent Deadline)
+      - The Mars Agricultural Review - an application with a non-urgent flag (deadline in more than 7 days), marked as Flagged to you
+      - Cryptid Behavioral Studies Quarterly - an update request with a non-urgent flag (with no deadline), marked as Flagged to you
+      - The Bermuda Triangle Journal of Lost and Found - an application assigned to an editor from your group, flagged to someone else, NOT marked as flagged
+      - Feline Aerodynamics Review - an update request assigned to you, with no flags
+      - You DO NOT see the Applied Alchemy & Unstable Chemistry update request (flagged to someone else and not assigned to your group)
+      - Records with deadlines are ordered from the most urgent to the least urgent
+    - step: Open Cryptid Behavioral Studies Quarterly journal
+    - step: Change the deadline of the flag to the past (e.g., 2020-01-01)
+    - step: Save the record and then unlock and close
+    - step: Go back to your dashboard and refresh the page
+      results:
+      - Cryptid Behavioral Studies Quarterly is now displayed first as the most urgent, and it is marked as Flagged to you (Urgent Deadline)
+    - step: Click on the New Applications filter
+      results:
+      - Records Journal of Intergalactic Diplomacy and The Mars Agricultural Review are listed
+    - step: Click on the Update Requests filter
+      results:
+      - Records Cryptid Behavioral Studies Quarterly, Journal of Quantum Homeopathy and Feline Aerodynamics Review are displayed
+    - step: Click on the On Hold filter
+      results:
+      - Record The Bermuda Triangle Journal of Lost and Found is listed
 
   - title: Admin - Search
     context:
@@ -340,7 +340,8 @@ tests:
       - step: Click "Add flag"
       - step: Enter an assignee, a deadline and a note
       - step: Click "Save"
-        results: The form is saved correctly with a new flag
+        results:
+        - The form is saved correctly with a new flag
       - step: Click "Resolve" to resolve the flag
       - step: Click "Add flag"
       - step: Enter an assignee, a deadline and a note
