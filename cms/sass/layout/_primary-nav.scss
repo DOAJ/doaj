@@ -3,14 +3,17 @@
 .primary-nav {
   position: fixed;
   top: 0;
-  width: 100vw;
   z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
   height: 90px;
   background-color: $warm-black;
-  transition: height 0.3s ease-out;
-  text-transform: uppercase;
-  font-weight: 600;
   color: $white;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: height 0.3s ease-out;
 
   a {
     color: $white;
@@ -21,19 +24,10 @@
     color: $white;
   }
 
-  // TODO: Needs to be renamed from secondary-nav since it’s been moved outside of there
-  // Also appears in JS
+  // TODO: Needs to be renamed from secondary-nav since it’s been moved outside of there.
+  // Also appears in JS.
   .secondary-nav__menu-toggle {
     display: none;
-  }
-
-  @media (max-width: 1279px) {
-    .secondary-nav__menu-toggle {
-      display: flex;
-      margin-left: $spacing-03;
-      color: $white;
-      stroke: $white;
-    }
   }
 
   .dropdown__trigger {
@@ -45,12 +39,25 @@
     color: $white;
   }
 
+  &__items {
+    display: flex;
+    align-items: center;
+  }
+
+  &__toggle,
+  &__close,
+  &__mobile-header,
+  &__backdrop {
+    display: none;
+  }
+
   &--scrolled {
     height: 40px;
 
-    .logo, .logo svg {
-      padding: 0;
+    .logo,
+    .logo svg {
       height: 20px;
+      padding: 0;
       line-height: 1;
     }
 
@@ -59,7 +66,7 @@
     }
 
     .nav-bar {
-      height: 40px
+      height: 40px;
     }
 
     .dropdown__trigger {
@@ -68,14 +75,167 @@
   }
 
   @media (max-width: 1279px) {
+    .secondary-nav__menu-toggle {
+      display: flex;
+      margin-left: $spacing-03;
+      color: $white;
+      stroke: $white;
+    }
+
     .nav-bar {
       float: right;
     }
 
-    //.feather-chevron-down,
     .feather-heart,
     .primary-nav__item_desktop {
       display: none !important;
     }
+  }
+
+  @media (max-width: 1023px) {
+    &__toggle {
+      display: inline-flex;
+      align-items: center;
+      min-width: 44px;
+      min-height: 44px;
+      margin: 0;
+      padding: 0 2rem;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    &__backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: block;
+      background: rgba(0, 0, 0, 55%);
+
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    &__panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 1000;
+      width: 24rem;
+      max-width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow-y: auto;
+      background: $warm-black;
+      color: $white;
+      box-shadow: -0.25rem 0 1rem rgba(0, 0, 0, 30%);
+      visibility: hidden;
+      transform: translateX(100%);
+      transition:
+        transform 200ms ease,
+        visibility 200ms;
+
+      &.is-open {
+        visibility: visible;
+        transform: translateX(0);
+      }
+
+      .dropdown__menu {
+        position: static;
+        width: 100%;
+        margin: 0;
+        padding: 0 0 0.5rem;
+        border: 0;
+        background: rgba(255, 255, 255, 8%);
+        box-shadow: none;
+      }
+
+      .dropdown__link {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 44px;
+        padding: 0.65rem 1rem 0.65rem 2rem;
+        color: inherit;
+        text-align: left;
+      }
+
+      .nav-bar__logout-form {
+        margin: 0;
+      }
+    }
+
+    &__mobile-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 4rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 25%);
+      background: $warm-black;
+    }
+
+    &__close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      margin-bottom: 0;
+      padding: 0.5rem;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    &__items {
+      display: block;
+      margin: 0;
+      padding: 0;
+
+      > li {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 20%);
+
+        > a,
+        > button {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          width: 100%;
+          min-height: 3.5rem;
+          padding: 0.75rem 1rem;
+          border: 0;
+          background: transparent;
+          color: inherit;
+          text-align: left;
+        }
+      }
+    }
+
+    svg.feather.feather-menu {
+      position: static;
+      top: auto;
+      height: 1rem;
+    }
+  }
+}
+
+@media (max-width: 1023px) {
+  body.primary-nav-open {
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary-nav__panel {
+    transition: none;
   }
 }
