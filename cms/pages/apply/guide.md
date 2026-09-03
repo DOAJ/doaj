@@ -311,7 +311,7 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 ## In other languages
 
-Our guide to applying is available in several languages. Below is a list of translations, please note that not all translations include the latest changes made to the Guide.
+Our guide to applying is available in several languages. Please note that not all translations include the latest changes made to the Guide.
 
 ### Version 2.8
 
