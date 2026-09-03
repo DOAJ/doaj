@@ -585,4 +585,6 @@ def save_all_block_last(model_list):
         model.save()
     last.save(blocking=True)
 
+    time.sleep(0.5)
+
     return model_list
