@@ -2,6 +2,13 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.1
+
+Enable user attributes as well as roles (additional field on model).
+https://github.com/DOAJ/doajPM/issues/4317
+
+Fixes for tests and anonymous export script.
+
 ### 8.7.0
 
 Separate the notes from Journal and Application models into their own index.
