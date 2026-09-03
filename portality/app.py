@@ -509,6 +509,13 @@ def run_server(host=None, port=None, fake_https=False):
     if fake_https:
         run_kwargs['ssl_context'] = 'adhoc'
 
+    debugger_attached = sys.gettrace() is not None
+    if debugger_attached:
+        run_kwargs.update(
+            use_reloader=False,
+            use_debugger=False,
+        )
+
     host = host or app.config['HOST']
     port = port or app.config['PORT']
     app.run(host=host, debug=app.config['DEBUG'], port=port,
