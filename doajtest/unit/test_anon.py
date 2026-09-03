@@ -5,6 +5,7 @@ from freezegun import freeze_time
 from copy import deepcopy
 
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, BackgroundFixtureFactory
+from doajtest.fixtures.v2 import JOURNAL_BASE, JOURNAL_FULL_LEGACY_FIXTURE
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.core import app
@@ -51,54 +52,53 @@ class TestAnon(DoajTestCase):
         assert e3 == '2@example.com', e3
 
     def test_05_anonymise_admin_with_notes(self):
-        journal_src = JournalFixtureFactory.make_journal_source()
 
-        journal_src['admin'] = {
-            'owner': 'testuser',
-            'editor': 'testeditor',
-            'notes': [
-                {
-                    "id": "note1",
-                    'note': 'Test note',
-                    'date': '2017-02-23T00:00:00Z'
-                },
-                {
-                    "id": "note2",
-                    'note': 'Test note 2',
-                    'date': '2017-02-23T00:00:00Z'
+        overlay = {
+            "admin": {
+                "owner": "testuser",
+                "editor": "testeditor",
+                "note_ids": [
+                    "note1",
+                    "note2",
+                ],
+                "index": {
+                    "notes": [
+                        "Test note",
+                        'Test note 2'
+                    ]
                 }
-            ]
+            }
         }
 
-        journal = models.Journal(**journal_src)
+        journal = models.Journal(**overlay)
 
         with freeze_time("2017-02-23"):
             ar = anon_export._anonymise_admin(journal)
 
-        assert ar.data['admin'] == {
-            'owner': 'testuser',
-            'editor': 'testeditor',
-            'notes': [
-                {
-                    "id": "note1",
-                    'note': '---note removed for data security---',
-                    'date': '2017-02-23T00:00:00Z'
-                },
-                {
-                    "id": "note2",
-                    'note': '---note removed for data security---',
-                    'date': '2017-02-23T00:00:00Z'
+        assert ar.data['admin'] ==  {
+                "owner": "testuser",
+                "editor": "testeditor",
+                "note_ids": [
+                    "note1",
+                    "note2",
+                ],
+                "index": {
+                    "notes": [
+                        "---note removed for data security---",
+                        '---note removed for data security---'
+                    ]
                 }
-            ]
         }, ar['admin']
 
     def test_06_anonymise_admin_empty_notes(self):
-        journal_src = JournalFixtureFactory.make_journal_source()
-
+        journal_src = {}
         journal_src['admin'] = {
             'owner': 'testuser',
             'editor': 'testeditor',
-            'notes': []
+            'note_ids': [],
+            "index": {
+                "notes": []
+            }
         }
 
         journal = models.Journal(**journal_src)
@@ -109,7 +109,7 @@ class TestAnon(DoajTestCase):
         assert ar.data['admin'] == {
             'owner': 'testuser',
             'editor': 'testeditor',
-            'notes': []
+            "index": {}
         }, ar['admin']
 
     def test_07_anonymise_account(self):

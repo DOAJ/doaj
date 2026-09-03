@@ -6,9 +6,17 @@ board:
   institution: LatIndex
   country: Mexico
   photo: "Ana-María-Cetto.png"
-  bio: "Ana María holds a Master's degree in Biophysics from Harvard, and Master's and Ph.D. degrees in Physics from UNAM. She does research on the foundations of quantum physics at the Institute of Physics and teaches at the Faculty of Sciences, UNAM. She is the former Director of the Faculty of Sciences, the Museum of Light and the Mexican Journal of Physics, OWSD vice-president, consultant to UNESCO for the World Conference on Science, member of the UNU Governing Board, ISC Secretary General and President of the Mexican Physical Society (SMF). Ana María founded LATINDEX, over which she presides, in addition to holding the UNESCO Chair on Science Diplomacy and Heritage, and chairing the UNESCO Global Open Science Steering Committee. She is Mexico's Woman of the Year 2003 and has received, among others, the UNESCO Kalinga Prize in 2023 and the Oganesson Prize in 2024. She is also co-recipient of the 1995 Nobel Peace Prize as a member of the Executive Committee of the Pugwash Conferences and of the 1995 Nobel Peace Prize as IAEA's Deputy Director General."
+  bio: "Ana María holds a Master's degree in Biophysics from Harvard, and Master's and PhD degrees in Physics from UNAM. She researches the foundations of quantum physics at the Institute of Physics and teaches at the Faculty of Sciences, UNAM. She is the former Director of the Faculty of Sciences, the Museum of Light and the Mexican Journal of Physics, OWSD vice-president, consultant to UNESCO for the World Conference on Science, member of the UNU Governing Board, ISC Secretary General and President of the Mexican Physical Society (SMF). Ana María founded LATINDEX, which she presides over, and holds the UNESCO Chair on Science Diplomacy and Heritage, as well as chairing the UNESCO Global Open Science Steering Committee. She is Mexico's Woman of the Year 2003 and has received, among others, the UNESCO Kalinga Prize in 2023 and the Oganesson Prize in 2024. She is also co-recipient of the 1995 Nobel Peace Prize as a member of the Executive Committee of the Pugwash Conferences and of the 1995 Nobel Peace Prize as IAEA's Deputy Director General."
   coi:
     2024: https://docs.google.com/document/d/1SjH4jFductQClV0MYi9nJeO_gm4q9F1H6iqknsnuWlI/edit?usp=drive_link
+
+- name: Anne-Sofie Axelsson
+  institution: Chalmers University of Technology
+  country: Sweden
+  photo: "Ann-Sofie Axelsson.jpg"
+  bio: "Since 2019, Ann-Sofie Axelsson has served as Head of the Department of Communication and Learning in Science and Library Director at Chalmers University of Technology in Gothenburg, Sweden. From 2013 to 2018, she was Head of the Swedish School of Library and Information Science (SSLIS). During her tenure, SSLIS joined the global iSchools organisation, where she later led the European chapter. Since 2022, Ann-Sofie has been a member of the LIBER Quarterly editorial board, and since 2025 she has served on the executive board of LIBER Europe. Over the years, she has also been active in Sweden’s national research library network and the Nordic Five Tech organisation, working to strengthen academic collaboration across national and professional boundaries. Ann-Sofie holds a PhD in Technology Management and Economics from Chalmers University of Technology."
+  coi:
+    2026: https://drive.google.com/file/d/1_54ynIT4vVJkzjqhmGUeMDzB_gfun96D/view?usp=sharing
 
 - name: David Prosser (Chair)
   institution: Research Libraries UK
@@ -17,14 +25,6 @@ board:
   bio: "Since March 2010, David has been the Executive Director of RLUK, the representative body for the UK and Ireland's leading research libraries. Before moving to RLUK, he was, from 2002, the founding Director of SPARC Europe, an alliance of over 110 research-led university libraries from 14 European countries advocating new models of scholarly communication.  Previously, he spent ten years in STM journal publishing for Oxford University Press and Elsevier Science. During this time, he was involved in all aspects of publishing, from production to editorial and financial management of journals. Before becoming a publisher, he received a PhD and BSc in Physics from Leeds University, UK."
   coi:
     2024: https://docs.google.com/document/d/14goBp4Q2AY7I9C4QG8MTQJl6z9XpkDpPb_fBA85mP5c/edit?usp=drive_link
-
-- name: Giannis Tsakonas
-  institution: University of Patras
-  country: Greece
-  photo: "Giannis-Tsakonas.png"
-  bio: "Giannis is Director of the Library & Information Center, University of Patras, Greece. He is Vice President of LIBER and a member of the organisation's Executive Board. He served on the Board of Directors of HEAL-Link, the consortium of Greek academic libraries, from 2016 to 2022. From 2016 to 2019, he was appointed Vice President of the Hellenic General Council of Libraries, a body of the Ministry of Education, Research and Religious Affairs, monitoring the operation of Greek public libraries. He is also a member of the Managing Committee of the Knowledge Rights 21 programme. He has a PhD in information science. In his free time, he cooks, runs and goes to concerts."
-  coi:
-    2024: https://drive.google.com/file/d/1a1CJ_ioTDUF0tZrgWf3ax8aF_JNfxMFV/view?usp=drive_link
 
 - name: Hans de Jonge
   institution: Dutch Research Council NWO
