@@ -1,3 +1,6 @@
+import json
+
+from portality import constants
 from werkzeug.datastructures import MultiDict
 
 from portality import models, lcc
@@ -280,13 +283,30 @@ class JournalGenericXWalk(object):
     @classmethod
     def form2admin(cls, form, obj):
         import re
+
+        publisher_comment_id = None
+        if getattr(form, "publisher_comment_admin", None):
+            pc_data = form.publisher_comment_admin.data
+            if pc_data:
+                pc = json.loads(form.publisher_comment_admin.data)
+                publisher_comment_id = pc["id"]
+                obj.set_publisher_comment(pc["comment"], author_id=pc["author_id"], id=publisher_comment_id, date=pc["date"])
+
         if getattr(form, "notes", None):
             for formnote in form.notes.data:
-                if formnote["note"]:
+                if formnote["note"] and formnote["note_id"] != publisher_comment_id:
                     note_date = formnote["note_date"]
                     note_id = formnote["note_id"]
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
                                  author_id=formnote["note_author_id"])
+
+        # if getattr(form, "publisher_comment_group", None):
+        #     publisher_comment_group = form.publisher_comment_group.data
+        #     comment = publisher_comment_group["publisher_comment"] if "publisher_comment" in publisher_comment_group else None
+        #     author = publisher_comment_group["publisher_comment_author"] if "publisher_comment_author" in publisher_comment_group else ""
+        #     pubid = publisher_comment_group["publisher_comment_id"] if "publisher_comment_id" in publisher_comment_group else ""
+        #     date = publisher_comment_group["publisher_comment_date"] if "publisher_comment_date" in publisher_comment_group else ""
+        #     obj.set_publisher_comment(comment, author_id=author, id=pubid, date=date)
 
         flag = getattr(form, "flags", None)
         if flag and flag["flag_note"].data:
@@ -486,10 +506,22 @@ class JournalGenericXWalk(object):
     @classmethod
     def admin2form(cls, obj, forminfo):
         forminfo['notes'] = []
-        for n in obj.ordered_notes_except_flags:
+
+        forminfo['publisher_comment_admin'] = ""
+        if obj.publisher_comment:
+            forminfo['publisher_comment_admin'] = json.dumps(obj.publisher_comment)
+            note_fields = sorted(
+                [*obj.ordered_notes_except_flags, obj.publisher_comment],
+                key=lambda note: note["date"],
+                reverse=True,
+            )
+        else:
+            note_fields = obj.ordered_notes_except_flags
+        for n in note_fields:
             author_id = n.get('author_id', '')
             note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
-            note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
+            note_obj = {'note': n["note"] if "note" in n else cls._comment2note(n["comment"]),
+                        'note_date': n['date'], 'note_id': n['id'],
                         'note_author': note_author_name,
                         'note_author_id': author_id,
                         }
@@ -521,6 +553,9 @@ class JournalGenericXWalk(object):
         if getattr(obj, "last_full_review", None):
             forminfo["last_full_review"] = obj.last_full_review
 
+    @classmethod
+    def _comment2note(self, comment):
+        return constants.PUBLISHER_COMMENT_NOTE.replace("<comment>", comment)
 
 class JournalFormXWalk(JournalGenericXWalk):
 

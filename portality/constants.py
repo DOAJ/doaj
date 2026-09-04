@@ -1,6 +1,7 @@
 # ~~Constants:Config~~
 
 # ~~-> ApplicationStatuses:Config~~
+APPLICATION_STATUS_DRAFT = "draft"
 APPLICATION_STATUS_ACCEPTED = "accepted"
 APPLICATION_STATUS_REJECTED = "rejected"
 APPLICATION_STATUS_UPDATE_REQUEST = "update_request"
@@ -163,6 +164,8 @@ ERROR_RECORD_JOURNAL = "journal"
 ERROR_410_WITHDRAWN = "withdrawn"
 ERROR_410_TOMBSTONE = "tombstone"
 
+MAX_PUBLISHER_COMMENT_LENGTH = 200
+PUBLISHER_COMMENT_NOTE = "PUBLISHER COMMENT: \n<comment>"
 
 class ConstantList:
     @classmethod

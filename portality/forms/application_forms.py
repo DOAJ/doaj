@@ -14,7 +14,7 @@ from flask_babel import lazy_gettext
 from portality import constants
 from portality import regex
 from portality.core import app
-from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk, PublisherApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.datasets import language_options, country_options, currency_options
 from portality.forms import application_processors
@@ -2127,6 +2127,68 @@ class FieldDefinitions:
         "input": "checkbox"
     }
 
+    PUBLISHER_COMMENT = {
+        "name": "publisher_comment",
+        "input": "textarea",
+        "label": lazy_gettext("Add here any extra information to support your application."),
+        "optional": True,
+        "maxlength": constants.MAX_PUBLISHER_COMMENT_LENGTH,
+        "subfield": True,
+        "group": "publisher_comment_group",
+        "widgets": [
+            "textarea_with_counter"
+        ],
+        "help": {
+            "short_help": "Maximum 200 characters, longer comments will be shortened."
+        },
+    }
+
+    PUBLISHER_COMMENT_ID = {
+        "name": "publisher_comment_id",
+        # "input": "hidden",
+        "input": "text",
+        "subfield": True,
+        "group": "publisher_comment_group",
+        "optional": True
+    }
+
+    PUBLISHER_COMMENT_AUTHOR = {
+        "name": "publisher_comment_author",
+        # "input": "hidden",
+        "input": "text",
+        "subfield": True,
+        "group": "publisher_comment_group",
+        "optional": True
+    }
+
+    PUBLISHER_COMMENT_DATE = {
+        "name": "publisher_comment_date",
+        # "input": "hidden",
+        "input": "text",
+        "subfield": True,
+        "group": "publisher_comment_group",
+        "optional": True
+    }
+
+    PUBLISHER_COMMENT_GROUP = {
+        "name": "publisher_comment_group",
+        "input": "group",
+        "subfields": [
+            "publisher_comment_id",
+            "publisher_comment_author",
+            "publisher_comment_date",
+            "publisher_comment"
+        ],
+        "template": templates.TEXTAREA_WITH_COUNTER
+    }
+
+    PUBLISHER_COMMENT_ADMIN = {
+        "name": "publisher_comment_admin",
+        "label": "publisher_comment_admin",
+        #"input": "hidden"
+        "input": "text"
+    }
+
 
 ##########################################################
 # Define our fieldsets
@@ -2449,6 +2511,24 @@ class FieldSetDefinitions:
         ]
     }
 
+    PUBLISHER_COMMENT = {
+        "name": "publisher_comment",
+        "fields": [
+            FieldDefinitions.PUBLISHER_COMMENT_GROUP["name"],
+            FieldDefinitions.PUBLISHER_COMMENT_ID["name"],
+            FieldDefinitions.PUBLISHER_COMMENT_AUTHOR["name"],
+            FieldDefinitions.PUBLISHER_COMMENT_DATE["name"],
+            FieldDefinitions.PUBLISHER_COMMENT["name"]
+        ]
+    }
+
+    PUBLISHER_COMMENT_ADMIN = {
+        "name": "publisher_comment_admin",
+        "fields": [
+            FieldDefinitions.PUBLISHER_COMMENT_ADMIN["name"],
+        ]
+    }
+
 
 ###########################################################
 # Define our Contexts
@@ -2497,6 +2577,9 @@ class ApplicationContextDefinitions:
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
     UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
+    UPDATE["fieldsets"] += [
+        FieldSetDefinitions.PUBLISHER_COMMENT["name"]
+    ]
 
     # ~~->$ ReadOnlyApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2512,7 +2595,8 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
     ASSOCIATE["templates"]["form"] = templates.ASSED_APPLICATION_FORM
@@ -2525,7 +2609,8 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.NOTES["name"]
+        FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
     EDITOR["templates"]["form"] = templates.EDITOR_APPLICATION_FORM
@@ -2543,15 +2628,21 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.NOTES["name"],
+        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"],
         FieldSetDefinitions.MARK_AS_FULL_REVIEW["name"],
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
     # add about the journal and editorial fields that differ between the contexts
-    public_context = [PUBLIC, READ_ONLY, UPDATE]
-    for pc in public_context:
-        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"]]
+    publisher_context = [PUBLIC, READ_ONLY, UPDATE]
+    for pc in publisher_context:
+        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"],
+                            FieldSetDefinitions.PUBLISHER_COMMENT["name"]]
+        pc["crosswalks"] = {
+            "obj2form": PublisherApplicationFormXWalk.obj2form,
+            "form2obj": PublisherApplicationFormXWalk.form2obj
+        }
 
     editorial_context = [ASSOCIATE, EDITOR, MANED]
     for ec in editorial_context:
@@ -3393,7 +3484,8 @@ JAVASCRIPT_FUNCTIONS = {
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
-    "date_picker": "formulaic.widgets.newDatePicker"  # ~~-> DatePicker:FormWidget~~
+    "date_picker": "formulaic.widgets.newDatePicker",  # ~~-> DatePicker:FormWidget~~
+    "textarea_with_counter": "formulaic.widgets.newTextareaWithCounter"
 
 }
 
@@ -3566,7 +3658,14 @@ class TextAreaBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        sf = TextAreaField(**wtfargs)
+        render_kw = {
+            "rows": field.get("rows", 1)
+        }
+        if field.get("maxlength"):
+            render_kw["maxlength"] = field.get("maxlength")
+        if "textarea_with_counter" in field.get("widgets", []):
+            render_kw["class"] = "textarea-with-counter"
+        sf = TextAreaField(render_kw=render_kw, **wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
         return sf

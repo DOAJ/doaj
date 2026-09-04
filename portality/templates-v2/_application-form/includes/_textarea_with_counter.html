@@ -1,0 +1,28 @@
+<div class="{{ f.name }}__container form__question">
+    {% for subfield in f.group_subfields() %}
+        {% if subfield.label %}
+            <label for="{{f.name}}-{{ subfield.name }}">
+                {% autoescape off %}{{ subfield.label }}{% endautoescape%}
+                {% if subfield.optional %}<span class="form__question--optional">({{ _("Optional") }})</span>{% endif %}
+            </label>
+        {% endif %}
+        {% if subfield.help("short_help") %}
+            <p class="form__short-help"><small>{{ subfield.help("short_help") | safe }}</small></p>
+        {% endif %}
+        {% if "textarea_with_counter" in subfield.widgets %}
+            <div class="textarea-with-counter-wrapper">
+                {{ subfield.render_form_control() }}
+                <span
+                        id="{{ f.name }}-{{ subfield.name }}-counter"
+                        class="character-counter"
+                        aria-hidden="true"
+                >
+              0/{%- if subfield.maxlength -%}{{ subfield.maxlength }}{%- endif -%}
+            </span>
+            </div>
+        {% else %}
+            <p style="color: red">{{ subfield.name }}</p>
+            {{ subfield.render_form_control() }}
+        {% endif %}
+    {% endfor %}
+</div>
