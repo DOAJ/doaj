@@ -311,15 +311,21 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 ## In other languages
 
-Our guide to applying is available in several languages. Below is a list of translations, please note that not all translations include the latest changes made to the Guide.
+Our guide to applying is available in several languages. Please note that not all translations include the latest changes made to the Guide.
 
 ### Version 2.8
+
 - [Chinese](https://docs.google.com/document/d/1MwiODuiinngP4fZVufR_RgF9vyztlALy/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 - [Portuguese](https://docs.google.com/document/d/11uNQ6hnFONazdHz-jmVL-fP1uH-yGN-q/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
 - [Spanish](https://docs.google.com/document/d/1M1zEdjUXmmHxQT6fZ051N-im2n7e9giz5s9mqoMvkOw/edit?usp=sharing)
 
 ### Version 2.7
+
 - [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
+
+### Version 2.6
+
+- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
 
 ### Version 2.5
 
@@ -327,7 +333,6 @@ Our guide to applying is available in several languages. Below is a list of tran
 
 ### Version 2.4
 
-- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
 - [Turkish](https://docs.google.com/document/d/18JYSfpAMxUsdQctxdqY2WCggGWHYGIiC/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
 - [Ukrainian](https://docs.google.com/document/d/10lGTROkEoTu8PwdVO440DsXuldGb_sUjxrFR1GmjD-w/edit?usp=sharing)
 
