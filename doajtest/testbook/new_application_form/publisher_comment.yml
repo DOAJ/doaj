@@ -2,6 +2,8 @@ suite: New Application Form
 testset: Publisher's Form
 tests:
   - title: Test Publisher Comments on New Applications and Update Requests
+    context:
+      role: publisher and admin
     setup:
       - "Navigate to /testdrive/publisher_comment"
       - "At the top of the Testdrive page, the test title is shown followed by its ID, e.g. 'TestName (id: 234)'."
@@ -10,15 +12,15 @@ tests:
       - "All data in the Testdrive dashboard includes a copy button. You can use it to quickly copy the correct value and use it in the relevant place in the test."
       - "Open a new session in a different browser or a private (incognito) window. Do not close the Testdrive page."
     steps:
-      - step: Log in as QuillMartin__<id> (publisher) using the credentials provided in Testdrive (use "Log in with password" option)
+      - step: Log in as QuillMartin__<id> (publisher) using the credentials provided in Testdrive and the "Log in with password" option
         results:
           - The publisher dashboard is displayed
-      - step: Open the "My applications" tab and click "Edit" for the draft application Journal of Nocturnal Pollination Studies__<id>. Alternatively, open the URL provided under publisher -> new_application in the Testdrive
+      - step: Open the "My applications" tab and click "Edit" for the draft application Journal of Nocturnal Pollination Studies__<id>. Alternatively, open the URL provided under publisher -> new_application
         results:
           - The pre-filled application form for Journal of Nocturnal Pollination Studies__<id> is displayed
       - step: Select step 7, "Review", from the side navigation and scroll to the bottom of the page
         results:
-          - An optional additional comment field is displayed above the confirmation checkbox
+          - An optional additional-comment field is displayed above the confirmation checkbox
           - A character counter is displayed in the lower-right corner of the field
       - step: Enter the comment provided under publisher -> new_application -> comment in Testdrive
         results:
@@ -26,7 +28,7 @@ tests:
       - step: Try to enter enough additional text to exceed the 200-character limit. Alternatively, paste the value provided under publisher -> new_application -> comment_extension
         results:
           - The field does not accept more than 200 characters
-          - If pasted text would cause the content to exceed 200 characters, only the portion that fits within the limit is inserted
+          - If the pasted text would cause the content to exceed 200 characters, only the portion that fits within the limit is inserted
           - The character counter does not exceed 200
       - step: Select the confirmation checkbox and click "Submit"
         results:
@@ -35,34 +37,55 @@ tests:
       - step: Click "Edit" for International Review of Applied Hibernation__<id>. Alternatively, open the URL provided under publisher -> update_request -> url
         results:
           - The pre-filled update request form for International Review of Applied Hibernation__<id> is displayed
-      - step: Select step 7 "Review" from the side navigation and scroll to the bottom of the page
+      - step: Select step 7, "Review", from the side navigation and scroll to the bottom of the page
         results:
-          - An optional additional comment field is displayed above the confirmation checkbox
-      - step: Enter a comment in the field or paste the comment provided under publisher -> update_request -> comment in Testdrive
+          - An optional additional-comment field is displayed above the confirmation checkbox
+      - step: Enter a comment manually or paste the comment provided under publisher -> update_request -> comment in Testdrive
         results:
           - The comment is displayed in the field
           - The character counter updates to show the current number of characters
       - step: Select the confirmation checkbox and click "Submit"
         results:
           - The update request is submitted successfully
-      - step: Go back to your publisher's dashboard -> My update requests
-      - step: Click on the International Review of Applied Hibernation__<id> title
+      - step: Return to the publisher dashboard and open the "Update requests" tab
         results:
-          - the read only form for International Review of Applied Hibernation__<id> is displayed
-          - at the end there is a "Publisher comment" section and your comment is displayed
+          - International Review of Applied Hibernation__<id> is displayed
+      - step: Click the title International Review of Applied Hibernation__<id>
+        results:
+          - The read-only form for International Review of Applied Hibernation__<id> is displayed
+          - A "Publisher comment" section is displayed at the end of the form
+          - The section contains a "Your comment" row
+          - The row displays the same comment submitted by the publisher
+          - If the Testdrive comment was used, the displayed text matches publisher -> update_request -> comment
       - step: Log out of the publisher account
-      - step: Log in as DrVesperCeleste__<id> (admin) using the credentials provided in Testdrive (use "Log in with password" option)
+      - step: Log in as DrVesperCeleste__<id> (admin) using the credentials provided in Testdrive and the "Log in with password" option
+        results:
+          - The admin dashboard is displayed
       - step: Open the admin application for Journal of Nocturnal Pollination Studies__<id> using the URL provided under admin -> new_application -> url
         results:
           - The admin application for Journal of Nocturnal Pollination Studies__<id> is displayed
           - A note created by the publisher is displayed at the top of the notes column
-          - The note contains the same text that the publisher submitted
-          - If the Testdrive comment was used, the note matches the value under admin -> new_application -> comment
+          - The note contains the same text submitted by the publisher
+          - If the Testdrive comment was used, the note matches admin -> new_application -> comment
       - step: Close the form
       - step: Open the admin update request form for International Review of Applied Hibernation__<id> using the URL provided under admin -> update_request -> url
         results:
           - The admin update request form for International Review of Applied Hibernation__<id> is displayed
-          - A note created by the publisher is displayed at the top of the notes column
-          - The note contains the same text that the publisher submitted
-          - If the Testdrive comment was used, the note matches the value under admin -> update_request -> comment
-      - step: Close the form
+          - A note created by QuillMartin__<id> (publisher) is displayed at the top of the notes column
+          - The note contains the same text submitted by the publisher
+          - If the Testdrive comment was used, the note matches admin -> update_request -> comment
+          - The publisher comment is included in the differences table
+          - The differences table displays the same comment submitted by the publisher
+      - step: Accept the update request
+        results:
+          - The update request is accepted successfully
+          - A confirmation banner containing a "Journal created" link is displayed
+      - step: Click the "Journal created" link in one of the banners at the top of the page
+        results:
+          - The journal page for International Review of Applied Hibernation__<id> is displayed
+      - step: Click "Edit this journal"
+        results:
+          - The admin journal form for International Review of Applied Hibernation__<id> is displayed
+          - The publisher's comment is still displayed as a note
+          - The note contains the same text submitted with the update request
+          - The note identifies QuillMartin__<id> (publisher) as its author

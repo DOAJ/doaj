@@ -112,6 +112,9 @@ class PublisherComment(TestDrive):
 
         # update_request
         source = ApplicationFixtureFactory.make_update_request_source()
+        del source["bibjson"]["discontinued_date"]
+        del source["bibjson"]["is_replaced_by"]
+        del source["bibjson"]["replaces"]
         self.ur = models.Application(**source)
         self.ur.set_id(self.ur.makeid())
         self.ur.set_current_journal(self.journal.id)
