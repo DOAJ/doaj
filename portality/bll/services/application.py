@@ -554,9 +554,9 @@ class ApplicationService(object):
         # save publisher comment from the app to a note in a journal
         if application.publisher_comment:
             pc = application.publisher_comment
-            note_obj = {'note': constants.PUBLISHER_COMMENT_NOTE.replace("<comment>", pc["comment"]),
+            note_obj = {'note': pc['comment'],
                         'note_date': pc['date'], 'note_id': pc['id'],
-                        'note_author_id': pc["author_id"],
+                        'author_id': pc["author_id"],
                         }
             journal.add_note_by_dict(note_obj)
         if application.owner is not None:

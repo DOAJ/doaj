@@ -520,7 +520,8 @@ class JournalGenericXWalk(object):
         for n in note_fields:
             author_id = n.get('author_id', '')
             note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
-            note_obj = {'note': n["note"] if "note" in n else cls._comment2note(n["comment"]),
+            note = n["note"] if "note" in n else n["comment"]
+            note_obj = {'note': note,
                         'note_date': n['date'], 'note_id': n['id'],
                         'note_author': note_author_name,
                         'note_author_id': author_id,
@@ -552,10 +553,6 @@ class JournalGenericXWalk(object):
 
         if getattr(obj, "last_full_review", None):
             forminfo["last_full_review"] = obj.last_full_review
-
-    @classmethod
-    def _comment2note(self, comment):
-        return constants.PUBLISHER_COMMENT_NOTE.replace("<comment>", comment)
 
 class JournalFormXWalk(JournalGenericXWalk):
 

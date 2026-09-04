@@ -165,7 +165,6 @@ ERROR_410_WITHDRAWN = "withdrawn"
 ERROR_410_TOMBSTONE = "tombstone"
 
 MAX_PUBLISHER_COMMENT_LENGTH = 200
-PUBLISHER_COMMENT_NOTE = "PUBLISHER COMMENT: \n<comment>"
 
 class ConstantList:
     @classmethod
