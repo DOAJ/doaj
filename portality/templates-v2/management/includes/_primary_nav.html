@@ -1,0 +1,173 @@
+<nav class="primary-nav" id="primary-nav">
+    <a href="{% if current_user.has_role('admin') %}/dashboard/{% elif current_user.has_role('editor') or current_user.has_role('associate_editor') %}/editor/{% endif %}"
+       class="logo">
+        {% include "includes/svg/doaj-icon.svg" %}
+    </a>
+
+    <button
+        type="button"
+        class="primary-nav__toggle"
+        id="primary-nav-toggle"
+        aria-controls="primary-nav-menu"
+        aria-expanded="false"
+        aria-label="Open navigation">
+        Menu &nbsp;
+        <span data-feather="menu" aria-hidden="true"></span>
+    </button>
+
+    <div class="primary-nav__backdrop" id="primary-nav-backdrop" hidden></div>
+
+    <div class="primary-nav__panel" id="primary-nav-menu">
+        <div class="primary-nav__mobile-header">
+
+            <button
+                type="button"
+                class="primary-nav__close"
+                id="primary-nav-close"
+                aria-label="Close navigation">
+                <span data-feather="x" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <ul class="primary-nav__items unstyled-list">
+            {% include "_tourist/includes/_tourist_nav.html" %}
+
+            <li class="dropdown dropdown--notifications" id="notifications_nav">
+                <a href="/dashboard/notifications"
+                   class="dropdown__trigger label notifications__item"
+                   id="dropdown__trigger--notifications"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    <span>
+                        <span data-feather="bell" aria-hidden="true"></span>
+                        Notifications
+                        <span class="js-notifications-count"></span>
+                    </span>
+                </a>
+
+                <ul class="dropdown__menu dropdown--notifications notifications"
+                    id="top_notifications"></ul>
+            </li>
+
+            {% if (current_user.has_role("editor") or current_user.has_role("associate_editor"))
+                  and not current_user.has_role("admin") %}
+                <li>
+                    <a href="{{ url_for('editor.index') }}" class="label">
+                        <span data-feather="list" aria-hidden="true"></span>
+                        Editor dashboard
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if current_user.has_role("admin") %}
+                <li class="dropdown" id="system_nav">
+                    <button
+                        type="button"
+                        class="dropdown__trigger label"
+                        id="menu-system"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <span data-feather="aperture" aria-hidden="true"></span>
+                        &nbsp;System Data
+                    </button>
+
+                    <ul class="dropdown__menu" aria-labelledby="menu-system">
+                        <li>
+                            <a href="{{ url_for('admin.autoassign_search') }}"
+                               class="dropdown__link">
+                                Autoassign
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin.ris_search') }}"
+                               class="dropdown__link">
+                                Article RIS
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin.pdd_search') }}"
+                               class="dropdown__link">
+                                Public Data Dumps
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin.journal_csv_search') }}"
+                               class="dropdown__link">
+                                Journal CSVs
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown" id="quick_links_nav">
+                    <button
+                        type="button"
+                        class="dropdown__trigger label"
+                        id="menu-quick-links"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                        <span data-feather="list" aria-hidden="true"></span>
+                         &nbsp;Quick Links
+                    </button>
+
+                    <ul class="dropdown__menu" aria-labelledby="menu-quick-links">
+                        <li>
+                            <a href="{{ url_for('dashboard.top_todo') }}"
+                               class="dropdown__link">
+                                <span data-feather="list" aria-hidden="true"></span>
+                                Admin dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/" class="dropdown__link">
+                                <span data-feather="home" aria-hidden="true"></span>
+                                DOAJ home
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <button
+                        type="button"
+                        id="menu-account"
+                        class="dropdown__trigger label"
+                        data-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-haspopup="true">
+                        <span class="username">
+                            <span class="signed-in-as">Signed in as</span>
+                            {{ current_user.id }}
+                            (Managing Editor)
+                            <span data-feather="chevron-down" aria-hidden="true"></span>
+                        </span>
+                    </button>
+
+                    <ul class="dropdown__menu" aria-labelledby="menu-account">
+                        <li>
+                            <a href="{{ url_for('account.username', username=current_user.id) }}"
+                               class="dropdown__link">
+                                My Account
+                                <span data-feather="user" aria-hidden="true"></span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <form method="POST"
+                                  action="{{ url_for('account.logout') }}"
+                                  class="nav-bar__logout-form">
+                                <button type="submit" class="dropdown__link btn-logout">
+                                    Logout
+                                    <span data-feather="log-out" aria-hidden="true"></span>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

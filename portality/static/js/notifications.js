@@ -56,9 +56,20 @@ doaj.notifications.notificationsReceived = function(data) {
     } else {
         $(".js-notifications-count").html("");
     }
-
+    const desktopNav = window.matchMedia('(min-width: 1024px)');
+    $("#notifications_nav").hoverIntent(
+        event => {
+            if (desktopNav.matches) {
+                doaj.tourist.showDropdown(event);
+            }
+        },
+        event => {
+            if (desktopNav.matches) {
+                doaj.tourist.hideDropdown(event);
+            }
+        }
+    );
     $(".notification_action_link").on("click", doaj.notifications.notificationClicked);
-    $("#notifications_nav").hoverIntent(doaj.notifications.showDropdown, doaj.notifications.hideDropdown);
 }
 
 doaj.notifications.showDropdown = function(e) {

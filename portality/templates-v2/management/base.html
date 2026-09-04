@@ -27,51 +27,7 @@
     <header>
         <h2 class="sr-only">DOAJ Dashboard</h2>
 
-        <nav class="primary-nav flex-space-between" id="primary-nav">
-            <a href="{% if current_user.has_role('admin') %}/dashboard/{% elif current_user.has_role('editor') or current_user.has_role('associate_editor') %}/editor/{% endif %}" class="logo">
-                {% include "includes/svg/doaj-icon.svg" %}
-            </a>
-            <ul class="unstyled-list flex-center">
-                {% include "_tourist/includes/_tourist_nav.html" %}
-                {# ~~->Notifications:Feature~~ #}
-                <li class="dropdown dropdown--notifications flex-center" id="notifications_nav">
-                    <a href="/dashboard/notifications" class="dropdown__trigger label" id="dropdown__trigger--notifications" role="button" aria-haspopup="true" aria-expanded="false">
-                        <span><span data-feather="bell" aria-hidden="true"></span> Notifications <span class="js-notifications-count"></span></span>
-                    </a>
-                    <ul class="dropdown__menu notifications" id="top_notifications"></ul>
-                </li>
-                {% if (current_user.has_role("editor") or current_user.has_role("associate_editor")) and not current_user.has_role("admin") %}
-                    <li class="flex-center">
-                        <a href="{{ url_for('editor.index') }}" class="label">
-                            <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
-                        </a>
-                    </li>
-                {% endif %}
-                {% if current_user.has_role("admin") %}
-                    <li class="dropdown dropdown--notifications flex-center" id="system_nav">
-                        <a href="#" class="dropdown__trigger label" id="dropdown__trigger--system" role="button" aria-haspopup="true" aria-expanded="false">
-                            <span><span data-feather="aperture" aria-hidden="true"></span> System Data</span>
-                        </a>
-                        <ul class="dropdown__menu notifications" id="system_views">
-                            <li><a href="{{ url_for("admin.autoassign_search") }}" class="dropdown__link">Autoassign</a></li>
-                            <li><a href="{{ url_for("admin.ris_search") }}" class="dropdown__link">Article RIS</a></li>
-                            <li><a href="{{ url_for("admin.pdd_search") }}" class="dropdown__link">Public Data Dumps</a></li>
-                            <li><a href="{{ url_for("admin.journal_csv_search") }}" class="dropdown__link">Journal CSVs</a></li>
-                        </ul>
-                    </li>
-                    <li class="flex-center" id="admin_dashboard_nav">
-                        <a href="{{ url_for('dashboard.top_todo') }}" class="label">
-                            <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
-                        </a>
-                    </li>
-                {% endif %}
-                <li class="flex-center" id="doaj_home">
-                    <a href="/" class="label">
-                        <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        {% include "management/includes/_primary_nav.html" %}
         {% block nav %}{% endblock %}
     </header>
 
@@ -80,21 +36,6 @@
         <header class="main-header">
             <div class="row">
                 <header class="col-md-6 col-lg-4">
-                    <p class="label tag">
-                        <small>
-                            <a href="{{ url_for('account.username', username=current_user.id) }}" title="Manage my profile & settings">
-                                <span data-feather="user" aria-hidden="true"></span>
-                                {{ current_user.id }}
-                                {% if current_user.has_role("admin") %}
-                                    (Managing Editor)
-                                {% elif current_user.has_role("editor") %}
-                                    (Editor)
-                                {% elif current_user.has_role("associate_editor") %}
-                                    (Associate Editor)
-                                {% endif %}
-                            </a>
-                        </small>
-                    </p>
                     <h1>
                         {% block page_header %}
                             {{ self.page_title() }}
@@ -215,6 +156,7 @@
 
 {% block base_js %}
     <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/js/navigation.js?v={{config.get('DOAJ_VERSION')}}"></script>
     <script type="text/javascript">
         $.extend(true, doaj, {
             session : {

@@ -25,12 +25,27 @@
     .nav-bar__logout-form {
       margin: 0;
       > button.btn-logout {
-        font-size: unset;
+        border: none;
+        background-color: transparent;
+        margin: 0;
+        display: flex;
+        align-items: baseline;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        gap: .25rem;
+        color: $warm-black !important;
+        line-height: 1;
+        font-size: .889em;
+        width: 100%;
+        &:hover, &:active, &:focus {
+          background-color: $grapefruit;
+          color: $warm-black;
+        }
       }
     }
 
-    button.dropdown__trigger,
-    .nav-bar__logout-form > button.btn-logout{
+    button.dropdown__trigger {
       padding: 0;
       border: none;
       line-height: 75px;
@@ -63,4 +78,49 @@
 .nav-bar__link {
   display: block;
   line-height: 75px;
+}
+
+nav {
+  .dropdown {
+    button.dropdown__trigger {
+      > .username {
+        position: relative;
+
+        > .signed-in-as {
+          @media (min-width: 1024px) {
+            position: absolute;
+            font-size: 0.75em;
+          }
+          left: 0;
+          bottom: -0.7rem;
+          margin-bottom: 0.25rem;
+          font-weight: normal;
+          white-space: nowrap;
+          text-transform: uppercase;
+        }
+      }
+    }
+    ul.dropdown__menu {
+      width: unset;
+      height: fit-content;
+      font-size: .889em;
+      left: 1.5rem;
+      min-width: calc(100% - 3rem);
+      .nav-bar__logout-form {
+        margin-bottom: 0;
+        button.dropdown__link.btn-logout {
+          margin-bottom: 0;
+          width: 100%;
+          color: white;
+          border: none;
+          text-align: start;
+          &:hover,
+          &:focus,
+          &:active {
+            color: $warm-black;
+          }
+        }
+      }
+    }
+  }
 }
