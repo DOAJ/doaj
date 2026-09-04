@@ -21,7 +21,6 @@
             </span>
             </div>
         {% else %}
-            <p style="color: red">{{ subfield.name }}</p>
             {{ subfield.render_form_control() }}
         {% endif %}
     {% endfor %}

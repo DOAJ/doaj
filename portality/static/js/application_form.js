@@ -94,24 +94,29 @@ doaj.af.BaseApplicationForm = class {
             tab.fieldsets.forEach((fs) => {
                 let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                 fieldset.fields.forEach((f) => {
-                    if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
-                        let value = this.determineFieldsValue(f.name);
-                        let text = this.convertValueToText(value);
-                        if (f.input === 'taglist') {
-                            text = this.addSpaces(text);
-                        }
+                    // This field has separate labels for the group’s review-table entry and the textarea’s accessible name in editable mode.
+                    // Treat it as a special case here to prevent the value from being rendered twice.
+                    // The broader grouped-field labelling issue is tracked in https://github.com/DOAJ/doaj/pull/2619#issuecomment-5544737595.
+                    if (f.name !== "publisher_comment") {
+                        if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))) {
+                            let value = this.determineFieldsValue(f.name);
+                            let text = this.convertValueToText(value);
+                            if (f.input === 'taglist') {
+                                text = this.addSpaces(text);
+                            }
 
-                        if (f.validate && $.inArray("is_url", f.validate) !== -1) {
-                            text = '<a href="' + text + '" target="_blank" rel="noopener">' + text + '</a>';
-                        }
+                            if (f.validate && $.inArray("is_url", f.validate) !== -1) {
+                                text = '<a href="' + text + '" target="_blank" rel="noopener">' + text + '</a>';
+                            }
 
-                        let html = `
+                            let html = `
                     <tr>
                         <td id="` + f.name + `__review_label">` + f.label + `</td>
-                        <td id="` + f.name + `__review_value">` + text +`</td>
+                        <td id="` + f.name + `__review_value">` + text + `</td>
                     </tr>
                     `;
-                        review_table.append(html);
+                            review_table.append(html);
+                        }
                     }
                 });
             });
@@ -128,6 +133,9 @@ doaj.af.BaseApplicationForm = class {
         for (let i = 0; i < inputs.length; i++) {
             let input = $(inputs[i]);
             let type = input.attr("type");
+            if (type === "hidden") {
+                continue;
+            }
             if (type === "text" || type === "number" || type === "url" || input.is("textarea")) {
                 result.push(input.val());
             }

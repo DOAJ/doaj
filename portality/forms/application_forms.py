@@ -2145,8 +2145,8 @@ class FieldDefinitions:
 
     PUBLISHER_COMMENT_ID = {
         "name": "publisher_comment_id",
-        # "input": "hidden",
-        "input": "text",
+        "input": "hidden",
+        # "input": "text",
         "subfield": True,
         "group": "publisher_comment_group",
         "optional": True
@@ -2154,8 +2154,8 @@ class FieldDefinitions:
 
     PUBLISHER_COMMENT_AUTHOR = {
         "name": "publisher_comment_author",
-        # "input": "hidden",
-        "input": "text",
+        "input": "hidden",
+        # "input": "text",
         "subfield": True,
         "group": "publisher_comment_group",
         "optional": True
@@ -2163,8 +2163,8 @@ class FieldDefinitions:
 
     PUBLISHER_COMMENT_DATE = {
         "name": "publisher_comment_date",
-        # "input": "hidden",
-        "input": "text",
+        "input": "hidden",
+        # "input": "text",
         "subfield": True,
         "group": "publisher_comment_group",
         "optional": True
@@ -2172,6 +2172,7 @@ class FieldDefinitions:
 
     PUBLISHER_COMMENT_GROUP = {
         "name": "publisher_comment_group",
+        "label": lazy_gettext("Your comment"),
         "input": "group",
         "subfields": [
             "publisher_comment_id",
@@ -2184,9 +2185,9 @@ class FieldDefinitions:
 
     PUBLISHER_COMMENT_ADMIN = {
         "name": "publisher_comment_admin",
-        "label": "publisher_comment_admin",
-        #"input": "hidden"
-        "input": "text"
+        "label": "Publisher comment",
+        "input": "hidden"
+        # "input": "text"
     }
 
 

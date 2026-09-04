@@ -1,3 +1,5 @@
+import json
+
 from portality import models, lcc, constants
 from portality.crosswalks.journal_form import JournalGenericXWalk, JournalFormXWalk
 
@@ -127,6 +129,8 @@ class ApplicationFormXWalk(JournalGenericXWalk):
                 aform = ApplicationFormXWalk.obj2form(source)
                 if "notes" in aform:
                     del aform["notes"]
+                if "publisher_comment_admin" in aform and aform["publisher_comment_admin"]:
+                    aform["publisher_comment_admin"] = json.loads(aform["publisher_comment_admin"])["comment"]
                 diff = cls.form_diff(jform, aform)
 
         return diff, cj
