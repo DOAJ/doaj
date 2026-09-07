@@ -156,3 +156,18 @@ class TestBackgroundTaskStatus(DoajTestCase):
             else:
                 assert status['status'] == "stable"
 
+    def test_02_create_errors_status_disabled_by_none(self):
+        # allowed_num_err=None disables the error-count check entirely, regardless of how
+        # many errors have actually occurred, so status should always come back stable. Useful when you only care about
+        # the last successful run.
+        action = AnonExportBackgroundTask.__action__
+        for _ in range(3):
+            save_mock_bgjob(action=action, status=constants.BGJOB_STATUS_ERROR, is_save=True, blocking=True)
+
+        result = background_task_status.create_errors_status(action, check_sec=3000, allowed_num_err=None)
+
+        assert result['status'] == constants.BG_STATUS_STABLE
+        assert result['err_msgs'] == []
+        assert result['in_monitoring_period'] is None
+        assert result['total'] >= 3
+
