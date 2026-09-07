@@ -300,14 +300,6 @@ class JournalGenericXWalk(object):
                     obj.add_note(formnote["note"], date=note_date, id=note_id,
                                  author_id=formnote["note_author_id"])
 
-        # if getattr(form, "publisher_comment_group", None):
-        #     publisher_comment_group = form.publisher_comment_group.data
-        #     comment = publisher_comment_group["publisher_comment"] if "publisher_comment" in publisher_comment_group else None
-        #     author = publisher_comment_group["publisher_comment_author"] if "publisher_comment_author" in publisher_comment_group else ""
-        #     pubid = publisher_comment_group["publisher_comment_id"] if "publisher_comment_id" in publisher_comment_group else ""
-        #     date = publisher_comment_group["publisher_comment_date"] if "publisher_comment_date" in publisher_comment_group else ""
-        #     obj.set_publisher_comment(comment, author_id=author, id=pubid, date=date)
-
         flag = getattr(form, "flags", None)
         if flag and flag["flag_note"].data:
             flag_date = flag["flag_created_date"].data
