@@ -74,10 +74,9 @@
     </fieldset>
     {%- set fs = formulaic_context.fieldset("publisher_comment_admin") -%}
     {% if fs %}
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {% include field_template %}
-        {% endfor %}
+        <!-- This is just one hidden field to carry the data - no need for a template -->
+        {% set f = fs.fields()[0] %}
+            {{ f.render_form_control() }}
     {% endif %}
     <fieldset>
         {% set fs = formulaic_context.fieldset("notes") %}
