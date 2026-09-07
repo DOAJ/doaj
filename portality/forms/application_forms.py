@@ -2146,7 +2146,6 @@ class FieldDefinitions:
     PUBLISHER_COMMENT_ID = {
         "name": "publisher_comment_id",
         "input": "hidden",
-        # "input": "text",
         "subfield": True,
         "group": "publisher_comment_group",
         "optional": True
@@ -2155,7 +2154,6 @@ class FieldDefinitions:
     PUBLISHER_COMMENT_AUTHOR = {
         "name": "publisher_comment_author",
         "input": "hidden",
-        # "input": "text",
         "subfield": True,
         "group": "publisher_comment_group",
         "optional": True
@@ -2164,7 +2162,6 @@ class FieldDefinitions:
     PUBLISHER_COMMENT_DATE = {
         "name": "publisher_comment_date",
         "input": "hidden",
-        # "input": "text",
         "subfield": True,
         "group": "publisher_comment_group",
         "optional": True
@@ -2187,7 +2184,6 @@ class FieldDefinitions:
         "name": "publisher_comment_admin",
         "label": "Publisher comment",
         "input": "hidden"
-        # "input": "text"
     }
 
 
