@@ -1533,8 +1533,11 @@ BG_MONITOR_DEFAULT_CONFIG = {
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
     'anon_export': {
-        'check_sec': _WEEK,    # a week
-        'allowed_num_err': 0
+        # anon_export only runs monthly, so a raw count of errors within a rolling window
+        # can't distinguish "still failing" from "failed a few times then succeeded" - disable
+        # this check and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['anon_export'] instead,
+        # which only cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'article_bulk_create': {
         'check_sec': _DAY,  # 1 day
