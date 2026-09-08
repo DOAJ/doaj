@@ -9,6 +9,9 @@ from portality.ui import templates
 class TriageFormRenderer(JinjaFormRenderer):
     template = templates.WORKFLOW_TRIAGE_FORM
 
+class TriageFormRORenderer(JinjaFormRenderer):
+    template = templates.WORKFLOW_TRIAGE_RO_FORM
+
 class TriageForm(Structure):
     class TriageFormCapability(FormCapability):
         order = [
@@ -22,6 +25,12 @@ class TriageForm(Structure):
             "metadata_review"
         ]
         render_class = TriageFormRenderer
+
+        alt_render = {
+            "ro": {
+                "render_class": TriageFormRORenderer
+            }
+        }
 
     name_ = "triage"
     capabilities_ = (
@@ -42,8 +51,7 @@ class TriageSubmission(FormObject):
 
 ###################################
 
-# class TriageRORenderer(JinjaFormRenderer):
-#     template = templates.WORKFLOW_TRIAGE_READ_ONLY
+
 #
 # class TriageRO(Structure):
 #     class C(FormCapability):

@@ -13,8 +13,9 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput, Buttons
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability, GenericFormStructureCapability
-from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, GenericControl, GenericField, \
-    GenericCompound
+from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, \
+    GenericControl, GenericField, \
+    GenericCompound, JinjaFieldsetRenderer
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
@@ -43,6 +44,21 @@ class DummyRenderer(JinjaFieldRenderer):
 
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
+
+class GenericROCompoundFieldRenderer(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_COMPOUND
+
+class GenericROFieldRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_FIELD
+
+class GenericRORadioRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_RO_RADIO_CONTROL
+
+class GenericROControlRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_CONTROL
+
+class GenericROFieldsetRenderer(JinjaFieldsetRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_FIELDSET
 
 ## Control Renderers
 
@@ -120,6 +136,13 @@ class ComplianceCheckCapability(FormFieldCapability):
     control_render_class = TriageRadioRenderer
     render_class = TriageComplianceCheckFieldRenderer
 
+    alt_render = {
+        "ro": {
+            "render_class": GenericROFieldRenderer,
+            "control_render_class": GenericRORadioRenderer
+        }
+    }
+
 class ButtonsCapability(FormFieldCapability):
     role = "check"
     label = "Compliance"
@@ -143,12 +166,30 @@ class CheckboxCompoundCapability(CompoundFieldCapability):
     render_class = TriageCheckboxListRenderer
     sr_only_legend = False
 
+    alt_render = {
+        "ro": {
+            "render_class": GenericROCompoundFieldRenderer
+        }
+    }
+
 class TriageCompoundFieldCapability(CompoundFieldCapability):
     action = {}
+
+    alt_render = {
+        "ro": {
+            "render_class": GenericROCompoundFieldRenderer
+        }
+    }
 
 class SimpleCompoundCapability(CompoundFieldCapability):
     render_class = SimpleCompoundRenderer
     control_btns = []
+
+    alt_render = {
+        "ro": {
+            "render_class": GenericROCompoundFieldRenderer
+        }
+    }
 
 #######
 ## Generic notes capability and field
@@ -163,6 +204,13 @@ class NoteCapability(FormFieldCapability):
     control_class = Textarea
     control_class_renderer = GenericControl
     render_class = GenericField
+
+    alt_render = {
+        "ro": {
+            "render_class": GenericROFieldRenderer,
+            "control_render_class": GenericROControlRenderer
+        }
+    }
 
 class GeneralNoteCapability(NoteCapability):
     label = "Notes (optional)"
@@ -716,6 +764,12 @@ class DatabaseWithdrawnExceptions(Field):
             DisallowedValue: T.database_withdrawn.validation.exceptions.disallowed_value,
         }
         trigger_btn = "action"
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
 
     name = "database_withdrawn_exceptions"
     coerce = [Unicode()]
@@ -853,6 +907,12 @@ class DatabaseEmbargoExceptions(Field):
             DisallowedValue: T.database_embargo.validation.exceptions.disallowed_value,
         }
         trigger_btn = "action"
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
 
     name = "database_embargo_exceptions"
     coerce = [Unicode()]
@@ -1006,6 +1066,12 @@ class EISSN(Field):
             RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "eissn"
     coerce = [Unicode(trim_whitespace=True)]
@@ -1021,6 +1087,12 @@ class PISSN(Field):
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "pissn"
@@ -1206,6 +1278,12 @@ class Title(Field):
             DisallowedValue: T.issn_title_match.validation.title.disallowed_value,
             IsRequired: T.issn_title_match.validation.title.is_required
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "eissn"
     coerce = [Unicode(trim_whitespace=True)]
@@ -1309,6 +1387,12 @@ class Continues(Field):
         render_class = GenericField
         error_messages = {
             RegexDoesNotMatch: T.issn_continuation.validation.continues.regex_not_match
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "continues"
@@ -1528,6 +1612,12 @@ class License(Field):
             IsRequired: T.website_license_policy.validation.license.is_required,
             DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "license"
     coerce = [Unicode()]
@@ -1556,6 +1646,12 @@ class LicenseAttribute(Field):
             DisallowedValue: T.website_license_policy.validation.license_attribute.disallowed_value,
             IsConditionallyRequired: T.website_license_policy.validation.license_attribute.is_conditionally_required
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "license_attribute"
     coerce = [Unicode()]
@@ -1571,6 +1667,12 @@ class LicenseURL(Field):
         error_messages = {
             IsRequired: T.website_license_policy.validation.license_url.is_required,
             DisallowedValue: T.website_license_policy.validation.license_url.disallowed_value
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "license_url"
@@ -1669,6 +1771,12 @@ class CopyrightAuthorRetains(Field):
             DisallowedValue: T.website_copyright.validation.copyright_author_retains.disallowed_value,
             IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "copyright_author_retains"
     coerce = [Unicode()]
@@ -1684,6 +1792,12 @@ class CopyrightURL(Field):
         error_messages = {
             IsRequired: T.website_copyright.validation.copyright_url.is_required,
             DisallowedValue: T.website_copyright.validation.copyright_url.disallowed_value
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "copyright_url"
@@ -1954,6 +2068,12 @@ class ContentNewJournalExceptions(Field):
         error_messages = {
             DisallowedValue: T.content_new_journal.validation.exceptions.disallowed_value,
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "new_journal_exceptions"
     coerce = [Unicode()]
@@ -2062,6 +2182,12 @@ class SpecialExceptions(Field):
         error_messages = {
             DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
 
     name = "special_exceptions"
     coerce = [Unicode()]
@@ -2077,6 +2203,12 @@ class SpecialExceptionOther(Field):
         render_class = GenericField
         error_messages = {
             IsConditionallyRequired: T.admin_special_exception.validation.special_exception_other.is_conditionally_required
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "special_exception_other"

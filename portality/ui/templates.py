@@ -102,6 +102,9 @@ WORKFLOW_TRIAGE_COMPOUND_BASE = "management/admin/_workflow/includes/_triage_com
 WORKFLOW_SIMPLE_COMPOUND = "management/admin/_workflow/includes/_simple_compound.html"
 WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_claim.html"
 
+# Triage workflow read-only components
+WORKFLOW_TRIAGE_RO_FORM = "management/admin/_workflow/includes/_ro_triage_form.html"
+
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
 WORKFLOW_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_checkbox.html"
 WORKFLOW_TRIAGE_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_triage_checkbox.html"
@@ -115,6 +118,13 @@ WORKFLOW_TRIAGE_FIELDSET = "management/admin/_workflow/includes/_triage_fieldset
 WORKFLOW_GENERIC_COMPOUND = "management/admin/_workflow/includes/_generic_compound.html"
 WORKFLOW_GENERIC_FIELD = "management/admin/_workflow/includes/_generic_field.html"
 WORKFLOW_GENERIC_CONTROL = "management/admin/_workflow/includes/_generic_control.html"
+
+# Read only versions
+WORKFLOW_RO_GENERIC_FIELDSET = "management/admin/_workflow/includes/_ro_generic_fieldset.html"
+WORKFLOW_RO_GENERIC_COMPOUND = "management/admin/_workflow/includes/_ro_generic_compound.html"
+WORKFLOW_RO_GENERIC_FIELD = "management/admin/_workflow/includes/_ro_generic_field.html"
+WORKFLOW_RO_RADIO_CONTROL = "management/admin/_workflow/includes/_ro_radio_control.html"
+WORKFLOW_RO_GENERIC_CONTROL = "management/admin/_workflow/includes/_ro_generic_control.html"
 
 # Reusable application form components
 AF_ENTRY_GOUP = "_application-form/includes/_entry_group.html"

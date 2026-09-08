@@ -1,0 +1,37 @@
+{% macro render_content(content_list) -%}
+    {%- if content_list is string -%}
+        {{- content_list -}}
+
+    {%- elif content_list is iterable and content_list is not string and content_list is not mapping -%}
+        {%- for ic in content_list -%}
+            {%- set ic_content = ic.content -%}
+            {%- set rendered_content = render_content(ic_content) -%}
+            {% autoescape off %}
+            {{ rendered_content }}
+            {% endautoescape %}
+        {%- endfor -%}
+
+    {%- else -%}
+        {{- content_list -}}
+    {%- endif -%}
+{%- endmacro %}
+
+Radio Controls<br>
+{% set answer = {"value": "not_answered"} %}
+{% for control in controls %}
+{#    {% if control.label %}#}
+{#        <strong>{{ control.label.content }}</strong>#}
+{#    {% endif %}#}
+
+    {% set input=control.control %}
+    {% if input.attrs.checked %}
+        {% set answer.value = input.attrs.value %}
+    {% endif %}
+{#    {% set content = {"value": ""} %}#}
+{#    {% if input.content %}#}
+{#        {% set content.value=render_content(input.content) %}#}
+{#    {% endif %}#}
+{% endfor %}
+{% autoescape off %}
+    Value: {{ answer.value }}<br>
+{% endautoescape %}

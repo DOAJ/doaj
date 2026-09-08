@@ -1,0 +1,9 @@
+<div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
+    Fieldset: {{ fieldset.label }}
+
+    {% for element in fieldset.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+</div>

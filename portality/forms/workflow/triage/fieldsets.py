@@ -8,7 +8,8 @@ from portality.forms.workflow.triage.fields import EthicsNotExcludedGroup, Ethic
     ISSNTitleMatchGroup, ISSNContinuationGroup, WebsiteWorkingGroup, WebsiteISSNGroup, WebsiteURLGroup, \
     WebsiteLicensePolicyGroup, WebsiteCopyrightGroup, ContentNoLoginGroup, \
     ContentNoEmbargoGroup, ContentPublishEnoughGroup, ContentUniqueLinkGroup, ContentFormatGroup, \
-    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTimeGroup, ISSNCountryMatchGroup
+    ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTimeGroup, \
+    ISSNCountryMatchGroup, GenericROFieldsetRenderer
 
 
 class EthicsCriteria(Structure):
@@ -23,6 +24,11 @@ class EthicsCriteria(Structure):
             "no_suspicious_ties",
         ]
         render_class = GenericFieldset
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldsetRenderer,
+            }
+        }
 
     name_ = "ethics_criteria"
     capabilities_ = (C(),)
@@ -51,6 +57,11 @@ class Database(Structure):
             "not_duplicate"
         ]
         render_class = GenericFieldset
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldsetRenderer,
+            }
+        }
 
     name_ = "database"
     capabilities_ = (C(),)
@@ -77,6 +88,11 @@ class ISSN(Structure):
             "continuation"
         ]
         render_class = GenericFieldset
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldsetRenderer,
+            }
+        }
 
     name_ = "issn"
     capabilities_ = (C(),)
@@ -97,6 +113,11 @@ class Website(Structure):
             "copyright"
         ]
         render_class = GenericFieldset
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldsetRenderer,
+            }
+        }
 
     name_ = "website"
     capabilities_ = (C(),)
@@ -119,6 +140,11 @@ class Content(Structure):
             "new_journal"
         ]
         render_class = GenericFieldset
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldsetRenderer,
+            }
+        }
 
     name_ = "content"
     capabilities_ = (C(),)
@@ -137,6 +163,11 @@ class SpecialException(Structure):
             "special_exception"
         ]
         render_class = GenericFieldset
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldsetRenderer,
+            }
+        }
 
     name_ = "special_exception"
     capabilities_ = (C(),)
@@ -150,6 +181,11 @@ class MetadataReview(Structure):
             "metadata_review"
         ]
         render_class = GenericFieldset
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldsetRenderer,
+            }
+        }
 
     name_ = "metadata_review"
     capabilities_ = (C(),)

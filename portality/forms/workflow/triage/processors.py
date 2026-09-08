@@ -67,6 +67,8 @@ from portality.models.workflow import TriageField, SpecialExceptionTriageField
 #         )
 #         return form_html
 
+
+
 class TriageFormProcessor:
     def __init__(self, source_application:Application, source_wfc:WorkflowControl, raw_formdata:dict=None):
         self._source_application = source_application
@@ -75,7 +77,7 @@ class TriageFormProcessor:
 
         self.form2obj_xwalk = TriageForm2WorkflowControl()
         self.obj2form_xwalk = WorkflowControl2TriageForm()
-        self.serialiser = FormSerialiser(context_id = "triage-form")
+        self.serialiser = FormSerialiser()
         self.parser = FormDataParser()
 
         self._form_inst:TriageSubmission = None
@@ -423,3 +425,15 @@ class TriageFormProcessor:
 
         return {"code": rec.get("code"), "reasons": localised}
 
+
+class TriageROFormProcessor(TriageFormProcessor):
+    def render_form(self):
+        form_html = self.serialiser.data_to_string(
+            self.form_instance.data,
+            self.form_instance.struct,
+            application=self._source_application,
+            wfc=self._source_wfc,
+            errors=self.form_instance.validation_result,
+            render_context="ro"
+        )
+        return form_html

@@ -12,7 +12,7 @@ from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview, Triaged
 from portality.decorators import ssl_required, write_required, restrict_to_role
-from portality.forms.workflow.triage.processors import TriageFormProcessor
+from portality.forms.workflow.triage.processors import TriageFormProcessor, TriageROFormProcessor
 from portality.lib import dicts
 from portality.ui import templates
 from portality.ui.workflow import StateUIFactory
@@ -71,10 +71,11 @@ def workflow_item_overview(application_id):
     state = svc.state_for_application(application_id)
     ui = StateUIFactory.get(state)
 
-    processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
+    processor = TriageROFormProcessor(source_application=application, source_wfc=wfc)
     rec = processor.recommendation(wfc)
+    ro_form = processor.render_form()
 
-    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec)
+    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec, ro_form=ro_form)
 
 @blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
 @login_required

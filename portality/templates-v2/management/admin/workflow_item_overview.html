@@ -51,11 +51,11 @@
     <div class="row">
         <div class="col-md-8">
             {% include 'management/admin/_workflow/includes/_recommend.html' %}
-
-            <p>There will be a read-only quick reference view of the Triage form here at some point.</p>
-
-            <p>In the meantime, the workflow control buttons on this page all work, and if you are
-                assigned to the workflow item, you can continue to work on it</p>
+            <div class="triage">
+                {% autoescape off %}
+                    {{ ro_form }}
+                {% endautoescape %}
+            </div>
         </div>
         <div class="col-md-4">
             {% if wfc.reviewer %}
