@@ -8,7 +8,7 @@
 {% set csv = url_for('publisher.journal_csv') %}
 
 {% set tabs = [
-    (index, "My draft applications", 0, constants.ROLE_PUBLISHER),
+    (index, "My applications", 0, constants.ROLE_PUBLISHER),
     (journals, "My journals", 1, constants.ROLE_PUBLISHER),
     (urs, "My update requests", 2, constants.ROLE_PUBLISHER),
     (xml, "Upload article XML", 3, constants.ROLE_PUBLISHER),

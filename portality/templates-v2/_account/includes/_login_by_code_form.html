@@ -1,0 +1,56 @@
+{% from "includes/_formhelpers.html" import render_field %}
+
+<form method="POST" action="{{ url_for('account.verify_code') }}" class="verify-form form-login" id="verify-code-form">
+    <input type="hidden" name="email" value="{{ email }}">
+
+    <div class="form-group form__question form-login__question">
+        <label for="code">Enter verification code</label>
+        <input type="text" class="form-control" id="code" name="code" required>
+    </div>
+    {{ render_field(form.next) }}
+
+    <button type="submit" class="button button--primary"> Submit the code </button>
+
+    <div class="links">
+        <a href="{{ url_for('account.login') }}">Back to login</a>
+    </div>
+</form>
+
+<form method="POST" action="{{ url_for('account.verify_code') }}" class="verify-form form-login" id="resend-code-form">
+    <input type="hidden" name="email" value="{{ email }}">
+    {{ render_field(form.next) }}
+    <input type="hidden" name="action" value="resend">
+    <button type="submit" class="button button--primary" id="resend-button">Resend code</button>
+
+</form>
+
+<script>
+(function() {
+  try {
+    var btn = document.getElementById('resend-button');
+    if (!btn) return;
+    var defaultWait = 60; // seconds
+    var serverWait = parseInt('{{ resend_wait|default(0) }}', 10) || 0;
+    var wait = serverWait > 0 ? serverWait : defaultWait;
+    var disableFor = function(seconds) {
+      btn.disabled = true;
+      var remaining = seconds;
+      var original = btn.innerText;
+      var tick = function() {
+        if (remaining <= 0) {
+          btn.disabled = false;
+          btn.innerText = original;
+          return;
+        }
+        btn.innerText = 'Resend code (' + remaining + 's)';
+        remaining -= 1;
+        setTimeout(tick, 1000);
+      };
+      tick();
+    };
+    // Disable on load
+    disableFor(wait);
+
+  } catch (e) {}
+})();
+</script>

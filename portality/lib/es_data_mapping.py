@@ -14,6 +14,14 @@ def get_mappings(app):
     # LEGACY DEFAULT MAPPINGS
     mappings = app.config["MAPPINGS"]
 
+    # Ensure legacy mappings also respect any DEFAULT_INDEX_SETTINGS override (e.g. from test.cfg),
+    # rather than using the hardcoded dict reference set at module import time in settings.py.
+    default_settings = app.config.get("DEFAULT_INDEX_SETTINGS", {})
+    index_overrides = app.config.get("INDEX_SETTINGS_OVERRIDES", {})
+    for key in list(mappings.keys()):
+        if 'settings' in mappings[key]:
+            mappings[key]['settings'] = {**default_settings, **index_overrides.get(key, {})}
+
     # TYPE SPECIFIC MAPPINGS
     # get the list of classes which carry the type-specific mappings to be loaded
     mapping_daos = app.config.get("ELASTIC_SEARCH_MAPPINGS", [])
@@ -22,7 +30,7 @@ def get_mappings(app):
     for cname in mapping_daos:
         klazz = plugin.load_class_raw(cname)
         mappings[klazz.__type__] = {'mappings': klazz().mappings()}
-        mappings[klazz.__type__]['settings'] = app.config["DEFAULT_INDEX_SETTINGS"]
+        mappings[klazz.__type__]['settings'] = {**default_settings, **index_overrides.get(klazz.__type__, {})}
 
     return mappings
 

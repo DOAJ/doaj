@@ -46,16 +46,18 @@ class TestOldDataCleanup(DoajTestCase):
                 "background_job": 7,
             }
         })
+        try:
 
-        # run target
-        old_data_cleanup.clean_all_old_data()
+            # run target
+            old_data_cleanup.clean_all_old_data()
 
-        # assert result
-        time.sleep(3)
-        self.assertEqual(Notification.hit_count(es_queries.query_all()), 4)
-        self.assertEqual(BackgroundJob.hit_count(es_queries.query_all()), 6)
+            # assert result
+            time.sleep(3)
+            self.assertEqual(Notification.hit_count(es_queries.query_all()), 4)
+            self.assertEqual(BackgroundJob.hit_count(es_queries.query_all()), 6)
+        finally:
 
-        portality.util.patch_config(self.app_test, org_config)
+            portality.util.patch_config(self.app_test, org_config)
 
     def test_clean_all_old_data__no_obj_deleted(self):
         # prepare data
@@ -73,13 +75,15 @@ class TestOldDataCleanup(DoajTestCase):
                 "background_job": 7,
             }
         })
+        try:
 
-        # run target
-        old_data_cleanup.clean_all_old_data()
+            # run target
+            old_data_cleanup.clean_all_old_data()
 
-        # assert result
-        time.sleep(3)
-        self.assertEqual(Notification.hit_count(es_queries.query_all()), org_size)
-        self.assertEqual(BackgroundJob.hit_count(es_queries.query_all()), 0)
+            # assert result
+            time.sleep(3)
+            self.assertEqual(Notification.hit_count(es_queries.query_all()), org_size)
+            self.assertEqual(BackgroundJob.hit_count(es_queries.query_all()), 0)
 
-        portality.util.patch_config(self.app_test, org_config)
+        finally:
+            portality.util.patch_config(self.app_test, org_config)

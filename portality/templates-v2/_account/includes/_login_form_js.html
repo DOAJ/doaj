@@ -1,0 +1,41 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#show-password').on('click', function (e) {
+            e.preventDefault();
+            $('#password-section').slideDown();
+            // disabled (not just hidden) so a hidden login-link-btn isn't
+            // reachable by keyboard/assistive tech while it's out of view
+            $('#login-link-btn').hide().prop('disabled', true);
+            $('#toggle-to-password').hide();
+            $('#password-btn').prop('disabled', false);
+        });
+
+        $('#show-login-link').on('click', function (e) {
+            e.preventDefault();
+            $('#password-section').slideUp();
+            $('#login-link-btn').show().prop('disabled', false);
+            $('#toggle-to-password').show();
+            $('#password-section input[type="password"]').val('');
+            $('#password-btn').prop('disabled', true);
+        });
+
+        // The form always has two submit buttons in the DOM. A browser's
+        // native implicit (Enter-key) submission targets the *first*
+        // submit button in DOM order regardless of which is currently
+        // visible/enabled - disabling the other one doesn't change that,
+        // it just means implicit submission silently does nothing once
+        // that first button is disabled. So Enter is handled explicitly
+        // here instead: click whichever button is currently visible.
+        $('.form-login').on('keydown', function (e) {
+            if (e.key !== 'Enter') {
+                return;
+            }
+            e.preventDefault();
+            if ($('#password-section').is(':visible')) {
+                document.getElementById('password-btn').click();
+            } else {
+                document.getElementById('login-link-btn').click();
+            }
+        });
+    });
+</script>

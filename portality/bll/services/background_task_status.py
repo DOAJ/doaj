@@ -5,8 +5,6 @@ import itertools
 from typing import Iterable
 
 from portality import constants
-# from portality.constants import BGJOB_QUEUE_ID_LONG, BGJOB_QUEUE_ID_MAIN, BGJOB_QUEUE_ID_EVENTS, BGJOB_QUEUE_ID_SCHEDULED_LONG, BGJOB_QUEUE_ID_SCHEDULED_SHORT, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED, \
-#     BG_STATUS_STABLE, BG_STATUS_UNSTABLE, BGJOB_STATUS_COMPLETE
 from portality.core import app
 from portality.lib import dates
 from portality.models.background import BackgroundJobQueryBuilder, BackgroundJob, SimpleBgjobQueue, \
@@ -50,8 +48,12 @@ class BackgroundTaskStatusService:
                     .order_by('created_date', 'desc')
                     .build_query_dict())
 
-        lr_results = BackgroundJob.q2obj(q=lr_query)
-        lr_job = lr_results[0] if len(lr_results) > 0 else None
+        try:
+            lr_results = BackgroundJob.q2obj(q=lr_query)
+            lr_job = lr_results[0] if len(lr_results) > 0 else None
+        except Exception as e:
+            app.logger.error(f'Error querying last successfully run status for action {action}: {e}')
+            lr_job = None
 
         status = constants.BG_STATUS_UNSTABLE
         lr = None
@@ -96,8 +98,13 @@ class BackgroundTaskStatusService:
                         .status_includes(constants.BGJOB_STATUS_QUEUED).size(1)
                         .order_by('created_date', 'asc')
                         .build_query_dict())
-        oldest_jobs = list(BackgroundJob.q2obj(q=oldest_query))
-        oldest_job = oldest_jobs and oldest_jobs[0]
+        try:
+            oldest_jobs = list(BackgroundJob.q2obj(q=oldest_query))
+            oldest_job = oldest_jobs and oldest_jobs[0]
+        except Exception as e:
+            app.logger.error(f'Error querying queued status for action {action}: {e}')
+            oldest_jobs = []
+            oldest_job = None
 
         err_msgs = []
         limited_oldest_date = dates.before_now(oldest)
@@ -120,11 +127,16 @@ class BackgroundTaskStatusService:
 
     def create_queues_status(self, queue_name) -> dict:
         # define last_completed_job
-        bgjob_list = BackgroundJob.q2obj(q=LastCompletedJobQuery(queue_name).query())
-        bgjob_list = list(bgjob_list)
-        if bgjob_list:
-            last_completed_date = bgjob_list[0].last_updated_timestamp
-        else:
+        try:
+            bgjob_list = BackgroundJob.q2obj(q=LastCompletedJobQuery(queue_name).query())
+            bgjob_list = list(bgjob_list)
+            if bgjob_list:
+                last_completed_date = bgjob_list[0].last_updated_timestamp
+            else:
+                last_completed_date = None
+        except Exception as e:
+            app.logger.error(f'Error querying last completed job for queue {queue_name}: {e}')
+            bgjob_list = []
             last_completed_date = None
 
         errors = {action: self.create_errors_status(action, **config) for action, config
@@ -174,9 +186,7 @@ class BackgroundTaskStatusService:
     def create_background_status(self) -> dict:
         queues = {
             queue_name: self.create_queues_status(queue_name)
-            for queue_name in [constants.BGJOB_QUEUE_ID_LONG,
-                               constants.BGJOB_QUEUE_ID_MAIN,
-                               constants.BGJOB_QUEUE_ID_EVENTS,
+            for queue_name in [constants.BGJOB_QUEUE_ID_EVENTS,
                                constants.BGJOB_QUEUE_ID_SCHEDULED_LONG,
                                constants.BGJOB_QUEUE_ID_SCHEDULED_SHORT]
         }

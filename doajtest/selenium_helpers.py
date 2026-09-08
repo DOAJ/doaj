@@ -1,12 +1,14 @@
 import datetime
 import logging
 import multiprocessing
+import time
 from multiprocessing import Process, freeze_support
 from typing import TYPE_CHECKING
 
 import selenium
 from selenium import webdriver
-from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException
+from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException, \
+    NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -183,12 +185,30 @@ class SeleniumTestCase(DoajTestCase):
         self.selenium.execute_script(script)
 
 
+def dismiss_cookie_consent(driver: 'WebDriver'):
+    """
+    Remove the cookie-consent banner if present. It's a fixed-position
+    element pinned to the viewport, so it can intercept clicks on
+    anything else it happens to overlap regardless of scroll position.
+    Removed directly via JS rather than clicking its own dismiss button -
+    that button is just as susceptible to being covered/mistimed as
+    anything else on the page, and this doesn't need to be a "real"
+    user dismissal (setting the consent cookie ahead of time isn't a
+    reliable alternative either: it's marked Secure and the test server
+    runs over plain HTTP, so the browser would just refuse to store it).
+    """
+    driver.execute_script(
+        "var el = document.getElementById('cookie-consent'); if (el) el.remove();"
+    )
+
+
 def goto(driver: 'WebDriver', url_path: str) -> str:
     if not url_path.startswith('/'):
         url_path = '/' + url_path
     url = SeleniumTestCase.get_doaj_url() + url_path
     log.info(f'goto: {url}')
     driver.get(url)
+    dismiss_cookie_consent(driver)
     return url
 
 
@@ -200,21 +220,52 @@ def cancel_alert(driver: 'WebDriver'):
         pass
 
 
+def scroll_and_click(driver: 'WebDriver', element: 'WebElement'):
+    # element_to_be_clickable only checks visibility/enabled state, not
+    # whether the element is scrolled into view or covered by something
+    # else at its actual screen coordinates - a plain .click() can still
+    # get intercepted, so scroll it into view first. Also re-check for
+    # the cookie-consent banner immediately before clicking: goto()'s
+    # one-time removal attempt isn't enough if the banner renders or
+    # reappears later in a longer-running test.
+    dismiss_cookie_consent(driver)
+    # main.css sets `html { scroll-behavior: smooth }` site-wide, so a
+    # plain scrollIntoView() animates over ~200-300ms and the immediately
+    # following click can fire mid-scroll, landing on whatever happens to
+    # be at that transient position. behavior: 'instant' overrides the
+    # CSS default for this call so the scroll completes synchronously.
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center', behavior: 'instant'});", element)
+    element.click()
+
+
 def login(driver: 'WebDriver', username: str, password: str):
     # Preserve current URL to redirect back after login
     login_path = "/login?" + urlencode({'next': driver.current_url}) if driver.current_url else "/login"
     login_url = goto(driver, login_path)
+    wait = WebDriverWait(driver, 10)
 
     driver.find_element(By.ID, 'user').send_keys(username)
     assert driver.find_element(By.ID, 'user').get_attribute('value') == username
-    driver.find_element(By.ID, 'password').send_keys(password)
+
+    # the password field starts hidden behind a "prefer to use a
+    # password?" toggle; reveal it before interacting with it. The reveal
+    # is an animated slideDown (fixed 400ms) - display flips to block
+    # immediately, but the container's height is still animating, so
+    # give it a moment to settle before touching anything inside it,
+    # otherwise scrolling/clicking hits stale mid-animation geometry.
+    password_section = driver.find_element(By.ID, 'password-section')
+    scroll_and_click(driver, driver.find_element(By.ID, 'show-password'))
+    wait.until(EC.visibility_of(password_section))
+    time.sleep(0.5)
+    password_field = driver.find_element(By.ID, 'password')
+
+    password_field.send_keys(password)
     assert driver.find_element(By.ID, 'password').get_attribute('value') == password
     driver.save_screenshot(f'doaj_seleniumtest_{username}.png')
-    driver.find_element(By.CSS_SELECTOR, 'input[type="submit"]').click()
+    scroll_and_click(driver, driver.find_element(By.ID, 'password-btn'))
 
     # Wait for login to complete - URL should change away from login page
     try:
-        wait = WebDriverWait(driver, 10)
         wait.until(EC.url_changes(login_url))
     except Exception as e:
         log.error(f"Login failed to complete, current_url: {driver.current_url}\n Error: {e}")

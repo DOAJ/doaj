@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from copy import deepcopy
 from typing import Iterable
+from portality import models
 
 import rstr
 
@@ -13,6 +14,17 @@ from doajtest.fixtures.v2.common import build_flags_form_expanded
 
 
 class JournalFixtureFactory(object):
+    @classmethod
+    def save_journals(cls, journals, block=False, save_kwargs=None):
+        if save_kwargs is None:
+            save_kwargs = {}
+        block_data = []
+        for a in journals:
+            a.save(**save_kwargs)
+            block_data.append((a.id, a.last_updated))
+        if block:
+            models.Journal.blockall(block_data)
+
     @staticmethod
     def make_journal_source(in_doaj=False, overlay=None):
         template = deepcopy(JOURNAL_SOURCE)
@@ -40,6 +52,14 @@ class JournalFixtureFactory(object):
             template['bibjson']['title'] = 'Test Title {}'.format(i)
             journal_sources.append(deepcopy(template))
         return journal_sources
+
+    @classmethod
+    def make_n_journals(cls, n, in_doaj=True):
+        sources = JournalFixtureFactory.make_many_journal_sources(count=n, in_doaj=in_doaj)
+        journals = []
+        for s in sources:
+            journals.append(models.Journal(**s))
+        return journals
 
     @staticmethod
     def make_journal_form(flag=False, **flag_kwargs):

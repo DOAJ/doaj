@@ -1,4 +1,6 @@
-from flask import Blueprint, make_response, abort, url_for, request, render_template
+import importlib
+
+from flask import Blueprint, make_response, abort, url_for, request, render_template, jsonify
 from flask_login import current_user, login_required
 from doajtest.testdrive.factory import TestFactory
 from portality import util
@@ -41,3 +43,15 @@ def teardown(test_id):
     resp = make_response(json.dumps(result))
     resp.mimetype = "application/json"
     return resp
+
+@blueprint.route('/run', methods=['GET', 'POST'])
+@util.jsonp
+@login_required
+def run_script():
+    data = request.get_json()
+    script_name = data.get('script_name')
+    if script_name not in app.config.get("TESTDRIVE_SCRIPT_WHITELIST"):
+        return jsonify({'error': 'Invalid script'}), 400
+    module = importlib.import_module(f'portality.scripts.{script_name}')
+    module.main()
+    return jsonify({'status': 'success', 'received': script_name})

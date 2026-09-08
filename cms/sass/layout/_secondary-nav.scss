@@ -5,6 +5,12 @@
   text-transform: uppercase;
   font-weight: 600;
   height: 150px;
+
+  .label {
+    font-size: unset;
+    color: $warm-black;
+    margin-bottom: 0;
+  }
 }
 
 .secondary-nav--precedes-highlight {
@@ -12,7 +18,7 @@
 }
 // Mobile / hamburger menu
 
-@media (max-width: 768px) {
+@media (max-width: 1279px) {
   .secondary-nav {
     height: 75px;
   }
@@ -83,7 +89,7 @@
 }
 
 .secondary-nav__item_mobile {
-  @media (min-width: 769px) {
+  @media (min-width: 1279px) {
     display: none;
   }
 }

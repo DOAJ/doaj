@@ -111,7 +111,7 @@ striped = {
     "article": True
 }
 
-skip = []
+skip = app.config.get("ANON_EXPORT_SKIP_LIST",[])
 
 
 def _copy_on_complete(path, logger_fn, tmpStore, mainStore, container):

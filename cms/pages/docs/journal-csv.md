@@ -1,0 +1,33 @@
+---
+layout: sidenav
+title: Journal CSV
+section: Docs
+toc: true
+sticky_sidenav: true
+preface: /public/includes/_csv-access.html
+featuremap: 
+  - ~~JournalCSV:Fragment->JournalCSV:WebRoute~~
+
+---
+
+The Journal CSV provides a full list of all public journals in the DOAJ database.
+
+## All users
+
+For all users, the CSV is up-to-date to within 30 days of the current data in the system.  This version of the CSV is open to everyone and does not require a login.  The CSV file is available for download at the following URL:
+
+```https://doaj.org/csv```
+
+## Premium metadata service users
+
+For Premium metadata service users, the CSV file is up-to-date to within 1 hour of the current data in the system.  To access and download the Premium version of the CSV, you must be logged into your DOAJ account and have an active Premium metadata service account.  If you are accessing the CSV via machine-to-machine, you can ensure you receive the most up-to-date CSV by including your API key in the URL. For example:
+
+```https://doaj.org/csv?api_key=[your api key]```
+
+If you do not have an API key, go to 'My Account' (in the Dashboard dropdown) to find your key.
+
+If you would like access to more up-to-date metadata and to know more about our Premium Metadata Services, please see the [Premium Metadata Services](/docs/premium) page.
+
+## Technical support for Premium Metadata Service users
+
+If you require technical support, please send an email to [helpdesk@doaj.org](mailto:helpdesk@doaj.org?subject=Premium%20Metadata%20Service)
