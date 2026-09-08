@@ -159,6 +159,9 @@ def main():
     roots = collect_roots(nodes)
     out = [strip_meta(r) for r in roots]
 
+    # wrap this up to look like LCC for the moment
+    out = {"name": "LCC", "children": out}
+
     if args.output:
         with open(args.output, "w", encoding="utf-8") as fh:
             json.dump(out, fh, indent=2, ensure_ascii=False)

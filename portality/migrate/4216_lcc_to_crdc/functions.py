@@ -6,9 +6,9 @@ MAPPING_FILE = paths.rel2abs(__file__, "code_mapping.csv")
 
 CRDC = paths.rel2abs(__file__, "..", "..", "..", "cms", "classification", "base")
 CRDC_SOURCE = [
-    os.path.join(CRDC, "CRDC-CCRD-2020-FOR-DDR-StructureV2-eng.csv"),
-    os.path.join(CRDC, "CRDC-CCRD-2020-SEO-OSE-StructureV2-eng.csv"),
-    os.path.join(CRDC, "CRDC-CCRD-2020-TOA-TDA-StructureV2-eng.csv")
+    os.path.join(CRDC, "CRDC-CCRD-2020-FOR-DDR-StructureV2-eng.csv")#,
+    #os.path.join(CRDC, "CRDC-CCRD-2020-SEO-OSE-StructureV2-eng.csv"),
+    #os.path.join(CRDC, "CRDC-CCRD-2020-TOA-TDA-StructureV2-eng.csv")
 ]
 
 MAPPING = {}
