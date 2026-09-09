@@ -8,7 +8,7 @@
             <div class="container">
                 <p class="label">Directory of Open Access Journals</p>
                 <h1>Find open access journals & articles.</h1>
-                <form class="row doaj-minisearch--container" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
+                <form class="row doaj-minisearch--container" role="search" action="{{ url_for('doaj.search_post') }}" method="post" id="homepage-search-form">
                     <input type="hidden" name="ref" value="homepage-box">
                     <input type="hidden" name="origin" value="ui">
                     <fieldset class="col-xs-12 col-md-8">
@@ -20,6 +20,7 @@
                     </fieldset>
 
                     <div class="col-xs-12 col-md-8">
+                        <div id="prefix-wildcard-warning" class="alert alert-warning" role="alert" style="display: none;"></div>
                         <div class="input-group">
                             <label for="keywords" class="sr-only">Search by keywords:</label>
                             <input class="input-group__input" type="text" name="keywords" id="keywords" required>
@@ -38,6 +39,20 @@
                         </div>
                     </div>
                 </form>
+
+                <script>
+                    document.getElementById("homepage-search-form").addEventListener("submit", function (e) {
+                        var keywords = document.getElementById("keywords").value;
+                        var warning = document.getElementById("prefix-wildcard-warning");
+                        if (keywords.trim() !== '*' && /^[*?.+]/.test(keywords)) {
+                            e.preventDefault();
+                            warning.innerHTML = doaj.prefixWildcardWarningMessage;
+                            warning.style.display = "block";
+                        } else {
+                            warning.style.display = "none";
+                        }
+                    });
+                </script>
 
                 <section class="row row--scrollable">
                     <h2 class="sr-only">DOAJ in numbers</h2>

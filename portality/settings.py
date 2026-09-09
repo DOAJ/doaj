@@ -767,7 +767,7 @@ QUERY_ROUTE = {
         "journal": {
             "auth": False,
             "role": None,
-            "query_validators": ["non_public_fields_validator", "public_query_validator"],
+            "query_validators": ["non_public_fields_validator", "public_query_validator", "prefix_wildcard_validator"],
             "query_filters": ["only_in_doaj", "last_update_fallback", "search_all_meta"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Journal",  # ~~->Journal:Model~~
@@ -777,7 +777,7 @@ QUERY_ROUTE = {
         "article": {
             "auth": False,
             "role": None,
-            "query_validators": ["non_public_fields_validator", "public_query_validator"],
+            "query_validators": ["non_public_fields_validator", "public_query_validator", "prefix_wildcard_validator"],
             "query_filters": ["only_in_doaj"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Article",  # ~~->Article:Model~~
@@ -788,7 +788,7 @@ QUERY_ROUTE = {
         "journal,article": {
             "auth": False,
             "role": None,
-            "query_validators": ["non_public_fields_validator", "public_query_validator"],
+            "query_validators": ["non_public_fields_validator", "public_query_validator", "prefix_wildcard_validator"],
             "query_filters": ["only_in_doaj", "strip_facets", "es_type_fix", "journal_article_filter"],
             "result_filters": ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
             "dao": "portality.models.JournalArticle",  # ~~->JournalArticle:Model~~
@@ -991,6 +991,7 @@ QUERY_FILTERS = {
     # sanitisers
     "public_query_validator": "portality.lib.query_filters.public_query_validator",
     "non_public_fields_validator": "portality.lib.query_filters.non_public_fields_validator",
+    "prefix_wildcard_validator": "portality.lib.query_filters.prefix_wildcard_validator",
 
     # query filters
     "only_in_doaj": "portality.lib.query_filters.only_in_doaj",
