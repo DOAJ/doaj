@@ -965,8 +965,8 @@ doaj.triage.reject = function () {
 doaj.triage.questions.Question = class {
     static $all = [];
 
-    static getById(id) {
-        return this.$all.find(q => q.id === id);
+    static getByIdx(idx) {
+        return this.$all.find(q => q.idx === idx);
     }
 
     static getByName(name) {
@@ -976,20 +976,23 @@ doaj.triage.questions.Question = class {
 
     static init() {
         this.$all = doaj.triage.questions._ids().map(
-            (id, index) => new this(id, index)
+            (name, index) => new this(name, index)
         );
     }
 
 
-    constructor(id, name) {
+    constructor(name, idx) {
         this.name = name;
-        this.id = id;
+        this.idx = idx;
 
-        this.$wrapper = $(`#${id}`);
+        this.$wrapper = $(`#${name}`);
         this.$headerBtn = this.$wrapper.find(
             ".criterion-wrapper--header > button"
         );
         this.$body = $(`#${this.$headerBtn.attr("aria-controls")}`);
+        this.group = QuestionGroup.getByElement(
+            this.$wrapper.closest(".question-group")
+        );
     }
 
     expand() {
@@ -1004,27 +1007,128 @@ doaj.triage.questions.Question = class {
     }
 
     activate() {
-        const current = doaj.triage.questions.currentQuestion;
+        const questions = doaj.triage.questions;
+        const previous = questions.currentQuestion;
 
-        if (current && current !== this) {
-            current.deactivate();
+        if (previous === this) {
+            return;
         }
+
+        if (previous) {
+            previous.deactivate();
+        }
+
+        questions.currentQuestion = this;
+
+        // This group now has special/current status.
+        // Close any other open non-current groups.
+        QuestionGroup.collapseOtherNonCurrent(this.group);
+
+        this.group.expand();
 
         this.$headerBtn.attr("aria-current", "true");
         this.expand();
-
-        doaj.triage.questions.currentQuestion = this;
+        this.scrollTo();
     }
 
     deactivate() {
         this.$headerBtn.removeAttr("aria-current");
         this.collapse();
     }
+
+    scrollTo() {
+        const headersHeight = $("#ew_header").outerHeight() + $("#primary-nav").outerHeight();
+        $(".criterion-wrapper").css("scroll-margin-top", `${headersHeight}px`);
+        this.$wrapper[0].scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
 };
-doaj.triage.questions.questionHeaderClick = function (btn) {
+
+doaj.triage.questions.QuestionGroup = class {
+    static $all = [];
+
+    static getByElement(element) {
+        const name = $(element).attr("id");
+        return this.$all.find(group => group.name === name);
+    }
+
+    static getByName(name) {
+        return this.$all.find(group => group.name === name);
+    }
+
+    static init() {
+        this.$all = $(".question-group").map(function() {
+            return new doaj.triage.questions.QuestionGroup(this.id);
+        }).get();
+    }
+
+    constructor(name) {
+        this.name = name;
+        this.$wrapper = $(`#${name}`);
+        this.$headerBtn = this.$wrapper.find(
+            "> .question-group--header > button"
+        );
+        this.$body = this.$wrapper.find(
+            "> .question-group--body"
+        );
+    }
+
+    get expanded() {
+        return this.$headerBtn.attr("aria-expanded") === "true";
+    }
+
+    get containsCurrentQuestion() {
+        return this === doaj.triage.questions.currentQuestion?.group;
+    }
+
+    expand() {
+        /**
+         * Makes this group visible
+         */
+        this.$headerBtn.attr("aria-expanded", "true");
+        this.$body._show();
+    }
+
+    collapse() {
+        this.$headerBtn.attr("aria-expanded", "false");
+        this.$body._hide();
+    }
+
+    toggle() {
+        if (this.expanded) {
+            this.collapse();
+        } else {
+            this.open();
+        }
+    }
+
+    open() {
+        /**
+         * the user has requested to open this group; enforce the group-state rules
+         */
+        if (!this.containsCurrentQuestion) {
+            QuestionGroup.collapseOtherNonCurrent(this);
+        }
+
+        this.expand();
+    }
+
+    static collapseOtherNonCurrent(groupToOpen) {
+        this.$all
+            .filter(group =>
+                group !== groupToOpen &&
+                !group.containsCurrentQuestion
+            )
+            .forEach(group => group.collapse());
+    }
+};
+
+doaj.triage.questions.handleQuestionHeaderClick = function (btn) {
     const $btn = $(btn);
     const questionId = $btn.data("question-id");
-    const question = Question.getById(questionId);
+    const question = Question.getByName(questionId);
 
     if ($btn.attr("aria-expanded") === "true") {
         question.collapse();
@@ -1032,8 +1136,21 @@ doaj.triage.questions.questionHeaderClick = function (btn) {
         question.activate();
     }
 };
+doaj.triage.questions.handleQuestionGroupHeaderClick = function (btn) {
+    const $btn = $(btn);
+    const groupId = $btn.data("group-id");
+    const group = QuestionGroup.getByName(groupId);
+
+    if ($btn.attr("aria-expanded") === "true") {
+        group.collapse();
+    } else {
+        group.open();
+    }
+}
 
 //----------------- do now ------------------
+const QuestionGroup = doaj.triage.questions.QuestionGroup;
 const Question = doaj.triage.questions.Question;
+QuestionGroup.init();
 Question.init();
-doaj.triage.questions.currentQuestion = Question.$all[0];
+Question.$all[0].activate();

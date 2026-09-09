@@ -6,12 +6,13 @@
                 class="accordion-btn col-md-12"
                 aria-expanded="true"
                 aria-controls="{{ fieldset.name }}-questions"
-                onclick="doaj.triage.toggleSection('{{ fieldset.name }}-questions', this);"
+                data-group-id="{{ fieldset.name }}"
+                onclick="doaj.triage.questions.handleQuestionGroupHeaderClick(this)"
         >
         {{ fieldset.label }}
         </button>
     </h2>
-    <div class="question-group--body" id="{{ fieldset.name }}-questions">
+    <div class="question-group--body" id="{{ fieldset.name }}-questions" hidden>
     {% for element in fieldset.elements %}
         {% autoescape off %}
             {{ element.renderer.draw(element, application=application, wfc=wfc) }}
