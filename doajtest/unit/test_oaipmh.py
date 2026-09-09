@@ -606,42 +606,44 @@ class TestOaiPmhPremium(DoajTestCase):
             "PREMIUM_PHASE_IN": False,
             "PREMIUM_PHASE_IN_START": dates.before_now(50 * 24 * 60 * 60),
         })
+        try:
 
-        with self.app_test.test_request_context():
-            with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
-                t = etree.fromstring(resp.data)
+            with self.app_test.test_request_context():
+                with self.app_test.test_client() as t_client:
+                    resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                    t = etree.fromstring(resp.data)
 
-                # Check we only have the oldest journal record returned
-                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
-                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
+                    # Check we only have the oldest journal record returned
+                    records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                    assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
 
-        _ = patch_config(app, {
-            "PREMIUM_PHASE_IN": True,
-            "PREMIUM_PHASE_IN_START": dates.before_now(10 * 24 * 60 * 60),
-        })
+            _ = patch_config(app, {
+                "PREMIUM_PHASE_IN": True,
+                "PREMIUM_PHASE_IN_START": dates.before_now(10 * 24 * 60 * 60),
+            })
 
-        with self.app_test.test_request_context():
-            with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
-                t = etree.fromstring(resp.data)
+            with self.app_test.test_request_context():
+                with self.app_test.test_client() as t_client:
+                    resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                    t = etree.fromstring(resp.data)
 
-                # Check we only have two journal records, the oldest and the one 15 days old
-                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
-                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 2
+                    # Check we only have two journal records, the oldest and the one 15 days old
+                    records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                    assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 2
 
-        _ = patch_config(app, {
-            "PREMIUM_PHASE_IN": True,
-            "PREMIUM_PHASE_IN_START": dates.now()
-        })
+            _ = patch_config(app, {
+                "PREMIUM_PHASE_IN": True,
+                "PREMIUM_PHASE_IN_START": dates.now()
+            })
 
-        with self.app_test.test_request_context():
-            with self.app_test.test_client() as t_client:
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
-                t = etree.fromstring(resp.data)
+            with self.app_test.test_request_context():
+                with self.app_test.test_client() as t_client:
+                    resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc'))
+                    t = etree.fromstring(resp.data)
 
-                # Check we have all 3 journals, as phase in is just starting
-                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
-                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 3
+                    # Check we have all 3 journals, as phase in is just starting
+                    records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                    assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 3
 
-        patch_config(app, cfg)
+        finally:
+            patch_config(app, cfg)

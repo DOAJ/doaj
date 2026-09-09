@@ -13,6 +13,27 @@
     cursor: pointer;
   }
 
+  button {
+    margin-bottom: 0;
+  }
+  p {
+    margin-bottom: 0;
+  }
+
+  &.focus {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: $white;
+    z-index: 1000;
+    button {
+      margin-top: 1.5rem;
+      width: max-content;
+      align-self: center;
+    }
+  }
+
   &--message {
     background-color: $warm-black;
     color: $white;

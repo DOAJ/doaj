@@ -22,17 +22,15 @@ def build_flags_form_expanded(assignee=None, deadline="", setter=None, created_d
         note = "This is a flag"
 
     flags_form_expanded = {
-        'flags': [
-            {
-                "flag_created_date": created_date,
-                "flag_deadline": deadline,
-                "flag_assignee": assignee,
-                "flag_setter": setter,
-                "flag_note_id": "1234-5678-9012",
-                "flag_note": note,
-                "flag_resolved": "true" if resolved else "false"
-            }
-        ]
+        'flags': {
+            "flag_created_date": created_date,
+            "flag_deadline": deadline,
+            "flag_assignee": assignee,
+            "flag_setter": setter,
+            "flag_note_id": "1234-5678-9012",
+            "flag_note": note,
+            "flag_resolved": "true" if resolved else "false"
+        }
     }
 
     return flags_form_expanded

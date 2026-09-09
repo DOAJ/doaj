@@ -984,6 +984,10 @@ class DomainObject(UserDict, object):
         for record in iterator:
             if transform is not None:
                 record = transform(record)
+                if record is None:
+                    # transform declined to alter (e.g. anonymise) this record - drop it rather than
+                    # writing raw/partially-anonymised data to the export
+                    continue
 
             if es_bulk_format:
                 kwargs = {}

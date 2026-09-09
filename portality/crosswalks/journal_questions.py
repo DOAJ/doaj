@@ -251,6 +251,25 @@ class Journal2QuestionXwalk(object):
             """ Comma separated string to list of stripped items """
             return [_.strip() for _ in x.split(',')]
 
+        def _comma_to_list_with_other(field_name, other_value="other"):
+            """ Detect values not in the valid choices and mapping them to 'other' field """
+            valid_choices = [x for x, y in ApplicationFormFactory.choices_for(field_name)]
+            def _transform(x):
+                items = [_.strip() for _ in x.split(',')]
+                result = []
+                other_items = []
+                for item in items:
+                    if item in valid_choices:
+                        result.append(item)
+                    else:
+                        other_items.append(item)
+                if other_items:
+                    if other_value not in result:
+                        result.append(other_value)
+                    forminfo[field_name + "_other"] = " ".join(other_items)
+                return result
+            return _transform
+
         def _lang_codes(x):
             """ Get the uppercase 2-char language string for each comma separated language name"""
             langs = [datasets.language_for(_) for _ in _comma_to_list(x)]
@@ -274,16 +293,16 @@ class Journal2QuestionXwalk(object):
             'license': _comma_to_list,
             'license_display': _y_or_blank,
             'copyright_author_retains': _y_n_or_blank,
-            'review_process': _comma_to_list,
+            'review_process': _comma_to_list_with_other('review_process'),
             'plagiarism_detection': _y_n_or_blank,
             'publication_time_weeks': lambda x: round(float(x)),
             'apc': _y_n_or_blank,
             'apc_charges': _unfurl_apc,
             'has_waiver': _y_n_or_blank,
             'has_other_charges': _y_n_or_blank,
-            'deposit_policy': _comma_to_list,
-            'preservation_service': _comma_to_list,
-            'persistent_identifiers': _comma_to_list,
+            'deposit_policy': _comma_to_list_with_other('deposit_policy'),
+            'preservation_service': _comma_to_list_with_other('preservation_service'),
+            'persistent_identifiers': _comma_to_list_with_other('persistent_identifiers'),
             'boai': _y_or_blank,
             's2o': _y_n_or_blank,
             'mirror': _y_n_or_blank,
