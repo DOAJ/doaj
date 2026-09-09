@@ -135,12 +135,12 @@ doaj.triage.init = function () {
     $(document).on("change", doaj.triage.selectors.checkboxNone, function (event) {
         doaj.triage.setupNone($(event.target))
     })
-    $(document).on("change", doaj.triage.selectors.answers, function (event) {
-        doaj.triage.setupAnswers($(event.target))
-    })
-    $(document).on("click", doaj.triage.selectors.clearAnswersButton, function (event) {
-        doaj.triage.clearAnswers($(event.target))
-    })
+    // $(document).on("change", doaj.triage.selectors.answers, function (event) {
+    //     doaj.triage.setupAnswers($(event.target))
+    // })
+    // $(document).on("click", doaj.triage.selectors.clearAnswersButton, function (event) {
+    //     doaj.triage.clearAnswers($(event.target))
+    // })
     // Findability: clicking an entry in the error summary (see
     // doaj.triage.summary) jumps straight to the field it's about, instead
     // of making the user hunt for it down a very long form.
@@ -157,7 +157,7 @@ doaj.triage.init = function () {
         doaj.triage.questions.scrollToActive();
     });
 
-    doaj.triage.setupUI();
+    // doaj.triage.setupUI();
 
     // quick implementation of a dependent question within an action group
     // $("[data-dependency-trigger]").on("change", function(event) {
@@ -193,8 +193,8 @@ doaj.triage.setupUI = function () {
             doaj.triage.setupAnswers($checkedAnswer);
         }
     });
-    doaj.triage.questions.setupInit();
-    doaj.triage.recommendation.render(doaj.triage.initialRecommendation);
+    // doaj.triage.questions.setupInit();
+    // doaj.triage.recommendation.render(doaj.triage.initialRecommendation);
 }
 
 /* ============================================================
@@ -218,56 +218,56 @@ doaj.triage.setupNone = function ($that) {
             .prop("disabled", false);
     }
 }
-doaj.triage.setupAnswers = function ($that) {
-    const $fieldset = $that.closest("fieldset");
-    let $that_label = $(`label[for="${$that.attr("id")}"]`);
-    const $changeButtonContainer = $fieldset.find(doaj.triage.selectors.clearAnswersButton).parent()
-    if ($that.is("[data-controls]")) {
-        $fieldset.find("label").parent()._hide();
-        doaj.triage.setupAction($that);
-    } else {
-        if ($that.is(":checked")) {
-            $fieldset.find("label").not($that_label).parent()._hide();
-            $changeButtonContainer._show();
-        } else {
-            $fieldset.find("label").not($that_label).parent()._show();
-            $changeButtonContainer._hide();
-        }
-    }
-    doaj.triage.requestSave();
-}
+// doaj.triage.setupAnswers = function ($that) {
+//     const $fieldset = $that.closest("fieldset");
+//     let $that_label = $(`label[for="${$that.attr("id")}"]`);
+//     const $changeButtonContainer = $fieldset.find(doaj.triage.selectors.clearAnswersButton).parent()
+//     if ($that.is("[data-controls]")) {
+//         $fieldset.find("label").parent()._hide();
+//         doaj.triage.setupAction($that);
+//     } else {
+//         if ($that.is(":checked")) {
+//             $fieldset.find("label").not($that_label).parent()._hide();
+//             $changeButtonContainer._show();
+//         } else {
+//             $fieldset.find("label").not($that_label).parent()._show();
+//             $changeButtonContainer._hide();
+//         }
+//     }
+//     doaj.triage.requestSave();
+// }
 
-doaj.triage.setupAction = function ($that) {
-    const $action_section = $(`#${$that.data("controls")}-container`);
-    const $answer_paragraph = $action_section.find("span.answer");
-    let $that_label = $(`label[for="${$that.attr("id")}"]`).find(".label-text");
-    $action_section._show();
-    $answer_paragraph.text($that_label.text());
-    $action_section.find("input").each(function () {
-        if ($(`label[for="${$(this).attr("id")}"]`).length === 0) {
-            $(this).attr("aria-describedby", $answer_paragraph.attr("id"));
-        }
-    })
-    let $action_inputs = $action_section.find("input")
-    if ($action_inputs.length > 0) {
-        $action_inputs[0].focus()
-    }
+// doaj.triage.setupAction = function ($that) {
+//     const $action_section = $(`#${$that.data("controls")}-container`);
+//     const $answer_paragraph = $action_section.find("span.answer");
+//     let $that_label = $(`label[for="${$that.attr("id")}"]`).find(".label-text");
+//     $action_section._show();
+//     $answer_paragraph.text($that_label.text());
+//     $action_section.find("input").each(function () {
+//         if ($(`label[for="${$(this).attr("id")}"]`).length === 0) {
+//             $(this).attr("aria-describedby", $answer_paragraph.attr("id"));
+//         }
+//     })
+//     let $action_inputs = $action_section.find("input")
+//     if ($action_inputs.length > 0) {
+//         $action_inputs[0].focus()
+//     }
+//
+// }
 
-}
-
-doaj.triage.clearAnswers = function ($clearBtn) {
-    const compound_name = $clearBtn.data("controls");
-    const answers = $clearBtn.data("controls") + doaj.triage.magicStrings.reviewOutcomeFieldset;
-    const $answers = $(`#${answers}`).find("input");
-    $answers.parent()._show();
-    $answers.prop("checked", false);
-    if ($clearBtn.hasClass("review-outcome-answer")) {
-        $clearBtn.parent()._hide();
-    }
-    const $action_section = $(`[data-group="${compound_name}"][data-role="additional_info"]`);
-    $action_section._hide();
-    doaj.triage.requestSave();
-}
+// doaj.triage.clearAnswers = function ($clearBtn) {
+//     const compound_name = $clearBtn.data("controls");
+//     const answers = $clearBtn.data("controls") + doaj.triage.magicStrings.reviewOutcomeFieldset;
+//     const $answers = $(`#${answers}`).find("input");
+//     $answers.parent()._show();
+//     $answers.prop("checked", false);
+//     if ($clearBtn.hasClass("review-outcome-answer")) {
+//         $clearBtn.parent()._hide();
+//     }
+//     const $action_section = $(`[data-group="${compound_name}"][data-role="additional_info"]`);
+//     $action_section._hide();
+//     doaj.triage.requestSave();
+// }
 
 doaj.triage.setupOther = function ($that) {
     let $input = $that.is("label")
@@ -674,20 +674,20 @@ doaj.triage.questions._ids = function () {
     }).get();
 };
 
-doaj.triage.questions._isAnswered = function ($wrapper) {
-    var answered = false;
-    $wrapper.find(doaj.triage.selectors.saveableFields).each(function () {
-        var $field = $(this);
-        if ($field.is(":checkbox, :radio")) {
-            if ($field.is(":checked")) {
-                answered = true;
-            }
-        } else if ($.trim($field.val() || "") !== "") {
-            answered = true;
-        }
-    });
-    return answered;
-};
+// doaj.triage.questions._isAnswered = function ($wrapper) {
+//     var answered = false;
+//     $wrapper.find(doaj.triage.selectors.saveableFields).each(function () {
+//         var $field = $(this);
+//         if ($field.is(":checkbox, :radio")) {
+//             if ($field.is(":checked")) {
+//                 answered = true;
+//             }
+//         } else if ($.trim($field.val() || "") !== "") {
+//             answered = true;
+//         }
+//     });
+//     return answered;
+// };
 
 // Each question carries its own Prev/Next (see _triage_compound_base.html)
 // - only the currently-active one is ever visible, but keep its buttons'
@@ -962,6 +962,54 @@ doaj.triage.reject = function () {
 }
 
 //------------------------- my code  -------------------------
+doaj.triage.questions.showOverview = function () {
+    console.log("TODO: show overview");
+};
+doaj.triage.questions.answerIcons = {
+    compliant: `<svg xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none"
+                    aria-hidden="true"
+                    class="answer-icon"
+                >
+                    <path d="M12 0.375C5.57967 0.375 0.375 5.57967 0.375 12C0.375 18.4203 5.57967 23.625 12 23.625C18.4203 23.625 23.625 18.4203 23.625 12C23.625 5.57967 18.4203 0.375 12 0.375ZM12 2.625C17.1812 2.625 21.375 6.81802 21.375 12C21.375 17.1812 17.182 21.375 12 21.375C6.81881 21.375 2.625 17.182 2.625 12C2.625 6.81881 6.81802 2.625 12 2.625ZM18.5721 8.73127L17.5157 7.66636C17.2969 7.44581 16.9408 7.44436 16.7202 7.66317L10.0943 14.2358L7.29159 11.4103C7.07283 11.1898 6.71667 11.1883 6.49613 11.4071L5.43117 12.4635C5.21062 12.6822 5.20917 13.0384 5.42798 13.259L9.68334 17.5488C9.90211 17.7693 10.2583 17.7708 10.4788 17.552L18.5689 9.52678C18.7894 9.30797 18.7908 8.95181 18.5721 8.73127Z" fill="#3A5959"/>
+                </svg>`,
+    non_compliant: `<svg xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none"
+                    aria-hidden="true"
+                    class="answer-icon"
+                >
+                        <path d="M12 0.375C5.57812 0.375 0.375 5.57812 0.375 12C0.375 18.4219 5.57812 23.625 12 23.625C18.4219 23.625 23.625 18.4219 23.625 12C23.625 5.57812 18.4219 0.375 12 0.375ZM12 21.375C6.82031 21.375 2.625 17.1797 2.625 12C2.625 6.82031 6.82031 2.625 12 2.625C17.1797 2.625 21.375 6.82031 21.375 12C21.375 17.1797 17.1797 21.375 12 21.375Z" fill="#982E0A"/>
+                        <path d="M12.1562 14.3438C10.9654 14.3438 10 15.3091 10 16.5C10 17.6909 10.9654 18.6562 12.1562 18.6562C13.3471 18.6562 14.3125 17.6909 14.3125 16.5C14.3125 15.3091 13.3471 14.3438 12.1562 14.3438Z" fill="#982E0A"/>
+                        <path d="M10.1091 6.59316L10.4568 12.9682C10.4731 13.2665 10.7197 13.5 11.0185 13.5H13.294C13.5928 13.5 13.8394 13.2665 13.8557 12.9682L14.2034 6.59316C14.221 6.27094 13.9645 6 13.6418 6H10.6707C10.348 6 10.0915 6.27094 10.1091 6.59316Z" fill="#982E0A"/>
+                    </svg>`,
+    later: `<svg xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none"
+                    aria-hidden="true"
+                    class="answer-icon"
+            >
+                <path d="M12 0.375C5.58014 0.375 0.375 5.58202 0.375 12C0.375 18.4217 5.58014 23.625 12 23.625C18.4199 23.625 23.625 18.4217 23.625 12C23.625 5.58202 18.4199 0.375 12 0.375ZM12 21.375C6.81881 21.375 2.625 17.1829 2.625 12C2.625 6.82055 6.819 2.625 12 2.625C17.1793 2.625 21.375 6.81895 21.375 12C21.375 17.1811 17.1829 21.375 12 21.375ZM17.0271 9.4125C17.0271 12.5556 13.6323 12.6039 13.6323 13.7655V14.0625C13.6323 14.3731 13.3805 14.625 13.0698 14.625H10.9301C10.6195 14.625 10.3676 14.3731 10.3676 14.0625V13.6566C10.3676 11.9811 11.6379 11.3113 12.5979 10.773C13.4211 10.3116 13.9256 9.99769 13.9256 9.38653C13.9256 8.57812 12.8944 8.04155 12.0607 8.04155C10.9737 8.04155 10.4719 8.55609 9.76655 9.44634C9.57638 9.68634 9.22936 9.73092 8.98533 9.54591L7.68108 8.55694C7.44169 8.37544 7.38806 8.03822 7.55714 7.78992C8.66466 6.16364 10.0753 5.25 12.2716 5.25C14.5718 5.25 17.0271 7.0455 17.0271 9.4125ZM13.9688 17.25C13.9688 18.3356 13.0856 19.2188 12 19.2188C10.9144 19.2188 10.0312 18.3356 10.0312 17.25C10.0312 16.1644 10.9144 15.2812 12 15.2812C13.0856 15.2812 13.9688 16.1644 13.9688 17.25Z" fill="#F9D950"/>
+            </svg>`,
+    action: `<svg xmlns="http://www.w3.org/2000/svg" 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none"
+                aria-hidden="true"
+                class="answer-icon"
+            >
+                <path d="M12 0.375C5.57967 0.375 0.375 5.57967 0.375 12C0.375 18.4203 5.57967 23.625 12 23.625C18.4203 23.625 23.625 18.4203 23.625 12C23.625 5.57967 18.4203 0.375 12 0.375ZM12 2.625C17.1812 2.625 21.375 6.81802 21.375 12C21.375 17.1812 17.182 21.375 12 21.375C6.81881 21.375 2.625 17.182 2.625 12C2.625 6.81881 6.81802 2.625 12 2.625Z" fill="#FD5A3B"/>
+                <path d="M16.9668 10.3366L10.1283 16.9309L7.77411 17.182C7.09182 17.2548 6.51109 16.6998 6.58661 16.0369L6.84703 13.7668L13.6856 7.1725C14.2819 6.59745 15.2455 6.59745 15.8392 7.1725L16.9642 8.25732C17.5606 8.83238 17.5606 9.76402 16.9668 10.3366ZM14.3939 11.1125L12.8809 9.65353L8.04234 14.3218L7.85224 15.9616L9.55276 15.7783L14.3939 11.1125ZM16.0814 9.11112L14.9564 8.0263C14.8496 7.92334 14.6752 7.92334 14.571 8.0263L13.7663 8.80225L15.2793 10.2612L16.084 9.48528C16.1882 9.37981 16.1882 9.21408 16.0814 9.11112Z" fill="#FD5A3B"/>
+            </svg>`
+}
 doaj.triage.questions.Question = class {
     static $all = [];
 
@@ -993,6 +1041,118 @@ doaj.triage.questions.Question = class {
         this.group = QuestionGroup.getByElement(
             this.$wrapper.closest(".question-group")
         );
+
+        this.$answerInput = this.$wrapper.find(
+            "input[type='radio'][data-role='answer']"
+        );
+
+        this.$changeAnswerBtn = this.$wrapper.find(
+            "button[data-role='change_answers']"
+        );
+
+        this.$actionBtn = this.$wrapper.find(
+            "button[data-controls][data-role='answer']"
+        );
+
+        this.$actionSection = this.$wrapper.find(
+            "div[data-role='action']"
+        );
+
+        this.$continueBtn = this.$wrapper.find(
+            "button[data-role='continue-triage']"
+        );
+        this.$srAnswer = this.$wrapper.find(".sr-answer");
+
+        this.answered = this.checkAnswered();
+        this._setupEvents();
+    }
+
+    _setupEvents() {
+        this.$answerInput.on("click", (event) => {
+            this.answer($(event.currentTarget));
+        });
+
+        this.$changeAnswerBtn.on("click", () => {
+            this.changeAnswer();
+        });
+
+        this.$actionBtn.on("click", () => {
+            this.startAction();
+        });
+
+        this.$continueBtn.on("click", () => {
+            this.continueTriage();
+        });
+    }
+
+    startAction() {
+        this.$answerInput._hide();
+        this.$actionBtn._hide();
+
+        this.$actionSection._show();
+        this.$continueBtn._show();
+        this.$changeAnswerBtn._show();
+    }
+
+    continueTriage() {
+        this.activateNext();
+    }
+
+    changeAnswer() {
+        this.$answerInput.prop("checked", false);
+
+        this.$actionSection._hide();
+        this.$continueBtn.parent()._hide();
+        this.$changeAnswerBtn.parent()._hide();
+
+        this.$answerInput.parent()._show();
+        this.$actionBtn.parent()._show();
+
+        this.answered = false;
+
+        doaj.triage.requestSave();
+    }
+
+    checkAnswered() {
+        let answered = false;
+        let $answer = null;
+
+        this.$wrapper.find(doaj.triage.selectors.saveableFields).each(function () {
+            const $field = $(this);
+            console.log($field);
+
+            if (
+                ($field.is(":checkbox, :radio") && $field.is(":checked")) ||
+                (!$field.is(":checkbox, :radio") && $.trim($field.val() || "") !== "")
+            ) {
+                answered = true;
+                $answer = $field;
+                return false;
+            }
+        });
+        if ($answer) {
+            this._setupAnswered($answer);
+        }
+        return answered;
+    }
+
+    answer($answer) {
+        this.answered = true;
+        doaj.triage.requestSave();
+        this._setupAnswered($answer);
+        this.activateNext();
+    }
+
+    _setupAnswered($answer) {
+        this.$answerInput.not($answer).parent()._hide();
+        this.$actionBtn.parent()._hide();
+        this.$changeAnswerBtn.parent()._show();
+        this.$headerBtn.find(".answer-icon").remove();
+        const answerVal = $answer.val();
+        this.$headerBtn.prepend(
+            doaj.triage.questions.answerIcons[answerVal]
+        );
+        this.$srAnswer.text(`Answered: ${answerVal}`);
     }
 
     expand() {
@@ -1010,10 +1170,6 @@ doaj.triage.questions.Question = class {
         const questions = doaj.triage.questions;
         const previous = questions.currentQuestion;
 
-        if (previous === this) {
-            return;
-        }
-
         if (previous) {
             previous.deactivate();
         }
@@ -1029,6 +1185,34 @@ doaj.triage.questions.Question = class {
         this.$headerBtn.attr("aria-current", "true");
         this.expand();
         this.scrollTo();
+    }
+
+    activateNext() {
+        const next = Question.getNextUnanswered(this);
+
+        if (next) {
+            next.activate();
+        } else {
+            doaj.triage.questions.showOverview();
+        }
+    }
+
+    static getFirstUnanswered() {
+        return this.$all.find(question => !question.answered);
+    }
+
+    static getNextUnanswered(current) {
+        const afterCurrent = this.$all
+            .slice(current.index + 1)
+            .find(question => !question.answered);
+
+        if (afterCurrent) {
+            return afterCurrent;
+        }
+
+        return this.$all
+            .slice(0, current.index)
+            .find(question => !question.answered);
     }
 
     deactivate() {
@@ -1059,7 +1243,7 @@ doaj.triage.questions.QuestionGroup = class {
     }
 
     static init() {
-        this.$all = $(".question-group").map(function() {
+        this.$all = $(".question-group").map(function () {
             return new doaj.triage.questions.QuestionGroup(this.id);
         }).get();
     }
@@ -1153,4 +1337,9 @@ const QuestionGroup = doaj.triage.questions.QuestionGroup;
 const Question = doaj.triage.questions.Question;
 QuestionGroup.init();
 Question.init();
-Question.$all[0].activate();
+const $firstUnanswered = Question.getFirstUnanswered();
+if ($firstUnanswered) {
+    $firstUnanswered.activate();
+} else {
+    Question.$all[0].activate();
+}
