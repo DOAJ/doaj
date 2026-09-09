@@ -48,8 +48,14 @@ class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
 class GenericROCompoundFieldRenderer(JinjaCompoundRenderer):
     template = templates.WORKFLOW_RO_GENERIC_COMPOUND
 
+class ROComplianceCompound(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_RO_COMPLIANCE_COMPOUND
+
 class GenericROFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_RO_GENERIC_FIELD
+
+class ROComplianceField(JinjaFieldRenderer):
+    template = templates.WORKFLOW_RO_COMPLIANCE_FIELD
 
 class GenericRORadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_RO_RADIO_CONTROL
@@ -138,7 +144,7 @@ class ComplianceCheckCapability(FormFieldCapability):
 
     alt_render = {
         "ro": {
-            "render_class": GenericROFieldRenderer,
+            "render_class": ROComplianceField,
             "control_render_class": GenericRORadioRenderer
         }
     }
@@ -168,7 +174,7 @@ class CheckboxCompoundCapability(CompoundFieldCapability):
 
     alt_render = {
         "ro": {
-            "render_class": GenericROCompoundFieldRenderer
+            "render_class": ROComplianceCompound
         }
     }
 
@@ -177,7 +183,7 @@ class TriageCompoundFieldCapability(CompoundFieldCapability):
 
     alt_render = {
         "ro": {
-            "render_class": GenericROCompoundFieldRenderer
+            "render_class": ROComplianceCompound
         }
     }
 
@@ -1615,7 +1621,7 @@ class License(Field):
         alt_render = {
             "ro": {
                 "render_class": GenericROFieldRenderer,
-                "control_render_class": GenericROControlRenderer
+                "control_render_class": GenericRORadioRenderer
             }
         }
 
@@ -1649,7 +1655,7 @@ class LicenseAttribute(Field):
         alt_render = {
             "ro": {
                 "render_class": GenericROFieldRenderer,
-                "control_render_class": GenericROControlRenderer
+                "control_render_class": GenericRORadioRenderer
             }
         }
 

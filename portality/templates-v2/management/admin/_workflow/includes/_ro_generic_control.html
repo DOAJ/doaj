@@ -16,7 +16,8 @@
     {%- endif -%}
 {%- endmacro %}
 
-Controls<br>
+{#Controls<br>#}
+{% set ns = namespace(values=[]) %}
 {% for control in controls %}
 {#    {% if control.label %}#}
 {#        <strong>{{ control.label.content }}</strong>#}
@@ -28,7 +29,13 @@ Controls<br>
 {#        {% set content.value=render_content(input.content) %}#}
 {#    {% endif %}#}
 
-    {% autoescape off %}
-        Value: {{ control.control.attrs.value }}<br>
-    {% endautoescape %}
+    {% if control.control.attrs.value %}
+        {% set ns.values = ns.values + [control.control.attrs.value] %}
+    {% endif %}
 {% endfor %}
+
+{% if ns.values|length > 0 %}
+    {{ ns.values|join(", ") }}
+{% else %}
+    -
+{% endif %}

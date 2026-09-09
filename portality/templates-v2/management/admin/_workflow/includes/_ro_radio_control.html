@@ -16,9 +16,26 @@
     {%- endif -%}
 {%- endmacro %}
 
-Radio Controls<br>
-{% set answer = {"value": "not_answered"} %}
+{% set compliant_icon %}
+    {% include "management/admin/_workflow/includes/icons/compliant-answer.html" %}
+{% endset %}
+
+{% set noncompliant_icon %}
+    {% include "management/admin/_workflow/includes/icons/noncompliant-answer.html" %}
+{% endset %}
+
+{% set later_icon %}
+    {% include "management/admin/_workflow/includes/icons/later-answer.html" %}
+{% endset %}
+
+{% set action_icon %}
+    {% include "management/admin/_workflow/includes/icons/action-answer.html" %}
+{% endset %}
+
+{#Radio Controls<br>#}
+{% set answer = namespace(value="not_answered") %}
 {% for control in controls %}
+
 {#    {% if control.label %}#}
 {#        <strong>{{ control.label.content }}</strong>#}
 {#    {% endif %}#}
@@ -33,5 +50,19 @@ Radio Controls<br>
 {#    {% endif %}#}
 {% endfor %}
 {% autoescape off %}
-    Value: {{ answer.value }}<br>
+    {% if answer.value == "compliant" %}
+        {{ compliant_icon | safe }}
+    {% elif compliance == "non_compliant" and label %}
+        {{ noncompliant_icon | safe }}
+    {% elif compliance == "later" and label %}
+        {{ later_icon | safe }}
+    {% elif compliance == "action" and label %}
+        {{ action_icon | safe }}
+    {% elif compliance == "conditional_compliant" and label %}
+        {{ compliant_icon | safe }}
+    {% elif compliance == "conditional_non_compliant" and label %}
+        {{ noncompliant_icon | safe }}
+    {% else %}
+        {{ answer.value }}
+    {% endif %}
 {% endautoescape %}

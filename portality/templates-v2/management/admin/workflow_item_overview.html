@@ -51,6 +51,13 @@
     <div class="row">
         <div class="col-md-8">
             {% include 'management/admin/_workflow/includes/_recommend.html' %}
+            <a href="#" class="button button--primary">Submission</a>
+            <a href="#" class="button button--primary">Triage</a>
+            <div class="submission">
+                {% autoescape off %}
+                    {{ original_ro }}
+                {% endautoescape %}
+            </div>
             <div class="triage">
                 {% autoescape off %}
                     {{ ro_form }}
@@ -81,5 +88,5 @@
 {% endblock %}
 
 {% block admin_js %}
-
+    {% include "_application-form/includes/_form_js.html" %}
 {% endblock %}

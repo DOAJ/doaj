@@ -24,7 +24,7 @@
             formSelector: "#{{ form_id }}",
             functions : {{ formulaic_context.javascript_functions|tojson }},
             doValidation : {% if js_validation %}true{% else %}false{% endif %},
-            autoSave: {{ auto_save }},
+            autoSave: {% if auto_save %}true{% else %}false{% endif %},
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
 

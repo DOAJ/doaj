@@ -77,9 +77,11 @@ MANED_READ_ONLY_JOURNAL = "management/admin/readonly_journal.html"
 EDITOR_READ_ONLY_JOURNAL = "management/editor/readonly_journal.html"
 MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_journal_bulk_edit.html"
 
+
 # Workflow entry pages
 WORKFLOW_SEARCH = "management/admin/workflow_search.html"
 WORKFLOW_ITEM_OVERVIEW = "management/admin/workflow_item_overview.html"
+WORKFLOW_READ_ONLY_APPLICATION = "management/admin/_application-form/_workflow_read_only.html"
 
 # Generic Workflow components
 WORKFLOW_CLAIM_WIDGET = "management/admin/_workflow/includes/claim.html"
@@ -122,7 +124,9 @@ WORKFLOW_GENERIC_CONTROL = "management/admin/_workflow/includes/_generic_control
 # Read only versions
 WORKFLOW_RO_GENERIC_FIELDSET = "management/admin/_workflow/includes/_ro_generic_fieldset.html"
 WORKFLOW_RO_GENERIC_COMPOUND = "management/admin/_workflow/includes/_ro_generic_compound.html"
+WORKFLOW_RO_COMPLIANCE_COMPOUND = "management/admin/_workflow/includes/_ro_compliance_compound.html"
 WORKFLOW_RO_GENERIC_FIELD = "management/admin/_workflow/includes/_ro_generic_field.html"
+WORKFLOW_RO_COMPLIANCE_FIELD = "management/admin/_workflow/includes/_ro_compliance_field.html"
 WORKFLOW_RO_RADIO_CONTROL = "management/admin/_workflow/includes/_ro_radio_control.html"
 WORKFLOW_RO_GENERIC_CONTROL = "management/admin/_workflow/includes/_ro_generic_control.html"
 
