@@ -1,4 +1,6 @@
-if (!window.doaj) { doaj = {} }
+if (!window.doaj) {
+    doaj = {}
+}
 
 doaj.triage = {};
 
@@ -31,7 +33,7 @@ doaj.triage.selectors = {
     // selector-based (not a list of field names) so this keeps working as
     // fields are added/removed from the form.
     saveableFields: 'input[type="text"], input[type="url"], input[type="number"], ' +
-                     'input[type="radio"], input[type="checkbox"], select, textarea',
+        'input[type="radio"], input[type="checkbox"], select, textarea',
 
     // Every question carries its own Prev/Next (see
     // _triage_compound_base.html) - only the currently-expanded one is ever
@@ -158,16 +160,16 @@ doaj.triage.init = function () {
     doaj.triage.setupUI();
 
     // quick implementation of a dependent question within an action group
-    $("[data-dependency-trigger]").on("change", function(event) {
-        const $trigger = $(event.currentTarget);
-        doaj.triage.setupDependents($trigger);
-    });
-    $("[data-dependency-trigger]").each(function() {
-        doaj.triage.setupDependents($(this));
-    })
+    // $("[data-dependency-trigger]").on("change", function(event) {
+    //     const $trigger = $(event.currentTarget);
+    //     doaj.triage.setupDependents($trigger);
+    // });
+    // $("[data-dependency-trigger]").each(function() {
+    //     doaj.triage.setupDependents($(this));
+    // })
 };
 
-doaj.triage.setupDependents = function($trigger) {
+doaj.triage.setupDependents = function ($trigger) {
     const key = $trigger.attr("data-dependency-trigger");
     const target = $(`[data-dependency-key="${key}"]`)
     const hidden = target.attr("hidden")
@@ -188,9 +190,6 @@ doaj.triage.setupUI = function () {
     $(doaj.triage.selectors.answersContainer).each(function () {
         if ($(this).find("input[type='radio']:checked").length > 0) {
             const $checkedAnswer = $(this).find("input[type=radio]:checked");
-            // const $changeButtonContainer = $(this).find(doaj.triage.selectors.clearAnswersButton).parent()
-            // $(this).find("input[type='radio']").not($checkedAnswer).parent()._hide();
-            // $changeButtonContainer._show();
             doaj.triage.setupAnswers($checkedAnswer);
         }
     });
@@ -214,26 +213,23 @@ doaj.triage.setupNone = function ($that) {
             .prop("checked", false)
             .trigger("change")
             .prop("disabled", true);
-    }
-    else {
+    } else {
         $fieldset.find("input").not($that)
             .prop("disabled", false);
     }
 }
-doaj.triage.setupAnswers = function($that) {
+doaj.triage.setupAnswers = function ($that) {
     const $fieldset = $that.closest("fieldset");
     let $that_label = $(`label[for="${$that.attr("id")}"]`);
     const $changeButtonContainer = $fieldset.find(doaj.triage.selectors.clearAnswersButton).parent()
-    if ($that.is("[data-controls]")){
+    if ($that.is("[data-controls]")) {
         $fieldset.find("label").parent()._hide();
         doaj.triage.setupAction($that);
-    }
-    else {
-         if ($that.is(":checked")) {
+    } else {
+        if ($that.is(":checked")) {
             $fieldset.find("label").not($that_label).parent()._hide();
             $changeButtonContainer._show();
-        }
-        else {
+        } else {
             $fieldset.find("label").not($that_label).parent()._show();
             $changeButtonContainer._hide();
         }
@@ -259,9 +255,9 @@ doaj.triage.setupAction = function ($that) {
 
 }
 
-doaj.triage.clearAnswers = function($clearBtn) {
+doaj.triage.clearAnswers = function ($clearBtn) {
     const compound_name = $clearBtn.data("controls");
-    const answers = $clearBtn.data("controls")+doaj.triage.magicStrings.reviewOutcomeFieldset;
+    const answers = $clearBtn.data("controls") + doaj.triage.magicStrings.reviewOutcomeFieldset;
     const $answers = $(`#${answers}`).find("input");
     $answers.parent()._show();
     $answers.prop("checked", false);
@@ -275,21 +271,20 @@ doaj.triage.clearAnswers = function($clearBtn) {
 
 doaj.triage.setupOther = function ($that) {
     let $input = $that.is("label")
-            ? $($that[0].control)
-            : $that;
-        const controls_id = $input.data("controls");
-        if (controls_id.length > 0) {
-            let $details = $(`#${controls_id}`)
-            let $details_label = $(`label[for="${$details.attr("id")}"]`);
-            if ($input.is(":checked")) {
-                $details._show();
-                $details_label._show();
-            }
-            else {
-                $details._hide();
-                $details_label._hide();
-            }
+        ? $($that[0].control)
+        : $that;
+    const controls_id = $input.data("controls");
+    if (controls_id.length > 0) {
+        let $details = $(`#${controls_id}`)
+        let $details_label = $(`label[for="${$details.attr("id")}"]`);
+        if ($input.is(":checked")) {
+            $details._show();
+            $details_label._show();
+        } else {
+            $details._hide();
+            $details_label._hide();
         }
+    }
 }
 
 doaj.triage.scrollToField = function (fieldId) {
@@ -314,7 +309,7 @@ doaj.triage.scrollToField = function (fieldId) {
     var $question = $target.closest(doaj.triage.selectors.questionWrapper);
     var questionId = $question.attr("id");
     if (questionId && questionId !== doaj.triage.questions.activeQuestionId) {
-        doaj.triage.questions.activate(questionId, { scroll: false });
+        doaj.triage.questions.activate(questionId, {scroll: false});
     }
 
     doaj.triage.questions._scrollWithHeaderOffset($target, "center");
@@ -484,7 +479,7 @@ doaj.triage.errors.render = function (errorList, severity) {
     errorList.forEach(function (error) {
         var message = error.code && error.code.msg;
         if (error.field_id && message) {
-            incoming[error.field_id] = { message: message, severity: severity };
+            incoming[error.field_id] = {message: message, severity: severity};
         }
     });
 
@@ -710,7 +705,7 @@ doaj.triage.questions._updateProgress = function (questionId) {
     var ids = doaj.triage.questions._ids();
     var index = ids.indexOf(questionId);
     if (index !== -1) {
-        $("#triage-progress").attr({ value: index + 1, max: ids.length });
+        $("#triage-progress").attr({value: index + 1, max: ids.length});
         $("#triage-progress-label").text("Question " + (index + 1) + " of " + ids.length);
     }
 };
@@ -766,7 +761,7 @@ doaj.triage.questions._scrollWithHeaderOffset = function ($target, block) {
     } else {
         delta = targetRect.top - safeTop;
     }
-    window.scrollBy({ top: delta, behavior: "smooth" });
+    window.scrollBy({top: delta, behavior: "smooth"});
 };
 
 // Collapses whichever question was previously active, expands questionId,
@@ -804,36 +799,36 @@ doaj.triage.questions._scrollWithHeaderOffset = function ($target, block) {
 // clicking Next from question 6 landed on question 27. Waiting for the
 // slide to finish before measuring where to scroll fixes it at the root,
 // rather than trying to compensate for a moving target.
-doaj.triage.questions.activate = function (questionId, options) {
-    options = options || {};
-    var $target = $(`#${questionId}`);
-    if ($target.length === 0 || questionId === doaj.triage.questions.activeQuestionId) {
-        return;
-    }
-
-    var previousId = doaj.triage.questions.activeQuestionId;
-    if (previousId) {
-        var $prevBody = $(`#${previousId}-body`);
-        $(`#${previousId}-header`).attr("aria-expanded", "false");
-        $(`#${previousId}`).removeClass("is-active");
-        $prevBody.stop(true, true).slideUp(doaj.triage.questions.ANIMATION_MS, function () {
-            $prevBody.prop("hidden", true).css({ display: "", height: "" });
-        });
-    }
-
-    var $newBody = $(`#${questionId}-body`);
-    $newBody.prop("hidden", false).hide().stop(true, true).slideDown(doaj.triage.questions.ANIMATION_MS, function () {
-        if (options.scroll) {
-            doaj.triage.questions._scrollWithHeaderOffset($target, "start");
-        }
-    });
-    $(`#${questionId}-header`).attr("aria-expanded", "true");
-    $target.addClass("is-active");
-
-    doaj.triage.questions.activeQuestionId = questionId;
-    doaj.triage.questions._updateOwnButtons(questionId);
-    doaj.triage.questions._updateProgress(questionId);
-};
+// doaj.triage.questions.activate = function (questionId, options) {
+//     options = options || {};
+//     var $target = $(`#${questionId}`);
+//     if ($target.length === 0 || questionId === doaj.triage.questions.activeQuestionId) {
+//         return;
+//     }
+//
+//     var previousId = doaj.triage.questions.activeQuestionId;
+//     if (previousId) {
+//         var $prevBody = $(`#${previousId}-body`);
+//         $(`#${previousId}-header`).attr("aria-expanded", "false");
+//         $(`#${previousId}`).removeClass("is-active");
+//         $prevBody.stop(true, true).slideUp(doaj.triage.questions.ANIMATION_MS, function () {
+//             $prevBody.prop("hidden", true).css({ display: "", height: "" });
+//         });
+//     }
+//
+//     var $newBody = $(`#${questionId}-body`);
+//     $newBody.prop("hidden", false).hide().stop(true, true).slideDown(doaj.triage.questions.ANIMATION_MS, function () {
+//         if (options.scroll) {
+//             doaj.triage.questions._scrollWithHeaderOffset($target, "start");
+//         }
+//     });
+//     $(`#${questionId}-header`).attr("aria-expanded", "true");
+//     $target.addClass("is-active");
+//
+//     doaj.triage.questions.activeQuestionId = questionId;
+//     doaj.triage.questions._updateOwnButtons(questionId);
+//     doaj.triage.questions._updateProgress(questionId);
+// };
 
 doaj.triage.questions.goNext = function (questionId) {
     var ids = doaj.triage.questions._ids();
@@ -841,7 +836,7 @@ doaj.triage.questions.goNext = function (questionId) {
     if (index === -1 || index >= ids.length - 1) {
         return;
     }
-    doaj.triage.questions.activate(ids[index + 1], { scroll: true });
+    doaj.triage.questions.activate(ids[index + 1], {scroll: true});
 };
 
 doaj.triage.questions.goPrev = function (questionId) {
@@ -850,7 +845,7 @@ doaj.triage.questions.goPrev = function (questionId) {
     if (index <= 0) {
         return;
     }
-    doaj.triage.questions.activate(ids[index - 1], { scroll: true });
+    doaj.triage.questions.activate(ids[index - 1], {scroll: true});
 };
 
 // Runs once on page load: opens the first not-yet-answered question so a
@@ -870,7 +865,7 @@ doaj.triage.questions.setupInit = function () {
         }
     }
 
-    doaj.triage.questions.activate(targetId, { scroll: true });
+    // doaj.triage.questions.activate(targetId, { scroll: true });
 };
 
 // There is no wizard/pagination UI beyond the accordion above, so "advance"
@@ -878,14 +873,14 @@ doaj.triage.questions.setupInit = function () {
 // a future implementation wants to react to it too.
 doaj.triage.advanceQuestion = function (questionId) {
     doaj.triage.questions.goNext(questionId);
-    $(document).trigger("doaj:triage:question-advanced", { questionId: questionId });
+    $(document).trigger("doaj:triage:question-advanced", {questionId: questionId});
 };
 
 /* ============================================================
  * Existing manual submit paths (unchanged)
  * ============================================================ */
 
-doaj.triage.asyncFormSubmit = function() {
+doaj.triage.asyncFormSubmit = function () {
     let $form = $("#triage");
     let $response = $("#triage-async-response");
 
@@ -916,7 +911,7 @@ doaj.triage.asyncFormSubmit = function() {
     });
 }
 
-doaj.triage.fullFormSubmit = function(submitter) {
+doaj.triage.fullFormSubmit = function (submitter) {
     let $form = $("#triage");
     let $response = $("#triage-async-response");
 
@@ -929,19 +924,19 @@ doaj.triage.fullFormSubmit = function(submitter) {
     $form[0].submit();
 }
 
-doaj.triage.show = function(elements) {
+doaj.triage.show = function (elements) {
     $(elements)._show();
 }
 
-doaj.triage.hide = function(elements) {
+doaj.triage.hide = function (elements) {
     $(elements)._hide();
 }
 
-doaj.triage.toggle = function(elements) {
+doaj.triage.toggle = function (elements) {
     $(elements)._toggle();
 }
 
-doaj.triage.toggleSection = function(section, btn) {
+doaj.triage.toggleSection = function (section, btn) {
     const $section = $(`#${section}`);
     const $btn = $(btn);
     const expanded = $btn.attr("aria-expanded") === "true";
@@ -949,7 +944,7 @@ doaj.triage.toggleSection = function(section, btn) {
     $btn.attr("aria-expanded", !expanded.toString());
 }
 
-doaj.triage.toggleInput = function(input_id, trigger) {
+doaj.triage.toggleInput = function (input_id, trigger) {
     console.log("toggle")
     const $input = $(`#${input_id}`);
     const $trigger = $(trigger);
@@ -957,11 +952,88 @@ doaj.triage.toggleInput = function(input_id, trigger) {
     $input.attr("hidden") === "true" ? $input.focus() : $trigger.focus();
 }
 
-doaj.triage.continue = function() {
+doaj.triage.continue = function () {
     console.log("continue clicked")
     doaj.triage.requestSave();
 }
 
-doaj.triage.reject = function() {
+doaj.triage.reject = function () {
     console.log("reject")
 }
+
+//------------------------- my code  -------------------------
+doaj.triage.questions.Question = class {
+    static $all = [];
+
+    static getById(id) {
+        return this.$all.find(q => q.id === id);
+    }
+
+    static getByName(name) {
+        return this.$all.find(q => q.name === name);
+    }
+
+
+    static init() {
+        this.$all = doaj.triage.questions._ids().map(
+            (id, index) => new this(id, index)
+        );
+    }
+
+
+    constructor(id, name) {
+        this.name = name;
+        this.id = id;
+
+        this.$wrapper = $(`#${id}`);
+        this.$headerBtn = this.$wrapper.find(
+            ".criterion-wrapper--header > button"
+        );
+        this.$body = $(`#${this.$headerBtn.attr("aria-controls")}`);
+    }
+
+    expand() {
+        this.$headerBtn.attr("aria-expanded", "true");
+        this.$headerBtn.trigger("focus");
+        this.$body._show();
+    }
+
+    collapse() {
+        this.$headerBtn.attr("aria-expanded", "false");
+        this.$body._hide();
+    }
+
+    activate() {
+        const current = doaj.triage.questions.currentQuestion;
+
+        if (current && current !== this) {
+            current.deactivate();
+        }
+
+        this.$headerBtn.attr("aria-current", "true");
+        this.expand();
+
+        doaj.triage.questions.currentQuestion = this;
+    }
+
+    deactivate() {
+        this.$headerBtn.removeAttr("aria-current");
+        this.collapse();
+    }
+};
+doaj.triage.questions.questionHeaderClick = function (btn) {
+    const $btn = $(btn);
+    const questionId = $btn.data("question-id");
+    const question = Question.getById(questionId);
+
+    if ($btn.attr("aria-expanded") === "true") {
+        question.collapse();
+    } else {
+        question.activate();
+    }
+};
+
+//----------------- do now ------------------
+const Question = doaj.triage.questions.Question;
+Question.init();
+doaj.triage.questions.currentQuestion = Question.$all[0];

@@ -212,11 +212,11 @@ body.dashboard {
                 // Breathing room around the recommendation + progress bar -
                 // previously had none, so they sat flush against the page
                 // edges and the header above.
-                padding: 1rem 0.5rem 0;
-
-                @media screen and (min-width: 769px) {
-                    padding: 1rem;
-                }
+                //padding: 1rem 0.5rem 0;
+                //
+                //@media screen and (min-width: 769px) {
+                //    padding: 1rem;
+                //}
 
                 .progress {
                     margin-top: 0.5rem;
