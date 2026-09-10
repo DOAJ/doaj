@@ -129,6 +129,8 @@ class QueryService(object):
         try:
             res = dao_klass.query(q=query.as_dict())
         except ESMappingMissingError:
+            if not cfg.get("tolerate_missing_mapping", False):
+                raise
             return {"hits": {"hits": [], "total": {"value": 0}}, "aggregations": {}}
 
         # filter the results as needed
