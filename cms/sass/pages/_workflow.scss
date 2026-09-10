@@ -2,22 +2,28 @@ body.dashboard {
     &.ew {
         .save-notification {
             position: fixed;
-            top: 75px;
-            right: 0;
+            right: .25rem;
             z-index: 1000;
-            padding: 0.5rem;
+            padding: 0.5rem 1rem;
+            margin-top: .25rem;
             font-weight: bold;
-            background-color: $white;
-            &.error * {
-                background-color: rgba($sanguine, 0.2);
-                color: $sanguine;
-            }
-            &.success * {
-                background-color: rgba($light-green, 0.2);
-                color: $dark-green;
-            }
-
+            width: 25%;
+            text-align: center;
         }
+        @media (max-width: 1279px) {
+            .save-notification {
+                width: calc(100% - 75px);
+            }
+        }
+        .save-notification.success {
+             background-color: rgba($light-green, 0.2);
+            color: $dark-green;
+        }
+        .save-notification.error {
+             background-color: rgba($sanguine, 0.2);
+             color: $sanguine;
+        }
+
         .question-group {
             padding: 0;
             margin-top: 0.375rem;
@@ -212,11 +218,11 @@ body.dashboard {
                 // Breathing room around the recommendation + progress bar -
                 // previously had none, so they sat flush against the page
                 // edges and the header above.
-                padding: 1rem 0.5rem 0;
-
-                @media screen and (min-width: 769px) {
-                    padding: 1rem;
-                }
+                //padding: 1rem 0.5rem 0;
+                //
+                //@media screen and (min-width: 769px) {
+                //    padding: 1rem;
+                //}
 
                 .progress {
                     margin-top: 0.5rem;

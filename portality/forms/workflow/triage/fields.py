@@ -73,9 +73,9 @@ class TriageFormButtons:
         "label": "Continue triage",
         "attrs": {
             "class": "button compliant",
-            "onclick": "doaj.triage.continue()",
             "type": "button",
-            "role": "compliant"
+            "role": "compliant",
+            "data-role": "continue-triage"
         }
     }
 

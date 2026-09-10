@@ -1,21 +1,45 @@
-if (!window.doaj) { doaj = {} }
+if (!window.doaj) {
+    doaj = {}
+}
 
 doaj.triage = {};
 
-/* ============================================================
- * Configuration
- *
- * asyncURL is injected from the page template (triage.html) after this
- * script loads - nothing in here should ever hardcode a URL or field name.
- * ============================================================ */
-
-doaj.triage.asyncURL = null;
-
-// The same recommendation data _recommend.html used to render statically -
-// injected from the page template (triage.html) so setupUI() can feed it
-// through doaj.triage.recommendation.render(), the exact function every
-// later async save also uses. See _recommend.html for why.
 doaj.triage.initialRecommendation = null;
+
+doaj.triage.recommendation = {};
+
+doaj.triage.recommendation.render = function (recommendation) {
+    if (!recommendation) {
+        console.log("No recommendation");
+        return;
+    }
+
+    console.log("Current Recommendation:", recommendation.code);
+
+    if (recommendation.code !== "reject") {
+        return;
+    }
+
+    console.log("Reasons:");
+
+    (recommendation.reasons || []).forEach(function (reason) {
+        var text = reason.question.text +
+            " (" + reason.question.name + ")" +
+            " [" + reason.question.field_id + "]: " +
+            reason.answer;
+
+        if (reason.sv) {
+            text += " (SV: " + reason.sv + ")";
+        }
+
+        if (reason.exception) {
+            text += " (Exception(s): " + reason.exception.join(", ") + ")";
+        }
+
+        console.log(text);
+    });
+};
+
 
 // strings that are used consistently in the templates
 doaj.triage.magicStrings = {
@@ -26,28 +50,11 @@ doaj.triage.magicStrings = {
 doaj.triage.selectors = {
     form: "#triage",
     response: "#triage-async-response",
-
-    // Any control whose value contributes to a triage answer. Deliberately
-    // selector-based (not a list of field names) so this keeps working as
-    // fields are added/removed from the form.
     saveableFields: 'input[type="text"], input[type="url"], input[type="number"], ' +
-                     'input[type="radio"], input[type="checkbox"], select, textarea',
-
-    // Every question carries its own Prev/Next (see
-    // _triage_compound_base.html) - only the currently-expanded one is ever
-    // visible/interactive, but the selector matches all of them.
+        'input[type="radio"], input[type="checkbox"], select, textarea',
     nextQuestionButton: ".js-triage-next-question",
     prevQuestionButton: ".js-triage-prev-question",
-
-    // One <section> per question - see doaj.triage.questions below.
     questionWrapper: ".criterion-wrapper",
-
-    // Dedicated host in the fixed top banner (triage.html) - moved there
-    // (previously the first, otherwise-unused child of the form itself) so
-    // it sits alongside the recommendation/progress bar instead of scrolling
-    // away with the question list, and no longer needs its own
-    // position:sticky (which fought with the site header - see
-    // _workflow.scss's removal of that rule).
     summaryContainer: "#triage-error-summary",
     summaryLink: "[data-field-error-summary-for]",
     checkboxOther: "input[type='checkbox'][value='other']",
@@ -57,313 +64,92 @@ doaj.triage.selectors = {
     clearAnswersButton: "button[data-role='change_answers']",
     actionButton: "button[data-controls]",
     actionSection: "div[data-role='action']",
-
-    // Host for the "reject" recommendation panel - see triage.html. Rebuilt
-    // in full on every save response, same approach as errors.summary.
     recommendationHost: "#triage-recommendation"
 };
-
-// Class + data attribute used to tag error messages we inject next to a
-// field, so a later render pass can find, update or remove them again.
 doaj.triage.errorNodeClass = "triage-field-error";
 doaj.triage.errorNodeDataAttr = "data-field-error-for";
 doaj.triage.summaryHostClass = "triage-error-summary-host";
 doaj.triage.summaryLinkDataAttr = "data-field-error-summary-for";
 
-/* ============================================================
- * init
- *
- * Wires up:
- *  - the existing manual "Check" / "Save" buttons
- *  - a soft, per-field async save triggered on genuine value changes
- *  - a hard validation gate on the "Next question" placeholder button
- * ============================================================ */
-
 doaj.triage.init = function () {
-
-    $(document).on("click", "#checkBtn", function (event) {
-        event.preventDefault();
-        doaj.triage.asyncFormSubmit();
-    });
 
     $(document).on("click", "#submitBtn", function (event) {
         event.preventDefault();
         doaj.triage.fullFormSubmit(this);
     });
-
-    // Soft save: fires on "change", not "blur"/"focusout". A single event
-    // type covers every control type correctly here, with no per-type
-    // branching needed:
-    //   - text / textarea / number / url: the browser only fires "change"
-    //     on blur if the value actually differs from what it was on focus.
-    //   - select / radio / checkbox: fires immediately on selection/toggle.
-    // That means someone tabbing through the form with a screen reader (or
-    // just reviewing answers without editing them) never triggers a save -
-    // there's a genuine value to persist, or there's no request at all.
-    $(document).on("change", doaj.triage.selectors.saveableFields, function () {
-        doaj.triage.requestSave();
-    });
-
-    // Hard gate: "Next question" always forces a save first. If that save
-    // comes back with errors, we block and leave the (now more visible)
-    // errors in place rather than letting the user move on.
-    $(document).on("click", doaj.triage.selectors.nextQuestionButton, function (event) {
-        event.preventDefault();
-        var questionId = $(event.currentTarget).closest(doaj.triage.selectors.questionWrapper).attr("id");
-
-        doaj.triage.requestSave({
-            blocking: true,
-            onSuccess: function () {
-                doaj.triage.advanceQuestion(questionId);
-            }
-        });
-    });
-
-    // "Previous question" never gates on validation - soft save already
-    // persists edits made so far, so this just navigates back.
-    $(document).on("click", doaj.triage.selectors.prevQuestionButton, function (event) {
-        event.preventDefault();
-        var questionId = $(event.currentTarget).closest(doaj.triage.selectors.questionWrapper).attr("id");
-        doaj.triage.questions.goPrev(questionId);
-    });
-
-    $(document).on("change", doaj.triage.selectors.checkboxOther, function (event) {
-        doaj.triage.setupOther($(event.target))
-    })
-    $(document).on("change", doaj.triage.selectors.checkboxNone, function (event) {
-        doaj.triage.setupNone($(event.target))
-    })
-    $(document).on("change", doaj.triage.selectors.answers, function (event) {
-        doaj.triage.setupAnswers($(event.target))
-    })
-    $(document).on("click", doaj.triage.selectors.clearAnswersButton, function (event) {
-        doaj.triage.clearAnswers($(event.target))
-    })
-    // Findability: clicking an entry in the error summary (see
-    // doaj.triage.summary) jumps straight to the field it's about, instead
-    // of making the user hunt for it down a very long form.
-    $(document).on("click", doaj.triage.selectors.summaryLink, function (event) {
-        event.preventDefault();
-        var fieldId = $(event.currentTarget).attr(doaj.triage.summaryLinkDataAttr);
-        doaj.triage.scrollToField(fieldId);
-    });
-
-    // "Question X of N" (in the fixed top banner) doubles as a "jump back
-    // to the question you're actually on" button.
-    $(document).on("click", "#triage-progress-label", function (event) {
-        event.preventDefault();
-        doaj.triage.questions.scrollToActive();
-    });
-
-    doaj.triage.setupUI();
-
-    // quick implementation of a dependent question within an action group
-    $("[data-dependency-trigger]").on("change", function(event) {
-        const $trigger = $(event.currentTarget);
-        doaj.triage.setupDependents($trigger);
-    });
-    $("[data-dependency-trigger]").each(function() {
-        doaj.triage.setupDependents($(this));
-    })
-};
-
-doaj.triage.setupDependents = function($trigger) {
-    const key = $trigger.attr("data-dependency-trigger");
-    const target = $(`[data-dependency-key="${key}"]`)
-    const hidden = target.attr("hidden")
-    if (hidden) {
-        target.removeAttr("hidden");
-    } else {
-        target.attr("hidden", "true");
-    }
 }
-
-doaj.triage.setupUI = function () {
-    $(doaj.triage.selectors.checkboxOther).each(function () {
-        doaj.triage.setupOther($(this));
-    })
-    $(doaj.triage.selectors.checkboxNone).each(function () {
-        doaj.triage.setupNone($(this));
-    })
-    $(doaj.triage.selectors.answersContainer).each(function () {
-        if ($(this).find("input[type='radio']:checked").length > 0) {
-            const $checkedAnswer = $(this).find("input[type=radio]:checked");
-            // const $changeButtonContainer = $(this).find(doaj.triage.selectors.clearAnswersButton).parent()
-            // $(this).find("input[type='radio']").not($checkedAnswer).parent()._hide();
-            // $changeButtonContainer._show();
-            doaj.triage.setupAnswers($checkedAnswer);
-        }
-    });
-    doaj.triage.questions.setupInit();
-    doaj.triage.recommendation.render(doaj.triage.initialRecommendation);
-}
-
-/* ============================================================
- * scrollToField
- *
- * Shared by the error summary (click a listed issue) - scrolls the field's
- * control(s) into view and focuses it, the way jumping to a real anchor
- * would, but working for radio/checkbox groups too (which have no single
- * element whose id equals field_id).
- * ============================================================ */
-
-doaj.triage.setupNone = function ($that) {
-    const $fieldset = $that.closest("fieldset");
-    if ($that.is(":checked")) {
-        $fieldset.find("input").not($that)
-            .prop("checked", false)
-            .trigger("change")
-            .prop("disabled", true);
-    }
-    else {
-        $fieldset.find("input").not($that)
-            .prop("disabled", false);
-    }
-}
-doaj.triage.setupAnswers = function($that) {
-    const $fieldset = $that.closest("fieldset");
-    let $that_label = $(`label[for="${$that.attr("id")}"]`);
-    const $changeButtonContainer = $fieldset.find(doaj.triage.selectors.clearAnswersButton).parent()
-    if ($that.is("[data-controls]")){
-        $fieldset.find("label").parent()._hide();
-        doaj.triage.setupAction($that);
-    }
-    else {
-         if ($that.is(":checked")) {
-            $fieldset.find("label").not($that_label).parent()._hide();
-            $changeButtonContainer._show();
-        }
-        else {
-            $fieldset.find("label").not($that_label).parent()._show();
-            $changeButtonContainer._hide();
-        }
-    }
-    doaj.triage.requestSave();
-}
-
-doaj.triage.setupAction = function ($that) {
-    const $action_section = $(`#${$that.data("controls")}-container`);
-    const $answer_paragraph = $action_section.find("span.answer");
-    let $that_label = $(`label[for="${$that.attr("id")}"]`).find(".label-text");
-    $action_section._show();
-    $answer_paragraph.text($that_label.text());
-    $action_section.find("input").each(function () {
-        if ($(`label[for="${$(this).attr("id")}"]`).length === 0) {
-            $(this).attr("aria-describedby", $answer_paragraph.attr("id"));
-        }
-    })
-    let $action_inputs = $action_section.find("input")
-    if ($action_inputs.length > 0) {
-        $action_inputs[0].focus()
-    }
-
-}
-
-doaj.triage.clearAnswers = function($clearBtn) {
-    const compound_name = $clearBtn.data("controls");
-    const answers = $clearBtn.data("controls")+doaj.triage.magicStrings.reviewOutcomeFieldset;
-    const $answers = $(`#${answers}`).find("input");
-    $answers.parent()._show();
-    $answers.prop("checked", false);
-    if ($clearBtn.hasClass("review-outcome-answer")) {
-        $clearBtn.parent()._hide();
-    }
-    const $action_section = $(`[data-group="${compound_name}"][data-role="additional_info"]`);
-    $action_section._hide();
-    doaj.triage.requestSave();
-}
-
-doaj.triage.setupOther = function ($that) {
-    let $input = $that.is("label")
-            ? $($that[0].control)
-            : $that;
-        const controls_id = $input.data("controls");
-        if (controls_id.length > 0) {
-            let $details = $(`#${controls_id}`)
-            let $details_label = $(`label[for="${$details.attr("id")}"]`);
-            if ($input.is(":checked")) {
-                $details._show();
-                $details_label._show();
-            }
-            else {
-                $details._hide();
-                $details_label._hide();
-            }
-        }
-}
-
-doaj.triage.scrollToField = function (fieldId) {
-    var $fields = $('[name="' + fieldId + '"]');
-    if ($fields.length === 0) {
-        return;
-    }
-
-    // For a radio/checkbox group, focus whichever option is actually
-    // selected (most relevant to the user) rather than always the first.
-    var $target = $fields.filter(":checked").first();
-    if ($target.length === 0) {
-        $target = $fields.first();
-    }
-
-    // Only the active question's body is ever visible - if this field's
-    // question isn't the active one (e.g. the user has since opened a
-    // different question), it's sitting inside a hidden accordion body,
-    // and scrollIntoView()/focus() on a display:none element are silent
-    // no-ops. Expand the right question first so there's actually
-    // something visible to scroll to.
-    var $question = $target.closest(doaj.triage.selectors.questionWrapper);
-    var questionId = $question.attr("id");
-    if (questionId && questionId !== doaj.triage.questions.activeQuestionId) {
-        doaj.triage.questions.activate(questionId, { scroll: false });
-    }
-
-    doaj.triage.questions._scrollWithHeaderOffset($target, "center");
-    $target.trigger("focus");
-};
-
-/* ============================================================
- * Save orchestration
- *
- * requestSave() is the single entry point both the soft (blur) and hard
- * (next question) triggers go through. Saves are coalesced: if one is
- * already in flight, we don't fire a second request immediately - we just
- * remember that another save is needed and run it once, with whatever the
- * form contains by then, as soon as the current one finishes. This keeps
- * things simple when a user tabs quickly through several fields (no request
- * pile-up, no risk of an earlier response arriving after a later one and
- * clobbering fresher error state).
- * ============================================================ */
 
 doaj.triage._saving = false;
 doaj.triage._queuedOptions = null;
 
+doaj.triage._announce = function ($region, message) {
+    $region.empty();
+
+    window.requestAnimationFrame(function () {
+        $region.text(message);
+    });
+};
 doaj.triage.requestSave = function (options) {
-    console.log("requestSave");
-    const defaultOptions = {
-        onSuccess: function () {
-            console.log("success");
-            $('#triage-save-notification-error')._hide();
-            $('#triage-save-notification-success')
-                .stop(true, true)
-                ._show()
-                .delay(3000)
-                .fadeOut('slow');
-        },
-        onFailure: function () {
-            console.log("failure");
-            $('#triage-save-notification-error')._show();
-        }
-    }
-    options = options || defaultOptions;
+    options = Object.assign({
+        blocking: false,
+        onSuccess: null,
+        onFailure: null
+    }, options || {});
 
     if (doaj.triage._saving) {
-        doaj.triage._queuedOptions = doaj.triage._mergeQueuedOptions(doaj.triage._queuedOptions, options);
+        doaj.triage._queuedOptions =
+            doaj.triage._mergeQueuedOptions(
+                doaj.triage._queuedOptions,
+                options
+            );
         return;
     }
 
     doaj.triage._runSave(options);
-    console.log("runSave finished")
 };
+
+doaj.triage._showSaveSuccess = function () {
+    const headersHeight = $("#ew_header").outerHeight() +
+        $("#primary-nav").outerHeight();
+
+    $(".save-notification").css("top", `${headersHeight}px`);
+
+    $("#triage-save-notification-error")._hide();
+    $("#triage-save-error-status").empty();
+
+    $("#triage-save-notification-success")
+        .stop(true, true)
+        ._show()
+        .show()
+        .delay(3000)
+        .fadeOut("slow");
+
+    doaj.triage._announce(
+        $("#triage-save-status"),
+        "Triage saved"
+    );
+};
+
+doaj.triage._showSaveFailure = function () {
+    const headersHeight =
+        $("#ew_header").outerHeight() +
+        $("#primary-nav").outerHeight();
+
+    $(".save-notification").css("top", `${headersHeight}px`);
+
+    $("#triage-save-notification-success")
+        .stop(true, true)
+        ._hide();
+
+    $("#triage-save-status").empty();
+    $("#triage-save-notification-error")._show();
+
+    doaj.triage._announce(
+        $("#triage-save-error-status"),
+        "Triage could not be saved. Please try again."
+    );
+};
+
 
 // Combine a newly-requested save with one already queued, so neither gets
 // silently dropped: "blocking" wins if either call asked for it, and the
@@ -372,7 +158,8 @@ doaj.triage._mergeQueuedOptions = function (existing, incoming) {
     existing = existing || {};
     return {
         blocking: !!(existing.blocking || incoming.blocking),
-        onSuccess: incoming.onSuccess || existing.onSuccess
+        onSuccess: incoming.onSuccess || existing.onSuccess,
+        onFailure: incoming.onFailure || existing.onFailure
     };
 };
 
@@ -397,7 +184,23 @@ doaj.triage._runSave = function (options) {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         // A transport/server failure, distinct from a validation failure -
         // there's no field-level information to show, so just log it.
-        console.error("Triage async save failed:", textStatus, errorThrown, jqXHR.responseText);
+        console.error(
+            "Triage async save failed:",
+            textStatus,
+            errorThrown,
+            jqXHR.responseText
+        );
+
+        doaj.triage._showSaveFailure();
+
+        if (typeof options.onFailure === "function") {
+            options.onFailure({
+                type: "request",
+                jqXHR: jqXHR,
+                textStatus: textStatus,
+                errorThrown: errorThrown
+            });
+        }
     }).always(function () {
         doaj.triage._saving = false;
         doaj.triage._runQueuedSaveIfAny();
@@ -415,18 +218,30 @@ doaj.triage._runQueuedSaveIfAny = function () {
 
 doaj.triage._handleSaveResponse = function (data, options) {
     if (data.validation) {
-        // Invalid: nothing was persisted. Always (re)render the errors so
-        // they stay in sync with the latest answers, whether this was a
-        // soft (blur) or blocking (next question) save - the severity
-        // reflects which kind of save actually produced this response.
-        var severity = options.blocking ? doaj.triage.severity.BLOCKING : doaj.triage.severity.SOFT;
-        doaj.triage.errors.render(data.validation.errors || [], severity);
+        const severity = options.blocking
+            ? doaj.triage.severity.BLOCKING
+            : doaj.triage.severity.SOFT;
+
+        doaj.triage.errors.render(
+            data.validation.errors || [],
+            severity
+        );
+
+        doaj.triage._showSaveFailure();
+
+        if (typeof options.onFailure === "function") {
+            options.onFailure({
+                type: "validation",
+                validation: data.validation
+            });
+        }
+
         return;
     }
 
-    // No "validation" key means the form validated and has been saved.
     doaj.triage.errors.clearAll();
     doaj.triage.recommendation.render(data.recommendation);
+    doaj.triage._showSaveSuccess();
 
     if (typeof options.onSuccess === "function") {
         options.onSuccess(data);
@@ -464,7 +279,15 @@ doaj.triage._handleSaveResponse = function (data, options) {
  * verification on 2026-07-14 - see TRIAGE_ASYNC_SAVE.md.
  * ============================================================ */
 
-doaj.triage.errors = {};
+doaj.triage.severity = {
+    SOFT: "soft",
+    BLOCKING: "blocking"
+};
+
+doaj.triage.severityLabel = {
+    soft: "Needs attention: ",
+    blocking: "Fix this before continuing: "
+};
 
 doaj.triage.severity = {
     SOFT: "soft",
@@ -476,447 +299,52 @@ doaj.triage.severityLabel = {
     blocking: "Fix this before continuing: "
 };
 
-// field_id -> {message, severity} for whatever is currently displayed.
-doaj.triage.errors._current = {};
 
-doaj.triage.errors.render = function (errorList, severity) {
-    var incoming = {};
-    errorList.forEach(function (error) {
-        var message = error.code && error.code.msg;
-        if (error.field_id && message) {
-            incoming[error.field_id] = { message: message, severity: severity };
-        }
-    });
+doaj.triage.Errors = class {
+    constructor() {
+        this.current = {};
+    }
 
-    // Drop anything that no longer has an error.
-    Object.keys(doaj.triage.errors._current).forEach(function (fieldId) {
-        if (!incoming[fieldId]) {
-            doaj.triage.errors._removeOne(fieldId);
-        }
-    });
+    render(errorList, severity) {
+        var incoming = {};
 
-    // Create or update only entries that are new or genuinely changed.
-    Object.keys(incoming).forEach(function (fieldId) {
-        var next = incoming[fieldId];
-        var current = doaj.triage.errors._current[fieldId];
-        if (!current || current.message !== next.message || current.severity !== next.severity) {
-            doaj.triage.errors._renderOne(fieldId, next.message, next.severity);
-        }
-    });
+        errorList.forEach(function (error) {
+            var message = error.code && error.code.msg;
 
-    doaj.triage.errors._current = incoming;
-    doaj.triage.summary.render(incoming);
+            if (error.field_id && message) {
+                incoming[error.field_id] = {
+                    message: message,
+                    severity: severity
+                };
+            }
+        });
+
+        this.current = incoming;
+
+        console.log("Validation errors:", incoming);
+    }
+
+    clearAll() {
+        this.current = {};
+        console.log("Validation errors cleared");
+    }
 };
 
-doaj.triage.errors._renderOne = function (fieldId, message, severity) {
-    // Radio/checkbox groups render one control per option, all sharing the
-    // same "name" - selecting by name (rather than id) works for both that
-    // case and the single-control case (text/select/textarea/number).
-    var $fields = $('[name="' + fieldId + '"]');
-    if ($fields.length === 0) {
-        return;
-    }
+doaj.triage.errors = new doaj.triage.Errors();
 
-    var label = doaj.triage.severityLabel[severity] || "";
-    var $existing = $("[" + doaj.triage.errorNodeDataAttr + "=\"" + fieldId + "\"]");
-
-    if ($existing.length > 0) {
-        // Update the existing node in place rather than replace it, so an
-        // unrelated screen-reader announcement isn't triggered for a field
-        // whose error text/severity is unchanged (that check already
-        // happened in render() - by the time we get here, something about
-        // this field's error really did change).
-        $existing
-            .removeClass(doaj.triage.errorNodeClass + "--" + doaj.triage.severity.SOFT)
-            .removeClass(doaj.triage.errorNodeClass + "--" + doaj.triage.severity.BLOCKING)
-            .addClass(doaj.triage.errorNodeClass + "--" + severity)
-            .text(label + message);
-        return;
-    }
-
-    var $error = $("<p></p>")
-        .addClass(doaj.triage.errorNodeClass)
-        .addClass(doaj.triage.errorNodeClass + "--" + severity)
-        .attr(doaj.triage.errorNodeDataAttr, fieldId)
-        .attr("role", "alert")
-        .text(label + message);
-
-    // Anchor the message after the group as a whole: a wrapping <fieldset>
-    // if there is one (e.g. the radio group's review-outcome fieldset),
-    // otherwise directly after the last matching control.
-    var $last = $fields.last();
-    var $anchor = $last.closest("fieldset");
-    if ($anchor.length === 0) {
-        $anchor = $last;
-    }
-
-    $anchor.after($error);
-};
-
-doaj.triage.errors._removeOne = function (fieldId) {
-    $("[" + doaj.triage.errorNodeDataAttr + "=\"" + fieldId + "\"]").remove();
-};
-
-doaj.triage.errors.clearAll = function () {
-    $("[" + doaj.triage.errorNodeDataAttr + "]").remove();
-    doaj.triage.errors._current = {};
-    doaj.triage.summary.render({});
-};
-
-/* ============================================================
- * Error summary ("a way to find the invalid fields to review")
- *
- * Renders a list of every currently outstanding error into the (otherwise
- * unused) error container _triage_form.html already places at the top of
- * the form, each entry linking to its field via scrollToField(). Unlike the
- * inline per-field errors, this is rebuilt in full on every render() call:
- * it's a single aria-live="polite" region rather than one role="alert" per
- * field, so a full rebuild here doesn't cause the same re-announcement
- * problem - "polite" is coalesced/queued by assistive tech rather than
- * interrupting, and it's the one place a changed *count* genuinely is the
- * thing worth announcing.
- * ============================================================ */
-
-doaj.triage.summary = {};
-
-doaj.triage.summary.render = function (errorsByFieldId) {
-    var $container = $(doaj.triage.selectors.summaryContainer).first();
-    if ($container.length === 0) {
-        return;
-    }
-
-    $container.addClass(doaj.triage.summaryHostClass).attr("aria-live", "polite");
-
-    var fieldIds = Object.keys(errorsByFieldId);
-    if (fieldIds.length === 0) {
-        $container.empty();
-        return;
-    }
-
-    var heading = fieldIds.length === 1
-        ? "1 question still needs attention:"
-        : fieldIds.length + " questions still need attention:";
-
-    var $list = $("<ul></ul>").addClass("triage-error-summary__list");
-    fieldIds.forEach(function (fieldId) {
-        var entry = errorsByFieldId[fieldId];
-        var $link = $("<a></a>")
-            .attr("href", "#")
-            .addClass("triage-error-summary__link")
-            .addClass("triage-error-summary__link--" + entry.severity)
-            .attr(doaj.triage.summaryLinkDataAttr, fieldId)
-            .text(entry.message);
-        $list.append($("<li></li>").append($link));
-    });
-
-    $container
-        .empty()
-        .append($("<p></p>").addClass("triage-error-summary__heading").text(heading))
-        .append($list);
-};
-
-/* ============================================================
- * Recommendation panel
- *
- * Kept in sync with every save response - only ever shown for a "reject"
- * recommendation (confirmed with user: nothing else is worth surfacing at
- * the top of the form while triage is still in progress). Rebuilt in full
- * each time, same approach as errors.summary above.
- * ============================================================ */
-
-doaj.triage.recommendation = {};
-
-doaj.triage.recommendation.render = function (recommendation) {
-    var $host = $(doaj.triage.selectors.recommendationHost);
-    if ($host.length === 0) {
-        return;
-    }
-
-    if (!recommendation || recommendation.code !== "reject") {
-        $host.empty();
-        return;
-    }
-
-    var $reasons = $("<ul></ul>");
-    (recommendation.reasons || []).forEach(function (reason) {
-        var text = reason.question.text + " (" + reason.question.name + ") [" + reason.question.field_id + "]: " + reason.answer;
-        if (reason.sv) {
-            text += " (SV:" + reason.sv + ")";
-        }
-        if (reason.exception) {
-            text += " (Exception(s): " + reason.exception.join(", ") + ")";
-        }
-        $reasons.append($("<li></li>").text(text));
-    });
-
-    $host
-        .empty()
-        .append($("<p></p>").text("Current Recommendation: " + recommendation.code))
-        .append($("<p></p>").text("Reasons:").append($reasons));
-};
-
-/* ============================================================
- * Question navigation
- *
- * Exactly one .criterion-wrapper (question) is ever expanded - "active" -
- * at a time; everything else stays collapsed. A question only ever changes
- * on an explicit click - either its own accordion header, or its own
- * Prev/Next buttons (each question carries its own, see
- * _triage_compound_base.html - only the active one's are ever visible).
- * There is deliberately no scroll-driven auto-expand: the question list
- * scrolls like any normal list, and only clicking changes what's open.
- * ============================================================ */
 
 doaj.triage.questions = {};
-doaj.triage.questions.activeQuestionId = null;
-
-// Flattened, DOM-order list of every question id on the page - Prev/Next
-// navigate purely by position in this list, so fieldset grouping/nesting
-// above the question level is irrelevant to them.
 doaj.triage.questions._ids = function () {
     return $(doaj.triage.selectors.questionWrapper).map(function () {
         return this.id;
     }).get();
 };
 
-doaj.triage.questions._isAnswered = function ($wrapper) {
-    var answered = false;
-    $wrapper.find(doaj.triage.selectors.saveableFields).each(function () {
-        var $field = $(this);
-        if ($field.is(":checkbox, :radio")) {
-            if ($field.is(":checked")) {
-                answered = true;
-            }
-        } else if ($.trim($field.val() || "") !== "") {
-            answered = true;
-        }
-    });
-    return answered;
-};
-
-// Each question carries its own Prev/Next (see _triage_compound_base.html)
-// - only the currently-active one is ever visible, but keep its buttons'
-// disabled state correct regardless (first question: no Prev, last: no Next).
-doaj.triage.questions._updateOwnButtons = function (questionId) {
-    var ids = doaj.triage.questions._ids();
-    var index = ids.indexOf(questionId);
-    $(`#${questionId}-prev`).prop("disabled", index <= 0);
-    $(`#${questionId}-next`).prop("disabled", index === -1 || index >= ids.length - 1);
-};
-
-// The progress bar/label is the one thing still shared (lives in the fixed
-// banner at the top - see triage.html), so it's kept in sync separately.
-doaj.triage.questions._updateProgress = function (questionId) {
-    var ids = doaj.triage.questions._ids();
-    var index = ids.indexOf(questionId);
-    if (index !== -1) {
-        $("#triage-progress").attr({ value: index + 1, max: ids.length });
-        $("#triage-progress-label").text("Question " + (index + 1) + " of " + ids.length);
-    }
-};
-
-// The progress label (#triage-progress-label) is a button, not just text -
-// clicking it scrolls the question list to bring the currently active
-// question back into view. Needed because each question's Prev/Next now
-// scrolls away with its own content (previewing a distant question via its
-// header, without using Prev/Next, leaves no other way back to "the one
-// I'm actually on").
-doaj.triage.questions.scrollToActive = function () {
-    var questionId = doaj.triage.questions.activeQuestionId;
-    if (!questionId) {
-        return;
-    }
-    var $target = $(`#${questionId}`);
-    if ($target.length > 0) {
-        doaj.triage.questions._scrollWithHeaderOffset($target, "start");
-    }
-};
-
-// How long the collapse/expand slide takes - meant to read as a smooth
-// transition rather than a showpiece animation, but slow enough to actually
-// be felt (200ms read as barely different from instant).
-doaj.triage.questions.ANIMATION_MS = 350;
-
-// Both the site nav and .ew_header (the workflow item's title/status
-// banner) are position:sticky and sit above the question content at a
-// higher z-index, so a plain scrollIntoView({block:"start"}) can leave the
-// top chunk of the target tucked underneath them - the browser only
-// guarantees the element's edge reaches the *viewport* edge, it has no
-// idea a sticky element is floating on top of that same edge. This
-// measures where .ew_header actually currently sits on screen (it moves
-// as you scroll, and its height itself isn't fixed) and scrolls just far
-// enough to clear it, rather than assuming a fixed pixel offset.
-doaj.triage.questions._scrollWithHeaderOffset = function ($target, block) {
-    var el = $target && $target.get(0);
-    if (!el) {
-        return;
-    }
-    var clearance = 16;
-    var $stickyHeader = $(".ew_header");
-    var safeTop = clearance;
-    if ($stickyHeader.length > 0) {
-        safeTop = $stickyHeader.get(0).getBoundingClientRect().bottom + clearance;
-    }
-
-    var targetRect = el.getBoundingClientRect();
-    var delta;
-    if (block === "center") {
-        var safeHeight = window.innerHeight - safeTop;
-        delta = targetRect.top - safeTop - Math.max(0, (safeHeight - targetRect.height) / 2);
-    } else {
-        delta = targetRect.top - safeTop;
-    }
-    window.scrollBy({ top: delta, behavior: "smooth" });
-};
-
-// Collapses whichever question was previously active, expands questionId,
-// and keeps its own Prev/Next plus the shared progress bar in sync.
-// Scrolling is opt-in via options.scroll: Prev/Next and the initial
-// auto-opened question scroll their target into view within the scrollable
-// question list; a manual header click doesn't need to (the user already
-// clicked something visible).
-//
-// The collapse/expand itself is animated (slideUp/slideDown) rather than
-// the instant hidden-attribute toggle _hide()/_show() do elsewhere - with
-// an instant toggle, the whole page layout jumps in one frame *before* the
-// smooth scroll even starts, so the scroll ends up animating across an
-// already-changed layout, which is what read as a jarring "blur" rather
-// than a smooth transition. Sliding the height open/closed over the same
-// short window the scroll animates in makes the two feel like one movement
-// instead of a snap followed by a scroll.
-//
-// The global `[hidden] { display: none !important }` rule (see
-// _workflow.scss) would otherwise fight jQuery's own inline height/display
-// styles for the whole animation, so the `hidden` attribute is only ever
-// applied once a collapse has *finished* (not before), and removed before
-// an expand *starts* (not after) - it's never present while an animation
-// is actually running.
-//
-// IMPORTANT: scrollIntoView() only runs in the slideDown *callback*, once
-// the expand has fully finished - not synchronously alongside it. Calling
-// it immediately (tried first) computes the scroll target against a layout
-// that's still actively changing: the question above is still shrinking
-// out from under it for the next ~200ms, so the browser's smooth-scroll
-// commits to a fixed pixel offset that's correct for the *starting* layout
-// but not the *final* one - once the collapse finishes and the page is
-// genuinely shorter, that same offset lands much further down the (now
-// shorter) document than intended. Live-confirmed as a real bug this way:
-// clicking Next from question 6 landed on question 27. Waiting for the
-// slide to finish before measuring where to scroll fixes it at the root,
-// rather than trying to compensate for a moving target.
-doaj.triage.questions.activate = function (questionId, options) {
-    options = options || {};
-    var $target = $(`#${questionId}`);
-    if ($target.length === 0 || questionId === doaj.triage.questions.activeQuestionId) {
-        return;
-    }
-
-    var previousId = doaj.triage.questions.activeQuestionId;
-    if (previousId) {
-        var $prevBody = $(`#${previousId}-body`);
-        $(`#${previousId}-header`).attr("aria-expanded", "false");
-        $(`#${previousId}`).removeClass("is-active");
-        $prevBody.stop(true, true).slideUp(doaj.triage.questions.ANIMATION_MS, function () {
-            $prevBody.prop("hidden", true).css({ display: "", height: "" });
-        });
-    }
-
-    var $newBody = $(`#${questionId}-body`);
-    $newBody.prop("hidden", false).hide().stop(true, true).slideDown(doaj.triage.questions.ANIMATION_MS, function () {
-        if (options.scroll) {
-            doaj.triage.questions._scrollWithHeaderOffset($target, "start");
-        }
-    });
-    $(`#${questionId}-header`).attr("aria-expanded", "true");
-    $target.addClass("is-active");
-
-    doaj.triage.questions.activeQuestionId = questionId;
-    doaj.triage.questions._updateOwnButtons(questionId);
-    doaj.triage.questions._updateProgress(questionId);
-};
-
-doaj.triage.questions.goNext = function (questionId) {
-    var ids = doaj.triage.questions._ids();
-    var index = ids.indexOf(questionId);
-    if (index === -1 || index >= ids.length - 1) {
-        return;
-    }
-    doaj.triage.questions.activate(ids[index + 1], { scroll: true });
-};
-
-doaj.triage.questions.goPrev = function (questionId) {
-    var ids = doaj.triage.questions._ids();
-    var index = ids.indexOf(questionId);
-    if (index <= 0) {
-        return;
-    }
-    doaj.triage.questions.activate(ids[index - 1], { scroll: true });
-};
-
-// Runs once on page load: opens the first not-yet-answered question so a
-// reviewer resumes where they left off (falls back to the last question if
-// everything is already answered).
-doaj.triage.questions.setupInit = function () {
-    var ids = doaj.triage.questions._ids();
-    if (ids.length === 0) {
-        return;
-    }
-
-    var targetId = ids[ids.length - 1];
-    for (var i = 0; i < ids.length; i++) {
-        if (!doaj.triage.questions._isAnswered($(`#${ids[i]}`))) {
-            targetId = ids[i];
-            break;
-        }
-    }
-
-    doaj.triage.questions.activate(targetId, { scroll: true });
-};
-
-// There is no wizard/pagination UI beyond the accordion above, so "advance"
-// here just means "go to the next question" plus notifying the DOM in case
-// a future implementation wants to react to it too.
-doaj.triage.advanceQuestion = function (questionId) {
-    doaj.triage.questions.goNext(questionId);
-    $(document).trigger("doaj:triage:question-advanced", { questionId: questionId });
-};
-
 /* ============================================================
  * Existing manual submit paths (unchanged)
  * ============================================================ */
 
-doaj.triage.asyncFormSubmit = function() {
-    let $form = $("#triage");
-    let $response = $("#triage-async-response");
-
-    if ($form.length === 0) {
-        $response.html("<pre>Unable to find form with id 'triage'.</pre>");
-        return;
-    }
-
-    let formData = new FormData($form[0]);
-
-    $.ajax({
-        url: doaj.triage.asyncURL,
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: "json"
-    }).done(function (data) {
-        $response.html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        var errorPayload = {
-            status: jqXHR.status,
-            textStatus: textStatus,
-            error: errorThrown,
-            responseText: jqXHR.responseText
-        };
-        $response.html("<pre>" + JSON.stringify(errorPayload, null, 2) + "</pre>");
-    });
-}
-
-doaj.triage.fullFormSubmit = function(submitter) {
+doaj.triage.fullFormSubmit = function (submitter) {
     let $form = $("#triage");
     let $response = $("#triage-async-response");
 
@@ -929,39 +357,408 @@ doaj.triage.fullFormSubmit = function(submitter) {
     $form[0].submit();
 }
 
-doaj.triage.show = function(elements) {
-    $(elements)._show();
+//------------------------- my code  -------------------------
+doaj.triage.questions.showOverview = function () {
+    console.log("TODO: show overview");
+};
+doaj.triage.questions.answerIcons = {
+    compliant: `<svg xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none"
+                    aria-hidden="true"
+                    class="answer-icon"
+                >
+                    <path d="M12 0.375C5.57967 0.375 0.375 5.57967 0.375 12C0.375 18.4203 5.57967 23.625 12 23.625C18.4203 23.625 23.625 18.4203 23.625 12C23.625 5.57967 18.4203 0.375 12 0.375ZM12 2.625C17.1812 2.625 21.375 6.81802 21.375 12C21.375 17.1812 17.182 21.375 12 21.375C6.81881 21.375 2.625 17.182 2.625 12C2.625 6.81881 6.81802 2.625 12 2.625ZM18.5721 8.73127L17.5157 7.66636C17.2969 7.44581 16.9408 7.44436 16.7202 7.66317L10.0943 14.2358L7.29159 11.4103C7.07283 11.1898 6.71667 11.1883 6.49613 11.4071L5.43117 12.4635C5.21062 12.6822 5.20917 13.0384 5.42798 13.259L9.68334 17.5488C9.90211 17.7693 10.2583 17.7708 10.4788 17.552L18.5689 9.52678C18.7894 9.30797 18.7908 8.95181 18.5721 8.73127Z" fill="#3A5959"/>
+                </svg>`,
+    non_compliant: `<svg xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none"
+                    aria-hidden="true"
+                    class="answer-icon"
+                >
+                        <path d="M12 0.375C5.57812 0.375 0.375 5.57812 0.375 12C0.375 18.4219 5.57812 23.625 12 23.625C18.4219 23.625 23.625 18.4219 23.625 12C23.625 5.57812 18.4219 0.375 12 0.375ZM12 21.375C6.82031 21.375 2.625 17.1797 2.625 12C2.625 6.82031 6.82031 2.625 12 2.625C17.1797 2.625 21.375 6.82031 21.375 12C21.375 17.1797 17.1797 21.375 12 21.375Z" fill="#982E0A"/>
+                        <path d="M12.1562 14.3438C10.9654 14.3438 10 15.3091 10 16.5C10 17.6909 10.9654 18.6562 12.1562 18.6562C13.3471 18.6562 14.3125 17.6909 14.3125 16.5C14.3125 15.3091 13.3471 14.3438 12.1562 14.3438Z" fill="#982E0A"/>
+                        <path d="M10.1091 6.59316L10.4568 12.9682C10.4731 13.2665 10.7197 13.5 11.0185 13.5H13.294C13.5928 13.5 13.8394 13.2665 13.8557 12.9682L14.2034 6.59316C14.221 6.27094 13.9645 6 13.6418 6H10.6707C10.348 6 10.0915 6.27094 10.1091 6.59316Z" fill="#982E0A"/>
+                    </svg>`,
+    later: `<svg xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none"
+                    aria-hidden="true"
+                    class="answer-icon"
+            >
+                <path d="M12 0.375C5.58014 0.375 0.375 5.58202 0.375 12C0.375 18.4217 5.58014 23.625 12 23.625C18.4199 23.625 23.625 18.4217 23.625 12C23.625 5.58202 18.4199 0.375 12 0.375ZM12 21.375C6.81881 21.375 2.625 17.1829 2.625 12C2.625 6.82055 6.819 2.625 12 2.625C17.1793 2.625 21.375 6.81895 21.375 12C21.375 17.1811 17.1829 21.375 12 21.375ZM17.0271 9.4125C17.0271 12.5556 13.6323 12.6039 13.6323 13.7655V14.0625C13.6323 14.3731 13.3805 14.625 13.0698 14.625H10.9301C10.6195 14.625 10.3676 14.3731 10.3676 14.0625V13.6566C10.3676 11.9811 11.6379 11.3113 12.5979 10.773C13.4211 10.3116 13.9256 9.99769 13.9256 9.38653C13.9256 8.57812 12.8944 8.04155 12.0607 8.04155C10.9737 8.04155 10.4719 8.55609 9.76655 9.44634C9.57638 9.68634 9.22936 9.73092 8.98533 9.54591L7.68108 8.55694C7.44169 8.37544 7.38806 8.03822 7.55714 7.78992C8.66466 6.16364 10.0753 5.25 12.2716 5.25C14.5718 5.25 17.0271 7.0455 17.0271 9.4125ZM13.9688 17.25C13.9688 18.3356 13.0856 19.2188 12 19.2188C10.9144 19.2188 10.0312 18.3356 10.0312 17.25C10.0312 16.1644 10.9144 15.2812 12 15.2812C13.0856 15.2812 13.9688 16.1644 13.9688 17.25Z" fill="#F9D950"/>
+            </svg>`,
+    action: `<svg xmlns="http://www.w3.org/2000/svg" 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none"
+                aria-hidden="true"
+                class="answer-icon"
+            >
+                <path d="M12 0.375C5.57967 0.375 0.375 5.57967 0.375 12C0.375 18.4203 5.57967 23.625 12 23.625C18.4203 23.625 23.625 18.4203 23.625 12C23.625 5.57967 18.4203 0.375 12 0.375ZM12 2.625C17.1812 2.625 21.375 6.81802 21.375 12C21.375 17.1812 17.182 21.375 12 21.375C6.81881 21.375 2.625 17.182 2.625 12C2.625 6.81881 6.81802 2.625 12 2.625Z" fill="#FD5A3B"/>
+                <path d="M16.9668 10.3366L10.1283 16.9309L7.77411 17.182C7.09182 17.2548 6.51109 16.6998 6.58661 16.0369L6.84703 13.7668L13.6856 7.1725C14.2819 6.59745 15.2455 6.59745 15.8392 7.1725L16.9642 8.25732C17.5606 8.83238 17.5606 9.76402 16.9668 10.3366ZM14.3939 11.1125L12.8809 9.65353L8.04234 14.3218L7.85224 15.9616L9.55276 15.7783L14.3939 11.1125ZM16.0814 9.11112L14.9564 8.0263C14.8496 7.92334 14.6752 7.92334 14.571 8.0263L13.7663 8.80225L15.2793 10.2612L16.084 9.48528C16.1882 9.37981 16.1882 9.21408 16.0814 9.11112Z" fill="#FD5A3B"/>
+            </svg>`
 }
+doaj.triage.questions.Question = class {
+    static $all = [];
 
-doaj.triage.hide = function(elements) {
-    $(elements)._hide();
-}
+    static getByIdx(idx) {
+        return this.$all.find(q => q.idx === idx);
+    }
 
-doaj.triage.toggle = function(elements) {
-    $(elements)._toggle();
-}
+    static getByName(name) {
+        return this.$all.find(q => q.name === name);
+    }
 
-doaj.triage.toggleSection = function(section, btn) {
-    const $section = $(`#${section}`);
+
+    static init() {
+        this.$all = doaj.triage.questions._ids().map(
+            (name, index) => new this(name, index)
+        );
+    }
+
+
+    constructor(name, idx) {
+        this.name = name;
+        this.idx = idx;
+
+        this.$wrapper = $(`#${name}`);
+        this.$headerBtn = this.$wrapper.find(
+            ".criterion-wrapper--header > button"
+        );
+        this.$body = $(`#${this.$headerBtn.attr("aria-controls")}`);
+        this.group = QuestionGroup.getByElement(
+            this.$wrapper.closest(".question-group")
+        );
+
+        this.pendingAction = false;
+
+        this.$answerInput = this.$wrapper.find(
+            "input[type='radio'][data-role='answer']"
+        );
+        this.$changeAnswerBtn = this.$wrapper.find(
+            "button[data-role='change_answers']"
+        );
+        this.$actionInput = this.$wrapper.find(
+            "input[type='radio'][value='action']"
+        )
+        this.$actionSection = this.$wrapper.find(
+            "div.action-container"
+        );
+        this.$continueBtn = this.$wrapper.find(
+            "button[data-role='continue-triage']"
+        );
+        this.$srAnswer = this.$wrapper.find(".sr-answer");
+
+        this.answer = this.checkAnswered();
+        this._setupEvents();
+    }
+
+    _setupEvents() {
+        this.$answerInput.on("click", (event) => {
+            this.setAnswer($(event.currentTarget));
+        });
+
+        this.$changeAnswerBtn.on("click", () => {
+            this.changeAnswer();
+        });
+
+        this.$continueBtn.on("click", () => {
+            this.continueTriage();
+        });
+    }
+
+    continueTriage() {
+        const wasPending = this.pendingAction;
+
+        if (wasPending) {
+            this.$actionInput.prop("checked", true);
+        }
+
+        doaj.triage.requestSave({
+            blocking: true,
+
+            onSuccess: () => {
+                if (wasPending) {
+                    this.pendingAction = false;
+                    this.answer = this.$actionInput;
+                    this._setupAnswered();
+                }
+
+                this.activateNext();
+            },
+
+            onFailure: () => {
+                if (wasPending) {
+                    // Prevent another whole-form save from accidentally
+                    // persisting this unconfirmed action answer.
+                    this.$actionInput.prop("checked", false);
+                }
+            }
+        });
+    }
+
+    changeAnswer() {
+        this.$answerInput.prop("checked", false);
+
+        this.$actionSection._hide();
+        this.$continueBtn.parent()._hide();
+        this.$changeAnswerBtn.parent()._hide();
+
+        this.$answerInput.parent()._show();
+        this.$headerBtn.find(".answer-icon").remove();
+        this.answer = null;
+        this.pendingAction = false;
+
+        doaj.triage.requestSave();
+    }
+
+    checkAnswered() {
+        const $answer = this.$wrapper
+            .find('[data-role="answer"]:checked')
+            .first();
+        if ($answer.length) {
+            this._setupAnswered($answer);
+            return $answer;
+        }
+        return null;
+    }
+
+    setAnswer($answer) {
+        if ($answer.val() === "action") {
+            this.pendingAction = true;
+            this.$actionInput.prop("checked", false);
+            this._setupAnswered($answer);
+        } else {
+            this.answer = $answer;
+            doaj.triage.requestSave({
+                blocking: true,
+
+                onSuccess: () => {
+                    this.answer = $answer;
+                    this._setupAnswered($answer);
+                    this.activateNext();
+                }
+            });
+        }
+    }
+
+    _setupAnswered($answer) {
+        if ($answer.val() === "action") {
+            this.$answerInput.parent()._hide();
+            this.$actionSection._show();
+            if (this.pendingAction) {
+                this.$actionSection.find("input").first().trigger("focus");
+            }
+            else {
+                this.$headerBtn.find(".answer-icon").remove();
+                const answerVal = $answer.val();
+                this.$headerBtn.prepend(
+                    doaj.triage.questions.answerIcons[answerVal]
+                );
+                this.$srAnswer.text(`Answered: ${answerVal}`);
+            }
+        } else {
+            this.$answerInput.not($answer).parent()._hide();
+            this.$changeAnswerBtn.parent()._show();
+            this.$headerBtn.find(".answer-icon").remove();
+            const answerVal = $answer.val();
+            this.$headerBtn.prepend(
+                doaj.triage.questions.answerIcons[answerVal]
+            );
+            this.$srAnswer.text(`Answered: ${answerVal}`);
+        }
+    }
+
+    expand() {
+        this.$headerBtn.attr("aria-expanded", "true");
+        this.$headerBtn.trigger("focus");
+        this.$body._show();
+    }
+
+    collapse() {
+        this.$headerBtn.attr("aria-expanded", "false");
+        this.$body._hide();
+    }
+
+    activate() {
+        const questions = doaj.triage.questions;
+        const previous = questions.currentQuestion;
+
+        if (previous) {
+            previous.deactivate();
+        }
+
+        questions.currentQuestion = this;
+        QuestionGroup.collapseOtherNonCurrent(this.group);
+
+        this.group.expand();
+
+        this.$headerBtn.attr("aria-current", "true");
+        this.expand();
+        this.scrollTo();
+    }
+
+    activateNext() {
+        const next = Question.getNextUnanswered(this);
+
+        if (next) {
+            next.activate();
+        } else {
+            doaj.triage.questions.showOverview();
+        }
+    }
+
+    static getFirstUnanswered() {
+        return this.$all.find(question => !question.answer);
+    }
+
+    static getNextUnanswered(current) {
+        const afterCurrent = this.$all
+            .slice(current.idx + 1)
+            .find(question => !question.answer);
+
+        if (afterCurrent) {
+            return afterCurrent;
+        }
+
+        return this.$all
+            .slice(0, current.idx)
+            .find(question => !question.answer);
+    }
+
+    deactivate() {
+        this.$headerBtn.removeAttr("aria-current");
+        this.collapse();
+    }
+
+    scrollTo() {
+        const headersHeight = $("#ew_header").outerHeight() + $("#primary-nav").outerHeight();
+        $(".criterion-wrapper").css("scroll-margin-top", `${headersHeight}px`);
+        this.$wrapper[0].scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+};
+
+doaj.triage.questions.QuestionGroup = class {
+    static $all = [];
+
+    static getByElement(element) {
+        const name = $(element).attr("id");
+        return this.$all.find(group => group.name === name);
+    }
+
+    static getByName(name) {
+        return this.$all.find(group => group.name === name);
+    }
+
+    static init() {
+        this.$all = $(".question-group").map(function () {
+            return new doaj.triage.questions.QuestionGroup(this.id);
+        }).get();
+    }
+
+    constructor(name) {
+        this.name = name;
+        this.$wrapper = $(`#${name}`);
+        this.$headerBtn = this.$wrapper.find(
+            "> .question-group--header > button"
+        );
+        this.$body = this.$wrapper.find(
+            "> .question-group--body"
+        );
+    }
+
+    get expanded() {
+        return this.$headerBtn.attr("aria-expanded") === "true";
+    }
+
+    get containsCurrentQuestion() {
+        return this === doaj.triage.questions.currentQuestion?.group;
+    }
+
+    expand() {
+        /**
+         * Makes this group visible
+         */
+        this.$headerBtn.attr("aria-expanded", "true");
+        this.$body._show();
+    }
+
+    collapse() {
+        this.$headerBtn.attr("aria-expanded", "false");
+        this.$body._hide();
+    }
+
+    toggle() {
+        if (this.expanded) {
+            this.collapse();
+        } else {
+            this.open();
+        }
+    }
+
+    open() {
+        /**
+         * the user has requested to open this group; enforce the group-state rules
+         */
+        if (!this.containsCurrentQuestion) {
+            QuestionGroup.collapseOtherNonCurrent(this);
+        }
+
+        this.expand();
+    }
+
+    static collapseOtherNonCurrent(groupToOpen) {
+        this.$all
+            .filter(group =>
+                group !== groupToOpen &&
+                !group.containsCurrentQuestion
+            )
+            .forEach(group => group.collapse());
+    }
+};
+
+doaj.triage.questions.handleQuestionHeaderClick = function (btn) {
     const $btn = $(btn);
-    const expanded = $btn.attr("aria-expanded") === "true";
-    $section._toggle();
-    $btn.attr("aria-expanded", !expanded.toString());
+    const questionId = $btn.data("question-id");
+    const question = Question.getByName(questionId);
+
+    if ($btn.attr("aria-expanded") === "true") {
+        question.collapse();
+    } else {
+        question.activate();
+    }
+};
+doaj.triage.questions.handleQuestionGroupHeaderClick = function (btn) {
+    const $btn = $(btn);
+    const groupId = $btn.data("group-id");
+    const group = QuestionGroup.getByName(groupId);
+
+    if ($btn.attr("aria-expanded") === "true") {
+        group.collapse();
+    } else {
+        group.open();
+    }
 }
 
-doaj.triage.toggleInput = function(input_id, trigger) {
-    console.log("toggle")
-    const $input = $(`#${input_id}`);
-    const $trigger = $(trigger);
-    $input._toggle();
-    $input.attr("hidden") === "true" ? $input.focus() : $trigger.focus();
-}
-
-doaj.triage.continue = function() {
-    console.log("continue clicked")
-    doaj.triage.requestSave();
-}
-
-doaj.triage.reject = function() {
-    console.log("reject")
+//----------------- do now ------------------
+const QuestionGroup = doaj.triage.questions.QuestionGroup;
+const Question = doaj.triage.questions.Question;
+QuestionGroup.init();
+Question.init();
+const $firstUnanswered = Question.getFirstUnanswered();
+if ($firstUnanswered) {
+    $firstUnanswered.activate();
+} else {
+    Question.$all[0].activate();
 }
