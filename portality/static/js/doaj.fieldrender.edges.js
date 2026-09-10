@@ -1,5 +1,4 @@
-$.extend(true, doaj, {
-    filters: {
+doaj.filters = {
         noCharges: function () {
             return {
                 id: "no_charges",
@@ -43,8 +42,9 @@ $.extend(true, doaj, {
             }
         }
 
-    },
-    facets: {
+};
+
+doaj.facets = {
         inDOAJ: function () {
             return edges.newRefiningANDTermSelector({
                 id: "in_doaj",
@@ -336,9 +336,9 @@ $.extend(true, doaj, {
                 })
             })
         }
-    },
+};
 
-    valueMaps: {
+doaj.valueMaps = {
         // This must be updated in line with the list in formcontext/choices.py
         applicationStatus: {
             'update_request': 'Update Request',
@@ -440,8 +440,9 @@ $.extend(true, doaj, {
         dateHistogramSelectorExporter: function(component) {
             return component.values;
         }
-    },
-    components: {
+};
+
+doaj.components = {
         pager: function (id, category) {
             return edges.newPager({
                 id: id,
@@ -518,6 +519,205 @@ $.extend(true, doaj, {
                     showCounts: false
                 })
             })
+        },
+
+        //-----------------------------
+        // Reusable facet helpers
+        //-----------------------------
+
+        // Standard RefiningAND term facet - replaces the ~10-line repeated block across all edge files.
+        // Required params: id, field, display
+        // Optional params: deactivateThreshold (default 0), orderBy, orderDir, open (default false)
+        refiningAndFacet: function(params) {
+            return edges.newRefiningANDTermSelector({
+                id: params.id,
+                category: "facet",
+                field: params.field,
+                display: params.display,
+                deactivateThreshold: edges.getParam(params.deactivateThreshold, 0),
+                orderBy: edges.getParam(params.orderBy, undefined),
+                orderDir: edges.getParam(params.orderDir, undefined),
+                size: edges.getParam(params.size, undefined),
+                valueMap: edges.getParam(params.valueMap, undefined),
+                valueFunction: edges.getParam(params.valueFunction, undefined),
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: edges.getParam(params.open, false),
+                    togglable: edges.getParam(params.togglable, true),
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: edges.getParam(params.hideInactive, true)
+                })
+            });
+        },
+
+        // Month-interval date histogram facet.
+        // Required params: id, field, display
+        // Optional params: open (default false), togglable (default false)
+        monthDateHistogramFacet: function(params) {
+            return edges.newDateHistogramSelector({
+                id: params.id,
+                category: "facet",
+                field: params.field,
+                interval: "month",
+                display: params.display,
+                displayFormatter: function(val) {
+                    var d = new Date(parseInt(val));
+                    return d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
+                },
+                sortFunction: function(values) {
+                    values.reverse();
+                    return values;
+                },
+                renderer: edges.bs3.newDateHistogramSelectorRenderer({
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true,
+                    open: edges.getParam(params.open, false),
+                    togglable: edges.getParam(params.togglable, false)
+                })
+            });
+        },
+
+        // Year-interval date histogram facet.
+        // Required params: id, field, display
+        // Optional params: open (default false), togglable (default false)
+        yearDateHistogramFacet: function(params) {
+            return edges.newDateHistogramSelector({
+                id: params.id,
+                category: "facet",
+                field: params.field,
+                interval: "year",
+                display: params.display,
+                displayFormatter: function(val) {
+                    return (new Date(parseInt(val))).getUTCFullYear().toString();
+                },
+                sortFunction: function(values) {
+                    values.reverse();
+                    return values;
+                },
+                renderer: edges.bs3.newDateHistogramSelectorRenderer({
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true,
+                    open: edges.getParam(params.open, false),
+                    togglable: edges.getParam(params.togglable, false)
+                })
+            });
+        },
+
+        //-----------------------------
+        // makeSearch factory
+        //-----------------------------
+        // Builds a complete Edges search interface from a declarative config, handling all
+        // repeated boilerplate (searching notification, pagers, search controller, selected filters,
+        // error callback) so individual search definitions only need to specify what's unique.
+        //
+        // Required params:
+        //   selector      {string}  CSS selector for the container div, e.g. "#admin_alerts"
+        //   searchUrl     {string}  Full search URL (use doaj.buildUrl(path) to construct)
+        //
+        // Optional params:
+        //   facets            {Array}   Pre-built component objects (use refiningAndFacet / monthDateHistogramFacet)
+        //   sortOptions       {Array}   [{display, field}] for the sort menu
+        //   fieldOptions      {Array}   [{display, field}] for the field search menu
+        //   searchPlaceholder {string}  Search box placeholder text
+        //   sizeOptions       {Array}   Page size options, default [25, 50, 100]
+        //   resultsDisplay    {Object}  A pre-built edges.newResultsDisplay(...) component
+        //   fieldDisplays     {Object}  Field name -> label map for the selected-filters bar
+        //   rangeFunctions    {Object}  Field name -> range display function map
+        //   openingQuery      {Object}  es.newQuery(...) for the initial page load
+        //   callbacks         {Object}  Edge callbacks; edges:query-fail is always added if absent
+        makeSearch: function(params) {
+            var selector = params.selector;
+            var search_url = params.searchUrl;
+
+            var sortOptions = edges.getParam(params.sortOptions, [{"display": "Date Created", "field": "created_date"}]);
+            var fieldOptions = edges.getParam(params.fieldOptions, []);
+            var sizeOptions = edges.getParam(params.sizeOptions, [25, 50, 100]);
+            var fieldDisplays = edges.getParam(params.fieldDisplays, {});
+            var rangeFunctions = edges.getParam(params.rangeFunctions, {});
+            var valueMaps = edges.getParam(params.valueMaps, {});
+            var compoundDisplays = edges.getParam(params.compoundDisplays, undefined);
+            var selectedFiltersRenderer = edges.getParam(params.selectedFiltersRenderer, undefined);
+            var openingQuery = edges.getParam(params.openingQuery, es.newQuery({
+                sort: [{field: "created_date", order: "desc"}],
+                size: 25
+            }));
+
+            var callbacks = edges.getParam(params.callbacks, {});
+            if (!callbacks["edges:query-fail"]) {
+                callbacks["edges:query-fail"] = function() {
+                    alert("There was an unexpected error. Please reload the page and try again. If the issue persists please contact an administrator.");
+                };
+            }
+
+            var components = [doaj.components.searchingNotification()];
+
+            var facets = edges.getParam(params.facets, []);
+            for (var i = 0; i < facets.length; i++) {
+                components.push(facets[i]);
+            }
+
+            components.push(edges.newFullSearchController({
+                id: "search-controller",
+                category: "controller",
+                sortOptions: sortOptions,
+                fieldOptions: fieldOptions,
+                defaultOperator: "AND",
+                renderer: doaj.renderers.newFullSearchControllerRenderer({
+                    freetextSubmitDelay: -1,
+                    searchButton: true,
+                    searchPlaceholder: edges.getParam(params.searchPlaceholder, "Search")
+                })
+            }));
+
+            components.push(edges.newPager({
+                id: "top-pager",
+                category: "top-pager",
+                renderer: edges.bs3.newPagerRenderer({
+                    sizeOptions: sizeOptions,
+                    numberFormat: doaj.valueMaps.countFormat,
+                    scroll: false
+                })
+            }));
+            components.push(edges.newPager({
+                id: "bottom-pager",
+                category: "bottom-pager",
+                renderer: edges.bs3.newPagerRenderer({
+                    sizeOptions: sizeOptions,
+                    numberFormat: doaj.valueMaps.countFormat,
+                    scroll: false
+                })
+            }));
+
+            if (params.resultsDisplay) {
+                components.push(params.resultsDisplay);
+            }
+
+            if (Object.keys(fieldDisplays).length > 0) {
+                var sfParams = {
+                    id: "selected-filters",
+                    category: "selected-filters",
+                    fieldDisplays: fieldDisplays,
+                    rangeFunctions: rangeFunctions,
+                    valueMaps: valueMaps
+                };
+                if (compoundDisplays) {
+                    sfParams.compoundDisplays = compoundDisplays;
+                }
+                if (selectedFiltersRenderer) {
+                    sfParams.renderer = selectedFiltersRenderer;
+                }
+                components.push(edges.newSelectedFilters(sfParams));
+            }
+
+            return edges.newEdge({
+                selector: selector,
+                template: edges.bs3.newFacetview(),
+                search_url: search_url,
+                manageUrl: true,
+                components: components,
+                openingQuery: openingQuery,
+                callbacks: callbacks
+            });
         },
 
         newDateHistogramSelector : function(params) {
@@ -1197,9 +1397,9 @@ $.extend(true, doaj, {
                 this.drawn = true;
             };
         }
-    },
+};
 
-    templates: {
+doaj.templates = {
         newPublicSearch: function (params) {
             return edges.instantiate(doaj.templates.PublicSearch, params, edges.newTemplate);
         },
@@ -1325,9 +1525,9 @@ $.extend(true, doaj, {
                 edge.context.html(frag);
             };
         }
-    },
+};
 
-    renderers: {
+doaj.renderers = {
         newAdminBasicResultsRenderer: function (params) {
             if (!params) {
                 params = {}
@@ -5334,9 +5534,9 @@ $.extend(true, doaj, {
                 this.component.setSort({field: field, dir: dir});
             };
         }
-    },
+};
 
-    fieldRender: {
+doaj.fieldRender = {
         fragment:
             {
                 fullFlagHTML: `<span class="flag flag--full" title="Record flagged to me"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -5713,9 +5913,9 @@ $.extend(true, doaj, {
                 return false;
             }
         },
-    },
+};
 
-    bulk: {
+doaj.bulk = {
         applicationMultiFormBox: function (edge_instance, doaj_type) {
             return doaj.multiFormBox.newMultiFormBox({
                 edge: edge_instance,
@@ -5778,6 +5978,4 @@ $.extend(true, doaj, {
                 }
             });
         }
-    }
-
-});
+};

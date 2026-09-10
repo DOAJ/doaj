@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.1"
+DOAJ_VERSION = "8.7.2"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -908,6 +908,66 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.RISExport",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        # ~~->SystemObjectProvenanceQuery:Endpoint~~
+        "provenance": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Provenance"  # ~~->Provenance:Model~~
+        },
+        # ~~->SystemObjectFileUploadQuery:Endpoint~~
+        "upload": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.FileUpload"  # ~~->FileUpload:Model~~
+        },
+        # ~~->SystemObjectBulkUploadQuery:Endpoint~~
+        "bulk_articles": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.BulkArticles"  # ~~->BulkArticles:Model~~
+        },
+        # ~~->SystemObjectCacheQuery:Endpoint~~
+        "cache": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Cache"  # ~~->Cache:Model~~
+        },
+        # ~~->SystemObjectLockQuery:Endpoint~~
+        "lock": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Lock"  # ~~->Lock:Model~~
+        },
+        # ~~->SystemObjectPreservationQuery:Endpoint~~
+        "preserve": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.PreservationState"  # ~~->PreservationState:Model~~
+        },
+        # ~~->SystemObjectArticleTombstoneQuery:Endpoint~~
+        "article_tombstone": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.ArticleTombstone"  # ~~->ArticleTombstone:Model~~
+        },
+        # ~~->SystemObjectDraftApplicationQuery:Endpoint~~
+        "draft_application": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.DraftApplication"  # ~~->DraftApplication:Model~~
+        },
+        # ~~->SystemObjectHarvesterStateQuery:Endpoint~~
+        "harvester_state": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.HarvestState"  # ~~->HarvestState:Model~~
+        },
+        # ~~->SystemObjectAutocheckQuery:Endpoint~~
+        "autocheck": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Autocheck"  # ~~->Autocheck:Model~~
         }
     },
     "associate_query": {
