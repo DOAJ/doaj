@@ -91,8 +91,38 @@
 {% block body_class %}{{ super() }} ew{% endblock %}
 
 {% block admin_content %}
-    <div class="save-notification success" id="triage-save-notification-success" hidden><span>SAVED</span></div>
-    <div class="save-notification error" id="triage-save-notification-error" hidden><span>ERROR WHILE SAVING</span></div>
+    <div
+        class="save-notification success"
+        id="triage-save-notification-success"
+        hidden
+        aria-hidden="true"
+    >
+        <span>Saved</span>
+    </div>
+
+    <div
+        class="save-notification error"
+        id="triage-save-notification-error"
+        hidden
+        aria-hidden="true"
+    >
+        <span>Could not save triage</span>
+    </div>
+
+    <div
+        class="sr-only"
+        id="triage-save-status"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+    ></div>
+
+    <div
+        class="sr-only"
+        id="triage-save-error-status"
+        role="alert"
+        aria-atomic="true"
+    ></div>
     <div id="triage-async-response"></div>
 
     {#
