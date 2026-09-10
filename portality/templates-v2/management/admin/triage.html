@@ -3,13 +3,6 @@
 {% block page_title %}Triage Form{% endblock %}
 
 {% block admin_stylesheets %}
-    {#
-        Placeholder styling for the async field-save error messages injected
-        by triage.js (see doaj.triage.errors). Feel free to replace this
-        entirely once the real triage UI/error design exists - the only
-        contract JS relies on is the "triage-field-error" class plus the
-        "--soft" / "--blocking" severity modifiers.
-    #}
     <style type="text/css">
         .triage-field-error {
             display: block;
@@ -135,34 +128,6 @@
     #}
     <div class="triage-panel">
         <div class="triage-panel__banner">
-            {#
-                Dedicated host for the "needs attention" error summary (see
-                doaj.triage.summary / doaj.triage.selectors.summaryContainer
-                in triage.js) - lives in the banner, alongside the
-                recommendation and progress bar, rather than scrolling away
-                with the question list.
-            #}
-<!--            <div id="triage-error-summary" class="error-container"></div>-->
-
-<!--            {% include 'management/admin/_workflow/includes/_recommend.html' %}-->
-
-<!--            <div class="row">-->
-<!--                <div class="col-md-7">-->
-<!--                    <div class="progress">-->
-<!--                        <label for="triage-progress" class="sr-only">Question progress</label>-->
-<!--                        <progress class="progress" value="0" max="1" id="triage-progress">0%</progress>-->
-<!--                    </div>-->
-<!--                    {#-->
-<!--                        Not just a label - clicking it scrolls the question-->
-<!--                        list to whichever question is currently active, so-->
-<!--                        there's always a quick way back to it after-->
-<!--                        previewing other (collapsed) questions further away.-->
-<!--                    #}-->
-<!--                    <button type="button" class="progress-label" id="triage-progress-label"></button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-
         <div class="ew_body triage-panel__questions">
             {% autoescape off %}
                 {{ form_html }}

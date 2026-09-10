@@ -117,30 +117,6 @@
 
             {% block renderer scoped %}{% endblock %}
 
-            {#
-                Prev/Next belong to this question specifically - normal
-                in-flow content at the end of it (not sticky/shared), so
-                they scroll away with the question like everything else in
-                it and the same pattern repeats consistently for every
-                question.
-            #}
-<!--            <div class="row">-->
-<!--                <div class="col-md-7">-->
-<!--                    <nav class="criterion-nav">-->
-<!--                        <button type="button"-->
-<!--                                class="button button&#45;&#45;prev js-triage-prev-question"-->
-<!--                                id="{{ compound.name }}-prev">-->
-<!--                            Previous question-->
-<!--                        </button>-->
-<!--                        <button type="button"-->
-<!--                                class="button button&#45;&#45;next js-triage-next-question"-->
-<!--                                id="{{ compound.name }}-next">-->
-<!--                            Next question-->
-<!--                        </button>-->
-<!--                    </nav>-->
-<!--                </div>-->
-<!--            </div>-->
-
         </section>
         {% endautoescape %}
 
