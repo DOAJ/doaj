@@ -316,16 +316,38 @@ doaj.triage.Errors = class {
                     message: message,
                     severity: severity
                 };
+                const $errorContainer = $(`#${error.field_id}-error-container`);
+                $errorContainer
+                    ._show()
+                    .html(message);
+                const $invalidField = $(`#${error.field_id}`);
+                $invalidField
+                    .attr("aria-invalid", "true")
+                    .attr("aria-describedby", `${error.field_id}-error-container`)
+                    .trigger("focus");
+                const $answerInput = $invalidField.closest(".criterion-wrapper").find("input[data-role='answer']:checked");
+                $answerInput.prop("checked", false);
             }
         });
 
         this.current = incoming;
-
         console.log("Validation errors:", incoming);
     }
 
     clearAll() {
         this.current = {};
+        $('[aria-invalid="true"]').each(function () {
+            const $field = $(this);
+            const $errorContainer = $(`#${this.id}---error-container`);
+            if ($errorContainer) {
+                $errorContainer
+                    .empty()
+                    ._hide();
+            }
+            $field
+                .removeAttr("aria-invalid")
+                .removeAttr("aria-describedby");
+        });
         console.log("Validation errors cleared");
     }
 };
@@ -556,8 +578,7 @@ doaj.triage.questions.Question = class {
             this.$actionSection._show();
             if (this.pendingAction) {
                 this.$actionSection.find("input").first().trigger("focus");
-            }
-            else {
+            } else {
                 this.$headerBtn.find(".answer-icon").remove();
                 const answerVal = $answer.val();
                 this.$headerBtn.prepend(
@@ -601,7 +622,9 @@ doaj.triage.questions.Question = class {
 
         this.group.expand();
 
-        this.$headerBtn.attr("aria-current", "true");
+        this.$headerBtn
+            .attr("aria-current", "true")
+            .trigger("focus");
         this.expand();
         this.scrollTo();
     }

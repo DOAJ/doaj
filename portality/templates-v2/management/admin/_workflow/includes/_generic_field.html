@@ -12,7 +12,7 @@
     {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
 {% endautoescape %}
 
-<div class="error-container">
+<div class="error-container" id="{{ field.prefix }}-error-container" hidden>
 {% if field.displayable_errors %}
     Field Errors
     {% for error in field.displayable_errors %}
