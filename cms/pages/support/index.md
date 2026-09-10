@@ -21,7 +21,7 @@ Our Sustaining model aligns with the levels recommended by [SCOSS](https://scoss
 | Large organisations | 4,000    | 4,400   | 3,440   |
 | Small organisations | 2,000    | 2,200   | 1,720   |
 
-A discount will be applied to institutions that support us through a billing consortium. Please [contact us](mailto:supporters@doaj.org) for further information.
+Discounts are available for institutions that support us through a billing consortium. Please [contact us](mailto:supporters@doaj.org) for further information.
 
 Organisations from [low- and middle-income countries](https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html) are eligible for a discounted contribution. 
 
