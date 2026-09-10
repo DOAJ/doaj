@@ -45,8 +45,7 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         pissn_eissn_match = True if kwargs.get("pissn_eissn_match") == "yes" else False
         journal_in_doaj = True if kwargs.get("journal_in_doaj") == "yes" else False
 
-        journal_source = JournalFixtureFactory.make_journal_source(in_doaj=False)
-        journal = Journal(**journal_source)
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=False)
         jbib = journal.bibjson()
         jbib.add_identifier(jbib.P_ISSN, '0000-0000')
         jbib.add_identifier(jbib.E_ISSN, '1111-1111')
@@ -78,8 +77,7 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
 
     def test_has_permissions(self):
 
-        journal_source = JournalFixtureFactory.make_journal_source()
-        journal1 = Journal(**journal_source)
+        journal1 = JournalFixtureFactory.make_legacy_journal_object()
 
         publisher_owner_src = AccountFixtureFactory.make_publisher_source()
         publisher_owner = Account(**publisher_owner_src)
@@ -120,14 +118,14 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         kweissn = kwargs.get("eissn")
         validated = kwargs.get("validated")
 
-        js = JournalFixtureFactory.make_many_journal_sources(2)
-        journal_in_doaj = Journal(**js[0])
+        js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=True)
+        journal_in_doaj = js[0]
         journal_in_doaj.set_in_doaj(True)
         journal_in_doaj.bibjson().pissn = "1111-1111"
         journal_in_doaj.bibjson().eissn = "2222-2222"
         journal_in_doaj.save(blocking=True)
 
-        journal_not_in_doaj = Journal(**js[1])
+        journal_not_in_doaj = js[1]
         journal_not_in_doaj.set_in_doaj(False)
         journal_not_in_doaj.bibjson().pissn = "3333-3333"
         journal_not_in_doaj.bibjson().eissn = "4444-4444"
@@ -164,13 +162,15 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
 
     def test_check_validation_for_2_journals(self):
 
-        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
-        journal_in_doaj = Journal(**js[0])
+        # js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
+        js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=True)
+        journal_in_doaj = js[0]
         journal_in_doaj.bibjson().pissn = "1111-1111"
         journal_in_doaj.bibjson().eissn = "2222-2222"
         journal_in_doaj.save(blocking=True)
 
-        journal_not_in_doaj = Journal(**js[1])
+        journal_not_in_doaj = js[1]
+        journal_not_in_doaj.set_in_doaj(False)
         journal_not_in_doaj.bibjson().pissn = "3333-3333"
         journal_not_in_doaj.bibjson().eissn = "4444-4444"
         journal_not_in_doaj.save(blocking=True)

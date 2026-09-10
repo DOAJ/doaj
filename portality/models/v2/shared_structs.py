@@ -189,10 +189,10 @@ SHARED_JOURNAL_LIKE = {
                 "date_applied": {"coerce": "utcdatetime"},
             },
             "lists" : {
-                "notes" : {"contains" : "object"}
+                "note_ids" : {"contains" : "field", "coerce" : "unicode"},
             },
             "objects" : [
-                "contact"
+                "contact", "flag", "index"
             ],
             "structs" : {
                 "contact" : {
@@ -201,25 +201,18 @@ SHARED_JOURNAL_LIKE = {
                         "name" : {"coerce" : "unicode"}
                     }
                 },
-                "notes" : {
-                    "fields" : {
-                        "id" : {"coerce" : "unicode"},
-                        "note" : {"coerce" : "unicode"},
-                        "date" : {"coerce" : "utcdatetime"},
-                        "author_id" : {"coerce" : "unicode"}  # account_id of the note's author
-                    },
-                    "objects": [
-                        "flag"
-                    ],
-                    "structs": {
-                        "flag": {
-                            "fields": {
-                                "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
-                                "deadline": {"coerce" : "bigenddate"}
-                            }
-                        }
+                "flag": {
+                    "fields": {
+                        "assigned_to": {"coerce" : "unicode"},  # account_id of the note's assignee
+                        "deadline": {"coerce" : "bigenddate"},
+                        "note_id": {"coerce" : "unicode"}
                     }
                 },
+                "index": {
+                    "lists": {
+                        "notes": {"contains": "field", "coerce": "unicode"},
+                    }
+                }
             }
         },
         "index" : {
@@ -288,7 +281,7 @@ ARTICLE_STRUCT = {
                 "schema_codes_tree": {"coerce" : "unicode"},
                 "schema_subject": {"coerce" : "unicode"},
                 "subject": {"coerce" : "unicode"},
-                "unpunctitle": {"coerce" : "unicode"}
+                "unpunctitle": {"coerce" : "unicode"},
             }
         }
     }

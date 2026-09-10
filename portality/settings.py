@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.13"
+DOAJ_VERSION = "8.7.1"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -529,6 +529,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
+    "portality.models.note.Note"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -1079,9 +1080,13 @@ QUERY_FILTERS = {
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
 PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
+    # old protections for notes
+    # TODO: these MUST remain in place for the duration of deployment, they can be removed post migration
     "admin.notes.note",
     "admin.notes.id",
-    "admin.notes.author_id"
+    "admin.notes.author_id",
+    # New protections for notes
+    "admin.index.notes"
 ]
 
 ADMIN_NOTES_INDEX_ONLY_FIELDS = {
@@ -1096,8 +1101,12 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
     }
 }
 
+# These mappings prevent the notes and flags from being indexed in all_meta (the default for text fields)
 ADMIN_NOTES_SEARCH_MAPPING = {
-    "admin.notes.id": {
+    "admin.index.notes": {
+        "type": "text"
+    },
+    "admin.flag.note_id": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1106,16 +1115,7 @@ ADMIN_NOTES_SEARCH_MAPPING = {
             }
         }
     },
-    "admin.notes.note": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
-    },
-    "admin.notes.author_id": {
+    "admin.flag.assigned_to": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1593,8 +1593,11 @@ BG_MONITOR_DEFAULT_CONFIG = {
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
     'anon_export': {
-        'check_sec': _WEEK,    # a week
-        'allowed_num_err': 0
+        # anon_export only runs monthly, so a raw count of errors within a rolling window
+        # can't distinguish "still failing" from "failed a few times then succeeded" - disable
+        # this check and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['anon_export'] instead,
+        # which only cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'article_bulk_create': {
         'check_sec': _DAY,  # 1 day
@@ -1898,3 +1901,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False
