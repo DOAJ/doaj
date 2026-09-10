@@ -12,20 +12,27 @@ featuremap:
 
 Academic organisations' support of DOAJ is vital, and we are proud that over 80% of our support comes from these types of organisations. We are very grateful to all our supporting academic organisations.
 
-### 2026 pricing
+### Sustaining pricing
 
-Our model aligns with the levels recommended by [SCOSS](https://scoss.org/). This model enables us to invest in the organisation's future and continue providing high-quality services to our community.
+Our Sustaining model aligns with the levels recommended by [SCOSS](https://scoss.org/). This model enables us to invest in the organisation's future and continue providing high-quality services to our community.
 
 |                     | Euros(€) | USDs($) | GBPs(£) |
 |---------------------|----------|---------|---------|
 | Large organisations | 4,000    | 4,400   | 3,440   |
 | Small organisations | 2,000    | 2,200   | 1,720   |
 
-In 2026, a discount will be applied to institutions that support us through a billing consortium. Please [contact us](mailto:supporters@doaj.org) for further information.
+Discounts are available for institutions that support us through a billing consortium. Please [contact us](mailto:supporters@doaj.org) for further information.
 
 Organisations from [low- and middle-income countries](https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html) are eligible for a discounted contribution. 
 
-We always have a wishlist of development projects that require additional funding. Please contact us if you would like to sponsor one of these projects.
+### Sustaining Plus
+Those libraries that want to invest further in DOAJ's sustainability can upgrade their support through our new Sustaining Plus model. This model includes three tiers, where libraries are free to choose the tier they want.
+
+|        | Euros(€)  | USDs($)   | GBPs(£)  |
+|--------|-----------|-----------|----------|
+| Tier 1 | 10,000    | 11,600    | 8,800    |
+| Tier 2 | 7,500     | 8,800     | 6,500    |
+| Tier 3 | 5,000     | 5,800     | 4,400    |
 
 ### Why you should support us
 
@@ -43,5 +50,9 @@ By supporting us, your organisation will join [a growing family of like-minded i
 - You can include details of your DOAJ support in marketing activities
 - You can use [our logo](https://doaj-kit.netlify.app/building-blocks/logotype/) on your institution’s websites and in your communications
 - Via access to our [Premium Metadata Services](https://doaj.org/docs/premium), you can integrate our metadata into your discovery and aggregator tools via our [OAI-PMH feed](/docs/oai-pmh/), [API](/docs/api/) or [public data dump](/docs/public-data-dump/)
+- You will get access to a supporter pack, with promotional materials and training resources
+- You will be invited to an annual Town Hall meeting with early access to our Annual Highlights
+
+In addition to the benefits above, those who support DOAJ through the Sustaining Plus model will have their institution and selected tier highlighted on the DOAJ supporter page with a logo in addition to the name on the normal supporter list.
 
 ---
