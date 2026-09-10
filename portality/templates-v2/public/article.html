@@ -111,8 +111,10 @@
                                     {% if author.orcid_id %}
                                         <dd><a href="{{author.orcid_id}}" target="_blank" rel="noopener">ORCiD</a></dd>
                                     {% endif %}
-                                    {% if author.affiliation %}
-                                        <dd>{{author.affiliation}}</dd>
+                                    {% if author.affiliations %}
+                                        {% for aff in author.affiliations %}
+                                            <dd>{{aff}}</dd>
+                                        {% endfor %}
                                     {% endif %}
                                 {% endfor %}
                             </dl>
