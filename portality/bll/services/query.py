@@ -2,6 +2,7 @@ from portality.core import app, es_connection
 from portality.util import ipt_prefix
 from portality.bll import exceptions
 from portality.lib import plugin
+from portality.dao import ESMappingMissingError
 from copy import deepcopy
 
 class QueryService(object):
@@ -125,7 +126,10 @@ class QueryService(object):
         query = self._get_query(cfg, raw_query)
 
         # send the query
-        res = dao_klass.query(q=query.as_dict())
+        try:
+            res = dao_klass.query(q=query.as_dict())
+        except ESMappingMissingError:
+            return {"hits": {"hits": [], "total": {"value": 0}}, "aggregations": {}}
 
         # filter the results as needed
         res = self._post_filter_search_results(cfg, res)
