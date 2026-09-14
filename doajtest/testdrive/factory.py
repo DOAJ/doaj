@@ -4,6 +4,7 @@ import string
 from portality import models, constants
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 
 
 class TestDrive:
@@ -58,6 +59,11 @@ class TestDrive:
         for a in articles:
             report["articles"].append(a.id)
 
+    def report_application_ids(self, applications, report):
+        report["applications"] = []
+        for a in applications:
+            report["applications"].append(a.id)
+
     def report_article_tombstone_ids(self, tombstones, report):
         report["article_tombstones"] = []
         for a in tombstones:
@@ -83,9 +89,28 @@ class TestDrive:
         for aid in report.get("articles", []):
             models.Article.remove_by_id(aid)
 
+    def teardown_applications(self, report):
+        for aid in report.get("applications", []):
+            models.Application.remove_by_id(aid)
+
     def teardown_article_tombstones(self, report):
         for tid in report.get("article_tombstones", []):
             models.ArticleTombstone.remove_by_id(tid)
+
+    def safe_delete_by_issns(self, issns):
+        """ Best-effort article cleanup by ISSN, for use in teardown.
+
+        Article.delete_by_issns aborts the whole batch (including ISSNs that matched
+        cleanly) if it hits an article whose ownership can't be resolved - e.g. a fixed
+        test ISSN that happens to collide with real articles already in the index (many
+        journals use "0000-0000" as a placeholder for a missing eissn). Rather than let
+        that crash the teardown page, swallow it here and move on; call this once per
+        ISSN group that needs to succeed independently of the others. """
+        from portality.models.article import NoValidOwnerException
+        try:
+            models.Article.delete_by_issns(issns)
+        except NoValidOwnerException:
+            pass
 
     ### Useful factory methods
 
@@ -133,6 +158,65 @@ class TestDrive:
                 a.save()
             articles.append(a)
         return articles
+
+    def journal(self, in_doaj=True, title=None, owner=None, editor_group=None, editor=None,
+                license_type=None, has_apc=None, notes=None, pissn=None, eissn=None,
+                save=True, block=False):
+        """ Build a single journal, exposing the facet-relevant fields that journal-search
+        testdrives (admin/editor/associate/publisher) need to vary: DOAJ status, owner,
+        editor group / assigned editor, licence type, APC, and searchable notes.
+        pissn/eissn default to freshly generated unique values, but can be pinned to a
+        fixed value instead - e.g. to match a static XML upload fixture file that has
+        specific ISSNs hardcoded into it. """
+        source = JournalFixtureFactory.make_journal_source(in_doaj=in_doaj)
+        j = models.Journal(**source)
+        j.remove_current_application()
+        j.set_id(j.makeid())
+        j.bibjson().title = title or f"Journal {self.run_seed} {self.create_random_str(4)}"
+        j.bibjson().eissn = eissn or self.generate_unique_issn()
+        j.bibjson().pissn = pissn or self.generate_unique_issn()
+
+        if owner is not None:
+            j.set_owner(owner)
+        if editor_group is not None:
+            j.set_editor_group(editor_group)
+        if editor is not None:
+            j.set_editor(editor)
+        if license_type is not None:
+            j.bibjson().remove_licenses()
+            j.bibjson().add_license(license_type)
+        if has_apc is not None:
+            j.bibjson().has_apc = has_apc
+        for note in notes or []:
+            j.add_note(**note)
+
+        if save:
+            j.save(blocking=block)
+        return j
+
+    def application(self, title=None, editor=None, editor_group=None, status=None, save=True, block=False):
+        """ Build a standalone new application - e.g. to link from a journal's
+        related_applications, so an admin/editor "Related Record" link has something
+        real to find, or to populate an editor/associate editor's assigned-applications
+        search. """
+        source = ApplicationFixtureFactory.make_application_source()
+        a = models.Application(**source)
+        a.remove_current_journal()
+        a.remove_related_journal()
+        a.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
+        a.set_id(a.makeid())
+        a.bibjson().title = title or f"Application {self.run_seed} {self.create_random_str(4)}"
+
+        if editor_group is not None:
+            a.set_editor_group(editor_group)
+        if status is not None:
+            a.set_application_status(status)
+        if editor is not None:
+            a.set_editor(editor)
+
+        if save:
+            a.save(blocking=block)
+        return a
 
     def article_tombstones(self, journal, n=1, save=True):
         articles = self.articles(journal, n=n, save=False)
