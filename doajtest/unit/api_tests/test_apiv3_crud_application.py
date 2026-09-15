@@ -1,6 +1,7 @@
 import time
 import json
 from flask import url_for
+from flask_babel import lazy_gettext
 from portality import constants, models
 from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.fixtures import AccountFixtureFactory
@@ -238,6 +239,24 @@ class TestCrudApplication(DoajTestCase):
             except Api400Error as e:
                 raise
 
+    def test_03a_create_application_dryrun(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object, with the dry_run flag set
+        a = ApplicationsCrudApi.create(data, account, dry_run=True)
+
+        time.sleep(1)
+
+        # now check that the application index remains empty
+        ss = [x for x in models.Application.iterall()]
+        assert len(ss) == 0
+
     def test_03b_create_update_request_fail(self):
         # update request target not found
         with self.assertRaises(Api404Error):
@@ -300,23 +319,16 @@ class TestCrudApplication(DoajTestCase):
             except Api404Error as e:
                 raise
 
-    def test_03a_create_application_dryrun(self):
-        # set up all the bits we need
-        data = ApplicationFixtureFactory.incoming_application()
-        del data["admin"]["current_journal"]
-        account = models.Account()
-        account.set_id("test")
-        account.set_name("Tester")
-        account.set_email("test@test.com")
+    def test_03d_validation_message_with_lazystring_error(self):
+        # some form field validators (e.g. SUBJECT's required_if) define their message with
+        # lazy_gettext, which produces a LazyString rather than a str. _validation_message must
+        # not choke on that when building the combined error string.
+        class FakeFormContext:
+            errors = {"subject": [lazy_gettext("This field is required")]}
 
-        # call create on the object, with the dry_run flag set
-        a = ApplicationsCrudApi.create(data, account, dry_run=True)
-
-        time.sleep(1)
-
-        # now check that the application index remains empty
-        ss = [x for x in models.Application.iterall()]
-        assert len(ss) == 0
+        msg = ApplicationsCrudApi._validation_message(FakeFormContext())
+        assert "subject" in msg
+        assert "This field is required" in msg
 
     def test_04_coerce(self):
         data = ApplicationFixtureFactory.incoming_application()

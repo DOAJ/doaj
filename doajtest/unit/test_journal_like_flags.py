@@ -1,3 +1,5 @@
+import json
+
 from werkzeug.datastructures import MultiDict
 
 from doajtest.helpers import DoajTestCase, create_random_str
@@ -26,12 +28,15 @@ JOURNAL_FORMINFO = JournalFixtureFactory.make_journal_form_info()
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 
 def _create_note_object(author_id=None, assignee_id=None, note=DEFAULT_NOTE_TEXT, deadline=None,
-                        id=create_random_str()):
+                        id=None):
     if author_id is None:
         author_id = current_user.id
 
     if deadline is None and assignee_id is not None:
         deadline = dates.far_in_the_future()
+
+    if id is None:
+        id = create_random_str()
 
     return {"date": dates.today(), "note": note, "id": id, "author_id": author_id,
             "assigned_to": "" if assignee_id is None else assignee_id, "deadline": deadline}
@@ -72,8 +77,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
                                                    roles=["editor"])
         self.another_editor.save()
 
-        jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
-        self.journal = Journal(**jsource)
+        self.journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         self.journal.remove_notes()
         self.journal.save()
 
@@ -92,11 +96,12 @@ class TestJournalLikeFlagsModel(DoajTestCase):
                                                      note="No need to look at that till year 9999", id=flag_id)
         note = _create_note_object(author_id=create_random_str())
 
-        self.journal.add_note(**note)
+        original_note = self.journal.add_note(**note)
         self.journal.save(blocking=True)
         assert not self.journal.is_flagged, "This journal is not flagged yet"
 
-        self.journal.add_note(**flag_far_in_the_future)
+        flag_note = self.journal.add_note(**flag_far_in_the_future)
+        assert self.journal.is_flagged
         self.journal.save(blocking=True)
         assert self.journal.is_flagged, "This journal is flagged now"
 
@@ -104,32 +109,27 @@ class TestJournalLikeFlagsModel(DoajTestCase):
         assert len(self.journal.notes) == 2, "We expect 2 notes: one with a flag and one without."
         assert len(self.journal.notes_except_flags) == 1, "Flags not correctly identified among notes."
 
-        self.journal.add_note(**flag)
+        second_flag = self.journal.add_note(**flag)
         self.journal.save(blocking=True)
 
         assert self.journal.is_flagged, "This journal is flagged now"
 
-        assert len(self.journal.flags) == 2, "Flag not set"
+        assert len(self.journal.flags) == 1, "Flag not set" # only ever one flag
         assert len(self.journal.notes) == 3, "We expect 3 notes: two with a flag and one without."
-        assert len(self.journal.notes_except_flags) == 1, "Flags not correctly identified among notes."
+        assert len(self.journal.notes_except_flags) == 2, "Flags not correctly identified among notes."
         assert self.journal.ordered_notes[0]["flag"]["deadline"] ==  short_deadline, "More urgent flag should be first"
-        assert self.journal.ordered_notes[1]["flag"]["deadline"] == dates.far_in_the_future(out_format=dates.FMT_DATE_STD), "Less urgent flag should be second"
         assert self.journal.most_urgent_flag_deadline == short_deadline, "The most urgent flag not identified correctly"
 
-        self.journal.resolve_flag(flag_id=flag_id, updated_note=RESOLVED_NOTE)
+        self.journal.resolve_flag(flag_id=second_flag.id, updated_note=RESOLVED_NOTE, date=dates.today(), author=self.admin.id)
 
-        assert len(self.journal.flags) == 1, "Flag not set"
-        assert self.journal.flags[0]["note"] != RESOLVED_NOTE
-        assert len(
-            self.journal.notes) == 3, "We expect 3 notes: one with a flag and 2 without, including the one that used to be a flag."
-        assert len(self.journal.notes_except_flags) == 2, "Flags not correctly identified among notes."
-        assert flag_id in [note["id"] for note in
-                           self.journal.notes_except_flags], "Note that used to be a flag not found in notes_except_flags"
+        assert len(self.journal.flags) == 0, "Flag not set"
+        assert len(self.journal.notes) == 3, "We expect 3 notes: all without flags, including the one that used to be a flag."
+        assert len(self.journal.notes_except_flags) == 3, "Flags not correctly identified among notes."
 
 
     def test_setFlagWithCorrectDeadline(self):
         with self._make_and_push_test_context_manager(acc=self.admin):
-            fsource = JournalFixtureFactory.make_journal_form(flag=True, assignee=self.admin.id, setter=self.admin.id, deadline=short_deadline, note="Flag with a correct deadline")
+            fsource = JournalFixtureFactory.make_journal_form(flag=True, assignee=self.admin.id, setter="({})".format(self.admin.id), deadline=short_deadline, note="Flag with a correct deadline")
             form = self.pc.wtform(MultiDict(fsource))
             app = JournalFormXWalk.form2obj(form)
             app.save()
@@ -161,46 +161,59 @@ class TestJournalLikeFlagsModel(DoajTestCase):
             f = app.flags[0]
             assert f["flag"]["deadline"] == dates.far_in_the_future(out_format=dates.FMT_DATE_STD)
 
-    def test_setFlagWithoutAssignee(self):
-        ftext = "Flag without an assignee"
-        with self._make_and_push_test_context_manager(acc=self.admin):
-            fsource = JournalFixtureFactory.make_journal_form(flag=True, note=ftext, deadline=short_deadline)
-            form = self.pc.wtform(MultiDict(fsource))
-            app = JournalFormXWalk.form2obj(form)
-            app.save()
-            assert app.is_flagged == False, "Flag without an assignee should be automatically converted to a note"
-            assert ftext in [note["note"] for note in app.notes]
+    # RJ: I've removed this test because I don't think it is valid.  There is a confusion in the flags
+    # code that seems to think that the object or even the crosswalk is responsible for deciding if a flag
+    # is valid or not.  This is a form validation issue, really, and should be handled at that level, OR
+    # it is a model level issue, in which case the model's API should be clearer about the requirements on
+    # setting a flag.  For the moment I think this is largely academic, as there IS form validation, but
+    # we should consider cleaning up the flags code a little more now that Notes are separate from the
+    # model objects and the flags.
+    #
+    # def test_setFlagWithoutAssignee(self):
+    #     ftext = "Flag without an assignee"
+    #     with self._make_and_push_test_context_manager(acc=self.admin):
+    #         fsource = JournalFixtureFactory.make_journal_form(flag=True, note=ftext, deadline=short_deadline)
+    #         form = self.pc.wtform(MultiDict(fsource))
+    #         app = JournalFormXWalk.form2obj(form)
+    #         app.save()
+    #         assert app.is_flagged == False, "Flag without an assignee should be automatically converted to a note"
+    #         assert ftext in [note["note"] for note in app.notes]
 
     def test_resolveFlag(self):
         ftext = "Resolved flag"
         with self._make_and_push_test_context_manager(acc=self.admin):
-            journal = Journal(**JOURNAL_SOURCE)
-            # ready_application = Application(**UPDATE_REQUEST_SOURCE_TEST_1)
-            # ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
-            # ready_application.set_current_journal(self.journal.id)
+            journal = JournalFixtureFactory.make_legacy_journal_object()
             journal.remove_notes()
 
-            # Construct an application form
+            flag_note_id = create_random_str()
+            flag_created = dates.today()
+            journal.add_note(ftext, date=flag_created, id=flag_note_id, author_id=self.admin.id,
+                             assigned_to=self.another_admin.id, deadline=short_deadline)
+            journal.save(blocking=True)
+
+            # Construct an admin form for the journal, and mark the existing flag as resolved,
+            # the way the flag_manager JS widget does (see resolveFlag in formulaic.js)
             fc = JournalFormFactory.context("admin")
             processor = fc.processor(source=journal)
-            processor.form.flags.entries.clear()
-            # Make changes to the application status via the form
-            processor.form.flags.append_entry(
-                {
-                    "flag_note_id": create_random_str(),
-                    "flag_deadline": "",
-                    "flag_assignee": self.another_admin.id,
-                    "flag_note": ftext,
-                    "flag_resolved": "true"
-                })
+            resolved_flag = {
+                "assignee": self.another_admin.id,
+                "deadline": short_deadline,
+                "note": ftext,
+                "author": self.admin.id,
+                "created": flag_created
+            }
+            processor.form.flags.flag_note_id.data = flag_note_id
+            processor.form.flags.flag_resolved.data = json.dumps(resolved_flag)
 
             # Emails are sent during the finalise stage, and requires the app context to build URLs
             processor.finalise(current_user)
-            # app = ApplicationFormXWalk.form2obj(processor.form)
-            # app.save(blocking=True)
             app = processor.target
             assert app.is_flagged == False, "Flag hasn't been resolved"
             msg = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                created_date=dates.human_date(resolved_flag["created"]),
+                author=resolved_flag["author"],
+                assignee=resolved_flag["assignee"],
+                deadline=resolved_flag["deadline"],
                 date=dates.today(),
                 username=current_user.id,
                 note=ftext

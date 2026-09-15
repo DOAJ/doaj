@@ -1,4 +1,7 @@
 import uuid
+import hashlib
+import hmac
+import re
 from flask_login import UserMixin
 from datetime import timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -19,7 +22,7 @@ class Account(DomainObject, UserMixin):
         super(Account, self).__init__(**kwargs)
 
     @classmethod
-    def make_account(cls, email, username=None, name=None, roles=None, associated_journal_ids=None):
+    def make_account(cls, email, username=None, name=None, roles=None, associated_journal_ids=None, attributes:dict[str, list]=None):
         if roles is None:
             roles = []
 
@@ -39,8 +42,16 @@ class Account(DomainObject, UserMixin):
 
         for role in roles:
             a.add_role(role)
+
         for jid in associated_journal_ids:
             a.add_journal(jid)
+
+        if attributes is not None:
+            for attr_type, value in attributes.items():
+                if not isinstance(value, list):
+                    value = [value]
+                for v in value:
+                    a.add_attribute(attr_type, v)
 
         # New accounts don't have passwords set - create a reset token for password.
         reset_token = uuid.uuid4().hex
@@ -128,11 +139,94 @@ class Account(DomainObject, UserMixin):
             del self.data['password']
 
     def check_password(self, password):
+        """Check the provided password against the stored hash.
+
+        Handles legacy hashes removed in Werkzeug 3 (e.g. 'sha1$...' or raw 40-hex SHA1) by verifying once
+        and upgrading them to a modern hash. This preserves behaviour for existing records while moving
+        them forward to supported hash schemes.
+        """
         try:
-            return check_password_hash(self.data['password'], password)
+            stored = self.data['password']
         except KeyError:
             app.logger.error("Problem with user '{}' account: no password field".format(self.data['id']))
             raise
+
+        # If the stored hash looks like a legacy SHA1 format, verify via compatibility shim first.
+        if self._is_legacy_sha1_hash(stored):
+            if self._verify_legacy_sha1(stored, password):
+                # Upgrade path: replace legacy hash with a modern one and persist.
+                # Note: This handles a breaking change in Werkzeug 3 (legacy verifiers removed).
+                self.set_password(password)
+                try:
+                    # DomainObject.save() is expected to exist; failure to save should not block login success.
+                    self.save()
+                except Exception as e:
+                    app.logger.warning(
+                        "Password upgraded for user '%s' but save failed: %s", self.data.get('id'), str(e)
+                    )
+                return True
+            return False
+
+        # Otherwise, use Werkzeug's checker. If Werkzeug raises due to an unsupported legacy format,
+        # fall back to the legacy verifier as a last resort.
+        try:
+            return check_password_hash(stored, password)
+        except ValueError:
+            # Fallback for unsupported legacy formats encountered at runtime.
+            if self._verify_legacy_sha1(stored, password):
+                self.set_password(password)
+                try:
+                    self.save()
+                except Exception as e:
+                    app.logger.warning(
+                        "Password upgraded for user '%s' after ValueError but save failed: %s",
+                        self.data.get('id'), str(e)
+                    )
+                return True
+            return False
+
+    # --- Legacy SHA1 compatibility (Werkzeug 3 removal) ---
+    _SHA1_HEX_RE = re.compile(r"^[a-f0-9]{40}$", re.IGNORECASE)
+
+    @classmethod
+    def _is_legacy_sha1_hash(cls, stored: str) -> bool:
+        """Detect legacy SHA1 formats that Werkzeug 3 no longer supports.
+
+        Supported legacy patterns:
+        - 'sha1$<salt>$<hexdigest>' (old Werkzeug simple salted SHA1)
+        - '<40-hex>' (unsalted plain SHA1 of password)
+        """
+        if not stored or not isinstance(stored, str):
+            return False
+        if stored.startswith('sha1$'):
+            parts = stored.split('$')
+            return len(parts) == 3 and bool(parts[1]) and bool(parts[2])
+        # plain 40 hex characters implies unsalted SHA1
+        return bool(cls._SHA1_HEX_RE.fullmatch(stored))
+
+    @classmethod
+    def _verify_legacy_sha1(cls, stored: str, password: str) -> bool:
+        """Verify a password against legacy SHA1 formats.
+
+        - 'sha1$<salt>$<hexdigest>' uses sha1(salt + password)
+        - '<40-hex>' uses sha1(password)
+        """
+        if not stored or password is None:
+            return False
+        try:
+            if stored.startswith('sha1$'):
+                # salted format: sha1$<salt>$<hexdigest>
+                _, salt, hexdigest = stored.split('$', 2)
+                digest = hashlib.sha1((salt + password).encode('utf-8')).hexdigest()
+                return hmac.compare_digest(digest, hexdigest)
+            # unsalted plain SHA1 hex
+            if cls._SHA1_HEX_RE.fullmatch(stored):
+                digest = hashlib.sha1(password.encode('utf-8')).hexdigest()
+                return hmac.compare_digest(digest, stored.lower())
+        except Exception:
+            # Any parsing/encoding issues -> treat as non-match
+            return False
+        return False
 
     @property
     def journal(self):
@@ -218,6 +312,56 @@ class Account(DomainObject, UserMixin):
         if not isinstance(role, list):
             role = [role]
         self.data["role"] = role
+
+    ###############################
+    ## user attributes
+
+    @property
+    def attributes(self):
+        return self.data.get("attributes")
+
+    @attributes.deleter
+    def attributes(self):
+        if "attributes" in self.data:
+            del self.data["attributes"]
+
+    @property
+    def attribute_workflow(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__WORKFLOW, [])
+
+    @property
+    def attribute_language(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__LANGUAGE, [])
+
+    @property
+    def attribute_country(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__COUNTRY, [])
+
+    @property
+    def attribute_tag(self):
+        return self.data.get("attributes", {}).get(constants.USER_ATTR__TAG, [])
+
+    def add_attribute(self, attribute_type, value):
+        if attribute_type not in constants.USER_ATTR__ALL:
+            raise ValueError("Unknown user attribute type: {}".format(attribute_type))
+        if "attributes" not in self.data:
+            self.data["attributes"] = {}
+        if attribute_type not in self.data["attributes"]:
+            self.data["attributes"][attribute_type] = []
+        if value not in self.data["attributes"][attribute_type]:
+            self.data["attributes"][attribute_type].append(value)
+
+    def has_attribute(self, attribute_type, value):
+        if attribute_type not in constants.USER_ATTR__ALL:
+            raise ValueError("Unknown user attribute type: {}".format(attribute_type))
+        return value in self.data.get("attributes", {}).get(attribute_type, [])
+
+    def get_attributes(self, attribute_type):
+        if attribute_type not in constants.USER_ATTR__ALL:
+            raise ValueError("Unknown user attribute type: {}".format(attribute_type))
+        return self.data.get("attributes", {}).get(attribute_type, [])
+
+    #######################
 
     def prep(self):
         self.data['last_updated'] = dates.now_str()
@@ -326,3 +470,32 @@ class LoginCodeQuery:
                 }
             }
         }
+
+    @classmethod
+    def find_by_attributes(cls, attribute_types_and_values:list[tuple[str, str]], limit=1000):
+        q = AttributesQuery(attribute_types_and_values, limit)
+        return cls.object_query(q.query())
+
+
+class AttributesQuery:
+    def __init__(self, attribute_types_and_values, page_size):
+        self._tup = attribute_types_and_values
+        self._size = page_size
+
+    def query(self):
+        musts = []
+        for t, v in self._tup.items():
+            if not isinstance(v, list):
+                v = [v]
+            f = {"terms": {f"attribute.{t}.exact": v}}
+            musts.append(f)
+
+        q = {
+            "query": {
+                "bool": {
+                    "must": musts
+                }
+            },
+            "size": self._size
+        }
+        return q

@@ -13,6 +13,12 @@
 {% block page_title %}{% if obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: {{ obj.bibjson().title }}{% endblock %}
 {% block body_id %}apply{% endblock %}
 
+{% block permanent_warnings %}
+    {% if obj.application_status == constants.APPLICATION_STATUS_REJECTED and continuation_info.journal %}
+        {% include "management/admin/includes/_warning_continuation.html" with context %}
+    {% endif %}
+{% endblock %}
+
 {% block admin_content scoped %}
     {% include "management/_application-form/includes/_editorial_form_body.html" %}
 

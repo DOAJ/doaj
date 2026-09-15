@@ -2,6 +2,44 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.2
+
+Refactor and improve the search interface code structure
+https://github.com/DOAJ/doajPM/issues/4185
+
+### 8.7.1
+
+Enable user attributes as well as roles (additional field on model).
+https://github.com/DOAJ/doajPM/issues/4317
+
+Fixes for tests and anonymous export script.
+
+### 8.7.0
+
+Separate the notes from Journal and Application models into their own index.
+https://github.com/DOAJ/doajPM/issues/4316
+
+### 8.6.13
+
+Prompt for withdrawing a continued journal when an application is rejected.
+https://github.com/DOAJ/doajPM/issues/4145
+
+### 8.6.12
+
+Flask v3 upgrade - some password migration required to support later Werkzeug.
+https://github.com/DOAJ/doajPM/issues/4181
+
+### 8.6.11
+
+Adds a 'Last Full Review' checkbox to the admin update request form.
+https://github.com/DOAJ/doajPM/issues/4287
+
+Required fields assignee and deadline for flagged journals, notifications on flags.
+https://github.com/DOAJ/doajPM/issues/4202
+https://github.com/DOAJ/doajPM/issues/4203
+
+Fix for API article validation errors failing to reach the user due to translation
+
 ### 8.6.10
 
 Static pages release and upgrade some dependencies, move advisory board page path.
