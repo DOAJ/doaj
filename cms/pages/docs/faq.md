@@ -166,23 +166,23 @@ You may see the 403 forbidden or 500 errors for different reasons. These apply t
 
 ### I am seeing a timeout or a 'blocked' error
 
-If you see a timeout error, please try splitting your upload into smaller files, even if your file is under our 50MB limit. Many may be uploading content to us, and the server is taking longer than usual to collect your file.
+If you see a timeout error, please try splitting your upload into smaller files, even if your file is under our 50MB limit. Many people may be uploading content at the same time, and the server may take longer than usual to collect your file.
 
-If you see a screen from Cloudflare that says you have been blocked, please [contact us](mailto:helpdesk@doaj.org). Include a screenshot that shows the Ray ID at the very bottom of the page. We need this to troubleshoot the problem.
+If you see a Cloudflare screen saying you have been blocked, please [contact us](mailto:helpdesk@doaj.org). Include a screenshot showing the Ray ID at the bottom of the page. We need this to troubleshoot the problem.
 
 ## Downloading your metadata
 
-You can download metadata about your journal by [downloading our CSV](https://doaj.org/csv).
+You can download your journal metadata by [downloading our CSV](https://doaj.org/csv).
 
 You can download your article metadata by [using our API](https://doaj.org/docs/api/) or by using our [public data dump service](/docs/public-data-dump/).
 
-## Using a spreadsheet to update your journal metadata
+## Using a Journal Update File to update your journal metadata
 
-If you received a spreadsheet from us--a 'Journal Update File'--please complete it by the deadline sent to you. You will have received some instructions as well. Read them carefully as they will help you with your updates.  
+If you received a Journal Update File from us, please complete it by the deadline communicated to you. You will also have received instructions. Read them carefully, as they will help you with your updates.  
 
 Before you return the spreadsheet to us, you must do two things:
 
-1. Convert it to a CSV using the 'Save as' function. If asked, save it in the Unicode UTF-8 format. Delete the Instructions tab first.
+1. Convert it to a CSV using the 'Save as' function. If there is one, delete the Instructions tab first. If asked, save it in the Unicode UTF-8 format. 
 2. [Validate it](/publisher/journal-csv).
 
 Here are some tips to ensure that your CSV file will pass validation:
@@ -194,9 +194,9 @@ Here are some tips to ensure that your CSV file will pass validation:
 - don't include anything in the column other than what is asked for in the instructions
 - make sure no spaces are accidentally added before or after the information in each cell
 
-Deleting a journal (a row) from the spreadsheet means that no update will be applied to that journal. It will not remove the journal from your account or withdraw it from DOAJ. To do this, you must contact [Help Desk](mailto:helpdesk@doaj.org).
+Deleting a journal (a row) from the spreadsheet means no update will be applied to that journal. It will not remove the journal from your account or withdraw it from DOAJ. To do this, you must contact [Help Desk](mailto:helpdesk@doaj.org).
 
-### Validating your CSV
+### Validating your Journal Update File
 
 To validate your CSV, go to the '[Validate your CSV](https://doaj.org/publisher/journal-csv)' tab on your Publisher Dashboard. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
 
