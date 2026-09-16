@@ -62,8 +62,10 @@ BASE_ARTICLE_STRUCT = {
                 "author": {
                     "fields": {
                         "name": {"coerce": "unicode"},
-                        "affiliation": {"coerce": "unicode"},
                         "orcid_id": {"coerce": "unicode"}
+                    },
+                    "lists": {
+                        "affiliations": {"contains": "field", "coerce": "unicode"}
                     }
                 },
                 "journal": {
@@ -158,6 +160,15 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
     ~~APIIncomingArticle:Model->DataObj:Library~~
     """
     def __init__(self, raw=None):
+        # backward compatibility: convert old "affiliation" field to "affiliations" list
+        if raw is not None and "bibjson" in raw and "author" in raw.get("bibjson", {}):
+            for author in raw["bibjson"]["author"]:
+                if "affiliation" in author:
+                    old_aff = author.pop("affiliation")
+                    if old_aff and "affiliations" not in author:
+                        author["affiliations"] = [old_aff]
+                    elif old_aff and "affiliations" in author:
+                        author["affiliations"].append(old_aff)
         self._add_struct(BASE_ARTICLE_STRUCT)
         self._add_struct(INCOMING_ARTICLE_REQUIRED)
         super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True,
