@@ -23,35 +23,38 @@ We only accept support through our publisher supporter model from publishers wit
 
 | Band | Number of journals in DOAJ | GBPs (£)* |
 |------|----------------------------|-----------|
-| A    | 600+                       | 27,000    |
-| B    | 400-599                    | 22,000    |
-| C    | 150-399                    | 19,000    |
-| D    | 100-149                    | 16,000    |
-| E    | 50-99                      | 9000      |
-| F    | 30-49                      | 6700      |
-| G    | 10-29                      | 5400      |
-| H    | 1-9                        | 3800      |
+| A    | 600+                       | 28,000    |
+| B    | 400-599                    | 23,000    |
+| C    | 150-399                    | 20,000    |
+| D    | 100-149                    | 16,500    |
+| E    | 50-99                      | 9500      |
+| F    | 30-49                      | 7000      |
+| G    | 10-29                      | 5600      |
+| H    | 1-9                        | 4000      |
 
 ### Community-led / institutional publishers
 
 | Band | Number of journals in DOAJ | GBPs (£)* |
 |------|----------------------------|-----------|
-| C    | 150-399                    | 3700      |
-| D    | 100-149                    | 3200      |
-| E    | 50-99                      | 2700      |
-| F    | 30-49                      | 2200      |
-| G    | 10-29                      | 1600      |
-| H    | 1-9                        | 1100      |
+| C    | 150-399                    | 3800      |
+| D    | 100-149                    | 3300      |
+| E    | 50-99                      | 2800      |
+| F    | 30-49                      | 2300      |
+| G    | 10-29                      | 1650      |
+| H    | 1-9                        | 1150      |
 
 *A 50% discount is available for supporters in Low- and Middle-Income Countries according to the World Bank classification.
+
+As DOAJ’s supporter model includes exclusive services, contributions are subject to VAT.
 
 ## Benefits
 
 1. Your logo on the DOAJ website
 2. A blog post during the year thanking all our supporters
 3. A DOAJ Supporter logo that you can use on your website
-4. An option to download [a copy of all our data](/docs/public-data-dump/)
-5. A personal DOAJ contact to whom all enquiries regarding your applications and updates can be directed
+4. Our quarterly newsletter for publishers
+5. Access to DOAJ’s [premium metadata service](https://doaj.org/docs/premium), providing our most up-to-date data
+6. A personal DOAJ contact to whom all enquiries regarding your applications and updates can be directed
 
 ## Sponsorship opportunities
 
