@@ -2,8 +2,101 @@
 
 <script type="text/javascript">
     jQuery(document).ready(function($) {
-        // Populate select2 role picker
-        $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"]})
+        // Populate select2 role picker (multiple select)
+        // Use JSON serialization for the available tags to avoid quoting issues
+        var roleTags = {{ current_user.all_top_level_roles()|tojson }};
+        $('#roles').select2({
+            tags: roleTags,
+            tokenSeparators: [',', ';'],
+            placeholder: 'Select or type roles',
+            width: '100%',
+            closeOnSelect: false, // keep dropdown open for multiple selection
+            allowClear: true
+        });
+
+        var $attrWf = $("#attribute_workflow");
+        $attrWf.select2({
+            placeholder: 'Select workflow stages',
+            width: '100%',
+            newOption: true,
+        });
+
+        // Initialise select2 for language field. If the underlying select is multiple,
+        // keep the dropdown open on select (closeOnSelect = false).
+        var $attrLang = $("#attribute_language");
+        $attrLang.select2({
+            placeholder: 'Select language',
+            width: '100%',
+            newOption: true,
+        });
+
+        let $attrCountry = $("#attribute_country");
+        $attrCountry.select2({
+            placeholder: 'Select country',
+            width: '100%',
+            newOption: true
+        })
+
+        let $otherAttr = $("#attribute_tag");
+        // Turn a simple text field into a free-text tag entry box.
+        // Use comma as the token separator so users can enter tags separated by commas.
+        $otherAttr.select2({
+            multiple: true,
+            minimumInputLength: 1,
+            ajax: {
+                url: current_scheme + "//" + current_domain + "/admin/autocomplete/user_tags",
+                dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        q: term
+                    };
+                },
+                results: function (data, page) {
+                    return {results: data["suggestions"]};
+                }
+            },
+            createSearchChoice: function (term) {
+                return {id: $.trim(term), text: $.trim(term)};
+            },
+            initSelection: function (element, callback) {
+                var initial = element.val();
+                var entries = initial.split(",").map(x => x.trim()).filter(x => x !== "");
+                var data = [];
+                for (var i = 0; i < entries.length; i++) {
+                    data.push({id: entries[i], text: entries[i]});
+                }
+                callback(data);
+            },
+            placeholder: "Add tags",
+            allowClear: false,
+            tags: true,
+            tokenSeparators: [',', ";"],
+            width: 'resolve'
+        });
+        {#$otherAttr.select2({#}
+        {#    tags: true,#}
+        {#    tokenSeparators: [','],#}
+        {#    placeholder: 'Add tags',#}
+        {#    width: '100%',#}
+        {#    allowClear: true,#}
+        {#    closeOnSelect: true,#}
+        {#    // Remove the built-in "Searching..." message/spinner since there is#}
+        {#    // no remote data source — return an empty string for the searching#}
+        {#    // message so the spinner text is not shown.#}
+        {#    language: {#}
+        {#        searching: function() { return ''; }#}
+        {#    },#}
+        {#    // Ensure markup isn't escaped so empty searching messages don't show markup#}
+        {#    escapeMarkup: function (markup) { return markup; },#}
+        {#    // Normalize entered tags by trimming whitespace and preventing empty tags#}
+        {#    createTag: function (params) {#}
+        {#        var term = $.trim(params.term);#}
+        {#        if (term === '') {#}
+        {#            return null;#}
+        {#        }#}
+        {#        return { id: term, text: term };#}
+        {#    }#}
+        {#});#}
 
         // Scroll to errors
         let firstError = $('.errors')[0];

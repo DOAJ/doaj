@@ -53,7 +53,7 @@ class TestBLLAcceptApplication(DoajTestCase):
             application.add_note("unique 1", "2002-01-01T00:00:00Z")
             application.add_note("duplicate", "2001-01-01T00:00:00Z", "duplicate_id")
             cj = application.current_journal
-            journal = Journal(**JournalFixtureFactory.make_journal_source())
+            journal = JournalFixtureFactory.make_legacy_journal_object()
             journal.set_id(cj)
             journal.remove_notes()
             journal.add_note("unique 2", "2003-01-01T00:00:00Z")

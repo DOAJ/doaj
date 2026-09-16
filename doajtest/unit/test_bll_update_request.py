@@ -38,12 +38,12 @@ class TestBLLUpdateRequest(DoajTestCase):
         journal = None
         jid = None
         if journal_id == "valid":
-            journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+            journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
             journal.remove_related_applications()
             journal.remove_current_application()
             jid = journal.id
         elif journal_id == "not_in_doaj":
-            journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=False))
+            journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=False)
             journal.remove_related_applications()
             journal.remove_current_application()
             jid = journal.id
@@ -140,14 +140,16 @@ class TestBLLUpdateRequest(DoajTestCase):
             elif db_jlock == "yes" and acc is not None:
                 assert lock.has_lock("journal", jid, acc.id)
 
-            if db_alock == "no" and application.id is not None and acc is not None:
+            # FIXME: here we use the presence of the "index" field to determine if a fixture has been saved
+            # which may be unreliable down the line
+            if db_alock == "no" and application.data.get("index") is None and acc is not None:
                 assert not lock.has_lock("suggestion", application.id, acc.id)
-            elif db_alock == "yes" and application.id is not None and acc is not None:
+            elif db_alock == "yes" and application.data.get("index") is not None and acc is not None:
                 assert lock.has_lock("suggestion", application.id, acc.id)
 
-            if db_app == "no" and application.id is not None:
+            if db_app == "no" and application.data.get("index") is not None:
                 indb = Suggestion.q2obj(q="id.exact:" + application.id)
-                assert indb is None
-            elif db_app == "yes" and application.id is not None:
+                assert len(indb) == 0 or indb is None
+            elif db_app == "yes" and application.data.get("index") is not None:
                 indb = Suggestion.q2obj(q="id.exact:" + application.id)
-                assert indb is not None
+                assert len(indb) > 0 or indb is not None

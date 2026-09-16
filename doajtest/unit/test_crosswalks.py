@@ -54,7 +54,7 @@ class TestCrosswalks(DoajTestCase):
         obj = JournalFormXWalk.form2obj(form)
 
         form_author_id_list = {v for k, v in JOURNAL_FORM.items() if re.match(r'notes-\d+-note_author_id', k)}
-        assert form_author_id_list == {n['author_id'] for n in obj['admin']['notes']}
+        assert form_author_id_list == {n['author_id'] for n in obj.notes}
 
         assert isinstance(obj, Journal)
 
@@ -64,7 +64,7 @@ class TestCrosswalks(DoajTestCase):
         assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
 
     def test_02_journal_obj2form(self):
-        j = models.Journal(**JOURNAL_SOURCE)
+        j = JournalFixtureFactory.make_legacy_journal_object()
         form = JournalFormXWalk.obj2form(j)
 
         compare = deepcopy(JOURNAL_FORMINFO)
@@ -85,7 +85,7 @@ class TestCrosswalks(DoajTestCase):
         assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
 
     def test_04_application_obj2form(self):
-        j = models.Application(**APPLICATION_SOURCE)
+        j = ApplicationFixtureFactory.make_legacy_application_object()
         form = ApplicationFormXWalk.obj2form(j)
 
         compare = deepcopy(APPLICATION_FORMINFO)

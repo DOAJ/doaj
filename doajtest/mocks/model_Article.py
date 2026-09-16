@@ -8,8 +8,7 @@ class ModelArticleMockFactory(object):
         journals = []
 
         for spec in specs:
-            source = JournalFixtureFactory.make_journal_source(in_doaj=in_doaj)
-            j = Journal(**source)
+            j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=in_doaj)
             bj = j.bibjson()
             bj.title = spec.get("title", "Journal Title")
             del bj.eissn
