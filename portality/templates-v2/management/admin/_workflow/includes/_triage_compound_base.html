@@ -42,9 +42,9 @@
             {% endif %}
         {% endfor %}
         {% autoescape off %}
-        <section class="criterion col-md-12">
-            <div class="row">
-                <div class="col-md-7">
+        <section class="criterion-main col-md-12">
+            <div class="row criterion-layout">
+                <div class="col-md-12 criterion-layout__question">
                     {% if els.check.capability.check %}
                     <h4>{{ els.check.capability.check }}</h4>
                         {% if els.check.capability.application_info %}
@@ -56,6 +56,14 @@
                             </ul>
                         {% endif %}
                     {% endif %}
+                    {% if els.check.capability.resources|length > 0 %}
+                        <h5><span data-feather="book" class="icon" aria-hidden="true"></span>Resources</h5>
+                        <ul>
+                            {% for resource in els.check.capability.resources %}
+                            <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     {% if els.options %}
                         <fieldset style="flex-direction: column;" class="subquestion">
                             <legend class="sr-only">Special exceptions</legend>
@@ -66,53 +74,76 @@
                         </fieldset>
                     {% endif %}
 
-                    {% if els.action %}
-                        {% for action in els.action %}
-                        <div class="row">
-                            <div class="col-md-7 action-container {{ action.capability.trigger_btn }} " id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info" hidden>
-                                <p class="your-answer" id="{{ compound.name }}-your_answer">Your answer: <span class="answer {{ action.capability.trigger_btn }}"></span></p>
-                                {{ action.renderer.draw(action, application=application, wfc=wfc) }}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-
                     {% if els.not_classified %}
                         {% for nc in els.not_classified %}
                             <div class="row">
-                                <div class="col-md-7 action-container" id="{{nc.name}}-container">
+                                <div class="col-md-12 action-container" id="{{nc.name}}-container">
                                     {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
                                 </div>
                             </div>
                         {% endfor %}
                     {% endif %}
+                    {% if els.note %}
+                    <div class="note-container">
+                        {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}
+                    </div>
+                    {% endif %}
+                    {% if els.action %}
+                        {% for action in els.action %}
+                            <div class="action-container {{ action.capability.trigger_btn }} action" id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info" hidden>
+                                <p id="{{ compound.name }}-your_answer">Your answer: <span class="your-answer answer action"></span></p>
+                                <p class="reminder save-reminder" hidden>
+                                    <span data-feather="alert-circle" aria-hidden="true"></span>
+                                    <span class="save-reminder-text" role="status" aria-live="polite" aria-atomic="true"></span>
+                                </p>
+                                {{ action.renderer.draw(action, application=application, wfc=wfc) }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                <div class="col-md-5" style="margin-top: 1.25rem">
-                    <aside>
-                        {% if els.check.capability.remember %}
-                        <div class="criterion-important">
-                            <h5><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>REMEMBER</h5>
-                            <p>{{ els.check.capability.remember }}</p>
+                {% if els.check.capability.remember or els.check.capability.instructions %}
+                <button
+                        type="button"
+                        class="criterion-instructions-trigger"
+                        aria-controls="{{ compound.name }}-criterion-instructions"
+                        aria-expanded="false"
+                        data-role="open-instructions"
+                >
+                    <span class="form__long-help" data-feather="info" aria-hidden="true"></span>
+                    <span class="criterion-instructions-trigger__label">
+                        Instructions
+                    </span>
+                </button>
+                <div class="criterion-instructions"
+                    id="{{ compound.name }}-criterion-instructions"
+                    aria-hidden="true"
+                    aria-label="Instructions"
+                >
+                        <header class="criterion-instructions__header">
+                            <button
+                                type="button"
+                                class="criterion-instructions-close"
+                                data-role="close-instructions"
+                            >
+                                <span data-feather="x" class="icon" aria-label="close instructions"></span>
+                            </button>
+                        </header>
+                        <div class="criterion-instructions__body">
+                            {% if els.check.capability.remember %}
+                            <div class="criterion-important">
+                                <h5><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>&nbsp;REMEMBER</h5>
+                                <p>{{ els.check.capability.remember }}</p>
+                            </div>
+                            {% endif %}
+                            {% if els.check.capability.instructions %}
+                            <div class="criterion-instructions__content">
+                                <h5><span class="form__long-help" data-feather="help-circle" aria-hidden="true"></span>&nbsp;Instructions</h5>
+                                <p>{{ els.check.capability.instructions }}</p>
+                            </div>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                        {% if els.check.capability.instructions %}
-                        <div class="criterion-instructions">{{ els.check.capability.instructions }}</div>
-                        {% endif %}
-
-                        {% if els.check.capability.resources|length > 0 %}
-                        <h5><span data-feather="book" class="icon" aria-hidden="true"></span>Resources</h5>
-                        <ul>
-                            {% for resource in els.check.capability.resources %}
-                            <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-
-                        {% if els.note %}
-                            {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}
-                        {% endif %}
-                    </aside>
                 </div>
+                {% endif %}
             </div>
 
             {% block renderer scoped %}{% endblock %}

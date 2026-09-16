@@ -99,6 +99,7 @@ WORKFLOW_TRIAGE_FIELD_COMPLIANCE = "management/admin/_workflow/includes/triage_f
 WORKFLOW_BUTTONS = "management/admin/_workflow/includes/_triage_buttons.html"
 WORKFLOW_TRIAGE_COMPOUND = "management/admin/_workflow/includes/_triage_radio_compound.html"
 WORKFLOW_TRIAGE_COMPOUND_BASE = "management/admin/_workflow/includes/_triage_compound_base.html"
+WORKFLOW_TRIAGE_REVIEW = "management/admin/_workflow/includes/_triage_review.html"
 WORKFLOW_SIMPLE_COMPOUND = "management/admin/_workflow/includes/_simple_compound.html"
 WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_claim.html"
 

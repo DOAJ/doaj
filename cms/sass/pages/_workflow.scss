@@ -43,358 +43,707 @@ body.dashboard {
       }
     }
 
-  .question-group {
-    padding: 0;
-    margin-top: 0.375rem;
-    display: flex;
-    flex-direction: column;
-
-    &--header {
-      margin: 0.125rem 0 0 0;
-
-      button.accordion-btn {
-        margin: 0;
-        border: 0;
-        width: 100%;
-        text-align: left;
-        font-size: 1rem;
-        font-weight: 700;
-        font-variant: small-caps;
-        background-color: $light-grey;
-
-        &:hover, &:focus {
-          background-color: $warm-black;
-          color: $white;
-        }
-      }
-
-    }
-
-    &--body {
+    .question-group {
+      padding: 0;
+      margin-top: 0.375rem;
       display: flex;
       flex-direction: column;
-    }
-
-    .criterion-wrapper {
-      padding: 0;
-      margin: 0;
 
       &--header {
-        margin: 0;
+        margin: 0.125rem 0 0 0;
 
-        button.accordion-btn--secondary {
+        button.accordion-btn {
           margin: 0;
           border: 0;
           width: 100%;
           text-align: left;
-          font-size: 0.9rem;
-          font-weight: normal;
-          text-transform: capitalize;
-          background-color: $white;
-          border-bottom: 2px solid $light-grey;
+          font-size: 1rem;
+          font-weight: 700;
+          font-variant: small-caps;
+          background-color: $light-grey;
 
           &:hover, &:focus {
-            background-color: $white;
-            color: $grapefruit;
-          }
-
-          &[aria-expanded="true"] {
-            font-weight: bold;
-            border-bottom: none;
+            background-color: $warm-black;
+            color: $white;
           }
         }
 
       }
-    }
-  }
 
-  .placeholder {
-    font-style: italic;
-    color: $dark-grey;
-  }
+      &--body {
+        display: flex;
+        flex-direction: column;
+      }
 
-  main {
-    padding: 0;
-  }
+      .criterion-wrapper {
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
 
-  .ew_header {
-    position: sticky;
-    top: 75px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 0;
-    padding: 1rem .5rem;
-    background-color: $light-grey;
+        &--header {
+          margin: 0;
 
-    @media screen and (max-width: 768px) {
-      padding: 20px;
-    }
+          button.accordion-btn--secondary {
+            margin: 0;
+            border: 0;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: normal;
+            text-transform: capitalize;
+            background-color: $white;
+            border-bottom: 2px solid $light-grey;
 
-    @media screen and (max-width: 1279px) and (min-width: 769px) {
-      padding: 20px 30px;
-    }
+            &:hover, &:focus {
+              background-color: $white;
+              color: $grapefruit;
+            }
 
-    @media screen and (min-width: 1280px) {
-      padding: 20px 40px;
-    }
+            &[aria-expanded="true"] {
+              font-weight: bold;
+              border-bottom: none;
+            }
+          }
 
-  }
-
-  .left {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: .5rem;
-  }
-
-  .top {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: .75rem;
-  }
-
-  .bottom {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-  }
-
-  .page-content {
-    margin-top: 0;
-    padding-top: 0;
-  }
-
-  h1 {
-    margin-bottom: 0;
-    line-height: 1.25em;
-  }
-
-  .icon {
-    margin-right: .25rem;
-  }
-
-  li::marker {
-    font-size: 0.75em;
-  }
-
-  .data,
-  .data a {
-    display: flex;
-    align-items: center;
-
-    &--issns {
-      color: $sanguine;
-      font-size: 1rem;
-      font-style: normal;
-      font-weight: 700;
-      line-height: 1.1875rem;
-      letter-spacing: 0.09rem;
-    }
-  }
-
-  .criterion {
-    h4 {
-      width: 100%;
-      margin: 1.25rem 0;
-      font-size: 1.25rem;
-      font-weight: normal;
-    }
-
-    h5:not(:first-child) {
-      margin-top: 1rem;
-    }
-
-    h5 {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      font-weight: bold;
-    }
-
-    &-important {
-      padding-left: 1rem;
-      margin-bottom: 1rem;
-      border-left: 4px solid $grapefruit;
-    }
-
-    textarea {
-      min-height: 4rem;
-      min-width: 100%;
-    }
-  }
-
-  // The whole page scrolls normally (like every other admin page) -
-  // recommendation banner, progress bar, and the question list are
-  // all just plain in-flow content, one after another. No
-  // sticky/fixed positioning and no separate scroll region here
-  // deliberately - an earlier version pinned the banner/progress and
-  // gave the question list its own internal scrollbar, which needed
-  // increasingly elaborate overflow:hidden/JS workarounds to stop the
-  // outer page from scrolling too (which also pushed the page's
-  // trailing Logout/Settings row out of its normal place). Simpler to
-  // just not fight the browser: normal page, normal scroll, Logout/
-  // Settings ends up exactly where it is on every other page - after
-  // all the content, reached by scrolling to the end.
-  .triage-panel {
-    &__banner {
-      // Breathing room around the recommendation + progress bar -
-      // previously had none, so they sat flush against the page
-      // edges and the header above.
-      //padding: 1rem 0.5rem 0;
-      //
-      //@media screen and (min-width: 769px) {
-      //    padding: 1rem;
-      //}
-
-      .progress {
-        margin-top: 0.5rem;
+        }
       }
     }
-  }
 
-  // Prev/Next belong to the question they're in (see
-  // _triage_compound_base.html) - plain in-flow content at the end of
-  // each question, not sticky/shared, so the same pattern repeats
-  // consistently for every question. Prev and Next are equally
-  // weighted actions here, so both are left as plain .button-sized
-  // buttons - no special link-like treatment for Prev - and disabled
-  // state comes from the global .button[disabled] rule
-  // (components/_buttons.scss), same as everywhere else.
-  .criterion-nav {
-    margin-top: 1.5rem;
-  }
-
-  $progress-gradient: linear-gradient(
-                  90deg,
-                  #982E0A 0%,
-                  #FD5A3B 16.6%,
-                  #FA9A87 33%,
-                  #F9D950 50%,
-                  #A3C386 67%,
-                  #47A178 83%,
-                  #3A5959 100%
-  );
-
-  progress.progress {
-    width: 100%;
-    height: 1.25rem;
-    overflow: hidden;
-    appearance: none;
-
-    &::-webkit-progress-bar {
-      background: #eee;
+    .placeholder {
+      font-style: italic;
+      color: $dark-grey;
     }
 
-    &::-webkit-progress-value {
-      background: $progress-gradient;
+    main {
+      padding: 0;
     }
 
-    &::-moz-progress-bar {
-      background: $progress-gradient;
-    }
-  }
-
-  // A <button> (see triage.html) rather than the plain text it used
-  // to be - clicking it scrolls the question list to whichever
-  // question is currently active. Sits below the bar as normal flow
-  // content now, not layered on top of it via absolute positioning.
-  // Resets the generic button styling from components/_buttons.scss
-  // (border/padding/uppercase) since this should read as a plain
-  // text link, not a bordered button.
-  .progress-label {
-    display: block;
-    margin: 0.35rem 0 0;
-    border: none;
-    background: transparent;
-    padding: 0;
-    color: $warm-black;
-    text-decoration: underline;
-    text-transform: none;
-    letter-spacing: normal;
-    font-size: 0.875rem;
-    cursor: pointer;
-    white-space: nowrap;
-
-    &:hover, &:focus, &:active {
-      border: none;
-      background-color: transparent;
-      color: $grapefruit;
-    }
-  }
-
-  .review-outcome {
-    margin-top: $spacing-05;
-    display: flex;
-    flex-wrap: wrap;
-    gap: $spacing-04;
-    justify-content: space-between;
-
-    &.justify-start {
-      justify-content: flex-start !important;
-    }
-
-    button {
+    .ew_header {
+      position: sticky;
+      top: 75px;
+      z-index: 1000;
       display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 0;
+      padding: 1rem .5rem;
+      background-color: $light-grey;
+
+      @media screen and (max-width: 768px) {
+        padding: 20px;
+      }
+
+      @media screen and (max-width: 1279px) and (min-width: 769px) {
+        padding: 20px 30px;
+      }
+
+      @media screen and (min-width: 1280px) {
+        padding: 20px 40px;
+      }
+
+      .view-switcher {
+        display: inline-flex;
+        padding: 0;
+        background: #fff;
+        border-radius: 999px;
+      }
+
+      .view-switcher__link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: .25rem .5rem;
+        color: $warm-black;
+        border-radius: 999px;
+        text-decoration: none;
+        transition: color 150ms ease,
+        background-color 150ms ease,
+        transform 150ms ease;
+      }
+
+      .view-switcher__link.is-current {
+        background-color: $sanguine;
+        color: $white;
+      }
+
+      .view-switcher__link svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .view-switcher__link:not(.is-current):hover {
+        color: $grapefruit;
+      }
+
+      .view-switcher__link:focus-visible {
+        outline: 3px solid $sanguine;
+        outline-offset: 3px;
+      }
+
+    }
+
+    .left {
+      display: flex;
+      flex-direction: row;
       align-items: flex-start;
       gap: .5rem;
-      padding: $spacing-02 $spacing-03;
-      border-radius: 0;
-      cursor: pointer;
-      transition: all 0.15s ease;
+    }
 
-      border: 2px solid $dark-grey;
-      background-color: white;
-      color: $warm-black;
+    .top {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: .75rem;
+    }
 
-      box-shadow: $spacing-01 $spacing-02 0 0 $dark-grey;
-      margin-bottom: 0;
+    .bottom {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
 
-      @include font-sans;
-      font-size: .9rem;
-      text-transform: none;
+    fieldset legend {
+      margin: 0 0 1rem 0;
+      line-height: 1.1;
+      color: black;
+      font-size: 1rem;
+    }
 
-      &.compliant {
-        color: $dark-green;
-        border-color: $dark-green;
-        box-shadow: $spacing-01 $spacing-02 0 0 $dark-green;
+    .input {
+      &.inline {
+        display: flex;
+        gap: .5rem;
 
-        &:hover {
-          background: $dark-green;
-          color: $white;
-          box-shadow: none;
+        label {
+          margin-bottom: 0;
         }
       }
 
-      &.non-compliant {
-        color: $sanguine;
-        box-shadow: $spacing-01 $spacing-02 0 0 $sanguine;
-        border-color: $sanguine;
+      &.long {
+        input[type="text"] {
+          width: 100%;
+        }
+      }
 
-        &:hover {
-          background: $sanguine;
+      margin-bottom: 1rem;
+
+      input[type="checkbox"] {
+        position: initial;
+        opacity: unset;
+        width: 1rem;
+        height: 1rem;
+        cursor: pointer;
+        border-radius: 0;
+
+        &:checked {
+          background-color: $sanguine;
+          box-shadow: inset 0 0 0 2px #fff;
+        }
+
+        &:focus-visible {
+          outline: 2px solid $grapefruit;
+          outline-offset: 2px;
+        }
+      }
+
+      label {
+        cursor: pointer;
+        margin: 0 0 .5rem 0;
+        line-height: 1.1;
+        color: $dark-grey;
+        font-size: 1rem;
+      }
+
+      input[type="checkbox"] + label::before {
+        content: none;
+      }
+    }
+
+    .page-content {
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0;
+      line-height: 1.25em;
+    }
+
+    .reminder {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: rgba($grapefruit, 0.2);
+    }
+
+    .icon {
+      margin-right: .25rem;
+    }
+
+    li::marker {
+      font-size: 0.75em;
+    }
+
+    .data,
+    .data a {
+      display: flex;
+      align-items: center;
+
+      &--issns {
+        color: $sanguine;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 1.1875rem;
+        letter-spacing: 0.09rem;
+      }
+    }
+
+    .review-table {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .review-table__values-cell,
+    .review-table__buttons-cell {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      .review-table__value-pair {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        .review-table__value {
+          font-weight: 700;
+        }
+      }
+
+      .button--tertiary {
+        color: $warm-black;
+        margin-bottom: 0;
+        height: fit-content;
+        font-size: 0.8rem !important;
+        letter-spacing: 0.015em !important;
+        line-height: 1.45;
+        &:hover,
+        &:active,
+        &:focus {
+          left: unset;
+          top: unset;
           color: $white;
-          box-shadow: none;
+          border-color: currentColor;
         }
       }
     }
 
-    .radio-option {
-      display: flex;
-      flex: 1 1 0;
+    /* Visually hide the native checkbox without removing it
+       from the accessibility tree */
 
-      label.review-outcome-answer,
-      button.review-outcome-answer {
+    .review-table__checkbox {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    /* Confirmation control: unchecked */
+
+    .review-table__confirmation label {
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: $dark-green;
+        color: $white;
+      }
+    }
+
+    .review-table__confirmation label::before {
+        content: "";
+        border: 0;
+        margin: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* Confirmation control: checked */
+
+    .review-table__checkbox:checked + label {
+      color: $white;
+      background: $dark-green;
+    }
+
+    .confirmation-checked {
+      display: none;
+    }
+
+    .review-table__checkbox:checked + label .confirmation-unchecked {
+      display: none;
+    }
+
+    .review-table__checkbox:checked + label .confirmation-checked {
+      display: inline;
+    }
+
+    /* Keyboard focus */
+
+    .review-table__checkbox:focus-visible + label,
+    .review-table__edit:focus-visible {
+      outline: 3px solid $dark-green;
+      outline-offset: 3px;
+    }
+
+    .criterion {
+      position: relative;
+      min-width: 0;
+
+      h4 {
+        width: 100%;
+        margin: 1.25rem 0;
+        font-size: 1.25rem;
+        font-weight: normal;
+      }
+
+      h5:not(:first-child) {
+        margin-top: 1rem;
+      }
+
+      h5 {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      .criterion-main {
+        float: none;
+        width: 100%;
+      }
+
+      .criterion-instructions {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        background: #fff;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateX(100%);
+        transition: transform 250ms ease,
+        visibility 0s linear 250ms;
+      }
+
+      .criterion-layout--instructions-open .criterion-instructions {
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateX(0);
+        transition-delay: 0s;
+      }
+
+      .criterion-instructions__header {
+        flex: 0 0 auto;
+      }
+
+      .criterion-instructions__body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+
+        .criterion-important {
+          padding-left: 1rem;
+          margin-bottom: 1rem;
+          border-left: 4px solid $grapefruit;
+        }
+      }
+
+      /* The collapsed trigger remains anchored to the right edge. */
+      .criterion-instructions-trigger {
+        position: absolute;
+        top: 1rem;
+        right: -2rem;
+        z-index: 30;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+
+        box-sizing: border-box;
+        width: 2.75rem;
+        padding: 0.75rem 0.5rem 1rem;
+
+        color: $warm-black;
+        background: $white;
+        border: 1px solid $light-grey;
+        border-right: 0;
+        border-radius: 0.35rem 0 0 0.35rem;
+        box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.12);
+
+        font: inherit;
+        cursor: pointer;
+
+        transition: transform 150ms ease,
+        background-color 150ms ease,
+        box-shadow 150ms ease;
+      }
+
+      .criterion-instructions-close {
+        // dev: fix the position and size
+        position: absolute;
+        top: 0;
+        color: $dark-grey;
+        border: none;
+        margin-bottom: 0;
+        padding: 0;
+        right: 1rem;
+        height: 1.25rem;
+        width: 1.25rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover, &:focus {
+          background-color: transparent;
+          color: $grapefruit;
+        }
+
+        svg {
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .criterion-instructions-trigger:hover,
+      .criterion-instructions-trigger:focus-visible {
+        transform: translateX(-0.25rem);
+        background: #f7f7f7;
+        box-shadow: -4px 3px 8px rgba(0, 0, 0, 0.16);
+      }
+
+      .criterion-instructions-trigger:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: -3px;
+      }
+
+      .criterion-instructions-trigger > svg {
+        transform: rotate(90deg);
+      }
+
+      .criterion-instructions-trigger__label {
+        display: block;
+        max-width: none;
+        margin: 0;
+        overflow: visible;
+        opacity: 1;
+
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+
+        transition: none;
+      }
+
+      .criterion-instructions-trigger .form__long-help {
+        flex: 0 0 auto;
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+
+      .criterion-layout--instructions-open
+      .criterion-instructions-trigger {
+        visibility: hidden;
+      }
+
+
+      /* Desktop: main content becomes 7/12 and drawer occupies 5/12. */
+      @media (min-width: 1280px) {
+        .criterion-layout {
+          position: relative;
+          flex-wrap: nowrap;
+        }
+
+        .criterion-layout__question {
+          flex: 0 0 100%;
+          max-width: 100%;
+          transition: flex-basis 250ms ease,
+          max-width 250ms ease;
+        }
+
+        .criterion-layout > .criterion-instructions {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 41.666667%;
+          max-width: 41.666667%;
+          z-index: 20;
+        }
+
+        .criterion-layout--instructions-open >
+        .criterion-layout__question {
+          flex-basis: 58.333333%;
+          max-width: 58.333333%;
+        }
+      }
+
+      /* Smaller screens: drawer covers the viewport. */
+      @media (max-width: 1279px) {
+        body.criterion-instructions-open {
+          overflow: hidden;
+        }
+
+        .criterion-layout--instructions-open .criterion-main {
+          width: 100%;
+        }
+
+        .criterion-instructions {
+          position: fixed;
+          inset: 0;
+          z-index: 1000;
+          width: 100%;
+          height: 100vh;
+        }
+
+        .criterion-instructions-trigger {
+          position: fixed;
+        }
+      }
+
+      textarea {
+        min-height: 4rem;
+        min-width: 100%;
+      }
+    }
+
+    // The whole page scrolls normally (like every other admin page) -
+    // recommendation banner, progress bar, and the question list are
+    // all just plain in-flow content, one after another. No
+    // sticky/fixed positioning and no separate scroll region here
+    // deliberately - an earlier version pinned the banner/progress and
+    // gave the question list its own internal scrollbar, which needed
+    // increasingly elaborate overflow:hidden/JS workarounds to stop the
+    // outer page from scrolling too (which also pushed the page's
+    // trailing Logout/Settings row out of its normal place). Simpler to
+    // just not fight the browser: normal page, normal scroll, Logout/
+    // Settings ends up exactly where it is on every other page - after
+    // all the content, reached by scrolling to the end.
+    .triage-panel {
+      &__banner {
+        // Breathing room around the recommendation + progress bar -
+        // previously had none, so they sat flush against the page
+        // edges and the header above.
+        //padding: 1rem 0.5rem 0;
+        //
+        //@media screen and (min-width: 769px) {
+        //    padding: 1rem;
+        //}
+
+        .progress {
+          margin-top: 0.5rem;
+        }
+      }
+    }
+
+    // Prev/Next belong to the question they're in (see
+    // _triage_compound_base.html) - plain in-flow content at the end of
+    // each question, not sticky/shared, so the same pattern repeats
+    // consistently for every question. Prev and Next are equally
+    // weighted actions here, so both are left as plain .button-sized
+    // buttons - no special link-like treatment for Prev - and disabled
+    // state comes from the global .button[disabled] rule
+    // (components/_buttons.scss), same as everywhere else.
+    .criterion-nav {
+      margin-top: 1.5rem;
+    }
+
+    $progress-gradient: linear-gradient(
+                    90deg,
+                    #982E0A 0%,
+                    #FD5A3B 16.6%,
+                    #FA9A87 33%,
+                    #F9D950 50%,
+                    #A3C386 67%,
+                    #47A178 83%,
+                    #3A5959 100%
+    );
+
+    progress.progress {
+      width: 100%;
+      height: 1.25rem;
+      overflow: hidden;
+      appearance: none;
+
+      &::-webkit-progress-bar {
+        background: #eee;
+      }
+
+      &::-webkit-progress-value {
+        background: $progress-gradient;
+      }
+
+      &::-moz-progress-bar {
+        background: $progress-gradient;
+      }
+    }
+
+    // A <button> (see triage.html) rather than the plain text it used
+    // to be - clicking it scrolls the question list to whichever
+    // question is currently active. Sits below the bar as normal flow
+    // content now, not layered on top of it via absolute positioning.
+    // Resets the generic button styling from components/_buttons.scss
+    // (border/padding/uppercase) since this should read as a plain
+    // text link, not a bordered button.
+    .progress-label {
+      display: block;
+      margin: 0.35rem 0 0;
+      border: none;
+      background: transparent;
+      padding: 0;
+      color: $warm-black;
+      text-decoration: underline;
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: 0.875rem;
+      cursor: pointer;
+      white-space: nowrap;
+
+      &:hover, &:focus, &:active {
+        border: none;
+        background-color: transparent;
+        color: $grapefruit;
+      }
+    }
+
+    .review-outcome {
+      margin-top: $spacing-05;
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-04;
+      justify-content: space-between;
+
+      &.justify-start {
+        justify-content: flex-start !important;
+      }
+
+      button {
         display: flex;
         align-items: flex-start;
         gap: .5rem;
-        flex: 1;
         padding: $spacing-02 $spacing-03;
         border-radius: 0;
         cursor: pointer;
@@ -411,175 +760,231 @@ body.dashboard {
         font-size: .9rem;
         text-transform: none;
 
-        &:hover {
-          background-color: $warm-black;
-          color: $white;
-          box-shadow: none;
-        }
-
-        svg {
-          width: 1.5rem;
-          min-width: 1.5rem;
-        }
-      }
-
-      input[type="radio"]:hover + label.review-outcome-answer,
-      input[type="radio"]:checked + label.review-outcome-answer {
-        background: $warm-black;
-        color: white;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.08);
-      }
-
-      input[type="radio"]:focus-visible + label.review-outcome-answer {
-        outline: 2px solid $warm-black;
-        outline-offset: 2px;
-      }
-
-      &.compliant {
-        label.review-outcome-answer {
-          border: 2px solid $dark-green;
+        &.compliant {
           color: $dark-green;
+          border-color: $dark-green;
           box-shadow: $spacing-01 $spacing-02 0 0 $dark-green;
+
+          &:hover, &.checked {
+            background: $dark-green;
+            color: $white;
+            box-shadow: none;
+          }
         }
 
-        input[type="radio"]:hover + label.review-outcome-answer,
-        input[type="radio"]:checked + label.review-outcome-answer {
-          background: $dark-green;
-          color: $white;
-        }
-
-        input[type="radio"]:focus-visible + label.review-outcome-answer {
-          outline: 2px solid $dark-green;
-        }
-      }
-
-      &.noncompliant {
-        label.review-outcome-answer {
-          border: 2px solid $sanguine;
+        &.non-compliant {
           color: $sanguine;
-
           box-shadow: $spacing-01 $spacing-02 0 0 $sanguine;
-        }
+          border-color: $sanguine;
 
-        input[type="radio"]:hover + label.review-outcome-answer,
-        input[type="radio"]:checked + label.review-outcome-answer {
-          background: $sanguine;
-          color: $white;
-        }
-
-        input[type="radio"]:focus-visible + label.review-outcome-answer {
-          outline: 2px solid $sanguine;
+          &:hover, &.checked {
+            background: $sanguine;
+            color: $white;
+            box-shadow: none;
+          }
         }
       }
 
-      &.action {
-        label.review-outcome-answer {
-          border: 2px solid $grapefruit;
-          color: $grapefruit;
+      .radio-option {
+        display: flex;
+        flex: 1 1 0;
 
-          box-shadow: $spacing-01 $spacing-02 0 0 $grapefruit;
-        }
+        label.review-outcome-answer,
+        button.review-outcome-answer {
+          display: flex;
+          align-items: flex-start;
+          gap: .5rem;
+          flex: 1;
+          padding: $spacing-02 $spacing-03;
+          border-radius: 0;
+          cursor: pointer;
+          transition: all 0.15s ease;
 
-        input[type="radio"]:hover + label.review-outcome-answer,
-        input[type="radio"]:checked + label.review-outcome-answer {
-          background: $grapefruit;
-          color: $white;
-        }
-
-        input[type="radio"]:focus-visible + label.review-outcome-answer {
-          outline: 2px solid $grapefruit;
-        }
-      }
-
-      &.later {
-        label.review-outcome-answer {
-          border: 2px solid $yellow;
+          border: 2px solid $dark-grey;
+          background-color: white;
           color: $warm-black;
 
-          box-shadow: $spacing-01 $spacing-02 0 0 $yellow;
+          box-shadow: $spacing-01 $spacing-02 0 0 $dark-grey;
+          margin-bottom: 0;
+
+          @include font-sans;
+          font-size: .9rem;
+          text-transform: none;
+
+          &:hover {
+            background-color: $warm-black;
+            color: $white;
+            box-shadow: none;
+          }
+
+          svg {
+            width: 1.5rem;
+            min-width: 1.5rem;
+          }
         }
 
         input[type="radio"]:hover + label.review-outcome-answer,
         input[type="radio"]:checked + label.review-outcome-answer {
-          background: $yellow;
-          color: $warm-black;
+          background: $warm-black;
+          color: white;
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.08);
         }
 
         input[type="radio"]:focus-visible + label.review-outcome-answer {
-          outline: 2px solid $yellow;
+          outline: 2px solid $warm-black;
+          outline-offset: 2px;
         }
+
+        &.compliant {
+          label.review-outcome-answer {
+            border: 2px solid $dark-green;
+            color: $dark-green;
+            box-shadow: $spacing-01 $spacing-02 0 0 $dark-green;
+          }
+
+          input[type="radio"]:hover + label.review-outcome-answer,
+          input[type="radio"]:checked + label.review-outcome-answer {
+            background: $dark-green;
+            color: $white;
+          }
+
+          input[type="radio"]:focus-visible + label.review-outcome-answer {
+            outline: 2px solid $dark-green;
+          }
+        }
+
+        &.noncompliant {
+          label.review-outcome-answer {
+            border: 2px solid $sanguine;
+            color: $sanguine;
+
+            box-shadow: $spacing-01 $spacing-02 0 0 $sanguine;
+          }
+
+          input[type="radio"]:hover + label.review-outcome-answer,
+          input[type="radio"]:checked + label.review-outcome-answer {
+            background: $sanguine;
+            color: $white;
+          }
+
+          input[type="radio"]:focus-visible + label.review-outcome-answer {
+            outline: 2px solid $sanguine;
+          }
+        }
+
+        &.action {
+
+          label.review-outcome-answer {
+            border: 2px solid $grapefruit;
+            color: $grapefruit;
+            box-shadow: $spacing-01 $spacing-02 0 0 $grapefruit;
+          }
+
+          input[type="radio"]:hover + label.review-outcome-answer,
+          input[type="radio"]:checked + label.review-outcome-answer {
+            background: $grapefruit;
+            color: $white;
+          }
+
+          input[type="radio"]:focus-visible + label.review-outcome-answer {
+            outline: 2px solid $grapefruit;
+          }
+        }
+
+        &.later {
+          label.review-outcome-answer {
+            border: 2px solid $yellow;
+            color: $warm-black;
+
+            box-shadow: $spacing-01 $spacing-02 0 0 $yellow;
+          }
+
+          input[type="radio"]:hover + label.review-outcome-answer,
+          input[type="radio"]:checked + label.review-outcome-answer {
+            background: $yellow;
+            color: $warm-black;
+          }
+
+          input[type="radio"]:focus-visible + label.review-outcome-answer {
+            outline: 2px solid $yellow;
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      .review-outcome {
+        flex-direction: column;
+      }
+
+      .radio-option {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 100%;
       }
     }
   }
 
-  @media (max-width: 768px) {
+  // Keeps the "Current Recommendation" panel compact regardless of how
+  // many reasons/exceptions accumulate, so the question area below it
+  // (.ew_body) keeps the majority of the available vertical space. A
+  // solid background + left accent bar (rather than just a thin border)
+  // is what makes it read as a banner rather than plain text.
+  #triage-recommendation:not(:empty) {
+    max-height: 12rem;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+    background-color: $light-grey;
+    border-left: 4px solid $grapefruit;
+    border-radius: 3px;
+  }
 
-    .review-outcome {
-      flex-direction: column;
+  .action-container {
+    padding-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-left: 4px solid;
+    margin-top: 1rem;
+
+    &.action {
+      border-color: $grapefruit;
     }
 
-    .radio-option {
-      flex: 1 1 auto;
-      width: 100%;
-      max-width: 100%;
+    .help-text {
+      color: $dark-grey;
+      font-size: 0.9em;
+    }
+
+    &.non_compliant {
+      border-color: $sanguine;
     }
   }
-}
 
-// Keeps the "Current Recommendation" panel compact regardless of how
-// many reasons/exceptions accumulate, so the question area below it
-// (.ew_body) keeps the majority of the available vertical space. A
-// solid background + left accent bar (rather than just a thin border)
-// is what makes it read as a banner rather than plain text.
-#triage-recommendation:not(:empty) {
-  max-height: 12rem;
-  overflow-y: auto;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0.75rem;
-  background-color: $light-grey;
-  border-left: 4px solid $grapefruit;
-  border-radius: 3px;
-}
-
-.action-container {
-  padding-left: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  border-left: 4px solid;
-
-  &.action {
-    border-color: $grapefruit;
+  strong.highlight {
+    display: block;
+    font-weight: normal !important;
+    padding: .25rem;
+    background-color: rgba($sanguine, 0.2)
   }
 
-  &.non_compliant {
-    border-color: $sanguine;
+  span.answer {
+    font-weight: bold;
+
+    &.non_compliant {
+      color: $sanguine;
+    }
+
+    &.compliant {
+      color: $dark-green;
+    }
+
+    &.action {
+      color: $grapefruit;
+    }
   }
-}
-
-strong.highlight {
-  display: block;
-  font-weight: normal !important;
-  padding: .25rem;
-  background-color: rgba($sanguine, 0.2)
-}
-
-span.answer {
-  font-weight: bold;
-  text-transform: capitalize;
-
-  &.non_compliant {
-    color: $sanguine;
-  }
-
-  &.compliant {
-    color: $dark-green;
-  }
-
-  &.action {
-    color: $grapefruit;
-  }
-}
 
 }
 

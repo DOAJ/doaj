@@ -7,12 +7,10 @@
             {%- set ic_content = ic.content -%}
             {%- set rendered_content = render_content(ic_content) -%}
             {% autoescape off %}
-            {{ make_tag(ic, rendered_content) }}
-            <{{ ic.tag }} {% for k, v in ic.attrs %}{{ k }}="{{ v }}" {% endfor %} {% if not ic.close %}/{% endif %}>
-                {{ rendered_content }}
-            {% if ic.close %}
-                </{{ic.tag}}>
-            {% endif %}
+                {{ make_tag(ic, rendered_content) }}
+                <{{ ic.tag }} {% for k, v in ic.attrs %}{{ k }}="{{ v }}" {% endfor %} {% if not ic.close %}/{% endif %}>
+                    {{ rendered_content }}
+                {% if ic.close %}</{{ic.tag}}>{% endif %}
             {% endautoescape %}
         {%- endfor -%}
 
@@ -21,27 +19,28 @@
     {%- endif -%}
 {%- endmacro %}
 
-{% macro make_tag(spec, content, controls) %}
+{% macro make_tag(spec, content, controls, other=False) %}
     {% set attrs = spec.attrs %}
     <{{ spec.tag }}
         {% if attrs %}
             {% for k, v in spec.attrs.items() %}{{ k }}="{{ v }}" {% endfor %}
+        {% endif %}
+        {% if other %}
+            data-role="other_option"
         {% endif %}
         {% if controls %}
             data-controls="{{ controls }}"
         {% endif %}
         {% if not spec.close %}/{% endif %}>
             {{ content }}
-    {% if spec.close %}
-        </{{spec.tag}}>
-    {% endif %}
+    {% if spec.close %}</{{spec.tag}}>{% endif %}
 {%- endmacro %}
 
 {% set checkboxes = namespace(
-            options=[],
-            other=None,
-            none=None
-        ) %}
+    options=[],
+    other=None,
+    none=None
+) %}
 
 {% for control in controls %}
     {% set input = control.control %}
@@ -49,7 +48,7 @@
         {% set value = input.attrs.value %}
         {% if value == "none" %}
             {% set checkboxes.none = control %}
-        {% elif value == "other" %}
+        {% elif value == "other" or value == controls.other_option %}
             {% set checkboxes.other = control %}
         {% else %}
             {% set checkboxes.options = checkboxes.options + [control] %}
@@ -57,7 +56,28 @@
     {% endif %}
 {% endfor %}
 
-{% for control in checkboxes.options %}
+{% if checkboxes.multiple %}
+<fieldset class="checkbox-list">
+    <legend>{{ checkboxes.label }}</legend>
+{% endif %}
+    {% for control in checkboxes.options %}
+    {% set input=control.control %}
+    {% set content = {"value": ""} %}
+    {% if input.content %}
+        {% set content.value=render_content(input.content) %}
+    {% endif %}
+    <div class="input inline">
+        {% autoescape off %}
+        {{ make_tag(input, content.value) }}
+        {% endautoescape %}
+        {% if control.label %}
+        {{ make_tag(control.label, control.label.content) }}
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    {% if checkboxes.other %}
+    {% set control = checkboxes.other %}
     {% set input=control.control %}
     {% set content = {"value": ""} %}
     {% if input.content %}
@@ -65,51 +85,44 @@
     {% endif %}
 
     {% autoescape off %}
-        {{ make_tag(input, content.value) }}
-    {% endautoescape %}
-    {% if control.label %}
+    {% if other %}
+        {% set other_field = other.control[0].control.attrs.id %}
+    {% endif %}
+    <div class="input inline">
+        {{ make_tag(input, content.value, controls=other_field, other=True) }}
+        {% endautoescape %}
+        {% if control.label %}
         {{ make_tag(control.label, control.label.content) }}
-    {% endif %}
-{% endfor %}
-
-{% if checkboxes.other %}
-{% set control = checkboxes.other %}
-{% set input=control.control %}
-    {% set content = {"value": ""} %}
-    {% if input.content %}
-        {% set content.value=render_content(input.content) %}
-    {% endif %}
-
-    {% autoescape off %}
-        {% if other %}
-            {% set other_field = other.control[0].control.attrs.id %}
         {% endif %}
-        {{ make_tag(input, content.value, controls=other_field) }}
-    {% endautoescape %}
-    {% if control.label %}
-        {{ make_tag(control.label, control.label.content) }}
+    </div>
     {% endif %}
-{% endif %}
-
-{% if other %}
+    {% if other %}
     {% autoescape off %}
+    <p style="color: green">{{ other.label }}</p>
+    <div class="input" data-role="other_value">
         {{ other.renderer.draw(other, application=application, wfc=wfc) }}
+    </div>
     {% endautoescape %}
-{% endif %}
+    {% endif %}
 
 
-{% if checkboxes.none %}
-{% set control = checkboxes.none %}
-{% set input=control.control %}
-{% set content = {"value": ""} %}
-{% if input.content %}
-    {% set content.value=render_content(input.content) %}
-{% endif %}
+    {% if checkboxes.none %}
+    <div class="input inline">
+        {% set control = checkboxes.none %}
+        {% set input=control.control %}
+        {% set content = {"value": ""} %}
+        {% if input.content %}
+            {% set content.value=render_content(input.content) %}
+        {% endif %}
 
-{% autoescape off %}
-    {{ make_tag(input, content.value) }}
-{% endautoescape %}
-{% if control.label %}
-    {{ make_tag(control.label, control.label.content) }}
-{% endif %}
-{% endif %}
+        {% autoescape off %}
+        {{ make_tag(input, content.value) }}
+        {% endautoescape %}
+        {% if control.label %}
+            {{ make_tag(control.label, control.label.content) }}
+        {% endif %}
+    </div>
+    {% endif %}
+    {% if checkboxes.multiple %}
+        </fieldset>
+    {% endif %}

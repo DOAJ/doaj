@@ -175,6 +175,7 @@ class WorkflowControl2TriageForm(object):
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
         form.set(f.issn.title_match.action_group.title, bj.title)
+        form.set(f.issn.title_match.action_group.alttitle, bj.alternative_title)
 
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)
@@ -394,7 +395,9 @@ class TriageForm2WorkflowControl(object):
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
         title = form.get(f.issn.title_match.action_group.title)
+        alttitle = form.get(f.issn.title_match.action_group.alttitle)
         bj.title = title
+        bj.alternative_title = alttitle
 
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)

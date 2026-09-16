@@ -1,10 +1,14 @@
 {% autoescape off %}
+
 {% if compound.capability.label %}
-<p>{{ compound. capability.label }}</p>
+<p>{{ compound.capability.label }}</p>
 {% endif %}
 {% for element in compound.elements %}
+<div class="input{%- if element.capability.long_input -%} long {%- endif -%}">
 {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+</div>
 {% endfor %}
+
 {% if compound.capability.control_btns %}
 <div class="justify-start review-outcome">
     {% set buttons = compound.capability.control_btns %}

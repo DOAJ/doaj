@@ -181,6 +181,9 @@ triage:
       severity_value:
         non_compliant: 10
 
+    ethics_no_suspicious_ties_action:
+      label: "Add more information in the note field above."
+
     issn_at_least_one:
       label: "8. ISSN(s)"
       check: "8. This journal has <strong>at least one</strong> ISSN (International Standard Serial Number) that is registered, active and confirmed at portal.issn.org"
@@ -271,7 +274,7 @@ triage:
         non_compliant:
           instruction: "Provide more information about this journal's title"
         action:
-          instruction: "Provide correct title and/or alternative title in the relevant input below. Add more information on the change (eg. why this change is required) in the notes input.<strong class=highlight warning>Titles must not contain an HTML script tag</span>"
+          instruction: 'Provide correct title and/or alternative title in the relevant input below. Add more information on the change (eg. why this change is required) in the notes input.<strong> Titles must not contain an HTML script tag</strong></span>'
       remember: "<ul><li>Check both title and alternative title</li><li>If you need to edit the title always use the <strong>Online</strong> ISSN record (if available).</li></ul>"
       instructions: '<ul>
                   <li>If the title on the website matches the key-title or title proper at portal.issn.org but not the title provided in the application form, click <span class="answer action">Journal’s title needs to be changed</span>, provide the correct title and add a note </li>
@@ -302,6 +305,7 @@ triage:
           # note: "Provide more information about what change in the title you are making and why"
       edit:
         title: "Title"
+        alttitle: "Alternative title"
       compliant_answers:
         - "compliant"
       action_answers:
@@ -418,7 +422,7 @@ triage:
         action:
           instruction: "Do any of these exceptions apply?"
         button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: "Do any of these exceptions apply?"
       edit:
         exceptions: "Exceptions"
       exceptions:
@@ -516,7 +520,7 @@ triage:
         eissn: "Electronic ISSN"
       action:
         button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: "Reject the other applications and list their application IDs in the Notes field. Then select <span class='answer compliant'>Continue triage</span> to confirm and save your decision, and move to the next question."
       remember: "Keep the newest application or the one which is in progress and “Quick Reject” the others as duplicates"
       instructions: ''
       resources:
@@ -529,9 +533,10 @@ triage:
           is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
         - "compliant"
-        - "action"
       non_compliant_answers:
       - "non_compliant"
+      action_answer:
+      - "action"
       recommend:
         non_compliant: "reject"
 
@@ -586,7 +591,7 @@ triage:
         apc_www: "Link to publishing charge fees"
       action:
         button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: 'Provide more information on why identical URLs are acceptable for this application in the Note fields. Then select <span class="answer compliant">Continue triage</span> to confirm and save your decision, and move to the next question.'
       remember: "If the website is structured so that all required information is correctly available under a single URL, select <span answer='answer action'>Same URL acceptable. All required information is correctly provided under a single URL due to the website structure.</span>"
       instructions: '<ul>
                   <li>If all URLs are identical but the required information is not actually available at that URL (e.g. all links point to the homepage), select <span class="answer non_compliant">Non-compliant</span></li>
@@ -603,7 +608,7 @@ triage:
       non_compliant_answers:
         - "non_compliant"
       note_required_answers:
-        "action"
+        - "action"
 
     website_license_policy:
       label: "19. OA policy"
@@ -613,6 +618,15 @@ triage:
         non_compliant: "<span class='answer'>Non-compliant</span>, OA policy <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
         later: "I don't know - mark for later"
         action: "Changes to open access policy information are required"
+      license_attrs:
+        "CC BY": "CC BY"
+        "CC BY-SA": "CC BY-SA"
+        "CC BY-ND": "CC BY-ND"
+        "CC BY-NC": "CC BY-NC"
+        "CC BY-NC-SA": "CC BY-NC-SA"
+        "CC BY-NC-ND": "CC BY-NC-ND"
+        "CC0": "CC0"
+        "Publisher's own license": "Publisher's own license"
       action:
         action:
           instruction: "Update the license information as needed"
@@ -833,6 +847,10 @@ triage:
         non_compliant: ""
         later: "I don't know - mark for later"
         action: "<span class='answer'>Yes</span>, this <strong>is</strong> a newly launched or a flipped journal"
+      subquestion:
+        answers:
+          compliant: "Yes"
+          non_compliant: "No"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
@@ -859,8 +877,7 @@ triage:
       instructions: ""
       answers:
         compliant: "Everything is correct"
-        non_compliant: "Not acceptable"
-        later: "Do this later"
+        non_compliant: ""
       info:
         www: "Journal's homepage"
         oa: "Open Access licensing policy"

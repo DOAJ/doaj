@@ -1,26 +1,74 @@
 <header class="ew_header" id="ew_header">
     <div class="left">
-            <span class="tag tag--workflow tag--workflow--new tag--workflow--big">new</span>
-            <div class="main_info">
-                <div class="top">
-                    <h1>{{ application.bibjson().title }}</h1>
-                    <span class="data data--issns">P: {{ application.bibjson().pissn }} / E: {{ application.bibjson().eissn }} </span>
-                </div>
-                <div class="bottom">
+        <!--        dev: this should be a tag showing the current application status. -->
+
+        <!--            <span class="tag tag&#45;&#45;workflow tag&#45;&#45;workflow&#45;&#45;new tag&#45;&#45;workflow&#45;&#45;big">new</span>-->
+        <div class="main_info">
+            <div class="top">
+                <h1>{{ application.bibjson().title }}</h1>
+                <span class="data data--issns">P: {{ application.bibjson().pissn }} / E: {{ application.bibjson().eissn }} </span>
+            </div>
+            <div class="bottom">
                     <span class="data data--url"><a href="{{ application.bibjson().journal_url }}" target="_blank"><span
                             data-feather="link" class="icon"></span>{{ application.bibjson().journal_url }}</a></span>
-                    <span class="data data--country"><span data-feather="globe" class="icon"></span><span
-                            class="placeholder">{{ datasets.get_country_name(application.bibjson().publisher_country) }}</span></span>
-                    <span class="data data--lang"><span><img alt="Language" src="/static/doaj/images/feather-icons/language.svg"
-                                                             class="icon" style="height: 1.25rem; width: auto;"/></span><span
-                            class="placeholder">{{ application.bibjson().language_name()|join(", ") }}</span></span>
-                </div>
+                <span class="data data--country"><span data-feather="globe" class="icon"></span><span
+                        class="placeholder">{{ datasets.get_country_name(application.bibjson().publisher_country) }}</span></span>
+                <span class="data data--lang"><span><img alt="Language"
+                                                         src="/static/doaj/images/feather-icons/language.svg"
+                                                         class="icon"
+                                                         style="height: 1.25rem; width: auto;"/></span><span
+                        class="placeholder">{{ application.bibjson().language_name()|join(", ") }}</span></span>
             </div>
         </div>
-        <div class="right">
-            <div class="buttons">
-                <button id="checkBtn" class="button button--secondary" type="submit">Async Submit</button>
-                <a href="{{ url_for("workflow.workflow_item_overview", application_id=application.id) }}" class="button button--secondary">Back to Overview</a>
+    </div>
+    <div class="right">
+        {% set is_form_view = request.endpoint == "workflow.triage_form" %}
+        {% set is_overview_view = request.endpoint == "workflow.workflow_item_overview"
+        %}
+        <div class="top">
+            <nav class="view-switcher" aria-label="Change the view">
+                <a
+                        href="{{ url_for('workflow.triage_form', application_id=application.id) }}"
+                        class="view-switcher__link{% if is_form_view %} is-current{% endif %}"
+                        aria-label="Question view"
+                        {% if is_form_view %}aria-current="page" {% endif %}
+                >
+                    <span aria-hidden="true" style="padding-right: .5rem; padding-left: .25rem;">?</span>
+                    Questions
+                </a>
+
+                <a
+                        href="{{ url_for('workflow.workflow_item_overview', application_id=application.id) }}"
+                        class="view-switcher__link{% if is_overview_view %} is-current{% endif %}"
+                        aria-label="Application overview"
+                        {% if is_overview_view %}aria-current="page" {% endif %}
+                >
+                    <svg
+                            aria-hidden="true"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1"
+                            style="margin-right: .25rem"
+                    >
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Overview
+                </a>
+            </nav>
+        </div>
+        {% if is_form_view %}
+        <div class="bottom">
+            <div class="input inline" style="margin-left: .75rem">
+                <label>
+                    <input type="checkbox" id="ew_header--show_instructions_by_default">
+                    Show instructions
+                </label>
             </div>
         </div>
+        {% endif %}
+    </div>
 </header>

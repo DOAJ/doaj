@@ -16,6 +16,11 @@
 
 {% endblock %}
 
+{% block body_class %}{{ super() }} ew{% endblock %}
+
+{% block admin_header %}
+{% include "management/admin/_workflow/includes/_header.html" %}
+{% endblock %}
 {% block admin_content %}
     <span class="tag tag--featured">{{ wfc.module }}</span>
     <h1>{{ application.bibjson().title }}</h1>
