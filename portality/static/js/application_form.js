@@ -392,11 +392,19 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             let errFirst = $(errFields.first()[0].element);
             // The Firefox does not handle focus on hidden fields and select2 does not implement this after autofocus on select2 fields
             // it resolves this issue and fixes: https://github.com/DOAJ/doajPM/issues/2626
+            let errScrollTarget;
             if ($(errFirst).attr("type") !== "radio"){
                 errFirst.triggerHandler("focus");
+                errScrollTarget = errFirst;
             }
             else {
-                errFirst.closest("li[tabindex='0']").focus();
+                errScrollTarget = errFirst.closest("li[tabindex='0']");
+                errScrollTarget.focus();
+            }
+            // triggerHandler("focus") above does not invoke the browser's native focus behaviour,
+            // so it will not scroll the field into view by itself - do that explicitly here.
+            if (errScrollTarget.length > 0) {
+                errScrollTarget[0].scrollIntoView({block: "center"});
             }
             //$(".nextBtn").blur();
             if (showEvenIfInvalid){
@@ -1138,6 +1146,30 @@ doaj.af.decimalPlaces = num => {
        // Adjust for scientific notation.
        (match[2] ? +match[2] : 0));
 };
+
+window.Parsley.addValidator("notValue", {
+    validateString: function(value, requirement) {
+        if (!value) { return true; }
+        return value.trim().toLowerCase() !== requirement.trim().toLowerCase();
+    },
+    messages: {
+        en: `<p><small>${doaj.i18n.get("'None' is not a valid answer for this question. Leave blank.")}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get("'None' is not a valid answer for this question. Leave blank.")}</small></p>`
+    },
+    priority: 32
+});
+
+window.Parsley.addValidator("forbiddenWord", {
+    validateString: function(value, requirement) {
+        if (!value) { return true; }
+        return !value.toLowerCase().includes(requirement.toLowerCase());
+    },
+    messages: {
+        en: `<p><small>${doaj.i18n.get("Please use the structured options above to indicate the type of blind peer review used.")}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get("Please use the structured options above to indicate the type of blind peer review used.")}</small></p>`
+    },
+    priority: 32
+});
 
 // remove the old type validator
 window.Parsley.removeValidator("type");
