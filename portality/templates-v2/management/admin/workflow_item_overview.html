@@ -51,14 +51,14 @@
     <div class="row">
         <div class="col-md-8">
             {% include 'management/admin/_workflow/includes/_recommend.html' %}
-            <a href="#" class="button button--primary">Submission</a>
-            <a href="#" class="button button--primary">Triage</a>
+            <a href="#" class="button button--primary" data-toggle="submission">Submission</a>
+            <a href="#" class="button button--primary" data-toggle="triage">Triage</a>
             <div class="submission">
                 {% autoescape off %}
                     {{ original_ro }}
                 {% endautoescape %}
             </div>
-            <div class="triage">
+            <div class="triage" style="display: none">
                 {% autoescape off %}
                     {{ ro_form }}
                 {% endautoescape %}
@@ -88,5 +88,38 @@
 {% endblock %}
 
 {% block admin_js %}
-    {% include "_application-form/includes/_form_js.html" %}
+    <script type="text/javascript">
+        function initialiseWorkflowItemToggle() {
+            var toggleLinks = document.querySelectorAll("a[data-toggle]");
+            var sections = {
+                submission: document.querySelector(".submission"),
+                triage: document.querySelector(".triage")
+            };
+
+            function showSection(sectionName) {
+                Object.keys(sections).forEach(function(name) {
+                    if (!sections[name]) {
+                        return;
+                    }
+
+                    sections[name].style.display = name === sectionName ? "block" : "none";
+                });
+            }
+
+            toggleLinks.forEach(function(link) {
+                link.addEventListener("click", function(event) {
+                    var sectionName = link.getAttribute("data-toggle");
+
+                    if (!sections[sectionName]) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    showSection(sectionName);
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", initialiseWorkflowItemToggle);
+    </script>
 {% endblock %}

@@ -61,9 +61,37 @@ class GenericFieldset(JinjaFieldsetRenderer):
 class GenericCompound(JinjaCompoundRenderer):
     template = templates.WORKFLOW_GENERIC_COMPOUND
 
+class GenericElementList(JinjaElementListRenderer):
+    template = templates.WORKFLOW_GENERIC_ELEMENT_LIST
+
 class GenericField(JinjaFieldRenderer):
     template = templates.WORKFLOW_GENERIC_FIELD
 
 class GenericControl(JinjaControlRenderer):
     template = templates.WORKFLOW_GENERIC_CONTROL
 
+####################
+
+class GenericROCompoundFieldRenderer(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_COMPOUND
+
+class InlineROCompoundFieldRenderer(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_RO_INLINE_COMPOUND
+
+class GenericROFieldRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_FIELD
+
+class GenericRORadioRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_RO_RADIO_CONTROL
+
+class GenericROControlRenderer(JinjaControlRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_CONTROL
+
+class GenericROFieldsetRenderer(JinjaFieldsetRenderer):
+    template = templates.WORKFLOW_RO_GENERIC_FIELDSET
+
+class ListEntryROFieldRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_RO_LIST_ENTRY_FIELD
+
+class JustControlROFieldRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_RO_JUST_CONTROL_FIELD

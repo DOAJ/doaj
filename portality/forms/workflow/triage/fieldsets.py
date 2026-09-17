@@ -1,6 +1,6 @@
 from formulaic.core import Structure, SINGLE, OPTIONAL
 from formulaic.serialise.form.core import FieldsetCapability
-from portality.forms.workflow.core import GenericFieldset
+from portality.forms.workflow.core import GenericFieldset, GenericROFieldsetRenderer
 from portality.forms.workflow.triage.fields import EthicsNotExcludedGroup, EthicsNoNonStandardMetricsGroup, \
     EthicsNoFakeImpactGroup, EthicsNoFalseDOAJClaimGroup, \
     EthicsNoSuspiciousTiesGroup, ISSNAtLeastOneGroup, \
@@ -9,7 +9,7 @@ from portality.forms.workflow.triage.fields import EthicsNotExcludedGroup, Ethic
     WebsiteLicensePolicyGroup, WebsiteCopyrightGroup, ContentNoLoginGroup, \
     ContentNoEmbargoGroup, ContentPublishEnoughGroup, ContentUniqueLinkGroup, ContentFormatGroup, \
     ContentNewJournalGroup, AdminMetadataReviewGroup, AdminSpecialExceptionGroup, EthicsPubTimeGroup, \
-    ISSNCountryMatchGroup, GenericROFieldsetRenderer
+    ISSNCountryMatchGroup
 
 
 class EthicsCriteria(Structure):

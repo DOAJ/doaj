@@ -1,5 +1,5 @@
 <div {# style="border: 1px solid black; padding: 10px; margin-bottom: 10px;" #}>
-    {{ field.label}}:
+    <strong>{{ field.label}}</strong>
     {% autoescape off %}
         {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
     {% endautoescape %}

@@ -33,7 +33,7 @@
 {% endset %}
 
 {#Radio Controls<br>#}
-{% set answer = namespace(value="not_answered") %}
+{% set answer = namespace(value="not_answered", display="") %}
 {% for control in controls %}
 
 {#    {% if control.label %}#}
@@ -43,6 +43,7 @@
     {% set input=control.control %}
     {% if input.attrs.checked %}
         {% set answer.value = input.attrs.value %}
+        {% set answer.display = control.label.content %}
     {% endif %}
 {#    {% set content = {"value": ""} %}#}
 {#    {% if input.content %}#}
@@ -63,6 +64,6 @@
     {% elif compliance == "conditional_non_compliant" and label %}
         {{ noncompliant_icon | safe }}
     {% else %}
-        {{ answer.value }}
+        {{ answer.display or answer.value }}
     {% endif %}
 {% endautoescape %}

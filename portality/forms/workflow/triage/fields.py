@@ -1,7 +1,5 @@
 from copy import deepcopy
 
-from flask import render_template
-
 from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent, IsConditionallyRequired, DisallowedValue, \
     IsRequired
 from formulaic.validate.form.validate import LimitToFormOptions
@@ -15,7 +13,8 @@ from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability, GenericFormStructureCapability
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, \
     GenericControl, GenericField, \
-    GenericCompound, JinjaFieldsetRenderer
+    GenericCompound, JinjaFieldsetRenderer, GenericRORadioRenderer, GenericROCompoundFieldRenderer, \
+    GenericROFieldRenderer, GenericROControlRenderer
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
@@ -45,26 +44,11 @@ class DummyRenderer(JinjaFieldRenderer):
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
 
-class GenericROCompoundFieldRenderer(JinjaCompoundRenderer):
-    template = templates.WORKFLOW_RO_GENERIC_COMPOUND
-
 class ROComplianceCompound(JinjaCompoundRenderer):
     template = templates.WORKFLOW_RO_COMPLIANCE_COMPOUND
 
-class GenericROFieldRenderer(JinjaFieldRenderer):
-    template = templates.WORKFLOW_RO_GENERIC_FIELD
-
 class ROComplianceField(JinjaFieldRenderer):
     template = templates.WORKFLOW_RO_COMPLIANCE_FIELD
-
-class GenericRORadioRenderer(JinjaControlRenderer):
-    template = templates.WORKFLOW_RO_RADIO_CONTROL
-
-class GenericROControlRenderer(JinjaControlRenderer):
-    template = templates.WORKFLOW_RO_GENERIC_CONTROL
-
-class GenericROFieldsetRenderer(JinjaFieldsetRenderer):
-    template = templates.WORKFLOW_RO_GENERIC_FIELDSET
 
 ## Control Renderers
 

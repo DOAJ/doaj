@@ -1,19 +1,17 @@
-{% macro render_content(content_list) -%}
-    {%- if content_list is string -%}
-        {{- content_list -}}
-
-    {%- elif content_list is iterable and content_list is not string and content_list is not mapping -%}
-        {%- for ic in content_list -%}
-            {%- set ic_content = ic.content -%}
-            {%- set rendered_content = render_content(ic_content) -%}
-            {% autoescape off %}
-            {{ rendered_content }}
-            {% endautoescape %}
-        {%- endfor -%}
-
-    {%- else -%}
-        {{- content_list -}}
-    {%- endif -%}
+{% macro render_value(value) -%}
+    {% if value is string %}
+        {% if value.startswith("http") %}
+            <a href="{{ value }}" target="_blank">{{ value }}</a>
+        {% else %}
+            {{ value }}
+        {% endif %}
+    {% elif value is mapping %}
+        mapping
+    {% elif value is sequence  %}
+        sequence
+    {% else %}
+        {{ value }}
+    {% endif %}
 {%- endmacro %}
 
 {#Controls<br>#}
@@ -35,7 +33,9 @@
 {% endfor %}
 
 {% if ns.values|length > 0 %}
-    {{ ns.values|join(", ") }}
+    {% for value in ns.values %}
+        {{ render_value(value) }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
 {% else %}
     -
 {% endif %}

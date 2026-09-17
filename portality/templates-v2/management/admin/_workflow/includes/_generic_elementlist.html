@@ -1,0 +1,10 @@
+<div {# style="border: 1px solid black; padding: 10px; margin-bottom: 10px;" #}>
+    <strong>{{ element_list.repeatable_label }}</strong>
+    <ul>
+    {% for element in element_list.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+    </ul>
+</div>
