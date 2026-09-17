@@ -2,6 +2,16 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.3
+
+Disallow terminology 'blind' peer review via form validation (anonymous should be selected)
+https://github.com/DOAJ/doajPM/issues/4232
+
+### 8.7.2
+
+Refactor and improve the search interface code structure
+https://github.com/DOAJ/doajPM/issues/4185
+
 ### 8.7.1
 
 Enable user attributes as well as roles (additional field on model).

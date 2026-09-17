@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='8.7.1',
+    version='8.7.3',
     python_requires='>=3.12',
     packages=find_packages(),
     install_requires=[

@@ -286,6 +286,14 @@ var doaj = {
         }
     },
 
+    getBaseURL: function() {
+        return window.location.protocol + "//" + document.location.host;
+    },
+
+    buildUrl: function(path) {
+        return doaj.getBaseURL() + path;
+    },
+
     searchQuerySource : function (params) {
         // ~~-> Edges:Technology ~~
         // ~~-> Elasticsearch:Technology ~~
