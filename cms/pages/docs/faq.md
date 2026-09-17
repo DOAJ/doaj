@@ -155,7 +155,7 @@ Metadata containing multiple languages can still be uploaded to us. However, you
 You may see the 403 forbidden or 500 errors for different reasons. These apply to both the API and uploading XML.
 
 - ISSNs
-  - You may be sending us an extra ISSN that we don’t have in your journal record.
+  - You may be sending us an extra ISSN that we don’t have in your journal record. (A common mistake is including a Print ISSN that we don't have in the journal record.) If the ISSN Portal shows a Print ISSN as expired, we will not accept it.)
   - You may be sending only one ISSN, but we have two in the journal record.
   - You might have put the EISSN in the PISSN field and vice-versa.
 - Wrong account
