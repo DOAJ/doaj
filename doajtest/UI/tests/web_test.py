@@ -29,7 +29,7 @@ def test_basic_search(browser):
 
 def test_metadata_form(browser):
     TITLE = "New Article"
-    AUTHOR = {"name": "Aga Domanska", "affiliation" : "CL University"}
+    AUTHOR = {"name": "Aga Domanska", "affiliations" : "CL University"}
     FULLTEXT_URL = "https://www.example.com"
     ACCOUNT = {"username" : "Aga", "password" : "password", "issns" : ["1234-5678", "9876-5432"]}
 

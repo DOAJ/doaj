@@ -26,15 +26,19 @@ class ArticleFormXWalk(object):
             bibjson.author = []
         for subfield in form.authors:
             if subfield.form.name.data != "":
-                aff = ""
+                affiliations = []
                 orcid_id = ""
                 author = subfield.form.name.data
-                if subfield.form.affiliation.data != "":
-                    aff = subfield.form.affiliation.data
+                if subfield.form.affiliations.data and subfield.form.affiliations.data != "":
+                    affiliations = [a.strip() for a in subfield.form.affiliations.data.split(";") if a.strip()]
                 if subfield.form.orcid_id.data != "":
                     orcid_id = subfield.form.orcid_id.data
                 if author is not None and author != "":
-                    bibjson.add_author(author, affiliation=aff, orcid_id=orcid_id)
+                    existing_idx = bibjson.find_author_index(author)
+                    if existing_idx >= 0 and affiliations:
+                        bibjson.add_affiliations_to_author(existing_idx, affiliations)
+                    else:
+                        bibjson.add_author(author, affiliations=affiliations if affiliations else None, orcid_id=orcid_id)
 
         # abstract
         abstract = form.abstract.data
@@ -117,10 +121,10 @@ class ArticleFormXWalk(object):
                     author.name = a["name"]
                 else:
                     author.name = ""
-                if "affiliation" in a:
-                    author.affiliation = a["affiliation"]
+                if "affiliations" in a and a["affiliations"]:
+                    author.affiliations = "; ".join(a["affiliations"])
                 else:
-                    author.affiliation = ""
+                    author.affiliations = ""
                 if "orcid_id" in a:
                     author.orcid_id = a["orcid_id"]
                 else:
