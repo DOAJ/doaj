@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.1"
+DOAJ_VERSION = "8.7.3"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -908,6 +908,76 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.RISExport",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        # ~~->SystemObjectProvenanceQuery:Endpoint~~
+        "provenance": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Provenance",  # ~~->Provenance:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectFileUploadQuery:Endpoint~~
+        "upload": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.FileUpload",  # ~~->FileUpload:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectBulkUploadQuery:Endpoint~~
+        "bulk_articles": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.BulkArticles",  # ~~->BulkArticles:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectCacheQuery:Endpoint~~
+        "cache": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Cache",  # ~~->Cache:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectLockQuery:Endpoint~~
+        "lock": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Lock",  # ~~->Lock:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectPreservationQuery:Endpoint~~
+        "preserve": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.PreservationState",  # ~~->PreservationState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectArticleTombstoneQuery:Endpoint~~
+        "article_tombstone": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.ArticleTombstone",  # ~~->ArticleTombstone:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectDraftApplicationQuery:Endpoint~~
+        "draft_application": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.DraftApplication",  # ~~->DraftApplication:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectHarvesterStateQuery:Endpoint~~
+        "harvester_state": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.HarvestState",  # ~~->HarvestState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectAutocheckQuery:Endpoint~~
+        "autocheck": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Autocheck",  # ~~->Autocheck:Model~~
+            "tolerate_missing_mapping": True
         }
     },
     "associate_query": {
