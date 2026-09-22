@@ -93,7 +93,7 @@ class TestAPIDiscovery(DoajTestCase):
                 res = DiscoveryApi.search("journal", None, "*Test", 1, 10)
 
             # 6b. Suffix wildcard search should be allowed
-            res = DiscoveryApi.search("journal", None, "Te*t", 1, 10)
+            res = DiscoveryApi.search("journal", None, "Te*", 1, 10)
 
             # 7. Failed attempt at fuzzy search
             with self.assertRaises(DiscoveryException):
