@@ -1,14 +1,14 @@
 <h2 id="search_api"><a name="search-api"></a>How-To Guide on Search API</h2>
 
     <h3 id="query_syntax">Query string syntax</h3>
-    <p>If you'd like to do more complex queries than simple words or phrases, read <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax" target="_blank">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a>. The DOAJ database is built on Elasticsearch and knowing more about its query syntax will let you send more advanced queries. (This is not a prerequisite for using the DOAJ API - in the sections below, we provide instructions for the most common use cases.) If you think that what you have achieved with the API would be useful for others to know and would like us to add an example to this documentation, submit it to <a href="https://groups.google.com/g/doaj-public-api">our API group</a>.</p>
+    <p>If you'd like to do more complex queries than simple words or phrases, read <a href="https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#query-string-syntax" target="_blank">https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#query-string-syntax</a>. The DOAJ database is built on Opensearch and knowing more about its query syntax will let you send more advanced queries. (This is not a prerequisite for using the DOAJ API - in the sections below, we provide instructions for the most common use cases.) If you think that what you have achieved with the API would be useful for others to know and would like us to add an example to this documentation, submit it to <a href="https://groups.google.com/g/doaj-public-api">our API group</a>.</p>
 
     <!--<h3 id="default_query_operator">Default handling of phrases</h3>
     <p>The default query operator is <strong>AND</strong>. That means that if you search for a phrase, e.g. "understanding shadows in 3D scenes", DOAJ's search engine will return articles and journals which have metadata that contains *all* of the words "understanding", "shadows", "3D" and "scenes" ("in" may be ignored).  You can override AND by sending us a query such as "understanding OR shadows". We find that the results returned by AND queries are much more relevant when looking for specific topics, where OR queries are best for exploring what is available, e.g. based loosely on the interests of your users.</p>
     -->
     <h3 id="specific_field_search">Searching inside a specific field</h3>
 
-    <p>When you are querying on a specific field you can use the json dot notation used by Elasticsearch, so for example to access the journal title of an article, you could use
+    <p>When you are querying on a specific field you can use the json dot notation used by Opensearch, so for example to access the journal title of an article, you could use
         <pre>bibjson.journal.title:"Journal of Science"</pre>
     </p>
 
@@ -83,15 +83,15 @@ sort=bibjson.title:desc
 
     <h3 id="query_string_advanced_usage">The query string - advanced usage</h3>
 
-    <p>The format of the query part of the URL is that of an Elasticsearch query string, as documented here: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a>. Elasticsearch uses Lucene under the hood.</p>
+    <p>The format of the query part of the URL is that of an Opensearch query string, as documented here: <a href="https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#query-string-syntax">https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#query-string-syntax</a>. Opensearch uses Lucene under the hood.</p>
 
-    <p>Some of the Elasticsearch query syntax <strong>has been disabled</strong> in order to prevent queries which may damage performance. The disabled features are:</p>
+    <p>Some of the Opensearch query syntax <strong>has been disabled</strong> in order to prevent queries which may damage performance. The disabled features are:</p>
 
     <ol>
-        <li><p>Prefix wildcard searches.  You may not start a search term with a wildcard character (<code>*</code> or <code>?</code>), e.g. <code>*test</code> or <code>?est</code>. Wildcards at the end of a term (e.g. <code>test*</code>) are permitted. See: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_wildcards">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_wildcards</a></p></li>
-        <li><p>Regular expression searches.  You may not put an expression between two forward slashes <code>/regex/</code> into a query string: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_regular_expressions">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_regular_expressions</a>. This is done both for performance reasons and because of the escaping of forward slashes <code>/</code> <a href="#special_characters">described above.</a></p></li>
-        <li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness</a></p></li>
-        <li><p>Proximity Searches. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches</a></p></li>
+        <li><p>Prefix wildcard searches.  You may not start a search term with a wildcard character (<code>*</code> or <code>?</code>), e.g. <code>*test</code> or <code>?est</code>. Wildcards at the end of a term (e.g. <code>test*</code>) are permitted. See: <a href="https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#wildcard-expressions">https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#wildcard-expressions_wildcards</a></p></li>
+        <li><p>Regular expression searches.  You may not put an expression between two forward slashes <code>/regex/</code> into a query string: <a href="https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#regular-expressions">https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#regular-expressions</a>. This is done both for performance reasons and because of the escaping of forward slashes <code>/</code> <a href="#special_characters">described above.</a></p></li>
+        <li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#fuzziness">https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#fuzziness</a></p></li>
+        <li><p>Proximity Searches. <a href="https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#proximity-queries">https://docs.opensearch.org/3.1/query-dsl/full-text/query-string/#proximity-queries</a></p></li>
     </ol>
 
     <h2 id="crud_api">How-To Guide on CRUD API</h2>
