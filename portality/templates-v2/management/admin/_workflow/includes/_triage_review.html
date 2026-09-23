@@ -1,4 +1,14 @@
 {% block triage_compound_base %}
+{% macro license_display(licenses) %}
+    {% for license in licenses %}
+        {%- if loop.last and licenses|length > 1 -%}&nbsp;or
+        {%- elif not loop.first -%}, {%- endif -%}
+        {{ license.type }}
+        {% if license.type == "Publisher's own license" %}:
+            {% for key, value in license.items() if value is sameas true %} {{ key }}{% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
 
 <section
         id="{{ compound.name }}"
@@ -52,13 +62,13 @@
                     {% endif %}
                     <div class="review-table">
                         {% for info in els.check.capability.application_info %}
+                        <div class="review-table__row">
                             <div class="review-table__values-cell">
                             {% for field in info.fields %}
                                 <div class="review-table__value-pair">
                                     <span class="review-table__label">
-                                        {{ field.label }}
+                                        {{ field.label }}:
                                     </span>
-
                                     <strong class="review-table__value">
                                         {{ field.lookup(application, wfc) }}
                                     </strong>
@@ -91,6 +101,7 @@
                                     </label>
                                 </div>
                             </div>
+                        </div>
                         {% endfor %}
                 </div>
 <!--                    {% if els.check.capability.resources|length > 0 %}-->
@@ -186,7 +197,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container" style="flex-direction: column;">
+                    <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container single" style="flex-direction: column;">
                         <legend class="sr-only">Review outcome</legend>
                         {% set cr = els.check.capability.get_control_renderer() %}
                         {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}

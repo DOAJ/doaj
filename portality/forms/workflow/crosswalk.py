@@ -188,6 +188,7 @@ class WorkflowControl2TriageForm(object):
         # Working
         compliance_field_radio(triage.website_working, f.website.working)
         compliance_field_note(triage.website_working, f.website.working)
+        form.set(f.website.working.action.journal_url, bj.journal_url)
 
         # ISSN
         compliance_field_radio(triage.website_issn, f.website.issn)
@@ -414,6 +415,9 @@ class TriageForm2WorkflowControl(object):
         # Working
         compliance_field_radio(triage.website_working, f.website.working)
         compliance_field_note(triage.website_working, f.website.working)
+
+        journal_url = form.get(f.website.working.action.journal_url)
+        bj.journal_url = journal_url
 
         # ISSN
         compliance_field_radio(triage.website_issn, f.website.issn)

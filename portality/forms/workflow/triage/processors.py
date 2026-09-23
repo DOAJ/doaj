@@ -203,6 +203,10 @@ class TriageFormProcessor:
 
         # Title
         tbj.title = sbj.title
+        tbj.alternative_title = sbj.alternative_title
+
+        # url
+        tbj.journal_url = sbj.journal_url
 
         # Continuation
         tbj.replaces = sbj.replaces

@@ -1549,11 +1549,44 @@ class WebsiteWorkingNote(NoteField):
     name = "website_working_note"
     capabilities = (NoteCapability(),)
 
+class JournalUrl(Field):
+    class C(FormFieldCapability):
+        label = T.website_working.edit.url
+        control_class = URLInput
+        control_render_class = GenericControl
+        render_class = GenericField
+        error_messages = {
+            IsRequired: T.website_working.validation.url.is_required,
+            DisallowedValue: T.website_working.validation.url.disallowed_value
+        }
+
+    name = "journal_url"
+    coerce = [Unicode(trim_whitespace=True)]
+    capabilities = (C(),)
+    validators = [IsURL()]
+
+
+class WebsiteWorkingActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        label = T.website_copyright.edit.copyright
+        order = [
+            "journal_url"
+        ]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "website_working_group"})]
+        trigger_btn = "action"
+
+    name_ = "website_working_action_group"
+    capabilities_ = (C(),)
+
+    journal_url = JournalUrl(REQUIRED, SINGLE)
+
 
 class WebsiteWorkingGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.website_working.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "action"]
         render_class = TriageCompound
 
     name_ = "website_working_group"
@@ -1561,6 +1594,7 @@ class WebsiteWorkingGroup(Structure):
 
     answer = WebsiteWorking(OPTIONAL, SINGLE)
     note = WebsiteWorkingNote(OPTIONAL, SINGLE)
+    action = WebsiteWorkingActionGroup(OPTIONAL, SINGLE)
 
 
 ###########################################################
@@ -2189,23 +2223,87 @@ class ContentNewJournalGroup(Structure):
 ###########################################################
 ## Admin: Metadata Review
 
+def _license_display(licenses):
+    descriptions = []
+    for license in licenses:
+        description = license["type"]
+        if description == "Publisher's own license":
+            attributes = [
+                key for key, value in license.items()
+                if value is True
+            ]
+            description += ": " + " ".join(attributes)
+        descriptions.append(description)
+    if len(descriptions) > 1:
+        return ", ".join(descriptions[:-1]) + " or " + descriptions[-1]
+    return descriptions[0] if descriptions else ""
+
 class AdminMetadataReview(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.admin_metadata_review
         check = S.check
         options = options_for(S)
         instructions = S.instructions
+
         application_info = [
             {"question": "issn_at_least_one_group",
              "fields": [{
                  "label": "PISSN",
                  "lookup": lambda application, wfc: application.bibjson().pissn
-                },
-                {
-                "label": "EISSN",
-                "lookup": lambda application, wfc: application.bibjson().eissn
-                }
-             ]}
+             },
+                 {
+                     "label": "EISSN",
+                     "lookup": lambda application, wfc: application.bibjson().eissn
+                 }
+             ]},
+            {
+                "question": "issn_title_match_group",
+                "fields": [{
+                    "label": "Title",
+                    "lookup": lambda application, wfc: application.bibjson().title
+                    },
+                    {
+                        "label": "Alternative Title",
+                        "lookup": lambda application, wfc: application.bibjson().alternative_title
+                    }]
+            },
+            {
+                "question": "website_working_group",
+                "fields": [
+                    {
+                        "label": "Journal's homepage",
+                        "lookup": lambda application, wfc: application.bibjson().journal_url
+                    }
+                ]
+            },
+            {
+                "question": "website_license_policy_group",
+                "fields": [
+                    {
+                        "label": "Licensing",
+                        "lookup": lambda application, wfc: _license_display(application.bibjson().licenses),
+                    },
+                    {
+                        "label": "url",
+                        "lookup": lambda application, wfc: application.bibjson().copyright_url
+                    },
+                ]
+            },
+            {
+                "question": "website_copyright_group",
+                "fields": [
+                    {
+                        "label": "Author retains rights ",
+                         "lookup": lambda application, wfc: (
+                            "Yes" if application.bibjson().author_retains_copyright else "No"
+                        ),
+                    },
+                    {
+                        "label": "url",
+                        "lookup": lambda application, wfc: application.bibjson().copyright_url
+                    }
+                ]
+            }
         ]
 
     name = "admin_metadata_review"

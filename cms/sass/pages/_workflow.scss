@@ -303,6 +303,14 @@ body.dashboard {
 
     .review-table {
       display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .review-table__row {
+      display: flex;
+      flex-direction: row;
       justify-content: space-between;
       width: 100%;
       font-size: 1rem;
@@ -317,7 +325,7 @@ body.dashboard {
       .review-table__value-pair {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: .25rem;
         .review-table__value {
           font-weight: 700;
         }
@@ -823,6 +831,7 @@ body.dashboard {
           }
         }
 
+
         input[type="radio"]:hover + label.review-outcome-answer,
         input[type="radio"]:checked + label.review-outcome-answer {
           background: $warm-black;
@@ -912,6 +921,10 @@ body.dashboard {
         }
       }
     }
+
+    .review_outcome-container.single .radio-option label.review-outcome-answer {
+        flex: unset;
+      }
 
     @media (max-width: 768px) {
 

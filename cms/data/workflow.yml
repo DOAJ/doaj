@@ -486,13 +486,19 @@ triage:
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does</strong> have a working website"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does not</strong> have a working website"
+        action: "This journal has a working website, but url requires changes"
         later: "I don't know - mark for later"
-        action: ""
       info:
         www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
+      edit:
+        url: "Journal's website"
+      validation:
+        url:
+          is_required: "You must provide the journal's URL"
+          disallowed_value: "You must enter a valid URL"
       remember: "If the website doesn’t work now remember to check it again later at least once, in case these are temporary issues."
       instructions: '<ul>
                   <li>Open the homepage URL and make sure it is working. If not, check it again later and if it is still not working, the answer is <span class="answer non_compliant">Non-compliant</span></li>
@@ -502,6 +508,7 @@ triage:
           url: "https://downforeveryoneorjustme.com/"
       compliant_answers:
         - "compliant"
+        - "action"
       non_compliant_answers:
         - "non_compliant"
       recommend:
@@ -873,7 +880,7 @@ triage:
 
     admin_metadata_review:
       label: "27. Check Metadata"
-      check: "27. Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , OA URL, Copyright URL and Licensing URL are correct. Incorrect information has been edited"
+      check: "27. Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , Copyright URL and Licensing URL are correct. Incorrect information has been edited"
       instructions: ""
       answers:
         compliant: "Everything is correct"
