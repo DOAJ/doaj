@@ -175,6 +175,7 @@ class WorkflowControl2TriageForm(object):
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
         form.set(f.issn.title_match.action_group.title, bj.title)
+        form.set(f.issn.title_match.action_group.alttitle, bj.alternative_title)
 
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)
@@ -187,6 +188,7 @@ class WorkflowControl2TriageForm(object):
         # Working
         compliance_field_radio(triage.website_working, f.website.working)
         compliance_field_note(triage.website_working, f.website.working)
+        form.set(f.website.working.action.journal_url, bj.journal_url)
 
         # ISSN
         compliance_field_radio(triage.website_issn, f.website.issn)
@@ -394,7 +396,9 @@ class TriageForm2WorkflowControl(object):
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
         title = form.get(f.issn.title_match.action_group.title)
+        alttitle = form.get(f.issn.title_match.action_group.alttitle)
         bj.title = title
+        bj.alternative_title = alttitle
 
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)
@@ -411,6 +415,9 @@ class TriageForm2WorkflowControl(object):
         # Working
         compliance_field_radio(triage.website_working, f.website.working)
         compliance_field_note(triage.website_working, f.website.working)
+
+        journal_url = form.get(f.website.working.action.journal_url)
+        bj.journal_url = journal_url
 
         # ISSN
         compliance_field_radio(triage.website_issn, f.website.issn)

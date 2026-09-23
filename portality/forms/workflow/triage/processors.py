@@ -203,6 +203,10 @@ class TriageFormProcessor:
 
         # Title
         tbj.title = sbj.title
+        tbj.alternative_title = sbj.alternative_title
+
+        # url
+        tbj.journal_url = sbj.journal_url
 
         # Continuation
         tbj.replaces = sbj.replaces
@@ -224,19 +228,20 @@ class TriageFormProcessor:
         R = app.cms.workflow.triage.fields
 
         for question in R.keys():
-            triage_field = getattr(t, question)
-            ans = triage_field.answer
+            if question not in t.NON_QUESTION_ELEMENTS:
+                triage_field = getattr(t, question)
+                ans = triage_field.answer
 
-            if "severity_value" in R[question]:
-                if ans in R[question].severity_value:
-                    triage_field.severity_value = R[question].severity_value[ans]
+                if "severity_value" in R[question]:
+                    if ans in R[question].severity_value:
+                        triage_field.severity_value = R[question].severity_value[ans]
 
-            if ans in R[question].compliant_answers:
-                triage_field.compliant = True
-            elif ans in R[question].non_compliant_answers:
-                triage_field.compliant = False
-            else:
-                triage_field.compliant = None
+                if ans in R[question].compliant_answers:
+                    triage_field.compliant = True
+                elif ans in R[question].non_compliant_answers:
+                    triage_field.compliant = False
+                else:
+                    triage_field.compliant = None
 
     def _calculate_recommendation(self, wfc:WorkflowControl):
         t = wfc.triage
@@ -277,7 +282,8 @@ class TriageFormProcessor:
         recs = []
 
         for question in R.keys():
-            recs += get_recommendation(getattr(t, question), R[question])
+            if question not in t.NON_QUESTION_ELEMENTS:
+                recs += get_recommendation(getattr(t, question), R[question])
 
         def evaluate_recommendations(recs):
             r = []

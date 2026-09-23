@@ -13,13 +13,13 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput, Buttons
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability, GenericFormStructureCapability
-from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, GenericControl, GenericField, \
+from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, \
+    GenericControl, GenericField, \
     GenericCompound
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
 ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
-
 
 
 #####################################################
@@ -33,13 +33,19 @@ ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 class TriageCompound(GenericCompound):
     template = templates.WORKFLOW_TRIAGE_COMPOUND
 
+
 class ExceptionListRenderer(JinjaCompoundRenderer):
     template = templates.WORKFLOW_TRIAGE_EXCEPTIONS_LIST
+
+class TriageReviewCompoundRenderer(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_TRIAGE_REVIEW
+
 
 ## Field renderers
 
 class DummyRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_DUMMY
+
 
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
@@ -49,23 +55,30 @@ class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
 class RadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_RADIO
 
+
 class TriageRadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_TRIAGE_CONTROL_RADIO
+
 
 class CheckboxRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_CHECKBOX
 
+
 class TriageCheckboxRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_TRIAGE_CONTROL_CHECKBOX
+
 
 class TriageCheckboxListRenderer(GenericCompound):
     template = templates.WORKFLOW_TRIAGE_CHECKBOX_QUESTION
 
+
 class ButtonsRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_BUTTONS
 
+
 class SimpleCompoundRenderer(GenericCompound):
     template = templates.WORKFLOW_SIMPLE_COMPOUND
+
 
 #################################
 class TriageFormButtons:
@@ -73,9 +86,9 @@ class TriageFormButtons:
         "label": "Continue triage",
         "attrs": {
             "class": "button compliant",
-            "onclick": "doaj.triage.continue()",
             "type": "button",
-            "role": "compliant"
+            "role": "compliant",
+            "data-role": "continue-triage"
         }
     }
 
@@ -106,6 +119,18 @@ class TriageFormButtons:
                 changeb["attrs"][k] = v
         return changeb
 
+
+class ReviewCapability(CompoundFieldCapability):
+    role = "review"
+    label = "Review"
+
+    questions_to_review = []
+    confirm_each = True
+    always_compliant = True
+    control_render_class = TriageRadioRenderer
+    render_class = TriageReviewCompoundRenderer
+    control_class = Radio
+
 class ComplianceCheckCapability(FormFieldCapability):
     role = "check"
     label = "Compliance"
@@ -119,6 +144,7 @@ class ComplianceCheckCapability(FormFieldCapability):
     control_class = Radio
     control_render_class = TriageRadioRenderer
     render_class = TriageComplianceCheckFieldRenderer
+
 
 class ButtonsCapability(FormFieldCapability):
     role = "check"
@@ -138,17 +164,21 @@ class ComplianceCheckField(Field):
     coerce = [Unicode()]
     validators = [LimitToFormOptions()]
 
+
 class CheckboxCompoundCapability(CompoundFieldCapability):
     list_render_class = TriageCheckboxListRenderer
     render_class = TriageCheckboxListRenderer
     sr_only_legend = False
 
+
 class TriageCompoundFieldCapability(CompoundFieldCapability):
     action = {}
+
 
 class SimpleCompoundCapability(CompoundFieldCapability):
     render_class = SimpleCompoundRenderer
     control_btns = []
+
 
 #######
 ## Generic notes capability and field
@@ -164,19 +194,24 @@ class NoteCapability(FormFieldCapability):
     control_class_renderer = GenericControl
     render_class = GenericField
 
+
 class GeneralNoteCapability(NoteCapability):
     label = "Notes (optional)"
     placeholder = "You can add any notes related to this question here..."
 
+
 class DummyNote(NoteCapability):
     render_class = DummyRenderer
+
 
 class NoteField(Field):
     coerce = [Unicode()]
 
+
 class GeneralNote(Field):
     coerce = [Unicode()]
     capabilities = (GeneralNoteCapability(),)
+
 
 #######
 ## options preparation
@@ -186,10 +221,12 @@ def options_for(source):
         {"value": k, "label": t} for k, t in source.answers.items()
     ]
 
+
 def exception_options_for(source):
     return [
         {"value": k, "label": t} for k, t in source.exceptions.items()
     ]
+
 
 def resource_for(source):
     resources = []
@@ -209,7 +246,6 @@ def resource_for(source):
     return resources
 
 
-
 #####################################################
 ## Record ID (hidden field required for identification)
 
@@ -222,6 +258,7 @@ class RecordID(Field):
     name = "id"
     coerce = [Unicode()]
     capabilities = (C(),)
+
 
 #####################################################
 ## Ethics: Not Excluded
@@ -249,6 +286,7 @@ class EthicsNotExcluded(ComplianceCheckField):
     name = "ethics_not_excluded"
     capabilities = (C(),)
 
+
 # class EthicsNotExcludedNote(NoteField):
 #     class NC(NoteCapability):
 #         error_messages = {
@@ -266,6 +304,7 @@ class EthicsNotExcludedNote(NoteField):
 
     name = "ethics_not_excluded_note"
     capabilities = (NC(),)
+
 
 # RJ: I have removed these as they overcomplicated the implementation, and having 2 notes fields in one
 # question added complexity both to the interface and the back-end.  If this is a requirement it can be
@@ -322,10 +361,11 @@ class EthicsNotExcludedGroup(Structure):
     validators_ = [
         RequiredIf(
             note,  # <- this field is required if
-            answer,       # <- this field has one of the values
+            answer,  # <- this field has one of the values
             T.ethics_not_excluded.non_compliant_answers  # <- that is non compliant
         )
     ]
+
 
 ##########################################################
 
@@ -354,13 +394,16 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
     name = "ethics_no_nonstandard_metrics"
     capabilities = (C(),)
 
+
 class EthicsNoNonStandardMetricsNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.note.is_conditionally_required
         }
+
     name = "ethics_no_nonstandard_metrics_note"
     capabilities = (NC(),)
+
 
 class EthicsNoNonStandardMetricsGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -385,11 +428,12 @@ class EthicsNoNonStandardMetricsGroup(Structure):
     # action_note = EthicsNonStandardMetricsNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(note, # <- this field is required if
-                  answer,        # <- this field has one of the values
-                  T.ethics_no_nonstandard_metrics.non_compliant_answers # <- that is non compliant
-                  )
+        RequiredIf(note,  # <- this field is required if
+                   answer,  # <- this field has one of the values
+                   T.ethics_no_nonstandard_metrics.non_compliant_answers  # <- that is non compliant
+                   )
     ]
+
 
 ###########################################################
 
@@ -418,13 +462,16 @@ class EthicsNoFakeImpact(ComplianceCheckField):
     name = "ethics_no_fake_impact"
     capabilities = (C(),)
 
+
 class EthicsNoFakeImpactNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.ethics_no_fake_impact.validation.note.is_conditionally_required
         }
+
     name = "ethics_no_fake_impact_note"
     capabilities = (NC(),)
+
 
 class EthicsNoFakeImpactGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -456,6 +503,7 @@ class EthicsNoFakeImpactGroup(Structure):
                    )
     ]
 
+
 ###########################################################
 
 ##########################################################
@@ -478,13 +526,17 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
     name = "ethics_no_false_doaj_claim"
     capabilities = (C(),)
 
+
 class EthicsNoFalseDOAJClaimNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.ethics_no_false_doaj_claim.validation.note.is_conditionally_required
         }
+
     name = "ethics_no_false_doaj_claim_note"
     capabilities = (NC(),)
+
+
 class EthicsNoFalseDOAJClaimGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_no_false_doaj_claim.label
@@ -511,10 +563,11 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
     validators_ = [
         RequiredIf(
             note,  # <- this field is required if
-            answer,       # <- this field has one of the values
+            answer,  # <- this field has one of the values
             T.ethics_no_false_doaj_claim.non_compliant_answers  # <- that is non compliant
         )
     ]
+
 
 ###########################################################
 ##########################################################
@@ -538,9 +591,11 @@ class EthicsPubTime(ComplianceCheckField):
     name = "ethics_submission_to_publication_time"
     capabilities = (C(),)
 
+
 class EthicsPubTimeNote(GeneralNote):
     name = "ethics_no_false_doaj_claim_note"
     # capabilities = (NoteCapability(),)
+
 
 class EthicsPubTimeGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -554,6 +609,7 @@ class EthicsPubTimeGroup(Structure):
 
     answer = EthicsPubTime(OPTIONAL, SINGLE)
     note = EthicsPubTimeNote(OPTIONAL, SINGLE)
+
 
 ###########################################################
 
@@ -582,18 +638,34 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
     name = "ethics_no_suspicious_ties"
     capabilities = (C(),)
 
+
 class EthicsNoSuspiciousTiesNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.note.is_conditionally_required
         }
+
     name = "ethics_no_suspicious_ties_note"
     capabilities = (NC(),)
+
+
+class EthicsNoSuspiciousTiesNoLongerQuestionable(Structure):
+    class C(SimpleCompoundCapability):
+        label = T.ethics_no_suspicious_ties_action.label
+        role = "action"
+        S = T.database_embargo
+        order = []
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "database_embargo_group"})]
+
+    name_ = "ethics_no_suspicious_ties_no_longer_questionable"
+    capabilities_ = (C(),)
+
 
 class EthicsNoSuspiciousTiesGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_no_suspicious_ties.label
-        order = ["answer", "note"]
+        order = ["answer", "action", "note"]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.group.is_conditionally_required
@@ -614,7 +686,7 @@ class EthicsNoSuspiciousTiesGroup(Structure):
 
     answer = EthicsNoSuspiciousTies(OPTIONAL, SINGLE)
     note = EthicsNoSuspiciousTiesNote(OPTIONAL, SINGLE)
-    # action = EthicsNoSuspiciousTiesActionGroup(OPTIONAL, SINGLE)
+    action = EthicsNoSuspiciousTiesNoLongerQuestionable(OPTIONAL, SINGLE)
     # action_note = EthicsNoSuspiciousTiesActionNote(OPTIONAL, SINGLE)
     # non_compliant_group = EthicsNoSuspiciousTiesNonCompliantGroup(OPTIONAL, SINGLE)
     # non_compliant_note = EthicsNoSuspiciousTiesNonCompliantNote(OPTIONAL, SINGLE)
@@ -624,13 +696,14 @@ class EthicsNoSuspiciousTiesGroup(Structure):
                    answer,  # <- this field has one of the values
                    T.ethics_no_suspicious_ties.action_answers + T.ethics_no_suspicious_ties.non_compliant_answers
                    # <- that is either compliant or non compliant
-                   )#,
+                   )  # ,
         # RequiredIf(note,  # <- this field is required if
         #            answer,  # <- this field has one of the values
         #            T.ethics_no_suspicious_ties.non_compliant_answers
         #            # <- that is either compliant or non compliant
         #            ),
     ]
+
 
 ###########################################################
 
@@ -646,6 +719,7 @@ class RequiredIfNestedException(RequiredIf):
     than being a direct sibling of the validator's own structure, which is
     all the base RequiredIf's by_name()-based lookup can reach.
     """
+
     def _bind_fields(self):
         # FIXME: there is a mechanism on the Validator for binding fields which are nested,
         # we should update this to use that mechanism (or just update RequiredIf)
@@ -654,6 +728,7 @@ class RequiredIfNestedException(RequiredIf):
         self._depends_on_field = self._reference.ref_.get_path(
             "database_withdrawn_exceptions_group.database_withdrawn_exceptions"
         )
+
 
 # class ExceptionsNoteOptions:
 #     on_exception = "on_exception"
@@ -681,11 +756,13 @@ class DatabaseWithdrawn(ComplianceCheckField):
     name = "database_withdrawn"
     capabilities = (C(),)
 
+
 class DatabaseWithdrawnNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.database_withdrawn.validation.note.is_conditionally_required
         }
+
     name = "database_withdrawn_note"
     capabilities = (NC(),)
 
@@ -721,6 +798,7 @@ class DatabaseWithdrawnExceptions(Field):
     coerce = [Unicode()]
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
+
 
 # class DatabaseWithdrawnExceptionsNote(NoteField):
 #     class NC(NoteCapability):
@@ -758,9 +836,10 @@ class DatabaseWithdrawnExceptionsGroup(Structure):
     name_ = "database_withdrawn_exceptions_group"
     capabilities_ = (C(),)
 
-    #radio_wrapper = DatabaseWithdrawnExceptionsRadioWrapper(OPTIONAL, SINGLE)
+    # radio_wrapper = DatabaseWithdrawnExceptionsRadioWrapper(OPTIONAL, SINGLE)
     exceptions = DatabaseWithdrawnExceptions(OPTIONAL, REPEATABLE)
-    #note = DatabaseWithdrawnExceptionsNote(OPTIONAL, SINGLE)
+    # note = DatabaseWithdrawnExceptionsNote(OPTIONAL, SINGLE)
+
 
 ### The main entry point to the Database: Withdrawn question
 class DatabaseWithdrawnGroup(Structure):
@@ -801,9 +880,10 @@ class DatabaseWithdrawnGroup(Structure):
     # sub-structures - "note" still resolves the normal way.
     validators_ = [
         RequiredIfNestedException(note,  # <- this field is required if
-                   exceptions_group.exceptions,  # <- this field has one of the values
-                   T.database_withdrawn.note_required_exceptions  # <- that is one of the relevant exceptions
-                   )
+                                  exceptions_group.exceptions,  # <- this field has one of the values
+                                  T.database_withdrawn.note_required_exceptions
+                                  # <- that is one of the relevant exceptions
+                                  )
     ]
 
 
@@ -831,6 +911,7 @@ class DatabaseEmbargo(ComplianceCheckField):
     name = "database_embargo"
     capabilities = (C(),)
 
+
 class DatabaseEmbargoNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
@@ -840,10 +921,11 @@ class DatabaseEmbargoNote(NoteField):
     name = "database_embargo_note"
     capabilities = (NC(),)
 
+
 class DatabaseEmbargoExceptions(Field):
     class C(FormFieldCapability):
         role = "options"
-        label = T.database_embargo.edit.exceptions
+        label = T.database_embargo.action.instruction
         control_class = Checkbox
         multiple = True
         options = exception_options_for(T.database_embargo)
@@ -859,6 +941,7 @@ class DatabaseEmbargoExceptions(Field):
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
+
 class DatabaseEmbargoExceptionsGroup(Structure):
     class C(SimpleCompoundCapability):
         label = " "
@@ -872,6 +955,7 @@ class DatabaseEmbargoExceptionsGroup(Structure):
     capabilities_ = (C(),)
 
     exceptions = DatabaseEmbargoExceptions(OPTIONAL, REPEATABLE)
+
 
 class DatabaseEmbargoGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -895,6 +979,7 @@ class DatabaseEmbargoGroup(Structure):
     note = DatabaseEmbargoNote(OPTIONAL, SINGLE)
     exceptions_group = DatabaseEmbargoExceptionsGroup(OPTIONAL, SINGLE)
 
+
 ###########################################################
 ## DOAJ Database: Not Listed
 
@@ -909,9 +994,11 @@ class DatabaseNotListed(ComplianceCheckField):
     name = "database_not_listed"
     capabilities = (C(),)
 
+
 class DatabaseNotListedNote(NoteField):
     name = "database_not_listed_note"
     capabilities = (NoteCapability(),)
+
 
 class DatabaseNotListedGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -924,6 +1011,7 @@ class DatabaseNotListedGroup(Structure):
 
     answer = DatabaseNotListed(OPTIONAL, SINGLE)
     note = DatabaseNotListedNote(OPTIONAL, SINGLE)
+
 
 ###########################################################
 ## DOAJ Database: Not Duplicate
@@ -939,18 +1027,34 @@ class DatabaseNotDuplicate(ComplianceCheckField):
     name = "database_not_duplicate"
     capabilities = (C(),)
 
+
 class DatabaseNotDuplicateNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.database_not_duplicate.validation.note.is_conditionally_required
         }
+
     name = "database_not_duplicate_note"
     capabilities = (NC(),)
+
+
+class DatabaseNotDuplicateInstruction(Structure):
+    class C(TriageCompoundFieldCapability):
+        label = T.database_not_duplicate.action.instruction
+        role = "action"
+        order = []
+        render_class = SimpleCompoundRenderer
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "database_not_duplicate_group"})]
+
+    name_ = "database_not_duplicate_instruction"
+    capabilities_ = (C(),)
+
 
 class DatabaseNotDuplicateGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.database_not_duplicate.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "instructions"]
         render_class = TriageCompound
 
     name_ = "database_not_duplicate_group"
@@ -958,10 +1062,13 @@ class DatabaseNotDuplicateGroup(Structure):
 
     answer = DatabaseNotDuplicate(OPTIONAL, SINGLE)
     note = DatabaseNotDuplicateNote(OPTIONAL, SINGLE)
+    instructions = DatabaseNotDuplicateInstruction(OPTIONAL, SINGLE)
 
     validators_ = [
-        RequiredIf(note, answer, T.database_not_duplicate.non_compliant_answers)
+        RequiredIf(note, answer, T.database_not_duplicate.non_compliant_answers),
+        RequiredIf(note, answer, T.database_not_duplicate.action_answer)
     ]
+
 
 ###########################################################
 ## ISSN: At Least One Registered ISSN
@@ -988,13 +1095,16 @@ class ISSNAtLeastOne(ComplianceCheckField):
     name = "issn_at_least_one"
     capabilities = (C(),)
 
+
 class ISSNAtLeastOneNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.issn_at_least_one.validation.note.is_conditionally_required
         }
+
     name = "issn_at_least_one_note"
     capabilities = (NC(),)
+
 
 class EISSN(Field):
     class C(FormFieldCapability):
@@ -1012,6 +1122,7 @@ class EISSN(Field):
     capabilities = (C(),)
     validators = [Regex(ISSN)]
 
+
 class PISSN(Field):
     class C(FormFieldCapability):
         label = T.issn_at_least_one.edit.pissn
@@ -1028,6 +1139,7 @@ class PISSN(Field):
     capabilities = (C(),)
     validators = [Regex(ISSN)]
 
+
 # class ISSNActionNote(NoteField):
 #     class NC(NoteCapability):
 #         error_messages = {
@@ -1040,9 +1152,10 @@ class PISSN(Field):
 class ISSNAdditionalFields(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label  = T.issn_at_least_one.action.action.instruction
+        label = T.issn_at_least_one.action.action.instruction
         order = ["eissn", "pissn"]
-        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
         error_messages = {
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different
         }
@@ -1059,14 +1172,15 @@ class ISSNAdditionalFields(Structure):
         Different(eissn, pissn),
     ]
 
+
 class ISSNAtLeastOneGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.issn_at_least_one.label
         order = [
             "answer",
             "edited_issns",
-            "note"#,
-            #"noncompliant_group"
+            "note"  # ,
+            # "noncompliant_group"
         ]
         action_group = ["edited_issns"]
         render_class = TriageCompound
@@ -1093,13 +1207,15 @@ class ISSNAtLeastOneGroup(Structure):
     validators_ = [
         RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
-                   T.issn_at_least_one.action_answers + T.issn_at_least_one.non_compliant_answers # <- that is non compliant
-                   )#,
+                   T.issn_at_least_one.action_answers + T.issn_at_least_one.non_compliant_answers
+                   # <- that is non compliant
+                   )  # ,
         # RequiredIf(action_note,  # <- this field is required if
         #            answer,  # <- this field has one of the values
         #            T.issn_at_least_one.non_compliant_answers  # <- that is non compliant
         #            )
     ]
+
 
 ###########################################################
 ## ISSN: Country Match
@@ -1122,13 +1238,16 @@ class ISSNCountryMatch(ComplianceCheckField):
     name = "issn_country_match"
     capabilities = (C(),)
 
+
 class ISSNCountryMatchNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.issn_country_match.validation.note.is_conditionally_required
         }
+
     name = "issn_country_match_note"
     capabilities = (NC(),)
+
 
 class ISSNCountryMatchGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1163,6 +1282,7 @@ class ISSNCountryMatchGroup(Structure):
                    )
     ]
 
+
 ###########################################################
 ## ISSN: Title Match
 
@@ -1188,13 +1308,16 @@ class ISSNTitleMatch(ComplianceCheckField):
     name = "issn_title_match"
     capabilities = (C(),)
 
+
 class ISSNTitleMatchNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.issn_title_match.validation.note.is_conditionally_required
         }
+
     name = "issn_title_match_note"
     capabilities = (NC(),)
+
 
 class Title(Field):
     class C(FormFieldCapability):
@@ -1202,29 +1325,48 @@ class Title(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
+        long_input = True
         error_messages = {
             DisallowedValue: T.issn_title_match.validation.title.disallowed_value,
             IsRequired: T.issn_title_match.validation.title.is_required
         }
 
-    name = "eissn"
+    name = "title"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
     validators = [NoScriptTag()]
 
+
+class AltTitle(Field):
+    class C(FormFieldCapability):
+        label = T.issn_title_match.edit.alttitle
+        control_class = TextInput
+        control_render_class = GenericControl
+        render_class = GenericField
+        long_input = True
+
+    name = "alttitle"
+    coerce = [Unicode(trim_whitespace=True)]
+    capabilities = (C(),)
+    validators = [NoScriptTag()]
+
+
 class ISSNTitleMatchActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label = T.issn_title_match.edit.title
-        order = ["title"]
-        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_title_match_group"})]
+        label = T.issn_title_match.action.action.instruction
+        order = ["title", "alttitle"]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "issn_title_match_action_group"})]
         trigger_btn = "action"
 
     name_ = "issn_title_match_action_group"
     capabilities_ = (C(),)
 
     title = Title(REQUIRED, SINGLE)
-    # action_note = ISSNTitleMatchActionNote(OPTIONAL, SINGLE)
+    alttitle = AltTitle(OPTIONAL, SINGLE)
+    # action_note = ISSNActionNote(OPTIONAL, SINGLE)
+
 
 class ISSNTitleMatchGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1250,7 +1392,7 @@ class ISSNTitleMatchGroup(Structure):
 
     answer = ISSNTitleMatch(OPTIONAL, SINGLE)
     action_group = ISSNTitleMatchActionGroup(OPTIONAL, SINGLE)
-    #action_note = ISSNTitleMatchActionNote(OPTIONAL, SINGLE)
+    # action_note = ISSNTitleMatchActionNote(OPTIONAL, SINGLE)
     note = ISSNTitleMatchNote(OPTIONAL, SINGLE)
     # noncompliant_group = TitleMatchNonCompliantGroup(OPTIONAL, SINGLE)
     # noncompliant_note = TitleMatchNonCompliantNote(OPTIONAL, SINGLE)
@@ -1258,7 +1400,8 @@ class ISSNTitleMatchGroup(Structure):
     validators_ = [
         RequiredIf(note,  # <- this field is required if
                    answer,  # <- this field has one of the values
-                   T.issn_title_match.action_answers + T.issn_title_match.non_compliant_answers  # <- that is non compliant
+                   T.issn_title_match.action_answers + T.issn_title_match.non_compliant_answers
+                   # <- that is non compliant
                    )
     ]
 
@@ -1277,13 +1420,16 @@ class ISSNContinuation(ComplianceCheckField):
     name = "issn_continuation"
     capabilities = (C(),)
 
+
 class ISSNContinuationNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.issn_continuation.validation.note.is_conditionally_required
         }
+
     name = "issn_continuation_note"
     capabilities = (NC(),)
+
 
 class RequiredIfNotNestedException(RequiredIfNot):
     """
@@ -1294,12 +1440,14 @@ class RequiredIfNotNestedException(RequiredIfNot):
     by_name()-based lookup can reach. Resolves depends_on_field via
     get_path() instead, which can walk into sub-structures.
     """
+
     def _bind_fields(self):
         # FIXME: this problem has been resolved in RequiredIfNot
         self._conditionally_required_field = self._reference.ref_.by_name(self._conditionally_required_field.name)
         self._depends_on_field = self._reference.ref_.get_path(
             "issn_continuation_action_group.continues"
         )
+
 
 class Continues(Field):
     class C(FormFieldCapability):
@@ -1310,11 +1458,13 @@ class Continues(Field):
         error_messages = {
             RegexDoesNotMatch: T.issn_continuation.validation.continues.regex_not_match
         }
+        long_input = True;
 
     name = "continues"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
     validators = [RegexOnList(ISSN)]
+
 
 # class ISSNContinuationActionNote(NoteField):
 #     class NC(NoteCapability):
@@ -1328,15 +1478,17 @@ class Continues(Field):
 class ISSNContinuationActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label = T.issn_continuation.edit.continues
+        label = " "
         order = ["continues"]
-        control_btns = [TriageFormButtons.contb(), TriageFormButtons.changeb({"data-controls": "issn_continuation_group"})]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "issn_continuation_group"})]
         trigger_btn = "action"
 
     name_ = "issn_continuation_action_group"
     capabilities_ = (C(),)
     continues = Continues(OPTIONAL, SINGLE)
     # note = ISSNContinuationActionNote(OPTIONAL, SINGLE)
+
 
 class ISSNContinuationGroup(Structure):
     # TO DO: add further groups and actions - see triage workflow
@@ -1367,7 +1519,7 @@ class ISSNContinuationGroup(Structure):
     note = ISSNContinuationNote(OPTIONAL, SINGLE)
 
     validators_ = [
-        AllInvalid( # the application IS a continuation AND its preceeding journal is not in DOAJ
+        AllInvalid(  # the application IS a continuation AND its preceeding journal is not in DOAJ
             RequiredIf(note,  # <- this field is required if
                        answer,  # <- this field has one of the values
                        T.issn_continuation.notes_required_answers  # <- that is compliant
@@ -1376,6 +1528,7 @@ class ISSNContinuationGroup(Structure):
             error_code=IsConditionallyRequired
         )
     ]
+
 
 ###########################################################
 ## Website: Working
@@ -1391,14 +1544,49 @@ class WebsiteWorking(ComplianceCheckField):
     name = "website_working"
     capabilities = (C(),)
 
+
 class WebsiteWorkingNote(NoteField):
     name = "website_working_note"
     capabilities = (NoteCapability(),)
 
+class JournalUrl(Field):
+    class C(FormFieldCapability):
+        label = T.website_working.edit.url
+        control_class = URLInput
+        control_render_class = GenericControl
+        render_class = GenericField
+        error_messages = {
+            IsRequired: T.website_working.validation.url.is_required,
+            DisallowedValue: T.website_working.validation.url.disallowed_value
+        }
+
+    name = "journal_url"
+    coerce = [Unicode(trim_whitespace=True)]
+    capabilities = (C(),)
+    validators = [IsURL()]
+
+
+class WebsiteWorkingActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        role = "action"
+        label = T.website_copyright.edit.copyright
+        order = [
+            "journal_url"
+        ]
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "website_working_group"})]
+        trigger_btn = "action"
+
+    name_ = "website_working_action_group"
+    capabilities_ = (C(),)
+
+    journal_url = JournalUrl(REQUIRED, SINGLE)
+
+
 class WebsiteWorkingGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.website_working.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "action"]
         render_class = TriageCompound
 
     name_ = "website_working_group"
@@ -1406,6 +1594,8 @@ class WebsiteWorkingGroup(Structure):
 
     answer = WebsiteWorking(OPTIONAL, SINGLE)
     note = WebsiteWorkingNote(OPTIONAL, SINGLE)
+    action = WebsiteWorkingActionGroup(OPTIONAL, SINGLE)
+
 
 ###########################################################
 ## Website: ISSN
@@ -1421,13 +1611,16 @@ class WebsiteISSN(ComplianceCheckField):
     name = "website_issn"
     capabilities = (C(),)
 
+
 class WebsiteISSNNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
         }
+
     name = "website_issn_note"
     capabilities = (NC(),)
+
 
 class WebsiteISSNGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1445,6 +1638,7 @@ class WebsiteISSNGroup(Structure):
         RequiredIf(note, answer, T.website_issn.non_compliant_answers)
     ]
 
+
 ###########################################################
 ## Website: URL
 
@@ -1459,18 +1653,34 @@ class WebsiteURL(ComplianceCheckField):
     name = "website_url"
     capabilities = (C(),)
 
+
+class WebsiteURLInstruction(Structure):
+    class C(TriageCompoundFieldCapability):
+        label = T.website_url.action.instruction
+        role = "action"
+        order = []
+        render_class = SimpleCompoundRenderer
+        control_btns = [TriageFormButtons.contb(),
+                        TriageFormButtons.changeb({"data-controls": "database_not_duplicate_group"})]
+
+    name_ = "website_url_instruction"
+    capabilities_ = (C(),)
+
+
 class WebsiteURLNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.website_url.validation.note.is_conditionally_required
         }
+
     name = "website_url_note"
     capabilities = (NC(),)
+
 
 class WebsiteURLGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.website_url.label
-        order = ["answer", "note"]
+        order = ["answer", "note", "instruction"]
         render_class = TriageCompound
 
     name_ = "website_url_group"
@@ -1478,10 +1688,12 @@ class WebsiteURLGroup(Structure):
 
     answer = WebsiteURL(OPTIONAL, SINGLE)
     note = WebsiteURLNote(OPTIONAL, SINGLE)
+    instruction = WebsiteURLInstruction(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note, answer, T.website_url.note_required_answers)
     ]
+
 
 ###########################################################
 ## Website: License Policy
@@ -1497,13 +1709,16 @@ class WebsiteLicensePolicy(ComplianceCheckField):
     name = "website_license_policy"
     capabilities = (C(),)
 
+
 class WebsiteLicensePolicyNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.website_license_policy.validation.note.is_conditionally_required
         }
+
     name = "website_license_policy_note"
     capabilities = (NC(),)
+
 
 class License(Field):
     class C(FormFieldCapability):
@@ -1511,19 +1726,10 @@ class License(Field):
         control_class = Checkbox
         multiple = True
         options = [
-            {"label": "CC BY", "value": "CC BY"},
-            {"label": "CC BY-SA", "value": "CC BY-SA"},
-            {"label": "CC BY-ND", "value": "CC BY-ND"},
-            {"label": "CC BY-NC", "value": "CC BY-NC"},
-            {"label": "CC BY-NC-SA", "value": "CC BY-NC-SA"},
-            {"label": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
-            {"label": "CC0", "value": "CC0"},
-            {"label": "Public domain", "value": "Public domain"},
-            # FIXME: this dependency bit is a hack, it should not be here, but I don't know where yet
-            {"label": "Publisher's own license", "value": "Publisher's own license", "attrs": {"data-dependency-trigger": "license_attribute"}},
+            {"value": k, "label": t} for k, t in T.website_license_policy.license_attrs.items()
         ]
-        control_render_class = CheckboxRenderer
-        render_class = GenericField
+        other_option = "Publisher's own license"
+        control_render_class = TriageCheckboxRenderer
         error_messages = {
             IsRequired: T.website_license_policy.validation.license.is_required,
             DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
@@ -1534,8 +1740,10 @@ class License(Field):
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
+
 class LicenseAttribute(Field):
     class C(FormFieldCapability):
+        role = "other"
         label = T.website_license_policy.edit.license_attribute
         control_class = Checkbox
         multiple = True
@@ -1545,13 +1753,7 @@ class LicenseAttribute(Field):
             {"label": "No Derivatives", "value": "ND"},
             {"label": "No Commercial Usage", "value": "NC"}
         ]
-        # FIXME: this dependency bit is a hack, it should not be here, but I don't know where yet
-        fieldset_attributes = {
-            "data-dependency-key": "license_attribute",
-            "hidden": "true"
-        }
-        control_render_class = CheckboxRenderer
-        render_class = GenericField
+        control_render_class = TriageCheckboxRenderer
         error_messages = {
             DisallowedValue: T.website_license_policy.validation.license_attribute.disallowed_value,
             IsConditionallyRequired: T.website_license_policy.validation.license_attribute.is_conditionally_required
@@ -1559,8 +1761,27 @@ class LicenseAttribute(Field):
 
     name = "license_attribute"
     coerce = [Unicode()]
-    validators = [LimitToFormOptions()]
+    # validators = [LimitToFormOptions()]
     capabilities = (C(),)
+
+
+# class LicenseCheckboxesGroup(Structure):
+#     class C(CheckboxCompoundCapability):
+#         label = "exceptions group"
+#         order = ["license", "license_attribute"]
+#
+#     name_ = "license_checkboxes_group"
+#     capabilities_ = (C(),)
+#     license = License(OPTIONAL, SINGLE)
+#     license_attribute = LicenseAttribute(OPTIONAL, SINGLE)
+
+    # validators_ = [
+    #     RequiredIf(license_attribute,  # <- this field is required if
+    #                license,  # <- this field has one of the values
+    #                ["Publisher's own license"]
+    #                )
+    # ]
+
 
 class LicenseURL(Field):
     class C(FormFieldCapability):
@@ -1578,15 +1799,15 @@ class LicenseURL(Field):
     capabilities = (C(),)
     validators = [IsURL()]
 
+
 class WebsiteLicensePolicyActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
         label = T.website_license_policy.edit.licences
         order = [
-            "license",
-            "license_attribute",
-            "license_url"
+            "license", "license_attribute", "license_url"
         ]
+        control_render_class = SimpleCompoundRenderer
         control_btns = [TriageFormButtons.contb(),
                         TriageFormButtons.changeb({"data-controls": "website_license_policy_group"})]
         trigger_btn = "action"
@@ -1595,15 +1816,16 @@ class WebsiteLicensePolicyActionGroup(Structure):
     capabilities_ = (C(),)
 
     license = License(REQUIRED, REPEATABLE)
-    license_attribute = LicenseAttribute(OPTIONAL, REPEATABLE)
+    license_attribute = LicenseAttribute(REQUIRED, REPEATABLE)
     license_url = LicenseURL(REQUIRED, SINGLE)
 
     validators_ = [
         RequiredIf(license_attribute,  # <- this field is required if
                    license,  # <- this field has one of the values
-                   "Publisher's own license"
+                   ["Publisher's own license"]
                    )
     ]
+
 
 class WebsiteLicensePolicyGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1632,7 +1854,6 @@ class WebsiteLicensePolicyGroup(Structure):
     note = WebsiteLicensePolicyNote(OPTIONAL, SINGLE)
 
 
-
 ###########################################################
 ## Website: Copyright Policy
 
@@ -1647,13 +1868,16 @@ class WebsiteCopyright(ComplianceCheckField):
     name = "website_copyright"
     capabilities = (C(),)
 
+
 class WebsiteCopyrightNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.website_copyright.validation.note.is_conditionally_required
         }
+
     name = "website_copyright_note"
     capabilities = (NC(),)
+
 
 class CopyrightAuthorRetains(Field):
     class C(FormFieldCapability):
@@ -1675,6 +1899,7 @@ class CopyrightAuthorRetains(Field):
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
+
 class CopyrightURL(Field):
     class C(FormFieldCapability):
         label = T.website_copyright.edit.copyright_url
@@ -1690,6 +1915,7 @@ class CopyrightURL(Field):
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
     validators = [IsURL()]
+
 
 class WebsiteCopyrightActionGroup(Structure):
     class C(SimpleCompoundCapability):
@@ -1708,6 +1934,7 @@ class WebsiteCopyrightActionGroup(Structure):
 
     copyright_author_retains = CopyrightAuthorRetains(REQUIRED, SINGLE)
     copyright_url = CopyrightURL(REQUIRED, SINGLE)
+
 
 class WebsiteCopyrightGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1750,13 +1977,16 @@ class ContentNoLogin(ComplianceCheckField):
     name = "content_no_login"
     capabilities = (C(),)
 
+
 class ContentNoLoginNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.content_no_login.validation.note.is_conditionally_required
         }
+
     name = "content_no_login_note"
     capabilities = (NC(),)
+
 
 class ContentNoLoginGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1774,6 +2004,7 @@ class ContentNoLoginGroup(Structure):
         RequiredIf(note, answer, T.content_no_login.non_compliant_answers)
     ]
 
+
 ###########################################################
 ## Content: No Embargo
 
@@ -1788,13 +2019,16 @@ class ContentNoEmbargo(ComplianceCheckField):
     name = "content_no_embargo"
     capabilities = (C(),)
 
+
 class ContentNoEmbargoNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.content_no_embargo.validation.note.is_conditionally_required
         }
+
     name = "content_no_embargo_note"
     capabilities = (NC(),)
+
 
 class ContentNoEmbargoGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1812,6 +2046,7 @@ class ContentNoEmbargoGroup(Structure):
         RequiredIf(note, answer, T.content_no_embargo.non_compliant_answers)
     ]
 
+
 ###########################################################
 ## Content: Publish Enough
 
@@ -1826,13 +2061,16 @@ class ContentPublishEnough(ComplianceCheckField):
     name = "content_publish_enough"
     capabilities = (C(),)
 
+
 class ContentPublishEnoughNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.content_publish_enough.validation.note.is_conditionally_required
         }
+
     name = "content_publish_enough_note"
     capabilities = (NC(),)
+
 
 class ContentPublishEnoughGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1850,6 +2088,7 @@ class ContentPublishEnoughGroup(Structure):
         RequiredIf(note, answer, T.content_publish_enough.non_compliant_answers)
     ]
 
+
 ###########################################################
 ## Content: Unique Link
 
@@ -1864,13 +2103,16 @@ class ContentUniqueLink(ComplianceCheckField):
     name = "content_unique_link"
     capabilities = (C(),)
 
+
 class ContentUniqueLinkNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.content_unique_link.validation.note.is_conditionally_required
         }
+
     name = "content_unique_link_note"
     capabilities = (NC(),)
+
 
 class ContentUniqueLinkGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1888,6 +2130,7 @@ class ContentUniqueLinkGroup(Structure):
         RequiredIf(note, answer, T.content_unique_link.non_compliant_answers)
     ]
 
+
 ###########################################################
 ## Content: Format
 
@@ -1902,13 +2145,16 @@ class ContentFormat(ComplianceCheckField):
     name = "content_format"
     capabilities = (C(),)
 
+
 class ContentFormatNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
             IsConditionallyRequired: T.content_format.validation.note.is_conditionally_required
         }
+
     name = "content_format_note"
     capabilities = (NC(),)
+
 
 class ContentFormatGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1925,6 +2171,7 @@ class ContentFormatGroup(Structure):
     validators_ = [
         RequiredIf(note, answer, T.content_format.non_compliant_answers)
     ]
+
 
 ###########################################################
 ## Content: Format
@@ -1976,31 +2223,108 @@ class ContentNewJournalGroup(Structure):
 ###########################################################
 ## Admin: Metadata Review
 
+def _license_display(licenses):
+    descriptions = []
+    for license in licenses:
+        description = license["type"]
+        if description == "Publisher's own license":
+            attributes = [
+                key for key, value in license.items()
+                if value is True
+            ]
+            description += ": " + " ".join(attributes)
+        descriptions.append(description)
+    if len(descriptions) > 1:
+        return ", ".join(descriptions[:-1]) + " or " + descriptions[-1]
+    return descriptions[0] if descriptions else ""
+
 class AdminMetadataReview(ComplianceCheckField):
     class C(ComplianceCheckCapability):
         S = T.admin_metadata_review
-        options = options_for(S)
         check = S.check
+        options = options_for(S)
         instructions = S.instructions
-        resources = resource_for(S)
+
+        application_info = [
+            {"question": "issn_at_least_one_group",
+             "fields": [{
+                 "label": "PISSN",
+                 "lookup": lambda application, wfc: application.bibjson().pissn
+             },
+                 {
+                     "label": "EISSN",
+                     "lookup": lambda application, wfc: application.bibjson().eissn
+                 }
+             ]},
+            {
+                "question": "issn_title_match_group",
+                "fields": [{
+                    "label": "Title",
+                    "lookup": lambda application, wfc: application.bibjson().title
+                    },
+                    {
+                        "label": "Alternative Title",
+                        "lookup": lambda application, wfc: application.bibjson().alternative_title
+                    }]
+            },
+            {
+                "question": "website_working_group",
+                "fields": [
+                    {
+                        "label": "Journal's homepage",
+                        "lookup": lambda application, wfc: application.bibjson().journal_url
+                    }
+                ]
+            },
+            {
+                "question": "website_license_policy_group",
+                "fields": [
+                    {
+                        "label": "Licensing",
+                        "lookup": lambda application, wfc: _license_display(application.bibjson().licenses),
+                    },
+                    {
+                        "label": "url",
+                        "lookup": lambda application, wfc: application.bibjson().copyright_url
+                    },
+                ]
+            },
+            {
+                "question": "website_copyright_group",
+                "fields": [
+                    {
+                        "label": "Author retains rights ",
+                         "lookup": lambda application, wfc: (
+                            "Yes" if application.bibjson().author_retains_copyright else "No"
+                        ),
+                    },
+                    {
+                        "label": "url",
+                        "lookup": lambda application, wfc: application.bibjson().copyright_url
+                    }
+                ]
+            }
+        ]
 
     name = "admin_metadata_review"
     capabilities = (C(),)
 
+
 class AdminMetadataReviewNote(GeneralNote):
     name = "admin_metadata_review_note"
 
+
 class AdminMetadataReviewGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ReviewCapability):
         label = T.admin_metadata_review.label
         order = ["answer", "note"]
-        render_class = TriageCompound
 
     name_ = "admin_metadata_review_group"
     capabilities_ = (C(),)
 
     answer = AdminMetadataReview(OPTIONAL, SINGLE)
     note = AdminMetadataReviewNote(OPTIONAL, SINGLE)
+
 
 ###########################################################
 ## Admin: Special Exceptions
@@ -2013,9 +2337,11 @@ class AdminSpecialException(ComplianceCheckField):
         instructions = S.instructions
         # remember = S.remember
         resources = resource_for(S)
+        control_class = Checkbox
 
     name = "admin_special_exception"
     capabilities = (C(),)
+
 
 # RJ: I have removed this because the button approach was not properly abstracted or wired in
 # and was at odds with the other mechanisms on the form.  Instead, I have used the usual approach
@@ -2051,6 +2377,7 @@ class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
     capabilities = (GeneralNoteCapability(),)
 
+
 class SpecialExceptions(Field):
     class C(FormFieldCapability):
         role = "options"
@@ -2068,6 +2395,7 @@ class SpecialExceptions(Field):
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
+
 class SpecialExceptionOther(Field):
     class C(FormFieldCapability):
         role = "other"
@@ -2082,6 +2410,7 @@ class SpecialExceptionOther(Field):
     name = "special_exception_other"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
+
 
 class AdminSpecialExceptionGroup(Structure):
     class C(CheckboxCompoundCapability):
@@ -2127,7 +2456,7 @@ class AdminSpecialExceptionGroup(Structure):
 
     validators_ = [
         RequiredIf(special_exception_other,  # <- this field is required if
-                    special_exceptions,  # <- this field has one of the values
-                    ["other"]  # <- that is non compliant
+                   special_exceptions,  # <- this field has one of the values
+                   ["other"]  # <- that is non compliant
                    )
     ]
