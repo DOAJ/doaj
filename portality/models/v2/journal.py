@@ -471,7 +471,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return raw
 
     @property
-    def note_objects(self):
+    def note_objects(self) -> list[Note]:
         if not self._notes_loaded:
             self._load_notes()
         return [n for n in self._notes.values() if n]

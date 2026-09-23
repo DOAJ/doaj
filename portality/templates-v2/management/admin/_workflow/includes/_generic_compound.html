@@ -1,5 +1,9 @@
 <fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
-    <legend>{{ compound.label }}</legend>
+    {# only show the legend if this is not part of a releatable list of elements (which will probably
+    do the global legend for you #}
+    {% if not compound.capability.struct_ref.repeatable %}
+        <legend>{{ compound.label }}</legend>
+    {% endif %}
 
     <div class="error-container">
     {% if compound.displayable_errors %}

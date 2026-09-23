@@ -13,6 +13,7 @@ from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessm
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview, Triaged
 from portality.decorators import ssl_required, write_required, restrict_to_role
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.forms.workflow.notes import StandAloneNotesProcessor
 from portality.forms.workflow.submission.processors import OriginalROFormProcessor
 from portality.forms.workflow.triage.processors import TriageFormProcessor, TriageROFormProcessor
 from portality.lib import dicts
@@ -77,15 +78,17 @@ def workflow_item_overview(application_id):
     original = wfc.original_application
     original_processor = OriginalROFormProcessor(source_application=original, source_wfc=wfc)
     original_ro = original_processor.render_form()
-    # fc = ApplicationFormFactory.context("workflow_read_only")
-    # fc.processor(source=original)
-    # original_ro = fc.render_template(obj=original)
 
+    # generate the read-only view of the triage form
     processor = TriageROFormProcessor(source_application=application, source_wfc=wfc)
     rec = processor.recommendation(wfc)
     ro_form = processor.render_form()
 
-    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec, original_ro=original_ro, ro_form=ro_form)
+    # generate the notes form
+    notes_processor = StandAloneNotesProcessor(source_application=application)
+    notes_form = notes_processor.render_form()
+
+    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec, original_ro=original_ro, ro_form=ro_form, notes_form=notes_form)
 
 @blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
 @login_required

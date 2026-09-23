@@ -6,68 +6,10 @@ from portality.bll import DOAJ
 from portality.bll.services.workflow.core import ApplicationEdit
 from portality.core import app
 from portality.forms.workflow.crosswalk import TriageForm2WorkflowControl, WorkflowControl2TriageForm
-from portality.forms.workflow.triage.fields import SpecialExceptions
-from portality.forms.workflow.triage.forms import TriageForm, TriageSubmission
+from portality.forms.workflow.triage.forms import TriageSubmission
 from portality.models import Application, WorkflowControl
-from formulaic.core import DataProcessingResult, ErrorCode, Structure, Field
+from formulaic.core import ErrorCode, Structure, Field
 from portality.models.workflow import TriageField, SpecialExceptionTriageField
-
-
-# class TriageReadOnlyProcessor:
-#     def __init__(self, source_application:Application, source_wfc:WorkflowControl):
-#         self._source_application = source_application
-#         self._source_wfc = source_wfc
-#
-#         self.obj2form_xwalk = WorkflowControl2TriageForm()
-#         self.serialiser = FormSerialiser(context_id = "triage-ro")
-#
-#         self._form_inst:TriageSubmission = None
-#
-#         if self._source_application and self._source_wfc:
-#             self.source2forminstance()
-#
-#     ################################
-#     ## accessors
-#
-#     @property
-#     def source_application(self):
-#         return self._source_application
-#
-#     @property
-#     def source_workflow_control(self):
-#         return self._source_wfc
-#
-#     @property
-#     def form_instance(self):
-#         return self._form_inst
-#
-#     @form_instance.setter
-#     def form_instance(self, inst):
-#         self._form_inst = inst
-#
-#     ################################
-#     ## Data transformations
-#
-#     def source2forminstance(self):
-#         if not (self._source_wfc and self._source_application):
-#             raise ValueError("Must provide both source application and workflow control")
-#
-#         self.form_instance = self.obj2form_xwalk.transform(self._source_wfc, self._source_application)
-#
-#     ##########################
-#     ## Form serialisation
-#
-#     def render_form(self):
-#         form_html = self.serialiser.data_to_string(
-#             self.form_instance.data,
-#             self.form_instance.struct,
-#             application=self._source_application,
-#             wfc=self._source_wfc,
-#             errors=self.form_instance.validation_result
-#         )
-#         return form_html
-
-
 
 class TriageFormProcessor:
     def __init__(self, source_application:Application, source_wfc:WorkflowControl, raw_formdata:dict=None):
@@ -161,6 +103,13 @@ class TriageFormProcessor:
 
     def finalise(self, account):
         self.forminstance2target(account)
+
+        # reference for possible future audit system
+        # clSvc = DOAJ.changeLogService()
+        # change_log = clSvc.record_change(self._source_application, self._target_application, account)
+        # if self._target_wfc.triage.start_version is None:
+        #     self._target_wfc.triage.start_version = change_log.current_version - 1
+        # self._target_wfc.triage.end_version = change_log.current_version
 
         wfSvc = DOAJ.workflowService()
         state = wfSvc.state_for_workflow_control(self._target_wfc, self._target_application)

@@ -1,5 +1,5 @@
-from formulaic.core import Structure, OPTIONAL, SINGLE, FieldCapability
-from formulaic.serialise.form.core import FormCapability, FormObject
+from formulaic.core import Structure, OPTIONAL, SINGLE, FieldCapability, REPEATABLE, Field, REQUIRED
+from formulaic.serialise.form.core import FormCapability, FormObject, CompoundFieldCapability
 from portality.forms.workflow.core import JinjaFormRenderer
 from portality.forms.workflow.triage.fields import RecordID
 from portality.forms.workflow.triage.fieldsets import EthicsCriteria, ISSN, Database, Website, Content, \
@@ -49,28 +49,3 @@ class TriageForm(Structure):
 class TriageSubmission(FormObject):
     struct = TriageForm()
 
-###################################
-
-
-#
-# class TriageRO(Structure):
-#     class C(FormCapability):
-#         order = [
-#             "ethics",
-#             "database",
-#             "issn",
-#             "website",
-#             "content",
-#             "admin"
-#         ]
-#
-#     name_ = "triage_readonly"
-#     capabilities_ = (C(),)
-#
-#     ethics = EthicsCriteriaRO(OPTIONAL, SINGLE)
-#     database = DatabaseRO(OPTIONAL, SINGLE)
-#     issn = ISSNRO(OPTIONAL, SINGLE)
-#     website = WebsiteRO(OPTIONAL, SINGLE)
-#     content = ContentRO(OPTIONAL, SINGLE)
-#     admin = AdminRO(OPTIONAL, SINGLE)
-#

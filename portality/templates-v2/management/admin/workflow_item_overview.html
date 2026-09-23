@@ -10,48 +10,62 @@
 {% set event_reject = state.event_reject %}
 {% set event_triaged = state.event_triaged %}
 
-{% block page_title %}Workflow Item Overview{% endblock %}
+{% block page_title %}{{ wfc.module }} {{ application.bibjson().title }}{% endblock %}
+{% block page_header %}
+    <span class="tag tag--featured">{{ wfc.module }}</span> {{ application.bibjson().title }}
+{% endblock %}
 
 {% block admin_stylesheets %}
 
 {% endblock %}
 
 {% block admin_content %}
-    <span class="tag tag--featured">{{ wfc.module }}</span>
-    <h1>{{ application.bibjson().title }}</h1>
-
-    {% if wfc.reviewer_id == current_user.id %}
-    <a href="{{ url_for("workflow.triage_form", application_id=application.id) }}" class="button button--cta">Continue Working on this Item</a>
-    {% endif %}
-
-    {% if event_claim and event_claim.is_available(current_user) %}
-        <div style="margin-left: 25px">
-            {% with event = event_claim %}
-                {% include event_claim.template %}
-            {% endwith %}
+    <div class="row" style="margin-bottom: 15px">
+        <div class="col-md-12">
+            <span>[link icon]</span><a href="{{ application.bibjson().journal_url }}" target="_blank">{{ application.bibjson().journal_url }}</a>
+            <span>[lang icon]</span>{% for lang in application.bibjson().language %}
+                {{ datasets.name_for_lang(lang) }}
+            {% endfor %}
+            <span>[world icon]</span>{{ datasets.get_country_name(application.bibjson().publisher_country) }}
         </div>
-    {% endif %}
+    </div>
 
-    {% if event_assign and event_assign.is_available(current_user) %}
-        <div style="margin-left: 25px">
-            {% with event = event_assign %}
-                {% include event_assign.template %}
-            {% endwith %}
-        </div>
-    {% endif %}
+    <div class="row" style="margin-bottom: 15px">
+        <div class="col-md-12">
+            {% if wfc.reviewer_id == current_user.id %}
+                <a href="{{ url_for("workflow.triage_form", application_id=application.id) }}" class="button button--cta">Continue Working on this Item</a>
+            {% endif %}
 
-    {% if event_reassign and event_reassign.is_available(current_user) %}
-        <div style="margin-left: 25px">
-            {% with event = event_reassign %}
-                {% include event_reassign.template %}
-            {% endwith %}
+            {% if event_claim and event_claim.is_available(current_user) %}
+                <span style="margin-left: 25px">
+                    {% with event = event_claim %}
+                        {% include event_claim.template %}
+                    {% endwith %}
+                </span>
+            {% endif %}
+
+            {% if event_assign and event_assign.is_available(current_user) %}
+                <span style="margin-left: 25px">
+                    {% with event = event_assign %}
+                        {% include event_assign.template %}
+                    {% endwith %}
+                </span>
+            {% endif %}
+
+            {% if event_reassign and event_reassign.is_available(current_user) %}
+                <span style="margin-left: 25px">
+                    {% with event = event_reassign %}
+                        {% include event_reassign.template %}
+                    {% endwith %}
+                </span>
+            {% endif %}
         </div>
-    {% endif %}
+    </div>
 
     <div class="row">
         <div class="col-md-8">
             {% include 'management/admin/_workflow/includes/_recommend.html' %}
-            <a href="#" class="button button--primary" data-toggle="submission">Submission</a>
+            <a href="#" class="button button--primary button--cta" data-toggle="submission">Publisher Submission</a>
             <a href="#" class="button button--primary" data-toggle="triage">Triage</a>
             <div class="submission">
                 {% autoescape off %}
@@ -68,20 +82,32 @@
             {% if wfc.reviewer %}
                 Assigned To: {{ wfc.reviewer.name }} ({{ wfc.reviewer.id }})
                 {% if event_unclaim and wfc.reviewer_id == current_user.id%}
-                    <div style="margin-left: 25px">
+                    <div>
                         {% with event = event_unclaim %}
                             {% include event_unclaim.template %}
                         {% endwith %}
                     </div>
                 {% endif %}
                 {% if event_unassign and wfc.reviewer_id != current_user.id%}
-                    <div style="margin-left: 25px">
+                    <div>
                         {% with event = event_unassign %}
                             {% include event_unassign.template %}
                         {% endwith %}
                     </div>
                 {% endif %}
             {% endif %}
+
+            {% set owner = application.owner_account %}
+            {% if owner and owner.email %}
+                <a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
+            {% endif %}
+
+            {% autoescape off %}
+                {{ notes_form }}
+            {% endautoescape %}
+
+            <a href="{{ url_for("admin.application", application_id=application.id) }}">Full Edit Form</a>
+
         </div>
     </div>
 
@@ -95,6 +121,13 @@
                 submission: document.querySelector(".submission"),
                 triage: document.querySelector(".triage")
             };
+
+            function setActiveButton(sectionName) {
+                toggleLinks.forEach(function(link) {
+                    var isActive = link.getAttribute("data-toggle") === sectionName;
+                    link.classList.toggle("button--cta", isActive);
+                });
+            }
 
             function showSection(sectionName) {
                 Object.keys(sections).forEach(function(name) {
@@ -116,6 +149,7 @@
 
                     event.preventDefault();
                     showSection(sectionName);
+                    setActiveButton(sectionName);
                 });
             });
         }

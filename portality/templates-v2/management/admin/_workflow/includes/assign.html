@@ -3,7 +3,7 @@
     <input type="hidden" name="application" value="{{ application.id }}">
     <input type="hidden" name="async" value="n">
     <input type="hidden" name="onward" value="workflow.workflow_search">
-    <label for="assign_to">Assign to:</label>
+    <label for="assign_to">Reviewer</label>
     <select name="assign_to" id="assign_to">
         <option value="">Select User...</option>
         {% for account in state.assignable_users() %}
@@ -11,8 +11,8 @@
                 <option value="{{ account.id }}">
                     {{ account.name }}
                     ({{ account.id }})
-                    {{ account.role }}
-                    {{ account.attributes }}
+{#                    {{ account.role }}#}
+{#                    {{ account.attributes }}#}
                 </option>
             {% endif %}
         {% endfor %}

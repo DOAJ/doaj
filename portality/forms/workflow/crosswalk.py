@@ -1,3 +1,4 @@
+from portality.forms.workflow.notes import StandAloneNotes
 from portality.forms.workflow.triage.forms import TriageSubmission
 from portality.models import WorkflowControl, Note, Application
 from portality.datasets import licenses as LICENSES
@@ -499,3 +500,22 @@ class TriageForm2WorkflowControl(object):
 
         return wfc, application
 
+
+class Application2Notes(object):
+    def transform(self, application:Application) -> StandAloneNotes:
+        form = StandAloneNotes()
+        f = StandAloneNotes.struct
+
+        notes = []
+        for note in application.note_objects:
+            n = {
+                "note_id": note.id,
+                "note_text": note.note,
+                "note_author": note.author_id,
+                "note_created": note.created_date,
+                "note_last_updated": note.last_updated
+            }
+            notes.append(n)
+
+        form.set(f.notes, notes)
+        return form
