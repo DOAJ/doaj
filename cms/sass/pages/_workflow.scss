@@ -840,7 +840,9 @@ body.dashboard {
 
 
         input:hover + label.review-outcome-answer,
-        input:checked + label.review-outcome-answer {
+        input:checked + label.review-outcome-answer,
+        button.review-outcome-answer:hover,
+        button.review-outcome-answer:focus {
           background: $warm-black;
           color: white;
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25),

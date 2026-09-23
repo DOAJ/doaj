@@ -670,6 +670,7 @@ doaj.triage.questions.Question = class {
         this.answer = null;
         this.pendingAction = false;
         this.$continueBtn.removeClass("checked");
+        this.$changeAnswerBtn.parent()._hide();
 
         doaj.triage.requestSave();
     }
