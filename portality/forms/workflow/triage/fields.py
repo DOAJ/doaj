@@ -2337,6 +2337,7 @@ class AdminSpecialException(ComplianceCheckField):
         instructions = S.instructions
         # remember = S.remember
         resources = resource_for(S)
+        control_class = Checkbox
 
     name = "admin_special_exception"
     capabilities = (C(),)

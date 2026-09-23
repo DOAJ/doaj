@@ -470,7 +470,7 @@ doaj.triage.questions.Question = class {
         this.$reminderText = this.$reminder.find(".save-reminder-text");
 
         this.$answerInput = this.$wrapper.find(
-            "input[type='radio'][data-role='answer']"
+            "input[data-role='answer']"
         );
         this.$changeAnswerBtn = this.$wrapper.find(
             "button[data-role='change_answers']"
@@ -486,6 +486,11 @@ doaj.triage.questions.Question = class {
         );
 
         this.$editBtn = this.$wrapper.find(".button-edit");
+        this.$confirmCheckboxes = this.$wrapper.find(".confirmation-checkbox");
+        if (this.$confirmCheckboxes.length > 0) {
+            this.$changeAnswerBtn.remove();
+            this.$answerInput.prop("disabled", this.$confirmCheckboxes.filter(":not(:checked)").length !== 0);
+        }
 
         this.$checkboxOther = this.$wrapper.find(
             "input[type='checkbox'][data-role='other_option']"
@@ -592,7 +597,6 @@ doaj.triage.questions.Question = class {
                     if (this.answer.val() !== "action") {
                         this.changeAnswer()
                     } else {
-                        this._show_save_reminder();
                         this.$answerInput.prop("checked", false);
                         this.$headerBtn.find(".answer-icon").remove();
                         this.answer = null;
@@ -609,6 +613,11 @@ doaj.triage.questions.Question = class {
                 }
             })
         }
+
+        this.$confirmCheckboxes.on("click", () => {
+            this.$answerInput.prop("checked", false);
+            this.$answerInput.prop("disabled", this.$confirmCheckboxes.filter(":not(:checked)").length !== 0);
+        });
     }
 
     _show_save_reminder() {

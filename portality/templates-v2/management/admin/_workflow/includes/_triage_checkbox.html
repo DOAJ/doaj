@@ -98,7 +98,6 @@
     {% endif %}
     {% if other %}
     {% autoescape off %}
-    <p style="color: green">{{ other.label }}</p>
     <div class="input" data-role="other_value">
         {{ other.renderer.draw(other, application=application, wfc=wfc) }}
     </div>

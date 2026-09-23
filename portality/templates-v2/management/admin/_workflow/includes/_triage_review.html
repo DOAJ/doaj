@@ -85,13 +85,14 @@
 
                                 <div class="review-table__confirmation">
                                     <input
-                                            class="review-table__checkbox"
+                                            class="review-table__checkbox confirmation-checkbox"
                                             type="checkbox"
                                             id="{{ info.question }}-confirmation"
                                             name="{{ info.question }}-confirmation"
                                     >
 
-                                    <label for="{{ info.question }}-confirmation" class="button button--tertiary">
+                                    <label for="{{ info.question }}-confirmation" class="button button--tertiary button-confirmation">
+                                        <span data-feather="check" aria-hidden="true"></span>
                                         <span class="confirmation-unchecked">
                                             Click to confirm
                                         </span>
@@ -104,52 +105,7 @@
                         </div>
                         {% endfor %}
                 </div>
-<!--                    {% if els.check.capability.resources|length > 0 %}-->
-<!--                        <h5><span data-feather="book" class="icon" aria-hidden="true"></span>Resources</h5>-->
-<!--                        <ul>-->
-<!--                            {% for resource in els.check.capability.resources %}-->
-<!--                            <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>-->
-<!--                            {% endfor %}-->
-<!--                        </ul>-->
-<!--                        {% endif %}-->
-<!--                    {% if els.options %}-->
-<!--                        <fieldset style="flex-direction: column;" class="subquestion">-->
-<!--                            <legend class="sr-only">Special exceptions</legend>-->
-<!--                            {% for option in els.options %}-->
-<!--                                {% set options_renderer = option.capability.get_control_renderer() %}-->
-<!--                                {{ options_renderer.draw(option.control, application=application, wfc=wfc, other=els.other) }}-->
-<!--                            {% endfor %}-->
-<!--                        </fieldset>-->
-<!--                    {% endif %}-->
-
-<!--                    {% if els.not_classified %}-->
-<!--                        {% for nc in els.not_classified %}-->
-<!--                            <div class="row">-->
-<!--                                <div class="col-md-12 action-container" id="{{nc.name}}-container">-->
-<!--                                    {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        {% endfor %}-->
-<!--                    {% endif %}-->
-<!--                    {% if els.note %}-->
-<!--                    <div class="note-container">-->
-<!--                        {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}-->
-<!--                    </div>-->
-<!--                    {% endif %}-->
-<!--                    {% if els.action %}-->
-<!--                        {% for action in els.action %}-->
-<!--                            <div class="action-container {{ action.capability.trigger_btn }} action" id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info" hidden>-->
-<!--                                <p id="{{ compound.name }}-your_answer">Your answer: <span class="your-answer answer action"></span></p>-->
-<!--                                <p class="reminder save-reminder" hidden>-->
-<!--                                    <span data-feather="alert-circle" aria-hidden="true"></span>-->
-<!--                                    <span class="save-reminder-text" role="status" aria-live="polite" aria-atomic="true"></span>-->
-<!--                                </p>-->
-<!--                                <p style="color: red">{{ action }}</p>-->
-<!--                                {{ action.renderer.draw(action, application=application, wfc=wfc) }}-->
-<!--                            </div>-->
-<!--                        {% endfor %}-->
-<!--                    {% endif %}-->
-                </div>
+            </div>
                 {% if els.check.capability.remember or els.check.capability.instructions %}
                 <button
                         type="button"
@@ -197,7 +153,12 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container single" style="flex-direction: column;">
+<!--                    <div class="checkbox-button review-outcome-container">-->
+<!--                        <input type="checkbox" id="{{ compound.name }}&#45;&#45;review_outcome" value="compliant" data-role="answer">-->
+<!--                        <label for="{{ compound.name }}&#45;&#45;review_outcome" class="review-outcome__label">{{ compound.capability.ok_answer }}</label>-->
+<!--                    </div>-->
+
+                    <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container single">
                         <legend class="sr-only">Review outcome</legend>
                         {% set cr = els.check.capability.get_control_renderer() %}
                         {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}
