@@ -130,6 +130,7 @@ class ReviewCapability(CompoundFieldCapability):
     control_render_class = TriageRadioRenderer
     render_class = TriageReviewCompoundRenderer
     control_class = Radio
+    js_class = "review"
 
 class ComplianceCheckCapability(FormFieldCapability):
     role = "check"
@@ -172,10 +173,12 @@ class CheckboxCompoundCapability(CompoundFieldCapability):
 
 
 class TriageCompoundFieldCapability(CompoundFieldCapability):
+    js_class = "compatibilityCheck"
     action = {}
 
 
 class SimpleCompoundCapability(CompoundFieldCapability):
+    js_class = "simple"
     render_class = SimpleCompoundRenderer
     control_btns = []
 
@@ -670,6 +673,7 @@ class EthicsNoSuspiciousTiesGroup(Structure):
         error_messages = {
             IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.group.is_conditionally_required
         }
+        js_class = "with_action"
         # action = {
         #     "action": {
         #         "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
@@ -856,6 +860,7 @@ class DatabaseWithdrawnGroup(Structure):
                 "controls": "database_withdrawn_exceptions_group"
             }
         }
+        js_class = "with_action"
 
     name_ = "database_withdrawn_group"
     capabilities_ = (C(),)
@@ -2191,16 +2196,25 @@ class ContentNewJournalNote(NoteField):
     name = "content_new_journal_note"
 
 class ContentNewJournalExceptions(Field):
-    class C(FormFieldCapability):
+    class C(SimpleCompoundCapability):
+        role = "action"
         label = T.content_new_journal.edit.exceptions
-        control_class = Checkbox
-        multiple = True
         options = exception_options_for(T.content_new_journal)
-        control_render_class = CheckboxRenderer
         render_class = GenericField
-        error_messages = {
-            DisallowedValue: T.content_new_journal.validation.exceptions.disallowed_value,
-        }
+        control_btns = [
+                        {
+                            "label": "Continue triage",
+                            "attrs": {
+                                "class": "button compliant",
+                                "type": "button",
+                                "role": "compliant",
+                                "data-role": "continue-triage",
+                                "onclick": "set_compliance"
+                            }
+                        },
+                        TriageFormButtons.changeb({"data-controls": "ethics_not_excluded_group"})
+                    ]
+
 
     name = "new_journal_exceptions"
     coerce = [Unicode()]

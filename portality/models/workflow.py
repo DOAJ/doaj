@@ -521,7 +521,8 @@ class Triage(SeamlessMixin):
 
     NON_QUESTION_ELEMENTS = [
         "ethics_no_suspicious_ties_action",
-        "database_not_duplicate_instruction"
+        "database_not_duplicate_instruction",
+        "new_journal_exceptions"
     ]
 
     def __init__(self, raw=None, parent:WorkflowControl=None, **kwargs):

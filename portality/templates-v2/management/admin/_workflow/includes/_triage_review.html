@@ -14,7 +14,7 @@
         id="{{ compound.name }}"
         {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}
         class="criterion-wrapper"
-        data-widget="review">
+        data-js-class="{{ compound.capability.js_class }}">
     <h3 class="criterion-wrapper--header">
         <button
                 type="button"

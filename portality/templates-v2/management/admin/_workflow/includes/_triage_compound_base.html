@@ -2,7 +2,8 @@
 <section
         id="{{ compound.name }}"
         {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}
-        class="criterion-wrapper">
+        class="criterion-wrapper"
+        data-js-class="{{ compound.capability.js_class }}">
     <h3 class="criterion-wrapper--header">
         <button
                 type="button"
@@ -46,6 +47,7 @@
             <div class="row criterion-layout">
                 <div class="col-md-12 criterion-layout__question">
                     {% if els.check.capability.check %}
+                    <p style="color: blue">{{ els }}</p>
                     <h4>{{ els.check.capability.check }}</h4>
                         {% if els.check.capability.application_info %}
                             <h5>Information provided by the applicant</h5>
