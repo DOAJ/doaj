@@ -122,6 +122,10 @@ WORKFLOW_GENERIC_ELEMENT_LIST = "management/admin/_workflow/includes/_generic_el
 WORKFLOW_GENERIC_FIELD = "management/admin/_workflow/includes/_generic_field.html"
 WORKFLOW_GENERIC_CONTROL = "management/admin/_workflow/includes/_generic_control.html"
 
+WORKFLOW_OVERVIEW_NOTES_FORM = "management/admin/_workflow/includes/_overview_notes_form.html"
+WORKFLOW_OVERVIEW_NOTE_COMPOUND = "management/admin/_workflow/includes/_overview_note_compound.html"
+WORKFLOW_OVERVIEW_NOTE_TEMPLATE_COMPOUND = "management/admin/_workflow/includes/_overview_note_template.html"
+
 # Read only versions
 WORKFLOW_RO_GENERIC_FIELDSET = "management/admin/_workflow/includes/_ro_generic_fieldset.html"
 WORKFLOW_RO_GENERIC_COMPOUND = "management/admin/_workflow/includes/_ro_generic_compound.html"

@@ -1,0 +1,43 @@
+<form id="{{ form.name }}"
+      method="{{ form.method }}"
+      {% for k, v in form.attributes %}{{ k }}="{{ v }}" {% endfor %}
+    >
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>{{ form.label }}</h3>
+        </div>
+        <div class="col-md-6 text-right">
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Add</button>
+        </div>
+    </div>
+
+    <div class="error-container">
+    {% if form.has_nested_errors() %}
+        <div class="error" style="color: red; font-weight: bold;">
+            There are errors in the form. Please correct them and try again.
+        </div>
+    {% endif %}
+    {% if form.displayable_errors %}
+        {% for error in form.displayable_errors %}
+            <div class="error" style="color: red; font-weight: bold;">
+                {{ form.error_message(error) }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
+    <div class="page">
+        <section class="page-content">
+            {% for element in form.elements %}
+                {% autoescape off %}
+                    {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+                {% endautoescape %}
+            {% endfor %}
+        </section>
+    </div>
+</form>
+
+<script>
+    
+</script>

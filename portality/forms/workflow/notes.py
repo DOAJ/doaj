@@ -5,12 +5,25 @@ from formulaic.serialise.form.controls import Hidden, Textarea, TextInput
 from formulaic.serialise.form.core import CompoundFieldCapability, FormCapability, FormObject, FormFieldCapability, \
     FormSerialiser, FormDataParser, GenericFormStructureCapability
 from portality.forms.workflow.core import GenericField, GenericControl, GenericROFieldRenderer, \
-    GenericROControlRenderer, GenericCompound
+    GenericROControlRenderer, GenericCompound, JinjaCompoundRenderer, JinjaFormRenderer, GenericElementList
 from portality.models import Application
+from portality.ui import templates
 
 
 ########################################
 ## stand alone notes
+
+##############
+## Renderers
+
+class NotesFormRenderer(JinjaFormRenderer):
+    template = templates.WORKFLOW_OVERVIEW_NOTES_FORM
+
+class NoteCompoundRenderer(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_OVERVIEW_NOTE_COMPOUND
+
+class NoteTemplateCompoundRenderer(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_OVERVIEW_NOTE_TEMPLATE_COMPOUND
 
 ##############
 ## Component fields
@@ -70,8 +83,8 @@ class NoteAuthor(Field):
 
 class Note(Structure):
     class C(CompoundFieldCapability):
-        label = "Note"
-        repeatable_label = "Notes"
+        label = None # don't use a label for the compound
+        repeatable_label = None # don't use a repeatable label
         order = [
             "note_id",
             "note_text",
@@ -79,8 +92,8 @@ class Note(Structure):
             "note_last_updated",
             "note_author"
         ]
-        render_class = GenericCompound
-        list_render_class = None # will use the default
+        render_class = NoteCompoundRenderer
+        list_render_class = GenericElementList
 
     name_ = "note"
     capabilities_ = (C(),)
@@ -91,6 +104,20 @@ class Note(Structure):
     note_last_updated = NoteLastUpdated(OPTIONAL, SINGLE)
     note_author = NoteAuthor(OPTIONAL, SINGLE)
 
+class NoteTemplate(Structure):
+    class C(CompoundFieldCapability):
+        label = None
+        placeholder = "Enter a note ..."
+        order = [
+            "note_text"
+        ]
+        render_class = NoteTemplateCompoundRenderer
+
+    name_ = "note_template"
+    capabilities_ = (C(),)
+
+    note_text = NoteText(OPTIONAL, SINGLE)
+
 ###################
 ## Form
 
@@ -98,14 +125,16 @@ class NotesForm(Structure):
     class C(FormCapability):
         label = "Notes"
         order = [
-            "notes"
+            "notes",
+            "template"
         ]
-        render_class = None # will use the default
+        render_class = NotesFormRenderer
 
     name_ = "notes"
     capabilities_ = (C(),)
 
     notes = Note(OPTIONAL, REPEATABLE)
+    template = NoteTemplate(OPTIONAL, SINGLE)
 
 class StandAloneNotes(FormObject):
     struct = NotesForm()

@@ -1,13 +1,6 @@
-<fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
-    {# only show the legend if this is not part of a releatable list of elements (which will probably
-    do the global legend for you #}
-    {% if not compound.capability.struct_ref.repeatable and compound.label %}
-        <legend>{{ compound.label }}</legend>
-    {% endif %}
-
+<li><fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
     <div class="error-container">
     {% if compound.displayable_errors %}
-        Field Group Errors
         {% for error in compound.displayable_errors %}
             <div class="error" style="color: red; font-weight: bold;">
                 {{ compound.error_message(error) }}
@@ -21,4 +14,7 @@
             {{ element.renderer.draw(element, application=application, wfc=wfc) }}
         {% endautoescape %}
     {% endfor %}
-</fieldset>
+
+    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Update</button>
+    <button type="button" class="btn btn-secondary" style="margin-top: 10px;">Remove</button>
+</fieldset></li>

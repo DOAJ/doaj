@@ -90,6 +90,32 @@ def workflow_item_overview(application_id):
 
     return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec, original_ro=original_ro, ro_form=ro_form, notes_form=notes_form)
 
+@blueprint.route("/note", methods=["POST"])
+@blueprint.route("/note/<note_id>", methods=["POST", "DELETE"])
+@login_required
+@ssl_required
+@write_required()
+def note(note_id=None):
+    resource_type = request.values.get("resource_type")
+    resource_id = request.values.get("resource_id")
+    note_text = request.values.get("note_text")
+
+    if not resource_type or not resource_id or not note_text:
+        abort(400)
+
+    resource = None
+    if resource_type == models.Application.__type__:
+        resource = models.Application.pull(resource_id)
+    else:
+        abort(400)
+
+    note_obj = resource.add_note(note=note_text, id=note_id, author_id=current_user.id)
+    resource.save()
+
+    # FIXME: not ideal to call internal method
+    data = resource._note_to_legacy_dict(note_obj)
+    return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+
 @blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required

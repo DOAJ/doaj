@@ -1,5 +1,7 @@
 <div {# style="border: 1px solid black; padding: 10px; margin-bottom: 10px;" #}>
+    {% if element_list.repeatable_label %}
     <strong>{{ element_list.repeatable_label }}</strong>
+    {% endif %}
     <ul>
     {% for element in element_list.elements %}
         {% autoescape off %}

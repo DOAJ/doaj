@@ -1,0 +1,12 @@
+<fieldset style="display: none" id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
+    <div class="error-container"></div>
+
+    {% for element in compound.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+
+    <button type="button" class="btn btn-primary" style="margin-top: 10px;">Save</button>
+    <button type="button" class="btn btn-secondary" style="margin-top: 10px;">Cancel</button>
+</fieldset>
