@@ -477,6 +477,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return [n for n in self._notes.values() if n]
 
     @property
+    def ordered_note_objects(self) -> list[Note]:
+        notes = self.note_objects
+        return self._order_note_objects(notes)
+
+    @property
     def note_ids(self):
         return self.__seamless__.get_list("admin.note_ids")
 
@@ -572,9 +577,27 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         notes = self.notes_except_flags
         return self._order_notes(notes)
 
+    def _order_note_objects(self, notes:list[Note]) -> list[Note]:
+        clusters = {}
+        for note in notes:
+            if not note.created_date:
+                note.set_created(DEFAULT_TIMESTAMP_VAL)  # this really means something is broken with note date setting, which needs to be fixed
+            if note.created_date not in clusters:
+                clusters[note.created_date] = [note]
+            else:
+                clusters[note.created_date].append(note)
+
+        ordered_keys = sorted(list(clusters.keys()), reverse=True)
+        ordered = []
+        for key in ordered_keys:
+            clusters[key].reverse()
+            ordered += clusters[key]
+        return ordered
+
     def _order_notes(self, notes):
         clusters = {}
         for note in notes:
+
             if "date" not in note:
                 note["date"] = DEFAULT_TIMESTAMP_VAL  # this really means something is broken with note date setting, which needs to be fixed
             if note["date"] not in clusters:

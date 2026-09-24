@@ -155,5 +155,9 @@
         }
 
         document.addEventListener("DOMContentLoaded", initialiseWorkflowItemToggle);
+
+        jQuery(document).ready(function($) {
+            doaj.workflow.notes.init();
+        });
     </script>
 {% endblock %}

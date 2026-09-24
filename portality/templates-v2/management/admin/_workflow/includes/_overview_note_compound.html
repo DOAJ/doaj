@@ -1,4 +1,4 @@
-<li><fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
+<li><fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %} data-note-role="existing">
     <div class="error-container">
     {% if compound.displayable_errors %}
         {% for error in compound.displayable_errors %}
@@ -15,6 +15,6 @@
         {% endautoescape %}
     {% endfor %}
 
-    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Update</button>
-    <button type="button" class="btn btn-secondary" style="margin-top: 10px;">Remove</button>
+    <button type="submit" class="btn btn-primary" data-note-action="update" style="margin-top: 10px;">Update</button>
+    <button type="button" class="btn btn-secondary" data-note-action="remove" style="margin-top: 10px;">Remove</button>
 </fieldset></li>

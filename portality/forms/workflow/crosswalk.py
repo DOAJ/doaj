@@ -507,7 +507,7 @@ class Application2Notes(object):
         f = StandAloneNotes.struct
 
         notes = []
-        for note in application.note_objects:
+        for note in application.ordered_note_objects:
             n = {
                 "note_id": note.id,
                 "note_text": note.note,

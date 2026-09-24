@@ -8,7 +8,7 @@
             <h3>{{ form.label }}</h3>
         </div>
         <div class="col-md-6 text-right">
-            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Add</button>
+            <button type="submit" class="btn btn-primary" data-note-action="add" style="margin-top: 10px;">Add</button>
         </div>
     </div>
 
@@ -39,5 +39,369 @@
 </form>
 
 <script>
-    
+    window.doaj = window.doaj || {};
+    doaj.workflow = doaj.workflow || {};
+    doaj.workflow.notes = doaj.workflow.notes || {};
+
+    doaj.workflow.notes.config = {
+        formSelector: "#{{ form.name }}",
+        resourceId: {{ application.id|tojson }},
+        resourceType: "application",
+        noteBaseUrl: {{ url_for("workflow.note")|tojson }},
+        cloneCount: 0,
+        initialised: false
+    };
+
+    doaj.workflow.notes.getForm = function () {
+        return jQuery(doaj.workflow.notes.config.formSelector);
+    };
+
+    doaj.workflow.notes.noteUrl = function (noteId) {
+        return doaj.workflow.notes.config.noteBaseUrl + "/" + encodeURIComponent(noteId);
+    };
+
+    doaj.workflow.notes.getNotesList = function () {
+        return doaj.workflow.notes.getForm().find("ul").first();
+    };
+
+    doaj.workflow.notes.getTemplateFieldset = function () {
+        return doaj.workflow.notes.getForm().find("#note_template").first();
+    };
+
+    doaj.workflow.notes.getErrorContainer = function ($scope) {
+        var $container = $scope.find(".error-container").first();
+        if ($container.length === 0) {
+            $container = jQuery("<div class=\"error-container\"></div>");
+            $scope.prepend($container);
+        }
+        return $container;
+    };
+
+    doaj.workflow.notes.clearErrors = function ($scope) {
+        doaj.workflow.notes.getErrorContainer($scope).empty();
+    };
+
+    doaj.workflow.notes.escapeHtml = function (value) {
+        return jQuery("<div></div>").text(value || "").html();
+    };
+
+    doaj.workflow.notes.showError = function ($scope, message) {
+        doaj.workflow.notes.getErrorContainer($scope).html(
+            '<div class="error" style="color: red; font-weight: bold;">' + doaj.workflow.notes.escapeHtml(message) + '</div>'
+        );
+    };
+
+    doaj.workflow.notes.extractErrorMessage = function (jqXHR, fallback) {
+        if (jqXHR.responseJSON) {
+            if (jqXHR.responseJSON.error) {
+                return jqXHR.responseJSON.error;
+            }
+            if (jqXHR.responseJSON.message) {
+                return jqXHR.responseJSON.message;
+            }
+        }
+
+        if (jqXHR.responseText) {
+            return jqXHR.responseText;
+        }
+
+        return fallback;
+    };
+
+    doaj.workflow.notes.getNoteTextField = function ($scope) {
+        return $scope.find('textarea[name$="note_text"], textarea[id$="note_text"], textarea').first();
+    };
+
+    doaj.workflow.notes.getNoteIdField = function ($scope) {
+        return $scope.find('input[type="hidden"][name$="note_id"], input[type="hidden"][id$="note_id"]').first();
+    };
+
+    doaj.workflow.notes.getFieldBySuffix = function ($scope, suffix) {
+        return $scope.find('[name$="' + suffix + '"], [id$="' + suffix + '"]').first();
+    };
+
+    doaj.workflow.notes.setBusy = function ($scope, busy) {
+        $scope.find("button").prop("disabled", busy);
+    };
+
+    doaj.workflow.notes.ensureNoteIdField = function ($fieldset) {
+        var $noteId = doaj.workflow.notes.getNoteIdField($fieldset);
+        if ($noteId.length === 0) {
+            $noteId = jQuery('<input type="hidden" name="note_id">');
+            $fieldset.prepend($noteId);
+        }
+        return $noteId;
+    };
+
+    doaj.workflow.notes.rebaseCloneIds = function ($fieldset, suffix) {
+        var idMap = {};
+
+        $fieldset.add($fieldset.find("[id]")).each(function () {
+            var currentId = this.id;
+            if (!currentId) {
+                return;
+            }
+            idMap[currentId] = currentId + "_" + suffix;
+            this.id = idMap[currentId];
+        });
+
+        $fieldset.find("label[for]").each(function () {
+            var labelFor = jQuery(this).attr("for");
+            if (idMap[labelFor]) {
+                jQuery(this).attr("for", idMap[labelFor]);
+            }
+        });
+    };
+
+    doaj.workflow.notes.normaliseNote = function (response, fallbackText) {
+        return {
+            id: response.id || response.note_id || "",
+            text: response.note || response.note_text || fallbackText || "",
+            created: response.date || response.created_date || "",
+            lastUpdated: response.last_updated || response.note_last_updated || response.date || response.created_date || "",
+            author: response.author_id || response.note_author || ""
+        };
+    };
+
+    doaj.workflow.notes.createMetadataField = function (name, label) {
+        var $wrapper = jQuery('<div class="js-note-metadata-field"></div>');
+        jQuery('<label></label>').attr("for", name).text(label).appendTo($wrapper);
+        jQuery('<input type="text" readonly="readonly">').attr({
+            id: name,
+            name: name,
+            "data-note-meta": name
+        }).appendTo($wrapper);
+        return $wrapper;
+    };
+
+    doaj.workflow.notes.ensureMetadataFields = function ($fieldset) {
+        var $container = $fieldset.find(".js-note-metadata").first();
+        if ($container.length === 0) {
+            $container = jQuery('<div class="js-note-metadata"></div>');
+            $container.append(doaj.workflow.notes.createMetadataField("note_created", "Created"));
+            $container.append(doaj.workflow.notes.createMetadataField("note_last_updated", "Last Updated"));
+            $container.append(doaj.workflow.notes.createMetadataField("note_author", "Author"));
+
+            var $firstButton = $fieldset.find("button").first();
+            if ($firstButton.length > 0) {
+                $container.insertBefore($firstButton);
+            } else {
+                $fieldset.append($container);
+            }
+        }
+        return $container;
+    };
+
+    doaj.workflow.notes.setFieldValue = function ($fieldset, suffix, value) {
+        var $field = doaj.workflow.notes.getFieldBySuffix($fieldset, suffix);
+        if ($field.length === 0) {
+            doaj.workflow.notes.ensureMetadataFields($fieldset);
+            $field = doaj.workflow.notes.getFieldBySuffix($fieldset, suffix);
+        }
+        if ($field.length > 0) {
+            $field.val(value || "");
+        }
+    };
+
+    doaj.workflow.notes.setDisplayValue = function ($fieldset, title, value) {
+        $fieldset.append(`<div><strong>${title}</strong>\n${value}</div>`)
+    };
+
+    doaj.workflow.notes.addButton = function ($fieldset, action, text) {
+        var $button = jQuery('<button type="button" class="btn btn-primary"></button>').attr("data-note-action", action).text(text);
+        $fieldset.append($button);
+    };
+
+    doaj.workflow.notes.applyNoteToFieldset = function ($fieldset, note) {
+        doaj.workflow.notes.ensureNoteIdField($fieldset).val(note.id);
+        doaj.workflow.notes.getNoteTextField($fieldset).val(note.text);
+        doaj.workflow.notes.setDisplayValue($fieldset, "Created", note.created);
+        doaj.workflow.notes.setDisplayValue($fieldset, "Last Updated", note.lastUpdated);
+        doaj.workflow.notes.setDisplayValue($fieldset, "Author", note.author);
+        doaj.workflow.notes.addButton($fieldset, "update", "Update");
+        doaj.workflow.notes.addButton($fieldset, "remove", "Remove");
+        //doaj.workflow.notes.setFieldValue($fieldset, "note_created", note.created);
+        //doaj.workflow.notes.setFieldValue($fieldset, "note_last_updated", note.lastUpdated);
+        //doaj.workflow.notes.setFieldValue($fieldset, "note_author", note.author);
+
+        $fieldset.attr("data-note-role", "existing");
+
+        //$fieldset.find('[data-note-action="save"]').attr("data-note-action", "update").attr("type", "submit").text("Update");
+        //$fieldset.find('[data-note-action="cancel"]').attr("data-note-action", "remove").attr("type", "button").text("Remove");
+        $fieldset.find('[data-note-action="cancel"]').remove();
+        $fieldset.find('[data-note-action="save"]').remove();
+    };
+
+    doaj.workflow.notes.validateNoteText = function (noteText) {
+        return jQuery.trim(noteText || "") !== "";
+    };
+
+    doaj.workflow.notes.handleAdd = function (event) {
+        event.preventDefault();
+
+        var $template = doaj.workflow.notes.getTemplateFieldset();
+        if ($template.length === 0) {
+            return;
+        }
+
+        var $clone = $template.clone(false, false);
+        var suffix = "draft_" + new Date().getTime() + "_" + doaj.workflow.notes.config.cloneCount;
+        doaj.workflow.notes.config.cloneCount += 1;
+
+        doaj.workflow.notes.rebaseCloneIds($clone, suffix);
+        $clone.removeAttr("style");
+        $clone.attr("data-note-role", "draft");
+        doaj.workflow.notes.clearErrors($clone);
+        doaj.workflow.notes.getNoteTextField($clone).val("");
+
+        var $wrapper = jQuery("<li></li>").append($clone);
+        var $notesList = doaj.workflow.notes.getNotesList();
+        if ($notesList.length > 0) {
+            $notesList.prepend($wrapper);
+        } else {
+            doaj.workflow.notes.getForm().find(".page-content").append($wrapper);
+        }
+
+        doaj.workflow.notes.getNoteTextField($clone).focus();
+    };
+
+    doaj.workflow.notes.handleSave = function (event) {
+        event.preventDefault();
+
+        var $fieldset = jQuery(this).closest("fieldset");
+        var noteText = doaj.workflow.notes.getNoteTextField($fieldset).val();
+
+        doaj.workflow.notes.clearErrors($fieldset);
+        if (!doaj.workflow.notes.validateNoteText(noteText)) {
+            doaj.workflow.notes.showError($fieldset, "Please enter a note before saving.");
+            return;
+        }
+
+        doaj.workflow.notes.setBusy($fieldset, true);
+
+        jQuery.ajax({
+            url: doaj.workflow.notes.config.noteBaseUrl,
+            method: "POST",
+            dataType: "json",
+            data: {
+                resource_type: doaj.workflow.notes.config.resourceType,
+                resource_id: doaj.workflow.notes.config.resourceId,
+                note_text: noteText
+            }
+        }).done(function (response) {
+            doaj.workflow.notes.clearErrors($fieldset);
+            doaj.workflow.notes.applyNoteToFieldset($fieldset, doaj.workflow.notes.normaliseNote(response, noteText));
+        }).fail(function (jqXHR) {
+            doaj.workflow.notes.showError($fieldset, doaj.workflow.notes.extractErrorMessage(jqXHR, "Unable to save note."));
+        }).always(function () {
+            doaj.workflow.notes.setBusy($fieldset, false);
+        });
+    };
+
+    doaj.workflow.notes.handleUpdate = function (event) {
+        event.preventDefault();
+
+        var $fieldset = jQuery(this).closest("fieldset");
+        var $noteIdField = doaj.workflow.notes.getNoteIdField($fieldset);
+        var noteId = $noteIdField.val();
+        var noteText = doaj.workflow.notes.getNoteTextField($fieldset).val();
+
+        doaj.workflow.notes.clearErrors($fieldset);
+        if (!noteId) {
+            doaj.workflow.notes.showError($fieldset, "Unable to update note because the note id is missing.");
+            return;
+        }
+        if (!doaj.workflow.notes.validateNoteText(noteText)) {
+            doaj.workflow.notes.showError($fieldset, "Please enter a note before updating.");
+            return;
+        }
+
+        doaj.workflow.notes.setBusy($fieldset, true);
+
+        jQuery.ajax({
+            url: doaj.workflow.notes.noteUrl(noteId),
+            method: "POST",
+            dataType: "json",
+            data: {
+                resource_type: doaj.workflow.notes.config.resourceType,
+                resource_id: doaj.workflow.notes.config.resourceId,
+                note_text: noteText
+            }
+        }).done(function (response) {
+            doaj.workflow.notes.clearErrors($fieldset);
+            doaj.workflow.notes.applyNoteToFieldset($fieldset, doaj.workflow.notes.normaliseNote(response, noteText));
+        }).fail(function (jqXHR) {
+            doaj.workflow.notes.showError($fieldset, doaj.workflow.notes.extractErrorMessage(jqXHR, "Unable to update note."));
+        }).always(function () {
+            doaj.workflow.notes.setBusy($fieldset, false);
+        });
+    };
+
+    doaj.workflow.notes.handleRemove = function (event) {
+        event.preventDefault();
+
+        var $fieldset = jQuery(this).closest("fieldset");
+        var $noteIdField = doaj.workflow.notes.getNoteIdField($fieldset);
+        var noteId = $noteIdField.val();
+
+        doaj.workflow.notes.clearErrors($fieldset);
+        if (!noteId) {
+            doaj.workflow.notes.showError($fieldset, "Unable to remove note because the note id is missing.");
+            return;
+        }
+
+        doaj.workflow.notes.setBusy($fieldset, true);
+
+        jQuery.ajax({
+            url: doaj.workflow.notes.noteUrl(noteId) + "?" + jQuery.param({
+                resource_type: doaj.workflow.notes.config.resourceType,
+                resource_id: doaj.workflow.notes.config.resourceId
+            }),
+            method: "DELETE",
+            dataType: "json"
+        }).done(function () {
+            var $listItem = $fieldset.closest("li");
+            if ($listItem.length > 0) {
+                $listItem.remove();
+            } else {
+                $fieldset.remove();
+            }
+        }).fail(function (jqXHR) {
+            doaj.workflow.notes.showError($fieldset, doaj.workflow.notes.extractErrorMessage(jqXHR, "Unable to remove note."));
+        }).always(function () {
+            doaj.workflow.notes.setBusy($fieldset, false);
+        });
+    };
+
+    doaj.workflow.notes.handleCancel = function (event) {
+        event.preventDefault();
+
+        var $fieldset = jQuery(this).closest("fieldset");
+        var $listItem = $fieldset.closest("li");
+        if ($listItem.length > 0) {
+            $listItem.remove();
+        } else {
+            $fieldset.remove();
+        }
+    };
+
+    doaj.workflow.notes.init = function () {
+        var $form = doaj.workflow.notes.getForm();
+
+        if ($form.length === 0 || doaj.workflow.notes.config.initialised) {
+            return;
+        }
+
+        $form.on("submit", function (event) {
+            event.preventDefault();
+        });
+
+        $form.on("click", '[data-note-action="add"]', doaj.workflow.notes.handleAdd);
+        $form.on("click", '[data-note-action="save"]', doaj.workflow.notes.handleSave);
+        $form.on("click", '[data-note-action="update"]', doaj.workflow.notes.handleUpdate);
+        $form.on("click", '[data-note-action="remove"]', doaj.workflow.notes.handleRemove);
+        $form.on("click", '[data-note-action="cancel"]', doaj.workflow.notes.handleCancel);
+
+        doaj.workflow.notes.config.initialised = true;
+    };
 </script>

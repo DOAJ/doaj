@@ -1,5 +1,4 @@
 import json
-from copy import deepcopy
 
 from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response, flash
 from flask_login import login_required, current_user
@@ -12,7 +11,6 @@ from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview, Triaged
 from portality.decorators import ssl_required, write_required, restrict_to_role
-from portality.forms.application_forms import ApplicationFormFactory
 from portality.forms.workflow.notes import StandAloneNotesProcessor
 from portality.forms.workflow.submission.processors import OriginalROFormProcessor
 from portality.forms.workflow.triage.processors import TriageFormProcessor, TriageROFormProcessor
@@ -100,7 +98,7 @@ def note(note_id=None):
     resource_id = request.values.get("resource_id")
     note_text = request.values.get("note_text")
 
-    if not resource_type or not resource_id or not note_text:
+    if not resource_type or not resource_id:
         abort(400)
 
     resource = None
@@ -109,12 +107,54 @@ def note(note_id=None):
     else:
         abort(400)
 
-    note_obj = resource.add_note(note=note_text, id=note_id, author_id=current_user.id)
-    resource.save()
+    if resource is None:
+        abort(404)
 
-    # FIXME: not ideal to call internal method
-    data = resource._note_to_legacy_dict(note_obj)
-    return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+    if request.method == "DELETE":
+        if not note_id:
+            abort(400)
+
+        note_obj = next((n for n in resource.note_objects if n.id == note_id), None)
+        if note_obj is None:
+            abort(404)
+
+        resource.remove_note_by_id(note_id)
+        resource.save()
+
+        data = {
+            "id": note_id,
+            "resource_type": resource_type,
+            "resource_id": resource_id,
+            "status": "deleted"
+        }
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+
+    else:
+        if not note_text:
+            abort(400)
+
+        if note_id is not None:
+            note_obj = next((n for n in resource.note_objects if n.id == note_id), None)
+            if note_obj is None:
+                abort(404)
+
+            resource.add_note(note=note_text, id=note_id, author_id=current_user.id)  # Update the note text and author
+
+            # not doing it this way, as we want to make sure the resource knows the note
+            # has been updated
+            # note_obj.note = note_text
+            # note_obj.author_id = current_user.id
+        else:
+            note_obj = resource.add_note(note=note_text, author_id=current_user.id)
+
+        resource.save()
+
+        # FIXME: not ideal to call internal method
+        data = resource._note_to_legacy_dict(note_obj)
+        data["last_updated"] = note_obj.data.get("last_updated")
+        data["resource_type"] = resource_type
+        data["resource_id"] = resource_id
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
 
 @blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
 @login_required
