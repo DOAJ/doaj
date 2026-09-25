@@ -313,6 +313,10 @@ Appeals or complaints that include abuse of DOAJ editors will not be considered.
 
 Our guide to applying is available in several languages. Please note that not all translations include the latest changes made to the Guide.
 
+### Version 2.9
+
+- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
+
 ### Version 2.8
 
 - [Chinese](https://docs.google.com/document/d/1MwiODuiinngP4fZVufR_RgF9vyztlALy/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
@@ -322,10 +326,6 @@ Our guide to applying is available in several languages. Please note that not al
 ### Version 2.7
 
 - [Arabic](https://docs.google.com/document/d/1rIcPSRefUihAIgdMhrwS6rn6Bs8bjjK6/edit?usp=sharing&ouid=115439492897544330630&rtpof=true&sd=true)
-
-### Version 2.6
-
-- [Bahasa Indonesia](https://docs.google.com/document/d/1yJk2eBIKd-ekOi4XuziT6nKoDbCh67jEGxamrS5VW_U/edit?usp=sharing)
 
 ### Version 2.5
 
