@@ -47,10 +47,16 @@ tests:
   - title: Upload a file with duplicates inside the file
     context:
       role: publisher
+      testdrive: article_xml_upload
     setup:
-      - Ensure that the publisher account owns a journal with Print ISSN "1111-1111" and E-ISSN "2222-2222", and 
-            these are not attached to any other journals.
-      - You must be logged in using a pure publisher account (no other privileges)
+      - Use the article_xml_upload testdrive to set up for this test at
+        /testdrive/article_xml_upload
+      - This provides a 'publisher' account owning a journal with print ISSN "1111-1111"
+        and online ISSN "2222-2222" (fixed, to match the hardcoded ISSNs in the XML
+        files used throughout this suite) - not attached to any other journal
+      - This same testdrive setup is reused by several tests in this suite - only run
+        it again (or use its teardown link) if you need to reset to a clean slate
+      - Log in as the 'publisher' account supplied by the testdrive
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -71,11 +77,15 @@ tests:
   - title: Upload a file containing ISSNs the publisher does not own
     context:
       role: publisher
+      testdrive: article_xml_upload
     setup:
-      - Ensure that the ISSNs 0000-0002 and 0000-000X are in DOAJ attached to one or more journals (e.g. one with 
-            0000-000X AND 0000-0002 or two, one with 0000-0002 and another with 0000-000X).  None of the journals with 
-            these ISSNs should be owned by the publisher
-      - You must be logged in using a pure publisher account (no other privileges)
+      - If you have not already, use the article_xml_upload testdrive to set up for
+        this test at /testdrive/article_xml_upload
+      - This provides ISSNs 0000-0002 and 0000-000X, in DOAJ, attached to a journal
+        NOT owned by the 'publisher' account (you don't need to log into that other
+        account, it just needs to exist)
+      - Log in as the 'publisher' account supplied by the testdrive, if not already
+        logged in
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -99,10 +109,15 @@ tests:
   - title: Upload a file containing ISSNs not previously seen in DOAJ
     context:
       role: publisher
+      testdrive: article_xml_upload
     setup:
-      - Ensure that the ISSN "1111-1111" is attached to a journal owned by the publisher and ISSN "5555-5555" is not 
-        present in any journal in DOAJ.
-      - You must be logged in using a pure publisher account (no other privileges)
+      - If you have not already, use the article_xml_upload testdrive to set up for
+        this test at /testdrive/article_xml_upload
+      - This provides the ISSN "1111-1111" attached to a journal owned by the
+        'publisher' account. ISSN "5555-5555" is not present in any journal in DOAJ
+        by default
+      - Log in as the 'publisher' account supplied by the testdrive, if not already
+        logged in
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -126,10 +141,17 @@ tests:
   - title: Upload a file containing ISSNs erroneously shared with another account
     context:
       role: publisher
+      testdrive: article_xml_upload_shared_issn
     setup:
-      - Ensure that the ISSN "1111-1111" is attached a journal owned by the publisher and ISSN "2222-2222" is attached 
-        to the same journal and also to another journal not owned by the publisher
-      - You must be logged in using a pure publisher account (no other privileges)
+      - Use the article_xml_upload_shared_issn testdrive to set up for this test at
+        /testdrive/article_xml_upload_shared_issn
+      - This provides a 'publisher' account owning a journal with ISSN "1111-1111"
+        and "2222-2222" - "2222-2222" is also attached to another journal not owned
+        by the publisher
+      - This is a separate testdrive from article_xml_upload, since the shared ISSN
+        state here would break the other tests in this suite that assume "2222-2222"
+        belongs to one journal only
+      - Log in as the 'publisher' account supplied by the testdrive
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -153,11 +175,16 @@ tests:
   - title: Successfully upload a file containing a new article
     context:
       role: publisher
+      testdrive: article_xml_upload
     setup:
-      - Ensure that the publisher account owns a journal with Print ISSN "1111-1111" and E-ISSN "2222-2222", and 
-        these are not attached to any other journals and that this journal does not contain "Success" or "Update" 
-        articles from previous tests (delete them via the admin interface if they do).
-      - You must be logged in using a pure publisher account (no other privileges)
+      - If you have not already, use the article_xml_upload testdrive to set up for
+        this test at /testdrive/article_xml_upload
+      - This provides a 'publisher' account owning a journal with print ISSN
+        "1111-1111" and online ISSN "2222-2222", not attached to any other journal.
+        If it already contains "Success"/"Update" articles from a previous run of
+        this test, use the testdrive's teardown link and re-run it for a clean slate
+      - Log in as the 'publisher' account supplied by the testdrive, if not already
+        logged in
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -182,9 +209,17 @@ tests:
   - title: Successfully upload a file containing an updated article
     context:
       role: publisher
+      testdrive: article_xml_upload
+    depends:
+      - suite: Article XML Upload
+        testset: Crossref 5.3.1
+        test: Successfully upload a file containing a new article
     setup:
-      - Run through the previous test to upload a new article
-      - You must be logged in using a pure publisher account (no other privileges)
+      - Run through the "Successfully upload a file containing a new article" test
+        first, using the same article_xml_upload testdrive session (don't tear it
+        down in between)
+      - Log in as the 'publisher' account supplied by the testdrive, if not already
+        logged in
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -210,8 +245,12 @@ tests:
   - title: Successfully upload a file by reference containing a new or updated article
     context:
       role: publisher
+      testdrive: article_xml_upload
     setup:
-      - You must be logged in using a pure publisher account (no other privileges)
+      - If you have not already, use the article_xml_upload testdrive to set up for
+        this test at /testdrive/article_xml_upload
+      - Log in as the 'publisher' account supplied by the testdrive, if not already
+        logged in
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -236,11 +275,14 @@ tests:
   - title: Successfully upload a file containing article with html tag in title
     context:
       role: publisher
+      testdrive: article_xml_upload
     setup:
-      - Ensure that the publisher account owns a journal with Print ISSN "1111-1111" and E-ISSN "2222-2222", and
-        these are not attached to any other journals and that this journal does not contain "Success" or "Update"
-        articles from previous tests (delete them via the admin interface if they do).
-      - You must be logged in using a pure publisher account (no other privileges)
+      - If you have not already, use the article_xml_upload testdrive to set up for
+        this test at /testdrive/article_xml_upload
+      - This provides a 'publisher' account owning a journal with print ISSN
+        "1111-1111" and online ISSN "2222-2222", not attached to any other journal
+      - Log in as the 'publisher' account supplied by the testdrive, if not already
+        logged in
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
@@ -292,7 +334,7 @@ tests:
     steps:
       - step: Go to the "Upload Article XML" tab in the "Publisher Area"
         path: /publisher/uploadfile
-      - step: Browse for a file under "Select a file" and select the test resource file "identical_issns.xml" from
+      - step: Browse for a file under "Select a file" and select the test resource file "no_issn.xml" from
           the Crossref 5.3.1 resources
         resource: /xml_upload_test_package/Crossref/5.3.1/no_issn.xml
       - step: Choose "Crossref 5.3.1 XML" from "Format of the file" dropdown

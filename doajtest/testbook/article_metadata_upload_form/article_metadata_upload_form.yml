@@ -5,7 +5,16 @@ tests:
 - title: Enter an article
   context:
     role: Publisher with existing journal
+    testdrive: article_metadata_upload_form
+  setup:
+  - Use the article_metadata_upload_form testdrive to set up for this test at
+    /testdrive/article_metadata_upload_form
+  - This provides a publisher account that already owns a journal in DOAJ, so the
+    "Enter Article Metadata" form's ISSN dropdowns have real values to offer
+  - At the end of the test, use the 'teardown' link provided by the testdrive to
+    remove the test assets from the system
   steps:
+  - step: Log in as the publisher account supplied by the testdrive
   - step: Go to the "Enter Article Metadata" tab in the "Publisher Area"
   - step: Do not fill in any data yet. Click "Add Article" button at the bottom of
       the page
@@ -61,4 +70,3 @@ tests:
   - step: Click "Add Article" button
     results:
     - 'At the top of the page you see the confirmation message:  Article created/updated (Dismiss)'
-    - https://docs.google.com/spreadsheets/d/1KGv7DEwocDvdbT8giN9Aw2EWtZGzKympouEw_uR2q18/edit#gid=782367369
