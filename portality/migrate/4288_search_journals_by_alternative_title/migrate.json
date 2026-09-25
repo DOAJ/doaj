@@ -1,0 +1,16 @@
+{
+	"new_version": "-20260819_search_alternative_title",
+	"old_version": "-20250822_ascii_folding",
+	"types": [
+		{
+			"type" : "article",
+			"migrate": true,
+			"set_alias": true
+		},
+		{
+			"type": "journal",
+			"migrate": true,
+			"set_alias": true
+		}
+	]
+}
