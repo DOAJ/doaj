@@ -4,6 +4,7 @@ admin.in_doaj: Whether the journal appears in the public corpus of DOAJ
 admin.owner: The user ID who owns the journal.  If accessing this via the API
 admin.ticked: Is the journal ticked?  This means that it has successfully re-applied for continued presence in DOAJ
 admin.last_full_review: When the journal was last fully reviewed by DOAJ staff
+admin.publisher_comment: Additional comment submitted with the application by the publisher.
 created_date: Date the record was created in DOAJ.
 id: ID assigned by DOAJ for the record.
 last_updated: Date the record was last updated in DOAJ.
