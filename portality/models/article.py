@@ -750,6 +750,22 @@ class ArticleBibJSON(GenericBibJSON):
         self._set_with_struct("end_page", val)
 
     @property
+    def elocation(self):
+        self.elocation += self.get_identifiers(self.ELOCATION)
+
+    @elocation.setter
+    def elocation(self, val):
+        self.add_identifier(self.ELOCATION, val)
+
+    @property
+    def other_identifiers(self):
+        identifiers = []
+        for each_id in self.get_identifiers():
+            if not each_id['type'] in self.NAMED_IDENTIFIERS:
+                identifiers.append(each_id)
+        return identifiers
+
+    @property
     def abstract(self):
         return self._get_single("abstract")
 

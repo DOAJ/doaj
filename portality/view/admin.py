@@ -185,6 +185,7 @@ def article_page(article_id):
         fc = ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
 
         fc.modify_authors_if_required(request.values)
+        fc.modify_other_identifiers_if_required(request.values)
 
         if fc.validate():
             try:
