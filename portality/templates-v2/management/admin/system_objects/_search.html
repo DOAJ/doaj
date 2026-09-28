@@ -1,0 +1,28 @@
+{% extends "management/admin/base.html" %}
+{# ~~ AdminSystemObjectsSearch:Page -> SystemObjectsSearch:Feature ~~ #}
+{#
+    Shared template for all system-object search pages.
+    Rendered via render_template(..., container_id="...", init_function="...", page_title="...")
+#}
+
+{% block admin_stylesheets %}
+    {% include "management/includes/_edges_common_css.html" %}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block admin_content %}
+    <h1 class="sr-only">{{ page_title }}</h1>
+    <div id="{{ container_id }}"></div>
+{% endblock %}
+
+{% block admin_js %}
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.system_objects.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            doaj.systemObjectSearch.{{ init_function }}();
+        });
+    </script>
+{% endblock %}
