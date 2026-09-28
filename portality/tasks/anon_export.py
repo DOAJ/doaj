@@ -12,6 +12,7 @@ from portality.core import app, es_connection
 from portality.lib import dates
 from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
+from portality.lib.seamless import SeamlessException
 from portality.models import Note
 from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
@@ -19,6 +20,8 @@ from portality.tasks.redis_huey import scheduled_long_queue as queue
 
 email_subs = {}
 email_counter = 0
+name_subs = {}
+name_counter = 0
 password = None
 
 def create_random_str(n_char=10):
@@ -33,6 +36,17 @@ def _anonymise_email(record):
         email_counter += 1
         email_subs[record.email] = str(email_counter) + "@example.com"
     record.set_email(email_subs[record.email])
+    return record
+
+
+def _anonymise_name(record):
+    if record.name is None:
+        return record
+    if record.name not in name_subs:
+        global name_counter
+        name_counter += 1
+        name_subs[record.name] = "User " + str(name_counter)
+    record.set_name(name_subs[record.name])
     return record
 
 
@@ -61,15 +75,27 @@ def _reset_password(record):
     return record
 
 
+def _drop_unanonymisable(type_, record):
+    # A record we can't safely construct/anonymise must never be exported raw - an "anon" export
+    # containing un-anonymised data isn't anonymous. Drop it and log so the gap is visible.
+    if not isinstance(record, dict):
+        app.logger.warning(f"anon_export: dropping {type_} record - could not be anonymised")
+        return None
+
+    app.logger.warning(f"anon_export: dropping {type_} record '{record.get('id')}' - could not be anonymised")
+    return None
+
+
 # transform functions - return the JSON data source since
 # esprit doesn't understand our model classes
 def anonymise_account(record):
     try:
         a = models.Account(**record)
     except DataStructureException:
-        return record
+        return _drop_unanonymisable("account", record)
 
     a = _anonymise_email(a)
+    a = _anonymise_name(a)
     a = _reset_api_key(a)
     a = _reset_password(a)
 
@@ -79,8 +105,8 @@ def anonymise_account(record):
 def anonymise_journal(record):
     try:
         j = models.Journal(**record)
-    except DataStructureException:
-        return record
+    except (DataStructureException, SeamlessException):
+        return _drop_unanonymisable("journal", record)
 
     return _anonymise_admin(j).data
 
@@ -88,8 +114,8 @@ def anonymise_journal(record):
 def anonymise_application(record):
     try:
         appl = models.Application(**record)
-    except DataStructureException:
-        return record
+    except (DataStructureException, SeamlessException):
+        return _drop_unanonymisable("application", record)
 
     appl = _anonymise_admin(appl)
     return appl.data
@@ -99,14 +125,19 @@ def anonymise_background_job(record):
     try:
         bgjob = models.BackgroundJob(**record)
     except DataStructureException:
-        return record
+        return _drop_unanonymisable("background_job", record)
 
     if bgjob.params and 'suggestion_bulk_edit__note' in bgjob.params:
         bgjob.params['suggestion_bulk_edit__note'] = basic_hash(bgjob.params['suggestion_bulk_edit__note'])
 
     return bgjob.data
 
-def anonymise_note(note:Note):
+def anonymise_note(record):
+    try:
+        note = Note(**record)
+    except (DataStructureException, SeamlessException):
+        return _drop_unanonymisable("note", record)
+
     note.note = "---note removed for data security---"
     note.author_id = create_random_str()
     return note.data

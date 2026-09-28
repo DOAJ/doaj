@@ -12,7 +12,7 @@ MAX_BATCH = 1000
 
 def extract_notes(model_class, jl:dict) -> tuple[JournalLikeObject, list[Note]]:
     notes = deepcopy(jl.get("admin", {}).get("notes", []))
-    if len(notes) > 0:
+    if "notes" in jl.get("admin", {}):
         del jl["admin"]["notes"]
 
     jl_obj = model_class(**jl)
