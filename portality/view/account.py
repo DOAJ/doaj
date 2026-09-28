@@ -571,6 +571,12 @@ def register(template=templates.REGISTER):
                 roles = [r.strip() for r in form.roles.data.split(',')]
                 for r in roles:
                     account.add_role(r)
+            else:
+                if constants.ROLE_PUBLISHER in form.roles.data:
+                    account.add_role(constants.ROLE_PUBLISHER)
+                if constants.ROLE_API in form.roles.data:
+                    account.add_role(constants.ROLE_API)
+
 
             account.save()
 
