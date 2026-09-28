@@ -15,7 +15,7 @@ class ModelJournalMockFactory(object):
                 if pissn not in seen_issns and pissn is not None:
                     seen_issns.append(pissn)
 
-                source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+                source = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
                 journal = Journal(**source)
                 journal.set_owner(owner)
 
