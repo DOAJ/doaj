@@ -305,3 +305,32 @@ tests:
         results:
           - Your file is shown in the "History of uploads" with status "processing failed" and a suitable entry in
             the "Notes".  Check that the explanation link goes to a suitable reason and resolution for the problem.
+
+  - title: Successfully upload a file containing article with multiple author affiliations using Crossref 5.3.1 XML
+    context:
+      role: publisher
+    setup:
+      - Ensure that the publisher account owns a journal with Print ISSN "1111-1111" and E-ISSN "2222-2222", and
+        these are not attached to any other journals.
+      - You must be logged in using a pure publisher account (no other privileges).
+    steps:
+      - step: Prepare a Crossref 5.3.1 XML file containing an article where contributors contain multiple <institution> entries with <institution_name> inside the <affiliations> tag. For example, author "Minerva Housecat" has institutions "Cottage Labs University" and "United States Department of Energy" with ORCID "https://orcid.org/0000-0002-4011-3590", and author "Josiah Carberry" has institutions "Brown University" and "Harvard University".
+      - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+        path: /publisher/uploadfile
+      - step: Browse for the prepared XML file under "Select a file"
+      - step: Choose "Crossref 5.3.1 XML" from "Format of the file" dropdown
+      - step: Click "Upload"
+        results:
+          - A flash message appears at the top of the screen indicating a successful upload: "File uploaded and waiting to be processed. Check back here for updates."
+          - Your file is shown in the "History of uploads" with status "pending"
+      - step: Wait a short amount of time for the job to process, then reload the page
+        results:
+          - Your file is shown in the "History of uploads" with status "successfully processed", and the Note "1 articles imported (1 new, 0 updated)"
+      - step: Go to the Table of Contents for the journal (/toc/2222-2222) and open the article landing page
+        results:
+          - Both authors "Minerva Housecat" and "Josiah Carberry" are displayed on the article page
+      - step: Click the "Affiliations" accordion button under the authors list
+        results:
+          - The affiliations section expands
+          - Under "Minerva Housecat", both "Cottage Labs University" and "United States Department of Energy" are displayed on separate lines
+          - Under "Josiah Carberry", both "Brown University" and "Harvard University" are displayed on separate lines

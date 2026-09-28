@@ -357,3 +357,30 @@ tests:
         - Related background job is found
         - status is "complete"
         - Outcome Status is "success"
+
+- title: Successfully upload a file containing an article with multiple author affiliations using DOAJ XML
+  context:
+    role: publisher
+  setup:
+    - Ensure that the publisher account owns a journal with Print ISSN "1111-1111" and E-ISSN "2222-2222", and these are not attached to any other journals.
+    - You must be logged in using a publisher account.
+  steps:
+    - step: Prepare a DOAJ Native XML file containing an article where authors reference multiple affiliationId entries from the affiliationsList. For example, author "Jane Doe" references affiliationId "1" and "2", and author "John Smith" references affiliationId "2" and "3", with affiliationsList mapping "1" to "University of Oxford", "2" to "Harvard University", and "3" to "MIT".
+    - step: Go to the "Upload Article XML" tab in the "Publisher Area" (/publisher/uploadfile)
+    - step: Choose "DOAJ Native XML" from the "Format of the file" dropdown
+    - step: Select the prepared XML file under "Select a file" and click "Upload"
+      results:
+        - A flash message appears indicating a successful upload: "File uploaded and waiting to be processed. Check back here for updates."
+        - The file is listed in the "History of uploads" with status "pending"
+    - step: Wait a short amount of time for the job to process, then reload the page
+      results:
+        - The file is shown in the "History of uploads" with status "successfully processed", and the Note "1 articles imported (1 new, 0 updated)"
+    - step: Navigate to the Table of Contents for the journal (/toc/2222-2222) and click on the article title to view its landing page
+      results:
+        - Both authors "Jane Doe" and "John Smith" are listed on the article page
+    - step: Click on the "Affiliations" accordion button under the authors list
+      results:
+        - The affiliations section expands
+        - Under "Jane Doe", both "University of Oxford" and "Harvard University" are displayed on separate lines
+        - Under "John Smith", both "Harvard University" and "MIT" are displayed on separate lines
+        - Clickable ORCID icons/links are displayed alongside each author

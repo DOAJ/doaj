@@ -141,7 +141,7 @@ class TestCrosswalks(DoajTestCase):
         assert bibjson.year == "2021", "expected '2021', received: {}".format(bibjson.year)
         assert bibjson.title == "This is a journal article title", "expected 'This is a journal article title', received: {}".format(bibjson.title)
         assert bibjson.author == [
-            {'affiliation': 'Cottage Labs University', 'name': 'Minerva Housecat', 'orcid_id': 'https://orcid.org/0000-0002-4011-3590'},
+            {'affiliations': ['Cottage Labs University', 'United States Department of Energy'], 'name': 'Minerva Housecat', 'orcid_id': 'https://orcid.org/0000-0002-4011-3590'},
             {'name': 'Josiah Carberry', 'orcid_id': 'https://orcid.org/0000-0002-1825-0097'}
-        ], "expected [{{'affiliation': 'Cottage Labs University', 'name': 'Minerva Housecat', 'orcid_id': 'https://orcid.org/0000-0002-4011-3590'}},{{'name': 'Josiah Carberry', 'orcid_id': 'https://orcid.org/0000-0002-1825-0097'}}]', received: {}".format(bibjson.author)
+        ], "received: {}".format(bibjson.author)
         assert bibjson.get_single_url("fulltext") == "https://www.crossref.org/xml-samples", "expected 'https://www.crossref.org/xml-samples', received: {}".format(bibjson.get_single_url("fulltext"))

@@ -430,9 +430,10 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
                 if author.get('email'):
                     email_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "email")
                     set_text(email_elem, author.get('email'))
-                if author.get('affiliation'):
-                    new_affid = len(affiliations)  # use the length of the list as the id for each new item
-                    affiliations.append((new_affid, author['affiliation']))
+                author_affs = author.get('affiliations', [])
+                for aff in author_affs:
+                    new_affid = len(affiliations)
+                    affiliations.append((new_affid, aff))
                     author_affiliation_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "affiliationId")
                     set_text(author_affiliation_elem, str(new_affid))
                 if author.get('orcid_id'):

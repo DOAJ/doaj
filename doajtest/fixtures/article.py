@@ -241,7 +241,7 @@ ARTICLE_SOURCE = {
         "author": [
             {
                 "name": "The Author",
-                "affiliation": "University Cottage Labs",
+                "affiliations": ["University Cottage Labs"],
                 "orcid_id": "https://orcid.org/0000-0001-1234-1234"
             },
         ],
@@ -318,8 +318,10 @@ ARTICLE_STRUCT = {
 
                 "author": {
                     "fields": {
-                        "name": {"coerce": "unicode"},
-                        "affiliation": {"coerce": "unicode"}
+                        "name": {"coerce": "unicode"}
+                    },
+                    "lists": {
+                        "affiliations": {"contains": "field", "coerce": "unicode"}
                     }
                 },
 

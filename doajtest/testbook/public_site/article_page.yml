@@ -1,0 +1,58 @@
+suite: Public Site
+testset: Article Page
+tests:
+- title: Test Article Landing Page Metadata and Affiliations Display
+  context:
+    role: anonymous
+  steps:
+  - step: Ensure there is a publicly available article in DOAJ with multiple authors,
+      where at least one author has multiple affiliations and an ORCID iD.
+  - step: Navigate to the article landing page at /article/<article_id> or search for
+      the article on /search/articles and click on its title
+    results:
+    - The article title is displayed prominently at the top
+    - The journal title is displayed and links to the journal Table of Contents page
+    - The list of authors is displayed
+    - Publication date, volume, issue, and page numbers are displayed if provided
+    - DOI and Full-Text URL links are displayed and active
+    - Abstract and Keywords are displayed if provided
+  - step: Click on the "Affiliations" button/accordion under the authors list
+    results:
+    - The affiliations section expands
+    - Each author is listed with their respective affiliations
+    - Authors with multiple affiliations display each affiliation on a separate line
+    - Authors with ORCID iDs display a clickable ORCID icon/link to their ORCID profile
+  - step: Click on the "Affiliations" button/accordion again
+    results:
+    - The affiliations section collapses
+
+- title: Test Article Page Citation and Export
+  context:
+    role: anonymous
+  steps:
+  - step: Navigate to an article landing page at /article/<article_id>
+  - step: Locate the citation / export options on the page
+  - step: Click on the RIS export option
+    results:
+    - An .ris file is downloaded containing the article's bibliographic metadata (including
+      title, authors, affiliations, journal, publication date, and identifiers)
+  - step: Click on the BibTeX export option if available
+    results:
+    - BibTeX formatted citation data is displayed or downloaded
+
+- title: Test Admin Edit Article Button on Article Landing Page
+  context:
+    role: Admin
+  steps:
+  - step: Log in with an admin account
+  - step: Navigate to an article landing page at /article/<article_id>
+    results:
+    - An "Edit this article" button is displayed near the top of the page
+  - step: Click the "Edit this article" button
+    results:
+    - The Admin Article Metadata form for this article opens in a new tab with the article's
+      data pre-filled
+  - step: Log out of the admin account and view the same article landing page as an anonymous
+      user or publisher
+    results:
+    - The "Edit this article" button is not visible
