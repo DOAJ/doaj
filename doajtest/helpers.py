@@ -271,6 +271,9 @@ class DoajTestCase(TestCase):
     def list_today_journal_history_files(self):
         return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], dates.now_str(FMT_DATE_STD), '*'))
 
+    def list_today_apps_history_fiels(self):
+        return glob(os.path.join(app.config['APPLICATION_HISTORY_DIR'], dates.now_str(FMT_DATE_STD), '*'))
+
     def _make_and_push_test_context(self, path="/", acc=None):
         ctx = self.app_test.test_request_context(path)
         ctx.push()
@@ -457,6 +460,9 @@ def patch_history_dir(dir_key):
             elif dir_key == 'JOURNAL_HISTORY_DIR':
                 from portality.models import JournalHistory
                 hist_class = JournalHistory
+            elif dir_key == 'APPLICATION_HISTORY_DIR':
+                from portality.models import ApplicationHistory
+                hist_class = ApplicationHistory
             else:
                 raise ValueError(f'unknown dir_key [{dir_key}]')
 
