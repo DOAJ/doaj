@@ -778,6 +778,40 @@ var formulaic = {
             return elements.find(containerSelector);
         },
 
+        newTextareaWithCounter: function(params) {
+            return edges.instantiate(formulaic.widgets.TextareaWithCounter, params);
+        },
+        TextareaWithCounter: function(params) {
+            this.fieldDef = params.fieldDef;
+            this.namespace = `formulaic-textareawithcounter-${this.groupName}-${this.fieldDef.name}`;
+
+            this.init = function() {
+                this.fieldName = this.fieldDef.name;
+                this.groupName = params.fieldDef.group;
+                this.$textarea = $(`#${this.groupName}-${this.fieldName}`);
+                if (!this.$textarea.length) {
+                    return;
+                }
+                this.$counter = $(`#${this.groupName}-${this.fieldName}-counter`);
+
+                this.$textarea.on("input", () => this.updateTextarea());
+                this.updateTextarea();
+            }
+
+            this.updateTextarea = function() {
+                const textarea = this.$textarea[0];
+                this.$counter.text(
+                textarea.maxLength >= 0
+                    ? `${textarea.value.length}/${textarea.maxLength}`
+                    : textarea.value.length
+                );
+                textarea.style.height = "auto";
+                textarea.style.height = `${textarea.scrollHeight}px`;
+            }
+
+            this.init();
+        },
+
         newFlagManager : function(params) {
             return edges.instantiate(formulaic.widgets.FlagManager, params);
         },

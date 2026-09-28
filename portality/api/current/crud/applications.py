@@ -1,17 +1,18 @@
 # ~~APICrudApplications:Feature->APICrud:Feature~~
 import json
+import uuid
 
 from portality.api.current.crud.common import CrudApi
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
 from portality.api.current.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.core import app
-from portality.lib import seamless, dataobj
+from portality.lib import seamless, dataobj, dates
 from portality import models, app_email
 
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
-from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk, PublisherApplicationFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.ui import templates
 
@@ -88,7 +89,7 @@ class ApplicationsCrudApi(CrudApi):
             raise Api400Error(str(e))
 
         # if that works, convert it to a Suggestion object
-        ap = ia.to_application_model()
+        ap = ia.to_application_model(account.id)
 
         # now augment the suggestion object with all the additional information it requires
 
@@ -135,14 +136,14 @@ class ApplicationsCrudApi(CrudApi):
             # convert the incoming application into the web form
             # ~~->ApplicationForm:Crosswalk~~
             # ~~->UpdateRequest:FormContext~~
-            form = ApplicationFormXWalk.obj2formdata(ap)
+            form = PublisherApplicationFormXWalk.obj2formdata(ap)
             formulaic_context = ApplicationFormFactory.context("update_request")
             fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
 
             if fc.validate():
                 try:
                     save_target = not dry_run
-                    fc.finalise(save_target=save_target, email_alert=False)
+                    fc.finalise(account=account, save_target=save_target, email_alert=False)
                     return fc.target
                 except Exception as e:
                     raise Api400Error(str(e))
@@ -157,7 +158,7 @@ class ApplicationsCrudApi(CrudApi):
         # otherwise, this is a brand-new application
         else:
             # ~~->ApplicationForm:Crosswalk~~
-            form = ApplicationFormXWalk.obj2formdata(ap)
+            form = PublisherApplicationFormXWalk.obj2formdata(ap)
 
             # create a template that will hold all the values we want to persist across the form submission
             template = models.Application() # ~~->Application:Model~~
@@ -242,7 +243,7 @@ class ApplicationsCrudApi(CrudApi):
             raise Api404Error()
 
         # if that works, convert it to a Suggestion object
-        new_ap = ia.to_application_model()
+        new_ap = ia.to_application_model(account.id)
 
         # now augment the suggestion object with all the additional information it requires
         #
@@ -293,7 +294,7 @@ class ApplicationsCrudApi(CrudApi):
 
             if fc.validate():
                 try:
-                    fc.finalise(email_alert=False)
+                    fc.finalise(account, email_alert=False)
                     return fc.target
                 except Exception as e:
                     raise Api400Error(str(e))
