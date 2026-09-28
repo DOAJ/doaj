@@ -6,16 +6,27 @@ tests:
 - title: Reject, Unreject and Accept
   context:
     role: admin
+    testdrive: update_request_rejection
+  setup:
+    - "Use the update_request_rejection testdrive - it supplies an admin account, a
+      publisher account, and journal_1 ('Update Request Rejection - Reject Unreject
+      Accept <run_seed>'), an in-DOAJ journal owned by that publisher with no update
+      request history and no APC, so this test's one live update request submission
+      is unambiguous. OR provide those yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
-  - step: Create an Update Request for a journal that does not have a current Update
-      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
-      the APC amount).  Take a note of the Journal's ToC URL
+  - step: Log in as the publisher account from the testdrive and create an Update
+      Request for journal_1.  Make a change that will be fairly easy to review from
+      the ToC (e.g. turn on the APC and give it an amount).  Take a note of the
+      Journal's ToC URL
   - step: Locate the Update Request created in the previous step from the admin area
       search
     results:
     - 'The record contains the value "Update Request For: [journal id]"'
   - step: Click "Review Update"
-  - step: Change the Application Status to "Rejected
+  - step: Change the Application Status to "Rejected"
   - step: Click "Save"
   - step: Click the "Unlock and Close" button / close the window
   - step: Go to the "My update requests" page of the publisher dashboard
@@ -54,20 +65,30 @@ tests:
 - title: Reject then Resubmit
   context:
     role: admin
+    testdrive: update_request_rejection
+  setup:
+    - "Use the update_request_rejection testdrive - it supplies journal_2 ('Update
+      Request Rejection - Reject Then Resubmit <run_seed>'), an in-DOAJ journal
+      owned by the testdrive's publisher account, which already has one Update
+      Request in its history, already Rejected (titled '...superseded UR
+      <run_seed>'). This lets the test focus on its one live (resubmitted) Update
+      Request, rather than needing two live submissions back-to-back on the same
+      journal within DOAJ's update-request submission cooldown. OR provide those
+      yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
-  - step: Create an Update Request for a journal that does not have a current Update
-      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
-      the APC amount).  Take a note of the Journal's ToC URL
-  - step: Locate the Update Request created in the previous step from the admin area
-      search
-  - step: Click "Review Update"
-  - step: Change the Application Status to "Rejected
-  - step: Click "Save"
-  - step: Create another Update Request for the same journal.  Make a change that
-      will be fairly easy to review from the ToC (e.g. the APC amount) AND which is
-      different from the change made before.  Take a note of the Journal's ToC URL
+  - step: Confirm the testdrive's superseded, already-Rejected Update Request for
+      journal_2 is visible via the admin area search (filter by Rejected)
     results:
-    - https://testdoaj.cottagelabs.com/toc/2297-6809
+    - 'The record contains the value "Originally For: [journal_2 id]"'
+  - step: Log in as the publisher account from the testdrive and create another
+      Update Request for journal_2 - this is the test's one live submission.  Make
+      a change that
+      will be fairly easy to review from the ToC (e.g. the APC amount) AND which is
+      different from the superseded update request.  Take a note of the Journal's
+      ToC URL
   - step: Locate the new Update Request created in the previous step in the admin
       search area
   - step: Click "Review Update"
@@ -87,19 +108,29 @@ tests:
 - title: Reject, Resubmit, Unreject
   context:
     role: admin
+    testdrive: update_request_rejection
+  setup:
+    - "Use the update_request_rejection testdrive - it supplies journal_3 ('Update
+      Request Rejection - Reject Resubmit Unreject <run_seed>'), an in-DOAJ journal
+      that already has this test's full 'reject, then resubmit' history pre-built:
+      one Update Request already Rejected (titled '...rejected UR (try to unreject
+      this one) <run_seed>') and a second, newer Update Request that is currently
+      open against the same journal (titled '...resubmitted UR (currently open)
+      <run_seed>', status Update Request). Pre-building both avoids two live
+      submissions to the same journal in quick succession, which risks tripping
+      DOAJ's real update-request submission cooldown - this test is about the
+      'cannot unreject while a newer one is open' guard, not the submissions
+      themselves. OR provide those yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
-  - step: Create an Update Request for a journal that does not have a current Update
-      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
-      the APC amount).  Take a note of the Journal's ToC URL
-  - step: Locate the Update Request created in the previous step from the admin area
-      search
-  - step: Click "Review Update"
-  - step: Change the Application Status to "Rejected
-  - step: Click "Save"
-  - step: Create another Update Request for the same journal.  Make a change that
-      will be fairly easy to review from the ToC (e.g. the APC amount) AND which is
-      different from the change made before.  Take a note of the Journal's ToC URL
-  - step: Locate the first Update Request in the admin area search
+  - step: Confirm the resubmitted Update Request for journal_3 is currently open
+      via the admin area search
+    results:
+    - 'The record contains the value "Update Request For: [journal_3 id]"'
+  - step: Locate the older, already-Rejected Update Request for journal_3 (titled
+      '...rejected UR (try to unreject this one)') via the admin area search
   - step: Click "View Finished Update"
   - step: Change the Application Status to "Pending"
   - step: Click "Save"
@@ -109,36 +140,34 @@ tests:
 - title: Reject, Reject, Unreject
   context:
     role: admin
+    testdrive: update_request_rejection
+  setup:
+    - "Use the update_request_rejection testdrive - it supplies journal_4 ('Update
+      Request Rejection - Reject Reject Unreject <run_seed>'), an in-DOAJ journal
+      with two Update Requests already Rejected in its history: an older one
+      (titled '...OLDER rejected UR, accept this one <run_seed>', APC $100) and a
+      newer one (titled '...newer rejected UR, ignore this one <run_seed>', APC
+      $250). Pre-building both, already rejected, avoids two live submissions to
+      the same journal in quick succession, which risks tripping DOAJ's real
+      update-request submission cooldown - this test is about proving the older
+      rejected request can still be accepted (and its data wins) even though a
+      newer, also-rejected one exists. OR provide those yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
-  - step: Create an Update Request for a journal that does not have a current Update
-      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
-      the APC amount).  Take a note of the Journal's ToC URL
-  - step: Locate the Update Request created in the previous step from the admin area
-      search
-  - step: Click "Review Update"
-  - step: Change the Application Status to "Rejected
-  - step: Click "Save"
-  - step: Create another Update Request for the same journal.  Make a change that
-      will be fairly easy to review from the ToC (e.g. the APC amount) AND which is
-      different from the change made before.  Take a note of the Journal's ToC URL
-  - step: Locate the Update Request created in the previous step from the admin area
-      search
-  - step: Click "Review Update"
-  - step: Change the Application Status to "Rejected
-  - step: Click "Save"
-  - step: Locate the first Update Reques in the admin area search (e.g. filter by
-      Rejected and order by last updated, oldest first - the record we want should
-      be the second one on the list)
+  - step: Locate the OLDER of the two Rejected Update Requests for journal_4 (titled
+      '...OLDER rejected UR, accept this one') via the admin area search
   - step: Click "View Finished Update"
   - step: Change the Application Status to "Accepted"
   - step: Click "Save"
     results:
     - The update request saves successfully
-  - step: Go to the Journal ToC
+  - step: Go to journal_4's ToC
     results:
-    - The Journal page has been updated with the new information from the first Update
-      Request (e.g the updated APC amount)
-  - step: Search for the Journal's ISSN in the admin journal search
+    - The Journal page shows an APC of $100 (from the OLDER Update Request), NOT
+      $250 (from the newer, ignored, Rejected Update Request)
+  - step: Search for journal_4's ISSN in the admin journal search
     results:
     - There is only one Journal published in DOAJ with that ISSN
   - step: Find the accepted application via the admin search (e.g. filter by Accepted

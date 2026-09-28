@@ -194,11 +194,25 @@ class TestDrive:
             j.save(blocking=block)
         return j
 
-    def application(self, title=None, editor=None, editor_group=None, status=None, save=True, block=False):
-        """ Build a standalone new application - e.g. to link from a journal's
+    def application(self, title=None, editor=None, editor_group=None, status=None, owner=None,
+                     pissn=None, eissn=None, has_apc=None, apc=None, is_update_request=None,
+                     current_journal=None, related_journal=None, date_rejected=None,
+                     save=True, block=False):
+        """ Build a standalone application - e.g. to link from a journal's
         related_applications, so an admin/editor "Related Record" link has something
         real to find, or to populate an editor/associate editor's assigned-applications
-        search. """
+        search.
+
+        current_journal/related_journal let a caller build an update request that is
+        (or once was) tied to a specific journal without necessarily going through the
+        live "create an update request" flow. Passing current_journal marks the record
+        as an update request currently open against that journal (and will trigger the
+        real UR concurrency guard on save, same as a live submission would). Passing
+        related_journal alone (with is_update_request=True, no current_journal) builds
+        a *historical* record - e.g. an already-rejected update request - which never
+        touches current_journal and so never touches that concurrency guard at all;
+        use this to pre-build UR history without risking a false collision against a
+        UR the tester is about to submit live for the same journal. """
         source = ApplicationFixtureFactory.make_application_source()
         a = models.Application(**source)
         a.remove_current_journal()
@@ -206,13 +220,32 @@ class TestDrive:
         a.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
         a.set_id(a.makeid())
         a.bibjson().title = title or f"Application {self.run_seed} {self.create_random_str(4)}"
+        a.bibjson().eissn = eissn or self.generate_unique_issn()
+        a.bibjson().pissn = pissn or self.generate_unique_issn()
 
+        if owner is not None:
+            a.set_owner(owner)
         if editor_group is not None:
             a.set_editor_group(editor_group)
-        if status is not None:
-            a.set_application_status(status)
         if editor is not None:
             a.set_editor(editor)
+        if has_apc is not None:
+            a.bibjson().clear_apcs()
+            if has_apc and apc is not None:
+                a.bibjson().add_apc(apc[0], apc[1])
+            else:
+                a.bibjson().has_apc = has_apc
+
+        if current_journal is not None:
+            a.set_current_journal(current_journal)  # also marks the application as an update request
+        elif is_update_request:
+            a.set_is_update_request(True)
+        if related_journal is not None:
+            a.set_related_journal(related_journal)
+        if date_rejected is not None:
+            a.date_rejected = date_rejected
+        if status is not None:
+            a.set_application_status(status)
 
         if save:
             a.save(blocking=block)
