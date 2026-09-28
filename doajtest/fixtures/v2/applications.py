@@ -3,63 +3,87 @@ from datetime import datetime
 
 import rstr
 
+from doajtest.fixtures.v2.shared_generators import make_data, APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE, \
+    make_object, JOURNAL_OBJECT_BASE_LOADERS
 from portality import constants, regex
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED
 from doajtest.fixtures.v2.common import build_flags_form_expanded
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.lib import dates, dicts
 from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
+from portality.models import JournalLikeBibJSON
 from portality.models.v2.application import Application
 from portality.crosswalks.application_form import ApplicationFormXWalk
 
 class ApplicationFixtureFactory(object):
     @staticmethod
     def make_update_request_source(overlay=None):
-        template = deepcopy(APPLICATION_SOURCE)
-        template["admin"]["current_journal"] = '123456789987654321'
-        if overlay is not None:
-            template = dicts.deep_merge(template, overlay, overlay=True)
-        return template
-
-    @staticmethod
-    def make_application_source(overlay=None):
-        result = deepcopy(APPLICATION_SOURCE)
-        result["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
-        del result["admin"]["current_journal"]
-        if overlay is not None:
-            result = dicts.deep_merge(result, overlay, overlay=True)
+        if overlay is None:
+            overlay = {}
+        if "admin" not in overlay:
+            overlay["admin"] = {}
+        if "current_journal" not in overlay["admin"]:
+            overlay["admin"]["current_journal"] = '123456789987654321'
+        result = make_data([APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE, overlay])
         return result
 
     @staticmethod
-    def make_application_with_data(title=None, publisher_name=None, country=None):
-        application = deepcopy(APPLICATION_SOURCE)
-        if title:
-            application["bibjson"]["title"] = title
-        if publisher_name:
-            application["bibjson"]["publisher"]["name"] = publisher_name
-        if country:
-            application["bibjson"]["publisher"]["country"] = country
+    def make_application_source(overlay=None):
+        if overlay is None:
+            overlay = {}
+        if "admin" not in overlay:
+            overlay["admin"] = {}
+        if "application_type" not in overlay["admin"]:
+            overlay["admin"]["application_type"] = constants.APPLICATION_TYPE_NEW_APPLICATION
+
+        result = make_data([APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE, overlay])
+        del result["admin"]["current_journal"]
+        return result
+
+    @staticmethod
+    def make_legacy_application_object(overlay=None):
+        if overlay is None:
+            overlay = {}
+        application = make_object(Application,
+                              [APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE, overlay],
+                              loaders=JOURNAL_OBJECT_BASE_LOADERS)
         return application
 
     @staticmethod
-    def make_many_application_sources(count=2, in_doaj=False):
-        application_sources = []
-        for i in range(0, count):
-            template = deepcopy(APPLICATION_SOURCE)
-            template['id'] = 'applicationid{0}'.format(i)
+    def make_application_object(data_stack=None, klazz=None, loaders=None):
+        application = make_object(klazz or Application,
+                              data_stack or [APPLICATION_BASE, APPLICATION_FULL_LEGACY_FIXTURE],
+                              loaders=loaders or JOURNAL_OBJECT_BASE_LOADERS)
+        return application
+
+    @classmethod
+    def make_multiple_applications_legacy(cls, count, data_stack=None, klazz=None, loaders=None, vary=None):
+        def legacy_vary(n, j: Application):
+            j.set_id("applicationid{0}".format(n))
+            j.set_current_journal('123456789')
             # now some very quick and very dirty date generation
-            fakemonth = i
+            fakemonth = n
             if fakemonth < 1:
                 fakemonth = 1
             if fakemonth > 9:
                 fakemonth = 9
-            template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-            template["bibjson"]["pissn"] = rstr.xeger(regex.ISSN_COMPILED)
-            template["bibjson"]["eissn"] = rstr.xeger(regex.ISSN_COMPILED)
-            template['bibjson']['title'] = 'Test Title {}'.format(i)
-            application_sources.append(deepcopy(template))
-            template["admin"]["current_journal"] = '123456789'
-        return application_sources
+            j.set_created("2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth))
+            bj: JournalLikeBibJSON = j.bibjson()
+            bj.pissn = rstr.xeger(regex.ISSN_COMPILED)
+            bj.eissn = rstr.xeger(regex.ISSN_COMPILED)
+            bj.title = 'Test Title {}'.format(i)
+
+        if vary is None:
+            vary = [legacy_vary]
+
+        journals = []
+        for i in range(count):
+            journal = cls.make_application_object(data_stack=data_stack, klazz=klazz, loaders=loaders)
+            for v in vary:
+                v(i, journal)
+            journals.append(journal)
+
+        return journals
 
     @staticmethod
     def make_application_form(role="maned", flag=None, **flag_kwargs):

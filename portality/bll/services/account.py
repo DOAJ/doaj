@@ -34,7 +34,7 @@ class AccountService:
         user.save()
         return code
 
-    def send_login_code_email(self, user: Account, code: str, redirected: Optional[str] = "") -> None:
+    def send_login_code_email(self, user: Account, code: str, redirected: Optional[str] = "") -> Optional[str]:
         """Compose and send the passwordless login email with code and a direct link.
         """
         if user is None or not user.email:
@@ -64,6 +64,8 @@ class AccountService:
             login_url=login_url,
             expiry_minutes=10
         )
+
+        return login_url
 
     def verify_password_login(self, user: Account, password: Optional[str]) -> Account:
         """

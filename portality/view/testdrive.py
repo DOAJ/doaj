@@ -32,7 +32,7 @@ def testdrive(test_id):
     return render_template("dev/testdrive/testdrive.html", params=params, name=test_id)
 
 
-@blueprint.route("/<test_id>/teardown")
+@blueprint.route("/<test_id>/teardown", methods=['GET', 'POST'])
 @util.jsonp
 @login_required
 def teardown(test_id):

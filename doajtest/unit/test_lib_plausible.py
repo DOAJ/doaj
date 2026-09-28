@@ -58,7 +58,7 @@ class TestLibPlausible(TestCase):
         def _assert_input(*args, **kwargs):
             input_json = kwargs.get('json', {})
             assert 'props' in input_json
-            assert json.loads(input_json['props']) == input_props_payload
+            assert input_json['props'] == input_props_payload
 
         post_mock.side_effect = self._create_side_effect_post_resp(
             input_fake_resp,

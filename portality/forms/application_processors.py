@@ -133,13 +133,9 @@ class ApplicationProcessor(FormProcessor):
         if self.target is None:
             raise Exception("Cannot carry data on to a non-existent target - run the xwalk first")
 
-        # first off, get the notes (by reference) in the target and the notes from the source
+        # first off, get the notes (by value) in the target and the notes from the source
         tnotes = self.target.notes
         snotes = self.source.notes
-
-        # if there are no notes, we might not have the notes by reference, so later will
-        # need to set them by value
-        apply_notes_by_value = len(tnotes) == 0
 
         # for each of the target notes we need to get the original dates from the source notes
         for n in tnotes:
@@ -147,11 +143,11 @@ class ApplicationProcessor(FormProcessor):
                 if n.get("id") == sn.get("id"):
                     n["date"] = sn.get("date")
 
-        # record the positions of any blank notes
+        # record the positions of any blank notes except flags
         i = 0
         removes = []
         for n in tnotes:
-            if n.get("note").strip() == "":
+            if not n.get("flag", {}).get("assigned_to", "") and n.get("note").strip() == "":
                 removes.append(i)
             i += 1
 
@@ -170,8 +166,7 @@ class ApplicationProcessor(FormProcessor):
                 if not found:
                     tnotes.append(sn)
 
-        if apply_notes_by_value:
-            self.target.set_notes(tnotes)
+        self.target.set_notes(tnotes)
 
     def _carry_continuations(self):
         if self.source is None:
@@ -218,36 +213,37 @@ class ApplicationProcessor(FormProcessor):
             # set author_id on the note if it's a new note
             for note in self.target.notes:
                 note_date = dates.parse(note['date'])
+                # FIXME: this feels quite bad, I am not going to fix it now, but
+                # we should probably sort this out in the next version of the processors
                 if not note.get('author_id') and note_date > dates.before_now(60):
                     try:
                         note['author_id'] = current_user.id
+                        self.target.add_note_by_dict(note)    # We have to explicitly re-add the note, as `.notes` is by value not reference now
                     except AttributeError:
                         # Skip if we don't have a current_user
                         pass
 
     def _resolve_flags(self, account):
+        import json
         # handle flag resolution
-
         # check that this form knows about flags
         if getattr(self.form, "flags", None) is None:
             return
 
-        resolved_flags = []
-        for flag in self.form.flags.data:
-            if flag["flag_resolved"] == "true":
-                # Note: new notes do not necessarily have ids, but flags that are being
-                # resolved must have an id because they must exist already to be resolved
-                resolved_flags.append(flag["flag_note_id"])
-
-        for flag_id in resolved_flags:
+        flag = self.form.flags.data
+        if flag["flag_resolved"]:
             acc_id = account.id if account else "unknown user"
-            flag = self.target.get_note_by_id(flag_id)
+            resolved = json.loads(flag["flag_resolved"])
             new_note_text = Messages.FORMS__APPLICATION_FLAG__RESOLVED.format(
+                created_date=dates.human_date(resolved["created"]),
+                author=resolved["author"],
+                assignee=resolved["assignee"],
+                deadline=resolved["deadline"],
                 date=dates.today(),
                 username=acc_id,
-                note=flag.get("note", "")
+                note=resolved["note"]
             )
-            self.target.resolve_flag(flag_id, new_note_text)
+            self.target.resolve_flag(flag["flag_note_id"], new_note_text, dates.today(), acc_id)
 
 
 class NewApplication(ApplicationProcessor):
@@ -421,6 +417,21 @@ class AdminApplication(ApplicationProcessor):
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             j = applicationService.accept_application(self.target, account)
+
+            # Record the current time as last full review, if mark as full review has been selected
+            if (self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST and
+                    self.form.mark_as_full_review.data):
+                now = dates.now_str()
+                # Add last full review note to update request application
+                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
+                self.target.add_note(n, date=now, author_id=account.id)
+                self.target.save()
+                # Add last full review note to journal
+                j.last_full_review = now
+                n = Messages.LAST_FULL_REVIEW_NOTE.format(date=now, username=account.id)
+                j.add_note(n, date=now, author_id=account.id)
+                j.save()
+
             # record the url the journal is available at in the admin are and alert the user
             if has_request_context():       # fixme: if we handle alerts via a notification service we won't have to toggle on request context
                 jurl = url_for("doaj.toc", identifier=j.toc_id)
@@ -460,6 +471,10 @@ class AdminApplication(ApplicationProcessor):
 
         # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
+            # FIXME: I'm not really sure what `info` is for - it has been defined but unused in the
+            # base class for ages.  This doesn't feel right, though, but since it's unused doesn't
+            # cause any actual problems right now
+            self.info = constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED
             # reject the application
             applicationService.reject_application(self.target, current_user._get_current_object())
 
@@ -882,6 +897,8 @@ class ManEdJournalReview(ApplicationProcessor):
                                                   changed_by=changed_by)
             self.target.add_note(n, date=dates.now_str(), author_id=changed_by)
 
+        is_new_flag_assignee = JournalFormXWalk.is_new_flag_assignee(self.form, self.source)
+
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
@@ -910,6 +927,13 @@ class ManEdJournalReview(ApplicationProcessor):
             # except app_email.EmailException:
             #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
             #     app.logger.exception('Error sending assignment email to associate.')
+
+        if is_new_flag_assignee:
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_FLAG_ASSIGNED, current_user.id, {
+                "assignee": self.target.flags[0]["flag"]["assigned_to"],
+                "journal": self.target.data
+            }))
 
     def validate(self):
         # make use of the ability to disable validation, otherwise, let it run

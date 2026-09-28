@@ -181,9 +181,27 @@ def no_op(*args, **kwargs):
     pass
 
 
+_UNSET = object()
+
+
 def patch_config(inst, properties):
+    """
+    Apply `properties` to inst.config, returning a dict that - when passed
+    back into a later patch_config(inst, ...) call - restores the prior
+    state exactly, including keys that weren't present at all beforehand.
+
+    A key absent from inst.config before patching must be removed again on
+    restore, not set to None: many config reads use
+    `app.config.get(key, some_non_none_default)`, which only falls back to
+    that default when the key is entirely absent. Leaving a None behind
+    silently breaks that fallback for the rest of the process, since the
+    key now "exists" with value None.
+    """
     originals = {}
     for k, v in properties.items():
-        originals[k] = inst.config.get(k)
-        inst.config[k] = v
+        originals[k] = inst.config[k] if k in inst.config else _UNSET
+        if v is _UNSET:
+            inst.config.pop(k, None)
+        else:
+            inst.config[k] = v
     return originals
