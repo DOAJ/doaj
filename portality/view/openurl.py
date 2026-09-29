@@ -1,6 +1,6 @@
 import re
 from flask import Blueprint, request, redirect, url_for, render_template, abort
-from portality.models import OpenURLRequest
+from portality.models import OpenURLRequest, UnsupportedOpenURLQuery
 from portality.lib import plausible
 from portality.core import app
 from urllib.parse import unquote
@@ -35,7 +35,12 @@ def openurl():
                          label=qs)
 
     # Get the OpenURLRequest object to issue a query and supply a url for the result
-    result_url = parser_response.get_result_url()
+    try:
+        result_url = parser_response.get_result_url()
+    except UnsupportedOpenURLQuery as e:
+        app.logger.info("Rejecting OpenURL request as a bad request: " + str(e))
+        abort(400)
+
     if result_url:
         return redirect(result_url)
     else:
@@ -102,3 +107,8 @@ def help():
 @blueprint.errorhandler(404)
 def bad_request(e):
     return render_template(templates.OPENURL_404), 404
+
+
+@blueprint.errorhandler(400)
+def unsupported_request(e):
+    return render_template(templates.OPENURL_400), 400

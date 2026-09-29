@@ -1,0 +1,20 @@
+{% extends "public/base.html" %}
+
+{% block public_content %}
+    <div class="page-content">
+        <section class="container">
+
+            <h2>OpenURL - unsupported request</h2>
+
+            <p>Sorry, we couldn't understand your OpenURL request. It may be using a field DOAJ doesn't support
+                searching by, or an unrecognised genre.</p>
+
+            <h3>What next?</h3>
+            <ul>
+            <li>Refer to the <a href="{{ url_for('openurl.help') }}">OpenURL help</a> page for guidance on the fields DOAJ supports.</li>
+            <li>Use the <a href="{{ url_for('doaj.search') }}">Search</a> page to manually find Open Access articles and journals.</li>
+            </ul>
+
+        </section>
+    </div>
+{% endblock %}
