@@ -2448,34 +2448,7 @@ class AdminSpecialExceptionGroup(Structure):
     class C(CheckboxCompoundCapability):
         label = T.admin_special_exception.label
         order = ["answer", "special_exceptions", "special_exception_other", "note"]
-        # ui = [
-        #     {
-        #         "conditional": {
-        #             "field": "special_exceptions",
-        #             "conditions": [
-        #                 {
-        #                     "field": "answer",
-        #                     "any_of": [T.admin_special_exception.non_compliant_answers]
-        #                 }
-        #             ]
-        #         }
-        #     },
-        #     {
-        #         "conditional": {
-        #             "field": "special_exception_other",
-        #             "conditions": [
-        #                 {
-        #                     "field": "answer",
-        #                     "any_of": [T.admin_special_exception.non_compliant_answers]
-        #                 },
-        #                 {
-        #                     "field": "special_exceptions",
-        #                     "any_of": ["other"]
-        #                 }
-        #             ]
-        #         }
-        #     }
-        # ]
+        js_class = "checkbox"
 
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)

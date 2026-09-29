@@ -957,7 +957,8 @@ doaj.triage.questions.QuestionGroup = class {
 doaj.triage.questions.classMap = {
     review: doaj.triage.questions.Review,
     multistep: doaj.triage.questions.MultistepQuestion,
-    action: doaj.triage.questions.ActionQuestion
+    action: doaj.triage.questions.ActionQuestion,
+    checkbox: doaj.triage.questions.CheckboxesQuestion
 }
 doaj.triage.instructions.init();
 doaj.triage.instructions.Drawer.init();
