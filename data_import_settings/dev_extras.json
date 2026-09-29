@@ -19,6 +19,7 @@
 		"preserve" : {"import" : true, "limit" : -1},
 		"provenance" : {"import" : true, "limit" : 10000},
 		"upload" : {"import" : true, "limit" : 10000},
-		"article" : {"import" : true, "limit" : 100000}
+		"article" : {"import" : true, "limit" : 100000},
+		"note": {"import":  true, "limit":  -1}
 	}
 }

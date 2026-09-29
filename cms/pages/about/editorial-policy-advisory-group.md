@@ -40,7 +40,7 @@ In addition to her work with researchers, code, and metadata, she is an active m
 
 ### José Florencio Fabella Lapeña, Jr. (WAME)
 
-Joey is a retired Professor of Otolaryngology at U.P. College of Medicine, former Vice Chancellor at the University of the Philippines Manila and Attending Otolaryngologist at the Philippine General Hospital. He has a special interest in pediatric cleft and aero-digestive surgery, medical education, mentoring, writing, and peer review. He is Vice President of the [World Association of Medical Editors](https://wame.org/), Past President of the Asia-Pacific Association of Medical Journal Editors, and Charter President of the [Philippine Association of Medical Journal Editors](https://www.philippinemedicalassociation.org/). 
+Joey is a retired Professor of Otolaryngology of the U.P. College of Medicine, Attending Otolaryngologist, Philippine General Hospital and former Vice Chancellor, University of the Philippines Manila with special interests in pediatric cleft and aero-digestive surgery, medical education, mentoring, writing and peer review. He is President of the World Association of Medical Editors, Past President of the Asia-Pacific Association of Medical Journal Editors, and Charter President of the Philippine Association of Medical Journal Editors. He Chairs the Regional and Philippine National Journal Selection Committees for the Western Pacific Region Index Medicus of the World Health Organization.
 
 He is Editor-in-Chief of the *[Philippine Journal of Otolaryngology Head and Neck Surgery](https://doaj.org/toc/1908-4889)*, and chairs the Philippine National Journal Selection Committee for the Western Pacific Region Index Medicus of the World Health Organization.
 
