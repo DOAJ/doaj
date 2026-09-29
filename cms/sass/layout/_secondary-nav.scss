@@ -17,8 +17,10 @@
   background-color: $light-grey;
 }
 // Mobile / hamburger menu
+// 79.9375em matches the primary nav's breakpoint (see _primary-nav.scss) -
+// keep these in step, since they gate the same desktop/mobile nav split.
 
-@media (max-width: 1279px) {
+@media (max-width: 79.9375em) {
   .secondary-nav {
     height: 75px;
   }
@@ -89,7 +91,7 @@
 }
 
 .secondary-nav__item_mobile {
-  @media (min-width: 1279px) {
+  @media (min-width: 79.9375em) {
     display: none;
   }
 }
