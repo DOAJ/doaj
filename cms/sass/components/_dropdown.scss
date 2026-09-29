@@ -71,7 +71,11 @@
   display: block;
 }
 
-@media (min-width: 1279px) {
+// 79.9375em matches the primary/secondary nav breakpoints (see
+// _primary-nav.scss) - keep in step, since the nav dropdowns (Support,
+// Apply, etc.) switch between hover-to-open (desktop) and click-to-open
+// (mobile) in lockstep with the nav collapsing to the hamburger menu.
+@media (min-width: 79.9375em) {
   // Only display dropdown menu on hover in desktop
   .dropdown:hover .dropdown__menu {
     display: block;
