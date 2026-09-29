@@ -42,12 +42,13 @@
                 {% set els.not_classified = els.not_classified + [element] %}
             {% endif %}
         {% endfor %}
+        {% for element in compound.elements %}
+            {% endfor %}
         {% autoescape off %}
         <section class="criterion-main col-md-12">
             <div class="row criterion-layout">
                 <div class="col-md-12 criterion-layout__question">
                     {% if els.check.capability.check %}
-                    <p style="color: blue">{{ els }}</p>
                     <h4>{{ els.check.capability.check }}</h4>
                         {% if els.check.capability.application_info %}
                             <h5>Information provided by the applicant</h5>

@@ -37,6 +37,7 @@ class TriageCompound(GenericCompound):
 class ExceptionListRenderer(JinjaCompoundRenderer):
     template = templates.WORKFLOW_TRIAGE_EXCEPTIONS_LIST
 
+
 class TriageReviewCompoundRenderer(JinjaCompoundRenderer):
     template = templates.WORKFLOW_TRIAGE_REVIEW
 
@@ -50,10 +51,14 @@ class DummyRenderer(JinjaFieldRenderer):
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
 
+
 ## Control Renderers
 
 class RadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_CONTROL_RADIO
+
+class RadioAsButtons(JinjaControlRenderer):
+    template = templates.WORKFLOW_RADIO_AS_BUTTONS
 
 
 class TriageRadioRenderer(JinjaControlRenderer):
@@ -79,6 +84,8 @@ class ButtonsRenderer(JinjaControlRenderer):
 class SimpleCompoundRenderer(GenericCompound):
     template = templates.WORKFLOW_SIMPLE_COMPOUND
 
+class OptionsAsButtonsCompoundRenderer(GenericCompound):
+    template = templates.WORKFLOW_OPTIONS_AS_BUTTONS_COMPOUND
 
 #################################
 class TriageFormButtons:
@@ -132,6 +139,7 @@ class ReviewCapability(CompoundFieldCapability):
     control_class = Radio
     js_class = "review"
 
+
 class ComplianceCheckCapability(FormFieldCapability):
     role = "check"
     label = "Compliance"
@@ -174,14 +182,18 @@ class CheckboxCompoundCapability(CompoundFieldCapability):
 
 class TriageCompoundFieldCapability(CompoundFieldCapability):
     js_class = "compatibilityCheck"
+    render_class = TriageCompound
     action = {}
+
+
+class ActionTriageCompoundFieldCapability(TriageCompoundFieldCapability):
+    js_class = "action"
 
 
 class SimpleCompoundCapability(CompoundFieldCapability):
     js_class = "simple"
     render_class = SimpleCompoundRenderer
     control_btns = []
-
 
 #######
 ## Generic notes capability and field
@@ -666,14 +678,13 @@ class EthicsNoSuspiciousTiesNoLongerQuestionable(Structure):
 
 
 class EthicsNoSuspiciousTiesGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.ethics_no_suspicious_ties.label
         order = ["answer", "action", "note"]
         render_class = TriageCompound
         error_messages = {
             IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.group.is_conditionally_required
         }
-        js_class = "with_action"
         # action = {
         #     "action": {
         #         "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
@@ -847,7 +858,7 @@ class DatabaseWithdrawnExceptionsGroup(Structure):
 
 ### The main entry point to the Database: Withdrawn question
 class DatabaseWithdrawnGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.database_withdrawn.label
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
@@ -860,7 +871,6 @@ class DatabaseWithdrawnGroup(Structure):
                 "controls": "database_withdrawn_exceptions_group"
             }
         }
-        js_class = "with_action"
 
     name_ = "database_withdrawn_group"
     capabilities_ = (C(),)
@@ -963,7 +973,7 @@ class DatabaseEmbargoExceptionsGroup(Structure):
 
 
 class DatabaseEmbargoGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.database_embargo.label
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
@@ -1057,7 +1067,7 @@ class DatabaseNotDuplicateInstruction(Structure):
 
 
 class DatabaseNotDuplicateGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.database_not_duplicate.label
         order = ["answer", "note", "instructions"]
         render_class = TriageCompound
@@ -1179,7 +1189,7 @@ class ISSNAdditionalFields(Structure):
 
 
 class ISSNAtLeastOneGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.issn_at_least_one.label
         order = [
             "answer",
@@ -1374,7 +1384,7 @@ class ISSNTitleMatchActionGroup(Structure):
 
 
 class ISSNTitleMatchGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.issn_title_match.label
         order = [
             "answer",
@@ -1497,7 +1507,7 @@ class ISSNContinuationActionGroup(Structure):
 
 class ISSNContinuationGroup(Structure):
     # TO DO: add further groups and actions - see triage workflow
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.issn_continuation.label
         order = [
             "answer",
@@ -1554,6 +1564,7 @@ class WebsiteWorkingNote(NoteField):
     name = "website_working_note"
     capabilities = (NoteCapability(),)
 
+
 class JournalUrl(Field):
     class C(FormFieldCapability):
         label = T.website_working.edit.url
@@ -1589,7 +1600,7 @@ class WebsiteWorkingActionGroup(Structure):
 
 
 class WebsiteWorkingGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.website_working.label
         order = ["answer", "note", "action"]
         render_class = TriageCompound
@@ -1683,7 +1694,7 @@ class WebsiteURLNote(NoteField):
 
 
 class WebsiteURLGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.website_url.label
         order = ["answer", "note", "instruction"]
         render_class = TriageCompound
@@ -1780,12 +1791,12 @@ class LicenseAttribute(Field):
 #     license = License(OPTIONAL, SINGLE)
 #     license_attribute = LicenseAttribute(OPTIONAL, SINGLE)
 
-    # validators_ = [
-    #     RequiredIf(license_attribute,  # <- this field is required if
-    #                license,  # <- this field has one of the values
-    #                ["Publisher's own license"]
-    #                )
-    # ]
+# validators_ = [
+#     RequiredIf(license_attribute,  # <- this field is required if
+#                license,  # <- this field has one of the values
+#                ["Publisher's own license"]
+#                )
+# ]
 
 
 class LicenseURL(Field):
@@ -1833,7 +1844,7 @@ class WebsiteLicensePolicyActionGroup(Structure):
 
 
 class WebsiteLicensePolicyGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.website_license_policy.label
         order = [
             "answer",
@@ -1942,7 +1953,7 @@ class WebsiteCopyrightActionGroup(Structure):
 
 
 class WebsiteCopyrightGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.website_copyright.label
         order = [
             "answer",
@@ -2192,47 +2203,53 @@ class ContentNewJournal(ComplianceCheckField):
     name = "content_new_journal"
     capabilities = (C(),)
 
+
 class ContentNewJournalNote(NoteField):
     name = "content_new_journal_note"
 
-class ContentNewJournalExceptions(Field):
-    class C(SimpleCompoundCapability):
-        role = "action"
-        label = T.content_new_journal.edit.exceptions
-        options = exception_options_for(T.content_new_journal)
-        render_class = GenericField
-        control_btns = [
-                        {
-                            "label": "Continue triage",
-                            "attrs": {
-                                "class": "button compliant",
-                                "type": "button",
-                                "role": "compliant",
-                                "data-role": "continue-triage",
-                                "onclick": "set_compliance"
-                            }
-                        },
-                        TriageFormButtons.changeb({"data-controls": "ethics_not_excluded_group"})
-                    ]
+class ContentNewJournalException(Field):
+    class C(ComplianceCheckCapability):
+        role = "answers"
+        S = T.content_new_journal.exception
+        check = T.content_new_journal.exception.check
+        control_class = Checkbox
+        options = options_for(S)
+        control_render_class = TriageRadioRenderer
+        attributes = {
+            "data-role": "continue-triage answer"
+        }
 
-
-    name = "new_journal_exceptions"
+    name = "content_new_journal_exception"
     coerce = [Unicode()]
-    validators = [LimitToFormOptions()]
     capabilities = (C(),)
 
+class ContentNewJournalActionGroup(Structure):
+    class C(SimpleCompoundCapability):
+        label = " "
+        role = "action"
+        order = ["exception"]
+        render_class = OptionsAsButtonsCompoundRenderer
+        control_btns = [
+            TriageFormButtons.changeb({"data-controls": "content_new_journal_group"})
+        ]
+
+    name_ = "new_journal_exceptions"
+    capabilities_ = (C(),)
+    exception = ContentNewJournalException(OPTIONAL, SINGLE)
+
+
 class ContentNewJournalGroup(Structure):
-    class C(TriageCompoundFieldCapability):
+    class C(ActionTriageCompoundFieldCapability):
         label = T.content_new_journal.label
-        order = ["answer", "note", "exceptions"]
-        render_class = TriageCompound
+        order = ["answer", "note", "action"]
 
     name_ = "content_new_journal_group"
     capabilities_ = (C(),)
 
     answer = ContentNewJournal(OPTIONAL, SINGLE)
-    note = ContentNewJournalNote(OPTIONAL, SINGLE)
-    exceptions = ContentNewJournalExceptions(OPTIONAL, REPEATABLE)
+    note = ContentFormatNote(OPTIONAL, SINGLE)
+    action = ContentNewJournalActionGroup(OPTIONAL, SINGLE)
+
 
 ###########################################################
 ## Admin: Metadata Review
@@ -2251,6 +2268,7 @@ def _license_display(licenses):
     if len(descriptions) > 1:
         return ", ".join(descriptions[:-1]) + " or " + descriptions[-1]
     return descriptions[0] if descriptions else ""
+
 
 class AdminMetadataReview(ComplianceCheckField):
     class C(ComplianceCheckCapability):
@@ -2275,7 +2293,7 @@ class AdminMetadataReview(ComplianceCheckField):
                 "fields": [{
                     "label": "Title",
                     "lookup": lambda application, wfc: application.bibjson().title
-                    },
+                },
                     {
                         "label": "Alternative Title",
                         "lookup": lambda application, wfc: application.bibjson().alternative_title
@@ -2308,7 +2326,7 @@ class AdminMetadataReview(ComplianceCheckField):
                 "fields": [
                     {
                         "label": "Author retains rights ",
-                         "lookup": lambda application, wfc: (
+                        "lookup": lambda application, wfc: (
                             "Yes" if application.bibjson().author_retains_copyright else "No"
                         ),
                     },

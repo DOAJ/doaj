@@ -159,7 +159,7 @@
 <!--                    </div>-->
 
                     <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container single">
-                        <legend class="sr-only">Review outcome</legend>
+                        <legend class="sr-only">{{ compound.label }}</legend>
                         {% set cr = els.check.capability.get_control_renderer() %}
                         {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}
                     </fieldset>

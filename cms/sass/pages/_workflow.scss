@@ -862,9 +862,11 @@ body.dashboard {
           }
 
           input:hover + label.review-outcome-answer,
-          input:checked + label.review-outcome-answer {
+          input:checked + label.review-outcome-answer,
+          input.checked + label.review-outcome-answer {
             background: $dark-green;
             color: $white;
+            box-shadow: none;
           }
 
           input:focus-visible + label.review-outcome-answer {
@@ -881,9 +883,11 @@ body.dashboard {
           }
 
           input:hover + label.review-outcome-answer,
-          input:checked + label.review-outcome-answer {
+          input:checked + label.review-outcome-answer,
+          input.checked + label.review-outcome-answer {
             background: $sanguine;
             color: $white;
+            box-shadow: none;
           }
 
           input:focus-visible + label.review-outcome-answer {

@@ -470,13 +470,13 @@ doaj.triage.questions.Question = class {
         this.$reminderText = this.$reminder.find(".save-reminder-text");
 
         this.$answerInput = this.$wrapper.find(
-            "input[data-role='answer']"
+            "input[data-role~='answer']"
         );
         this.$changeAnswerBtn = this.$wrapper.find(
-            "button[data-role='change_answers']"
+            "button[data-role~='change_answers']"
         );
         this.$continueBtn = this.$wrapper.find(
-            "button[data-role='continue-triage']"
+            "[data-role~='continue-triage']"
         );
         this.$srAnswer = this.$wrapper.find(".sr-answer");
 
@@ -860,6 +860,7 @@ doaj.triage.questions.ActionQuestion = class extends doaj.triage.questions.Quest
 
         this.$reviewOutcomeContainer._hide();
         this.$actionSection._show();
+        this.$actionSection.find("button[data-role='change_answers']").parent()._show();
 
         const answerLabel = $('label[for="' + $answer.attr("id") + '"]').text().trim();
         this.$actionSection.find("span.your-answer").html(answerLabel);
@@ -956,7 +957,7 @@ doaj.triage.questions.QuestionGroup = class {
 doaj.triage.questions.classMap = {
     review: doaj.triage.questions.Review,
     multistep: doaj.triage.questions.MultistepQuestion,
-    with_action: doaj.triage.questions.ActionQuestion
+    action: doaj.triage.questions.ActionQuestion
 }
 doaj.triage.instructions.init();
 doaj.triage.instructions.Drawer.init();

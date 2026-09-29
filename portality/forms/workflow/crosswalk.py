@@ -248,7 +248,7 @@ class WorkflowControl2TriageForm(object):
         # New Journal
         compliance_field_radio(triage.content_new_journal, f.content.new_journal)
         compliance_field_note(triage.content_new_journal, f.content.new_journal)
-        form.set(f.content.new_journal.exceptions, triage.content_new_journal.special_exceptions)
+        form.set(f.content.new_journal.action.exception, triage.content_new_journal.special_exceptions)
 
         ##############
         ## Admin
@@ -458,6 +458,8 @@ class TriageForm2WorkflowControl(object):
         compliance_field_note(triage.website_copyright, f.website.copyright)
         car = form.get(f.website.copyright.action_group.copyright_author_retains)
         bj.author_retains_copyright = car == "y"
+        print(form.get(f.website.copyright.action_group.copyright_author_retains))
+        # bj.author_retains_copyright = form.get(f.website.copyright.action_group.copyright_author_retains)
         curl = form.get(f.website.copyright.action_group.copyright_url)
         bj.copyright_url = curl
 
@@ -487,7 +489,7 @@ class TriageForm2WorkflowControl(object):
         # New Journal
         compliance_field_radio(triage.content_new_journal, f.content.new_journal)
         compliance_field_note(triage.content_new_journal, f.content.new_journal)
-        triage.content_new_journal.special_exceptions = form.get(f.content.new_journal.exceptions)
+        triage.content_new_journal.special_exceptions = form.get(f.content.new_journal.action.exception)
 
         ##############
         ## Admin

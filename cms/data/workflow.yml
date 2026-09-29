@@ -851,25 +851,21 @@ triage:
       check: "26. This is a newly launched journal or a flipped journal"
       answers:
         compliant: "<span class='answer'>No</span>, this is <strong>not</strong> a newly launched or a flipped journal"
-        non_compliant: ""
         later: "I don't know - mark for later"
         action: "<span class='answer'>Yes</span>, this <strong>is</strong> a newly launched or a flipped journal"
-      subquestion:
-        answers:
-          compliant: "Yes"
-          non_compliant: "No"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
       info:
         www: "Journal's homepage"
-      exceptions:
-        publishing_history: "This journal demonstrates a publishing history of more than one year or has published at least ten open access research articles"
+      exception:
+        check: "Does this journal demonstrates a publishing history of more than one year or has published at least ten open access research articles?"
+        answers:
+          true: "Yes, it does"
+          false: "No, it doesn't"
       remember: ""
       instructions: ''
       resources: ""
-      edit:
-        exceptions: "Exceptions"
       validation:
         exceptions:
             disallowed_value: "You must select one of the valid options"
@@ -884,7 +880,6 @@ triage:
       instructions: ""
       answers:
         compliant: "Everything is correct"
-        non_compliant: ""
       info:
         www: "Journal's homepage"
         oa: "Open Access licensing policy"

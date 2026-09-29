@@ -101,6 +101,7 @@ WORKFLOW_TRIAGE_COMPOUND = "management/admin/_workflow/includes/_triage_radio_co
 WORKFLOW_TRIAGE_COMPOUND_BASE = "management/admin/_workflow/includes/_triage_compound_base.html"
 WORKFLOW_TRIAGE_REVIEW = "management/admin/_workflow/includes/_triage_review.html"
 WORKFLOW_SIMPLE_COMPOUND = "management/admin/_workflow/includes/_simple_compound.html"
+WORKFLOW_OPTIONS_AS_BUTTONS_COMPOUND = "management/admin/_workflow/includes/_options_as_buttons_compound.html"
 WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_claim.html"
 
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
@@ -108,6 +109,7 @@ WORKFLOW_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_checkbox.html"
 WORKFLOW_TRIAGE_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_triage_checkbox.html"
 WORKFLOW_TRIAGE_CHECKBOX_QUESTION = "management/admin/_workflow/includes/_triage_checkbox_compound.html"
 WORKFLOW_TRIAGE_CONTROL_RADIO = "management/admin/_workflow/includes/_triage_radio.html"
+WORKFLOW_RADIO_AS_BUTTONS = "management/admin/_workflow/includes/_radio_as_buttons.html"
 WORKFLOW_TRIAGE_EXCEPTIONS_LIST = "management/admin/_workflow/includes/_triage_exceptions_list.html"
 WORKFLOW_TRIAGE_DUMMY = "management/admin/_workflow/includes/dummy.html"
 
