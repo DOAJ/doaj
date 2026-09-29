@@ -9,7 +9,7 @@ featuremap: ~~GuideToApplying:Fragment~~
 ---
 Before you start the application process, you will be asked to log in or register. The registration process requires an email address. You must use an official email for the journal or an email address that is checked regularly by the journal’s management office.  
 
-Once registered you may begin the application process. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
+Once registered you may begin the application process. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/version-3.2-October-2026-DOAJ-Application-Form.pdf) is available for download.
 
 In this guide, “must” means a requirement and “should” means a recommendation. “May”, “can”, or “permitted” means something is allowed.
 
