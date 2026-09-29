@@ -545,8 +545,8 @@ msgid "Enter the Year (YYYY)."
 msgstr "Indiquez l'année (AAAA)"
 
 #: forms/application_forms.py:975
-msgid "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than {}"
-msgstr "La date de début de l'OA doit être une année au format à 4 chiffres (par exemple, 1987) et doit être supérieure à {}"
+msgid "OA Start Date must be a year in the 4-digit format (eg. 1987) and must be greater than %(min_year)s"
+msgstr "La date de début de l'OA doit être une année au format à 4 chiffres (par exemple, 1987) et doit être supérieure à %(min_year)s"
 
 #: forms/application_forms.py:987
 msgid "Does the journal routinely screen article submissions for plagiarism?"
@@ -1077,16 +1077,16 @@ msgid "Please enter a valid URL. It should start with http or https"
 msgstr "Veuillez saisir une URL valide. Elle doit commencer par http ou https."
 
 #: forms/application_forms.py:2931
-msgid "This value should be between {min} and {max}"
-msgstr "Cette valeur doit être comprise entre {min} et {max}"
+msgid "This value should be between %(min)s and %(max)s"
+msgstr "Cette valeur doit être comprise entre %(min)s et %(max)s"
 
 #: forms/application_forms.py:2936
-msgid "This value should be bigger than {gte}"
-msgstr "Cette valeur doit être supérieure à {gte}"
+msgid "This value should be bigger than %(gte)s"
+msgstr "Cette valeur doit être supérieure à %(gte)s"
 
 #: forms/application_forms.py:2940
-msgid "This value should be smaller than {lte}"
-msgstr "Cette valeur doit être inférieure à {lte}"
+msgid "This value should be smaller than %(lte)s"
+msgstr "Cette valeur doit être inférieure à %(lte)s"
 
 #: forms/application_forms.py:3015
 #: forms/application_forms.py:3019

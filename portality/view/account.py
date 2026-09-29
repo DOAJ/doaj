@@ -1,17 +1,21 @@
 import uuid, json
+import random
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
+from flask import Blueprint, request, url_for, flash, redirect, make_response, g, current_app
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form
+from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form, SelectMultipleField
 
 from portality import util
 from portality import constants
 from portality.core import app
+from portality.datasets import language_options, country_options
 from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
-from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
+from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged, \
+    CurrentISOLanguage
 from portality.bll import DOAJ
+from portality.bll import exceptions as bll_exc
 from portality.ui.messages import Messages
 
 from portality.ui import templates
@@ -20,9 +24,41 @@ blueprint = Blueprint('account', __name__)
 
 @blueprint.url_value_preprocessor
 def pull_lang(endpoint, values):
-    # Remove 'lang' so it is not passed to the view function
+    # Remove 'lang' so it is not passed to the view function, but keep it
+    # around so url_for can still fill it in when building urls for
+    # endpoints (eg .forgot) that require it, since it's otherwise lost
+    # from request.view_args once popped below.
     if values:
         lang = values.pop('lang', None)
+        if lang:
+            # store the active language on the flask.g so url_defaults can access it
+            g.lang = lang
+
+@blueprint.url_defaults
+def add_lang(endpoint, values):
+    """Ensure that url_for() populates the 'lang' value for this blueprint when generating URLs.
+
+    If a language has been set on g (by pull_lang) then default the 'lang' for generated URLs
+    to that value so callers don't need to explicitly pass it.
+    """
+    if 'lang' not in values and current_app.url_map.is_endpoint_expecting(endpoint, 'lang'):
+        lang = getattr(g, 'lang', None)
+        if lang:
+            values.setdefault('lang', lang)
+
+class RedirectForm(Form):
+    next = HiddenField()
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+        if not self.next.data:
+            self.next.data = get_redirect_target() or ''
+
+    def redirect(self, endpoint='index', **values):
+        if self.next.data == util.is_safe_url(self.next.data):
+            return redirect(self.next.data)
+        target = get_redirect_target()
+        return redirect(target or url_for(endpoint, **values))
 
 @blueprint.route('/')
 @login_required
@@ -31,7 +67,6 @@ def index():
     if not current_user.has_role("list_users"):
         abort(401)
     return render_template(templates.USER_LIST)
-
 
 class UserEditForm(Form):
 
@@ -48,10 +83,47 @@ class UserEditForm(Form):
     ])
     email_confirm = StringField('Confirm email address')
     roles = StringField('User roles')
+    attribute_workflow = SelectMultipleField(
+        "Workflow Participation",
+        choices=[(x,x) for x in constants.EWF__ALL_STAGES]
+    )
+    attribute_language = SelectMultipleField(
+        'Can Review Languages',
+        [
+            CurrentISOLanguage()
+        ],
+        choices=language_options
+    )
+    attribute_country = SelectMultipleField(
+        'Can Review Applications from Countries',
+        choices=country_options
+    )
+    attribute_tag = StringField('Other User Attributes')
     password_change = PasswordField('Change password', [
         validators.EqualTo('password_confirm', message='Passwords must match'),
     ])
     password_confirm = PasswordField('Confirm password')
+
+class RegisterForm(RedirectForm):
+    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
+    name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
+    sender_email = StringField('Email address', [
+        validators.DataRequired(),
+        validators.Length(min=3, max=254),
+        validators.Email(message='Must be a valid email address'),
+        EmailAvailable(message="That email address is already in use. Please <a href='/account/forgot'>reset your password</a>. If you still cannot login, <a href='/contact'>contact us</a>.")
+    ])
+    roles = StringField('Roles')
+    # These are honeypot (bot-trap) fields
+    email = StringField('email')
+    hptimer = DecimalField('hptimer', [validators.Optional()])
+
+    def is_bot(self):
+        """
+        Checks honeypot fields and determines whether the form was submitted by a bot
+        :return: True, if bot suspected; False, if human
+        """
+        return self.email.data != "" or self.hptimer.data is None or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
 
 
 @blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
@@ -76,10 +148,10 @@ def username(username):
         else:
             conf = request.values.get("delete_confirm")
             if conf is None or conf != "delete_confirm":
-                flash('Check the box to confirm you really mean it!', "error")
+                Messages.flash(Messages.ACCOUNT__CONFIRM_CHECKBOX_REQUIRED)
                 return render_template(template, account=acc, form=UserEditForm(obj=acc))
             acc.delete()
-            flash('Account ' + acc.id + ' deleted')
+            Messages.flash(Messages.ACCOUNT__DELETED.format(id=acc.id))
             return redirect(url_for('.index'))
 
     elif request.method == 'POST':
@@ -106,10 +178,29 @@ def username(username):
         if 'password_change' in newdata and len(newdata['password_change']) > 0 and not newdata['password_change'].startswith('sha1'):
             acc.set_password(newdata['password_change'])
 
-        # only super users can re-write roles
-        if "roles" in newdata and current_user.is_super:
-            new_roles = [r.strip() for r in newdata.get("roles").split(",")]
-            acc.set_role(new_roles)
+        # only super users can re-write roles and attributes
+        if current_user.is_super:
+            if "roles" in newdata:
+                new_roles = [r.strip() for r in newdata.get("roles").split(",")]
+                acc.set_role(new_roles)
+
+            # remove old attributes
+            del acc.attributes
+
+            # apply new attributes
+            if hasattr(form, "attribute_workflow") and form.attribute_workflow.data:
+                for aw in form.attribute_workflow.data:
+                    acc.add_attribute(constants.USER_ATTR__WORKFLOW, aw)
+            if hasattr(form, "attribute_language") and form.attribute_language.data:
+                for al in form.attribute_language.data:
+                    acc.add_attribute(constants.USER_ATTR__LANGUAGE, al)
+            if hasattr(form, "attribute_country") and form.attribute_country.data:
+                for ac in form.attribute_country.data:
+                    acc.add_attribute(constants.USER_ATTR__COUNTRY, ac)
+            if "attribute_tag" in newdata:
+                for at in newdata["attribute_tag"].split(","):
+                    acc.add_attribute(constants.USER_ATTR__TAG, at.strip())
+
 
         if "marketing_consent" in newdata:
             acc.set_marketing_consent(newdata["marketing_consent"] == "true")
@@ -126,7 +217,7 @@ def username(username):
 
                 events_svc = DOAJ.eventsService()
                 events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id, context={"account" : acc.data}))
-                flash("Email address updated. You have been logged out for email address verification.")
+                Messages.flash(Messages.ACCOUNT__EMAIL_UPDATED_LOGGED_OUT)
 
                 logout_user()
 
@@ -137,7 +228,7 @@ def username(username):
                 return redirect(url_for('doaj.home'))
 
         acc.save()
-        flash("Record updated")
+        Messages.flash(Messages.ACCOUNT__RECORD_UPDATED)
         return render_template(template, account=acc, form=form)
 
     else:  # GET
@@ -173,25 +264,164 @@ def get_redirect_target(form=None, acc=None):
     return url_for(app.config.get("DEFAULT_LOGIN_DESTINATION"))
 
 
-class RedirectForm(Form):
-    next = HiddenField()
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        if not self.next.data:
-            self.next.data = get_redirect_target() or ''
-
-    def redirect(self, endpoint='index', **values):
-        if self.next.data == util.is_safe_url(self.next.data):
-            return redirect(self.next.data)
-        target = get_redirect_target()
-        return redirect(target or url_for(endpoint, **values))
-
-
 class LoginForm(RedirectForm):
     user = StringField('Email address or username', [validators.DataRequired()])
-    password = PasswordField('Password', [validators.DataRequired()])
+    password = PasswordField('Password', [validators.Optional()])
+    action = StringField('Action', [validators.DataRequired()])
 
+
+class LoginCodeForm(RedirectForm):
+    code = StringField('Code', [validators.DataRequired()])
+    user = HiddenField('User')
+
+def _get_param(param_name):
+    """Get parameter value from either GET or POST request"""
+    return request.args.get(param_name) or request.form.get(param_name)
+
+def _complete_verification(account):
+    """Complete the verification process and log in the user"""
+    account.remove_login_code()
+    account.save()
+    login_user(account, remember=True)
+
+
+def get_wait_period(secs: int) -> str:
+    secs = int(secs or 0)
+    if secs >= 7200:
+        return f"{(secs + 3599) // 3600} hours"
+    if secs >= 3600:
+        return "1 hour"
+    if secs >= 120:
+        return f"{(secs + 59) // 60} minutes"
+    if secs >= 60:
+        return "1 minute"
+    return f"{secs} seconds"
+
+
+def _handle_pwless_login(user, form, redirected: str = ""):
+    """ Handler for passwordless login backoff + email sending.
+
+    Returns a rendered verify_code template with appropriate resend_wait.
+    """
+    cps = DOAJ.concurrencyPreventionService()
+    allowed, wait_remaining, interval = cps.record_pwless_resend(user.email)
+
+    if not allowed:
+        tpl = Messages.ACCOUNT__PWLESS__RESEND_RATE_LIMIT
+        Messages.flash((tpl[0].format(wait=get_wait_period(wait_remaining)), tpl[1]))
+        return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form, resend_wait=wait_remaining)
+
+    try:
+        svc = DOAJ.accountService()
+        code = svc.initiate_login_code(user)
+        login_url = svc.send_login_code_email(user, code, redirected or "")
+        Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
+
+        if app.config.get('DEBUG', False):
+            util.flash_with_url('Debug mode - url for login link is <a href={0}>{0}</a>'.format(login_url))
+    except bll_exc.ArgumentException:
+        Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_ERROR)
+
+    return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form, resend_wait=interval)
+
+@blueprint.route('/verify-code', methods=['GET', 'POST'])
+def verify_code():
+    form = LoginForm(request.form, csrf_enabled=False)
+
+    # Handle resend requests posted from the code entry page
+    if request.method == 'POST' and (request.form.get('action') == 'resend'):
+        email = _get_param('email')
+        if not email:
+            Messages.flash(Messages.ACCOUNT__EMAIL_REQUIRED_FOR_RESEND)
+            return redirect(url_for('account.login'))
+
+        user = Account.pull_by_email(email)
+        if not user:
+            Messages.flash(Messages.ACCOUNT__NOT_RECOGNISED)
+            return redirect(url_for('account.login'))
+
+        return _handle_pwless_login(user, form, _get_param('redirected') or '')
+
+    svc = DOAJ.accountService()
+
+    try:
+        account, _redirected = svc.verify_login_code(
+            encrypted_token=_get_param('token'),
+            email=_get_param('email'),
+            code=_get_param('code'),
+        )
+    except bll_exc.ArgumentException:
+        Messages.flash(Messages.ACCOUNT__REQUIRED_PARAMS_NOT_AVAILABLE)
+        return redirect(url_for('account.login'))
+    except bll_exc.NoSuchObjectException:
+        Messages.flash(Messages.ACCOUNT__NOT_RECOGNISED)
+        return redirect(url_for('account.login'))
+    except bll_exc.IllegalStatusException:
+        Messages.flash(Messages.ACCOUNT__INVALID_OR_EXPIRED_CODE)
+        return redirect(url_for('account.login'))
+
+    # Preserve existing UI behavior for application redirect
+    redirected_page = request.args.get("redirected") or _redirected
+    if redirected_page == "apply":
+        form['next'].data = url_for("apply.public_application")
+
+    _complete_verification(account)
+    return redirect(get_redirect_target(form=form, acc=account))
+
+
+
+class ResetForm(Form):
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+
+def get_user_account(username):
+    # If our settings allow, try getting the user account by ID first, then by email address
+    if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
+        return Account.pull(username) or Account.pull_by_email(username)
+    return Account.pull_by_email(username)
+
+
+def handle_login_code_request(user, form):
+    LOGIN_CODE_LENGTH = 6
+    LOGIN_CODE_TIMEOUT = 600  # 10 minutes
+
+    code = ''.join(str(random.randint(0, 9)) for _ in range(LOGIN_CODE_LENGTH))
+    user.set_login_code(code, timeout=LOGIN_CODE_TIMEOUT)
+    user.save()
+
+    svc = DOAJ.accountService()
+    svc.send_login_code_email(user, code, request.args.get("redirected", ""))
+    Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
+
+    return render_template(templates.LOGIN_VERIFY_CODE, email=user.email, form=form)
+
+def handle_password_login(user, form):
+    if user.check_password(form.password.data):
+        login_user(user, remember=True)
+        Messages.flash(Messages.ACCOUNT__WELCOME_BACK)
+        return redirect(get_redirect_target(form=form, acc=user))
+    else:
+        forgot_url = url_for(".forgot")
+        form.password.errors.append(
+            f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
+        )
+
+def handle_incomplete_verification():
+    forgot_url = url_for('.forgot')
+    forgot_instructions = f'<a href="{forgot_url}">&lt;click here&gt;</a> to send a new reset link.'
+    util.flash_with_url(
+        'Account verification is incomplete. Check your emails for the link or ' + forgot_instructions,
+        'error'
+    )
+
+def handle_login_template_rendering(form):
+    if request.args.get("redirected") == "apply":
+        form['next'].data = url_for("apply.public_application")
+        return render_template(templates.LOGIN_TO_APPLY, form=form)
+    return render_template(templates.GLOBAL_LOGIN, form=form)
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
@@ -199,37 +429,47 @@ def login():
     current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
-        password = form.password.data
         username = form.user.data
+        action = request.form.get('action')
 
-        # If our settings allow, try getting the user account by ID first, then by email address
-        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
-            user = Account.pull(username) or Account.pull_by_email(username)
-        else:
-            user = Account.pull_by_email(username)
-
-        # If we have a verified user account, proceed to attempt login
+        svc = DOAJ.accountService()
         try:
-            if user is not None:
-                if user.check_password(password):
-                    login_user(user, remember=True)
-                    flash('Welcome back.', 'success')
-                    return redirect(get_redirect_target(form=form, acc=user))
-                else:
-                    form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
-            else:
-                form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
-        except KeyError:
-            # Account has no password set, the user needs to reset or use an existing valid reset link
-            FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to send a new reset link.'.format(url=url_for('.forgot'))
-            util.flash_with_url('Account verification is incomplete. Check your emails for the link or ' + FORGOT_INSTR,
-                                'error')
-            return redirect(url_for('doaj.home'))
+            user = svc.resolve_user(username)
+            if user is None:
+                raise bll_exc.NoSuchObjectException()
 
-    if request.args.get("redirected") == "apply":
-        form['next'].data = url_for("apply.public_application")
-        return render_template(templates.LOGIN_TO_APPLY, form=form)
-    return render_template(templates.GLOBAL_LOGIN, form=form)
+            if action == 'get_link':
+                return _handle_pwless_login(user, form, request.args.get("redirected", ""))
+
+            elif action == 'password_login':
+                account = svc.verify_password_login(user, form.password.data)
+                login_user(account, remember=True)
+                Messages.flash(Messages.ACCOUNT__WELCOME_BACK)
+                return redirect(get_redirect_target(form=form, acc=account))
+
+            else:
+                # Unknown action
+                raise bll_exc.ArgumentException("Unknown login action")
+
+        except bll_exc.NoSuchObjectException:
+            form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
+        except bll_exc.IllegalStatusException as e:
+            msg = str(e) if e.args else ""
+            if msg == 'incomplete_verification':
+                handle_incomplete_verification()
+                return redirect(url_for('doaj.home'))
+            elif msg == 'incorrect_password':
+                forgot_url = url_for(".forgot")
+                form.password.errors.append(
+                    f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
+                )
+            else:
+                # Generic illegal status
+                Messages.flash(Messages.ACCOUNT__STATUS_LOGIN_FAILED)
+        except bll_exc.ArgumentException:
+            Messages.flash(Messages.ACCOUNT__REQUEST_PROBLEM)
+
+    return handle_login_template_rendering(form)
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
@@ -261,21 +501,13 @@ def forgot():
 
         events_svc = DOAJ.eventsService()
         events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, account.id, context={"account": account.data}))
-        flash('Instructions to reset your password have been sent to you. Please check your emails.')
+        Messages.flash(Messages.ACCOUNT__RESET_EMAIL_SENT)
 
         if app.config.get('DEBUG', False):
             util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(
                 url_for('account.reset', reset_token=account.reset_token)))
 
     return render_template(templates.FORGOT_PASSWORD)
-
-
-class ResetForm(Form):
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
 
 
 @blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
@@ -292,14 +524,14 @@ def reset(reset_token):
         pw = request.values.get("password")
         conf = request.values.get("confirm")
         if pw != conf:
-            flash("Passwords do not match - please try again", "error")
+            Messages.flash(Messages.ACCOUNT__PASSWORDS_NOT_MATCH)
             return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
         # update the user's account
         account.set_password(pw)
         account.remove_reset_token()
         account.save()
-        flash("New password has been set and you're now logged in.", "success")
+        Messages.flash(Messages.ACCOUNT__PASSWORD_SET_AND_LOGGED_IN)
 
         # log the user in
         login_user(account, remember=True)
@@ -312,30 +544,8 @@ def reset(reset_token):
 @ssl_required
 def logout():
     logout_user()
-    flash('You are now logged out', 'success')
+    Messages.flash(Messages.ACCOUNT__LOGGED_OUT)
     return redirect('/')
-
-
-class RegisterForm(RedirectForm):
-    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
-    name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
-    sender_email = StringField('Email address', [
-        validators.DataRequired(),
-        validators.Length(min=3, max=254),
-        validators.Email(message='Must be a valid email address'),
-        EmailAvailable(message="That email address is already in use. Please <a href='/account/forgot'>reset your password</a>. If you still cannot login, <a href='/contact'>contact us</a>.")
-    ])
-    roles = StringField('Roles')
-    # These are honeypot (bot-trap) fields
-    email = StringField('email')
-    hptimer = DecimalField('hptimer', [validators.Optional()])
-
-    def is_bot(self):
-        """
-        Checks honeypot fields and determines whether the form was submitted by a bot
-        :return: True, if bot suspected; False, if human
-        """
-        return self.email.data != "" or self.hptimer.data is None or self.hptimer.data < app.config.get("HONEYPOT_TIMER_THRESHOLD", 5000)
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
@@ -356,8 +566,12 @@ def register(template=templates.REGISTER):
             return render_template(template, form=form)
 
         if form.validate():
-            account = Account.make_account(email=form.sender_email.data, username=form.identifier.data, name=form.name.data,
-                                           roles=[r.strip() for r in form.roles.data.split(',')])
+            account = Account.make_account(email=form.sender_email.data, username=form.identifier.data, name=form.name.data)
+            if current_user.is_authenticated and current_user.has_role(constants.ROLE_ADMIN):
+                roles = [r.strip() for r in form.roles.data.split(',')]
+                for r in roles:
+                    account.add_role(r)
+
             account.save()
 
             event_svc = DOAJ.eventsService()
@@ -371,17 +585,20 @@ def register(template=templates.REGISTER):
                 util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
                 return redirect(url_for('.index'))
             else:
-                flash('Thank you, please verify email address ' + form.sender_email.data + ' to set your password and login.',
-                      'success')
+                tpl = Messages.ACCOUNT__VERIFY_EMAIL_TO_SET_PASSWORD
+                Messages.flash((tpl[0].format(email=form.sender_email.data), tpl[1]))
 
             # We must redirect home because the user now needs to verify their email address.
             return redirect(url_for('doaj.home'))
         else:
-            flash('Please correct the errors', 'error')
+            Messages.flash(Messages.ACCOUNT__PLEASE_CORRECT_ERRORS)
 
     return render_template(template, form=form)
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
 @write_required()
+@login_required
 def create():
+    if not current_user.has_role(constants.ROLE_ADMIN):
+        abort(404)
     return register(template=templates.CREATE_USER)

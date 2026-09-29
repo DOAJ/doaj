@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.2"
+DOAJ_VERSION = "8.7.3"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -24,7 +24,7 @@ SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 CMS_BUILD_ASSETS_ON_STARTUP = False
 # Cookies security
-SESSION_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = True
 REMEMBER_COOKIE_SECURE = True
 
@@ -32,6 +32,9 @@ REMEMBER_COOKIE_SECURE = True
 # Testdrive for setting up the test environment.
 # CAUTION - this can modify the index so should NEVER be used in production!
 TESTDRIVE_ENABLED = False
+
+# List of script names which can be executed via the testdrive.
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications", "approaching_flag_deadline"]
 
 ####################################
 # Debug Mode
@@ -293,6 +296,18 @@ LOGIN_VIA_ACCOUNT_ID = True
 PASSWORD_RESET_TIMEOUT = 86400
 # amount of time a reset token for a new account is valid for
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
+# amount of time a login through login-link is valid for
+LOGIN_LINK_TIMEOUT = 600
+# Encryption key for passwordless login. Must be 32 url-safe
+# base64-encoded bytes, e.g. generated with:
+#   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# The placeholder below is not a valid key - set a real one as a secret
+# in your overriding app.cfg or dev.cfg, or requesting a passwordless
+# login link will fail with
+# "Fernet key must be 32 url-safe base64-encoded bytes."
+# (password-reset emails use a separate uuid-based reset token and are
+# unaffected by this setting)
+PASSWORDLESS_ENCRYPTION_KEY = "Passwordless login encryption key"
 
 # "api" top-level role is added to all accounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = [
@@ -464,6 +479,9 @@ HUEY_SCHEDULE = {
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
     "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
     "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
+    # Weekly notification to publishers about deleted articles (Article Tombstones)
+    "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
+    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
 }
 
 
@@ -511,6 +529,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
+    "portality.models.note.Note"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -688,6 +707,10 @@ DEFAULT_INDEX_SETTINGS = \
           }
         }
     }
+
+# Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
+# Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
+INDEX_SETTINGS_OVERRIDES = {}
 
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
@@ -885,6 +908,76 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.RISExport",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        # ~~->SystemObjectProvenanceQuery:Endpoint~~
+        "provenance": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Provenance",  # ~~->Provenance:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectFileUploadQuery:Endpoint~~
+        "upload": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.FileUpload",  # ~~->FileUpload:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectBulkUploadQuery:Endpoint~~
+        "bulk_articles": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.BulkArticles",  # ~~->BulkArticles:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectCacheQuery:Endpoint~~
+        "cache": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Cache",  # ~~->Cache:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectLockQuery:Endpoint~~
+        "lock": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Lock",  # ~~->Lock:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectPreservationQuery:Endpoint~~
+        "preserve": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.PreservationState",  # ~~->PreservationState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectArticleTombstoneQuery:Endpoint~~
+        "article_tombstone": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.ArticleTombstone",  # ~~->ArticleTombstone:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectDraftApplicationQuery:Endpoint~~
+        "draft_application": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.DraftApplication",  # ~~->DraftApplication:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectHarvesterStateQuery:Endpoint~~
+        "harvester_state": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.HarvestState",  # ~~->HarvestState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectAutocheckQuery:Endpoint~~
+        "autocheck": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Autocheck",  # ~~->Autocheck:Model~~
+            "tolerate_missing_mapping": True
         }
     },
     "associate_query": {
@@ -997,9 +1090,13 @@ QUERY_FILTERS = {
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
 PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
+    # old protections for notes
+    # TODO: these MUST remain in place for the duration of deployment, they can be removed post migration
     "admin.notes.note",
     "admin.notes.id",
-    "admin.notes.author_id"
+    "admin.notes.author_id",
+    # New protections for notes
+    "admin.index.notes"
 ]
 
 ADMIN_NOTES_INDEX_ONLY_FIELDS = {
@@ -1014,8 +1111,12 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
     }
 }
 
+# These mappings prevent the notes and flags from being indexed in all_meta (the default for text fields)
 ADMIN_NOTES_SEARCH_MAPPING = {
-    "admin.notes.id": {
+    "admin.index.notes": {
+        "type": "text"
+    },
+    "admin.flag.note_id": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1024,16 +1125,7 @@ ADMIN_NOTES_SEARCH_MAPPING = {
             }
         }
     },
-    "admin.notes.note": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
-    },
-    "admin.notes.author_id": {
+    "admin.flag.assigned_to": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1472,6 +1564,7 @@ _MIN = 60
 _HOUR = 3600
 _DAY = 24 * _HOUR
 _WEEK = 7 * _DAY
+_YEAR = 52 * _WEEK + _DAY  # unless it's a leap year
 
 # Configures the age of the last completed job on the queue before the queue is marked as unstable
 # (in seconds)
@@ -1510,8 +1603,11 @@ BG_MONITOR_DEFAULT_CONFIG = {
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
     'anon_export': {
-        'check_sec': _WEEK,    # a week
-        'allowed_num_err': 0
+        # anon_export only runs monthly, so a raw count of errors within a rolling window
+        # can't distinguish "still failing" from "failed a few times then succeeded" - disable
+        # this check and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['anon_export'] instead,
+        # which only cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'article_bulk_create': {
         'check_sec': _DAY,  # 1 day
@@ -1599,16 +1695,19 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _WEEK + _DAY
     },
     'check_latest_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'datalog_journal_added_update': {
-        'last_run_successful_in': _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'find_discontinued_soon': {
+        'last_run_successful_in': _DAY + 2 * _HOUR
+    },
+    'approaching_flag_deadline': {
         'last_run_successful_in': _DAY + _HOUR
     },
     'harvest': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'journal_csv': {
         'last_run_successful_in': 2 * _HOUR
@@ -1620,7 +1719,7 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'prune_es_backups': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'public_data_dump': {
         'last_run_successful_in': 32 * _DAY
@@ -1632,10 +1731,10 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': 32 * _DAY
     },
     'request_es_backup': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     },
     'sitemap': {
-        'last_run_successful_in': _DAY + _HOUR
+        'last_run_successful_in': _DAY + 2 * _HOUR
     }
 }
 
@@ -1658,6 +1757,12 @@ PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 # report journals that discontinue in ... days (eg. 1 = tomorrow)
 DISCONTINUED_DATE_DELTA = 0
+
+####################################################
+# Flag management
+
+# find approaching deadlines in ... days (eg. 1 = tomorrow)
+FLAG_APPROACHING_DEADLINE_DELTA = 7
 
 ##################################################
 # Feature tours currently active
@@ -1769,6 +1874,8 @@ BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
 
+ANON_EXPORT_SKIP_LIST = ['ris_export', 'cache']
+
 ##################################################
 # Honeypot bot-trap settings for forms (now: only registration form)
 HONEYPOT_TIMER_THRESHOLD = 5000
@@ -1804,3 +1911,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False

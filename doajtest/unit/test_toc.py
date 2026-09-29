@@ -6,7 +6,7 @@ from portality.util import url_for
 
 
 def _test_toc_uses_both_issns_when_available(app_test, url_name):
-    j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+    j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
     pissn = j.bibjson().first_pissn
     eissn = j.bibjson().first_eissn
     j.save(blocking=True)
@@ -20,7 +20,7 @@ def _test_toc_uses_both_issns_when_available(app_test, url_name):
 
 
 def _test_toc_correctly_uses_pissn(app_test, url_name):
-    j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+    j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
     pissn = j.bibjson().first_pissn
     # remove eissn
     del j.bibjson().eissn
@@ -34,7 +34,7 @@ def _test_toc_correctly_uses_pissn(app_test, url_name):
 
 
 def _test_toc_correctly_uses_eissn(app_test, url_name):
-    j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+    j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
     eissn = j.bibjson().first_eissn
     # remove pissn
     del j.bibjson().pissn
@@ -164,31 +164,23 @@ class TestTOC(DoajTestCase):
 
     def test_09_toc_withdrawn_journal_uuid_returns_410(self):
         """Test that a withdrawn journal accessed by UUID returns 410 Gone"""
-        import uuid
         # Create a journal that's not in DOAJ (withdrawn)
-        source = JournalFixtureFactory.make_journal_source(in_doaj=False)
-        # Set a proper 32-character UUID-like ID in the source
-        test_id = uuid.uuid4().hex  # This creates a 32-character hex string
-        source["id"] = test_id
-        j = models.Journal(**source)
+        import uuid
+        j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=False, overlay={"id": uuid.uuid4().hex})
         j.save(blocking=True)
         
         with self.app_test.test_client() as t_client:
-            response = t_client.get(url_for('doaj.toc', identifier=test_id))
+            response = t_client.get(url_for('doaj.toc', identifier=j.id))
             assert response.status_code == 410
 
     def test_10_toc_uuid_identifier_success(self):
         """Test that valid UUID identifier works correctly"""
         import uuid
-        source = JournalFixtureFactory.make_journal_source(in_doaj=True)
-        # Set a proper 32-character UUID-like ID in the source
-        test_id = uuid.uuid4().hex  # This creates a 32-character hex string
-        source["id"] = test_id
-        j = models.Journal(**source)
+        j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": uuid.uuid4().hex})
         j.save(blocking=True)
         
         with self.app_test.test_client() as t_client:
-            response = t_client.get(url_for('doaj.toc', identifier=test_id))
+            response = t_client.get(url_for('doaj.toc', identifier=j.id))
             # The route may redirect to canonical ISSN URL (301) or render directly (200)
             assert response.status_code in [200, 301]
 
@@ -202,14 +194,14 @@ class TestTOC(DoajTestCase):
         js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
         
         # First journal - set as withdrawn (not in_doaj)
-        js[0]["admin"]["in_doaj"] = False
-        j1 = models.Journal(**js[0])
+        import uuid
+        j1 = JournalFixtureFactory.make_legacy_journal_object(in_doaj=False, overlay={"id": uuid.uuid4().hex})
         j1.bibjson().pissn = pissn
         j1.bibjson().eissn = eissn  # Set same eissn
         j1.save(blocking=True)
         
         # Second journal - keep as in DOAJ
-        j2 = models.Journal(**js[1])
+        j2 = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": uuid.uuid4().hex})
         j2.bibjson().pissn = pissn
         j2.bibjson().eissn = eissn  # Set same eissn
         j2.save(blocking=True)
@@ -225,9 +217,8 @@ class TestTOC(DoajTestCase):
         eissn = "9876-5432"  # Same eissn for both to ensure ISSN sets match
         
         # Create two journals with the same ISSN, both withdrawn
-        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=False)
-        for j_source in js:
-            j = models.Journal(**j_source)
+        js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=False)
+        for j in js:
             j.bibjson().pissn = pissn
             j.bibjson().eissn = eissn  # Set same eissn
             j.save(blocking=True)
@@ -242,9 +233,8 @@ class TestTOC(DoajTestCase):
         eissn = "0987-6543"  # Same eissn for both to ensure ISSN sets match
         
         # Create two journals with th same ISSN, both in_doaj
-        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
-        for j_source in js:
-            j = models.Journal(**j_source)
+        js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=True)
+        for j in js:
             j.bibjson().pissn = pissn
             j.bibjson().eissn = eissn  # Set same eissn
             j.save(blocking=True)
@@ -287,25 +277,17 @@ class TestTOCArticles(DoajTestCase):
     def test_09_toc_articles_withdrawn_journal_uuid_returns_410(self):
         """Test that a withdrawn journal accessed by UUID returns 410 Gone for articles route"""
         import uuid
-        source = JournalFixtureFactory.make_journal_source(in_doaj=False)
-        # Set a proper 32-character UUID-like ID in the source
-        test_id = uuid.uuid4().hex  # This creates a 32-character hex string
-        source["id"] = test_id
-        j = models.Journal(**source)
+        j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=False, overlay={"id": uuid.uuid4().hex})
         j.save(blocking=True)
         
         with self.app_test.test_client() as t_client:
-            response = t_client.get(url_for('doaj.toc_articles', identifier=test_id))
+            response = t_client.get(url_for('doaj.toc_articles', identifier=j.id))
             assert response.status_code == 410
 
     def test_10_toc_articles_uuid_identifier_success(self):
         """Test that a valid UUID identifier works correctly for articles route"""
         import uuid
-        source = JournalFixtureFactory.make_journal_source(in_doaj=True)
-        # Set a proper 32-character UUID-like ID in the source
-        test_id = uuid.uuid4().hex  # This creates a 32-character hex string
-        source["id"] = test_id
-        j = models.Journal(**source)
+        j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={"id": uuid.uuid4().hex})
         j.save(blocking=True)
         
         # Create an article to avoid ES mapping issues with article_stats() call
@@ -315,7 +297,7 @@ class TestTOCArticles(DoajTestCase):
         a.save(blocking=True)
         
         with self.app_test.test_client() as t_client:
-            response = t_client.get(url_for('doaj.toc_articles', identifier=test_id))
+            response = t_client.get(url_for('doaj.toc_articles', identifier=j.id))
             # The route may redirect to canonical ISSN URL (301) or render directly (200)
             assert response.status_code in [200, 301]
 
@@ -325,17 +307,17 @@ class TestTOCArticles(DoajTestCase):
         eissn = "1098-7654"  # Same eissn for both to ensure ISSN sets match
         
         # Create two journal sources at once, then modify their in_doaj status
-        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
+        js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=True)
         
         # First journal - set as withdrawn (not in_doaj)
-        js[0]["admin"]["in_doaj"] = False
-        j1 = models.Journal(**js[0])
+        j1 = js[0]
+        j1.set_in_doaj(False)
         j1.bibjson().pissn = pissn
         j1.bibjson().eissn = eissn  # Set same eissn
         j1.save(blocking=True)
         
         # Second journal - keep as in DOAJ
-        j2 = models.Journal(**js[1])
+        j2 = js[1]
         j2.bibjson().pissn = pissn
         j2.bibjson().eissn = eissn  # Set same eissn
         j2.save(blocking=True)
@@ -357,9 +339,8 @@ class TestTOCArticles(DoajTestCase):
         eissn = "2109-8765"  # Same eissn for both to ensure ISSN sets match
         
         # Create two journals with same ISSN, both withdrawn
-        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=False)
-        for j_source in js:
-            j = models.Journal(**j_source)
+        js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=False)
+        for j in js:
             j.bibjson().pissn = pissn
             j.bibjson().eissn = eissn  # Set same eissn
             j.save(blocking=True)
@@ -374,9 +355,8 @@ class TestTOCArticles(DoajTestCase):
         eissn = "3210-9876"  # Same eissn for both to ensure ISSN sets match
         
         # Create two journals with same ISSN, both in_doaj
-        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
-        for j_source in js:
-            j = models.Journal(**j_source)
+        js = JournalFixtureFactory.make_multiple_journals_legacy(2, in_doaj=True)
+        for j in js:
             j.bibjson().pissn = pissn
             j.bibjson().eissn = eissn  # Set same eissn
             j.save(blocking=True)

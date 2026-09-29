@@ -15,7 +15,7 @@ from doajtest.mocks.file import FileMockFactory
 from doajtest.mocks.ftp import FTPMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.xwalk import XwalkMockFactory
-from portality import models
+from portality import dao, models
 from portality.background import BackgroundException
 from portality.bll.exceptions import IngestException
 from portality.bll.services import article as articleSvc
@@ -626,7 +626,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         job = models.BackgroundJob()
@@ -738,7 +738,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_1_issn_correct()
@@ -785,7 +785,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         url = "http://valid"
@@ -828,7 +828,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_1_issn_correct()
@@ -1017,7 +1017,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_2_issns_correct()
@@ -1071,7 +1071,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_1_issn_correct()
@@ -1123,7 +1123,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_1_issn_correct()
@@ -1344,7 +1344,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_2_issns_correct()
@@ -1456,7 +1456,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         # make both handles, as we want as little gap as possible between requests in a moment
@@ -1518,7 +1518,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
@@ -1577,7 +1577,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_1_issn_superlong_should_clip()
@@ -1687,7 +1687,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         handle = Crossref442ArticleFixtureFactory.upload_2_issns_correct()
@@ -1823,7 +1823,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         job = models.BackgroundJob()
@@ -2023,7 +2023,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         etree.XMLSchema = self.mock_load_schema
@@ -2152,7 +2152,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
         article.save(blocking=True)
-        article.delete()
+        dao.DomainObject.delete(article)  # bypass tombstoning for this disposable mapping-warmup article, see fix_es_mapping
         models.Article.blockdeleted(article.id)
 
         job = models.BackgroundJob()

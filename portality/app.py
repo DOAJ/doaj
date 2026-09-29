@@ -489,7 +489,7 @@ def handle_500(e):
 @app.errorhandler(elasticsearch.exceptions.RequestError)
 def handle_es_request_error(e):
     app.logger.exception(e)
-    return render_template(templates.ERROR_400), 400
+    return render_template(templates.ERROR_500, description=Messages.DEFAULT_500_DESCRIPTION), 500
 
 
 is_dev_log_setup_completed = False
@@ -537,6 +537,13 @@ def run_server(host=None, port=None, fake_https=False):
     run_kwargs = {}
     if fake_https:
         run_kwargs['ssl_context'] = 'adhoc'
+
+    debugger_attached = sys.gettrace() is not None
+    if debugger_attached:
+        run_kwargs.update(
+            use_reloader=False,
+            use_debugger=False,
+        )
 
     host = host or app.config['HOST']
     port = port or app.config['PORT']

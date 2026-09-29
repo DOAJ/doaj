@@ -5,7 +5,8 @@
 
 <legend class="form__legend"><div><span data-feather="edit-3"></span> {{ _("About the journal") }}</div></legend>
 
-{% set fs = formulaic_context.fieldset("about_the_journal") %}
+{% set fs_tmp = formulaic_context.fieldset("about_the_journal") %}
+{% set fs = fs_tmp if fs_tmp else formulaic_context.fieldset("about_the_journal_extended") %}
 {% for f in fs.fields() %}
     {% set field_template = f.template %}
     {%  include field_template %}

@@ -38,5 +38,45 @@ tests:
     - step: Go to your account setting at /account/testuser
       results:
       - Email address is displayed as "TestUser@test.com" (confirm correct casing).
-
-
+- title: Basic Passwordless Login Flow
+  context:
+    role: anonymous
+  steps:
+    - step: Ensure a user exists with email "passwordless@test.com" and password "password123"
+    - step: Go to login page at /account/login
+    - step: Enter email "passwordless@test.com" and click "Get Login Link" button
+      results:
+      - A message is displayed indicating a login link has been sent
+      - The verification code input form is displayed
+    - step: Check the email sent to "passwordless@test.com" and note the 6-digit verification code
+    - step: Enter the verification code in the form and submit
+      results:
+      - User is successfully logged in
+      - User is redirected to the homepage
+- title: Passwordless Login with Incorrect Code
+  context:
+    role: anonymous
+  steps:
+    - step: Ensure a user exists with email "passwordless@test.com" and password "password123"
+    - step: Go to login page at /account/login
+    - step: Enter email "passwordless@test.com" and click "Get Login Link" button
+      results:
+      - A message is displayed indicating a login link has been sent
+      - The verification code input form is displayed
+    - step: Enter an incorrect verification code (e.g., "999999") and submit
+      results:
+      - An error message "Invalid or expired verification code" is displayed
+      - User remains on the login page
+- title: Login Using Email Link
+  context:
+    role: anonymous
+  steps:
+    - step: Ensure a user exists with email "link@test.com" and password "password123"
+    - step: Go to login page at /account/login
+    - step: Enter email "link@test.com" and click "Get Login Link" button
+      results:
+      - A message is displayed indicating a login link has been sent
+    - step: Check the email sent to "link@test.com" and locate the login link
+    - step: Click on the login link in the email
+      results:
+      - User is automatically logged in without needing to enter the verification code

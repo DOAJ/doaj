@@ -288,14 +288,6 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
 huey_helper = ArticleDuplicateReportBackgroundTask.create_huey_helper(queue)
 
-'''
-@long_running.periodic_task(schedule("article_duplicate_report"))
-def scheduled_article_cleanup_sync():
-    user = app.config.get("SYSTEM_USERNAME")
-    job = ArticleDuplicateReportBackgroundTask.prepare(user)
-    ArticleDuplicateReportBackgroundTask.submit(job)
-'''
-
 
 @huey_helper.register_execute(is_load_config=False)
 def article_duplicate_report(job_id):

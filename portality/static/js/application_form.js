@@ -186,7 +186,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.TABS = [
             {title: "Open access compliance", fieldsets: ["basic_compliance"]},
-            {title: "About the Journal", fieldsets: ["about_the_journal", "publisher", "society_or_institution"]},
+            {title: "About the Journal", fieldsets: ["about_the_journal_extended", "publisher", "society_or_institution"]},
             {title: "Copyright & licensing", fieldsets: ["licensing", "embedded_licensing", "copyright"]},
             {title: "Editorial", fieldsets: ["peer_review", "plagiarism", "editorial"]},
             {title: "Business model", fieldsets: ["apc", "apc_waivers", "other_fees"]},
@@ -392,11 +392,19 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             let errFirst = $(errFields.first()[0].element);
             // The Firefox does not handle focus on hidden fields and select2 does not implement this after autofocus on select2 fields
             // it resolves this issue and fixes: https://github.com/DOAJ/doajPM/issues/2626
+            let errScrollTarget;
             if ($(errFirst).attr("type") !== "radio"){
                 errFirst.triggerHandler("focus");
+                errScrollTarget = errFirst;
             }
             else {
-                errFirst.closest("li[tabindex='0']").focus();
+                errScrollTarget = errFirst.closest("li[tabindex='0']");
+                errScrollTarget.focus();
+            }
+            // triggerHandler("focus") above does not invoke the browser's native focus behaviour,
+            // so it will not scroll the field into view by itself - do that explicitly here.
+            if (errScrollTarget.length > 0) {
+                errScrollTarget[0].scrollIntoView({block: "center"});
             }
             //$(".nextBtn").blur();
             if (showEvenIfInvalid){
@@ -456,6 +464,12 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         this.sections.each((idx, sec) => {
             $(sec).show();
         });
+
+        $("#cont_confirmation").click(function() {
+            $(this).parent().removeClass("focus");
+            $(this).hide();
+            $("#focus-overlay").hide();
+        })
 
         var that = this;
         $("#unlock").click(function(event) {
@@ -718,6 +732,15 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             $("#modal-quick_reject").show();
         });
 
+        $("#application_status").on("change", (e) => {
+            e.preventDefault();
+            if ($("#application_status").val() === "accepted") {
+                $("#mark_as_full_review_div").show();
+            } else {
+               $("#mark_as_full_review_div").hide();
+            }
+        });
+
         let that = this;
         $("#submit_quick_reject").on("click", function(event) {
             if ($("#quick_reject").val() === "" && $("#quick_reject_details").val() === "") {
@@ -791,27 +814,82 @@ doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
     }
 };
 
+// value required if the field is not disabled
+window.Parsley.addValidator("requiredIfActive", {
+    validateString : function(value, requirement, parsleyInstance) {
+        console.log("requiredIfActive")
+        if (parsleyInstance.$element[0].disabled) {
+            return true;
+        }
+        return !!value;
+    }
+})
+
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
+        let thisElementId = parsleyInstance.$element[0].id;
+        // console.log(thisElementId)
+
+        const getGroupWithIndexFromInputId = (inputId) => {
+          const match = inputId.match(/^([^-]+-\d+-)|^([^-]+)/);
+          return match ? (match[1] || match[2]) : "";
+        }
+
+        let skipIfDisabled  = parsleyInstance.$element.attr("data-parsley-validate-if-disabled") === "false";
+        if (skipIfDisabled && parsleyInstance.$element[0].disabled) {
+            return true;
+        }
+
         let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+
+        // determine if this is the "not empty" value
+        let ne = parsleyInstance.$element.attr("data-parsley-required-if-not-empty")
+        if (ne === "true") {
+            ne = true;
+        } else {
+            ne = false;
+        }
+
         if (typeof requirement !== "string") {
             requirement = requirement.toString();
         }
-
         let requirements = requirement.split(",");
 
-        let other = $("[name='" + field + "']");
-        let type = other.attr("type");
-        if (type === "checkbox" || type === "radio") {
-            let otherVal = other.filter(":checked").val();
-            if ($.inArray(otherVal, requirements) > -1) {
-                return !!value;
-            }
-        } else {
-            if ($.inArray(other.val(), requirements) > -1) {
-                return !!value;
-            }
+        let prefix = getGroupWithIndexFromInputId(thisElementId)
+        let other = $("[name='" + (prefix ? (prefix + "-") : "") + field + "']");
+
+        // there's a chance `other` is not present in the form.  If so, we should not fail validation, as the field
+        // that triggers the requirement is not present, so we return true
+        if (other.length === 0) {
+            return true;
         }
+
+        let type = other.attr("type");
+
+        // get the value from the other field
+        const otherVal = (type === "checkbox" || type === "radio")
+            ? other.filter(":checked").val()
+            : other.val();
+
+        if (ne) {
+            // if the other value is not empty, then this field is required
+            if (otherVal !== undefined && otherVal !== null && otherVal !== "") {
+                // other value is not empty, so this field is required, so we return true if this field is not empty
+                if (value !== undefined && value !== null && value !== "") {
+                    return true;
+                }
+                return false;
+            }
+
+            // if the other value is empty, this field is not required
+            return true;
+        }
+
+        // otherwise check that the otherVal is in our requirements
+        if ($.inArray(otherVal, requirements) > -1) {
+            return !!value;
+        }
+
         return true;
     },
     messages: {
@@ -998,8 +1076,12 @@ window.Parsley.addValidator("year", {
 });
 
 window.Parsley.addValidator("validdate", {
-    validateString : function(value) {
+    validateString : function(value, requirements, parsleyInstance) {
         // Check if the value matches the YYYY-MM-DD format
+        const ignore_empty = parsleyInstance.$element.attr("data-parsley-validdate-ignore_empty");
+        if (ignore_empty && !value) {
+            return true;
+        }
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!regex.test(value)) {
           return false; // Invalid format
@@ -1064,6 +1146,30 @@ doaj.af.decimalPlaces = num => {
        // Adjust for scientific notation.
        (match[2] ? +match[2] : 0));
 };
+
+window.Parsley.addValidator("notValue", {
+    validateString: function(value, requirement) {
+        if (!value) { return true; }
+        return value.trim().toLowerCase() !== requirement.trim().toLowerCase();
+    },
+    messages: {
+        en: `<p><small>${doaj.i18n.get("'None' is not a valid answer for this question. Leave blank.")}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get("'None' is not a valid answer for this question. Leave blank.")}</small></p>`
+    },
+    priority: 32
+});
+
+window.Parsley.addValidator("forbiddenWord", {
+    validateString: function(value, requirement) {
+        if (!value) { return true; }
+        return !value.toLowerCase().includes(requirement.toLowerCase());
+    },
+    messages: {
+        en: `<p><small>${doaj.i18n.get("Please use the structured options above to indicate the type of blind peer review used.")}</small></p>`,
+        fr: `<p><small>${doaj.i18n.get("Please use the structured options above to indicate the type of blind peer review used.")}</small></p>`
+    },
+    priority: 32
+});
 
 // remove the old type validator
 window.Parsley.removeValidator("type");
