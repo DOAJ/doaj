@@ -557,7 +557,9 @@ def register(template=templates.REGISTER):
             or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
         abort(401)      # todo: we may need a template to explain this since it's linked from the application form
 
-    form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
+    form = RegisterForm(request.form, csrf_enabled=False,
+                        roles=",".join(app.config.get("DEFAULT_REGISTER_ROLES", [])),
+                        identifier=Account.new_short_uuid())
 
     if request.method == 'POST':
 
@@ -572,10 +574,10 @@ def register(template=templates.REGISTER):
                 for r in roles:
                     account.add_role(r)
             else:
-                if constants.ROLE_PUBLISHER in form.roles.data:
-                    account.add_role(constants.ROLE_PUBLISHER)
-                if constants.ROLE_API in form.roles.data:
-                    account.add_role(constants.ROLE_API)
+                # for all accounts, add the default roles
+                default_roles = app.config.get("DEFAULT_REGISTER_ROLES", [])
+                for role in default_roles:
+                    account.add_role(role)
 
 
             account.save()

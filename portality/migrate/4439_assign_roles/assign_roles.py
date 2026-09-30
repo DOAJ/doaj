@@ -1,10 +1,9 @@
-from portality import constants
+from portality.core import app
 from portality.lib import dates
 from portality.models import Account
 
 
 CUTOFF_DATE = dates.parse("2026-09-03T00:00:00Z")
-ROLES_TO_ASSIGN = [constants.ROLE_PUBLISHER, constants.ROLE_API]
 
 
 class AccountsCreatedSinceQuery(object):
@@ -32,7 +31,7 @@ def assign_roles():
         checked += 1
         changed = False
 
-        for role in ROLES_TO_ASSIGN:
+        for role in app.config.get("DEFAULT_REGISTER_ROLES", []):
             if acc.has_role(role):
                 continue
             acc.add_role(role)
