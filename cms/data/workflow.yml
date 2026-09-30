@@ -29,28 +29,22 @@ triage:
 
     ethics_no_nonstandard_metrics:
       label: "3. Non-standard metric services"
-      check: "3. The journal <strong>does not</strong> display any references  (images, links, logos) to non-standard 
-                  metric services"
+      check: "3. Does the journal display any references to non-standard metric services?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> display references to non standard services"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> display references to non standard services"
+        compliant: "<span class='answer'>No</span>, there are no references to non-standard metric services."
+        non_compliant: "<span class='answer'>Yes</span>, there are references to non-standard metric services."
         later: "I don't know - mark for later"
-      edit:
-        publisher: "Publisher"
-        title: "Journal's title"
-      remember: ""
-      instructions: ""
+      remember: "If you select <span class='answer non-compliant'>Yes</span>, you must add a note with a link to the source that supports your answer."
+      application_info:
+        homepage: "Journal's homepage"
       resources:
-        - label: "Quality Review Tool for Triage only"
-          url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
-      action: # not used here, should be removed
-        button: "non_compliant"
-        instruction: "Provide more information on non-standard metric services this journal references"
+        - label: "Non-standard services list"
+          url: "https://docs.google.com/spreadsheets/d/1JChOENJWD9CtHG4VsoITFqMhD0GXECx8TpIZnaN-rk4/edit?usp=sharing"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Provide more information on non-standard metric services this journal references"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
       compliant_answers:
       - "compliant"
       non_compliant_answers:

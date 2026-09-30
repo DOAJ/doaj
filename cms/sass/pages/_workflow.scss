@@ -427,9 +427,16 @@ body.dashboard {
       list-style-type: none;
     }
 
+
     .criterion {
       position: relative;
       min-width: 0;
+
+      .criterion-layout__question {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
 
       h4 {
         width: 100%;

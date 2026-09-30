@@ -344,19 +344,15 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
         S = T.ethics_no_nonstandard_metrics
         options = options_for(S)
         check = S.check
-        instructions = S.instructions
         remember = S.remember
         resources = resource_for(S)
         application_info = [
             {
-                "label": S.edit.publisher,
-                "lookup": lambda application, wfc: application.bibjson().publisher_name
-            },
-            {
-                "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title,
-                "data-value": "title"
-            },
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url",
+            }
         ]
 
     name = "ethics_no_nonstandard_metrics"
@@ -378,12 +374,6 @@ class EthicsNoNonStandardMetricsGroup(Structure):
         label = T.ethics_no_nonstandard_metrics.label
         order = ["answer", "note"]
         render_class = TriageCompound
-        # action = {
-        #     "non_compliant": {
-        #         "instruction": T.ethics_no_nonstandard_metrics.action.instruction,
-        #         "controls": "ethics_no_nonstandard_metrics_action_group"
-        #     }
-        # }
         error_messages = {
             IsConditionallyRequired: T.ethics_no_nonstandard_metrics.validation.group.is_conditionally_required
         }
@@ -392,8 +382,6 @@ class EthicsNoNonStandardMetricsGroup(Structure):
     capabilities_ = (C(),)
     answer = EthicsNoNonStandardMetrics(OPTIONAL, SINGLE)
     note = EthicsNoNonStandardMetricsNote(OPTIONAL, SINGLE)
-    # action = EthicsNonStandardMetricsActionGroup(OPTIONAL, SINGLE)
-    # action_note = EthicsNonStandardMetricsNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note,  # <- this field is required if
