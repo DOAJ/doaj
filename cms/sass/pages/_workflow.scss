@@ -2,29 +2,27 @@ body.dashboard {
   &.ew {
     .save-notification {
       position: fixed;
-      right: .25rem;
+      right: 0.25rem;
       z-index: 1000;
-      padding: 0.5rem 1rem;
-      margin-top: .25rem;
-      font-weight: bold;
       width: 25%;
+      margin-top: 0.25rem;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
       text-align: center;
-    }
 
-    @media (max-width: 1279px) {
-      .save-notification {
+      &.success {
+        background-color: rgba($light-green, 0.2);
+        color: $dark-green;
+      }
+
+      &.error {
+        background-color: rgba($sanguine, 0.2);
+        color: $sanguine;
+      }
+
+      @media (max-width: 1279px) {
         width: calc(100% - 75px);
       }
-    }
-
-    .save-notification.success {
-      background-color: rgba($light-green, 0.2);
-      color: $dark-green;
-    }
-
-    .save-notification.error {
-      background-color: rgba($sanguine, 0.2);
-      color: $sanguine;
     }
 
     .error-container {
@@ -32,7 +30,7 @@ body.dashboard {
       line-height: 1.15;
       color: $sanguine;
 
-      &:before {
+      &::before {
         display: inline-block;
         margin-right: $spacing-01;
         content: '';
@@ -62,7 +60,8 @@ body.dashboard {
           font-variant: small-caps;
           background-color: $light-grey;
 
-          &:hover, &:focus {
+          &:hover,
+          &:focus {
             background-color: $warm-black;
             color: $white;
           }
@@ -94,7 +93,8 @@ body.dashboard {
             background-color: $white;
             border-bottom: 2px solid $light-grey;
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
               background-color: $white;
               color: $grapefruit;
             }
@@ -127,7 +127,7 @@ body.dashboard {
       align-items: flex-start;
       justify-content: space-between;
       margin-bottom: 0;
-      padding: 1rem .5rem;
+      padding: 1rem 0.5rem;
       background-color: $light-grey;
 
       @media screen and (max-width: 768px) {
@@ -153,7 +153,7 @@ body.dashboard {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: .25rem .5rem;
+        padding: 0.25rem 0.5rem;
         color: $warm-black;
         border-radius: 999px;
         text-decoration: none;
@@ -187,7 +187,7 @@ body.dashboard {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
-      gap: .5rem;
+      gap: 0.5rem;
     }
 
     .top {
@@ -195,7 +195,7 @@ body.dashboard {
       flex-direction: row;
       align-items: center;
       gap: 1rem;
-      margin-bottom: .75rem;
+      margin-bottom: 0.75rem;
     }
 
     .bottom {
@@ -214,7 +214,7 @@ body.dashboard {
     .input {
       &.inline {
         display: flex;
-        gap: .5rem;
+        gap: 0.5rem;
 
         label {
           margin-bottom: 0;
@@ -251,7 +251,7 @@ body.dashboard {
 
       label {
         cursor: pointer;
-        margin: 0 0 .5rem 0;
+        margin: 0 0 0.5rem;
         line-height: 1.1;
         color: $dark-grey;
         font-size: 1rem;
@@ -280,7 +280,7 @@ body.dashboard {
     }
 
     .icon {
-      margin-right: .25rem;
+      margin-right: 0.25rem;
     }
 
     li::marker {
@@ -305,124 +305,129 @@ body.dashboard {
     .review-table {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
       align-items: flex-start;
-    }
-
-    .review-table__row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      width: 100%;
-      font-size: 1rem;
-    }
-
-    .review-table__values-cell,
-    .review-table__buttons-cell {
-      display: flex;
-      align-items: center;
       gap: 1.5rem;
-      flex-wrap: wrap;
-      .review-table__value-pair {
+
+      &__row {
         display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        font-size: 1rem;
+      }
+
+      &__values-cell,
+      &__buttons-cell {
+        display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: .25rem;
-        .review-table__value {
-          font-weight: 700;
+        gap: 1.5rem;
+
+        .review-table__value-pair {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+
+          .review-table__value {
+            font-weight: 700;
+          }
+        }
+
+        .button--tertiary {
+          height: fit-content;
+          margin-bottom: 0;
+          color: $warm-black;
+          font-size: 0.8rem !important;
+          line-height: 1.45;
+          letter-spacing: 0.015em !important;
+
+          &:hover,
+          &:active,
+          &:focus {
+            top: unset;
+            left: unset;
+            color: $white;
+            border-color: currentColor;
+          }
         }
       }
 
-      .button--tertiary {
-        color: $warm-black;
-        margin-bottom: 0;
-        height: fit-content;
-        font-size: 0.8rem !important;
-        letter-spacing: 0.015em !important;
-        line-height: 1.45;
-        &:hover,
-        &:active,
-        &:focus {
-          left: unset;
-          top: unset;
+      // Visually hide the native checkbox without removing it from the accessibility tree.
+      &__checkbox {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+
+        &:checked + label {
           color: $white;
-          border-color: currentColor;
+          background: $dark-green;
+
+          .confirmation-unchecked {
+            display: none;
+          }
+
+          .confirmation-checked {
+            display: inline;
+          }
+        }
+
+        &:focus-visible + label {
+          outline: 3px solid $dark-green;
+          outline-offset: 3px;
         }
       }
-    }
 
-    /* Visually hide the native checkbox without removing it
-       from the accessibility tree */
+      &__confirmation {
+        label {
+          color: $dark-green;
+          border-color: $dark-green;
 
-    .review-table__checkbox {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
+          &:hover,
+          &:active,
+          &:focus {
+            color: $white;
+            background-color: $dark-green;
+          }
+        }
 
-    /* Confirmation control: unchecked */
-
-    .review-table__confirmation label {
-      color: $dark-green;
-      border-color: $dark-green;
-      &:hover,
-      &:active,
-      &:focus {
-        background-color: $dark-green;
-        color: $white;
+        .review-table__checkbox {
+          &:checked + label::before,
+          &:not(:checked) + label::before {
+            width: 0 !important;
+            height: 0 !important;
+            margin: 0 !important;
+            content: "" !important;
+            border: 0 !important;
+          }
+        }
       }
-    }
 
-    .review-table__confirmation .review-table__checkbox:checked + label:before,
-    .review-table__confirmation .review-table__checkbox:not(:checked) + label::before {
-        content: "" !important;
-        border: 0 !important;
-        margin: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
-
-    /* Confirmation control: checked */
-
-    .review-table__checkbox:checked + label {
-      color: $white;
-      background: $dark-green;
+      &__edit:focus-visible {
+        outline: 3px solid $dark-green;
+        outline-offset: 3px;
+      }
     }
 
     .confirmation-checked {
       display: none;
     }
 
-    .review-table__checkbox:checked + label .confirmation-unchecked {
-      display: none;
-    }
-
-    .review-table__checkbox:checked + label .confirmation-checked {
-      display: inline;
-    }
-
-    /* Keyboard focus */
-
-    .review-table__checkbox:focus-visible + label,
-    .review-table__edit:focus-visible {
-      outline: 3px solid $dark-green;
-      outline-offset: 3px;
-    }
-
     .app_info {
       display: flex;
       flex-direction: row;
-      justify-content: flex-start;
       flex-wrap: wrap;
+      justify-content: flex-start;
       gap: 1.5rem;
+
       .info-pair {
         min-width: calc(33.3333% - 3rem);
       }
-
     }
+
     .resources-list {
       list-style-type: none;
     }
@@ -445,10 +450,6 @@ body.dashboard {
         font-weight: normal;
       }
 
-      h5:not(:first-child) {
-        margin-top: 1rem;
-      }
-
       h5 {
         display: flex;
         align-items: center;
@@ -456,6 +457,10 @@ body.dashboard {
         margin-bottom: 1rem;
         font-size: 1rem;
         font-weight: bold;
+
+        &:not(:first-child) {
+          margin-top: 1rem;
+        }
       }
 
       .criterion-main {
@@ -477,7 +482,8 @@ body.dashboard {
         visibility: hidden;
         pointer-events: none;
         transform: translateX(100%);
-        transition: transform 250ms ease,
+        transition:
+        transform 250ms ease,
         visibility 0s linear 250ms;
       }
 
@@ -505,33 +511,50 @@ body.dashboard {
         top: 1rem;
         right: -2rem;
         z-index: 30;
-
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.6rem;
-
         box-sizing: border-box;
         width: 2.75rem;
+        gap: 0.6rem;
         padding: 0.75rem 0.5rem 1rem;
-
         color: $warm-black;
+        font: inherit;
         background: $white;
         border: 1px solid $light-grey;
         border-right: 0;
         border-radius: 0.35rem 0 0 0.35rem;
         box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.12);
-
-        font: inherit;
         cursor: pointer;
-
-        transition: transform 150ms ease,
+        transition:
+        transform 150ms ease,
         background-color 150ms ease,
         box-shadow 150ms ease;
+
+        &:hover,
+        &:focus-visible {
+          background: #f7f7f7;
+          box-shadow: -4px 3px 8px rgba(0, 0, 0, 0.16);
+          transform: translateX(-0.25rem);
+        }
+
+        &:focus-visible {
+          outline: 2px solid currentColor;
+          outline-offset: -3px;
+        }
+
+        > svg {
+          transform: rotate(90deg);
+        }
+
+        .form__long-help {
+          flex: 0 0 auto;
+          width: 1.1rem;
+          height: 1.1rem;
+        }
       }
 
       .criterion-instructions-close {
-        // dev: fix the position and size
         position: absolute;
         top: 0;
         color: $dark-grey;
@@ -545,7 +568,8 @@ body.dashboard {
         justify-content: center;
         align-items: center;
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background-color: transparent;
           color: $grapefruit;
         }
@@ -555,22 +579,6 @@ body.dashboard {
           width: 100%;
           height: 100%;
         }
-      }
-
-      .criterion-instructions-trigger:hover,
-      .criterion-instructions-trigger:focus-visible {
-        transform: translateX(-0.25rem);
-        background: #f7f7f7;
-        box-shadow: -4px 3px 8px rgba(0, 0, 0, 0.16);
-      }
-
-      .criterion-instructions-trigger:focus-visible {
-        outline: 2px solid currentColor;
-        outline-offset: -3px;
-      }
-
-      .criterion-instructions-trigger > svg {
-        transform: rotate(90deg);
       }
 
       .criterion-instructions-trigger__label {
@@ -592,12 +600,6 @@ body.dashboard {
         transition: none;
       }
 
-      .criterion-instructions-trigger .form__long-help {
-        flex: 0 0 auto;
-        width: 1.1rem;
-        height: 1.1rem;
-      }
-
       .criterion-layout--instructions-open
       .criterion-instructions-trigger {
         visibility: hidden;
@@ -614,7 +616,8 @@ body.dashboard {
         .criterion-layout__question {
           flex: 0 0 100%;
           max-width: 100%;
-          transition: flex-basis 250ms ease,
+          transition:
+          flex-basis 250ms ease,
           max-width 250ms ease;
         }
 
@@ -664,56 +667,29 @@ body.dashboard {
       }
     }
 
-    // The whole page scrolls normally (like every other admin page) -
-    // recommendation banner, progress bar, and the question list are
-    // all just plain in-flow content, one after another. No
-    // sticky/fixed positioning and no separate scroll region here
-    // deliberately - an earlier version pinned the banner/progress and
-    // gave the question list its own internal scrollbar, which needed
-    // increasingly elaborate overflow:hidden/JS workarounds to stop the
-    // outer page from scrolling too (which also pushed the page's
-    // trailing Logout/Settings row out of its normal place). Simpler to
-    // just not fight the browser: normal page, normal scroll, Logout/
-    // Settings ends up exactly where it is on every other page - after
-    // all the content, reached by scrolling to the end.
+    // Keep the triage panel in normal document flow; no internal scroll region.
     .triage-panel {
       &__banner {
-        // Breathing room around the recommendation + progress bar -
-        // previously had none, so they sat flush against the page
-        // edges and the header above.
-        //padding: 1rem 0.5rem 0;
-        //
-        //@media screen and (min-width: 769px) {
-        //    padding: 1rem;
-        //}
-
         .progress {
           margin-top: 0.5rem;
         }
       }
     }
 
-    // Prev/Next belong to the question they're in (see
-    // _triage_compound_base.html) - plain in-flow content at the end of
-    // each question, not sticky/shared, so the same pattern repeats
-    // consistently for every question. Prev and Next are equally
-    // weighted actions here, so both are left as plain .button-sized
-    // buttons - no special link-like treatment for Prev - and disabled
-    // state comes from the global .button[disabled] rule
-    // (components/_buttons.scss), same as everywhere else.
+    // Previous/Next controls stay in normal flow at the end of each question.
     .criterion-nav {
       margin-top: 1.5rem;
     }
 
     $progress-gradient: linear-gradient(
-                    90deg,
-                    #982E0A 0%,
-                    #FD5A3B 16.6%,
-                    #FA9A87 33%,
-                    #F9D950 50%,
-                    #A3C386 67%,
-                    #47A178 83%,
-                    #3A5959 100%
+    90deg,
+    #982e0a 0%,
+    #fd5a3b 16.6%,
+    #fa9a87 33%,
+    #f9d950 50%,
+    #a3c386 67%,
+    #47a178 83%,
+    #3a5959 100%
     );
 
     progress.progress {
@@ -735,13 +711,7 @@ body.dashboard {
       }
     }
 
-    // A <button> (see triage.html) rather than the plain text it used
-    // to be - clicking it scrolls the question list to whichever
-    // question is currently active. Sits below the bar as normal flow
-    // content now, not layered on top of it via absolute positioning.
-    // Resets the generic button styling from components/_buttons.scss
-    // (border/padding/uppercase) since this should read as a plain
-    // text link, not a bordered button.
+    // Button styled as a text link; clicking it scrolls to the active question.
     .progress-label {
       display: block;
       margin: 0.35rem 0 0;
@@ -756,7 +726,9 @@ body.dashboard {
       cursor: pointer;
       white-space: nowrap;
 
-      &:hover, &:focus, &:active {
+      &:hover,
+      &:focus,
+      &:active {
         border: none;
         background-color: transparent;
         color: $grapefruit;
@@ -777,21 +749,21 @@ body.dashboard {
       button {
         display: flex;
         align-items: flex-start;
-        gap: .5rem;
+        gap: 0.5rem;
         padding: $spacing-02 $spacing-03;
         border-radius: 0;
         cursor: pointer;
         transition: all 0.15s ease;
 
         border: 2px solid $dark-grey;
-        background-color: white;
+        background-color: $white;
         color: $warm-black;
 
         box-shadow: $spacing-01 $spacing-02 0 0 $dark-grey;
         margin-bottom: 0;
 
         @include font-sans;
-        font-size: .9rem;
+        font-size: 0.9rem;
         text-transform: none;
 
         &.compliant {
@@ -799,7 +771,8 @@ body.dashboard {
           border-color: $dark-green;
           box-shadow: $spacing-01 $spacing-02 0 0 $dark-green;
 
-          &:hover, &.checked {
+          &:hover,
+          &.checked {
             background: $dark-green;
             color: $white;
             box-shadow: none;
@@ -811,7 +784,8 @@ body.dashboard {
           box-shadow: $spacing-01 $spacing-02 0 0 $sanguine;
           border-color: $sanguine;
 
-          &:hover, &.checked {
+          &:hover,
+          &.checked {
             background: $sanguine;
             color: $white;
             box-shadow: none;
@@ -825,7 +799,7 @@ body.dashboard {
 
         label.review-outcome-answer,
         button.review-outcome-answer {
-          &:before {
+          &::before {
             content: "";
             border: 0;
             margin: 0;
@@ -835,7 +809,7 @@ body.dashboard {
           }
           display: flex;
           align-items: flex-start;
-          gap: .5rem;
+          gap: 0.5rem;
           flex: 1;
           padding: $spacing-02 $spacing-03;
           border-radius: 0;
@@ -843,14 +817,14 @@ body.dashboard {
           transition: all 0.15s ease;
 
           border: 2px solid $dark-grey;
-          background-color: white;
+          background-color: $white;
           color: $warm-black;
 
           box-shadow: $spacing-01 $spacing-02 0 0 $dark-grey;
           margin-bottom: 0;
 
           @include font-sans;
-          font-size: .9rem;
+          font-size: 0.9rem;
           text-transform: none;
 
           svg {
@@ -866,7 +840,7 @@ body.dashboard {
         button.review-outcome-answer:hover,
         button.review-outcome-answer:focus {
           background: $warm-black;
-          color: white;
+          color: $white;
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25),
           inset 0 -1px 0 rgba(255, 255, 255, 0.08);
         }
@@ -960,7 +934,9 @@ body.dashboard {
             color: $dark-grey !important;
             border-color: $light-grey;
             box-shadow: none !important;
-            &:hover, &:focus, &:active {
+            &:hover,
+            &:focus,
+            &:active {
               background: $light-grey !important;
               color: $dark-grey !important;
               border-color: $light-grey;
@@ -973,8 +949,8 @@ body.dashboard {
     }
 
     .review_outcome-container.single .radio-option label.review-outcome-answer {
-        flex: unset;
-      }
+      flex: unset;
+    }
 
     @media (max-width: 768px) {
 
@@ -990,11 +966,7 @@ body.dashboard {
     }
   }
 
-  // Keeps the "Current Recommendation" panel compact regardless of how
-  // many reasons/exceptions accumulate, so the question area below it
-  // (.ew_body) keeps the majority of the available vertical space. A
-  // solid background + left accent bar (rather than just a thin border)
-  // is what makes it read as a banner rather than plain text.
+  // Keep the current recommendation compact as reasons/exceptions accumulate.
   #triage-recommendation:not(:empty) {
     max-height: 12rem;
     overflow-y: auto;
@@ -1029,8 +1001,8 @@ body.dashboard {
   strong.highlight {
     display: block;
     font-weight: normal !important;
-    padding: .25rem;
-    background-color: rgba($sanguine, 0.2)
+    padding: 0.25rem;
+    background-color: rgba($sanguine, 0.2);
   }
 
   span.answer {
@@ -1050,5 +1022,3 @@ body.dashboard {
   }
 
 }
-
-
