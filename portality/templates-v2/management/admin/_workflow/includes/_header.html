@@ -5,19 +5,19 @@
         <!--            <span class="tag tag&#45;&#45;workflow tag&#45;&#45;workflow&#45;&#45;new tag&#45;&#45;workflow&#45;&#45;big">new</span>-->
         <div class="main_info">
             <div class="top">
-                <h1>{{ application.bibjson().title }}</h1>
-                <span class="data data--issns">P: {{ application.bibjson().pissn }} / E: {{ application.bibjson().eissn }} </span>
+                <h1 data-value="title">{{ application.bibjson().title }}</h1>
+                <span class="data data--issns">P: <span data-value="pissn">{{ application.bibjson().pissn }}</span> / E: <span data-value="eissn">{{ application.bibjson().eissn }}</span> </span>
             </div>
             <div class="bottom">
                     <span class="data data--url"><a href="{{ application.bibjson().journal_url }}" target="_blank"><span
-                            data-feather="link" class="icon"></span>{{ application.bibjson().journal_url }}</a></span>
+                            data-feather="link" class="icon"></span><span >{{ application.bibjson().journal_url }}</span></a></span>
                 <span class="data data--country"><span data-feather="globe" class="icon"></span><span
-                        class="placeholder">{{ datasets.get_country_name(application.bibjson().publisher_country) }}</span></span>
+                        class="placeholder" >{{ datasets.get_country_name(application.bibjson().publisher_country) }}</span></span>
                 <span class="data data--lang"><span><img alt="Language"
                                                          src="/static/doaj/images/feather-icons/language.svg"
                                                          class="icon"
                                                          style="height: 1.25rem; width: auto;"/></span><span
-                        class="placeholder">{{ application.bibjson().language_name()|join(", ") }}</span></span>
+                        class="placeholder"  >{{ application.bibjson().language_name()|join(", ") }}</span></span>
             </div>
         </div>
     </div>

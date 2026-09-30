@@ -290,11 +290,12 @@ class EthicsNotExcluded(ComplianceCheckField):
         application_info = [
             {
                 "label": S.edit.publisher,
-                "lookup": lambda application, wfc: application.bibjson().publisher_name
+                "lookup": lambda application, wfc: application.bibjson().publisher_name,
             },
             {
                 "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
             },
         ]
 
@@ -402,7 +403,8 @@ class EthicsNoNonStandardMetrics(ComplianceCheckField):
             },
             {
                 "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
             },
         ]
 
@@ -470,7 +472,8 @@ class EthicsNoFakeImpact(ComplianceCheckField):
             },
             {
                 "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
             },
         ]
 
@@ -534,7 +537,8 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
         application_info = [
             {
                 "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
             },
         ]
 
@@ -646,7 +650,8 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
             },
             {
                 "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
             },
         ]
 
@@ -760,11 +765,13 @@ class DatabaseWithdrawn(ComplianceCheckField):
         application_info = [
             {
                 "label": S.info.pissn,
-                "lookup": lambda application, wfc: application.bibjson().pissn
+                "lookup": lambda application, wfc: application.bibjson().pissn,
+                "data-value": "pissn"
             },
             {
                 "label": S.info.eissn,
-                "lookup": lambda application, wfc: application.bibjson().eissn
+                "lookup": lambda application, wfc: application.bibjson().eissn,
+                "data-value": "eissn"
             },
         ]
 
@@ -915,11 +922,13 @@ class DatabaseEmbargo(ComplianceCheckField):
         application_info = [
             {
                 "label": S.info.pissn,
-                "lookup": lambda application, wfc: application.bibjson().pissn
+                "lookup": lambda application, wfc: application.bibjson().pissn,
+                "data-value": "pissn"
             },
             {
                 "label": S.info.eissn,
-                "lookup": lambda application, wfc: application.bibjson().eissn
+                "lookup": lambda application, wfc: application.bibjson().eissn,
+                "data-value": "eissn"
             },
         ]
 
@@ -1099,11 +1108,13 @@ class ISSNAtLeastOne(ComplianceCheckField):
         application_info = [
             {
                 "label": S.info.eissn,
-                "lookup": lambda application, wfc: application.bibjson().eissn
+                "lookup": lambda application, wfc: application.bibjson().eissn,
+                "data-value": "eissn"
             },
             {
                 "label": S.info.pissn,
-                "lookup": lambda application, wfc: application.bibjson().pissn
+                "lookup": lambda application, wfc: application.bibjson().pissn,
+                "data-value": "pissn"
             }
         ]
 
@@ -1127,6 +1138,7 @@ class EISSN(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
+        attributes = {"data-value": "eissn"}
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
@@ -1144,6 +1156,7 @@ class PISSN(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
+        attributes = {"data-value": "pissn"}
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
@@ -1312,11 +1325,13 @@ class ISSNTitleMatch(ComplianceCheckField):
         application_info = [
             {
                 "label": S.info.title_label,
-                "lookup": lambda application, wfc: application.bibjson().title
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
             },
             {
                 "label": S.info.alttitle_label,
-                "lookup": lambda application, wfc: application.bibjson().alternative_title
+                "lookup": lambda application, wfc: application.bibjson().alternative_title,
+                "data-value": "alttitle"
             }
         ]
 
@@ -1340,7 +1355,7 @@ class Title(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
-        long_input = True
+        attributes = {"data-value": "title"}
         error_messages = {
             DisallowedValue: T.issn_title_match.validation.title.disallowed_value,
             IsRequired: T.issn_title_match.validation.title.is_required
@@ -1358,7 +1373,7 @@ class AltTitle(Field):
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
-        long_input = True
+        attributes = {"data-value": "alttitle"}
 
     name = "alttitle"
     coerce = [Unicode(trim_whitespace=True)]
@@ -1473,7 +1488,6 @@ class Continues(Field):
         error_messages = {
             RegexDoesNotMatch: T.issn_continuation.validation.continues.regex_not_match
         }
-        long_input = True;
 
     name = "continues"
     coerce = [Unicode(trim_whitespace=True)]
@@ -1571,6 +1585,7 @@ class JournalUrl(Field):
         control_class = URLInput
         control_render_class = GenericControl
         render_class = GenericField
+        attributes = {"data-value": "homepage_url"}
         error_messages = {
             IsRequired: T.website_working.validation.url.is_required,
             DisallowedValue: T.website_working.validation.url.disallowed_value
@@ -1750,6 +1765,7 @@ class License(Field):
             IsRequired: T.website_license_policy.validation.license.is_required,
             DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
         }
+        attributes = {"data-value": "license"}
 
     name = "license"
     coerce = [Unicode()]
@@ -1805,6 +1821,7 @@ class LicenseURL(Field):
         control_class = URLInput
         control_render_class = GenericControl
         render_class = GenericField
+        attributes = {"data-value": "license_url"}
         error_messages = {
             IsRequired: T.website_license_policy.validation.license_url.is_required,
             DisallowedValue: T.website_license_policy.validation.license_url.disallowed_value
@@ -1909,6 +1926,7 @@ class CopyrightAuthorRetains(Field):
             DisallowedValue: T.website_copyright.validation.copyright_author_retains.disallowed_value,
             IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
         }
+        attributes = {"data-value": "author_retains_rights"}
 
     name = "copyright_author_retains"
     coerce = [Unicode()]
@@ -1922,6 +1940,7 @@ class CopyrightURL(Field):
         control_class = URLInput
         control_render_class = GenericControl
         render_class = GenericField
+        attributes = {"data-value": "copyright_url"}
         error_messages = {
             IsRequired: T.website_copyright.validation.copyright_url.is_required,
             DisallowedValue: T.website_copyright.validation.copyright_url.disallowed_value
@@ -2281,22 +2300,26 @@ class AdminMetadataReview(ComplianceCheckField):
             {"question": "issn_at_least_one_group",
              "fields": [{
                  "label": "PISSN",
-                 "lookup": lambda application, wfc: application.bibjson().pissn
+                 "lookup": lambda application, wfc: application.bibjson().pissn,
+                 "data-value": "pissn"
              },
                  {
                      "label": "EISSN",
-                     "lookup": lambda application, wfc: application.bibjson().eissn
+                     "lookup": lambda application, wfc: application.bibjson().eissn,
+                     "data-value": "eissn"
                  }
              ]},
             {
                 "question": "issn_title_match_group",
                 "fields": [{
                     "label": "Title",
-                    "lookup": lambda application, wfc: application.bibjson().title
+                    "lookup": lambda application, wfc: application.bibjson().title,
+                    "data-value": "title"
                 },
                     {
                         "label": "Alternative Title",
-                        "lookup": lambda application, wfc: application.bibjson().alternative_title
+                        "lookup": lambda application, wfc: application.bibjson().alternative_title,
+                        "data-value": "alttitle"
                     }]
             },
             {
@@ -2304,7 +2327,8 @@ class AdminMetadataReview(ComplianceCheckField):
                 "fields": [
                     {
                         "label": "Journal's homepage",
-                        "lookup": lambda application, wfc: application.bibjson().journal_url
+                        "lookup": lambda application, wfc: application.bibjson().journal_url,
+                        "data-value": "homepage_url"
                     }
                 ]
             },
@@ -2314,10 +2338,12 @@ class AdminMetadataReview(ComplianceCheckField):
                     {
                         "label": "Licensing",
                         "lookup": lambda application, wfc: _license_display(application.bibjson().licenses),
+                        "data-value": "license",
                     },
                     {
                         "label": "url",
-                        "lookup": lambda application, wfc: application.bibjson().copyright_url
+                        "lookup": lambda application, wfc: application.bibjson().copyright_url,
+                        "data-value": "license_url",
                     },
                 ]
             },
@@ -2329,10 +2355,12 @@ class AdminMetadataReview(ComplianceCheckField):
                         "lookup": lambda application, wfc: (
                             "Yes" if application.bibjson().author_retains_copyright else "No"
                         ),
+                        "data-value": "author_retains_rights",
                     },
                     {
                         "label": "url",
-                        "lookup": lambda application, wfc: application.bibjson().copyright_url
+                        "lookup": lambda application, wfc: application.bibjson().copyright_url,
+                        "data-value": "copyright_url"
                     }
                 ]
             }

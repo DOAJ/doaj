@@ -69,7 +69,7 @@
                                     <span class="review-table__label">
                                         {{ field.label }}:
                                     </span>
-                                    <strong class="review-table__value">
+                                    <strong class="review-table__value" data-value="{{ field['data-value'] }}">
                                         {{ field.lookup(application, wfc) }}
                                     </strong>
                                 </div>

@@ -480,6 +480,8 @@ doaj.triage.questions.Question = class {
         );
         this.$srAnswer = this.$wrapper.find(".sr-answer");
 
+        this.$changedValues = [];
+
         // Subclass fields must exist before restoring answers or binding events.
         this._initQuestion();
 
@@ -488,6 +490,8 @@ doaj.triage.questions.Question = class {
         if (this.answer) {
             this.$continueBtn.addClass("checked");
         }
+
+        this.$valueInputs = this.$wrapper.find("input[data-value]")
 
         this._setupEvents();
     }
@@ -520,6 +524,23 @@ doaj.triage.questions.Question = class {
                 }
             }
         });
+        const question = this;
+        this.$valueInputs.on("change", function () {
+            question.$changedValues.push($(this));
+        });
+    }
+
+    updateDynamicValues() {
+        this.$changedValues.forEach( ($input) =>{
+            const value_name = $input.attr("data-value");
+            const val = $input.val();
+
+            $(document)
+                .find(`[data-value="${value_name}"]`)
+                .not("input")
+                .html(val);
+        })
+        this.$changedValues = [];
     }
 
     _hide_save_reminder() {
@@ -586,6 +607,7 @@ doaj.triage.questions.Question = class {
         );
         this.$continueBtn.addClass("checked");
         this.$srAnswer.text(`Answered: ${answerVal}`);
+        this.updateDynamicValues();
     }
 
     expand() {
