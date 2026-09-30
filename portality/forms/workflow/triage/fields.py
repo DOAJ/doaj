@@ -990,23 +990,10 @@ class DatabaseNotDuplicateNote(NoteField):
     capabilities = (NC(),)
 
 
-class DatabaseNotDuplicateInstruction(Structure):
-    class C(TriageCompoundFieldCapability):
-        label = T.database_not_duplicate.action.instruction
-        role = "action"
-        order = []
-        render_class = SimpleCompoundRenderer
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "database_not_duplicate_group"})]
-
-    name_ = "database_not_duplicate_instruction"
-    capabilities_ = (C(),)
-
-
 class DatabaseNotDuplicateGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
         label = T.database_not_duplicate.label
-        order = ["answer", "note", "instructions"]
+        order = ["answer", "note"]
         render_class = TriageCompound
 
     name_ = "database_not_duplicate_group"
@@ -1014,13 +1001,11 @@ class DatabaseNotDuplicateGroup(Structure):
 
     answer = DatabaseNotDuplicate(OPTIONAL, SINGLE)
     note = DatabaseNotDuplicateNote(OPTIONAL, SINGLE)
-    instructions = DatabaseNotDuplicateInstruction(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note, answer, T.database_not_duplicate.non_compliant_answers),
         RequiredIf(note, answer, T.database_not_duplicate.action_answer)
     ]
-
 
 ###########################################################
 ## ISSN: At Least One Registered ISSN
@@ -1637,19 +1622,6 @@ class WebsiteURL(ComplianceCheckField):
     capabilities = (C(),)
 
 
-class WebsiteURLInstruction(Structure):
-    class C(TriageCompoundFieldCapability):
-        label = T.website_url.action.instruction
-        role = "action"
-        order = []
-        render_class = SimpleCompoundRenderer
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "database_not_duplicate_group"})]
-
-    name_ = "website_url_instruction"
-    capabilities_ = (C(),)
-
-
 class WebsiteURLNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
@@ -1663,7 +1635,7 @@ class WebsiteURLNote(NoteField):
 class WebsiteURLGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
         label = T.website_url.label
-        order = ["answer", "note", "instruction"]
+        order = ["answer", "note"]
         render_class = TriageCompound
 
     name_ = "website_url_group"
@@ -1671,7 +1643,6 @@ class WebsiteURLGroup(Structure):
 
     answer = WebsiteURL(OPTIONAL, SINGLE)
     note = WebsiteURLNote(OPTIONAL, SINGLE)
-    instruction = WebsiteURLInstruction(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note, answer, T.website_url.note_required_answers)

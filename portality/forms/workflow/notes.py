@@ -85,6 +85,8 @@ class Note(Structure):
     class C(CompoundFieldCapability):
         label = None # don't use a label for the compound
         repeatable_label = None # don't use a repeatable label
+        repeatable_minimum = 0
+        repeatable_initial = 0
         order = [
             "note_id",
             "note_text",
@@ -198,8 +200,7 @@ class StandAloneNotesProcessor:
         self.form_instance = self.obj2form_xwalk.transform(self._source_application)
 
     def forminstance2target(self, account):
-        partial_application = self.form2obj_xwalk.transform(self._form_inst, account)
-        self._target_application = self._patch_application(partial_application)
+        pass
 
     def blank_form(self):
         self.form_instance = StandAloneNotes()
@@ -218,42 +219,7 @@ class StandAloneNotesProcessor:
         return self.form_instance.validate()
 
     def finalise(self, account):
-        self.forminstance2target(account)
-        self._target_application.save()
-
-    ################################
-    ## Internal processing methods
-
-    def _patch_application(self, partial_application: Application) -> Application:
-        target = Application(**deepcopy(self._source_application.data))
-        tbj = target.bibjson()
-        sbj = partial_application.bibjson()
-
-        # this patcher assumes all the metadata have been provided by the partial.
-        # If it's possible a partial won't have that info, then we need to update this to
-        # accommodate
-
-        # EISSN/PISSN
-        tbj.eissn = sbj.eissn
-        tbj.pissn = sbj.pissn
-
-        # Title
-        tbj.title = sbj.title
-
-        # Continuation
-        tbj.replaces = sbj.replaces
-
-        # License information
-        tbj.remove_licenses()
-        for lic in sbj.licenses:
-            tbj.add_license_obj(lic)
-        tbj.license_terms_url = sbj.license_terms_url
-
-        # Copyright
-        tbj.author_retains_copyright = sbj.author_retains_copyright
-        tbj.copyright_url = sbj.copyright_url
-
-        return target
+        pass
 
     ##########################
     ## Form serialisation
