@@ -83,7 +83,7 @@
                     {% if els.check.capability.resources|length > 0 %}
                     <div class="resources-list-container">
                         <h5><span data-feather="book" class="icon" aria-hidden="true"></span>Resources</h5>
-                        <ul class="resources-list">
+                        <ul class="resources-list" style="margin-left: -1.5rem;">
                             {% for resource in els.check.capability.resources %}
                             <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
                             {% endfor %}

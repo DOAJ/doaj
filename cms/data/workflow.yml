@@ -14,8 +14,8 @@ triage:
         organization: "Other organization"
         homepage: "Homepage"
       remember: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage.'
-      instructions: '<ul><li>If there is a current publisher exclusion, choose the  <span class="answer non-compliant">red answer.</span></li>
-            <li> if there is a current journal exclusion for the journal we triage, choose the  <span class="answer non-compliant">red answer.</li>
+      instructions: '<ul><li>If there is a current publisher exclusion, choose the  <span class="answer non_compliant"">red answer.</span></li>
+            <li> if there is a current journal exclusion for the journal we triage, choose the  <span class="answer non_compliant"">red answer.</li>
             <li>if there is a current journal exclusion for a <i>different</i> journal than the one we triage from the same publisher, choose the  <span class="answer compliant">green answer.</span></li></ul>'
       resources:
         - label: "Excluded publishers spreadsheet"
@@ -34,7 +34,7 @@ triage:
         compliant: "<span class='answer'>No</span>, there are no references to non-standard metric services."
         non_compliant: "<span class='answer'>Yes</span>, there are references to non-standard metric services."
         later: "I don't know - mark for later"
-      remember: "If you select <span class='answer non-compliant'>Yes</span>, you must add a note with a link to the source that supports your answer."
+      remember: "If you select <span class='answer non_compliant'>Yes</span>, you must add a note with a link to the source that supports your answer."
       application_info:
         homepage: "Journal's homepage"
       resources:
@@ -54,27 +54,20 @@ triage:
 
     ethics_no_fake_impact:
       label: "4. Fake impact factor values"
-      check: "4. The journal <strong>does not</strong> display fake impact factor values in texts or/and images"
+      check: "4. Does the journal display fake impact factor values in text or images?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> display fake impact factor values"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> fake impact factor values"
+        compliant: "<span class='answer'>No</span>, it does not display fake impact factor values."
+        non_compliant: "<span class='answer'>Yes</span>, Yes, it displays fake impact factor values."
         later: "I don't know - mark for later"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      edit:
-        publisher: "Publisher"
-        title: "Journal's title"
-      remember: ""
-      instructions: ""
+      remember: 'Check the website as well as the fulltext for any fake impact factor values. <br /> If you select <span class="answer non_compliant">Yes</span>, you must add a note with a link to the source that supports your answer.'
       resources:
-        - label: "Quality Review Tool for Triage only"
-          url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+        - label: "Non-standard services list"
+          url: "https://docs.google.com/spreadsheets/d/1JChOENJWD9CtHG4VsoITFqMhD0GXECx8TpIZnaN-rk4/edit?usp=sharing"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Instruction placeholder"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
       compliant_answers:
       - "compliant"
       non_compliant_answers:

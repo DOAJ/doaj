@@ -401,19 +401,15 @@ class EthicsNoFakeImpact(ComplianceCheckField):
         S = T.ethics_no_fake_impact
         options = options_for(S)
         check = S.check
-        instructions = S.instructions
         remember = S.remember
         resources = resource_for(S)
         application_info = [
             {
-                "label": S.edit.publisher,
-                "lookup": lambda application, wfc: application.bibjson().publisher_name
-            },
-            {
-                "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title,
-                "data-value": "title"
-            },
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url",
+            }
         ]
 
     name = "ethics_no_fake_impact"
@@ -435,12 +431,6 @@ class EthicsNoFakeImpactGroup(Structure):
         label = T.ethics_no_fake_impact.label
         order = ["answer", "note"]
         render_class = TriageCompound
-        # action = {
-        #     "non_compliant": {
-        #         "instruction": T.ethics_no_fake_impact.action.instruction,
-        #         "controls": "ethics_no_fake_impact_metrics_action_group"
-        #     }
-        # }
         error_messages = {
             IsConditionallyRequired: T.ethics_no_fake_impact.validation.group.is_conditionally_required
         }
@@ -450,8 +440,6 @@ class EthicsNoFakeImpactGroup(Structure):
 
     answer = EthicsNoFakeImpact(OPTIONAL, SINGLE)
     note = EthicsNoFakeImpactNote(OPTIONAL, SINGLE)
-    # action = EthicsNoFakeImpactActionGroup(OPTIONAL, SINGLE)
-    # action_note = EthicsNoFakeImpactNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note,  # <- this field is required if
