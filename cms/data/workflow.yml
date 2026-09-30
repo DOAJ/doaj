@@ -903,25 +903,24 @@ triage:
 
     admin_special_exception:
       label: "1. Special exceptions"
-      check: "1. Is this application is reviewed under a special exception?"
-      instructions: "Application may be triaged with a special exception at the discretion of the Triage user. A special exception lies outside the regular triage 
-        workflow checks. For eg. 'application is from Africa' or 'application is from a journal where publisher name 
-        does not match the (dedicated) publisher account.'"
+      check: "1. Is this application reviewed under a special exception?"
+      instructions: '<ul><li>If the application has not been submitted by the WKMK central account, please reject the application and inform Mamta.Java@wolterskluwer.com, WKHLRPMedknow_editorial@wolterskluwer.com and Leena that you rejected the application and that the 6 months embargo period does not apply (details included: Journal title, ISSN, date applied, applicant’s email address) </li></ul>'
       answers:
         compliant: "Continue triage"
         non_compliant: "Reject this application"
         later: "I don't know - mark for later"
       exceptions:
-        option_1: "Option 1"
-        option_2: "Option 2"
+        africa: "Application is from Africa"
+        publisher: "Not the designated publisher a/c"
         other: "Other"
         none: "No exceptions apply"
-      edit:
-        special_exceptions: "Special exceptions"
-        other: "Other special exception"
+      application_info:
+        country: "Country"
+        account: "Owner's id"
+        publisher: "Publisher"
       validation:
         special_exceptions:
-          disallowed_value: "Please select a checkbox"
+          disallowed_value: "Please select one of the options"
         special_exception_other:
           is_conditionally_required: "If you select 'Other', please provide a description of the special exception"
       compliant_answers:

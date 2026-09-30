@@ -51,7 +51,7 @@
                     {% if els.check.capability.check %}
                     <h4>{{ els.check.capability.check }}</h4>
                         {% if els.check.capability.application_info %}
-                            <h5>Information provided by the applicant</h5>
+                            <h5>Information from the application</h5>
                             <ul style="padding-left: 0">
                                 {% for info in els.check.capability.application_info %}
                                     <li style="list-style-type: none;">{{ info.label }}: <strong {% if 'data-value' in info %} data-value = "{ info[data-value] }" {% endif %}>{{ info.lookup(application, wfc) }}</strong></li>

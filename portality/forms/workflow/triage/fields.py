@@ -2395,43 +2395,25 @@ class AdminSpecialException(ComplianceCheckField):
         options = options_for(S)
         check = S.check
         instructions = S.instructions
-        # remember = S.remember
         resources = resource_for(S)
         control_class = Checkbox
+        application_info = [
+            {
+                "label": S.application_info.account,
+                "lookup": lambda application, wfc: application.owner
+            },
+            {
+                "label": S.application_info.publisher,
+                "lookup": lambda application, wfc: application.bibjson().publisher_name,
+            },
+            {
+                "label": S.application_info.country,
+                "lookup": lambda application, wfc: application.bibjson().publisher_country
+            },
+        ]
 
     name = "admin_special_exception"
     capabilities = (C(),)
-
-
-# RJ: I have removed this because the button approach was not properly abstracted or wired in
-# and was at odds with the other mechanisms on the form.  Instead, I have used the usual approach
-# and a recommendation to reject will be raised which takes the user to the rejection process
-#
-# class AdminSpecialException(ComplianceCheckField):
-#     class C(ButtonsCapability):
-#         S = T.admin_special_exception
-#         options = [
-#             {
-#                 "class": "compliant",
-#                 "label": S.answers.compliant,
-#                 "onclick": "doaj.triage.continue()",
-#                 "type": "button",
-#                 "role": "compliant"
-#             },
-#             {
-#                 "class": "non-compliant",
-#                 "label": S.answers.non_compliant,
-#                 "onclick": "doaj.triage.reject()",
-#                 "type": "button",
-#                 "role": "non_compliant"
-#             }
-#         ]
-#         check = S.check
-#         instructions = S.instructions
-#         resources = resource_for(S)
-#
-#     name = "admin_special_exception"
-#     capabilities = (C(),)
 
 class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
@@ -2473,6 +2455,10 @@ class SpecialExceptionOther(Field):
 
 
 class AdminSpecialExceptionGroup(Structure):
+    # * for exceptions == "africa" recommendation requirement:
+    #     No rejection for any reason and assignment to the corresponding Managing Editor (Kamel or Mahmoud)
+    # * instruction should be added as a reminder
+
     class C(CheckboxCompoundCapability):
         label = T.admin_special_exception.label
         order = ["answer", "special_exceptions", "special_exception_other", "note"]
@@ -2480,7 +2466,6 @@ class AdminSpecialExceptionGroup(Structure):
 
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)
-    # sr_only_legend = True
 
     answer = AdminSpecialException(OPTIONAL, SINGLE)
     special_exceptions = SpecialExceptions(OPTIONAL, REPEATABLE)
@@ -2491,5 +2476,6 @@ class AdminSpecialExceptionGroup(Structure):
         RequiredIf(special_exception_other,  # <- this field is required if
                    special_exceptions,  # <- this field has one of the values
                    ["other"]  # <- that is non compliant
-                   )
+                   ),
+        RequiredIf(note, special_exceptions, ["africa", "publisher", "other"] )
     ]
