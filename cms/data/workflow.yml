@@ -908,6 +908,7 @@ triage:
         publisher: "Not the designated publisher a/c"
         other: "Other"
         none: "No exceptions apply"
+      other_text_input: "What other exception apply?"
       application_info:
         country: "Country"
         account: "Owner's id"

@@ -412,6 +412,21 @@ body.dashboard {
       outline-offset: 3px;
     }
 
+    .app_info {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      .info-pair {
+        min-width: calc(33.3333% - 3rem);
+      }
+
+    }
+    .resources-list {
+      list-style-type: none;
+    }
+
     .criterion {
       position: relative;
       min-width: 0;
@@ -439,6 +454,12 @@ body.dashboard {
       .criterion-main {
         float: none;
         width: 100%;
+      }
+
+      .criterion-important {
+        padding-left: 1rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid $grapefruit;
       }
 
       .criterion-instructions {
@@ -469,12 +490,6 @@ body.dashboard {
         min-height: 0;
         overflow-y: auto;
         overscroll-behavior: contain;
-
-        .criterion-important {
-          padding-left: 1rem;
-          margin-bottom: 1rem;
-          border-left: 4px solid $grapefruit;
-        }
       }
 
       /* The collapsed trigger remains anchored to the right edge. */

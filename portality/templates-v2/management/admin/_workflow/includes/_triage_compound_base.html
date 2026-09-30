@@ -52,22 +52,33 @@
                     <h4>{{ els.check.capability.check }}</h4>
                     {% if els.check.capability.remember %}
                     <div class="criterion-important">
-                        <h5><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>&nbsp;REMEMBER</h5>
+                        <h5>REMEMBER</h5>
                         <p>{{ els.check.capability.remember }}</p>
                     </div>
                     {% endif %}
                     {% if els.check.capability.application_info %}
-                        <h5>Information from the application</h5>
-                        <ul style="padding-left: 0">
+                        <h5><span data-feather="info" class="icon" aria-hidden="true"></span>Information from the application</h5>
+                        <dl class="app_info">
                             {% for info in els.check.capability.application_info %}
-                                <li style="list-style-type: none;">{{ info.label }}: <strong {% if 'data-value' in info %} data-value = "{ info[data-value] }" {% endif %}>{{ info.lookup(application, wfc) }}</strong></li>
+                            <div class="info-pair">
+                                <dt>{{ info.label }}</dt>
+                                        <dd {% if 'data-value' in info %} data-value = "{ info[data-value] }" {% endif %}>
+                                            {%- if info.type == "url" -%}
+                                                <a href="info.lookup(application, wfc)" target="_blank" ref="noreferrer">
+                                            {%- endif -%}
+                                                    {{ info.lookup(application, wfc) }}
+                                            {%- if info.type == "url" -%}
+                                                </a>
+                                            {% endif %}
+                                        </dd>
+                                </div>
                             {% endfor %}
-                        </ul>
+                        </dl>
                     {% endif %}
                     {% endif %}
                     {% if els.check.capability.resources|length > 0 %}
                         <h5><span data-feather="book" class="icon" aria-hidden="true"></span>Resources</h5>
-                        <ul>
+                        <ul class="resources-list">
                             {% for resource in els.check.capability.resources %}
                             <li><a href="{{ resource.url }}" target="_blank">{{ resource.label }}</a></li>
                             {% endfor %}
@@ -117,7 +128,7 @@
                         aria-expanded="false"
                         data-role="open-instructions"
                 >
-                    <span class="form__long-help" data-feather="info" aria-hidden="true"></span>
+                    <span class="form__long-help" data-feather="help-circle" aria-hidden="true"></span>
                     <span class="criterion-instructions-trigger__label">
                         Instructions
                     </span>

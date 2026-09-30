@@ -58,7 +58,7 @@
 
 {% if checkboxes.multiple %}
 <fieldset class="checkbox-list">
-    <legend>{{ checkboxes.label }}</legend>
+    <legend {% if checkboxes.capabilities.label_hidden %} class="sr-only" {% endif %}>{{ checkboxes.label }}</legend>
 {% endif %}
     {% for control in checkboxes.options %}
     {% set input=control.control %}

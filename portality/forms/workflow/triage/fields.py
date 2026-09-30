@@ -294,22 +294,23 @@ class EthicsNotExcluded(ComplianceCheckField):
                 "data-value": "title"
             },
             {
-                "label": S.edit.alttitle,
+                "label": S.application_info.alttitle,
                 "lookup": lambda application, wfc: application.bibjson().alternative_title,
                 "data-value": "alttitle"
             },
             {
-                "label": S.edit.publisher,
+                "label": S.application_info.publisher,
                 "lookup": lambda application, wfc: application.bibjson().publisher_name,
             },
             {
-                "label": S.edit.organization,
+                "label": S.application_info.organization,
                 "lookup": lambda application, wfc: application.bibjson().institution,
             },
             {
+                "type": "url",
                 "label": "Journal's homepage",
                 "lookup": lambda application, wfc: application.bibjson().journal_url,
-                "data-value": "homepage_url"
+                "data-value": "homepage_url",
             }
 
         ]
@@ -2373,7 +2374,8 @@ class AdminSpecialExceptionNote(NoteField):
 class SpecialExceptions(Field):
     class C(FormFieldCapability):
         role = "options"
-        label = T.admin_special_exception.edit.special_exceptions
+        label = T.admin_special_exception.check
+        label_hidden = True
         control_class = Checkbox
         multiple = True
         options = exception_options_for(T.admin_special_exception)
@@ -2381,6 +2383,7 @@ class SpecialExceptions(Field):
         error_messages = {
             DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
         }
+
 
     name = "special_exceptions"
     coerce = [Unicode()]
@@ -2391,14 +2394,13 @@ class SpecialExceptions(Field):
 class SpecialExceptionOther(Field):
     class C(FormFieldCapability):
         role = "other"
-        label = T.admin_special_exception.edit.other
+        label = T.admin_special_exception.other_text_input
         control_class = TextInput
         control_render_class = GenericControl
         render_class = GenericField
         error_messages = {
             IsConditionallyRequired: T.admin_special_exception.validation.special_exception_other.is_conditionally_required
         }
-
     name = "special_exception_other"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
