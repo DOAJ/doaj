@@ -1,10 +1,14 @@
 {% autoescape off %}
+
 {% if compound.capability.label %}
-<p>{{ compound. capability.label }}</p>
+<p>{{ compound.capability.label }}</p>
 {% endif %}
 {% for element in compound.elements %}
+<div class="input{%- if element.capability.long_input -%} long {%- endif -%}">
 {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+</div>
 {% endfor %}
+
 {% if compound.capability.control_btns %}
 <div class="justify-start review-outcome">
     {% set buttons = compound.capability.control_btns %}
@@ -18,7 +22,7 @@
 <div class="row">
     <div class="col-md-12">
         <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container" style="flex-direction: column;" data-widget="{{ widget }}">
-            <legend class="sr-only">Review outcome</legend>
+            <legend class="sr-only">{{ compound.label }}</legend>
             {% set cr = compound.capability.get_control_renderer() %}
             {{ cr.draw(compound.control, group=compound.name, action=compound.capability.action) }}
         </fieldset>

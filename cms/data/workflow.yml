@@ -2,19 +2,21 @@ triage:
   fields:
     ethics_not_excluded:
       label: "2. Current exclusions"
-      check: "2. This application is from a journal or publisher that is <strong>not</strong> 
-                  currently excluded."
+      check: "2. Is the journal or its publisher currently excluded?"
       answers:
-        compliant: '<span class="answer">Compliant</span>, this application is from a journal or publisher that <strong>is not</strong> currently excluded.'
-        non_compliant: "<span class='answer'>Non-compliant</span>, this application is from a journal or publisher that <strong>is</strong> currently excluded."
+        compliant: '<span class="answer">No</span>, Neither is currently excluded.'
+        non_compliant: '<span class="answer">Yes</span>, the journal or its publisher is currently excluded.'
         later: "I don't know - mark for later"
-      action: # not used here, should be removed
-        button: "non_compliant"
-        instruction: "Provide more information on non-standard metric services this journal references"
+      application_info:
+        title: "Title"
+        alttitle: "Alternative title"
+        publisher: "Publisher"
+        organization: "Other organization"
+        homepage: "Homepage"
       remember: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage.'
-      instructions: '<ul><li>If there is a current publisher exclusion, the answer is <span class="answer compliant">Compliant</span></li>
-            <li> if there is a current journal exclusion for the journal we triage, the answer is <span class="answer compliant">Compliant</span></li>
-            <li>if there is a current journal exclusion for a different journal than the one we triage from the same publisher, the answer is <span class="answer non-compliant">Non-compliant</span></li></ul>'
+      instructions: '<ul><li>If there is a current publisher exclusion, choose the  <span class="answer non_compliant"">red answer.</span></li>
+            <li> if there is a current journal exclusion for the journal we triage, choose the  <span class="answer non_compliant"">red answer.</li>
+            <li>if there is a current journal exclusion for a <i>different</i> journal than the one we triage from the same publisher, choose the  <span class="answer compliant">green answer.</span></li></ul>'
       resources:
         - label: "Excluded publishers spreadsheet"
           url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
@@ -24,39 +26,25 @@ triage:
       - "non_compliant"
       recommend:
         non_compliant: "reject"
-      edit:
-        publisher: "Publisher"
-        title: "Journal's title"
-      validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "Provide more information on non-standard metric services this journal references"
 
     ethics_no_nonstandard_metrics:
       label: "3. Non-standard metric services"
-      check: "3. The journal <strong>does not</strong> display any references  (images, links, logos) to non-standard 
-                  metric services"
+      check: "3. Does the journal display any references to non-standard metric services?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> display references to non standard services"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> display references to non standard services"
+        compliant: "<span class='answer'>No</span>, there are no references to non-standard metric services."
+        non_compliant: "<span class='answer'>Yes</span>, there are references to non-standard metric services."
         later: "I don't know - mark for later"
-      edit:
-        publisher: "Publisher"
-        title: "Journal's title"
-      remember: ""
-      instructions: ""
+      remember: "If you select <span class='answer non_compliant'>Yes</span>, you must add a note with a link to the source that supports your answer."
+      application_info:
+        homepage: "Journal's homepage"
       resources:
-        - label: "Quality Review Tool for Triage only"
-          url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
-      action: # not used here, should be removed
-        button: "non_compliant"
-        instruction: "Provide more information on non-standard metric services this journal references"
+        - label: "Non-standard services list"
+          url: "https://docs.google.com/spreadsheets/d/1JChOENJWD9CtHG4VsoITFqMhD0GXECx8TpIZnaN-rk4/edit?usp=sharing"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Provide more information on non-standard metric services this journal references"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -66,27 +54,20 @@ triage:
 
     ethics_no_fake_impact:
       label: "4. Fake impact factor values"
-      check: "4. The journal <strong>does not</strong> display fake impact factor values in texts or/and images"
+      check: "4. Does the journal display fake impact factor values in text or images?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> display fake impact factor values"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> fake impact factor values"
+        compliant: "<span class='answer'>No</span>, it does not display fake impact factor values."
+        non_compliant: "<span class='answer'>Yes</span>, Yes, it displays fake impact factor values."
         later: "I don't know - mark for later"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      edit:
-        publisher: "Publisher"
-        title: "Journal's title"
-      remember: ""
-      instructions: ""
+      remember: 'Check the website as well as the fulltext for any fake impact factor values. <br /> If you select <span class="answer non_compliant">Yes</span>, you must add a note with a link to the source that supports your answer.'
       resources:
-        - label: "Quality Review Tool for Triage only"
-          url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+        - label: "Non-standard services list"
+          url: "https://docs.google.com/spreadsheets/d/1JChOENJWD9CtHG4VsoITFqMhD0GXECx8TpIZnaN-rk4/edit?usp=sharing"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Instruction placeholder"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -95,27 +76,21 @@ triage:
         non_compliant: 3
 
     ethics_no_false_doaj_claim:
-      label: "5. False claim to be indexed in DOAJ"
-      check: "5. This journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
+      label: "5. DOAJ Indexing Claim"
+      check: "5. Does the journal falsely claim to be indexed in DOAJ?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> a false claim to be indexed in DOAJ"
+        compliant: "<span class='answer'>No</span>, it does not falsely claim to be indexed in DOAJ."
+        non_compliant: "<span class='answer'>Yes</span>, Yes, it falsely claims to be indexed in DOAJ."
         later: "I don't know - mark for later"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      edit:
-        title: "Journal's title"
-      instructions: ""
-      remember: ""
+      remember: "If the answer is <span class='answer non_compliant'>Yes</span>, and the journal was not previously indexed in DOAJ, add it to the corresponding spreadsheet and note that you have done so. <br /> You must also add a link to the source supporting your answer."
       resources:
-        - label: "Quality Review Tool for Triage only"
-          url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+        - label: "Journals and publishers that falsely claim they are indexed in DOAJ"
+          url: "https://docs.google.com/spreadsheets/d/1Y_Sza4rPDkf-NNX9kwiErGrKeNTM75md9B63A_gVpaQ/edit?usp=sharing"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Instruction placeholder"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -124,19 +99,14 @@ triage:
         non_compliant: 3
 
     ethics_submission_to_publication_time:
-      label: "6. Time between submission and publication"
-      check: "6. The time between submission and publication is more than 3 weeks"
+      label: "6. Publication timeline"
+      check: "6. Is the time between submission and publication more than three weeks?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, the time between submission and publication is <strong>more</strong> than 3 weeks."
-        non_compliant: "<span class='answer'>Non-compliant</span>, the time between submission and publication is <strong>less</strong> than 3 weeks."
+        compliant: "<span class='answer'>Yes</span>, Yes, it is more than three weeks."
+        non_compliant: "<span class='answer'>No</span>, it is three weeks or less."
         later: "I don't know - mark for later"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      info:
+      application_info:
         label: "Average number of weeks between submission and publication"
-      remember: ""
-      instructions: ""
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -145,33 +115,23 @@ triage:
         non_compliant: 3
 
     ethics_no_suspicious_ties:
-      label: "7. Previous exclusions/suspicious publisher or journals"
-      check: "7. The publisher/journal <strong>does not</strong> have links to previously excluded publishers and/or list of suspicious publishers"
+      label: "7. Links to Excluded or Suspicious Publishers"
+      check: "7. Was the journal or the publisher previously excluded or are they listed as suspicious, or linked to other excluded/suspicious publishers?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this publisher/journal <strong>does not</strong> have any such links"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this publisher/journal <strong>does</strong> have such links"
+        compliant: "<span class='answer'>No</span>, they are not."
+        non_compliant: "<span class='answer'>Yes</span>, they are."
         action: "No longer questionable"
         later: "I don't know - mark for later"
-      action:
-        non_compliant:
-          instruction: "Add more details about suspicious or excluded publishers/journals"
-        action:
-          instruction: "Provide more details on why this publisher or journal are no longer questionable"
-      remember: "If the entry in the spreadsheet is marked that is no longer questionable after last review, click <span class='answer action'>No longer questionable</span> and add a note"
-      instructions: ""
+      remember: "If the entry in the spreadsheet is marked that is no longer questionable after last review, choose <span class='answer action'>No longer questionable</span>."
       resources:
         - label: "Excluded publishers spreadsheet"
-          url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8"
-      edit:
-        instruction: "Please provide more details"
-        compliant: "Continue triage"
+          url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
+      application_info:
+        title: "Title"
+        alttitle: "Alternative title"
         publisher: "Publisher"
-        title: "Journal's title"
-      validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "Add more details about suspicious or excluded publishers/journals, or why this publisher or journal are no longer questionable (if applicable)"
+        organization: "Journal's title"
+        homepage: "Journal's homepage"
       compliant_answers:
       - "compliant"
       action_answers:
@@ -180,6 +140,9 @@ triage:
       - "non_compliant"
       severity_value:
         non_compliant: 10
+
+    ethics_no_suspicious_ties_action:
+      label: "Add more information in the note field above."
 
     issn_at_least_one:
       label: "8. ISSN(s)"
@@ -271,7 +234,7 @@ triage:
         non_compliant:
           instruction: "Provide more information about this journal's title"
         action:
-          instruction: "Provide correct title and/or alternative title in the relevant input below. Add more information on the change (eg. why this change is required) in the notes input.<strong class=highlight warning>Titles must not contain an HTML script tag</span>"
+          instruction: 'Provide correct title and/or alternative title in the relevant input below. Add more information on the change (eg. why this change is required) in the notes input.<strong> Titles must not contain an HTML script tag</strong></span>'
       remember: "<ul><li>Check both title and alternative title</li><li>If you need to edit the title always use the <strong>Online</strong> ISSN record (if available).</li></ul>"
       instructions: '<ul>
                   <li>If the title on the website matches the key-title or title proper at portal.issn.org but not the title provided in the application form, click <span class="answer action">Journal’s title needs to be changed</span>, provide the correct title and add a note </li>
@@ -302,6 +265,7 @@ triage:
           # note: "Provide more information about what change in the title you are making and why"
       edit:
         title: "Title"
+        alttitle: "Alternative title"
       compliant_answers:
         - "compliant"
       action_answers:
@@ -418,7 +382,7 @@ triage:
         action:
           instruction: "Do any of these exceptions apply?"
         button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: "Do any of these exceptions apply?"
       edit:
         exceptions: "Exceptions"
       exceptions:
@@ -482,13 +446,19 @@ triage:
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does</strong> have a working website"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does not</strong> have a working website"
+        action: "This journal has a working website, but url requires changes"
         later: "I don't know - mark for later"
-        action: ""
       info:
         www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
+      edit:
+        url: "Journal's website"
+      validation:
+        url:
+          is_required: "You must provide the journal's URL"
+          disallowed_value: "You must enter a valid URL"
       remember: "If the website doesn’t work now remember to check it again later at least once, in case these are temporary issues."
       instructions: '<ul>
                   <li>Open the homepage URL and make sure it is working. If not, check it again later and if it is still not working, the answer is <span class="answer non_compliant">Non-compliant</span></li>
@@ -498,6 +468,7 @@ triage:
           url: "https://downforeveryoneorjustme.com/"
       compliant_answers:
         - "compliant"
+        - "action"
       non_compliant_answers:
         - "non_compliant"
       recommend:
@@ -516,7 +487,7 @@ triage:
         eissn: "Electronic ISSN"
       action:
         button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: "Reject the other applications and list their application IDs in the Notes field. Then select <span class='answer compliant'>Continue triage</span> to confirm and save your decision, and move to the next question."
       remember: "Keep the newest application or the one which is in progress and “Quick Reject” the others as duplicates"
       instructions: ''
       resources:
@@ -529,9 +500,10 @@ triage:
           is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
         - "compliant"
-        - "action"
       non_compliant_answers:
       - "non_compliant"
+      action_answer:
+      - "action"
       recommend:
         non_compliant: "reject"
 
@@ -586,7 +558,7 @@ triage:
         apc_www: "Link to publishing charge fees"
       action:
         button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: 'Provide more information on why identical URLs are acceptable for this application in the Note fields. Then select <span class="answer compliant">Continue triage</span> to confirm and save your decision, and move to the next question.'
       remember: "If the website is structured so that all required information is correctly available under a single URL, select <span answer='answer action'>Same URL acceptable. All required information is correctly provided under a single URL due to the website structure.</span>"
       instructions: '<ul>
                   <li>If all URLs are identical but the required information is not actually available at that URL (e.g. all links point to the homepage), select <span class="answer non_compliant">Non-compliant</span></li>
@@ -603,7 +575,7 @@ triage:
       non_compliant_answers:
         - "non_compliant"
       note_required_answers:
-        "action"
+        - "action"
 
     website_license_policy:
       label: "19. OA policy"
@@ -613,6 +585,15 @@ triage:
         non_compliant: "<span class='answer'>Non-compliant</span>, OA policy <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
         later: "I don't know - mark for later"
         action: "Changes to open access policy information are required"
+      license_attrs:
+        "CC BY": "CC BY"
+        "CC BY-SA": "CC BY-SA"
+        "CC BY-ND": "CC BY-ND"
+        "CC BY-NC": "CC BY-NC"
+        "CC BY-NC-SA": "CC BY-NC-SA"
+        "CC BY-NC-ND": "CC BY-NC-ND"
+        "CC0": "CC0"
+        "Publisher's own license": "Publisher's own license"
       action:
         action:
           instruction: "Update the license information as needed"
@@ -830,7 +811,6 @@ triage:
       check: "26. This is a newly launched journal or a flipped journal"
       answers:
         compliant: "<span class='answer'>No</span>, this is <strong>not</strong> a newly launched or a flipped journal"
-        non_compliant: ""
         later: "I don't know - mark for later"
         action: "<span class='answer'>Yes</span>, this <strong>is</strong> a newly launched or a flipped journal"
       action:
@@ -838,13 +818,14 @@ triage:
         instruction: "Instruction placeholder"
       info:
         www: "Journal's homepage"
-      exceptions:
-        publishing_history: "This journal demonstrates a publishing history of more than one year or has published at least ten open access research articles"
+      exception:
+        check: "Does this journal demonstrates a publishing history of more than one year or has published at least ten open access research articles?"
+        answers:
+          true: "Yes, it does"
+          false: "No, it doesn't"
       remember: ""
       instructions: ''
       resources: ""
-      edit:
-        exceptions: "Exceptions"
       validation:
         exceptions:
             disallowed_value: "You must select one of the valid options"
@@ -855,12 +836,10 @@ triage:
 
     admin_metadata_review:
       label: "27. Check Metadata"
-      check: "27. Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , OA URL, Copyright URL and Licensing URL are correct. Incorrect information has been edited"
+      check: "27. Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , Copyright URL and Licensing URL are correct. Incorrect information has been edited"
       instructions: ""
       answers:
         compliant: "Everything is correct"
-        non_compliant: "Not acceptable"
-        later: "Do this later"
       info:
         www: "Journal's homepage"
         oa: "Open Access licensing policy"
@@ -884,25 +863,25 @@ triage:
 
     admin_special_exception:
       label: "1. Special exceptions"
-      check: "1. Is this application is reviewed under a special exception?"
-      instructions: "Application may be triaged with a special exception at the discretion of the Triage user. A special exception lies outside the regular triage 
-        workflow checks. For eg. 'application is from Africa' or 'application is from a journal where publisher name 
-        does not match the (dedicated) publisher account.'"
+      check: "1. Is this application reviewed under a special exception?"
+      instructions: '<ul><li>If the application has not been submitted by the WKMK central account, please reject the application and inform Mamta.Java@wolterskluwer.com, WKHLRPMedknow_editorial@wolterskluwer.com and Leena that you rejected the application and that the 6 months embargo period does not apply (details included: Journal title, ISSN, date applied, applicant’s email address) </li></ul>'
       answers:
         compliant: "Continue triage"
         non_compliant: "Reject this application"
         later: "I don't know - mark for later"
       exceptions:
-        option_1: "Option 1"
-        option_2: "Option 2"
+        africa: "Application is from Africa"
+        publisher: "Not the designated publisher a/c"
         other: "Other"
         none: "No exceptions apply"
-      edit:
-        special_exceptions: "Special exceptions"
-        other: "Other special exception"
+      other_text_input: "What other exception apply?"
+      application_info:
+        country: "Country"
+        account: "Owner's id"
+        publisher: "Publisher"
       validation:
         special_exceptions:
-          disallowed_value: "Please select a checkbox"
+          disallowed_value: "Please select one of the options"
         special_exception_other:
           is_conditionally_required: "If you select 'Other', please provide a description of the special exception"
       compliant_answers:

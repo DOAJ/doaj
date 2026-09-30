@@ -19,6 +19,11 @@
 
 {% endblock %}
 
+{% block body_class %}{{ super() }} ew{% endblock %}
+
+{% block admin_header %}
+{% include "management/admin/_workflow/includes/_header.html" %}
+{% endblock %}
 {% block admin_content %}
     <div class="row" style="margin-bottom: 15px">
         <div class="col-md-12">
