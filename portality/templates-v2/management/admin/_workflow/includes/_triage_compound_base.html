@@ -50,14 +50,20 @@
                 <div class="col-md-12 criterion-layout__question">
                     {% if els.check.capability.check %}
                     <h4>{{ els.check.capability.check }}</h4>
-                        {% if els.check.capability.application_info %}
-                            <h5>Information from the application</h5>
-                            <ul style="padding-left: 0">
-                                {% for info in els.check.capability.application_info %}
-                                    <li style="list-style-type: none;">{{ info.label }}: <strong {% if 'data-value' in info %} data-value = "{ info[data-value] }" {% endif %}>{{ info.lookup(application, wfc) }}</strong></li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
+                    {% if els.check.capability.remember %}
+                    <div class="criterion-important">
+                        <h5><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>&nbsp;REMEMBER</h5>
+                        <p>{{ els.check.capability.remember }}</p>
+                    </div>
+                    {% endif %}
+                    {% if els.check.capability.application_info %}
+                        <h5>Information from the application</h5>
+                        <ul style="padding-left: 0">
+                            {% for info in els.check.capability.application_info %}
+                                <li style="list-style-type: none;">{{ info.label }}: <strong {% if 'data-value' in info %} data-value = "{ info[data-value] }" {% endif %}>{{ info.lookup(application, wfc) }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     {% endif %}
                     {% if els.check.capability.resources|length > 0 %}
                         <h5><span data-feather="book" class="icon" aria-hidden="true"></span>Resources</h5>
@@ -76,7 +82,6 @@
                             {% endfor %}
                         </fieldset>
                     {% endif %}
-
                     {% if els.not_classified %}
                         {% for nc in els.not_classified %}
                             <div class="row">
@@ -104,7 +109,7 @@
                         {% endfor %}
                     {% endif %}
                 </div>
-                {% if els.check.capability.remember or els.check.capability.instructions %}
+                {% if els.check.capability.instructions %}
                 <button
                         type="button"
                         class="criterion-instructions-trigger"
@@ -132,18 +137,10 @@
                             </button>
                         </header>
                         <div class="criterion-instructions__body">
-                            {% if els.check.capability.remember %}
-                            <div class="criterion-important">
-                                <h5><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>&nbsp;REMEMBER</h5>
-                                <p>{{ els.check.capability.remember }}</p>
-                            </div>
-                            {% endif %}
-                            {% if els.check.capability.instructions %}
                             <div class="criterion-instructions__content">
                                 <h5><span class="form__long-help" data-feather="help-circle" aria-hidden="true"></span>&nbsp;Instructions</h5>
                                 <p>{{ els.check.capability.instructions }}</p>
                             </div>
-                            {% endif %}
                         </div>
                 </div>
                 {% endif %}

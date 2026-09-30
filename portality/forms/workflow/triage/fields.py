@@ -289,98 +289,48 @@ class EthicsNotExcluded(ComplianceCheckField):
 
         application_info = [
             {
+                "label": S.application_info.title,
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
+            },
+            {
+                "label": S.edit.alttitle,
+                "lookup": lambda application, wfc: application.bibjson().alternative_title,
+                "data-value": "alttitle"
+            },
+            {
                 "label": S.edit.publisher,
                 "lookup": lambda application, wfc: application.bibjson().publisher_name,
             },
             {
-                "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title,
-                "data-value": "title"
+                "label": S.edit.organization,
+                "lookup": lambda application, wfc: application.bibjson().institution,
             },
+            {
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url"
+            }
+
         ]
 
     name = "ethics_not_excluded"
     capabilities = (C(),)
 
-
-# class EthicsNotExcludedNote(NoteField):
-#     class NC(NoteCapability):
-#         error_messages = {
-#             IsConditionallyRequired: T.ethics_not_excluded.validation.note.is_conditionally_required
-#         }
-#
-#     name = "ethics_not_excluded_note"
-#     capabilities = (NC(),)
-
 class EthicsNotExcludedNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            IsConditionallyRequired: T.ethics_not_excluded.validation.note.is_conditionally_required
-        }
-
     name = "ethics_not_excluded_note"
-    capabilities = (NC(),)
-
-
-# RJ: I have removed these as they overcomplicated the implementation, and having 2 notes fields in one
-# question added complexity both to the interface and the back-end.  If this is a requirement it can be
-# revisited when time permits, otherwise the Note field on the question will become required if the
-# appropriate value is selected
-#
-# class EthicsNotExcludedNonCompliantNote(NoteField):
-#     class NC(NoteCapability):
-#         label = ""
-#         error_messages = {
-#             IsConditionallyRequired: T.ethics_not_excluded.validation.note.is_conditionally_required
-#         }
-#
-#     name = "ethics_not_excluded_noncompliant_note"
-#     capabilities = (NC(),)
-
-# class EthicsNotExcludedActionGroup(Structure):
-#     class C(SimpleCompoundCapability):
-#         role = "action"
-#         control_btns = [
-#             TriageFormButtons.contb(),
-#             TriageFormButtons.changeb({"data-controls": "ethics_not_excluded_group"})
-#         ]
-#         order = ["note"]
-#         label = ""
-#
-#     name_ = "ethics_not_excluded_action_group"
-#     capabilities_ = (C(),)
-#     note = EthicsNotExcludedNonCompliantNote(OPTIONAL, SINGLE)
 
 class EthicsNotExcludedGroup(Structure):
     class C(TriageCompoundFieldCapability):
         label = T.ethics_not_excluded.label
         order = ["answer", "note"]
         render_class = TriageCompound
-        # action = {
-        #     "non_compliant": {
-        #         "instruction": T.ethics_not_excluded.action.instruction,
-        #         "controls": "ethics_not_excluded_action_group"
-        #     }
-        # }
-        error_messages = {
-            IsConditionallyRequired: T.ethics_not_excluded.validation.group.is_conditionally_required
-        }
 
     name_ = "ethics_not_excluded_group"
     capabilities_ = (C(),)
 
     answer = EthicsNotExcluded(OPTIONAL, SINGLE)
     note = EthicsNotExcludedNote(OPTIONAL, SINGLE)
-    # action = EthicsNotExcludedActionGroup(OPTIONAL, SINGLE)
-    # action_note = EthicsNotExcludedNonCompliantNote(OPTIONAL, SINGLE)
-
-    validators_ = [
-        RequiredIf(
-            note,  # <- this field is required if
-            answer,  # <- this field has one of the values
-            T.ethics_not_excluded.non_compliant_answers  # <- that is non compliant
-        )
-    ]
 
 
 ##########################################################
