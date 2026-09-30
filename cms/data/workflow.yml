@@ -76,27 +76,21 @@ triage:
         non_compliant: 3
 
     ethics_no_false_doaj_claim:
-      label: "5. False claim to be indexed in DOAJ"
-      check: "5. This journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
+      label: "5. DOAJ Indexing Claim"
+      check: "5. Does the journal falsely claim to be indexed in DOAJ?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does not</strong> make a false claim to be indexed in DOAJ"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does</strong> a false claim to be indexed in DOAJ"
+        compliant: "<span class='answer'>No</span>, it does not falsely claim to be indexed in DOAJ."
+        non_compliant: "<span class='answer'>Yes</span>, Yes, it falsely claims to be indexed in DOAJ."
         later: "I don't know - mark for later"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      edit:
-        title: "Journal's title"
-      instructions: ""
-      remember: ""
+      remember: "If the answer is <span class='answer non_compliant'>Yes</span>, and the journal was not previously indexed in DOAJ, add it to the corresponding spreadsheet and note that you have done so. <br /> You must also add a link to the source supporting your answer."
       resources:
-        - label: "Quality Review Tool for Triage only"
-          url: "https://docs.google.com/spreadsheets/d/1IA_glTNaVbVq2EwFV7vJBZBUVn31GQJk-DvU-PJlRWA/edit?usp=sharing"
+        - label: "Journals and publishers that falsely claim they are indexed in DOAJ"
+          url: "https://docs.google.com/spreadsheets/d/1Y_Sza4rPDkf-NNX9kwiErGrKeNTM75md9B63A_gVpaQ/edit?usp=sharing"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Instruction placeholder"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
       compliant_answers:
       - "compliant"
       non_compliant_answers:
@@ -105,19 +99,14 @@ triage:
         non_compliant: 3
 
     ethics_submission_to_publication_time:
-      label: "6. Time between submission and publication"
-      check: "6. The time between submission and publication is more than 3 weeks"
+      label: "6. Publication timeline"
+      check: "6. Is the time between submission and publication more than three weeks?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, the time between submission and publication is <strong>more</strong> than 3 weeks."
-        non_compliant: "<span class='answer'>Non-compliant</span>, the time between submission and publication is <strong>less</strong> than 3 weeks."
+        compliant: "<span class='answer'>Yes</span>, Yes, it is more than three weeks."
+        non_compliant: "<span class='answer'>No</span>, it is three weeks or less."
         later: "I don't know - mark for later"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      info:
+      application_info:
         label: "Average number of weeks between submission and publication"
-      remember: ""
-      instructions: ""
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -126,33 +115,23 @@ triage:
         non_compliant: 3
 
     ethics_no_suspicious_ties:
-      label: "7. Previous exclusions/suspicious publisher or journals"
-      check: "7. The publisher/journal <strong>does not</strong> have links to previously excluded publishers and/or list of suspicious publishers"
+      label: "7. Links to Excluded or Suspicious Publishers"
+      check: "7. Was the journal or the publisher previously excluded or are they listed as suspicious, or linked to other excluded/suspicious publishers?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this publisher/journal <strong>does not</strong> have any such links"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this publisher/journal <strong>does</strong> have such links"
+        compliant: "<span class='answer'>No</span>, they are not."
+        non_compliant: "<span class='answer'>Yes</span>, they are."
         action: "No longer questionable"
         later: "I don't know - mark for later"
-      action:
-        non_compliant:
-          instruction: "Add more details about suspicious or excluded publishers/journals"
-        action:
-          instruction: "Provide more details on why this publisher or journal are no longer questionable"
-      remember: "If the entry in the spreadsheet is marked that is no longer questionable after last review, click <span class='answer action'>No longer questionable</span> and add a note"
-      instructions: ""
+      remember: "If the entry in the spreadsheet is marked that is no longer questionable after last review, choose <span class='answer action'>No longer questionable</span>."
       resources:
         - label: "Excluded publishers spreadsheet"
-          url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8"
-      edit:
-        instruction: "Please provide more details"
-        compliant: "Continue triage"
+          url: "https://docs.google.com/spreadsheets/d/17Ai-JMAabCrVIR3uhhtFXQZKLAwrK7jKd9DBnU7-GH8/edit?usp=sharing"
+      application_info:
+        title: "Title"
+        alttitle: "Alternative title"
         publisher: "Publisher"
-        title: "Journal's title"
-      validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "Add more details about suspicious or excluded publishers/journals, or why this publisher or journal are no longer questionable (if applicable)"
+        organization: "Journal's title"
+        homepage: "Journal's homepage"
       compliant_answers:
       - "compliant"
       action_answers:

@@ -459,14 +459,15 @@ class EthicsNoFalseDOAJClaim(ComplianceCheckField):
         S = T.ethics_no_false_doaj_claim
         options = options_for(S)
         check = S.check
-        instructions = S.instructions
+        remember = S.remember
         resources = resource_for(S)
         application_info = [
             {
-                "label": S.edit.title,
-                "lookup": lambda application, wfc: application.bibjson().title,
-                "data-value": "title"
-            },
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url",
+            }
         ]
 
     name = "ethics_no_false_doaj_claim"
@@ -488,12 +489,6 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
         label = T.ethics_no_false_doaj_claim.label
         order = ["answer", "note"]
         render_class = TriageCompound
-        # action = {
-        #     "non_compliant": {
-        #         "instruction": T.ethics_no_false_doaj_claim.action.instruction,
-        #         "controls": "ethics_no_false_doaj_claim_action_group"
-        #     }
-        # }
         error_messages = {
             IsConditionallyRequired: T.ethics_no_false_doaj_claim.validation.group.is_conditionally_required
         }
@@ -503,8 +498,6 @@ class EthicsNoFalseDOAJClaimGroup(Structure):
 
     answer = EthicsNoFalseDOAJClaim(OPTIONAL, SINGLE)
     note = EthicsNoFalseDOAJClaimNote(OPTIONAL, SINGLE)
-    # action = EthicsNoFalseDOAJClaimActionGroup(OPTIONAL, SINGLE)
-    # action_note = EthicsNoFalseDOAJClaimNonCompliantNote(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(
@@ -524,12 +517,10 @@ class EthicsPubTime(ComplianceCheckField):
         S = T.ethics_submission_to_publication_time
         options = options_for(S)
         check = S.check
-        instructions = S.instructions
-        resources = resource_for(S)
 
         application_info = [
             {
-                "label": S.info.label,
+                "label": S.application_info.label,
                 "lookup": lambda application, wfc: application.bibjson().publication_time_weeks
             }
         ]
@@ -540,7 +531,6 @@ class EthicsPubTime(ComplianceCheckField):
 
 class EthicsPubTimeNote(GeneralNote):
     name = "ethics_no_false_doaj_claim_note"
-    # capabilities = (NoteCapability(),)
 
 
 class EthicsPubTimeGroup(Structure):
@@ -567,19 +557,35 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
         S = T.ethics_no_suspicious_ties
         options = options_for(S)
         check = S.check
-        instructions = S.instructions
         remember = S.remember
         resources = resource_for(S)
+
         application_info = [
             {
-                "label": S.edit.publisher,
-                "lookup": lambda application, wfc: application.bibjson().publisher_name
-            },
-            {
-                "label": S.edit.title,
+                "label": S.application_info.title,
                 "lookup": lambda application, wfc: application.bibjson().title,
                 "data-value": "title"
             },
+            {
+                "label": S.application_info.alttitle,
+                "lookup": lambda application, wfc: application.bibjson().alternative_title,
+                "data-value": "alttitle"
+            },
+            {
+                "label": S.application_info.publisher,
+                "lookup": lambda application, wfc: application.bibjson().publisher_name
+            },
+            {
+                "label": S.application_info.organization,
+                "lookup": lambda application, wfc: application.bibjson().institution
+            },
+            {
+                "type": "url",
+                "label": S.application_info.homepage,
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url",
+            }
+
         ]
 
     name = "ethics_no_suspicious_ties"
@@ -587,69 +593,20 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
 
 
 class EthicsNoSuspiciousTiesNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.note.is_conditionally_required
-        }
-
     name = "ethics_no_suspicious_ties_note"
-    capabilities = (NC(),)
-
-
-class EthicsNoSuspiciousTiesNoLongerQuestionable(Structure):
-    class C(SimpleCompoundCapability):
-        label = T.ethics_no_suspicious_ties_action.label
-        role = "action"
-        S = T.database_embargo
-        order = []
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "database_embargo_group"})]
-
-    name_ = "ethics_no_suspicious_ties_no_longer_questionable"
-    capabilities_ = (C(),)
 
 
 class EthicsNoSuspiciousTiesGroup(Structure):
-    class C(ActionTriageCompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         label = T.ethics_no_suspicious_ties.label
-        order = ["answer", "action", "note"]
+        order = ["answer", "note"]
         render_class = TriageCompound
-        error_messages = {
-            IsConditionallyRequired: T.ethics_no_suspicious_ties.validation.group.is_conditionally_required
-        }
-        # action = {
-        #     "action": {
-        #         "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
-        #         "controls": "ethics_no_suspicious_ties_action_group"
-        #     },
-        #     "non_compliant": {
-        #         "instruction": T.ethics_no_suspicious_ties.action.action.instruction,
-        #         "controls": "ethics_no_suspicious_ties_noncompliant_group"
-        #     }
-        # }
 
     name_ = "ethics_no_suspicious_ties_group"
     capabilities_ = (C(),)
 
     answer = EthicsNoSuspiciousTies(OPTIONAL, SINGLE)
     note = EthicsNoSuspiciousTiesNote(OPTIONAL, SINGLE)
-    action = EthicsNoSuspiciousTiesNoLongerQuestionable(OPTIONAL, SINGLE)
-    # action_note = EthicsNoSuspiciousTiesActionNote(OPTIONAL, SINGLE)
-    # non_compliant_group = EthicsNoSuspiciousTiesNonCompliantGroup(OPTIONAL, SINGLE)
-    # non_compliant_note = EthicsNoSuspiciousTiesNonCompliantNote(OPTIONAL, SINGLE)
-
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.ethics_no_suspicious_ties.action_answers + T.ethics_no_suspicious_ties.non_compliant_answers
-                   # <- that is either compliant or non compliant
-                   )  # ,
-        # RequiredIf(note,  # <- this field is required if
-        #            answer,  # <- this field has one of the values
-        #            T.ethics_no_suspicious_ties.non_compliant_answers
-        #            # <- that is either compliant or non compliant
-        #            ),
-    ]
 
 
 ###########################################################
