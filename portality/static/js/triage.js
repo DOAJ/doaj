@@ -2,65 +2,21 @@ window.doaj = window.doaj || {};
 window.doaj.triage = window.doaj.triage || {};
 
 doaj.triage.Recommendation = class {
-    constructor() {
-        this.current = null;
-        this.$rejectionSection = $("#rejection_section");
+    constructor(url) {
+        this.url = url;
     }
 
-    render(recommendation) {
-        this.current = recommendation;
-        this.$rejectionSection.empty();
-
-        if (!this.current) {
-            return;
+     handle(recommendation) {
+        if (recommendation && recommendation.code !== "normal" && !recommendation_overwritten) {
+            window.location.href = this.url;
         }
-
-        console.log("Current recommendation:", this.current.code);
-
-        if (this.current.code === "reject") {
-            this._renderRejectionReasons();
-        }
-    }
-
-    _renderRejectionReasons() {
-        (this.current.reasons || []).forEach((reason) => {
-            const text = this._formatReason(reason);
-
-            this.$rejectionSection.append(
-                $("<p>").text(text)
-            );
-
-            console.log(text);
-        });
-    }
-
-    _formatReason(reason) {
-        let text = `${reason.question.text} (${reason.question.name}) ` +
-            `[${reason.question.field_id}]: ${reason.answer}`;
-
-        if (reason.sv) {
-            text += ` (SV: ${reason.sv})`;
-        }
-
-        if (reason.exception?.length) {
-            text += ` (Exception(s): ${reason.exception.join(", ")})`;
-        }
-
-        return text;
     }
 };
 
-doaj.triage.recommendation = new doaj.triage.Recommendation();
-
-
-doaj.triage.init = function () {
-
-    $(document).on("click", "#submitBtn", function (event) {
-        event.preventDefault();
-        doaj.triage.fullFormSubmit(this);
-    });
-}
-
+doaj.triage.overview_url = $("#triage").data("overview-url");
+doaj.triage.recommendation = new doaj.triage.Recommendation(
+    doaj.triage.overview_url
+);
 doaj.triage._saving = false;
 doaj.triage._queuedOptions = null;
 
@@ -224,7 +180,7 @@ doaj.triage._handleSaveResponse = function (data, options) {
     }
 
     doaj.triage.errors.clearAll();
-    doaj.triage.recommendation.render(data.recommendation);
+    doaj.triage.recommendation.handle(data.recommendation);
     doaj.triage._showSaveSuccess();
 
     if (typeof options.onSuccess === "function") {
@@ -338,28 +294,10 @@ doaj.triage.errors = new doaj.triage.Errors();
 doaj.triage.questions = {};
 
 
-/* ============================================================
- * Existing manual submit paths (unchanged)
- * ============================================================ */
-
-doaj.triage.fullFormSubmit = function (submitter) {
-    let $form = $("#triage");
-    let $response = $("#triage-async-response");
-
-    if ($form.length === 0) {
-        $response.html("<pre>Unable to find form with id 'triage'.</pre>");
-        return;
-    }
-
-    // Submit the form directly (button is outside the form)
-    $form[0].submit();
-}
-
-
 //------------------------- my code  -------------------------
 
 doaj.triage.questions.showOverview = function () {
-    console.log("TODO: show overview");
+    window.location.href = doaj.triage.overview_url;
 };
 
 doaj.triage.questions.answerIcons = {
@@ -994,8 +932,6 @@ doaj.triage.questions.QuestionGroup = class {
 
     constructor(name) {
         this.name = name;
-
-        console.log(this.name);
 
         this.$wrapper = $(`#${name}`);
 

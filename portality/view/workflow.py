@@ -184,7 +184,7 @@ def triage_form(application_id):
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
         form_html = processor.render_form()
         rec = processor.recommendation(wfc)
-        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc, recommendation=rec)
+        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc, recommendation=rec, recommendation_overwritten=request.values.get("override_recommendation", False))
 
     elif request.method == "POST":
         formdata = dicts.multidict_2_dict(request.form)

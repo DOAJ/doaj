@@ -69,12 +69,20 @@
         </div>
     </div>
 
+    {% if recommendation and recommendation.code != "normal" %}
     <div class="row">
         <div class="col-md-12 recommendation">
-            <div id="rejection_section" style="border: 6px solid #5e2ca5; min-height: 20rem;"></div>
-            {% include 'management/admin/_workflow/includes/_recommend.html' %}
+            <div id="rejection_section" style="background-color: #F6F4F4; min-height: 200px;">
+                <p><strong>RECOMMENDATION: </strong>{{ recommendation.code }}</p>
+                <p><strong>REASONS: </strong></p>
+                {% for reason in recommendation.reasons %}
+                <p>{{ reason.question.text }}</p>
+                {% endfor %}
+                <a href="{{ url_for('workflow.triage_form', application_id=application.id, override_recommendation=true) }}" class="btn button" style="background-color: white;">continue triage</a>
+            </div>
         </div>
     </div>
+    {% endif %}
     <div class="row">
         <div class="col-md-8">
             <a href="#" class="button button--primary button--cta" data-toggle="submission">Publisher Submission</a>

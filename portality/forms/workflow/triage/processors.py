@@ -215,7 +215,7 @@ class TriageFormProcessor:
                 if len(field.special_exceptions) > 0:
                     # if there is a "NO EXCEPTION" value, then don't record this as a rejection
                     if len(field.special_exceptions) == 1:
-                        if field.special_exceptions[0] == "none":   # urgh, magic string, but will have to do for now
+                        if field.special_exceptions[0] == "None":   # urgh, magic string, but will have to do for now
                             return []
 
                     return [{
