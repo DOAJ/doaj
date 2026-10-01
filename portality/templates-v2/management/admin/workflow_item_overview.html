@@ -12,7 +12,7 @@
 
 {% block page_title %}{{ wfc.module }} {{ application.bibjson().title }}{% endblock %}
 {% block page_header %}
-    <span class="tag tag--featured">{{ wfc.module }}</span> {{ application.bibjson().title }}
+<span class="tag tag--featured">{{ wfc.module }}</span> {{ application.bibjson().title }}
 {% endblock %}
 
 {% block admin_stylesheets %}
@@ -25,51 +25,58 @@
 {% include "management/admin/_workflow/includes/_header.html" %}
 {% endblock %}
 {% block admin_content %}
-    <div class="row" style="margin-bottom: 15px">
-        <div class="col-md-12">
-            <span>[link icon]</span><a href="{{ application.bibjson().journal_url }}" target="_blank">{{ application.bibjson().journal_url }}</a>
-            <span>[lang icon]</span>{% for lang in application.bibjson().language %}
-                {{ datasets.name_for_lang(lang) }}
-            {% endfor %}
-            <span>[world icon]</span>{{ datasets.get_country_name(application.bibjson().publisher_country) }}
-        </div>
-    </div>
-
-    <div class="row" style="margin-bottom: 15px">
-        <div class="col-md-12">
+<div class="overview-page">
+    <div class="row">
+        <div class="col-md-12 top-controls">
             {% if wfc.reviewer_id == current_user.id %}
                 <a href="{{ url_for("workflow.triage_form", application_id=application.id) }}" class="button button--cta">Continue Working on this Item</a>
             {% endif %}
 
             {% if event_claim and event_claim.is_available(current_user) %}
-                <span style="margin-left: 25px">
-                    {% with event = event_claim %}
-                        {% include event_claim.template %}
-                    {% endwith %}
-                </span>
+            <div class="claim">
+                {% with event = event_claim %}
+                {% include event_claim.template %}
+                {% endwith %}
+            </div>
             {% endif %}
 
             {% if event_assign and event_assign.is_available(current_user) %}
-                <span style="margin-left: 25px">
-                    {% with event = event_assign %}
-                        {% include event_assign.template %}
-                    {% endwith %}
-                </span>
+            <div class="assign">
+                {% with event = event_assign %}
+                {% include event_assign.template %}
+                {% endwith %}
+            </div>
             {% endif %}
 
             {% if event_reassign and event_reassign.is_available(current_user) %}
-                <span style="margin-left: 25px">
-                    {% with event = event_reassign %}
-                        {% include event_reassign.template %}
-                    {% endwith %}
-                </span>
+            <div class="reassign">
+                {% with event = event_reassign %}
+                {% include event_reassign.template %}
+                {% endwith %}
+            </div>
             {% endif %}
+
+            <div class="reject">
+                <button type="button"
+                        class="btn btn--non-recommended"
+                        id="show-rejection-section"
+                        aria-expanded="false"
+                        aria-controls="rejection_section"
+                >
+                    <span data-feather="alert-circle"></span> Reject this application (non-recommended)
+                </button>
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12 recommendation">
+            <div id="rejection_section" style="border: 6px solid #5e2ca5; min-height: 20rem;"></div>
             {% include 'management/admin/_workflow/includes/_recommend.html' %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
             <a href="#" class="button button--primary button--cta" data-toggle="submission">Publisher Submission</a>
             <a href="#" class="button button--primary" data-toggle="triage">Triage</a>
             <div class="submission">
@@ -160,6 +167,17 @@
         }
 
         document.addEventListener("DOMContentLoaded", initialiseWorkflowItemToggle);
+
+        const showRejectionSection = document.getElementById("show-rejection-section");
+        const rejectionsSection = document.getElementById("rejection_section");
+
+        showRejectionSection.addEventListener("click", () => {
+            rejectionsSection.hidden = false;
+            showRejectionSection.hidden = true;
+            rejectionsSection.setAttribute("aria-expanded", "true");
+        //     set focus
+
+        });
 
         jQuery(document).ready(function($) {
             doaj.workflow.notes.init();

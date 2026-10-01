@@ -1789,16 +1789,16 @@ class WebsiteLicensePolicyActionGroup(Structure):
     name_ = "website_license_policy_action_group"
     capabilities_ = (C(),)
 
-    license = License(REQUIRED, REPEATABLE)
-    license_attribute = LicenseAttribute(REQUIRED, REPEATABLE)
-    license_url = LicenseURL(REQUIRED, SINGLE)
+    license = License(OPTIONAL, REPEATABLE)
+    license_attribute = LicenseAttribute(OPTIONAL, REPEATABLE)
+    license_url = LicenseURL(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(license_attribute,  # <- this field is required if
-                   license,  # <- this field has one of the values
-                   ["Publisher's own license"]
-                   )
-    ]
+    # validators_ = [
+    #     RequiredIf(license_attribute,  # <- this field is required if
+    #                license,  # <- this field has one of the values
+    #                ["Publisher's own license"]
+    #                )
+    # ]
 
 
 class WebsiteLicensePolicyGroup(Structure):

@@ -1021,4 +1021,47 @@ body.dashboard {
     }
   }
 
+  .overview-page {
+    padding: 0 2.5rem;
+    .row {
+      padding: 1rem 0;
+    }
+    .top-controls {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+    form {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+      align-items: center;
+      * {
+        margin-bottom: 0;
+      }
+    }
+    .input {
+      &--inline {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+        margin-bottom: 0;
+        label {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .btn {
+      &--non-recommended {
+        border-color: $sanguine;
+        color: $sanguine;
+        :hover, :focus {
+          background-color: $sanguine;
+          color: $white;
+        }
+      }
+    }
+  }
+
 }
