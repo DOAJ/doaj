@@ -6,66 +6,10 @@ from portality.bll import DOAJ
 from portality.bll.services.workflow.core import ApplicationEdit
 from portality.core import app
 from portality.forms.workflow.crosswalk import TriageForm2WorkflowControl, WorkflowControl2TriageForm
-from portality.forms.workflow.triage.fields import SpecialExceptions
-from portality.forms.workflow.triage.forms import TriageForm, TriageSubmission
+from portality.forms.workflow.triage.forms import TriageSubmission
 from portality.models import Application, WorkflowControl
-from formulaic.core import DataProcessingResult, ErrorCode, Structure, Field
+from formulaic.core import ErrorCode, Structure, Field
 from portality.models.workflow import TriageField, SpecialExceptionTriageField
-
-
-# class TriageReadOnlyProcessor:
-#     def __init__(self, source_application:Application, source_wfc:WorkflowControl):
-#         self._source_application = source_application
-#         self._source_wfc = source_wfc
-#
-#         self.obj2form_xwalk = WorkflowControl2TriageForm()
-#         self.serialiser = FormSerialiser(context_id = "triage-ro")
-#
-#         self._form_inst:TriageSubmission = None
-#
-#         if self._source_application and self._source_wfc:
-#             self.source2forminstance()
-#
-#     ################################
-#     ## accessors
-#
-#     @property
-#     def source_application(self):
-#         return self._source_application
-#
-#     @property
-#     def source_workflow_control(self):
-#         return self._source_wfc
-#
-#     @property
-#     def form_instance(self):
-#         return self._form_inst
-#
-#     @form_instance.setter
-#     def form_instance(self, inst):
-#         self._form_inst = inst
-#
-#     ################################
-#     ## Data transformations
-#
-#     def source2forminstance(self):
-#         if not (self._source_wfc and self._source_application):
-#             raise ValueError("Must provide both source application and workflow control")
-#
-#         self.form_instance = self.obj2form_xwalk.transform(self._source_wfc, self._source_application)
-#
-#     ##########################
-#     ## Form serialisation
-#
-#     def render_form(self):
-#         form_html = self.serialiser.data_to_string(
-#             self.form_instance.data,
-#             self.form_instance.struct,
-#             application=self._source_application,
-#             wfc=self._source_wfc,
-#             errors=self.form_instance.validation_result
-#         )
-#         return form_html
 
 class TriageFormProcessor:
     def __init__(self, source_application:Application, source_wfc:WorkflowControl, raw_formdata:dict=None):
@@ -75,7 +19,7 @@ class TriageFormProcessor:
 
         self.form2obj_xwalk = TriageForm2WorkflowControl()
         self.obj2form_xwalk = WorkflowControl2TriageForm()
-        self.serialiser = FormSerialiser(context_id = "triage-form")
+        self.serialiser = FormSerialiser()
         self.parser = FormDataParser()
 
         self._form_inst:TriageSubmission = None
@@ -160,6 +104,13 @@ class TriageFormProcessor:
     def finalise(self, account):
         self.forminstance2target(account)
 
+        # reference for possible future audit system
+        # clSvc = DOAJ.changeLogService()
+        # change_log = clSvc.record_change(self._source_application, self._target_application, account)
+        # if self._target_wfc.triage.start_version is None:
+        #     self._target_wfc.triage.start_version = change_log.current_version - 1
+        # self._target_wfc.triage.end_version = change_log.current_version
+
         wfSvc = DOAJ.workflowService()
         state = wfSvc.state_for_workflow_control(self._target_wfc, self._target_application)
         if state is None:
@@ -203,6 +154,10 @@ class TriageFormProcessor:
 
         # Title
         tbj.title = sbj.title
+        tbj.alternative_title = sbj.alternative_title
+
+        # url
+        tbj.journal_url = sbj.journal_url
 
         # Continuation
         tbj.replaces = sbj.replaces
@@ -224,19 +179,20 @@ class TriageFormProcessor:
         R = app.cms.workflow.triage.fields
 
         for question in R.keys():
-            triage_field = getattr(t, question)
-            ans = triage_field.answer
+            if question not in t.NON_QUESTION_ELEMENTS:
+                triage_field = getattr(t, question)
+                ans = triage_field.answer
 
-            if "severity_value" in R[question]:
-                if ans in R[question].severity_value:
-                    triage_field.severity_value = R[question].severity_value[ans]
+                if "severity_value" in R[question]:
+                    if ans in R[question].severity_value:
+                        triage_field.severity_value = R[question].severity_value[ans]
 
-            if ans in R[question].compliant_answers:
-                triage_field.compliant = True
-            elif ans in R[question].non_compliant_answers:
-                triage_field.compliant = False
-            else:
-                triage_field.compliant = None
+                if ans in R[question].compliant_answers:
+                    triage_field.compliant = True
+                elif ans in R[question].non_compliant_answers:
+                    triage_field.compliant = False
+                else:
+                    triage_field.compliant = None
 
     def _calculate_recommendation(self, wfc:WorkflowControl):
         t = wfc.triage
@@ -259,7 +215,7 @@ class TriageFormProcessor:
                 if len(field.special_exceptions) > 0:
                     # if there is a "NO EXCEPTION" value, then don't record this as a rejection
                     if len(field.special_exceptions) == 1:
-                        if field.special_exceptions[0] == "none":   # urgh, magic string, but will have to do for now
+                        if field.special_exceptions[0] == "None":   # urgh, magic string, but will have to do for now
                             return []
 
                     return [{
@@ -277,7 +233,8 @@ class TriageFormProcessor:
         recs = []
 
         for question in R.keys():
-            recs += get_recommendation(getattr(t, question), R[question])
+            if question not in t.NON_QUESTION_ELEMENTS:
+                recs += get_recommendation(getattr(t, question), R[question])
 
         def evaluate_recommendations(recs):
             r = []
@@ -423,3 +380,15 @@ class TriageFormProcessor:
 
         return {"code": rec.get("code"), "reasons": localised}
 
+
+class TriageROFormProcessor(TriageFormProcessor):
+    def render_form(self):
+        form_html = self.serialiser.data_to_string(
+            self.form_instance.data,
+            self.form_instance.struct,
+            application=self._source_application,
+            wfc=self._source_wfc,
+            errors=self.form_instance.validation_result,
+            render_context="ro"
+        )
+        return form_html

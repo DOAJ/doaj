@@ -3,24 +3,9 @@
       action="{{ url_for('workflow.triage_form', application_id=application.id) }}"
       method="{{ form.method }}"
       data-parsley-focus="none"
+      data-overview-url="{{ url_for('workflow.workflow_item_overview', application_id=application.id) }}"
         {% for k, v in form.attributes %}{{ k }}="{{ v }}" {% endfor %}
     >
-
-    <div class="error-container">
-    {% if form.has_nested_errors() %}
-        <div class="error" style="color: red; font-weight: bold;">
-            There are errors in the form. Please correct them and try again.
-        </div>
-    {% endif %}
-    {% if form.displayable_errors %}
-        Form Errors
-        {% for error in form.displayable_errors %}
-            <div class="error" style="color: red; font-weight: bold;">
-                {{ form.error_message(error) }}
-            </div>
-        {% endfor %}
-    {% endif %}
-    </div>
 
     <div class="page">
         <section class="page-content">
@@ -32,3 +17,9 @@
         </section>
     </div>
 </form>
+
+{% block admin_js %}
+<script>
+    doaj.triage.recommendation_overwritten = {{ recommendation_overwritten }}
+</script>
+{% endblock %}

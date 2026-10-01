@@ -19,15 +19,8 @@ TRIAGE_FIELD = {
         "exception": {"coerce": "bool"},
         "note_id": {"coerce": "unicode"},
     },
-    "lists": {
-        "changes": {"contains": "object"},
-    },
-    "structs": {
-        "changes": {
-            "audit_id": {"coerce": "unicode"},
-            "note_id": {"coerce": "unicode"},
-        }
-    }
+    "lists": {},
+    "structs": {}
 }
 
 SPECIAL_EXCEPTION_TRIAGE_FIELD = deepcopy(TRIAGE_FIELD)
@@ -132,6 +125,12 @@ TRIAGE_STRUCT = {
 
                 "admin_metadata_review": TRIAGE_FIELD,
                 "admin_special_exception": SPECIAL_EXCEPTION_TRIAGE_FIELD
+            }
+        },
+        "audit": {
+            "fields": {
+                "start_version": {"coerce": "integer"},
+                "end_version": {"coerce": "integer"}
             }
         }
     }
@@ -469,10 +468,6 @@ class TriageField(SeamlessMixin):
         return self.__seamless__.get_single("note_id")
 
     @property
-    def changes(self):
-        return self.__seamless__.get_list("changes")
-
-    @property
     def note(self):
         from portality.models import Note
         if self._note is None and self.note_id is not None:
@@ -519,6 +514,12 @@ class Triage(SeamlessMixin):
         "content_new_journal"
     ]
 
+    NON_QUESTION_ELEMENTS = [
+        "ethics_no_suspicious_ties_action",
+        "database_not_duplicate_instruction",
+        "new_journal_exceptions"
+    ]
+
     def __init__(self, raw=None, parent:WorkflowControl=None, **kwargs):
         super(Triage, self).__init__(raw=raw, **kwargs)
         self._parent = parent
@@ -527,6 +528,22 @@ class Triage(SeamlessMixin):
     @property
     def data(self):
         return self.__seamless__.data
+
+    @property
+    def start_version(self):
+        return self.__seamless__.get_single("audit.start_version")
+
+    @start_version.setter
+    def start_version(self, val):
+        self.__seamless__.set_single("audit.start_version", val)
+
+    @property
+    def end_version(self):
+        return self.__seamless__.get_single("audit.end_version")
+
+    @end_version.setter
+    def end_version(self, val):
+        self.__seamless__.set_single("audit.end_version", val)
 
     def cache_note(self, note:"Note"):
         # cache the note at this level and pass it up.  This means that if

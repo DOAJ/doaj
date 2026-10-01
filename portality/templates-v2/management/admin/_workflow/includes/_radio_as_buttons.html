@@ -63,9 +63,9 @@
     {% if input %}
         {% set compliance = input.attrs.value %}
         {% set label = control.label.content %}
-        {% if compliance == "compliant" or compliance == true and label %}
+        {% if compliance == "compliant" or compliance == "true" and label %}
             {% set ns.compliant_answer = control %}
-        {% elif compliance == "non_compliant" or compliance == false and label %}
+        {% elif compliance == "non_compliant" compliance == "no" and label %}
             {% set ns.noncompliant_answer = control %}
         {% elif compliance == "later" and label %}
             {% set ns.later_answer = control %}

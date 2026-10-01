@@ -118,6 +118,24 @@ button[type="submit"].button--secondary {
   }
 }
 
+.button--tertiary {
+  position: relative;
+  left: 0;
+  top: 0;
+  transition: all 0.15s ease;
+  border-color: currentColor;
+  background-color: transparent;
+
+  &:hover,
+  &:active,
+  &:focus {
+    left: $spacing-01;
+    top: $spacing-01;
+    border-color: currentColor;
+    color: currentColor;
+  }
+}
+
 button.aria-button {
     all: inherit;
     -webkit-appearance: none;

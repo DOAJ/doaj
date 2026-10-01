@@ -1,3 +1,4 @@
+from portality.forms.workflow.notes import StandAloneNotes
 from portality.forms.workflow.triage.forms import TriageSubmission
 from portality.models import WorkflowControl, Note, Application
 from portality.datasets import licenses as LICENSES
@@ -175,6 +176,7 @@ class WorkflowControl2TriageForm(object):
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
         form.set(f.issn.title_match.action_group.title, bj.title)
+        form.set(f.issn.title_match.action_group.alttitle, bj.alternative_title)
 
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)
@@ -187,6 +189,7 @@ class WorkflowControl2TriageForm(object):
         # Working
         compliance_field_radio(triage.website_working, f.website.working)
         compliance_field_note(triage.website_working, f.website.working)
+        form.set(f.website.working.action.journal_url, bj.journal_url)
 
         # ISSN
         compliance_field_radio(triage.website_issn, f.website.issn)
@@ -246,7 +249,7 @@ class WorkflowControl2TriageForm(object):
         # New Journal
         compliance_field_radio(triage.content_new_journal, f.content.new_journal)
         compliance_field_note(triage.content_new_journal, f.content.new_journal)
-        form.set(f.content.new_journal.exceptions, triage.content_new_journal.special_exceptions)
+        form.set(f.content.new_journal.action.exception, triage.content_new_journal.special_exceptions)
 
         ##############
         ## Admin
@@ -394,7 +397,9 @@ class TriageForm2WorkflowControl(object):
         compliance_field_radio(triage.issn_title_match, f.issn.title_match)
         compliance_field_note(triage.issn_title_match, f.issn.title_match)
         title = form.get(f.issn.title_match.action_group.title)
+        alttitle = form.get(f.issn.title_match.action_group.alttitle)
         bj.title = title
+        bj.alternative_title = alttitle
 
         # Continuation
         compliance_field_radio(triage.issn_continuation, f.issn.continuation)
@@ -411,6 +416,9 @@ class TriageForm2WorkflowControl(object):
         # Working
         compliance_field_radio(triage.website_working, f.website.working)
         compliance_field_note(triage.website_working, f.website.working)
+
+        journal_url = form.get(f.website.working.action.journal_url)
+        bj.journal_url = journal_url
 
         # ISSN
         compliance_field_radio(triage.website_issn, f.website.issn)
@@ -451,6 +459,8 @@ class TriageForm2WorkflowControl(object):
         compliance_field_note(triage.website_copyright, f.website.copyright)
         car = form.get(f.website.copyright.action_group.copyright_author_retains)
         bj.author_retains_copyright = car == "y"
+        print(form.get(f.website.copyright.action_group.copyright_author_retains))
+        # bj.author_retains_copyright = form.get(f.website.copyright.action_group.copyright_author_retains)
         curl = form.get(f.website.copyright.action_group.copyright_url)
         bj.copyright_url = curl
 
@@ -480,7 +490,7 @@ class TriageForm2WorkflowControl(object):
         # New Journal
         compliance_field_radio(triage.content_new_journal, f.content.new_journal)
         compliance_field_note(triage.content_new_journal, f.content.new_journal)
-        triage.content_new_journal.special_exceptions = form.get(f.content.new_journal.exceptions)
+        triage.content_new_journal.special_exceptions = form.get(f.content.new_journal.action.exception)
 
         ##############
         ## Admin
@@ -499,3 +509,22 @@ class TriageForm2WorkflowControl(object):
 
         return wfc, application
 
+
+class Application2Notes(object):
+    def transform(self, application:Application) -> StandAloneNotes:
+        form = StandAloneNotes()
+        f = StandAloneNotes.struct
+
+        notes = []
+        for note in application.ordered_note_objects:
+            n = {
+                "note_id": note.id,
+                "note_text": note.note,
+                "note_author": note.author_id,
+                "note_created": note.created_date,
+                "note_last_updated": note.last_updated
+            }
+            notes.append(n)
+
+        form.set(f.notes, notes)
+        return form

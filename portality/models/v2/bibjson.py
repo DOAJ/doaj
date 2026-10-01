@@ -531,7 +531,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def review_process(self):
-        return self.__seamless__.get_list("editorial.review_proccess")
+        return self.__seamless__.get_list("editorial.review_process")
 
     @review_process.setter
     def review_process(self, review_process):
