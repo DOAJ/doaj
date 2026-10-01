@@ -5,16 +5,25 @@ tests:
   - title: Preparation
     context:
       role: Admin
+      testdrive: admin_article_metadata_form
     setup:
-      - Ensure you own a journal with ISSNs 1234-5678 and 9876-5432 and no articles
-        attached
-      - Ensure you are an owner of a journal with ISSN 0000-0000 that is not in
-        DOAJ
+      - Use the admin_article_metadata_form testdrive to set up for this test at
+        /testdrive/admin_article_metadata_form
+      - This creates a journal (in DOAJ) holding 3 test articles ("Success 100",
+        "Success 200" and "Success 300"), a second journal (not in DOAJ) owned by
+        the same non-admin account, and a third journal (in DOAJ) owned by a
+        different account entirely. All ISSNs, DOIs and fulltext URLs are
+        generated fresh each run - use the values shown in the testdrive result
+        throughout this test, not any specific numbers written here
+      - The testdrive's 'owner' account can be used later for the "log in as
+        publisher" step in "Check button linking to the article's page"
+      - At the end of the test suite, use the 'teardown' link provided by the
+        testdrive to remove the test assets from the system
     steps:
-      - step: Upload set of test articles
-        resource: /xml_upload_test_package/admin_metadata_form_test_pack.xml
+      - step: Log in as the 'admin' account supplied by the testdrive
         results:
-          - 3 Articles are uploaded and attached to the journal
+          - 3 articles ("Success 100", "Success 200" and "Success 300") are attached
+            to the "Successful ..." journal
 
   - title: Updating data other then DOI and Fulltext URL
     context:
@@ -33,8 +42,14 @@ tests:
       - step: Click "Edit this article"
         results:
           - The Admin Metadata Form for "Success 300" article is opened in the new window
-      - step: Check if PISSN and EISSN dropdowns have 1234-5678 and 9876-5432 options
-      - step: Check that PISSN and EISSN dropdowns have not 0000-0000 option
+      - step: Check that the PISSN and EISSN dropdowns offer the "Successful ..." journal's
+          ISSNs (shown in the testdrive result) as options
+      - step: Check that the PISSN and EISSN dropdowns do NOT offer the "Not In DOAJ ..."
+          journal's ISSN (shown in the testdrive result) as an option
+      - step: Check that the PISSN and EISSN dropdowns do NOT offer the "Other Publisher's
+          Journal ..." journal's ISSN (shown in the testdrive result) as an option, even
+          though that journal is in DOAJ - it belongs to a different account, so it must
+          not appear in this owner's dropdown
       - step: Check the Authors section
         results:
           - There is only one author and no "Remove Author" button
@@ -87,36 +102,40 @@ tests:
         testset: Admin Article Metadata Form
         test: Updating data other then DOI and Fulltext URL
     steps:
-      - step: Open a "Success 400" article metadata form
-      - step: Change DOI to 10.1234/200 and Fulltext URL to http://doaj.org/testing/500.pdf
+      - step: Open the "Success 400" article metadata form (this is "Success 300" as
+          renamed in the previous test)
+      - step: Note the current DOI and Fulltext URL of "Success 400" somewhere, you will
+          need to set it back later
+      - step: Change DOI to the DOI shown for "Success 200" in the testdrive result
+          (leave Fulltext URL as any value not used by another seeded article)
       - step: Click "Update article" button
         results:
           - The red banner "Article could not be updated, as it matches another existing
             article. Please check your metadata, and contact us if you cannot resolve the
-            issue yourself."
-      - step: Change DOI to 10.1234/500 and Fulltext URL to http://doaj.org/testing/200.pdf
+            issue yourself." is shown, because the DOI matches "Success 200"
+      - step: Change DOI to any value not used by another article, and change Fulltext
+          URL to the Fulltext URL shown for "Success 200" in the testdrive result
       - step: Click "Update article" button
         results:
-          - The red banner "Article could not be updated, as it matches another existing
-            article. Please check your metadata, and contact us if you cannot resolve the
-            issue yourself."
-      - step: Change DOI back to 10.1234/400 and Fulltext URL to http://doaj.org/testing/500.pdf
+          - The same red banner conflict is shown, because the Fulltext URL alone matches
+            "Success 200"
+      - step: Change DOI and Fulltext URL back to the original values you noted for
+          "Success 400"
       - step: Click "Update article" button
         results:
           - Green banner "Article created/updated" is shown at the top page
       - step: Open the "Success 400" landing page
         results:
-          - Confirm that Fulltext URL is changed to http://doaj.org/testing/500.pdf
+          - Confirm the Fulltext URL matches the value you set
       - step: Go back to the article metadata form
-      - step: Change DOI to 10.1234/500
+      - step: Change DOI to a new value not used by any other article
       - step: Click "Update article" button
         results:
           - Green banner "Article created/updated" is shown at the top page
       - step: Open the "Success 400" landing page
         results:
-          - Confirm that Fulltext URL is changed to http://doaj.org/testing/500.pdf
-          - Confirm only one article with DOI 10.1234/500 and fulltext URL http://doaj.org/testing/500.pdf
-            exists
+          - Confirm the DOI and Fulltext URL match the values you last set
+          - Confirm only one article exists with that DOI and Fulltext URL combination
 
   - title: Check button linking to the article's page
     context:

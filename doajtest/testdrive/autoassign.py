@@ -66,15 +66,15 @@ class Autoassign(TestDrive):
         maned2, pw5 = self._account("Managing Editor", [constants.ROLE_ADMIN])
         maned3, pw6 = self._account("Managing Editor", [constants.ROLE_ADMIN])
 
-        eg1source = EditorGroupFixtureFactory.make_editor_group_source(group_name="Account Mapping " + maned1.id, maned=maned1.id)
+        eg1source = EditorGroupFixtureFactory.make_editor_group_source(group_name="Account Mapping " + maned1.id, editor=None, maned=maned1.id)
         eg1 = models.EditorGroup(**eg1source)
         eg1.save()
 
-        eg2source = EditorGroupFixtureFactory.make_editor_group_source(group_name="Country Mapping " + maned2.id, maned=maned2.id)
+        eg2source = EditorGroupFixtureFactory.make_editor_group_source(group_name="Country Mapping " + maned2.id, editor=None, maned=maned2.id)
         eg2 = models.EditorGroup(**eg2source)
         eg2.save()
 
-        eg3source = EditorGroupFixtureFactory.make_editor_group_source(group_name="Unmapped " + maned3.id, maned=maned3.id)
+        eg3source = EditorGroupFixtureFactory.make_editor_group_source(group_name="Unmapped " + maned3.id, editor=None, maned=maned3.id)
         eg3 = models.EditorGroup(**eg3source)
         eg3.save()
 
@@ -107,7 +107,9 @@ class Autoassign(TestDrive):
                 "journal": j1.id,
                 "editor_group": eg1.name,
                 "maned_username": maned1.id,
-                "maned_password": pw4
+                "maned_password": pw4,
+                "admin_username": maned1.id,
+                "admin_password": pw4
             },
             "map_by_country": {
                 "publisher_username": pub2.id,
@@ -158,6 +160,7 @@ class Autoassign(TestDrive):
         eg = models.EditorGroup.pull_by_key("name", params["unmapped"]["editor_group"])
         eg.delete()
 
-        models.AdminAlert.remove_by_id(params["alert"])
+        for alert_id in params["alert"]:
+            models.AdminAlert.remove_by_id(alert_id)
 
         return {"status": "success"}
