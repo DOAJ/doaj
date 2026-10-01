@@ -428,6 +428,13 @@ def handle_login_template_rendering(form):
 def login():
     current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
+    # Issue #4184: an account that has registered but not yet set a password
+    # (no 'password' field at all) must produce a response indistinguishable
+    # from a nonexistent account - otherwise an attacker could enumerate which
+    # usernames/emails exist by noticing a different message/response for a
+    # partially-registered account. Shared between both except branches below
+    # so they can't silently drift apart.
+    account_not_recognised_msg = 'Account not recognised. If you entered an email address, try your username instead.'
     if request.method == 'POST' and form.validate():
         username = form.user.data
         action = request.form.get('action')
@@ -452,7 +459,7 @@ def login():
                 raise bll_exc.ArgumentException("Unknown login action")
 
         except bll_exc.NoSuchObjectException:
-            form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
+            form.user.errors.append(account_not_recognised_msg)
         except bll_exc.IllegalStatusException as e:
             msg = str(e) if e.args else ""
             if msg == 'incomplete_verification':
@@ -463,6 +470,9 @@ def login():
                 form.password.errors.append(
                     f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
                 )
+            elif msg == 'no_password':
+                # See comment above account_not_recognised_msg definition.
+                form.user.errors.append(account_not_recognised_msg)
             else:
                 # Generic illegal status
                 Messages.flash(Messages.ACCOUNT__STATUS_LOGIN_FAILED)
