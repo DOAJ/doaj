@@ -1,4 +1,5 @@
 import uuid, json
+import random
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response, g, current_app
 from flask import render_template, abort
@@ -9,8 +10,7 @@ from portality import util
 from portality import constants
 from portality.core import app
 from portality.datasets import language_options, country_options
-from portality.decorators import ssl_required, write_required, restrict_to_role
-from portality.forms.application_forms import MultiSelectBuilder, iso_language_list
+from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged, \
     CurrentISOLanguage
@@ -31,20 +31,20 @@ def pull_lang(endpoint, values):
     if values:
         lang = values.pop('lang', None)
         if lang:
+            # store the active language on the flask.g so url_defaults can access it
             g.lang = lang
 
 @blueprint.url_defaults
 def add_lang(endpoint, values):
-    if 'lang' not in values and current_app.url_map.is_endpoint_expecting(endpoint, 'lang'):
-        values['lang'] = g.get('lang')
+    """Ensure that url_for() populates the 'lang' value for this blueprint when generating URLs.
 
-@blueprint.route('/')
-@login_required
-@ssl_required
-def index():
-    if not current_user.has_role("list_users"):
-        abort(401)
-    return render_template(templates.USER_LIST)
+    If a language has been set on g (by pull_lang) then default the 'lang' for generated URLs
+    to that value so callers don't need to explicitly pass it.
+    """
+    if 'lang' not in values and current_app.url_map.is_endpoint_expecting(endpoint, 'lang'):
+        lang = getattr(g, 'lang', None)
+        if lang:
+            values.setdefault('lang', lang)
 
 class RedirectForm(Form):
     next = HiddenField()
@@ -60,17 +60,13 @@ class RedirectForm(Form):
         target = get_redirect_target()
         return redirect(target or url_for(endpoint, **values))
 
-
-class LoginForm(RedirectForm):
-    user = StringField('Email address or username', [validators.DataRequired()])
-    password = PasswordField('Password', [validators.DataRequired()])
-
-class ResetForm(Form):
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
+@blueprint.route('/')
+@login_required
+@ssl_required
+def index():
+    if not current_user.has_role("list_users"):
+        abort(401)
+    return render_template(templates.USER_LIST)
 
 class UserEditForm(Form):
 
@@ -268,25 +264,11 @@ def get_redirect_target(form=None, acc=None):
     return url_for(app.config.get("DEFAULT_LOGIN_DESTINATION"))
 
 
-class RedirectForm(Form):
-    next = HiddenField()
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        if not self.next.data:
-            self.next.data = get_redirect_target() or ''
-
-    def redirect(self, endpoint='index', **values):
-        if self.next.data == util.is_safe_url(self.next.data):
-            return redirect(self.next.data)
-        target = get_redirect_target()
-        return redirect(target or url_for(endpoint, **values))
-
-
 class LoginForm(RedirectForm):
     user = StringField('Email address or username', [validators.DataRequired()])
     password = PasswordField('Password', [validators.Optional()])
     action = StringField('Action', [validators.DataRequired()])
+
 
 class LoginCodeForm(RedirectForm):
     code = StringField('Code', [validators.DataRequired()])
@@ -387,6 +369,13 @@ def verify_code():
     return redirect(get_redirect_target(form=form, acc=account))
 
 
+
+class ResetForm(Form):
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
 
 def get_user_account(username):
     # If our settings allow, try getting the user account by ID first, then by email address
@@ -568,7 +557,9 @@ def register(template=templates.REGISTER):
             or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
         abort(401)      # todo: we may need a template to explain this since it's linked from the application form
 
-    form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
+    form = RegisterForm(request.form, csrf_enabled=False,
+                        roles=",".join(app.config.get("DEFAULT_REGISTER_ROLES", [])),
+                        identifier=Account.new_short_uuid())
 
     if request.method == 'POST':
 
@@ -582,6 +573,12 @@ def register(template=templates.REGISTER):
                 roles = [r.strip() for r in form.roles.data.split(',')]
                 for r in roles:
                     account.add_role(r)
+            else:
+                # for all accounts, add the default roles
+                default_roles = app.config.get("DEFAULT_REGISTER_ROLES", [])
+                for role in default_roles:
+                    account.add_role(role)
+
 
             account.save()
 

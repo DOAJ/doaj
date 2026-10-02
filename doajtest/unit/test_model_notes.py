@@ -1,4 +1,5 @@
 from doajtest.helpers import DoajTestCase
+from portality.lib import dates
 from portality.models import Journal, Note
 
 
@@ -250,7 +251,7 @@ class TestModels(DoajTestCase):
         assert len(j.notes_except_flags) == 1
 
         j.set_flag(n1.id, "test", "2027-01-01T00:00:00Z")
-        n2 = j.resolve_flag(n1.id, "Resolved")
+        n2 = j.resolve_flag(n1.id, "Resolved", dates.now_str(), "test")
 
         assert not j.is_flagged
         assert len(j.flags) == 0
