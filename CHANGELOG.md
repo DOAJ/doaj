@@ -2,6 +2,12 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.4
+
+Static pages release
+Fix bug where default roles weren't being assigned to new accounts
+https://github.com/DOAJ/doajPM/issues/4439
+
 ### 8.7.3
 
 Disallow terminology 'blind' peer review via form validation (anonymous should be selected)
