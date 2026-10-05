@@ -118,6 +118,40 @@ tests:
           - Confirm only one article with DOI 10.1234/500 and fulltext URL http://doaj.org/testing/500.pdf
             exists
 
+  - title: Editing the article references
+    context:
+      role: Admin
+    setup:
+      - Ensure that an article with references is in DOAJ, e.g. by uploading the test
+        resource file "with_references.xml" as a publisher
+    steps:
+      - step: Go to admin journal and articles search, find the article "References!"
+          and click "Edit this article"
+        resource: /xml_upload_test_package/DOAJ/with_references.xml
+      - step: Find the "References" field
+        results:
+          - The field is a multi-line textarea, with the help text "One reference per line"
+          - The 4 references of the article are shown, one per line, in the order they
+            were uploaded
+      - step: Add a new reference on a new line, change the text of the first reference,
+          and delete the last reference
+      - step: Click "Update Article" button
+        results:
+          - Green banner saying "Article created/updated" is shown at the top of the page.
+      - step: Reload the article metadata form
+        results:
+          - The "References" field shows your changes - the edited first reference, the
+            new reference and no deleted reference
+      - step: Open the article's public page
+        results:
+          - The "References" section shows the same references, in the same order, as the
+            form
+      - step: Go back to the article metadata form, clear the "References" field completely
+          and click "Update Article"
+      - step: Open the article's public page
+        results:
+          - No "References" section is shown on the page
+
   - title: Check button linking to the article's page
     context:
       role: Admin
