@@ -59,6 +59,7 @@ NOTIFICATIONS = "management/admin/notifications.html"
 ADMIN_UNLOCKED = "management/admin/unlocked.html"
 ADMIN_JOURNAL_CSV_SEARCH = "management/admin/journal_csv_search.html"
 ADMIN_PDD_SEARCH = "management/admin/pdd_search.html"
+ADMIN_SYSTEM_OBJECTS_SEARCH = "management/admin/system_objects/_search.html"
 
 ADMIN_WORKFLOW_OVERVIEW = "management/admin/workflow.html"
 ADMIN_WORKFLOW_OVERVIEW_ENTRY = "management/admin/_workflow/includes/workflow_entry.html"
@@ -147,7 +148,6 @@ AF_ENTRY_GROUP_HORIZONTAL = "_application-form/includes/_entry_group_horizontal.
 AF_FIELD = "_application-form/includes/_field.html"
 AF_GROUP = "_application-form/includes/_group.html"
 AF_LIST = "_application-form/includes/_list.html"
-FLAGS_LIST= "_application-form/includes/_flags_list.html"
 FLAG_ENTRY_GROUP = "_application-form/includes/_flag_entry.html"
 
 # Publisher area
