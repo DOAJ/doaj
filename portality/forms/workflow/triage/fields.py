@@ -991,12 +991,12 @@ class ISSNAtLeastOne(ComplianceCheckField):
 
         application_info = [
             {
-                "label": S.info.eissn,
+                "label": S.additional_info.eissn,
                 "lookup": lambda application, wfc: application.bibjson().eissn,
                 "data-value": "eissn"
             },
             {
-                "label": S.info.pissn,
+                "label": S.additional_info.pissn,
                 "lookup": lambda application, wfc: application.bibjson().pissn,
                 "data-value": "pissn"
             }
@@ -1007,13 +1007,7 @@ class ISSNAtLeastOne(ComplianceCheckField):
 
 
 class ISSNAtLeastOneNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            IsConditionallyRequired: T.issn_at_least_one.validation.note.is_conditionally_required
-        }
-
     name = "issn_at_least_one_note"
-    capabilities = (NC(),)
 
 
 class EISSN(Field):
@@ -1051,20 +1045,10 @@ class PISSN(Field):
     capabilities = (C(),)
     validators = [Regex(ISSN)]
 
-
-# class ISSNActionNote(NoteField):
-#     class NC(NoteCapability):
-#         error_messages = {
-#             IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
-#         }
-#
-#     name = "issn_at_least_one_action_note"
-#     capabilities = (NC(),)
-
 class ISSNAdditionalFields(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label = T.issn_at_least_one.action.action.instruction
+        label = T.issn_at_least_one.action.instruction
         order = ["eissn", "pissn"]
         control_btns = [TriageFormButtons.contb(),
                         TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
@@ -1078,7 +1062,6 @@ class ISSNAdditionalFields(Structure):
 
     eissn = EISSN(OPTIONAL, SINGLE)
     pissn = PISSN(OPTIONAL, SINGLE)
-    # action_note = ISSNActionNote(OPTIONAL, SINGLE)
 
     validators_ = [
         Different(eissn, pissn),
@@ -1091,20 +1074,10 @@ class ISSNAtLeastOneGroup(Structure):
         order = [
             "answer",
             "edited_issns",
-            "note"  # ,
-            # "noncompliant_group"
+            "note",
         ]
         action_group = ["edited_issns"]
         render_class = TriageCompound
-        error_messages = {
-            IsConditionallyRequired: T.issn_at_least_one.validation.group.is_conditionally_required,
-        }
-        action = {
-            "action": {
-                "instruction": T.issn_at_least_one.action.action.instruction,
-                "controls": "edited_issns"
-            }
-        }
 
     name_ = "issn_at_least_one_group"
     capabilities_ = (C(),)
@@ -1112,21 +1085,7 @@ class ISSNAtLeastOneGroup(Structure):
     answer = ISSNAtLeastOne(OPTIONAL, SINGLE)
     note = ISSNAtLeastOneNote(OPTIONAL, SINGLE)
     edited_issns = ISSNAdditionalFields(OPTIONAL, SINGLE)
-    # action_note = ISSNActionNote(OPTIONAL, SINGLE)
-    # noncompliant_group = ISSNNonCompliantGroup(OPTIONAL, SINGLE)
-    # noncompliant_note = ISSNNonCompliantNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note,  # <- this field is required if
-                   answer,  # <- this field has one of the values
-                   T.issn_at_least_one.action_answers + T.issn_at_least_one.non_compliant_answers
-                   # <- that is non compliant
-                   )  # ,
-        # RequiredIf(action_note,  # <- this field is required if
-        #            answer,  # <- this field has one of the values
-        #            T.issn_at_least_one.non_compliant_answers  # <- that is non compliant
-        #            )
-    ]
 
 
 ###########################################################
