@@ -4,6 +4,41 @@
     {{ render_field_horizontal(form.fulltext, placeholder="https://www.example.com") }}
     {{ render_field_horizontal(form.doi, placeholder="10.1234/article-32") }}
 </fieldset>
+<fieldset>
+    <legend>Identifiers</legend>
+    <div id="identifier-list">
+
+        {% for subfield in form.other_identifiers %}
+            <div id="{{subfield.short_name}}-container" class="identifier-item">
+                {{ subfield.form.id_types(class_="identifier-type-select") }}
+                {{ subfield.form.type(class_="identifier-type-other", placeholder="Type", style="display:none;") }}
+                {{ subfield.form.id }}
+                {% for error in subfield.errors %}
+                    <div class="alert alert--danger">
+                        <ul>
+                            <li>{{ subfield.errors.get(error)[0] }}</li>
+                        </ul>
+                    </div>
+                {% endfor %}
+                <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="remove_field__button remove_identifier__button button button--tertiary">
+                    Remove Identifier
+                </button>
+            </div>
+        {% endfor %}
+        <p class="add_field__button_div">
+            <button type="submit" class="add_field__button button button--primary" name="more_other_identifiers">
+                Add More Identifiers
+            </button>
+        </p>
+        {% if other_identifier_error %}
+            <div class="alert alert--danger">
+                <ul>
+                     <li>Please provide both the type and the identifier value</li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</fieldset>
 
 <fieldset>
     <div class="form-group{% if author_error %} error{% endif %} authors">
@@ -27,7 +62,7 @@
                         </ul>
                     </div>
                 {% endfor %}
-                <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="remove_field__button button button--tertiary">
+                <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="remove_field__button remove_author__button button button--tertiary">
                     Remove Author
                 </button>
             </div>
@@ -90,7 +125,7 @@
 </fieldset>
 
 <fieldset>
-    <h3 class="form__header">Page(s)</h3>
+    <h3 class="form__header">Location(s)</h3>
     <div class="form__question">
         <div class="input-group">
             <div class="input-group__input">
@@ -98,6 +133,9 @@
             </div>
             <div class="input-group__input">
                 {{ render_field_horizontal(form.end) }}
+            </div>
+            <div class="input-group__input">
+                {{ render_field_horizontal(form.elocation) }}
             </div>
         </div>
     </div>

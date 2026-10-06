@@ -361,6 +361,7 @@ def metadata():
         # the user might request by pressing the add/remove authors buttons
 
         fc.modify_authors_if_required(request.values)
+        fc.modify_other_identifiers_if_required(request.values)
 
         validated = False
         if fc.validate():

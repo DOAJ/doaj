@@ -6,6 +6,9 @@ class GenericBibJSON(dataobj.DataObj):
     P_ISSN = "pissn"
     E_ISSN = "eissn"
     DOI = "doi"
+    IDENTIFIER_TYPES = ['handle', 'ark', 'doi', 'urn', 'dor', 'purl']
+    ELOCATION = 'e-location'
+    NAMED_IDENTIFIERS = [P_ISSN, E_ISSN, DOI, ELOCATION]
 
     # allowable values for the url types
     HOMEPAGE = "homepage"
