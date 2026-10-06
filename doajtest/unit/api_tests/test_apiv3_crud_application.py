@@ -3,12 +3,13 @@ import json
 from flask import url_for
 from flask_babel import lazy_gettext
 from portality import constants, models
-from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory, VERY_LONG_STRING
 from doajtest.fixtures import AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error
 from portality.api.current.crud.applications import ApplicationsCrudApi
 from portality.api.current.data_objects.application import IncomingApplication, OutgoingApplication
+from portality.lib import dates
 from portality.lib.dataobj import ScriptTagFoundException
 from portality.lib.seamless import SeamlessException
 from portality.forms.application_processors import ApplicationProcessor
@@ -39,6 +40,11 @@ class TestCrudApplication(DoajTestCase):
 
         # make one from an incoming application model fixture
         data = ApplicationFixtureFactory.incoming_application()
+        ia = IncomingApplication(data)
+
+        # no publisher comment - it's optional
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["publisher_comment"]
         ia = IncomingApplication(data)
 
         # make application with <script> tag
@@ -149,6 +155,13 @@ class TestCrudApplication(DoajTestCase):
         assert "LOCKSS" in preservation.get("service")
         assert "A safe place" in preservation.get("service")
 
+        # check publisher comment
+        pc = a.publisher_comment
+        assert data["admin"]["publisher_comment"] == pc["comment"]
+        assert "test" == pc["author_id"]
+        assert pc["id"] is not None
+        assert pc["date"] is not None
+
         # check the stuff that should not be processed through
         assert a.bibjson().labels == []
 
@@ -234,6 +247,15 @@ class TestCrudApplication(DoajTestCase):
 
         with self.assertRaises(Api400Error):
             publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                raise
+
+        # publisher's comment too long
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            data["admin"]["publisher_comment"] = VERY_LONG_STRING
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
@@ -418,6 +440,9 @@ class TestCrudApplication(DoajTestCase):
         assert "editor" not in oa.data.get("admin", {})
         assert "related_journal" not in oa.data.get("admin", {})
 
+        # publisher comment is retrieved correctly
+        assert oa.data.get("admin", {}).get("publisher_comment", None) == data["admin"]["publisher_comment"]["comment"]
+
         # check that it does contain admin information that it should
         assert oa.data.get("admin", {}).get("current_journal") is not None
 
@@ -438,6 +463,7 @@ class TestCrudApplication(DoajTestCase):
         # check that we got back the object we expected
         assert isinstance(a, OutgoingApplication)
         assert a.data["id"] == ap.id
+        assert a.data["admin"]["publisher_comment"] == data["admin"]["publisher_comment"]["comment"]
 
     def test_07_retrieve_application_fail(self):
         # set up all the bits we need

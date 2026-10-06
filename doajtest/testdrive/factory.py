@@ -13,6 +13,9 @@ class TestDrive:
     def __init__(self):
         self.run_seed = self.create_random_str()
 
+    def seeded(self, value: str):
+        return f"{value}__{self.run_seed}"
+
     def create_random_str(self, n_char=10):
         s = string.ascii_letters + string.digits
         return ''.join(random.choices(s, k=n_char))

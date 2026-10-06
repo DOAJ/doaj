@@ -14,7 +14,8 @@
 {% set TAB5 = {"title": "Business model", "fieldsets": ["apc", "apc_waivers", "other_fees"]} %}
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
 {% set TAB_ED = {"title": "Admin", "fieldsets": ["subject", "notes"]} %}
-{% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6, TAB_ED] %}
+{% set TAB_PB = {"title": "Publisher comment", "fieldsets": ["publisher_comment"]} %}
+{% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6, TAB_ED, TAB_PB] %}
 
 {% block page_title %}(Read-only) {{ obj.bibjson().title }}{% endblock %}
 {% block body_id %}apply{% endblock %}
@@ -22,7 +23,7 @@
 {% block admin_content scoped %}
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <section class="col-md-12">
                 <section class="page-content">
                     <form id="{{ form_id }}"
                           data-context = "{{ formulaic_context.name }}"
@@ -33,6 +34,10 @@
                           data-formulaic-after="{{ formulaic_after }}">
 
                         {% include "_application-form/includes/_public_fieldsets.html" %}
+                        <!-- add publisher comment for the review table to read its value; it will be hidden alongside other tabs -->
+                        <section id="publisher-comment-section--read-only" class="tab form-section">
+                            {% include "_application-form/includes/_fieldset_publisher-comment.html" %}
+                        </section>
 
                         <div class="tab form-section">
                             {% include "public/_application-form/includes/_review.html" %}
