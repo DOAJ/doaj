@@ -574,12 +574,12 @@ triage:
 
     website_license_policy:
       label: "19. OA policy"
-      check: "19. Open access policy is present and the same in all parts of the journal website, including the license page, submission page, instructions for authors, article abstracts, HTML pages, PDFs, website footer, and copyright forms."
+      check: "19. Is the licensing policy present and consistent across the journal website?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, OA policy <strong>is</strong> present and the same in all parts of the journal website"
-        non_compliant: "<span class='answer'>Non-compliant</span>, OA policy <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
+        compliant: "<span class='answer'>Yes</span>, licensing policy is present and the same in all parts of the journal website"
+        non_compliant: "<span class='answer'>No</span>, licensing policy is not present or it is not the same in all parts of the journal website"
         later: "I don't know - mark for later"
-        action: "Changes to open access policy information are required"
+        action: "Changes to licensing policy information are required"
       license_attrs:
         "CC BY": "CC BY"
         "CC BY-SA": "CC BY-SA"
@@ -588,21 +588,18 @@ triage:
         "CC BY-NC-SA": "CC BY-NC-SA"
         "CC BY-NC-ND": "CC BY-NC-ND"
         "CC0": "CC0"
-        "Publisher's own license": "Publisher's own license"
+        "other": "Publisher's own license"
       action:
-        action:
-          instruction: "Update the license information as needed"
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: "Provide correct license, license attributes and license URL information provided below."
       remember: "If the exclusion does <strong>not</strong> relate to <all> journals from a publisher, an application for another journal from that publisher should <strong>not</strong> be rejected at this stage"
       instructions: '<ul>
-                  <li>If the licensing information in the website/articles is contradictory, the answer if <span class="answer non_compliant">Non-compliant</span></li>
-                  <li>If the licensing policy is stated in a <strong>different URL</strong> and not in the one provided, click <span class="answer action">Changes to licensing information is required</span> and provide correct URL</li>
-                  <li>If the license stated in the application form is incorrect based on the information given in the website, click <span class="answer action">Changes to licensing information is required</span> and provide correct  licensing information </li>
+                  <li>If the licensing information in the website/articles is contradictory, the answer is <span class="answer non_compliant">No</span></li>
+                  <li>If the licensing policy is stated in a <strong>different URL</strong> and not in the one provided, choose <span class="answer action">Changes to licensing information are required</span> and provide correct URL</li>
+                  <li>If the license stated in the application form is incorrect based on the information given in the website, choose <span class="answer action">Changes to licensing information is required</span> and provide correct  licensing information</li>
                   </ul>'
       resources: ""
-      info:
-        www: "Journal's homepage"
+      additional_info:
+        homepage: "Journal's homepage"
         license: "License"
         license_attribute: "License attributes"
         license_url: "License URL"
@@ -614,7 +611,7 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
         license:
           is_required: "You must select at least one license"
           disallowed_value: "You must select one of the valid options"

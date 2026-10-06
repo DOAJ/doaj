@@ -1596,7 +1596,7 @@ class WebsiteLicensePolicyNote(NoteField):
 
 class License(Field):
     class C(FormFieldCapability):
-        label = T.website_license_policy.info.license
+        label = T.website_license_policy.additional_info.license
         control_class = Checkbox
         multiple = True
         options = [
@@ -1618,7 +1618,6 @@ class License(Field):
 
 class LicenseAttribute(Field):
     class C(FormFieldCapability):
-        role = "other"
         label = T.website_license_policy.edit.license_attribute
         control_class = Checkbox
         multiple = True
@@ -1636,26 +1635,7 @@ class LicenseAttribute(Field):
 
     name = "license_attribute"
     coerce = [Unicode()]
-    # validators = [LimitToFormOptions()]
     capabilities = (C(),)
-
-
-# class LicenseCheckboxesGroup(Structure):
-#     class C(CheckboxCompoundCapability):
-#         label = "exceptions group"
-#         order = ["license", "license_attribute"]
-#
-#     name_ = "license_checkboxes_group"
-#     capabilities_ = (C(),)
-#     license = License(OPTIONAL, SINGLE)
-#     license_attribute = LicenseAttribute(OPTIONAL, SINGLE)
-
-# validators_ = [
-#     RequiredIf(license_attribute,  # <- this field is required if
-#                license,  # <- this field has one of the values
-#                ["Publisher's own license"]
-#                )
-# ]
 
 
 class LicenseURL(Field):
@@ -1679,7 +1659,7 @@ class LicenseURL(Field):
 class WebsiteLicensePolicyActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label = T.website_license_policy.edit.licences
+        label = T.website_license_policy.action.instruction
         order = [
             "license", "license_attribute", "license_url"
         ]
@@ -1692,19 +1672,19 @@ class WebsiteLicensePolicyActionGroup(Structure):
     capabilities_ = (C(),)
 
     license = License(REQUIRED, REPEATABLE)
-    license_attribute = LicenseAttribute(REQUIRED, REPEATABLE)
+    license_attribute = LicenseAttribute(OPTIONAL, REPEATABLE)
     license_url = LicenseURL(REQUIRED, SINGLE)
 
     validators_ = [
         RequiredIf(license_attribute,  # <- this field is required if
                    license,  # <- this field has one of the values
-                   ["Publisher's own license"]
+                   ["other"]
                    )
     ]
 
 
 class WebsiteLicensePolicyGroup(Structure):
-    class C(ActionTriageCompoundFieldCapability):
+    class C(CheckboxCompoundCapability):
         label = T.website_license_policy.label
         order = [
             "answer",
@@ -1717,10 +1697,11 @@ class WebsiteLicensePolicyGroup(Structure):
         }
         action = {
             "action": {
-                "instruction": T.website_license_policy.action.action.instruction,
+                "instruction": T.website_license_policy.action.instruction,
                 "controls": "website_license_policy_action_group",
             },
         }
+        js_class = "action"
 
     name_ = "website_license_policy_group"
     capabilities_ = (C(),)

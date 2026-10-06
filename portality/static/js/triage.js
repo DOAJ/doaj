@@ -317,13 +317,16 @@ doaj.triage.Errors = class {
                 $errorContainer
                     ._show()
                     .html(message);
-                const $invalidField = $(`#${error.field_id}`);
-                $invalidField
-                    .attr("aria-invalid", "true")
-                    .attr("aria-describedby", `${error.field_id}-error-container`)
-                    .trigger("focus");
-                const $answerInput = $invalidField.closest(".criterion-wrapper").find("input[data-role='answer']:checked");
-                $answerInput.prop("checked", false);
+                if ($errorContainer.length) {
+                    const $probableField = $(`#${error.field_id}`);
+                    const $invalidField = $probableField.length ? $probableField : $(`[name=${error.field_id}]`).first();
+                    $invalidField
+                        .attr("aria-invalid", "true")
+                        .attr("aria-describedby", `${error.field_id}-error-container`)
+                        .trigger("focus");
+                    const $answerInput = $invalidField.closest(".criterion-wrapper").find("input[data-role='answer']:checked");
+                    $answerInput.prop("checked", false);
+                }
             }
         });
 
@@ -693,8 +696,108 @@ doaj.triage.questions.Question = class {
     }
 };
 
-doaj.triage.questions.CheckboxesQuestion = class extends doaj.triage.questions.Question {
+doaj.triage.questions.ActionQuestion = class extends doaj.triage.questions.Question {
     _initQuestion() {
+        this.pendingAction = false;
+        this.$reviewOutcomeContainer = this.$wrapper.find(
+            ".review_outcome-container"
+        );
+        this.$actionInput = this.$wrapper.find(
+            "input[type='radio'][value='action']"
+        );
+        this.$actionSection = this.$wrapper.find(
+            "div.action-container"
+        );
+    }
+
+    _setupEvents() {
+        super._setupEvents();
+
+        this.$wrapper.find("input").not(".review-outcome-answer").on("change", () => {
+            if (!this.answer) {
+                return;
+            }
+
+            if (this.answer.val() !== "action") {
+                this.changeAnswer();
+            } else {
+                this.$answerInput.prop("checked", false);
+                this.$headerBtn.find(".answer-icon").remove();
+                this.answer = null;
+                this.pendingAction = true;
+                this.$continueBtn.removeClass("checked");
+            }
+        });
+    }
+
+    continueTriage() {
+        const wasPending = this.pendingAction;
+
+        if (!wasPending) {
+            return super.continueTriage();
+        }
+
+        this.$actionInput.prop("checked", true);
+
+        doaj.triage.requestSave({
+            blocking: true,
+
+            onSuccess: () => {
+                this.pendingAction = false;
+                this.answer = this.$actionInput;
+                this._setupAnswered(this.answer);
+                this.activateNext();
+            },
+
+            onFailure: () => {
+                // Prevent another whole-form save from accidentally
+                // persisting this unconfirmed action answer.
+                this.$actionInput.prop("checked", false);
+            }
+        });
+    }
+
+    changeAnswer() {
+        this.$actionSection._hide();
+        this.$reviewOutcomeContainer._show();
+        this.pendingAction = false;
+        super.changeAnswer();
+    }
+
+    setAnswer($answer) {
+        if ($answer.val() !== "action") {
+            return super.setAnswer($answer);
+        }
+
+        this.pendingAction = true;
+        this.$actionInput.prop("checked", false);
+        this._setupAnswered($answer);
+    }
+
+    _setupAnswered($answer) {
+        if ($answer.val() !== "action") {
+            return super._setupAnswered($answer);
+        }
+
+        this.$reviewOutcomeContainer._hide();
+        this.$actionSection._show();
+        this.$actionSection.find("button[data-role='change_answers']").parent()._show();
+
+        const answerLabel = $('label[for="' + $answer.attr("id") + '"]').text().trim();
+        this.$actionSection.find("span.your-answer").html(answerLabel);
+
+        if (this.pendingAction) {
+            this.$actionSection.find("input").first().trigger("focus");
+        } else {
+            this._hide_save_reminder();
+            this._displayAnswer($answer);
+        }
+    }
+};
+
+doaj.triage.questions.CheckboxesQuestion = class extends doaj.triage.questions.ActionQuestion {
+    _initQuestion() {
+        super._initQuestion();
         this.$checkboxOther = this.$wrapper.find(
             "input[type='checkbox'][data-role='other_option']"
         );
@@ -797,104 +900,6 @@ doaj.triage.questions.Review = class extends doaj.triage.questions.Question {
 doaj.triage.questions.MultistepQuestion = class extends doaj.triage.questions.Question {
 };
 
-doaj.triage.questions.ActionQuestion = class extends doaj.triage.questions.Question {
-    _initQuestion() {
-        this.pendingAction = false;
-        this.$reviewOutcomeContainer = this.$wrapper.find(
-            ".review_outcome-container"
-        );
-        this.$actionInput = this.$wrapper.find(
-            "input[type='radio'][value='action']"
-        );
-        this.$actionSection = this.$wrapper.find(
-            "div.action-container"
-        );
-    }
-
-    _setupEvents() {
-        super._setupEvents();
-
-        this.$wrapper.find("input").not(".review-outcome-answer").on("change", () => {
-            if (!this.answer) {
-                return;
-            }
-
-            if (this.answer.val() !== "action") {
-                this.changeAnswer();
-            } else {
-                this.$answerInput.prop("checked", false);
-                this.$headerBtn.find(".answer-icon").remove();
-                this.answer = null;
-                this.pendingAction = true;
-                this.$continueBtn.removeClass("checked");
-            }
-        });
-    }
-
-    continueTriage() {
-        const wasPending = this.pendingAction;
-
-        if (!wasPending) {
-            return super.continueTriage();
-        }
-
-        this.$actionInput.prop("checked", true);
-
-        doaj.triage.requestSave({
-            blocking: true,
-
-            onSuccess: () => {
-                this.pendingAction = false;
-                this.answer = this.$actionInput;
-                this._setupAnswered(this.answer);
-                this.activateNext();
-            },
-
-            onFailure: () => {
-                // Prevent another whole-form save from accidentally
-                // persisting this unconfirmed action answer.
-                this.$actionInput.prop("checked", false);
-            }
-        });
-    }
-
-    changeAnswer() {
-        this.$actionSection._hide();
-        this.$reviewOutcomeContainer._show();
-        this.pendingAction = false;
-        super.changeAnswer();
-    }
-
-    setAnswer($answer) {
-        if ($answer.val() !== "action") {
-            return super.setAnswer($answer);
-        }
-
-        this.pendingAction = true;
-        this.$actionInput.prop("checked", false);
-        this._setupAnswered($answer);
-    }
-
-    _setupAnswered($answer) {
-        if ($answer.val() !== "action") {
-            return super._setupAnswered($answer);
-        }
-
-        this.$reviewOutcomeContainer._hide();
-        this.$actionSection._show();
-        this.$actionSection.find("button[data-role='change_answers']").parent()._show();
-
-        const answerLabel = $('label[for="' + $answer.attr("id") + '"]').text().trim();
-        this.$actionSection.find("span.your-answer").html(answerLabel);
-
-        if (this.pendingAction) {
-            this.$actionSection.find("input").first().trigger("focus");
-        } else {
-            this._hide_save_reminder();
-            this._displayAnswer($answer);
-        }
-    }
-};
 doaj.triage.questions.QuestionGroup = class {
     static $all = [];
 
