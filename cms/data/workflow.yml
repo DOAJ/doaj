@@ -864,7 +864,11 @@ triage:
     admin_special_exception:
       label: "1. Special exceptions"
       check: "1. Is this application reviewed under a special exception?"
-      instructions: '<ul><li>If the application has not been submitted by the WKMK central account, please reject the application and inform Mamta.Java@wolterskluwer.com, WKHLRPMedknow_editorial@wolterskluwer.com and Leena that you rejected the application and that the 6 months embargo period does not apply (details included: Journal title, ISSN, date applied, applicant’s email address) </li></ul>'
+      instructions: '<ul><li>If the application is from Africa then application should <strong>not</strong>
+be rejected for <strong>any</strong> reason. After answering all triage questions assign the application to the corresponding Managing Editor (Kamel or Mahmoud)
+</li>
+      <li>If the application has not been submitted by the WKMK central account, please reject the application and inform Mamta.Java@wolterskluwer.com, WKHLRPMedknow_editorial@wolterskluwer.com and Leena that you rejected the application and that the 6 months embargo period does not apply (details included: Journal title, ISSN, date applied, applicant’s email address) </li>
+      </ul>'
       answers:
         compliant: "Continue triage"
         non_compliant: "Reject this application"
