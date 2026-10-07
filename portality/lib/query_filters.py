@@ -26,6 +26,38 @@ def public_query_validator(q):
     return True
 
 
+def prefix_wildcard_validator(q):
+    """Reject queries containing wildcard at the start of a search term"""
+    import re
+    raw = q.as_dict()
+    rx = r'(?:^|[\s:(])[\*\?\.\+]'
+
+    for query_string in _extract_query_strings(raw):
+        if query_string.strip() == '*':
+            continue
+        if re.search(rx, query_string):
+            return False
+
+    return True
+
+
+def _extract_query_strings(raw):
+    """
+    extract all query_string values from a raw query dict or list.
+    """
+    if isinstance(raw, dict):
+        for k, v in raw.items():
+            if k == "query_string" and isinstance(v, dict):
+                query_val = v.get("query")
+                if isinstance(query_val, str):
+                    yield query_val
+            else:
+                yield from _extract_query_strings(v)
+    elif isinstance(raw, list):
+        for item in raw:
+            yield from _extract_query_strings(item)
+
+
 def non_public_fields_validator(q):
     exclude_fields = app.config.get("PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS", {})
     context = q.get_field_context()
