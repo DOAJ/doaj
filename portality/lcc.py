@@ -69,7 +69,7 @@ def lcc2choices(thelcc, level=-2):
     level_indicator = '--'
     if 'children' in thelcc:
         results = []
-        if thelcc['name'] != 'LCC':
+        if thelcc['name'] not in ['LCC', "CRDC"]:
             # don't want the root + it doesn't have a code
             results += [(thelcc['code'], level_indicator * level + thelcc['name'])]
         for child in thelcc['children']:
@@ -88,7 +88,7 @@ def lcc2choices(thelcc, level=-2):
 def lcc2jstree(thelcc):
     if 'children' in thelcc:
         results = []
-        if thelcc['name'] == 'LCC':
+        if thelcc['name'] in ['LCC', "CRDC"]:
             for child in thelcc['children']:
                 results += lcc2jstree(child)
         else:
@@ -122,7 +122,7 @@ def lcc2jstree(thelcc):
 def lcc2flat_code_index(thelcc):
     if 'children' in thelcc:
         results = {}
-        if thelcc['name'] != 'LCC':
+        if thelcc['name'] not in ['LCC', "CRDC"]:
             # don't want the root + it doesn't have a code
             results.update({thelcc['code']: thelcc['name']})
         for child in thelcc['children']:
@@ -138,9 +138,31 @@ def lcc2flat_code_index(thelcc):
         return {thelcc['code']: thelcc['name']}
 
 
+def loadCRDC(source=None):
+    # use delayed imports, as this code will only be run rarely
+    import os
+    import json
+
+    if source is None:
+        source = paths.rel2abs(__file__, "..", "cms", "classification", "compiled", "crdc.json")
+
+    with open(source) as f:
+        data = json.load(f)
+
+    lcc = LCC(**data)
+
+    # Initialise the LCC index correctly if it doesn't exist - otherwise it'll be created badly on save
+    prepare_type(lcc.__type__)
+    lcc.save()
+
 lcc = LCC.pull('lcc')
 if not lcc:
-    loadLCC()
+    # NOTE: we are hot-switching from LCC to CRDC as the main classification scheme
+    # this is for demonstration purposes only, for the real thing we'll do a proper
+    # job of migrating data and removing LCC entirely
+
+    # loadLCC()
+    loadCRDC()
 lcc = LCC.pull('lcc')
 lcc_choices = []
 lcc_jstree = []
