@@ -812,6 +812,25 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
         self.__seamless__.set_with_struct("admin.index", admin_index)
 
+    @classmethod
+    def _history_class(cls):
+        raise NotImplementedError()
+
+    def snapshot(self):
+        snap = deepcopy(self.data)
+        if "id" in snap:
+            snap["about"] = snap["id"]
+            del snap["id"]
+        if "index" in snap:
+            del snap["index"]
+        if "last_updated" in snap:
+            del snap["last_updated"]
+        if "created_date" in snap:
+            del snap["created_date"]
+
+        hist = self._history_class()(**snap)
+        hist.save()
+
 class Journal(JournalLikeObject):
     __type__ = "journal"
 
@@ -942,26 +961,6 @@ class Journal(JournalLikeObject):
         if not id_:
             id_ = self.id
         return id_
-
-    ############################################################
-    ## revision history methods
-
-    def snapshot(self):
-        from portality.models import JournalHistory
-
-        snap = deepcopy(self.data)
-        if "id" in snap:
-            snap["about"] = snap["id"]
-            del snap["id"]
-        if "index" in snap:
-            del snap["index"]
-        if "last_updated" in snap:
-            del snap["last_updated"]
-        if "created_date" in snap:
-            del snap["created_date"]
-
-        hist = JournalHistory(**snap)
-        hist.save()
 
     #######################################################################
     ## Conversion methods
@@ -1306,6 +1305,10 @@ class Journal(JournalLikeObject):
 
         self.__seamless__.set_with_struct("index.has_apc", has_apc)
 
+    @classmethod
+    def _history_class(cls):
+        from portality.models import JournalHistory
+        return JournalHistory
 
 MAPPING_OPTS = {
     "dynamic": None,

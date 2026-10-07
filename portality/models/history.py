@@ -48,3 +48,7 @@ class ArticleHistory(History):
 class JournalHistory(History):
     __type__ = "journal_history"
     SAVE_BASE_DIRECTORY = app.config['JOURNAL_HISTORY_DIR']
+
+class ApplicationHistory(History):
+    __type__ = "application_history"
+    SAVE_BASE_DIRECTORY = app.config['APPLICATION_HISTORY_DIR']
