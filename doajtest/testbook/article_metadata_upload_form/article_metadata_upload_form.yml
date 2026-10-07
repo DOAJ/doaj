@@ -62,3 +62,35 @@ tests:
     results:
     - 'At the top of the page you see the confirmation message:  Article created/updated (Dismiss)'
     - https://docs.google.com/spreadsheets/d/1KGv7DEwocDvdbT8giN9Aw2EWtZGzKympouEw_uR2q18/edit#gid=782367369
+
+- title: Enter article references
+  context:
+    role: Publisher with existing journal
+  steps:
+  - step: Go to the "Enter Article Metadata" tab in the "Publisher Area"
+  - step: Find the "References" field
+    results:
+    - The field is a multi-line textarea, with the help text "One reference per line"
+    - The field is optional, so no error is shown for it when the form is submitted
+      empty
+  - step: Fill in the required fields (title, one author, Full-Text URL, Print and
+      Online ISSNs) for a new article
+  - step: 'Enter the following 3 lines in the "References" field: "Smith, J. (2020)
+      A reference with a DOI. doi:10.1234/abc", "Jones, A. (2021) A reference with
+      a URL. https://www.doaj.org/" and "Brown, B. (2022) A reference with no identifier."'
+  - step: Enter a 4th line containing a script tag, eg "<script>alert(1)</script>"
+  - step: Click "Add Article" button
+    results:
+    - 'Red error message under the "References" field: Value cannot contain script tag'
+    - The article is not created
+  - step: Remove the line containing the script tag
+  - step: Click "Add Article" button
+    results:
+    - 'At the top of the page you see the confirmation message:  Article created/updated (Dismiss)'
+  - step: Open the public page of the article you have just created
+    results:
+    - A "References" section is shown with the 3 references as a numbered list, in the
+      order you entered them
+    - The DOI in the first reference and the URL in the second reference are links, and
+      they open in a new tab
+    - The third reference contains no links

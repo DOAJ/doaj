@@ -467,6 +467,12 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
                 kel = etree.SubElement(keywords_elem, self.OAI_DOAJ + 'keyword')
                 set_text(kel, keyword)
 
+        if bibjson.reference:
+            references_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + 'references')
+            for reference in bibjson.reference:
+                rel = etree.SubElement(references_elem, self.OAI_DOAJ + 'reference')
+                set_text(rel, reference)
+
         return metadata
 
     def header(self, record):

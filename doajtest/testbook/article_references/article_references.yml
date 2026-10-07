@@ -1,0 +1,139 @@
+# ~~ArticleReferences:FunctionalTest -> ArticleReferences:Feature~~
+suite: Article References
+testset: Article References
+tests:
+  - title: Preparation
+    context:
+      role: publisher
+    setup:
+      - Ensure that the publisher account owns a journal for example with Print ISSN "1111-1111" and E-ISSN "2222-2222", and
+        these are not attached to any other journals
+      - You must be logged in using a publisher account
+    steps:
+      - step: Go to the "Upload Article XML" tab in the "Publisher Area" and upload the test resource file
+          "with_references.xml" using the "DOAJ Native XML" format
+        path: /publisher/uploadfile
+        resource: /xml_upload_test_package/DOAJ/with_references.xml
+      - step: wait a short amount of time for the job to process, then reload the page (do not re-submit the form
+          data).  If the job remains in "pending", reload the page until the status changes.
+        results:
+          - Your file is shown in the "History of uploads" with status "successfully processed", and the Note
+            "1 articles imported (1 new, 0 updated)"
+      - step: Go to the Table of Contents for the journal at /toc/2222-2222, go to the Articles tab and open the
+          article "References!".  Make a note of the article id in the URL, you will need it for the following tests.
+        path: /toc/2222-2222
+        results:
+          - The article page for "References!" is shown
+
+  - title: References are displayed on the article page
+    context:
+      role: anonymous
+    depends:
+      - suite: Article References
+        testset: Article References
+        test: Preparation
+    steps:
+      - step: Open the public article page for the article "References!" as an anonymous user
+        results:
+          - A "References" section with the heading "References" is shown
+          - The 4 references are shown as a numbered list, in the same order as in the uploaded file
+      - step: Check the first reference, which contains the DOI "10.1234/abc"
+        results:
+          - The DOI is displayed as a link
+          - Clicking the link opens https://doi.org/10.1234/abc in a new tab
+      - step: Check the second reference, which contains the URL "https://www.doaj.org/"
+        results:
+          - The URL is displayed as a link
+          - Clicking the link opens the URL in a new tab
+      - step: Check the third reference, which contains no DOI and no URL
+        results:
+          - The reference is displayed as plain text with no links
+      - step: Check the fourth reference, which contains the text "<i>markup</i>"
+        results:
+          - 'The reference text is displayed exactly as it was supplied: Taylor, C. (2023) A reference with
+            <i>markup</i> in it.'
+          - No part of the reference is rendered as italics, and no part of the page layout is broken
+      - step: Open the public article page of an article which has no references (e.g. an article uploaded from
+          "successful.xml")
+        results:
+          - No "References" heading and no reference list is shown on the page
+
+  - title: References are available in the public API
+    context:
+      role: anonymous
+    depends:
+      - suite: Article References
+        testset: Article References
+        test: Preparation
+    steps:
+      - step: Request the article from the API, using the article id noted in the Preparation test, by going to
+          /api/articles/{article_id}
+        results:
+          - The JSON response contains a "bibjson.reference" array with the 4 references, as strings, in the order
+            they were uploaded
+      - step: Search for the article via the API search endpoint, e.g.
+          /api/search/articles/bibjson.title:%22References!%22
+        results:
+          - The article in the results contains the same "bibjson.reference" array
+
+  - title: References are available in OAI-PMH
+    context:
+      role: anonymous
+    depends:
+      - suite: Article References
+        testset: Article References
+        test: Preparation
+    steps:
+      - step: Request the article record in the DOAJ OAI-PMH format, by going to
+          /oai.article?verb=GetRecord&metadataPrefix=oai_doaj&identifier=oai:doaj.org/article:{article_id}
+        results:
+          - The record contains a "<references>" element with one "<reference>" element per reference, in the order
+            they were uploaded
+          - The reference containing markup is correctly escaped in the XML, and the XML is well formed
+      - step: Request the same record in the Dublin Core format, by going to
+          /oai.article?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:doaj.org/article:{article_id}
+        results:
+          - The record is returned successfully (references are not part of the Dublin Core format)
+
+  - title: References are available in the RIS export
+    context:
+      role: anonymous
+    depends:
+      - suite: Article References
+        testset: Article References
+        test: Preparation
+    steps:
+      - step: Download the RIS export of the article, using the article id noted in the Preparation test, by going to
+          /service/export/article/{article_id}/ris
+        results:
+          - A RIS file is downloaded
+      - step: Open the downloaded file in a text editor
+        results:
+          - There is one "CR  -" line for each of the 4 references, in the order they were uploaded
+          - The rest of the RIS record (TY, TI, AU, etc.) is unchanged
+
+  - title: References are shown in the article metadata form
+    context:
+      role: publisher
+    depends:
+      - suite: Article References
+        testset: Article References
+        test: Preparation
+    steps:
+      - step: Go to the "Enter Article Metadata" tab in the "Publisher Area"
+      - step: Find the "References" field
+        results:
+          - The field is a multi-line textarea
+          - 'The help text reads: One reference per line'
+      - step: Fill in the required fields for a new article (title, author, Full-Text URL and the journal ISSNs) and
+          enter 3 references in the "References" field, one per line, leaving a blank line between two of them
+      - step: Click "Add Article"
+        results:
+          - 'At the top of the page you see the confirmation message: Article created/updated'
+      - step: Open the public page of the article you have just created
+        results:
+          - The 3 references are shown in the "References" section, in the order you entered them
+          - The blank line has not created an empty reference
+      - step: Create another article without entering anything in the "References" field, then open its public page
+        results:
+          - No "References" section is shown
