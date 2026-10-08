@@ -704,10 +704,11 @@ doaj.triage.questions.Question = class {
     }
 
     static getFirstUnanswered() {
-        return this.$all.find(question => !question.answer);
+        return this.$all.find(question => !question.answer)
+            ?? this.$all.find(question => question.answer?.val() === "later");
     }
 
-    static getNextUnanswered(current) {
+    static getNextUnanswered(current, ignore_yellow=false) {;
         const afterCurrent = this.$all
             .slice(current.idx + 1)
             .find(question => !question.answer || question.answer.val() === "later");
