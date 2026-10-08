@@ -1044,7 +1044,13 @@ class ISSNAtLeastOne(ComplianceCheckField):
 
 
 class ISSNAtLeastOneNote(NoteField):
+    class NC(NoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.issn_at_least_one.validation.note.is_conditionally_required
+        }
+
     name = "issn_at_least_one_note"
+    capabilities = (NC(),)
 
 
 class EISSN(Field):
@@ -1123,6 +1129,13 @@ class ISSNAtLeastOneGroup(Structure):
     answer = ISSNAtLeastOne(OPTIONAL, SINGLE)
     note = ISSNAtLeastOneNote(OPTIONAL, SINGLE)
     edited_issns = ISSNAdditionalFields(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note,  # <- this field is required if
+                   answer,  # <- this field has one of the values
+                   T.issn_at_least_one.action_answers  # <- that is non compliant
+                   )
+    ]
 
 
 

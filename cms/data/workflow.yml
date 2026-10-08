@@ -160,7 +160,7 @@ triage:
         later: "I don't know - mark for later"
         action: "Yes, but the ISSN in the application needs to be changed."
       action:
-        instruction: 'Make changes to PISSN and/or EISSN in the relevant fields below. <strong>PISSN and EISSN must be different</strong>'
+        instruction: 'Make changes to PISSN and/or EISSN in the relevant fields below. Add a note with more details on what changes are required and why. <strong>PISSN and EISSN must be different</strong>. '
       remember: "Search <strong>both</strong> ISSNs (if available)"
       instructions: '<ul>
                   <li>If the journal has no active and confirmed ISSN (unregistered, provisional, unreported, ceased), the answer is <span class="answer non_compliant">No</span></li>
@@ -193,6 +193,8 @@ triage:
         pissn:
           regex_not_match: "The ISSN is not of the valid form"
           fields_should_be_different: "The value of the PISSN must be different to the EISSN"
+        note:
+          is_conditionally_required: "Add more details about changes you made to ISSNs"
       compliant_answers:
         - "compliant"
       action_answers:
