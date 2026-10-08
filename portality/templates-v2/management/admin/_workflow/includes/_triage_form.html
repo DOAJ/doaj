@@ -1,0 +1,25 @@
+<form id="{{ form.name }}"
+      novalidate
+      action="{{ url_for('workflow.triage_form', application_id=application.id) }}"
+      method="{{ form.method }}"
+      data-parsley-focus="none"
+      data-overview-url="{{ url_for('workflow.workflow_item_overview', application_id=application.id) }}"
+        {% for k, v in form.attributes %}{{ k }}="{{ v }}" {% endfor %}
+    >
+
+    <div class="page">
+        <section class="page-content">
+            {% for element in form.elements %}
+                {% autoescape off %}
+                    {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+                {% endautoescape %}
+            {% endfor %}
+        </section>
+    </div>
+</form>
+
+{% block admin_js %}
+<script>
+    doaj.triage.recommendation_overwritten = {{ recommendation_overwritten }}
+</script>
+{% endblock %}

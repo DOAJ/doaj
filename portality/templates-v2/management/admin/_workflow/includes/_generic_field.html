@@ -1,0 +1,25 @@
+{% if field.control|length > 1 %}
+    <fieldset id="{{ field.prefix }}"
+        {% if field.capability.fieldset_attributes %}
+            {% for k, v in field.capability.fieldset_attributes.items() %}{{ k }}="{{ v }}" {% endfor %}
+        {% endif %}
+    >
+    <legend>{{ field.label}}</legend>
+{% endif %}
+
+{% autoescape off %}
+    {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
+{% endautoescape %}
+
+<div class="error-container" id="{{ field.prefix }}-error-container" hidden>
+{% if field.displayable_errors %}
+    Field Errors
+    {% for error in field.displayable_errors %}
+        <div class="error" style="color: red; font-weight: bold;">
+            {{ field.error_message(error) }}
+        </div>
+    {% endfor %}
+{% endif %}
+</div>
+
+{% if field.control|length > 1 %}</fieldset>{% endif %}

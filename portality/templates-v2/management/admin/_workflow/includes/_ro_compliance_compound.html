@@ -1,0 +1,23 @@
+<div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
+    {% set ns = namespace(check=None, others=[]) %}
+    {% for element in compound.elements %}
+        {% if element.capability.role == "check" %}
+            {% set ns.check = element %}
+        {% else %}
+            {% set ns.others = ns.others + [element] %}
+        {% endif %}
+
+    {% endfor %}
+
+    {% autoescape off %}
+        {{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}
+    {% endautoescape %}
+
+    <strong style="margin-left: 10px">{{ compound.label }}</strong>
+
+    {% for element in ns.others %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+</div>

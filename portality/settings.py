@@ -532,6 +532,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
+    "portality.models.workflow.WorkflowControl",
     "portality.models.note.Note"
 ]
 
@@ -828,6 +829,11 @@ QUERY_ROUTE = {
         }
     },
     "admin_query": {
+        "workflow": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.WorkflowControl"
+        },
         # ~~->AdminJournalQuery:Endpoint~~
         "journal": {
             "auth": True,
@@ -1894,7 +1900,6 @@ URLSHORT_LIMIT = 50_000
 
 URLSHORT_ALLOWED_SUPERDOMAINS = ['doaj.org']
 URLSHORT_ALIAS_LENGTH = 6
-HONEYPOT_TIMER_THRESHOLD = 5000
 
 ##################################################
 # Premium membership configurations

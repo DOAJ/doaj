@@ -9,7 +9,7 @@ from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.store import StoreMockFactory
-from lib.thread_utils import wait_until
+from portality.lib.thread_utils import wait_until
 from portality import models, store
 from portality.background import BackgroundApi
 from portality.core import app

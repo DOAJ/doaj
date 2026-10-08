@@ -1,0 +1,69 @@
+{% macro render_content(content_list) -%}
+    {%- if content_list is string -%}
+        {{- content_list -}}
+
+    {%- elif content_list is iterable and content_list is not string and content_list is not mapping -%}
+        {%- for ic in content_list -%}
+            {%- set ic_content = ic.content -%}
+            {%- set rendered_content = render_content(ic_content) -%}
+            {% autoescape off %}
+            {{ rendered_content }}
+            {% endautoescape %}
+        {%- endfor -%}
+
+    {%- else -%}
+        {{- content_list -}}
+    {%- endif -%}
+{%- endmacro %}
+
+{% set compliant_icon %}
+    {% include "management/admin/_workflow/includes/icons/compliant-answer.html" %}
+{% endset %}
+
+{% set noncompliant_icon %}
+    {% include "management/admin/_workflow/includes/icons/noncompliant-answer.html" %}
+{% endset %}
+
+{% set later_icon %}
+    {% include "management/admin/_workflow/includes/icons/later-answer.html" %}
+{% endset %}
+
+{% set action_icon %}
+    {% include "management/admin/_workflow/includes/icons/action-answer.html" %}
+{% endset %}
+
+{#Radio Controls<br>#}
+{% set answer = namespace(value="not_answered", display="") %}
+{% for control in controls %}
+
+{#    {% if control.label %}#}
+{#        <strong>{{ control.label.content }}</strong>#}
+{#    {% endif %}#}
+
+    {% set input=control.control %}
+    {% if input.attrs.checked %}
+        {% set answer.value = input.attrs.value %}
+        {% set answer.display = control.label.content %}
+    {% endif %}
+{#    {% set content = {"value": ""} %}#}
+{#    {% if input.content %}#}
+{#        {% set content.value=render_content(input.content) %}#}
+{#    {% endif %}#}
+{% endfor %}
+{% autoescape off %}
+    {% if answer.value == "compliant" %}
+        {{ compliant_icon | safe }}
+    {% elif compliance == "non_compliant" and label %}
+        {{ noncompliant_icon | safe }}
+    {% elif compliance == "later" and label %}
+        {{ later_icon | safe }}
+    {% elif compliance == "action" and label %}
+        {{ action_icon | safe }}
+    {% elif compliance == "conditional_compliant" and label %}
+        {{ compliant_icon | safe }}
+    {% elif compliance == "conditional_non_compliant" and label %}
+        {{ noncompliant_icon | safe }}
+    {% else %}
+        {{ answer.display or answer.value }}
+    {% endif %}
+{% endautoescape %}

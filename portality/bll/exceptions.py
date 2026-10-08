@@ -9,6 +9,7 @@ class AuthoriseException(Exception):
     # standardised reasons why an action might not be allowed
     NOT_OWNER = "not_owner"
     WRONG_ROLE = "wrong_role"
+    WRONG_ATTRIBUTE = "wrong_attribute"
     WRONG_STATUS = "wrong_status"
     NOT_AUTHORISED = "not_authorised"
 

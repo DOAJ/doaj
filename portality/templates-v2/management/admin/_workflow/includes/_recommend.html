@@ -1,0 +1,36 @@
+{#
+    #triage-recommendation is always rendered empty here - never filled in
+    by Jinja. Its content only ever comes from
+    doaj.triage.recommendation.render() (triage.js), called both right after
+    page load (fed doaj.triage.initialRecommendation, the same data this
+    template used to render statically) and after every async save (fed the
+    response's data.recommendation). Routing both through one function means
+    one gate decides "is there anything worth showing" (currently:
+    recommendation.code === "reject" only) - previously this template had
+    its own, looser gate (reject OR wfc.triage.review_complete, itself a
+    persisted flag), so a fresh page load could show content that no
+    subsequent live save would ever reproduce. It only ever covers the
+    text/reasons - the action widgets further down (fail.html / triaged.html)
+    are left alone by the JS and stay server-rendered / correct as of last
+    full page load.
+#}
+<div id="triage-recommendation"></div>
+
+{% if recommendation %}
+    {% if recommendation.code == "reject" or wfc.triage.review_complete %}
+        {% if recommendation.code == "reject" %}
+            {% if event_reject and event_reject.is_available(current_user) %}
+                {% with event = event_reject %}
+                    {% include event_reject.template %}
+                {% endwith %}
+            {% endif %}
+        {% else  %}
+            {% if event_triaged and event_triaged.is_available(current_user) %}
+                {% with event = event_triaged %}
+                    {% include event_triaged.template %}
+                {% endwith %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+{% endif %}

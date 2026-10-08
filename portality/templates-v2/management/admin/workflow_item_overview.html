@@ -1,0 +1,194 @@
+{% extends "management/admin/base.html" %}
+
+{% set wfc = state.workflow_control %}
+{% set application = state.application %}
+{% set event_claim = state.event_claim %}
+{% set event_assign = state.event_assign %}
+{% set event_unclaim = state.event_unclaim %}
+{% set event_unassign = state.event_unassign %}
+{% set event_reassign = state.event_reassign %}
+{% set event_reject = state.event_reject %}
+{% set event_triaged = state.event_triaged %}
+
+{% block page_title %}{{ wfc.module }} {{ application.bibjson().title }}{% endblock %}
+{% block page_header %}
+<span class="tag tag--featured">{{ wfc.module }}</span> {{ application.bibjson().title }}
+{% endblock %}
+
+{% block admin_stylesheets %}
+
+{% endblock %}
+
+{% block body_class %}{{ super() }} ew{% endblock %}
+
+{% block admin_header %}
+{% include "management/admin/_workflow/includes/_header.html" %}
+{% endblock %}
+{% block admin_content %}
+<div class="overview-page">
+    <div class="row">
+        <div class="col-md-12 top-controls">
+            {% if wfc.reviewer_id == current_user.id %}
+                <a href="{{ url_for("workflow.triage_form", application_id=application.id) }}" class="button button--cta">Continue Working on this Item</a>
+            {% endif %}
+
+            {% if event_claim and event_claim.is_available(current_user) %}
+            <div class="claim">
+                {% with event = event_claim %}
+                {% include event_claim.template %}
+                {% endwith %}
+            </div>
+            {% endif %}
+
+            {% if event_assign and event_assign.is_available(current_user) %}
+            <div class="assign">
+                {% with event = event_assign %}
+                {% include event_assign.template %}
+                {% endwith %}
+            </div>
+            {% endif %}
+
+            {% if event_reassign and event_reassign.is_available(current_user) %}
+            <div class="reassign">
+                {% with event = event_reassign %}
+                {% include event_reassign.template %}
+                {% endwith %}
+            </div>
+            {% endif %}
+
+            <div class="reject">
+                <button type="button"
+                        class="btn btn--non-recommended"
+                        id="show-rejection-section"
+                        aria-expanded="false"
+                        aria-controls="rejection_section"
+                >
+                    <span data-feather="alert-circle"></span> Reject this application (non-recommended)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {% if recommendation and recommendation.code != "normal" %}
+    <div class="row">
+        <div class="col-md-12 recommendation">
+            <div id="rejection_section" style="background-color: #F6F4F4; min-height: 200px;">
+                <p><strong>RECOMMENDATION: </strong>{{ recommendation.code }}</p>
+                <p><strong>REASONS: </strong></p>
+                {% for reason in recommendation.reasons %}
+                <p>{{ reason.question.text }}</p>
+                {% endfor %}
+                <a href="{{ url_for('workflow.triage_form', application_id=application.id, override_recommendation=true) }}" class="btn button" style="background-color: white;">continue triage</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-8">
+            <a href="#" class="button button--primary button--cta" data-toggle="submission">Publisher Submission</a>
+            <a href="#" class="button button--primary" data-toggle="triage">Triage</a>
+            <div class="submission">
+                {% autoescape off %}
+                    {{ original_ro }}
+                {% endautoescape %}
+            </div>
+            <div class="triage" style="display: none">
+                {% autoescape off %}
+                    {{ ro_form }}
+                {% endautoescape %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            {% if wfc.reviewer %}
+                Assigned To: {{ wfc.reviewer.name }} ({{ wfc.reviewer.id }})
+                {% if event_unclaim and wfc.reviewer_id == current_user.id%}
+                    <div>
+                        {% with event = event_unclaim %}
+                            {% include event_unclaim.template %}
+                        {% endwith %}
+                    </div>
+                {% endif %}
+                {% if event_unassign and wfc.reviewer_id != current_user.id%}
+                    <div>
+                        {% with event = event_unassign %}
+                            {% include event_unassign.template %}
+                        {% endwith %}
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% set owner = application.owner_account %}
+            {% if owner and owner.email %}
+                <a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
+            {% endif %}
+
+            {% autoescape off %}
+                {{ notes_form }}
+            {% endautoescape %}
+
+            <a href="{{ url_for("admin.application", application_id=application.id) }}">Full Edit Form</a>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript">
+        function initialiseWorkflowItemToggle() {
+            var toggleLinks = document.querySelectorAll("a[data-toggle]");
+            var sections = {
+                submission: document.querySelector(".submission"),
+                triage: document.querySelector(".triage")
+            };
+
+            function setActiveButton(sectionName) {
+                toggleLinks.forEach(function(link) {
+                    var isActive = link.getAttribute("data-toggle") === sectionName;
+                    link.classList.toggle("button--cta", isActive);
+                });
+            }
+
+            function showSection(sectionName) {
+                Object.keys(sections).forEach(function(name) {
+                    if (!sections[name]) {
+                        return;
+                    }
+
+                    sections[name].style.display = name === sectionName ? "block" : "none";
+                });
+            }
+
+            toggleLinks.forEach(function(link) {
+                link.addEventListener("click", function(event) {
+                    var sectionName = link.getAttribute("data-toggle");
+
+                    if (!sections[sectionName]) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    showSection(sectionName);
+                    setActiveButton(sectionName);
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", initialiseWorkflowItemToggle);
+
+        const showRejectionSection = document.getElementById("show-rejection-section");
+        const rejectionsSection = document.getElementById("rejection_section");
+
+        showRejectionSection.addEventListener("click", () => {
+            rejectionsSection.hidden = false;
+            showRejectionSection.hidden = true;
+            rejectionsSection.setAttribute("aria-expanded", "true");
+        //     set focus
+
+        });
+
+        jQuery(document).ready(function($) {
+            doaj.workflow.notes.init();
+        });
+    </script>
+{% endblock %}

@@ -2531,6 +2531,10 @@ class ApplicationContextDefinitions:
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
     READ_ONLY["templates"]["form"] = templates.PUBLISHER_READ_ONLY_APPLICATION
 
+    WORKFLOW_READ_ONLY = deepcopy(PUBLIC)
+    WORKFLOW_READ_ONLY["name"] = "workflow_read_only"
+    WORKFLOW_READ_ONLY["templates"]["form"] = templates.WORKFLOW_READ_ONLY_APPLICATION
+
     # ~~->$ AssociateEditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
     # ~~^-> AssociateEditorApplication:FormProcessor~~
@@ -2575,7 +2579,7 @@ class ApplicationContextDefinitions:
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
     # add about the journal and editorial fields that differ between the contexts
-    public_context = [PUBLIC, READ_ONLY, UPDATE]
+    public_context = [PUBLIC, READ_ONLY, UPDATE, WORKFLOW_READ_ONLY]
     for pc in public_context:
         pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"]]
 
@@ -2696,7 +2700,8 @@ APPLICATION_FORMS = {
         ApplicationContextDefinitions.READ_ONLY["name"]: ApplicationContextDefinitions.READ_ONLY,
         ApplicationContextDefinitions.ASSOCIATE["name"]: ApplicationContextDefinitions.ASSOCIATE,
         ApplicationContextDefinitions.EDITOR["name"]: ApplicationContextDefinitions.EDITOR,
-        ApplicationContextDefinitions.MANED["name"]: ApplicationContextDefinitions.MANED
+        ApplicationContextDefinitions.MANED["name"]: ApplicationContextDefinitions.MANED,
+        ApplicationContextDefinitions.WORKFLOW_READ_ONLY["name"]: ApplicationContextDefinitions.WORKFLOW_READ_ONLY
     },
     "fieldsets": {v['name']: v for k, v in FieldSetDefinitions.__dict__.items() if not k.startswith('_')},
     "fields": {v['name']: v for k, v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
