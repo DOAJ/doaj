@@ -380,6 +380,50 @@ doaj.triage.fullFormSubmit = function (submitter) {
 }
 
 //------------------------- my code  -------------------------
+
+// doaj.triage.updateStatusBar = function () {
+//     {
+//         const questions = doaj.triage.questions.Question.$all;
+//         const counts = {
+//             compliant: 0,
+//             non_compliant: 0,
+//             action: 0,
+//             later: 0,
+//             unanswered: 0
+//         };
+//
+//         if (questions.length) {
+//             questions.each(function () {
+//                 const answer = this.answer?.val();
+//
+//                 if (answer && Object.hasOwn(counts, answer)) {
+//                     counts[answer]++;
+//                 } else {
+//                     counts.unanswered++;
+//                 }
+//             });
+//         }
+//
+//         const total = questions.length;
+//         const $statusBar = $("#status-bar");
+//
+//         const colors = {
+//             compliant: "#3A5959",
+//             non_compliant: "#982E0A",
+//             action: "#FD5A3B"
+//         };
+//
+//         ["compliant", "non_compliant", "action"].forEach(type => {
+//             const percentage = total ? (counts[type] / total) * 100 : 0;
+//
+//             $statusBar.find(`.${type}`).css({
+//                 width: `${percentage}%`,
+//                 backgroundColor: colors[type]
+//             });
+//         });
+//     }
+// }
+
 doaj.triage.questions.showOverview = function () {
     console.log("TODO: show overview");
 };
@@ -534,7 +578,7 @@ doaj.triage.questions.Question = class {
     }
 
     updateDynamicValues() {
-        this.$changedValues.forEach( ($input) =>{
+        this.$changedValues.forEach(($input) => {
             const value_name = $input.attr("data-value");
             const val = $input.val();
 
@@ -611,6 +655,7 @@ doaj.triage.questions.Question = class {
         this.$continueBtn.addClass("checked");
         this.$srAnswer.text(`Answered: ${answerVal}`);
         this.updateDynamicValues();
+        // doaj.triage.updateStatusBar();
     }
 
     expand() {
@@ -665,7 +710,7 @@ doaj.triage.questions.Question = class {
     static getNextUnanswered(current) {
         const afterCurrent = this.$all
             .slice(current.idx + 1)
-            .find(question => !question.answer);
+            .find(question => !question.answer || question.answer.val() === "later");
 
         if (afterCurrent) {
             return afterCurrent;
@@ -673,7 +718,7 @@ doaj.triage.questions.Question = class {
 
         return this.$all
             .slice(0, current.idx)
-            .find(question => !question.answer);
+            .find(question => !question.answer || question.answer.val() === "later");
     }
 
     deactivate() {

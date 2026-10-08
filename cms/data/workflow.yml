@@ -208,29 +208,34 @@ triage:
     issn_country_match:
       id: "9"
       label: "Country match"
-      check: "Country in the application matches the country at ISSN portal"
+      check: "Does the country in the application match the country shown in the ISSN Portal?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, the country in the application <strong>does</strong> match the title at issn.portal.org"
-        non_compliant: "<span class='answer'>Non-compliant</span>, the country in the application <strong>does not</strong> match the title at issn.portal.org"
+        compliant: "<span class='answer'>Yes</span>, the country details match."
+        non_compliant: "<span class='answer'>No</span>, No, the country details do not match."
         later: "I don't know - mark for later"
         action: ""
       action: # not currently used, should be removed
         non_compliant:
           instruction: "Provide more information about the publisher's country"
-      remember: ""
+      remember: "If you select <span class='answer non_compliant'>No</span>, you must add a note with a link to the source that supports your answer."
       instructions: ''
       resources:
-        - label: "ISSN portal"
+        - label: "ISSN Portal"
           url: "https://portal.issn.org/"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Provide more information about the publisher's country"
-      info:
-        pissn: "Print ISSN"
+          is_conditionally_required: "Add a note with a link to the source that supports your answer."
+      additional_info:
         eissn: "Electronic ISSN"
-        country: "Country of publisher"
+        pissn: "Print ISSN"
+        title: "Title"
+        alttitle: "Alternative title"
+        publisher: "Publisher"
+        pcountry: "Publisher's country"
+        organization: "Other organization"
+        ocountry: "Other organization's country"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -239,17 +244,14 @@ triage:
     issn_title_match:
       id: "10"
       label: "Title match"
-      check: "The journal's title and alternative title in the application form and on the website match what is shown at issn.org"
+      check: "Do the journal title and alternative title match across the application, website and ISSN Portal?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal’s title and alternative title in the application, on the website and at ISSN portal <strong>does</strong> match each other"
-        non_compliant: "<span class='answer'>Non-compliant</span>, No, this journal’s title or the alternative title in the application or on the website <strong>does not</strong>  match the ISSN portal"
+        compliant: "<span class='answer'>Yes</span> this journal’s title and alternative title in the application, on the website and at ISSN portal match each other."
+        non_compliant: "<span class='answer'>No</span>, this journal’s title or the alternative title in the application or on the website <strong>does not</strong>  match the ISSN portal"
         later: "I don't know - mark for later"
         action: "Journal's title or alternative needs to be changed"
       action:
-        non_compliant:
-          instruction: "Provide more information about this journal's title"
-        action:
-          instruction: 'Provide correct title and/or alternative title in the relevant input below. Add more information on the change (eg. why this change is required) in the notes input.<strong> Titles must not contain an HTML script tag</strong></span>'
+        instruction: 'Provide correct title and/or alternative title in the relevant input below. <strong> Titles must not contain an HTML script tag</strong></span>'
       remember: "<ul><li>Check both title and alternative title</li><li>If you need to edit the title always use the <strong>Online</strong> ISSN record (if available).</li></ul>"
       instructions: '<ul>
                   <li>If the title on the website matches the key-title or title proper at portal.issn.org but not the title provided in the application form, click <span class="answer action">Journal’s title needs to be changed</span>, provide the correct title and add a note </li>
@@ -262,25 +264,18 @@ triage:
                   <li>Sometimes publishers add the English version of the title in the Alternative title field even if the journal does not have an English website and the English title is not available in the ISSN portal record. The entry in the Alternative title field has to be present in the ISSN portal record or in the website. If not, you may remove the original entry in the Alternative title field</li>
                   </ul>'
       resources:
-        - label: "ISSN portal"
+        - label: "ISSN Portal"
           url: "https://portal.issn.org/"
-      info:
+      additional_info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
-        title_label: "Title"
-        alttitle_label: "Alternative title"
+        title: "Title"
+        alttitle: "Alternative title"
+        homepage: "Journal's homepage"
       validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "Provide more information about this journal's title, and any information on the change you have made (if applicable)"
         title:
           disallowed_value: "Title must not contain an HTML script tag"
           is_required: "Title is required"
-          # note: "Provide more information about what change in the title you are making and why"
-      edit:
-        title: "Title"
-        alttitle: "Alternative title"
       compliant_answers:
         - "compliant"
       action_answers:
@@ -293,45 +288,39 @@ triage:
     issn_continuation:
       id: "11"
       label: "Continuation"
-      check: "This application is <strong>not</strong> for a continuation of existing journal"
+      check: "Is this application a continuation of a journal currently indexed in DOAJ?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this application <strong>is not</strong> for a continuation"
+        compliant: "<span class='answer'>No</span>, This application is not a continuation of a journal indexed in DOAJ."
         later: "I don't know - mark for later"
-        action: "This application <strong>is</strong> for a continuation"
-      info:
+        action: "This application is a continuation of a journal indexed in DOAJ."
+      additional_info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
-      action:
-        action:
-          instruction: "In the input below provide preceding journal's ISSNs, separated by comma"
-      remember: "If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage"
+        title: "Title"
+        alttitle: "Alternative title"
+      edit:
+        continues: "Continues"
       instructions: '<ul>
-                  <li>If your search at ISSN portal returns <strong>3 or more journals</strong> then it is likely that the answer is <span class="answer compliant">Yes</span>.</li>
-                  <li>Continuation status is often noted in the ISSN portal records of individual ISSNs so check for this as well, as <strong>a journal may be a continuation even if your search returns fewer than 3 journals</strong></li>
-                  <li>Check for journal records/previous applications of the preceding journal in DOAJ. If the preceding journal is currently indexed in DOAJ, click <span class="answer action">This application is for a continuation</span> and add the ISSN(s) to the relevant field, <strong>do not add the continuation details to the preceding journal record</strong>.</li>
-                  <li>If the <strong>preceding journal has a record in DOAJ, but is not currently indexed</strong>, make a note of it. If there are <strong>previous (rejected) applications from the preceding journal</strong>, make a note of them too</li>
-                  <li>If the new ISSN(s) are not confirmed at portal.issn.org, inform the publisher via the Rejection message to submit a new application as soon as the ISSN is confirmed so that the continuation may be created</li>
+                  <li>Check ISSN Portal records for continuation information. Three or more related records are a useful signal, but fewer records do not rule it out.</li>
+                  <li>Check DOAJ for the preceding journal and any earlier applications.</li>
+                  <li>If the preceding journal is indexed, choose <span class="answer action">This application is for a continuation</span> and add the ISSN(s) to the relevant field. <strong>Do not add the continuation details to the preceding journal record</strong>.</li>
+                  <li>If its ISSN is not confirmed, tell the publisher to re-apply when confirmation is complete.</li>
                   </ul>'
       resources:
-        - label: "ISSN portal"
+        - label: "ISSN Portal"
           url: "https://portal.issn.org/"
-        - label: "DOAJ admin journal search"
-          url: "https://doaj.org/admin"
-      edit:
-        continues: "If the preceeding journal is indexed in DOAJ, enter the ISSN(s) here (comma separated list)"
+      action:
+        instruction: "Enter the ISSN(s) of the preceeding journal here (comma separated list)"
       validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "The note field is required if the application is for a continuation, and the preceding journal is not currently indexed in DOAJ"
         continues:
           regex_not_match: "ISSN(s) must be of the valid form, separated by commas"
+          required: "Add the issn(s) of the preceeding journal."
       compliant_answers:
         - "compliant"
       non_compliant_answers:
         - ""
-      notes_required_answers:
-        - "action"  # <- in this case only when no continuation ISSN is provided
+      action_answers:
+        - "action"
 
     database_withdrawn:
       id: "12"
