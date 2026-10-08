@@ -1,8 +1,9 @@
 triage:
   fields:
     ethics_not_excluded:
-      label: "2. Current exclusions"
-      check: "2. Is the journal or its publisher currently excluded?"
+      id: "2"
+      label: "Current exclusions"
+      check: "Is the journal or its publisher currently excluded?"
       answers:
         compliant: '<span class="answer">No</span>, Neither is currently excluded.'
         non_compliant: '<span class="answer">Yes</span>, the journal or its publisher is currently excluded.'
@@ -28,8 +29,9 @@ triage:
         non_compliant: "reject"
 
     ethics_no_nonstandard_metrics:
-      label: "3. Non-standard metric services"
-      check: "3. Does the journal display any references to non-standard metric services?"
+      id: "3"
+      label: "Non-standard metric services"
+      check: "Does the journal display any references to non-standard metric services?"
       answers:
         compliant: "<span class='answer'>No</span>, there are no references to non-standard metric services."
         non_compliant: "<span class='answer'>Yes</span>, there are references to non-standard metric services."
@@ -53,8 +55,9 @@ triage:
         non_compliant: 1
 
     ethics_no_fake_impact:
-      label: "4. Fake impact factor values"
-      check: "4. Does the journal display fake impact factor values in text or images?"
+      id: "4"
+      label: "Fake impact factor values"
+      check: "Does the journal display fake impact factor values in text or images?"
       answers:
         compliant: "<span class='answer'>No</span>, it does not display fake impact factor values."
         non_compliant: "<span class='answer'>Yes</span>, Yes, it displays fake impact factor values."
@@ -76,8 +79,9 @@ triage:
         non_compliant: 3
 
     ethics_no_false_doaj_claim:
-      label: "5. DOAJ Indexing Claim"
-      check: "5. Does the journal falsely claim to be indexed in DOAJ?"
+      id: "5"
+      label: "DOAJ Indexing Claim"
+      check: "Does the journal falsely claim to be indexed in DOAJ?"
       answers:
         compliant: "<span class='answer'>No</span>, it does not falsely claim to be indexed in DOAJ."
         non_compliant: "<span class='answer'>Yes</span>, Yes, it falsely claims to be indexed in DOAJ."
@@ -99,10 +103,11 @@ triage:
         non_compliant: 3
 
     ethics_submission_to_publication_time:
-      label: "6. Publication timeline"
-      check: "6. Is the time between submission and publication more than three weeks?"
+      id: "6"
+      label: "Publication timeline"
+      check: "Is the time between submission and publication more than three weeks?"
       answers:
-        compliant: "<span class='answer'>Yes</span>, Yes, it is more than three weeks."
+        compliant: "<span class='answer'>Yes</span>, it is more than three weeks."
         non_compliant: "<span class='answer'>No</span>, it is three weeks or less."
         later: "I don't know - mark for later"
       application_info:
@@ -115,8 +120,9 @@ triage:
         non_compliant: 3
 
     ethics_no_suspicious_ties:
-      label: "7. Links to Excluded or Suspicious Publishers"
-      check: "7. Was the journal or the publisher previously excluded or are they listed as suspicious, or linked to other excluded/suspicious publishers?"
+      id: "7"
+      label: "Links to Excluded or Suspicious Publishers"
+      check: "Was the journal or the publisher previously excluded or are they listed as suspicious, or linked to other excluded/suspicious publishers?"
       answers:
         compliant: "<span class='answer'>No</span>, they are not."
         non_compliant: "<span class='answer'>Yes</span>, they are."
@@ -145,8 +151,9 @@ triage:
       label: "Add more information in the note field above."
 
     issn_at_least_one:
-      label: "8. ISSN(s)"
-      check: "8. Does the journal have at least one ISSN that is registered, active and confirmed in the ISSN Portal?"
+      id: "8"
+      label: "ISSN(s)"
+      check: "Does the journal have at least one ISSN that is registered, active and confirmed in the ISSN Portal?"
       answers:
         compliant: "<span class='answer'>Yes</span>, it has at least one active and confirmed ISSN."
         non_compliant: "<span class='answer'>No</span>, it has no active and confirmed ISSNs."
@@ -188,8 +195,9 @@ triage:
         - "non_compliant"
 
     issn_country_match:
-      label: "9. Country match"
-      check: "9. Country in the application matches the country at ISSN portal"
+      id: "9"
+      label: "Country match"
+      check: "Country in the application matches the country at ISSN portal"
       answers:
         compliant: "<span class='answer'>Compliant</span>, the country in the application <strong>does</strong> match the title at issn.portal.org"
         non_compliant: "<span class='answer'>Non-compliant</span>, the country in the application <strong>does not</strong> match the title at issn.portal.org"
@@ -218,8 +226,9 @@ triage:
         - "non_compliant"
 
     issn_title_match:
-      label: "10. Title match"
-      check: "10. The journal's title and alternative title in the application form and on the website match what is shown at issn.org"
+      id: "10"
+      label: "Title match"
+      check: "The journal's title and alternative title in the application form and on the website match what is shown at issn.org"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal’s title and alternative title in the application, on the website and at ISSN portal <strong>does</strong> match each other"
         non_compliant: "<span class='answer'>Non-compliant</span>, No, this journal’s title or the alternative title in the application or on the website <strong>does not</strong>  match the ISSN portal"
@@ -271,8 +280,9 @@ triage:
         non_compliant: "reject"
 
     issn_continuation:
-      label: "11. Continuation"
-      check: "11. This application is <strong>not</strong> for a continuation of existing journal"
+      id: "11"
+      label: "Continuation"
+      check: "This application is <strong>not</strong> for a continuation of existing journal"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this application <strong>is not</strong> for a continuation"
         later: "I don't know - mark for later"
@@ -313,8 +323,9 @@ triage:
         - "action"  # <- in this case only when no continuation ISSN is provided
 
     database_withdrawn:
-      label: "12. Journal withdrawn"
-      check: "12. This journal has <strong>not</strong> been removed from DOAJ earlier and does <strong>not</strong> have an embargo (6 months or otherwise)"
+      id: "12"
+      label: "Journal withdrawn"
+      check: "This journal has <strong>not</strong> been removed from DOAJ earlier and does <strong>not</strong> have an embargo (6 months or otherwise)"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>has not</strong> been removed and <strong>does not</strong> have an embargo"
         action: "<span class='answer'>Non-compliant</span>, this journal <strong>has</strong> either been removed or <strong>has</strong> the embargo."
@@ -360,8 +371,9 @@ triage:
       - journal_content
 
     database_embargo:
-      label: "13. Previous application rejection"
-      check: "13. This journal <strong>application</strong> does <strong>not</strong> 
+      id: "13"
+      label: "Previous application rejection"
+      check: "This journal <strong>application</strong> does <strong>not</strong> 
       does <strong>not</strong> have an embargo (6 months or otherwise)"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal application <strong>does not</strong> have an active embargo"
@@ -410,8 +422,9 @@ triage:
         - "conditional_non_compliant"
 
     database_not_listed:
-      label: "14. Not indexed in DOAJ"
-      check: "14. This journal is not currently listed in DOAJ "
+      id: "14"
+      label: "Not indexed in DOAJ"
+      check: "This journal is not currently listed in DOAJ "
       answers:
         compliant: "<span class='answer'>Compliant</span>, this record <strong>is not</strong> listed in DOAJ"
         non_compliant: "<span class='answer'>Non-compliant</span>, this record <strong>is</strong> currently listed in DOAJ"
@@ -436,8 +449,9 @@ triage:
         non_compliant: "reject"
 
     website_working:
-      label: "16. Website"
-      check: "16. This journal has a working website"
+      id: "16"
+      label: "Website"
+      check: "This journal has a working website"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this journal <strong>does</strong> have a working website"
         non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does not</strong> have a working website"
@@ -470,8 +484,9 @@ triage:
         non_compliant: "reject"
 
     database_not_duplicate:
-      label: "15. Duplicate application"
-      check: "15. This application is <strong>not</strong> a duplicate"
+      id: "15"
+      label: "Duplicate application"
+      check: "This application is <strong>not</strong> a duplicate"
       answers:
         compliant: "<span class='answer'>Compliant</span>, this application <strong>is not</strong> a duplicate"
         non_compliant: "<span class='answer'>Non-compliant</span>, it is a duplicate and <strong>there is a newer application</strong>"
@@ -503,8 +518,9 @@ triage:
         non_compliant: "reject"
 
     website_issn:
-      label: "17. Correct issn on the website"
-      check: "17. Correct ISSN is displayed on the website"
+      id: "17"
+      label: "Correct issn on the website"
+      check: "Correct ISSN is displayed on the website"
       answers:
         compliant: "<span class='answer'>Compliant</span>, The correct ISSN <strong>is</strong> displayed on the website"
         non_compliant: "<span class='answer'>Non-compliant</span>, there is <strong>no issn</strong> displayed on the website"
@@ -531,8 +547,9 @@ triage:
         - "non_compliant"
 
     website_url:
-      label: "18. Distinct URLs"
-      check: "18. The application form lists distinct URLs pointing to the correct information for all the answers that require a URL "
+      id: "18"
+      label: "Distinct URLs"
+      check: "The application form lists distinct URLs pointing to the correct information for all the answers that require a URL "
       answers:
         compliant: "<span class='answer'>Compliant</span>, All required URLs in the application are distinct and point to the correct information."
         non_compliant: "<span class='answer'>Non-compliant</span>, All URLs in the application are the same and do not point to the correct information."
@@ -573,8 +590,9 @@ triage:
         - "action"
 
     website_license_policy:
-      label: "19. OA policy"
-      check: "19. Is the licensing policy present and consistent across the journal website?"
+      id: "19"
+      label: "OA policy"
+      check: "Is the licensing policy present and consistent across the journal website?"
       answers:
         compliant: "<span class='answer'>Yes</span>, licensing policy is present and the same in all parts of the journal website"
         non_compliant: "<span class='answer'>No</span>, licensing policy is not present or it is not the same in all parts of the journal website"
@@ -628,8 +646,9 @@ triage:
         - "conditional"
 
     website_copyright:
-      label: "20. Copyright terms"
-      check: "20. Copyright terms are the same in all parts of the journal website, including the copyright page, article abstracts, HTML pages, PDFs, and copyright forms."
+      id: "20"
+      label: "Copyright terms"
+      check: "Copyright terms are the same in all parts of the journal website, including the copyright page, article abstracts, HTML pages, PDFs, and copyright forms."
       answers:
         compliant: "<span class='answer'>Compliant</span>, copyright information <strong>is</strong> present and the same in all parts of the journal website"
         non_compliant: "<span class='answer'>Non-compliant</span>, copyright information <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
@@ -669,8 +688,9 @@ triage:
         - "conditional"
 
     content_no_login:
-      label: "21. Login and registration"
-      check: "21. Login or registration <strong>are not required</strong> to access, read and download the articles"
+      id: "21"
+      label: "Login and registration"
+      check: "Login or registration <strong>are not required</strong> to access, read and download the articles"
       answers:
         compliant: "<span class='answer'>Compliant</span>, login and registration <strong>are not</strong> required"
         non_compliant: "<span class='answer'>Non-compliant</span>, login and registration <strong>are</strong> required"
@@ -695,8 +715,9 @@ triage:
         - "non_compliant"
 
     content_no_embargo:
-      label: "22. No embargo"
-      check: "22. All content is immediately freely available in full text with no embargo, paywall. "
+      id: "22"
+      label: "No embargo"
+      check: "All content is immediately freely available in full text with no embargo, paywall. "
       answers:
         compliant: "<span class='answer'>Compliant</span>, all content is immediately and freely <strong>available</strong> in full text "
         non_compliant: "<span class='answer'>Non-compliant</span>, some content is <strong>hidden</strong> behind embargo or paywall"
@@ -721,8 +742,9 @@ triage:
         - "non_compliant"
 
     content_publish_enough:
-      label: "23. 5 research articles per year"
-      check: "23. The journal publishes <strong>at least five</strong> research articles per year"
+      id: "23"
+      label: "5 research articles per year"
+      check: "The journal publishes <strong>at least five</strong> research articles per year"
       answers:
         compliant: "<span class='answer'>Compliant</span>, the journal publishes <strong>at least five</strong> research articles per year"
         non_compliant: "<span class='answer'>Non-compliant</span>, the journal publishes <strong>less than five</strong> research articles per year"
@@ -747,8 +769,9 @@ triage:
         - "non_compliant"
 
     content_unique_link:
-      label: "24. Unique article links"
-      check: "24. Each article has a unique link"
+      id: "24"
+      label: "Unique article links"
+      check: "Each article has a unique link"
       answers:
         compliant: "<span class='answer'>Compliant</span>, each article <strong>does have</strong> a unique link"
         non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>do not</strong> have unique links"
@@ -773,8 +796,9 @@ triage:
         - "non_compliant"
 
     content_format:
-      label: "25. Full text format"
-      check: "25. Articles are available in HTML or PDF format as a minimum"
+      id: "25"
+      label: "Full text format"
+      check: "Articles are available in HTML or PDF format as a minimum"
       answers:
         compliant: "<span class='answer'>Compliant</span>, articles <strong>are</strong> available in HTML or PDF"
         non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>are not</strong> available in HTML or PDF"
@@ -799,8 +823,9 @@ triage:
         - "non_compliant"
 
     content_new_journal:
-      label: "26. New or Flipped Journal"
-      check: "26. This is a newly launched journal or a flipped journal"
+      id: "26"
+      label: "New or Flipped Journal"
+      check: "This is a newly launched journal or a flipped journal"
       answers:
         compliant: "<span class='answer'>No</span>, this is <strong>not</strong> a newly launched or a flipped journal"
         later: "I don't know - mark for later"
@@ -827,8 +852,9 @@ triage:
         - "non_compliant"
 
     admin_metadata_review:
-      label: "27. Check Metadata"
-      check: "27. Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , Copyright URL and Licensing URL are correct. Incorrect information has been edited"
+      id: "27"
+      label: "Check Metadata"
+      check: "Confirm the answers in the application form for ISSNs, Title, Alt Title, Homepage URL , Copyright URL and Licensing URL are correct. Incorrect information has been edited"
       instructions: ""
       answers:
         compliant: "Everything is correct"
@@ -854,8 +880,9 @@ triage:
         - "non_compliant"
 
     admin_special_exception:
-      label: "1. Special exceptions"
-      check: "1. Is this application reviewed under a special exception?"
+      id: "1"
+      label: "Special exceptions"
+      check: "Is this application reviewed under a special exception?"
       instructions: '<ul><li>If the application is from Africa then application should <strong>not</strong>
 be rejected for <strong>any</strong> reason. After answering all triage questions assign the application to the corresponding Managing Editor (Kamel or Mahmoud)
 </li>

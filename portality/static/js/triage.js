@@ -638,11 +638,10 @@ doaj.triage.questions.Question = class {
 
         this.group.expand();
 
-        this.$headerBtn
-            .attr("aria-current", "true")
-            .trigger("focus");
         this.expand();
         this.scrollTo();
+        this.$headerBtn._hide();
+        this.$wrapper.first("input").focus();
 
         if (this.instructions.show_by_default) {
             this.instructions.open();
@@ -679,6 +678,7 @@ doaj.triage.questions.Question = class {
 
     deactivate() {
         this.$headerBtn.removeAttr("aria-current");
+        this.$headerBtn._show();
         this.collapse();
     }
 

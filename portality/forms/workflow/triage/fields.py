@@ -323,6 +323,7 @@ class EthicsNotExcludedNote(NoteField):
 
 class EthicsNotExcludedGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.ethics_not_excluded.id
         label = T.ethics_not_excluded.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -371,6 +372,7 @@ class EthicsNoNonStandardMetricsNote(NoteField):
 
 class EthicsNoNonStandardMetricsGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.ethics_no_nonstandard_metrics.id
         label = T.ethics_no_nonstandard_metrics.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -428,6 +430,7 @@ class EthicsNoFakeImpactNote(NoteField):
 
 class EthicsNoFakeImpactGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.ethics_no_fake_impact.id
         label = T.ethics_no_fake_impact.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -486,6 +489,7 @@ class EthicsNoFalseDOAJClaimNote(NoteField):
 
 class EthicsNoFalseDOAJClaimGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.ethics_no_false_doaj_claim.id
         label = T.ethics_no_false_doaj_claim.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -535,6 +539,7 @@ class EthicsPubTimeNote(GeneralNote):
 
 class EthicsPubTimeGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.ethics_submission_to_publication_time.id
         label = T.ethics_submission_to_publication_time.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -598,6 +603,7 @@ class EthicsNoSuspiciousTiesNote(NoteField):
 
 class EthicsNoSuspiciousTiesGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.ethics_no_suspicious_ties.id
         label = T.ethics_no_suspicious_ties.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -750,6 +756,7 @@ class DatabaseWithdrawnExceptionsGroup(Structure):
 ### The main entry point to the Database: Withdrawn question
 class DatabaseWithdrawnGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.database_withdrawn.id
         label = T.database_withdrawn.label
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
@@ -867,6 +874,7 @@ class DatabaseEmbargoExceptionsGroup(Structure):
 
 class DatabaseEmbargoGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.database_embargo.id
         label = T.database_embargo.label
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
@@ -910,6 +918,7 @@ class DatabaseNotListedNote(NoteField):
 
 class DatabaseNotListedGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.database_not_listed.id
         label = T.database_not_listed.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -961,6 +970,7 @@ class DatabaseNotDuplicateInstruction(Structure):
 
 class DatabaseNotDuplicateGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.database_not_duplicate.id
         label = T.database_not_duplicate.label
         order = ["answer", "note", "instructions"]
         render_class = TriageCompound
@@ -1070,6 +1080,7 @@ class ISSNAdditionalFields(Structure):
 
 class ISSNAtLeastOneGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.issn_at_least_one.id
         label = T.issn_at_least_one.label
         order = [
             "answer",
@@ -1122,6 +1133,7 @@ class ISSNCountryMatchNote(NoteField):
 
 class ISSNCountryMatchGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.issn_country_match.id
         label = T.issn_country_match.label
         order = [
             "answer",
@@ -1243,6 +1255,7 @@ class ISSNTitleMatchActionGroup(Structure):
 
 class ISSNTitleMatchGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.issn_title_match.id
         label = T.issn_title_match.label
         order = [
             "answer",
@@ -1365,6 +1378,7 @@ class ISSNContinuationActionGroup(Structure):
 class ISSNContinuationGroup(Structure):
     # TO DO: add further groups and actions - see triage workflow
     class C(ActionTriageCompoundFieldCapability):
+        id = T.issn_continuation.id
         label = T.issn_continuation.label
         order = [
             "answer",
@@ -1459,6 +1473,7 @@ class WebsiteWorkingActionGroup(Structure):
 
 class WebsiteWorkingGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.website_working.id
         label = T.website_working.label
         order = ["answer", "note", "action"]
         render_class = TriageCompound
@@ -1498,6 +1513,7 @@ class WebsiteISSNNote(NoteField):
 
 class WebsiteISSNGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.website_issn.id
         label = T.website_issn.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1553,6 +1569,7 @@ class WebsiteURLNote(NoteField):
 
 class WebsiteURLGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.website_url.id
         label = T.website_url.label
         order = ["answer", "note", "instruction"]
         render_class = TriageCompound
@@ -1685,6 +1702,7 @@ class WebsiteLicensePolicyActionGroup(Structure):
 
 class WebsiteLicensePolicyGroup(Structure):
     class C(CheckboxCompoundCapability):
+        id = T.website_license_policy.id
         label = T.website_license_policy.label
         order = [
             "answer",
@@ -1797,6 +1815,7 @@ class WebsiteCopyrightActionGroup(Structure):
 
 class WebsiteCopyrightGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.website_copyright.id
         label = T.website_copyright.label
         order = [
             "answer",
@@ -1849,6 +1868,7 @@ class ContentNoLoginNote(NoteField):
 
 class ContentNoLoginGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.content_no_login.id
         label = T.content_no_login.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1891,6 +1911,7 @@ class ContentNoEmbargoNote(NoteField):
 
 class ContentNoEmbargoGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.content_no_embargo.id
         label = T.content_no_embargo.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1933,6 +1954,7 @@ class ContentPublishEnoughNote(NoteField):
 
 class ContentPublishEnoughGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.content_publish_enough.id
         label = T.content_publish_enough.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -1975,6 +1997,7 @@ class ContentUniqueLinkNote(NoteField):
 
 class ContentUniqueLinkGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.content_unique_link.id
         label = T.content_unique_link.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -2017,6 +2040,7 @@ class ContentFormatNote(NoteField):
 
 class ContentFormatGroup(Structure):
     class C(TriageCompoundFieldCapability):
+        id = T.content_format.id
         label = T.content_format.label
         order = ["answer", "note"]
         render_class = TriageCompound
@@ -2083,6 +2107,7 @@ class ContentNewJournalActionGroup(Structure):
 
 class ContentNewJournalGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
+        id = T.content_new_journal.id
         label = T.content_new_journal.label
         order = ["answer", "note", "action"]
 
@@ -2200,6 +2225,7 @@ class AdminMetadataReviewNote(GeneralNote):
 
 class AdminMetadataReviewGroup(Structure):
     class C(ReviewCapability):
+        id = T.admin_metadata_review.id
         label = T.admin_metadata_review.label
         order = ["answer", "note"]
 
@@ -2285,6 +2311,7 @@ class AdminSpecialExceptionGroup(Structure):
     # * instruction should be added as a reminder
 
     class C(CheckboxCompoundCapability):
+        id = T.admin_special_exception.id
         label = T.admin_special_exception.label
         order = ["answer", "special_exceptions", "special_exception_other", "note"]
         js_class = "checkbox"

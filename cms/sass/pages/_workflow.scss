@@ -417,9 +417,10 @@ body.dashboard {
       flex-direction: row;
       justify-content: flex-start;
       flex-wrap: wrap;
-      gap: 1.5rem;
+      column-gap: .75rem;
+      row-gap: .25rem;
       .info-pair {
-        min-width: calc(33.3333% - 3rem);
+        width: calc(33.3333% - 1.5rem);
       }
 
     }
@@ -473,7 +474,8 @@ body.dashboard {
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
-        background: #fff;
+        background: $light-grey;
+        padding: 1rem;
         visibility: hidden;
         pointer-events: none;
         transform: translateX(100%);
@@ -533,7 +535,7 @@ body.dashboard {
       .criterion-instructions-close {
         // dev: fix the position and size
         position: absolute;
-        top: 0;
+        top: 1rem;
         color: $dark-grey;
         border: none;
         margin-bottom: 0;
