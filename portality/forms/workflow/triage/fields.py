@@ -1009,7 +1009,34 @@ class ISSNAtLeastOne(ComplianceCheckField):
                 "label": S.additional_info.pissn,
                 "lookup": lambda application, wfc: application.bibjson().pissn,
                 "data-value": "pissn"
+            },
+            {
+                "label": S.additional_info.title,
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
+            },
+            {
+                "label": S.additional_info.alttitle,
+                "lookup": lambda application, wfc: application.bibjson().alternative_title,
+                "data-value": "alttitle"
+            },
+            {
+                "label": S.additional_info.publisher,
+                "lookup": lambda application, wfc: application.bibjson().publisher
+            },
+            {
+                "label": S.additional_info.pcountry,
+                "lookup": lambda application, wfc: application.bibjson().country
+            },
+            {
+                "label": S.additional_info.organization,
+                "lookup": lambda application, wfc: application.bibjson().institution_name
+            },
+            {
+                "label": S.additional_info.pcountry,
+                "lookup": lambda application, wfc: application.bibjson().institution_country
             }
+
         ]
 
     name = "issn_at_least_one"
