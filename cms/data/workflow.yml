@@ -1,4 +1,59 @@
 triage:
+#  recommend:
+#  - action: "reject"
+#    conditions:
+#      - flag: "immediate_reject"
+#      - not_flag: "no_issn"
+#        flag: "website_name_mismatch"
+#      - flag: "no_issn"
+#        complete: true
+#      - flag: "reject_on_complete"
+#        complete: true
+#  - action: "maned"
+#    conditions:
+#    - flag: "indexed_continuation",
+#      complete: true
+#    - severity_value:
+#        gte: 3
+#        lt: 10
+#      complete: true
+#  - action: "normal"
+#    conditions:
+#    - severity_value:
+#        lt: 3
+#      complete: true
+#  - action: "integrity_ethics"
+#    conditions:
+#    - severity_value:
+#        gte: 10
+#      complete: true
+  recommend:
+  - action: "reject"
+    conditions:
+      flag: immediate_reject
+  - action: "reject"
+    conditions:
+      flag: website_name_mismatch
+      not_flag: no_issn
+  - action: "reject"
+    conditions:
+      flag: no_issn_at_end
+  - action: "maned"
+    conditions:
+      flag: indexed_continuation
+  - action: "reject"
+    conditions:
+      flag: reject_on_complete
+  - action: "integrity_ethics"
+    conditions:
+        severity_value:
+            gte: 10
+  - action: "maned"
+    conditions:
+      severity_value:
+        gte: 3
+        lt: 10
+  - action: "normal"
   fields:
     ethics_not_excluded:
       label: "2. Current exclusions"
@@ -25,7 +80,10 @@ triage:
       non_compliant_answers:
       - "non_compliant"
       recommend:
-        non_compliant: "reject"
+      - conditions:
+          answer: "non_compliant"
+        result:
+          flag: "immediate_reject"
 
     ethics_no_nonstandard_metrics:
       label: "3. Non-standard metric services"
@@ -49,8 +107,13 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "non_compliant"
-      severity_value:
-        non_compliant: 1
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+        result:
+          severity_value: 1
+#      severity_value:
+#        non_compliant: 1
 
     ethics_no_fake_impact:
       label: "4. Fake impact factor values"
@@ -72,8 +135,13 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "non_compliant"
-      severity_value:
-        non_compliant: 3
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+        result:
+          severity_value: 3
+#      severity_value:
+#        non_compliant: 3
 
     ethics_no_false_doaj_claim:
       label: "5. DOAJ Indexing Claim"
@@ -95,8 +163,13 @@ triage:
       - "compliant"
       non_compliant_answers:
       - "non_compliant"
-      severity_value:
-        non_compliant: 3
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+        result:
+          severity_value: 3
+#      severity_value:
+#        non_compliant: 3
 
     ethics_submission_to_publication_time:
       label: "6. Publication timeline"
@@ -111,8 +184,13 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-      severity_value:
-        non_compliant: 3
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+        result:
+          severity_value: 3
+#      severity_value:
+#        non_compliant: 3
 
     ethics_no_suspicious_ties:
       label: "7. Links to Excluded or Suspicious Publishers"
@@ -138,11 +216,16 @@ triage:
       - "action"
       non_compliant_answers:
       - "non_compliant"
-      severity_value:
-        non_compliant: 10
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+        result:
+          severity_value: 10
+#      severity_value:
+#        non_compliant: 10
 
-    ethics_no_suspicious_ties_action:
-      label: "Add more information in the note field above."
+#    ethics_no_suspicious_ties_action:
+#      label: "Add more information in the note field above."
 
     issn_at_least_one:
       label: "8. ISSN(s)"
@@ -191,6 +274,18 @@ triage:
         - "action"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "no_issn_at_end"
+      - conditions:
+          answer: "non_compliant"
+        result:
+          flag: "no_issn"
+#      flag_answers:
+#        non_compliant: "no_issn"
 
     issn_country_match:
       label: "9. Country match"
@@ -273,7 +368,15 @@ triage:
       non_compliant_answers:
         - "non_compliant"
       recommend:
-        non_compliant: "reject"
+      - conditions:
+          answer: "non_compliant"
+        result:
+          flag: "website_name_mismatch"
+#      recommend:
+#        non_compliant:
+#          conditions:
+#            not_flag: "not_registered_issn"
+#          result: "reject"
 
     issn_continuation:
       label: "11. Continuation"
@@ -316,6 +419,13 @@ triage:
         - ""
       notes_required_answers:
         - "action"  # <- in this case only when no continuation ISSN is provided
+      recommend:
+      - conditions:
+          answer: "action"
+        result:
+          flag: "indexed_continuation"
+#      flag_answers:
+#        action: "indexed_continuation"
 
     database_withdrawn:
       label: "12. Journal withdrawn"
@@ -363,6 +473,17 @@ triage:
       - ignore_embargo
       - website_unavailable
       - journal_content
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          exceptions: false
+        result:
+          flag: "immediate_reject"
+#      recommend:
+#        non_compliant:
+#          conditions:
+#            exceptions: false
+#          result: "reject"
 
     database_embargo:
       label: "13. Previous application rejection"
@@ -413,6 +534,17 @@ triage:
         - "conditional_compliant"
       non_compliant_answers:
         - "conditional_non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          exceptions: false
+        result:
+          flag: "immediate_reject"
+#      recommend:
+#        non_compliant:
+#          conditions:
+#            exceptions: false
+#          result: "reject"
 
     database_not_listed:
       label: "14. Not indexed in DOAJ"
@@ -438,7 +570,12 @@ triage:
       non_compliant_answers:
         - "non_compliant"
       recommend:
-        non_compliant: "reject"
+      - conditions:
+          answer: "non_compliant"
+        result:
+          flag: "immediate_reject"
+#      recommend:
+#        non_compliant: "reject"
 
     website_working:
       label: "16. Website"
@@ -472,7 +609,12 @@ triage:
       non_compliant_answers:
         - "non_compliant"
       recommend:
-        non_compliant: "reject"
+      - conditions:
+          answer: "non_compliant"
+        result:
+          flag: "immediate_reject"
+#      recommend:
+#        non_compliant: "reject"
 
     database_not_duplicate:
       label: "15. Duplicate application"
@@ -505,7 +647,12 @@ triage:
       action_answer:
       - "action"
       recommend:
-        non_compliant: "reject"
+      - conditions:
+          answer: "non_compliant"
+        result:
+          flag: "immediate_reject"
+#      recommend:
+#        non_compliant: "reject"
 
     website_issn:
       label: "17. Correct issn on the website"
@@ -534,6 +681,14 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     website_url:
       label: "18. Distinct URLs"
@@ -576,6 +731,14 @@ triage:
         - "non_compliant"
       note_required_answers:
         - "action"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     website_license_policy:
       label: "19. OA policy"
@@ -634,6 +797,14 @@ triage:
       non_compliant_answers:
         - "non_compliant"
         - "conditional"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     website_copyright:
       label: "20. Copyright terms"
@@ -675,6 +846,14 @@ triage:
       non_compliant_answers:
         - "non_compliant"
         - "conditional"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     content_no_login:
       label: "21. Login and registration"
@@ -701,6 +880,14 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     content_no_embargo:
       label: "22. No embargo"
@@ -727,6 +914,14 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     content_publish_enough:
       label: "23. 5 research articles per year"
@@ -753,6 +948,14 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     content_unique_link:
       label: "24. Unique article links"
@@ -779,6 +982,14 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     content_format:
       label: "25. Full text format"
@@ -805,6 +1016,14 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     content_new_journal:
       label: "26. New or Flipped Journal"
@@ -833,6 +1052,14 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+      - conditions:
+          answer: "non_compliant"
+          complete: true
+        result:
+          flag: "reject_on_complete"
+#      flag_answers:
+#        non_compliant: "reject_on_complete"
 
     admin_metadata_review:
       label: "27. Check Metadata"
@@ -888,5 +1115,3 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-      recommend:
-        non_compliant: "reject"

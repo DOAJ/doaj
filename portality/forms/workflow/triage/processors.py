@@ -83,7 +83,7 @@ class TriageFormProcessor:
         self._target_application = self._patch_application(partial_application)
         self._target_wfc = self._patch_wfc(partial_wfc)
         self._rationalise_answers(self._target_wfc)
-        self._calculate_recommendation(self._target_wfc)
+        self._calculate_recommendation_and_severity(self._target_wfc)
 
     def blank_form(self):
         self.form_instance = TriageSubmission()
@@ -179,101 +179,276 @@ class TriageFormProcessor:
         R = app.cms.workflow.triage.fields
 
         for question in R.keys():
-            if question not in t.NON_QUESTION_ELEMENTS:
-                triage_field = getattr(t, question)
-                ans = triage_field.answer
+            triage_field = getattr(t, question)
+            ans = triage_field.answer
 
-                if "severity_value" in R[question]:
-                    if ans in R[question].severity_value:
-                        triage_field.severity_value = R[question].severity_value[ans]
+            # if "severity_value" in R[question]:
+            #     if ans in R[question].severity_value:
+            #         triage_field.severity_value = R[question].severity_value[ans]
 
-                if ans in R[question].compliant_answers:
-                    triage_field.compliant = True
-                elif ans in R[question].non_compliant_answers:
-                    triage_field.compliant = False
-                else:
-                    triage_field.compliant = None
+            if ans in R[question].compliant_answers:
+                triage_field.compliant = True
+            elif ans in R[question].non_compliant_answers:
+                triage_field.compliant = False
+            else:
+                triage_field.compliant = None
 
-    def _calculate_recommendation(self, wfc:WorkflowControl):
+    def _calculate_recommendation_and_severity(self, wfc:WorkflowControl):
         t = wfc.triage
+        complete = t.review_complete
         R = app.cms.workflow.triage.fields
 
-        def get_recommendation(field:TriageField, config):
-            if "recommend" in config:
-                if field.answer is not None and field.answer in config.recommend:
-                    recommend = config.recommend[field.answer]
-                    return [{
-                        "code": recommend,
-                        "reasons": {
-                            "question": field.name,
-                            "answer": field.answer,
-                            "sv": field.severity_value,
-                            "exception": None,
-                        }
-                    }]
+        def text_in_list_match(field, conditions, values):
+            match = False
+            if field in conditions:
+                if conditions[field] in values:
+                    match = True
+            else:
+                match = True
+            return match
+
+        def complete_match(conditions):
+            match = False
+            if "complete" in conditions:
+                if conditions.complete == complete:
+                    match = True
+            else:
+                match = True
+            return match
+
+        def exceptions_match(conditions, exceptions):
+            match = False
+            if "exceptions" in conditions:
+                if conditions.exceptions is False and len(exceptions) == 0:
+                    match = True
+                elif conditions.exceptions is True and len(exceptions) > 0:
+                    match = True
+            else:
+                match = True
+            return match
+
+        def range_match(field, conditions, value):
+            match = False
+            if field in conditions:
+                gte_match = False
+                range = conditions.get(field, {})
+                if "gte" in range:
+                    if value >= range.gte:
+                        gte_match = True
+                else:
+                    gte_match = True
+
+                lt_match = False
+                if "lt" in conditions.severity_value:
+                    if value < range.lt:
+                        lt_match = True
+                else:
+                    lt_match = True
+
+                match = all([gte_match, lt_match])
+            else:
+                match = True
+
+            return match
+
+        def conditions_met(conditions, answer, exceptions):
+            answer_match = text_in_list_match("answer", conditions, [answer])
+            comp_match = complete_match(conditions)
+            except_match = exceptions_match(conditions, exceptions)
+            return all([answer_match, comp_match, except_match])
+
+        def get_flags_and_severity(field:TriageField, config) -> tuple[set, int]:
+            if "recommend" not in config:
+                return set(), 0
+
+            ans = field.answer
+            exceptions = []
             if isinstance(field, SpecialExceptionTriageField):
-                if len(field.special_exceptions) > 0:
-                    # if there is a "NO EXCEPTION" value, then don't record this as a rejection
-                    if len(field.special_exceptions) == 1:
-                        if field.special_exceptions[0] == "None":   # urgh, magic string, but will have to do for now
-                            return []
+                exceptions = field.special_exceptions
 
-                    return [{
-                        "code": "reject",
-                        "reasons": {
-                            "question": field.name,
-                            "answer": field.answer,
-                            "sv": field.severity_value,
-                            "exception": field.special_exceptions,
-                        }
-                    }]
+            results = []
+            for rec in config.recommend:
+                match = False
+                if "conditions" not in rec:
+                    match = True
+                else:
+                    match = conditions_met(rec.conditions, ans, exceptions)
 
-            return []
+                if match:
+                    results.append(rec.result)
 
-        recs = []
+            flags = set()
+            sv = 0
+            for r in results:
+                if "flag" in r:
+                    flags.add(r.flag)
+                if "severity_value" in r:
+                    sv += r.severity_value
 
+            return flags, sv
+
+        def get_recommendation(flags, total_severity, question_reasons):
+            R = app.cms.workflow.triage.recommend
+            for priority in R:
+                if "conditions" not in priority:
+                    return priority.action, []
+
+                flag_match = text_in_list_match("flag", priority.conditions, flags)
+                not_match = text_in_list_match("not_flag", priority.conditions, flags)
+                sv_match = range_match("severity_value", priority.conditions, total_severity)
+                # flag_match = False
+                # if "flag" in priority.conditions:
+                #     if priority.conditions.flag in flags:
+                #         flag_match = True
+                # else:
+                #     flag_match = True
+
+                # not_match = False
+                # if "not_flag" in priority.conditions:
+                #     if priority.conditions.not_flag in flags:
+                #         not_match = True
+                # else:
+                #     not_match = True
+
+                # sv_match = False
+                # if "severity_value" in priority.conditions:
+                #     gte_match = False
+                #     if "gte" in priority.conditions.severity_value:
+                #         if total_severity >= priority.conditions.severity_value.gte:
+                #             sv_match = True
+                #     else:
+                #         gte_match = True
+                #
+                #     lt_match = False
+                #     if "lt" in priority.conditions.severity_value:
+                #         if total_severity < priority.conditions.severity_value.lt:
+                #             kt_match = True
+                #     else:
+                #         lt_match = True
+                #
+                #     sv_match = gte_match and lt_match
+                # else:
+                #     sv_match = True
+
+                if all([flag_match, not_match, sv_match]):
+                    final_reasons = []
+                    for q, info in question_reasons.items():
+                        if "flag" in priority.conditions:
+                            if priority.conditions.flag in info["flags"]:
+                                final_reasons.append({
+                                    "question": q,
+                                    "answer": info["answer"],
+                                    "sv": info.get("sv", 0)
+                                })
+                        elif "severity_value" in priority.conditions:
+                            if info.get("sv", 0) > 0:
+                                final_reasons.append({
+                                    "question": q,
+                                    "answer": info["answer"],
+                                    "sv": info.get("sv", 0)
+                                })
+
+                    return priority.action, final_reasons
+
+            return "normal", []
+
+        flags = set()
+        question_reasons = {}
         for question in R.keys():
-            if question not in t.NON_QUESTION_ELEMENTS:
-                recs += get_recommendation(getattr(t, question), R[question])
+            triage_field = getattr(t, question)
+            field_flags, sv = get_flags_and_severity(triage_field, R[question])
 
-        def evaluate_recommendations(recs):
-            r = []
-            qf = []
-            for rec in recs:
-                if rec["code"] == "reject":
-                    r.append(rec["reasons"])
-                elif rec["code"] == "quick_fail":
-                    qf.append(rec["reasons"])
-            return r, qf
-
-        reject, quick_fail = evaluate_recommendations(recs)
-
-        if len(reject) > 0:
-            t.recommend("reject", reject)
-            return
-
-        if len(quick_fail) > 0:
-            t.recommend("quick_fail", quick_fail)
-            return
-
-        severity = t.get_fields_with_non_zero_severity_value()
-        report = [
-            {
-                "question": s.name,
-                "answer": s.answer,
-                "sv": s.severity_value,
-                "exception": s.exception
+            triage_field.severity_value = sv
+            flags.update(field_flags)
+            question_reasons[question] = {
+                "flags": field_flags,
+                "answer": triage_field.answer,
+                "sv": sv
             }
-            for s in severity
-        ]
-        sv_total = t.total_severity_value
 
-        if sv_total < 3:
-            t.recommend("normal", report)
-        elif sv_total < 10:
-            t.recommend("maned", report)
-        else:
-            t.recommend("integrity_ethics", report)
+        recommendation, reasons = get_recommendation(flags, t.total_severity_value, question_reasons)
+        t.recommend(recommendation, reasons)
+    #
+    # def _calculate_recommendation(self, wfc:WorkflowControl):
+    #     t = wfc.triage
+    #     R = app.cms.workflow.triage.fields
+    #
+    #     def get_recommendation(field:TriageField, config):
+    #         if "recommend" in config:
+    #             if field.answer is not None and field.answer in config.recommend:
+    #                 recommend = config.recommend[field.answer]
+    #                 return [{
+    #                     "code": recommend,
+    #                     "reasons": {
+    #                         "question": field.name,
+    #                         "answer": field.answer,
+    #                         "sv": field.severity_value,
+    #                         "exception": None,
+    #                     }
+    #                 }]
+    #         if isinstance(field, SpecialExceptionTriageField):
+    #             if len(field.special_exceptions) > 0:
+    #                 # if there is a "NO EXCEPTION" value, then don't record this as a rejection
+    #                 if len(field.special_exceptions) == 1:
+    #                     if field.special_exceptions[0] == "None":   # urgh, magic string, but will have to do for now
+    #                         return []
+    #
+    #                 return [{
+    #                     "code": "reject",
+    #                     "reasons": {
+    #                         "question": field.name,
+    #                         "answer": field.answer,
+    #                         "sv": field.severity_value,
+    #                         "exception": field.special_exceptions,
+    #                     }
+    #                 }]
+    #
+    #         return []
+    #
+    #     recs = []
+    #
+    #     for question in R.keys():
+    #         if question not in t.NON_QUESTION_ELEMENTS:
+    #             recs += get_recommendation(getattr(t, question), R[question])
+    #
+    #     def evaluate_recommendations(recs):
+    #         r = []
+    #         qf = []
+    #         for rec in recs:
+    #             if rec["code"] == "reject":
+    #                 r.append(rec["reasons"])
+    #             elif rec["code"] == "normal":
+    #                 qf.append(rec["reasons"])
+    #         return r, qf
+    #
+    #     reject, normal = evaluate_recommendations(recs)
+    #
+    #     if len(reject) > 0:
+    #         t.recommend("reject", reject)
+    #         return
+    #
+    #     if len(normal) > 0:
+    #         t.recommend("normal", normal)
+    #         return
+    #
+    #     severity = t.get_fields_with_non_zero_severity_value()
+    #     report = [
+    #         {
+    #             "question": s.name,
+    #             "answer": s.answer,
+    #             "sv": s.severity_value,
+    #             "exception": s.exception
+    #         }
+    #         for s in severity
+    #     ]
+    #     sv_total = t.total_severity_value
+    #
+    #     if sv_total < 3:
+    #         t.recommend("normal", report)
+    #     elif sv_total < 10:
+    #         t.recommend("maned", report)
+    #     else:
+    #         t.recommend("integrity_ethics", report)
 
     ##########################
     ## Form serialisation
