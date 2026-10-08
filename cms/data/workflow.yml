@@ -87,6 +87,9 @@ triage:
         non_compliant: "<span class='answer'>Yes</span>, Yes, it falsely claims to be indexed in DOAJ."
         later: "I don't know - mark for later"
       remember: "If the answer is <span class='answer non_compliant'>Yes</span>, and the journal was not previously indexed in DOAJ, add it to the corresponding spreadsheet and note that you have done so. <br /> You must also add a link to the source supporting your answer."
+      instructions: "<ul><li>If a journal clearly states that it is applying to be indexed in DOAJ, this does not constitute misrepresentation and triage does not consider it as false claim</li>
+                    <li>If a journal uses the DOAJ logo while claiming that it is applying, this is considered misuse of the DOAJ logo and triage considers it as false claim - triage does not add the journal to the corresponding spreadsheet though</li>
+                    <li>For other nuanced cases that are difficult to decide, triage considers it as false claim - triage does not add the journal to the corresponding spreadsheet though</li>"
       resources:
         - label: "Journals and publishers that falsely claim they are indexed in DOAJ"
           url: "https://docs.google.com/spreadsheets/d/1Y_Sza4rPDkf-NNX9kwiErGrKeNTM75md9B63A_gVpaQ/edit?usp=sharing"
