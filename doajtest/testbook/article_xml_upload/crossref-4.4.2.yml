@@ -243,7 +243,73 @@ tests:
   - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
     results:
     - The list of articles should contain an article with the title "Title with HTML
-      tags <i>escaped</i> and &lt;i&gt;unescaped&lt;/i&gt; "
+      tags escaped and unescaped", where both "escaped" and "unescaped" are shown
+      in italics, and no literal "<i>" or "</i>" text is visible
+
+- title: Successfully upload a file containing rich text (JATS) formatting in the title and abstract
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the publisher account owns a journal with Print ISSN "1111-1111"
+      and E-ISSN "2222-2222", and these are not attached to any other journals, and
+      that this journal does not already contain a "Rich text" article from a previous
+      run of this test.
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "jats_rich_text.xml" from
+      the Crossref 4.4.2 test resources folder
+    resource: /xml_upload_test_package/Crossref/4.4.2/jats_rich_text.xml
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating a successful upload
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "successfully processed",
+      and the Note "1 articles imported (1 new, 0 updated)"
+  - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
+      and go to the Articles tab
+    results:
+    - The list of articles contains an article titled "Rich text TiOx/Pt3Ti(111) and
+      E=mc2", where the "x" is an italic subscript, the "3" is a subscript and the "2"
+      is a superscript
+    - No literal tags such as "<sub>", "<i>" or "&lt;sub&gt;" are visible in the title
+  - step: Click "Abstract" on that article to expand it
+    results:
+    - The abstract reads "Films grown on a Pt3Ti(111) surface. Phases z-TiOx and w-TiOx
+      were produced. Energy scales as c2. Second paragraph with <script>alert('xss')</script>
+      text."
+    - The "3" in "Pt3Ti" is a subscript, each "x" in "TiOx" is an italic subscript,
+      the word "produced" is bold, and the "2" in "c2" is a superscript
+    - No text from the abstract is missing (in particular "Ti(111) surface", which
+      follows the first subscript, is present)
+    - The text "<script>alert('xss')</script>" is shown literally as plain text; no
+      alert pop-up appears
+  - step: Click the article title to open the public article page
+    results:
+    - The page heading shows the title with the same subscript/superscript/italic
+      formatting as on the Table of Contents, with no literal tags visible
+    - The abstract shows the same formatting as on the Table of Contents, and the
+      "<script>alert('xss')</script>" text is shown literally with no alert pop-up
+    - The browser tab title shows the article title as plain text ("Rich text TiOx/Pt3Ti(111)
+      and E=mc2 ...") with no "<sub>", "<i>" or "<sup>" tags in it
+  - step: View the page source of the article page and find the "citation_title" meta tag
+    results:
+    - The content of the "citation_title" meta tag is "Rich text TiOx/Pt3Ti(111) and
+      E=mc2" with no HTML tags in it
+  - step: Go to the public article search (/search/articles) and search for "Rich text TiOx"
+    results:
+    - The article is found and its title and (expanded) abstract are rendered with the
+      same formatting as on the Table of Contents, with no literal tags visible
+  - step: Log in as an administrator, go to "Journals & Articles" search in the admin
+      area (/admin/admin_site_search) and search for "Rich text TiOx"
+    results:
+    - The article's title is shown with the same formatting, with no literal tags visible
+    - Click "(show/hide)" next to the Abstract; the abstract is shown with the same
+      formatting, and "<script>alert('xss')</script>" is shown literally with no alert
+      pop-up
 
 - title: Upload a file containing 2 identical ISSNs
   context:
