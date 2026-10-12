@@ -85,6 +85,34 @@ tests:
     results:
     - You are taken to page 3 as normal; there is no checkbox and nothing blocks you
 
+- title: Checkbox cannot be bypassed using the progress menu
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form, skip to page 2 (About) using the progress bar
+    path: /apply
+  - step: Fill in all the required fields on page 2, selecting Mexico or Indonesia in
+      "Publisher's country", and leave the pre-assessment checklist checkbox unchecked
+  - step: Instead of clicking Next, click on (3) in the application progress menu on
+      the right
+    results:
+    - The checklist error message is shown by the checkbox
+    - You are still taken to page 3, and page 2 is marked red in the progress menu
+  - step: Complete pages 3 to 6 and go to page 7 (Review your answers)
+    results:
+    - 'A red alert is shown saying that you cannot submit the application because it
+      contains some invalid fields'
+  - step: Check the consent box at the bottom of the page
+    results:
+    - The Submit button stays greyed out and cannot be clicked
+  - step: Click "Edit this section" for the About section, tick the pre-assessment checklist
+      checkbox, and click "Review your answers" in the progress menu
+    results:
+    - The invalid-fields alert is no longer shown
+  - step: Check the consent box
+    results:
+    - The Submit button becomes active and the application can be submitted
+
 - title: Checkbox resets when the country is changed
   context:
     role: publisher
@@ -118,6 +146,14 @@ tests:
     - Mexico is selected in "Publisher's country"
     - The pre-assessment checklist checkbox is already shown, unchecked, without having
       to change the country
+  - step: Tick the checkbox, then save the application as a draft again
+  - step: Re-open the draft from your publisher dashboard and go to page 2 (About)
+    results:
+    - The checkbox is shown but is unchecked again. This is expected - the tick is not
+      saved with the draft, so the applicant must confirm again before continuing.
+  - step: Click Next without ticking the checkbox
+    results:
+    - You are not taken to page 3 and the checklist error message is shown
 
 - title: Checkbox does not appear on the editorial application form
   context:
@@ -134,6 +170,21 @@ tests:
       to you
     results:
     - The checkbox never appears
+
+- title: Checkbox does not appear on the journal form
+  context:
+    role: admin
+  steps:
+  - step: Find a journal in DOAJ whose publisher's country is Mexico or Indonesia (or
+      set one on any journal), and open it for editing
+    results:
+    - No pre-assessment checklist checkbox appears below "Publisher's country"
+  - step: Change "Publisher's country" between Mexico, Indonesia and another country
+    results:
+    - The checkbox never appears, regardless of the country selected
+  - step: Click "SAVE"
+    results:
+    - The journal saves without being blocked by any checklist validation
 
 - title: Checkbox does not appear on the update request form
   context:
