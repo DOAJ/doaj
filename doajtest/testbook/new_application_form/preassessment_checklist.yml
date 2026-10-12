@@ -1,0 +1,171 @@
+# ~~ PreassessmentChecklist:FunctionalTest -> PreassessmentChecklist:FormWidget ~~
+suite: New Application Form
+testset: Pre-assessment Checklist
+tests:
+
+- title: Checkbox is only shown for Mexico and Indonesia
+  context:
+    role: publisher
+  setup:
+  - You need a publisher account that can start a new application (use a fresh account
+    or start a fresh draft)
+  steps:
+  - step: Go to the application form
+    path: /apply
+  - step: Complete page 1 (Open access compliance) and click Next, or skip to page 2 (About)
+      using the progress bar. Do not touch the "Publisher's country" field yet
+    results:
+    - No pre-assessment checklist checkbox is visible below "Publisher's country"
+  - step: In "Publisher's country", select any country other than Mexico or Indonesia
+      (e.g. France)
+    results:
+    - No checkbox appears
+  - step: Change "Publisher's country" to Mexico
+    results:
+    - 'A checkbox appears below the field reading: "I confirm that I have completed the
+      pre-assessment checklist"'
+    - The "pre-assessment checklist" link goes to the Spanish-language Google Form
+  - step: Change "Publisher's country" to Indonesia
+    results:
+    - The checkbox is shown with the same wording
+    - The "pre-assessment checklist" link now goes to the English-language Google Form
+  - step: Change "Publisher's country" back to a country that is not Mexico or Indonesia
+    results:
+    - The checkbox and its accompanying text disappear entirely
+
+- title: Checklist help text and links
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form, skip to page 2 (About) using the progress bar
+    path: /apply
+  - step: Select Mexico or Indonesia in "Publisher's country"
+    results:
+    - 'Below the checkbox there is an explanatory paragraph beginning "We are launching
+      a pre-assessment checklist..." and ending "...please see our blogpost"'
+    - 'Below that there are two separate lines: "For Mexican journals, please use the
+      Spanish version" and "For Indonesian journals, please use the English version"'
+    - The two lines use the same font size and spacing as the paragraph above them
+  - step: Click the "blogpost" link
+    results:
+    - The DOAJ blog announcement post (blog.doaj.org/2026/09/28/...) opens in a new tab
+  - step: Click the "Spanish version" link
+    results:
+    - The Mexico (Spanish-language) checklist Google Form opens in a new tab
+  - step: Click the "English version" link
+    results:
+    - The Indonesia (English-language) checklist Google Form opens in a new tab
+  - step: Click the "pre-assessment checklist" link in the checkbox label
+    results:
+    - The checklist for the selected country opens in a new tab
+
+- title: Checkbox is required to leave page 2
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form, skip to page 2 (About) using the progress bar
+    path: /apply
+  - step: Fill in all the required fields on page 2, selecting Mexico or Indonesia in
+      "Publisher's country"
+  - step: Leave the pre-assessment checklist checkbox unchecked and click Next
+    results:
+    - You are not taken to page 3
+    - 'A red error message with a warning icon appears by the checkbox: "You must confirm
+      you have completed the pre-assessment checklist before continuing"'
+    - The error looks the same as the other required-field errors on the page
+  - step: Tick the checkbox
+    results:
+    - The error message disappears
+  - step: Click Next
+    results:
+    - You are taken to page 3 (Copyright & licensing) as normal
+  - step: Click Back to return to page 2, then change "Publisher's country" to a country
+      that is not Mexico or Indonesia
+  - step: Click Next
+    results:
+    - You are taken to page 3 as normal; there is no checkbox and nothing blocks you
+
+- title: Checkbox resets when the country is changed
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form, skip to page 2 (About) using the progress bar
+    path: /apply
+  - step: Select Mexico in "Publisher's country" and tick the checkbox
+  - step: Change "Publisher's country" to Indonesia
+    results:
+    - The checkbox is shown again, unchecked (the tick for Mexico is not carried over)
+  - step: Tick the checkbox again, then change "Publisher's country" to a country that
+      is not Mexico or Indonesia
+    results:
+    - The checkbox disappears
+  - step: Change "Publisher's country" back to Mexico
+    results:
+    - The checkbox is shown again, unchecked
+
+- title: Checkbox is shown when returning to a saved draft
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form, skip to page 2 (About) using the progress bar
+    path: /apply
+  - step: Fill in the journal title, select Mexico in "Publisher's country" and leave
+      the checkbox unchecked
+  - step: Save the application as a draft
+  - step: Go to your publisher dashboard and re-open the draft application
+  - step: Go to page 2 (About)
+    results:
+    - Mexico is selected in "Publisher's country"
+    - The pre-assessment checklist checkbox is already shown, unchecked, without having
+      to change the country
+
+- title: Checkbox does not appear on the editorial application form
+  context:
+    role: admin
+  steps:
+  - step: Find an existing application whose publisher's country is Mexico or Indonesia
+      (or set one on any application), and open it for review/edit
+    results:
+    - No pre-assessment checklist checkbox appears below "Publisher's country"
+  - step: Change "Publisher's country" between Mexico, Indonesia and another country
+    results:
+    - The checkbox never appears, regardless of the country selected
+  - step: Repeat the above as an editor or associate editor on an application assigned
+      to you
+    results:
+    - The checkbox never appears
+
+- title: Checkbox does not appear on the update request form
+  context:
+    role: publisher
+  setup:
+  - You need a publisher account which owns a journal in DOAJ whose publisher's country
+    is Mexico or Indonesia
+  steps:
+  - step: Go to your publisher dashboard and start an update request for that journal
+  - step: Go to the "Publisher's country" field
+    results:
+    - No pre-assessment checklist checkbox appears, even though the country is Mexico
+      or Indonesia
+  - step: Change "Publisher's country" to the other of Mexico/Indonesia
+    results:
+    - The checkbox still does not appear
+
+- title: Checkbox state is not saved with the application
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form and complete and submit an application with Mexico
+      or Indonesia as "Publisher's country", ticking the pre-assessment checklist checkbox
+      when prompted
+    path: /apply
+    results:
+    - The application submits successfully and you are shown the confirmation page
+  - step: As an admin, open the submitted application (or inspect the Application record
+      in Elasticsearch)
+    results:
+    - There is no field anywhere in the application relating to the pre-assessment checklist
+      checkbox. This is expected - the checkbox is UI-only and is not stored.
+  - step: 'Note: the checkbox requirement is enforced in the browser only. Submitting via
+      the API, or bypassing the JavaScript validation, is not blocked by it. This is a known
+      and accepted limitation, not a bug.'
