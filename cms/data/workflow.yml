@@ -1,32 +1,4 @@
 triage:
-#  recommend:
-#  - action: "reject"
-#    conditions:
-#      - flag: "immediate_reject"
-#      - not_flag: "no_issn"
-#        flag: "website_name_mismatch"
-#      - flag: "no_issn"
-#        complete: true
-#      - flag: "reject_on_complete"
-#        complete: true
-#  - action: "maned"
-#    conditions:
-#    - flag: "indexed_continuation",
-#      complete: true
-#    - severity_value:
-#        gte: 3
-#        lt: 10
-#      complete: true
-#  - action: "normal"
-#    conditions:
-#    - severity_value:
-#        lt: 3
-#      complete: true
-#  - action: "integrity_ethics"
-#    conditions:
-#    - severity_value:
-#        gte: 10
-#      complete: true
   recommend:
   - action: "reject"
     conditions:
@@ -54,6 +26,7 @@ triage:
         gte: 3
         lt: 10
   - action: "normal"
+
   fields:
     ethics_not_excluded:
       label: "2. Current exclusions"
@@ -212,6 +185,7 @@ triage:
         homepage: "Journal's homepage"
       compliant_answers:
       - "compliant"
+      - "action"
       action_answers:
       - "action"
       non_compliant_answers:
@@ -270,6 +244,7 @@ triage:
           is_conditionally_required: "Add more detail about this record's ISSNs, or add more information on what changes to ISSN you are making and why (if applicable)"
       compliant_answers:
         - "compliant"
+        - "action"
       action_answers:
         - "action"
       non_compliant_answers:
@@ -294,10 +269,10 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, the country in the application <strong>does</strong> match the title at issn.portal.org"
         non_compliant: "<span class='answer'>Non-compliant</span>, the country in the application <strong>does not</strong> match the title at issn.portal.org"
         later: "I don't know - mark for later"
-        action: ""
-      action: # not currently used, should be removed
-        non_compliant:
-          instruction: "Provide more information about the publisher's country"
+#        action: ""
+#      action: # not currently used, should be removed
+#        non_compliant:
+#          instruction: "Provide more information about the publisher's country"
       remember: ""
       instructions: ''
       resources:
@@ -363,6 +338,7 @@ triage:
         alttitle: "Alternative title"
       compliant_answers:
         - "compliant"
+        - "action"
       action_answers:
         - "action"
       non_compliant_answers:
@@ -416,12 +392,13 @@ triage:
       compliant_answers:
         - "compliant"
       non_compliant_answers:
-        - ""
+        - "action"
       notes_required_answers:
         - "action"  # <- in this case only when no continuation ISSN is provided
       recommend:
       - conditions:
           answer: "action"
+          complete: true
         result:
           flag: "indexed_continuation"
 #      flag_answers:
@@ -468,22 +445,23 @@ triage:
       compliant_answers:
         - "compliant"
       non_compliant_answers:
-        - "non_compliant"
+        - "action"
       note_required_exceptions:
       - ignore_embargo
       - website_unavailable
       - journal_content
       recommend:
       - conditions:
-          answer: "non_compliant"
+          answer: "action"
           exceptions: false
         result:
           flag: "immediate_reject"
-#      recommend:
-#        non_compliant:
-#          conditions:
-#            exceptions: false
-#          result: "reject"
+      - conditions:
+          answer: "action"
+          exceptions:
+          - none
+        result:
+          flag: "immediate_reject"
 
     database_embargo:
       label: "13. Previous application rejection"
@@ -531,20 +509,20 @@ triage:
           disallowed_value: "You must select one of the valid options"
       compliant_answers:
         - "compliant"
-        - "conditional_compliant"
       non_compliant_answers:
-        - "conditional_non_compliant"
+        - "action"
       recommend:
       - conditions:
-          answer: "non_compliant"
+          answer: "action"
           exceptions: false
         result:
           flag: "immediate_reject"
-#      recommend:
-#        non_compliant:
-#          conditions:
-#            exceptions: false
-#          result: "reject"
+      - conditions:
+          answer: "action"
+          exceptions:
+          - none
+        result:
+          flag: "immediate_reject"
 
     database_not_listed:
       label: "14. Not indexed in DOAJ"
@@ -553,13 +531,13 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, this record <strong>is not</strong> listed in DOAJ"
         non_compliant: "<span class='answer'>Non-compliant</span>, this record <strong>is</strong> currently listed in DOAJ"
         later: "I don't know - mark for later"
-        action: ""
+#        action: ""
       info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+#      action:
+#        button: "non_compliant"
+#        instruction: "Instruction placeholder"
       remember: ""
       instructions: ''
       resources:
@@ -642,6 +620,7 @@ triage:
           is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
         - "compliant"
+        - "action"
       non_compliant_answers:
       - "non_compliant"
       action_answer:
@@ -661,14 +640,14 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, The correct ISSN <strong>is</strong> displayed on the website"
         non_compliant: "<span class='answer'>Non-compliant</span>, there is <strong>no issn</strong> displayed on the website"
         later: "I don't know - mark for later"
-        action: ""
+        # action: ""
       info:
         www: "Journal's homepage"
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+#      action:
+#        button: "non_compliant"
+#        instruction: "Instruction placeholder"
       remember: ""
       instructions: ""
       resources: ""
@@ -796,7 +775,7 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-        - "conditional"
+        - "action"
       recommend:
       - conditions:
           answer: "non_compliant"
@@ -845,7 +824,7 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-        - "conditional"
+        - "action"
       recommend:
       - conditions:
           answer: "non_compliant"
@@ -862,12 +841,12 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, login and registration <strong>are not</strong> required"
         non_compliant: "<span class='answer'>Non-compliant</span>, login and registration <strong>are</strong> required"
         later: "I don't know - mark for later"
-        action: ""
+        # action: ""
       info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+#      action:
+#        button: "non_compliant"
+#        instruction: "Instruction placeholder"
       remember: ""
       instructions: ''
       resources: ""
@@ -896,12 +875,12 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, all content is immediately and freely <strong>available</strong> in full text "
         non_compliant: "<span class='answer'>Non-compliant</span>, some content is <strong>hidden</strong> behind embargo or paywall"
         later: "I don't know - mark for later"
-        action: ""
+        #action: ""
       info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+#      action:
+#        button: "non_compliant"
+#        instruction: "Instruction placeholder"
       remember: "This criterion does <strong>not</strong> apply to journal content in <strong>print</strong> format"
       instructions: ""
       resources: ""
@@ -930,12 +909,12 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, the journal publishes <strong>at least five</strong> research articles per year"
         non_compliant: "<span class='answer'>Non-compliant</span>, the journal publishes <strong>less than five</strong> research articles per year"
         later: "I don't know - mark for later"
-        action: ""
+        #action: ""
       info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+#      action:
+#        button: "non_compliant"
+#        instruction: "Instruction placeholder"
       remember: ""
       validation:
         group:
@@ -964,12 +943,12 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, each article <strong>does have</strong> a unique link"
         non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>do not</strong> have unique links"
         later: "I don't know - mark for later"
-        action: ""
+        #action: ""
       info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+#      action:
+#        button: "non_compliant"
+#        instruction: "Instruction placeholder"
       remember: ""
       instructions: ''
       resources: ""
@@ -998,12 +977,12 @@ triage:
         compliant: "<span class='answer'>Compliant</span>, articles <strong>are</strong> available in HTML or PDF"
         non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>are not</strong> available in HTML or PDF"
         later: "I don't know - mark for later"
-        action: ""
+        #action: ""
       info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+#      action:
+#        button: "non_compliant"
+#        instruction: "Instruction placeholder"
       remember: ""
       instructions: ''
       resources: ""
@@ -1051,7 +1030,7 @@ triage:
       compliant_answers:
         - "compliant"
       non_compliant_answers:
-        - "non_compliant"
+        - "action"
       recommend:
       - conditions:
           answer: "non_compliant"
@@ -1115,3 +1094,8 @@ triage:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      recommend:
+        - conditions:
+            answer: "non_compliant"
+          result:
+            flag: "immediate_reject"

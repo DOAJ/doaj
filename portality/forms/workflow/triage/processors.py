@@ -207,6 +207,15 @@ class TriageFormProcessor:
                 match = True
             return match
 
+        def text_not_in_list_match(field, conditions, values):
+            match = False
+            if field in conditions:
+                if conditions[field] not in values:
+                    match = True
+            else:
+                match = True
+            return match
+
         def complete_match(conditions):
             match = False
             if "complete" in conditions:
@@ -223,6 +232,9 @@ class TriageFormProcessor:
                     match = True
                 elif conditions.exceptions is True and len(exceptions) > 0:
                     match = True
+                elif isinstance(conditions.exceptions, list):
+                    if any([e in conditions.exceptions for e in exceptions]):
+                        match = True
             else:
                 match = True
             return match
@@ -294,7 +306,7 @@ class TriageFormProcessor:
                     return priority.action, []
 
                 flag_match = text_in_list_match("flag", priority.conditions, flags)
-                not_match = text_in_list_match("not_flag", priority.conditions, flags)
+                not_match = text_not_in_list_match("not_flag", priority.conditions, flags)
                 sv_match = range_match("severity_value", priority.conditions, total_severity)
                 # flag_match = False
                 # if "flag" in priority.conditions:
