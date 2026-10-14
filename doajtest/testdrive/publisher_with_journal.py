@@ -46,6 +46,8 @@ class PublisherWithJournal(TestDrive):
         }
 
     def teardown(self, params) -> dict:
+        # remove articles the tester uploaded into the journal; must run before the journal is removed
+        models.Article.delete_selected(owner=params["account"]["username"], snapshot=False, tombstone=False)
         models.Account.remove_by_id(params["account"]["username"])
         for jid in params["journals"]:
             models.Journal.remove_by_id(jid)

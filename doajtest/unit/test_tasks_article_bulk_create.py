@@ -1,5 +1,6 @@
 from doajtest import helpers
 from doajtest.fixtures import article_doajxml
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from doajtest.unit_tester import article_upload_tester
 from portality.models import BulkArticles
@@ -38,3 +39,24 @@ class TestArticleBulkCreateBackgroundTask(DoajTestCase):
         ])
         bulk_articles = run_background_process_by_incoming_articles(acc_id, [{"invalid": "format"}])
         article_upload_tester.assert_failed(bulk_articles, expected_details=False)
+
+    def test_invalid_articles_reported_by_index(self):
+        acc_id = "testowner"
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
+        journal.set_owner(acc_id)
+        helpers.save_all_block_last([
+            journal,
+            article_upload_tester.create_simple_publisher(acc_id),
+        ])
+        articles = list(ArticleFixtureFactory.make_bulk_incoming_api_article(count=4))
+        del articles[1]["bibjson"]["title"]
+        del articles[2]["bibjson"]["title"]
+        for ident in articles[3]["bibjson"]["identifier"]:
+            if ident["type"] in ("pissn", "eissn"):
+                ident["id"] = "0000-0000" if ident["type"] == "pissn" else "1111-1111"
+        bulk_articles = run_background_process_by_incoming_articles(acc_id, articles)
+        article_upload_tester.assert_failed(bulk_articles, expected_details=False)
+        assert "index 0" not in bulk_articles.error
+        assert "Article at index 1: Field 'title' is required" in bulk_articles.error
+        assert "Article at index 2: Field 'title' is required" in bulk_articles.error
+        assert "Article at index 3: No journal found" in bulk_articles.error
