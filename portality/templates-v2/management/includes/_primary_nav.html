@@ -46,8 +46,7 @@
                     </span>
                 </a>
 
-                <ul class="dropdown__menu dropdown--notifications notifications"
-                    id="top_notifications"></ul>
+                <ul class="dropdown__menu dropdown--notifications notifications" id="top_notifications"></ul>
             </li>
 
             {% if (current_user.has_role("editor") or current_user.has_role("associate_editor"))
@@ -100,7 +99,30 @@
                         </li>
                     </ul>
                 </li>
-
+                <li class="dropdown" id="system_objects_nav" aria-labelledby="system_objects_nav-menu">
+                        <button
+                            type="button"
+                            class="dropdown__trigger label"
+                            id="system_objects_nav-menu"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                            <span data-feather="database" aria-hidden="true"></span>
+                             &nbsp;System Objects
+                        </button>
+                        <ul class="dropdown__menu notifications" id="system_objects_views">
+                            <li><a href="{{ url_for('admin.system_object_provenance') }}" class="dropdown__link">Provenance</a></li>
+                            <li><a href="{{ url_for('admin.system_object_file_uploads') }}" class="dropdown__link">File Uploads</a></li>
+                            <li><a href="{{ url_for('admin.system_object_bulk_uploads') }}" class="dropdown__link">Bulk Uploads</a></li>
+                            <li><a href="{{ url_for('admin.system_object_cache') }}" class="dropdown__link">Cache</a></li>
+                            <li><a href="{{ url_for('admin.system_object_locks') }}" class="dropdown__link">Locks</a></li>
+                            <li><a href="{{ url_for('admin.system_object_preservation') }}" class="dropdown__link">Preservation</a></li>
+                            <li><a href="{{ url_for('admin.system_object_article_tombstones') }}" class="dropdown__link">Article Tombstones</a></li>
+                            <li><a href="{{ url_for('admin.system_object_draft_applications') }}" class="dropdown__link">Draft Applications</a></li>
+                            <li><a href="{{ url_for('admin.system_object_harvester_state') }}" class="dropdown__link">Harvester State</a></li>
+                            <li><a href="{{ url_for('admin.system_object_autochecks') }}" class="dropdown__link">Autochecks</a></li>
+                        </ul>
+                    </li>
                 <li class="dropdown" id="quick_links_nav">
                     <button
                         type="button"

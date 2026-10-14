@@ -287,6 +287,7 @@ tests:
           - The error under the assignee input is cleared
           - The error under the deadline input is displayed
       - step: Click "Cancel"
+        results:
           - The flag inputs are hidden
       - step: Click "Save"
         results:
@@ -333,6 +334,7 @@ tests:
           - The error under the assignee input is cleared
           - The error under the deadline input is displayed
       - step: Click "Cancel"
+        results:
           - The flag inputs are hidden
       - step: Click "Save"
         results:
