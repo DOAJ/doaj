@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.3"
+DOAJ_VERSION = "8.7.4"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -356,6 +356,9 @@ ROLE_MAP = {
 # existing use in the system.
 SYSTEM_USERNAME = "system"
 RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
+
+# Roles assigned to all users when they are registered
+DEFAULT_REGISTER_ROLES = [constants.ROLE_PUBLISHER, constants.ROLE_API]
 
 # Role map to destination route on login (when no other destination page is present)
 # checked in order, if the user has the role in the first tuple position, they will
