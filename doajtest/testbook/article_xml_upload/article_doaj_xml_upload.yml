@@ -168,10 +168,18 @@ tests:
 - title: Upload a file where some articles are valid and some are not
   context:
     role: publisher
+    testdrive: publisher_with_journal
+  setup:
+    - Use the publisher_with_journal testdrive to set up for this test at /testdrive/publisher_with_journal. It creates
+      a publisher account owning a journal in DOAJ with Print ISSN "1111-1111" and E-ISSN "2222-2222"
+    - If you have run this testdrive before, use the 'teardown' link from that earlier run first, so that no other
+      journal has these ISSNs
+    - Keep the testdrive tab open (closing it removes the test data) and do the test in a separate tab
+    - At the end of the test please use the 'teardown' link provided by the testdrive to remove test assets from the system
   steps:
-  - step: Ensure that the publisher account owns a journal with Print ISSN "1111-1111"
-      and E-ISSN "2222-2222", and that ISSN "5555-5555" is not present in any journal in DOAJ.
+  - step: Log in as the publisher account specified by the testdrive result
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+    path: /publisher/uploadfile
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "mixed_valid_and_invalid.xml"
       from the DOAJ folder.  It contains one valid article and one article with the unknown ISSN "5555-5555"
