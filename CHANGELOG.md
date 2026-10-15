@@ -2,6 +2,13 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.5
+
+Static pages release
+Improvements to scheduled task to reduce conflicts
+Pre-assessment checklist for journals from certain countries
+https://github.com/DOAJ/doajPM/issues/4421
+
 ### 8.7.4
 
 Static pages release
