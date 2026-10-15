@@ -35,6 +35,46 @@ IN_DOAJ_TERM = {"term": {"admin.in_doaj": True}}
 TERMS_SEARCH = {"query": {"bool": {"must": [IN_DOAJ_TERM]}}}
 
 
+def reformat_au_as_aulast(au_value):
+    """
+    Best-effort reformat of an OpenURL ``au`` (free-text full author name) into the
+    "Given Surname" order DOAJ's own indexing uses (see
+    ``portality.crosswalks.article_crossref_xml.extract_authors``), so it can be
+    searched via the same ES field as ``aulast``.
+
+    Real-world requests we've seen in production use ``au`` non-standardly to hold
+    *multiple* authors in one value, semicolon-separated, each usually in
+    "Surname, Given" order (e.g. ``"Barich, Howard;Kotler, Philip"``) - the
+    opposite order to how we index names. Only the first author is used if
+    several are supplied: exact-match search on a full name is already fragile
+    (a missing middle initial, a diacritic, or different formatting from the
+    source citation will still silently fail to match), and OR-ing several
+    full-name guesses together would only make that harder to reason about, not
+    more accurate.
+
+    :param au_value: the raw au string, e.g. "Barich, Howard;Kotler, Philip"
+    :return: a best-effort "Given Surname" string, e.g. "Howard Barich", or the
+        first author's value unchanged if it doesn't look like "Surname, Given"
+        (no comma present)
+    """
+    first_author = au_value.split(";")[0].strip()
+    if "," in first_author:
+        surname, given = first_author.split(",", 1)
+        return (given.strip() + " " + surname.strip()).strip()
+    return first_author
+
+
+class UnsupportedOpenURLQuery(Exception):
+    """
+    Raised when an OpenURL request cannot be turned into a usable search query -
+    e.g. every field supplied is one the OpenURL schema allows but that DOAJ does
+    not support searching on (such as ``rft.chron``), or the genre supplied isn't
+    one DOAJ recognises. Callers (the view) should treat this as a bad request
+    (400), as distinct from a well-formed query that simply found no results.
+    """
+    pass
+
+
 class OpenURLRequest(object):
     """
     Based on the fields from ofi/fmt:kev:mtx:journal schema for Journals in OpenURL 1.0
@@ -60,52 +100,125 @@ class OpenURLRequest(object):
     def query_es(self):
         """
         Query Elasticsearch for a set of matches for this request.
-        :return: The results of a query through the dao, a JSON object.
+
+        Fields the OpenURL schema allows but that DOAJ has no ES mapping for
+        (e.g. ``au``, ``chron``, ``ssn`` ...), and a genre DOAJ doesn't recognise,
+        are logged and skipped rather than raising - unless skipping them leaves
+        no usable search term at all, in which case :class:`UnsupportedOpenURLQuery`
+        is raised so the caller can respond with a 400 rather than treating it as
+        a legitimate (if empty) search.
+
+        :return: The results of a query through the dao, a JSON object, or None
+            if no attributes were supplied on the request at all.
+        :raises UnsupportedOpenURLQuery: if the request had content, but none of
+            it could be mapped onto a search DOAJ supports.
         """
         # Copy to the template, which will be populated with terms
         populated_query = deepcopy(TERMS_SEARCH)
 
-        # Get all of the attributes with values set.
-        set_attributes = [(x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS[:-1] if getattr(self, x)]
+        # Get all of the attributes with values set. Guard against a schema key that
+        # somehow doesn't have a matching property (shouldn't happen given __init__,
+        # but defends against future schema drift rather than crashing on it).
+        set_attributes = []
+        for x in JOURNAL_SCHEMA_KEYS[:-1]:
+            try:
+                val = getattr(self, x)
+            except AttributeError as e:
+                app.logger.warning("OpenURL schema key '{x}' has no matching property, skipping: {e}".format(x=x, e=e))
+                continue
+            if val:
+                set_attributes.append((x, val))
 
         # If we don't have a genre, guess journal FIXME: is it correct to assume journal?
         if not self.genre:
             self.genre = SUPPORTED_GENRES[0]    # TODO: we may want to handle 404 instead
 
-        # Set i to use either our mapping for journals or articles
-        i = SUPPORTED_GENRES.index(getattr(self, 'genre').lower())
+        # Set i to use either our mapping for journals or articles. An unrecognised
+        # genre means we can't tell which half of OPENURL_TO_ES to use at all, so
+        # none of the supplied fields (even otherwise-valid ones) can be mapped.
+        unsupported_fields = []
+        try:
+            i = SUPPORTED_GENRES.index(str(self.genre).lower())
+        except (ValueError, AttributeError) as e:
+            app.logger.warning("OpenURL request supplied an unsupported genre '{x}': {e}".format(x=self.genre, e=e))
+            unsupported_fields.append(("genre", self.genre))
+            i = None
 
-        # Add the attributes to the query
-        for (k, v) in set_attributes:
-            es_term = OPENURL_TO_ES[k][i]
-            if es_term is None:
-                continue
-            else:
-                term = {"term": {es_term: v}}
-            populated_query["query"]["bool"]["must"].append(term)
+        # Add the attributes to the query, skipping (and logging) any field that
+        # the OpenURL schema allows but DOAJ can't map to a search term, instead
+        # of letting one bad field crash the whole request.
+        # NOTE: populated_query's "must" list always starts with IN_DOAJ_TERM, so
+        # we can't tell "no real search terms added" just from its length - track
+        # that separately.
+        terms_added = 0
+        if i is not None:
+            # so 'au' can defer to an explicit 'aulast' if both are given, rather
+            # than adding two, possibly conflicting, author terms
+            attr_keys = {x for (x, _) in set_attributes}
 
-        # avoid doing an empty query
-        if len(populated_query["query"]["bool"]["must"]) == 0:
+            for (k, v) in set_attributes:
+                lookup_key, term_value = k, v
+
+                # 'au' (free-text full author name) isn't in OPENURL_TO_ES - DOAJ
+                # only supports author search via 'aulast' (surname). Real-world
+                # requests use 'au' far more often than 'aulast', so rather than
+                # just dropping it, make a best-effort translation onto the same
+                # search 'aulast' already uses (see reformat_au_as_aulast).
+                if k == "au":
+                    if "aulast" in attr_keys:
+                        app.logger.debug("OpenURL 'au' field ignored in favour of explicit 'aulast'")
+                        continue
+                    lookup_key = "aulast"
+                    term_value = reformat_au_as_aulast(v)
+
+                try:
+                    es_term = OPENURL_TO_ES[lookup_key][i]
+                except (KeyError, IndexError, TypeError) as e:
+                    app.logger.warning("OpenURL field '{x}' is not supported by DOAJ, skipping: {e}".format(x=k, e=e))
+                    unsupported_fields.append((k, v))
+                    continue
+
+                if es_term is None:
+                    continue
+
+                term = {"term": {es_term: term_value}}
+                populated_query["query"]["bool"]["must"].append(term)
+                terms_added += 1
+
+        # avoid doing an empty (unconstrained beyond in_doaj) query
+        if terms_added == 0:
+            if unsupported_fields:
+                # the request had content, but none of it could be turned into a
+                # usable search - this is a bad request, not just "no results"
+                msg = "OpenURL request contained no fields DOAJ can search on (unsupported: {x})".format(
+                    x=", ".join(f for f, _ in unsupported_fields))
+                app.logger.warning(msg)
+                raise UnsupportedOpenURLQuery(msg)
+
             app.logger.debug("No valid search terms in OpenURL object")
             return None
 
+        try:
+            query_json = json.dumps(populated_query)
+        except TypeError as e:
+            query_json = "<unable to serialise query for logging: {e}>".format(e=e)
+
         # Return the results of the query
         if i == 0:
-            app.logger.debug("OpenURL query to journal: " + json.dumps(populated_query))
+            app.logger.debug("OpenURL query to journal: " + query_json)
             return Journal.query(q=populated_query)
         elif i == 1:
-            app.logger.debug("OpenURL query to article: " + json.dumps(populated_query))
+            app.logger.debug("OpenURL query to article: " + query_json)
             return Article.query(q=populated_query)
 
     def get_result_url(self):
         """
         Get the URL for this OpenURLRequest's referent.
         :return: The url as a string, or None if not found.
+        :raises UnsupportedOpenURLQuery: propagated from query_es() - the caller
+            (the view) should turn this into a 400 response.
         """
-        try:
-            results = self.query_es()
-        except ValueError:
-            return None
+        results = self.query_es()
 
         if results is None:
             return None
@@ -157,7 +270,11 @@ class OpenURLRequest(object):
                 iss_term = {"term": {"bibjson.journal.number.exact": self.issue}}
                 volume_query["query"]["bool"]["must"].append(iss_term)
 
-            app.logger.debug("OpenURL subsequent volume query to article: " + json.dumps(volume_query))
+            try:
+                query_json = json.dumps(volume_query)
+            except TypeError as e:
+                query_json = "<unable to serialise query for logging: {e}>".format(e=e)
+            app.logger.debug("OpenURL subsequent volume query to article: " + query_json)
             return Article.query(q=volume_query)
 
     def fallthrough_retry(self):
