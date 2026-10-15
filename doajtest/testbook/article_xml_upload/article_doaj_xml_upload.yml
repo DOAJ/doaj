@@ -346,6 +346,66 @@ tests:
 
 
 
+- title: Successfully upload a file containing an article with references
+  context:
+    role: publisher
+  setup:
+  - Ensure that the publisher account owns a journal with Print ISSN "1111-1111" and
+    E-ISSN "2222-2222", and these are not attached to any other journals
+  - You must be logged in using a pure publisher account (no other privileges)
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select the test resource file "with_references.xml"
+    resource: /xml_upload_test_package/DOAJ/with_references.xml
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating a successful upload
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "successfully processed",
+      and the Note "1 articles imported (1 new, 0 updated)"
+  - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222),
+      go to the Articles tab and open the article "References!"
+    path: /toc/2222-2222
+    results:
+    - A "References" section is shown on the article page, below the keywords
+    - The references are shown as a numbered list, in the same order as they appear
+      in the uploaded file, and all 4 references are present
+    - The DOI "10.1234/abc" in the first reference is a link to https://doi.org/10.1234/abc,
+      and it opens the DOI resolver in a new tab
+    - The URL "https://www.doaj.org/" in the second reference is a link, and it opens
+      in a new tab
+    - The third reference contains no links
+    - 'The fourth reference displays its markup as text, i.e. the text reads: Taylor,
+      C. (2023) A reference with <i>markup</i> in it. - no part of it is rendered
+      as italics'
+
+- title: Successfully upload a file with no references
+  context:
+    role: publisher
+  setup:
+  - You must be logged in using a pure publisher account (no other privileges)
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select the test resource file "successful.xml",
+      which contains no "references" element
+    resource: /xml_upload_test_package/DOAJ/successful.xml
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating a successful upload
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).
+    results:
+    - Your file is shown in the "History of uploads" with status "successfully processed"
+  - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222),
+      go to the Articles tab and open the article "Success!"
+    path: /toc/2222-2222
+    results:
+    - No "References" section or heading is shown anywhere on the article page
+
 - title: Check Outcome Status of "Successfully upload a file containing a new article"
   context:
     role: admin

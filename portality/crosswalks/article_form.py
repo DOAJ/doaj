@@ -49,6 +49,15 @@ class ArticleFormXWalk(object):
             ks = [k.strip() for k in keywords]
             bibjson.set_keywords(ks)
 
+        # references
+        references = form.references.data
+        if references is not None and len(references) > 0:
+            if isinstance(references, str):
+                references = references.splitlines()
+            rs = [r.strip() for r in references if r is not None and r.strip() != ""]
+            if len(rs) > 0:
+                bibjson.set_reference(rs)
+
         # fulltext
         ft = form.fulltext.data
         if ft is not None and ft != "":
@@ -129,6 +138,9 @@ class ArticleFormXWalk(object):
 
         if bibjson.keywords:
             form.keywords.data = bibjson.keywords
+
+        if bibjson.reference:
+            form.references.data = "\n".join(bibjson.reference)
 
         url = bibjson.get_single_url("fulltext")
         if url:
