@@ -43,7 +43,10 @@ from portality.forms.validate import (
     Year,
     CurrentISOCurrency,
     CurrentISOLanguage,
-    DateInThePast, StopValidationOnOtherValue
+    DateInThePast,
+    NotValue,
+    ForbiddenWord,
+    StopValidationOnOtherValue
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -585,6 +588,32 @@ class FieldDefinitions:
             },
             "bulk_edit": {
                 "validate": []
+            },
+            # ~~^-> PreassessmentChecklist:FormWidget~~
+            # Issue #4421: on the public new-application form only, when the
+            # publisher's country is Mexico or Indonesia, show a required
+            # "I confirm..." checkbox below the country field (UI-only - its state
+            # is never saved as part of the Application, so there's no
+            # corresponding real form field/data model change). Deliberately
+            # scoped to "public" only (not update_request/editor/admin/etc, which
+            # share this same field definition) - the checklist is about
+            # readiness to *submit* a new application, not for staff reviewing one
+            # or a publisher updating an existing DOAJ-listed journal.
+            # Country values below are ISO 3166 alpha-2 codes (see iso_country_list
+            # / portality.datasets.country_options), NOT the country names.
+            "public": {
+                "widgets": [
+                    {"select": {}},
+                    {"preassessment_checklist": {
+                        "countries": {
+                            # Spanish-language pre-assessment checklist (Google Form)
+                            "MX": {"checklist_url": "https://docs.google.com/forms/d/e/1FAIpQLSceng2wJmSC5NElurptCh2bweAVcwgRzaf5QK0TgPXnDS2Acg/viewform"},
+                            # English-language pre-assessment checklist (Google Form)
+                            "ID": {"checklist_url": "https://docs.google.com/forms/d/e/1FAIpQLSeIjmsXhlUL1GCsKHC5LZ_wc0LsDzlONzOQKpRrSSw5F4ZfBQ/viewform?usp=header"},
+                        },
+                        "blog_url": "https://blog.doaj.org/2026/09/28/using-our-new-pre-assessment-checklist-an-invitation-to-mexican-and-indonesian-journals/"
+                    }}
+                ]
             }
         }
     }
@@ -609,18 +638,34 @@ class FieldDefinitions:
             # ~~^-> Autocomplete:FormWidget~~
             "full_contents"  # ~~^->FullContents:FormWidget~~
         ],
+        "validate": [
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
+        ],
         "contexts": {
             "public": {
-                "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}]
-                # ~~^-> DifferetTo:FormValidator~~
-
+                "validate": [
+                    {"different_to": {"field": "publisher_name",
+                                      "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}},
+                    # ~~^-> DifferetTo:FormValidator~~
+                    {"not_value": {
+                        "value": "None",
+                        "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+                    }}  # ~~^-> NotValue:FormValidator~~
+                ]
             },
             "update_request": {
-                "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}}]
-                # ~~^-> DifferetTo:FormValidator~~
-
+                "validate": [
+                    {"different_to": {"field": "publisher_name",
+                                      "message": lazy_gettext("The Publisher's name and Other organisation's name cannot be the same.")}},
+                    # ~~^-> DifferetTo:FormValidator~~
+                    {"not_value": {
+                        "value": "None",
+                        "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+                    }}  # ~~^-> NotValue:FormValidator~~
+                ]
             },
             "admin": {
                 "widgets": [
@@ -893,9 +938,9 @@ class FieldDefinitions:
         "multiple": True,
         "options": [
             {"display": lazy_gettext("Editorial review"), "value": "Editorial review"},
-            {"display": lazy_gettext("Peer review"), "value": "Peer review"},
-            {"display": lazy_gettext("Anonymous peer review"), "value": "Anonymous peer review"},
+            {"display": lazy_gettext("Single anonymous peer review"), "value": "Single anonymous peer review"},
             {"display": lazy_gettext("Double anonymous peer review"), "value": "Double anonymous peer review"},
+            {"display": lazy_gettext("Triple anonymous peer review"), "value": "Triple anonymous peer review"},
             {"display": lazy_gettext("Post-publication peer review"), "value": "Post-publication peer review"},
             {"display": lazy_gettext("Open peer review"), "value": "Open peer review"},
             {"display": lazy_gettext("Other"), "value": "other", "subfields": ["review_process_other"]}
@@ -927,14 +972,18 @@ class FieldDefinitions:
                 "field": "review_process",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another type of peer review")
-            }
-            }
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }},  # ~~^-> NotValue:FormValidator~~
+            {"forbidden_word": {
+                "word": "blind",
+                "message": lazy_gettext("Please use the structured options above to indicate the type of peer review used.")
+            }}  # ~~^-> ForbiddenWord:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
         ]
     }
 
@@ -995,7 +1044,7 @@ class FieldDefinitions:
                           "services(s) used on your website.")],
         },
         "options": [
-            {"display": lazy_gettext("Yes"), "value": "y", "subfields": ["review_process_other"]},
+            {"display": lazy_gettext("Yes"), "value": "y"},
             {"display": lazy_gettext("No"), "value": "n"}
         ],
         "validate": [
@@ -1390,8 +1439,11 @@ class FieldDefinitions:
                 "field": "preservation_service",
                 "value": "national_library",
                 "message": lazy_gettext("Enter the name(s) of the national library or libraries where the journal is archived")
-            }
-            }
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -1413,11 +1465,11 @@ class FieldDefinitions:
                 "field": "preservation_service",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another archiving policy")
-            }
-            }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
@@ -1513,11 +1565,11 @@ class FieldDefinitions:
                 "field": "deposit_policy",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another repository policy")
-            }
-            }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
@@ -1622,11 +1674,11 @@ class FieldDefinitions:
                 "field": "persistent_identifiers",
                 "value": "other",
                 "message": lazy_gettext("Enter the name of another type of identifier")
-            }
-            }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
+            }},
+            {"not_value": {
+                "value": "None",
+                "message": lazy_gettext("'None' is not a valid answer for this question. Leave blank.")
+            }}  # ~~^-> NotValue:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
@@ -3297,6 +3349,36 @@ class CurrentISOLanguageBuilder:
         return CurrentISOLanguage(settings.get("message"))
 
 
+class NotValueBuilder:
+    # ~~->$ NotValue:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-not-value"] = settings.get("value", "")
+        if "message" in settings:
+            html_attrs["data-parsley-not-value-message"] = "<p><small>" + settings["message"] + "</small></p>"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return NotValue(settings.get("value"), settings.get("message"))
+
+
+class ForbiddenWordBuilder:
+    # ~~->$ ForbiddenWord:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        word = settings.get("word", "")
+        if word:
+            # Use Parsley's built-in pattern validator with a case-insensitive negative lookahead.
+            # The /i flag is picked up by Parsley's regexp parser via the /pattern/i literal format.
+            html_attrs["data-parsley-pattern"] = "/^(?!.*" + word + ").*$/i"
+        if "message" in settings and word:
+            html_attrs["data-parsley-pattern-message"] = "<p><small>" + settings["message"] + "</small></p>"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return ForbiddenWord(settings.get("word"), settings.get("message"))
+
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -3340,6 +3422,8 @@ PYTHON_FUNCTIONS = {
             "no_script_tag": NoScriptTagBuilder.render,
             "year": YearBuilder.render,
             "date_in_the_past": DateInThePastBuilder.render,
+            "not_value": NotValueBuilder.render,
+            "forbidden_word": ForbiddenWordBuilder.render,
             "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.render,
         },
         "wtforms": {
@@ -3369,6 +3453,8 @@ PYTHON_FUNCTIONS = {
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
             "current_iso_language": CurrentISOLanguageBuilder.wtforms,
             "date_in_the_past": DateInThePastBuilder.wtforms,
+            "not_value": NotValueBuilder.wtforms,
+            "forbidden_word": ForbiddenWordBuilder.wtforms,
             "stop_validation_on_other_value": StopValidationOnOtherValueBuilder.wtforms
         }
     }
@@ -3393,7 +3479,8 @@ JAVASCRIPT_FUNCTIONS = {
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
-    "date_picker": "formulaic.widgets.newDatePicker"  # ~~-> DatePicker:FormWidget~~
+    "date_picker": "formulaic.widgets.newDatePicker",  # ~~-> DatePicker:FormWidget~~
+    "preassessment_checklist": "formulaic.widgets.newPreassessmentChecklist"  # ~~-> PreassessmentChecklist:FormWidget~~
 
 }
 
@@ -3466,6 +3553,51 @@ class ListWidgetWithSubfields(object):
         return HTMLString(''.join(html))
 
 
+class RepeatableFieldListWidget(object):
+    """
+    Renders a repeatable single-value field (FieldList of e.g. StringField,
+    DateField, TextAreaField or SelectField) as a `ul` list.
+
+    WTForms' stock ListWidget (the default widget for FieldList) only ever
+    applies the HTML attributes it's called with to the wrapping `<ul>`, not
+    to the individual subfields it renders - so attributes generated from a
+    field's `validate` config (e.g. `data-parsley-not-value`,
+    `data-parsley-required-if`) never reached the actual `<input>` elements,
+    and Parsley silently skipped validating them. This widget applies those
+    same attributes to each subfield too, while leaving the `<ul>` itself
+    unchanged, and without clobbering each subfield's own unique id/name.
+
+    Only the first entry represents the field's "at least one" requirement;
+    every later entry is an optional extra the user may leave blank (see
+    formulaic.js, which already strips the plain `required` attribute from
+    entries after the first for this exact reason). So a `required_if` rule
+    is applied to the first entry only - carrying it over to the later,
+    usually-empty-and-hidden entries would make Parsley block navigation
+    over a field the user was never asked to fill in.
+    """
+
+    def __init__(self, html_tag='ul', prefix_label=True):
+        assert html_tag in ('ol', 'ul')
+        self.html_tag = html_tag
+        self.prefix_label = prefix_label
+
+    def __call__(self, field, **kwargs):
+        kwargs.pop("formulaic", None)
+        container_attrs = dict(kwargs)
+        container_attrs.setdefault('id', field.id)
+        later_entry_kwargs = {k: v for k, v in kwargs.items() if not k.startswith("data-parsley-required-if")}
+
+        html = ['<%s %s>' % (self.html_tag, html_params(**container_attrs))]
+        for idx, subfield in enumerate(field):
+            subfield_kwargs = kwargs if idx == 0 else later_entry_kwargs
+            if self.prefix_label:
+                html.append('<li>%s %s</li>' % (subfield.label, subfield(**subfield_kwargs)))
+            else:
+                html.append('<li>%s %s</li>' % (subfield(**subfield_kwargs), subfield.label))
+        html.append('</%s>' % self.html_tag)
+        return HTMLString(''.join(html))
+
+
 ##########################################################
 # Mapping from configurations to WTForms builders
 ##########################################################
@@ -3517,7 +3649,8 @@ class SelectBuilder(WTFormsBuilder):
             wtfargs['label'] = field["repeatable"]["label"]
         sf = SelectField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
 
         return sf
 
@@ -3543,7 +3676,8 @@ class TextBuilder(WTFormsBuilder):
             wtfargs["filters"] = (lambda x: x.strip() if x is not None else x,)
         sf = StringField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
         return sf
 
 class DateBuilder(WTFormsBuilder):
@@ -3556,7 +3690,8 @@ class DateBuilder(WTFormsBuilder):
         wtfargs["widget"] = widgets.Input(input_type="date")
         sf = DateField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
         return sf
 
 class TextAreaBuilder(WTFormsBuilder):
@@ -3568,7 +3703,8 @@ class TextAreaBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         sf = TextAreaField(**wtfargs)
         if "repeatable" in field:
-            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1),
+                            widget=RepeatableFieldListWidget())
         return sf
 
 

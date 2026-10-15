@@ -34,7 +34,8 @@ def test_disable_edit_note_except_editing_user(user_id, expected_result):
     formulaic_context = JournalFormFactory.context("associate_editor", extra_param={
         EXPARAM_EDITING_USER: Account(id=user_id),
     })
-    formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+    journal = JournalFixtureFactory.make_legacy_journal_object()
+    formulaic_context.processor(source=journal)
     note_field: FormulaicField = formulaic_context.fieldset('notes').fields()[0].group_subfields()[0]
     note_field.wtfinst = next(formulaic_context.fieldset('notes').fields()[0].wtfield[0].__iter__(), None)
     assert disable_edit_note_except_editing_user(note_field, formulaic_context) == expected_result

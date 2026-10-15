@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.12"
+DOAJ_VERSION = "8.7.5"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -357,6 +357,9 @@ ROLE_MAP = {
 SYSTEM_USERNAME = "system"
 RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
+# Roles assigned to all users when they are registered
+DEFAULT_REGISTER_ROLES = [constants.ROLE_PUBLISHER, constants.ROLE_API]
+
 # Role map to destination route on login (when no other destination page is present)
 # checked in order, if the user has the role in the first tuple position, they will
 # be redirected to the endpoint in the second tuple position
@@ -460,28 +463,36 @@ CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minut
 
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
-    "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
-    "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
+    # Hourly
     "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
-    "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
+    "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
+
+    # Daily
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
+    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
+    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
+    "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
-    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
-    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
-    "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
-    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
+
+    # Every N days of the month
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
-    "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
-    "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
-    # Weekly notification to publishers about deleted articles (Article Tombstones)
+    "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+
+    # Weekly (Monday)
+    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
     "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
-    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
+
+    # Monthly
+    "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
+    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "2", "minute": "0"},
+    "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
 }
 
 
@@ -529,6 +540,7 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.ur_review_route.URReviewRoute", # ~~-> URReviewRoute:Model~~
     "portality.models.admin_alert.AdminAlert", # ~~-> AdminAlert:Model~~
     "portality.models.ris_export.RISExport",
+    "portality.models.note.Note"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -907,6 +919,76 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.RISExport",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        # ~~->SystemObjectProvenanceQuery:Endpoint~~
+        "provenance": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Provenance",  # ~~->Provenance:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectFileUploadQuery:Endpoint~~
+        "upload": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.FileUpload",  # ~~->FileUpload:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectBulkUploadQuery:Endpoint~~
+        "bulk_articles": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.BulkArticles",  # ~~->BulkArticles:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectCacheQuery:Endpoint~~
+        "cache": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Cache",  # ~~->Cache:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectLockQuery:Endpoint~~
+        "lock": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Lock",  # ~~->Lock:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectPreservationQuery:Endpoint~~
+        "preserve": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.PreservationState",  # ~~->PreservationState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectArticleTombstoneQuery:Endpoint~~
+        "article_tombstone": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.ArticleTombstone",  # ~~->ArticleTombstone:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectDraftApplicationQuery:Endpoint~~
+        "draft_application": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.DraftApplication",  # ~~->DraftApplication:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectHarvesterStateQuery:Endpoint~~
+        "harvester_state": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.HarvestState",  # ~~->HarvestState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectAutocheckQuery:Endpoint~~
+        "autocheck": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Autocheck",  # ~~->Autocheck:Model~~
+            "tolerate_missing_mapping": True
         }
     },
     "associate_query": {
@@ -1019,9 +1101,13 @@ QUERY_FILTERS = {
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
 PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
+    # old protections for notes
+    # TODO: these MUST remain in place for the duration of deployment, they can be removed post migration
     "admin.notes.note",
     "admin.notes.id",
-    "admin.notes.author_id"
+    "admin.notes.author_id",
+    # New protections for notes
+    "admin.index.notes"
 ]
 
 ADMIN_NOTES_INDEX_ONLY_FIELDS = {
@@ -1036,8 +1122,12 @@ ADMIN_NOTES_INDEX_ONLY_FIELDS = {
     }
 }
 
+# These mappings prevent the notes and flags from being indexed in all_meta (the default for text fields)
 ADMIN_NOTES_SEARCH_MAPPING = {
-    "admin.notes.id": {
+    "admin.index.notes": {
+        "type": "text"
+    },
+    "admin.flag.note_id": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1046,16 +1136,7 @@ ADMIN_NOTES_SEARCH_MAPPING = {
             }
         }
     },
-    "admin.notes.note": {
-        "type": "text",
-        "fields": {
-            "exact": {
-                "type": "keyword",
-                "store": True
-            }
-        }
-    },
-    "admin.notes.author_id": {
+    "admin.flag.assigned_to": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1534,8 +1615,11 @@ BG_MONITOR_DEFAULT_CONFIG = {
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
     'anon_export': {
-        'check_sec': _WEEK,    # a week
-        'allowed_num_err': 0
+        # anon_export only runs monthly, so a raw count of errors within a rolling window
+        # can't distinguish "still failing" from "failed a few times then succeeded" - disable
+        # this check and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['anon_export'] instead,
+        # which only cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'article_bulk_create': {
         'check_sec': _DAY,  # 1 day
@@ -1839,3 +1923,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False

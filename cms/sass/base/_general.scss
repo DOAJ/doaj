@@ -333,3 +333,13 @@ fieldset {
   height: 1em;
   width: auto;
 }
+
+.focus-overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba($dark-grey, 0.7);
+  z-index: 999;
+  top: 0;
+  left: 0;
+}

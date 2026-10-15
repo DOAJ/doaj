@@ -200,9 +200,8 @@ class TestModels(DoajTestCase):
         assert ons[0]["note"] == "another note"
 
         # now construct from a fixture
-        source = JournalFixtureFactory.make_journal_source()
         try:
-            j = models.Journal(**source)
+            j = JournalFixtureFactory.make_legacy_journal_object()
         except seamless.SeamlessException as e:
             raise Exception(e.message)
         assert j is not None
@@ -233,7 +232,7 @@ class TestModels(DoajTestCase):
         EISSN = "1234-5678"
         PISSN = "9876-5432"
 
-        wsource = JournalFixtureFactory.make_journal_source(in_doaj=False, overlay={
+        older = JournalFixtureFactory.make_legacy_journal_object(in_doaj=False, overlay={
             "last_updated": "2002-01-01T00:00:00Z",
             "admin": {
                 "owner": "test"
@@ -244,11 +243,10 @@ class TestModels(DoajTestCase):
                 "eissn": EISSN
             }
         })
-        older = Journal(**wsource)
         older.set_id(older.makeid())
         older.save(blocking=True)
 
-        wsource = JournalFixtureFactory.make_journal_source(in_doaj=False, overlay={
+        newer = JournalFixtureFactory.make_legacy_journal_object(in_doaj=False, overlay={
             "last_updated": "2022-01-01T00:00:00Z",
             "admin": {
                 "owner": "test"
@@ -259,7 +257,6 @@ class TestModels(DoajTestCase):
                 "eissn": EISSN
             }
         })
-        newer = Journal(**wsource)
         nid = newer.makeid()
         newer.set_id(nid)
         newer.save(blocking=True)
@@ -269,7 +266,7 @@ class TestModels(DoajTestCase):
 
         assert article.get_journal().id == nid
 
-        isource = JournalFixtureFactory.make_journal_source(in_doaj=True, overlay={
+        in_doaj = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={
             "last_updated": "2020-01-01T00:00:00Z",
             "admin": {
                 "owner": "test"
@@ -280,11 +277,11 @@ class TestModels(DoajTestCase):
                 "eissn": EISSN
             }
         })
-        in_doaj = Journal(**isource)
+
         in_doaj.set_id(in_doaj.makeid())
         in_doaj.save(blocking=True)
 
-        isource = JournalFixtureFactory.make_journal_source(in_doaj=True, overlay={
+        in_doaj = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={
             "last_updated": "2021-01-01T00:00:00Z",
             "admin": {
                 "owner": "test"
@@ -295,7 +292,7 @@ class TestModels(DoajTestCase):
                 "eissn": EISSN
             }
         })
-        in_doaj = Journal(**isource)
+
         idid = in_doaj.makeid()
         in_doaj.set_id(idid)
         in_doaj.save(blocking=True)
@@ -430,13 +427,13 @@ class TestModels(DoajTestCase):
 
     def test_05_sync_owners(self):
         # suggestion with no current_journal
-        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        s = ApplicationFixtureFactory.make_legacy_application_object()
         s.save(blocking=True)
         s = models.Suggestion.pull(s.id)
         assert s is not None
 
         # journal with no current_application
-        j = models.Journal(**JournalFixtureFactory.make_journal_source())
+        j = JournalFixtureFactory.make_legacy_journal_object()
         j.save(blocking=True)
         j = models.Journal.pull(j.id)
         assert j is not None
@@ -598,13 +595,15 @@ class TestModels(DoajTestCase):
     def test_09_account(self):
         # Make a new account
         acc = models.Account.make_account(email='user@example.com', username='mrs_user',
-                                          roles=['api', 'associate_editor'])
+                                          roles=['api', 'associate_editor'],
+                                          attributes={constants.USER_ATTR__WORKFLOW: ["triage"]})
 
         # Check the new user has the right roles
         assert acc.has_role('api')
         assert acc.has_role('associate_editor')
         assert not acc.has_role('admin')
         assert acc.marketing_consent is None
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "triage")
 
         # check the api key has been generated
         assert acc.api_key is not None
@@ -636,6 +635,58 @@ class TestModels(DoajTestCase):
         acc2.generate_api_key()
         acc2.save()
         assert acc2.api_key is not None
+
+    def test_09a_account_attributes(self):
+        acc = models.Account.make_account(email='user@example.com', username='mrs_user',
+                                          roles=['api', 'associate_editor'],
+                                          attributes={constants.USER_ATTR__WORKFLOW: ["triage"]})
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "triage")
+
+        acc.add_attribute(constants.USER_ATTR__WORKFLOW, "quality")
+        acc.add_attribute(constants.USER_ATTR__LANGUAGE, "FR")
+        acc.add_attribute(constants.USER_ATTR__LANGUAGE, "EN")
+        acc.add_attribute(constants.USER_ATTR__COUNTRY, "DE")
+        acc.add_attribute(constants.USER_ATTR__COUNTRY, "ES")
+        acc.add_attribute(constants.USER_ATTR__TAG, "test")
+
+        raw = acc.attributes
+        assert raw.get(constants.USER_ATTR__WORKFLOW) == ["triage", "quality"]
+        assert raw.get(constants.USER_ATTR__LANGUAGE) == ["FR", "EN"]
+        assert raw.get(constants.USER_ATTR__COUNTRY) == ["DE", "ES"]
+        assert raw.get(constants.USER_ATTR__TAG) == ["test"]
+
+        assert acc.attribute_workflow == ["triage", "quality"]
+        assert acc.attribute_language == ["FR", "EN"]
+        assert acc.attribute_country == ["DE", "ES"]
+        assert acc.attribute_tag == ["test"]
+
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "triage")
+        assert acc.has_attribute(constants.USER_ATTR__WORKFLOW, "quality")
+        assert acc.has_attribute(constants.USER_ATTR__LANGUAGE, "FR")
+        assert acc.has_attribute(constants.USER_ATTR__LANGUAGE, "EN")
+        assert acc.has_attribute(constants.USER_ATTR__COUNTRY, "DE")
+        assert acc.has_attribute(constants.USER_ATTR__COUNTRY, "ES")
+        assert acc.has_attribute(constants.USER_ATTR__TAG, "test")
+
+        assert acc.get_attributes(constants.USER_ATTR__WORKFLOW) == ["triage", "quality"]
+        assert acc.get_attributes(constants.USER_ATTR__LANGUAGE) == ["FR", "EN"]
+        assert acc.get_attributes(constants.USER_ATTR__COUNTRY) == ["DE", "ES"]
+        assert acc.get_attributes(constants.USER_ATTR__TAG) == ["test"]
+
+        del acc.attributes
+        raw = acc.attributes
+        assert raw is None
+
+        # try some error cases
+        with self.assertRaises(ValueError):
+            acc.add_attribute("whatever", "something")
+
+        with self.assertRaises(ValueError):
+            acc.has_attribute("whatever", "something")
+
+        with self.assertRaises(ValueError):
+            acc.get_attributes("whatever")
+
 
     def test_10_block(self):
         a = models.Article()
@@ -1465,7 +1516,7 @@ class TestModels(DoajTestCase):
 
 
     def test_27_article_journal_sync(self):
-        j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=False, with_journal_info=False))
 
         assert a.bibjson().journal_issns != j.bibjson().issns()
@@ -1621,8 +1672,7 @@ class TestModels(DoajTestCase):
 
             # Attach a few applications and journals, some in doaj and some not
             for j in range(4):
-                jsource = JournalFixtureFactory.make_journal_source(in_doaj=bool(j % 2))
-                a = models.Journal(**jsource)
+                a = JournalFixtureFactory.make_legacy_journal_object(in_doaj=bool(j % 2))
                 a.set_id()
                 a.set_owner(pubaccount.id)
                 a.save()

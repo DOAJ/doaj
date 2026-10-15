@@ -88,6 +88,7 @@ tests:
     - You are taken to the new user form
     - The "api" role and "publisher" role are pre-filled in the Roles field.
     - The ID box is prefilled with an alphanumeric value
+    - There are no user attributes options available in the form
   - step: Click in the "Roles" field
     results:
     - A pull-down menu appears with all the allowed roles
@@ -95,14 +96,13 @@ tests:
     results:
     - It is editable
     - Change the ID to something memorable
-  - step: Enter test values into each field in the form
-  - step: Click "Create User"
+  - step: Enter test values into each remaining field in the form
+  - step: Click "Register"
     results:
     - You are taken back to the /account
-    - You see a message  Debug mode - url for verify is /account/reset/f1b6b123b5f34cd0aa81807a90a096f2
-    - /account/reset/f1b6b123b5f34cd0aa81807a90a096f2 is a link and is clickable DO
-      NOT CLICK IT YET
-    - 'You see a message '' Account created for dom+test5@doaj.org. View Account:
+    - You see a message like "Debug mode - url for verify is ..."
+    - The verify URL in the message is a link and is clickable DO NOT CLICK IT YET
+    - 'You see a message '' Account created for [some email address]. View Account:
       /account/testingID'''
     - /account/testingID is a link and is clickable DO NOT CLICK IT YET
     - The ID (/testerID in the example above) matches the ID you chose on line 11
@@ -145,9 +145,26 @@ tests:
     - Your account page is shown
     - Your ID and email address are displayed
     - You can see your user roles but you cannot edit them
+    - You do not have any user attribute fields available to you
   - include:
       fragment: edit_account
-  
+
+- title: Edit your own user account (editor / associate editor)
+  context:
+    role: editor
+  setup:
+  - create an editor account with some attributes set
+  steps:
+  - step: Log in to your editor account
+  - step: Go to Settings under My Account
+    results:
+    - Your account page is shown
+    - Your ID and email address are displayed
+    - You can see your user roles but you cannot edit them
+    - You can see your user attributes but you cannot edit them
+  - include:
+      fragment: edit_account
+
 - title: Edit your own user account (admin)
   context:
     role: admin
@@ -157,6 +174,12 @@ tests:
     results:
     - Your account page is shown
     - Your ID and email address are displayed
+    - You can see your user roles and you can edit them
+    - You can see your user attributes and you can edit them
+  - step: Add one or more workflow attributes
+  - step: Add one or more language attributes
+  - step: Add one or more country attributes
+  - step: Add one or more free text tag attributes
   - include:
       fragment: edit_account
   - step: Log back in to your admin account and go to Settings
@@ -180,6 +203,10 @@ tests:
     - The user's account page is displayed
     - A warning alerts you 'NOTE you are editing a user account that is not your own.
       Be careful!'
+  - step: Add one or more workflow attributes
+  - step: Add one or more language attributes
+  - step: Add one or more country attributes
+  - step: Add one or more free text tag attributes
   - include:
       fragment: edit_account
   - include:
@@ -192,6 +219,7 @@ tests:
   - step: Put the username of the account you deleted into the search box
     results:
     - There are no results to display
+
 - title: User account with journals/applications
   context:
     role: admin

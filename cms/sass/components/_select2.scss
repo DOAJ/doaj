@@ -76,6 +76,12 @@ $s2-size:  20px;
       }
     }
 
+    .select2-search-choice-focus {
+      .select2-search-choice-close {
+        background-position: 0;
+      }
+    }
+
     .select2-chosen {
       padding-bottom: $s2-space;
 
@@ -105,12 +111,15 @@ $s2-size:  20px;
 }
 
 .select2-results {
-  .select2-highlighted,
   .select2-no-results,
   .select2-searching,
   .select2-ajax-error,
   .select2-selection-limit {
     background: $white;
+    color: $warm-black;
+  }
+  .select2-highlighted {
+    background: $light-grey;
     color: $warm-black;
   }
 }

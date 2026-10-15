@@ -4,6 +4,7 @@ import hashlib
 import logging
 import os
 import shutil
+import warnings
 from contextlib import contextmanager
 import time
 from glob import glob
@@ -197,6 +198,7 @@ class DoajTestCase(TestCase):
             'HUEY_IMMEDIATE': True,
             'HUEY_ASYNC_DELAY': 0,
             "SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE": False,
+            "SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS": False,
             'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1'],
             'PREMIUM_MODE': False
         }
@@ -205,7 +207,23 @@ class DoajTestCase(TestCase):
     def setUpClass(cls) -> None:
         import portality.app  # noqa, needed to registing routes
 
-        cls.originals = patch_config(app, cls.create_app_patch())
+        patch = cls.create_app_patch()
+        cls.originals = patch_config(app, patch)
+
+        # JournalLikeObject reads these from app.config once at import time, so patching
+        # app.config here has no effect on them - a mismatch means the value actually needed
+        # for CI/tests must be set directly in test.cfg (or dev.cfg for local runs) instead.
+        for key, actual in (
+                ("SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE", models.JournalLikeObject.__SEAMLESS_SILENT_PRUNE__),
+                ("SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS", models.JournalLikeObject.__SEAMLESS_ALLOW_OTHER_FIELDS__),
+        ):
+            if key in patch and patch[key] != actual:
+                warnings.warn(
+                    f"{key} is patched to {patch[key]!r} in create_app_patch(), but "
+                    f"JournalLikeObject already read {actual!r} from app.config at import time "
+                    f"and won't see this change. Set {key}={patch[key]!r} directly in test.cfg "
+                    f"(or dev.cfg for local runs) instead."
+                )
 
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
@@ -566,5 +584,7 @@ def save_all_block_last(model_list):
     for model in model_list:
         model.save()
     last.save(blocking=True)
+
+    time.sleep(0.5)
 
     return model_list
