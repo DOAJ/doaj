@@ -1,0 +1,399 @@
+import json
+
+from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response, flash
+from flask_login import login_required, current_user
+
+from portality import models, constants
+from portality.bll import DOAJ
+from portality.bll.exceptions import AuthoriseException
+from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail, Assign, Reassign
+from portality.bll.services.workflow.rejected import Rejected
+from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
+    TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview, Triaged
+from portality.decorators import ssl_required, write_required, restrict_to_role
+from portality.forms.workflow.notes import StandAloneNotesProcessor
+from portality.forms.workflow.submission.processors import OriginalROFormProcessor
+from portality.forms.workflow.triage.processors import TriageFormProcessor, TriageROFormProcessor
+from portality.lib import dicts
+from portality.ui import templates
+from portality.ui.workflow import StateUIFactory
+
+blueprint = Blueprint('workflow', __name__)
+
+# restrict everything in workflow to logged in users with the "admin" role
+@blueprint.before_request
+def restrict():
+    return restrict_to_role(constants.ROLE_ADMIN)
+
+@blueprint.route('/')
+@login_required
+@ssl_required
+def index():
+    svc = DOAJ.workflowService()
+    awaiting_triage = [StateUIFactory.get(x) for x in svc.first_n_in_state(AwaitingTriage, 10)]
+    triage_in_progress = [StateUIFactory.get(x) for x in svc.first_n_in_state(TriageAssessmentInProgress, 10)]
+    triage_minimal_review = [StateUIFactory.get(x) for x in svc.first_n_in_state(TriageAssessmentMinimalReview, 10)]
+    rejected = [StateUIFactory.get(x) for x in svc.first_n_in_state(Rejected, 10)]
+    return render_template(templates.ADMIN_WORKFLOW_OVERVIEW,
+                           awaiting_triage=awaiting_triage,
+                           triage_in_progress=triage_in_progress,
+                           triage_minimal_review=triage_minimal_review,
+                           rejected=rejected,
+                           admin_page=True)
+
+@blueprint.route('/search', methods=['GET'])
+@login_required
+@ssl_required
+def workflow_search():
+    return render_template(templates.WORKFLOW_SEARCH)
+
+@blueprint.route('/overview/<application_id>', methods=['GET'])
+@login_required
+@ssl_required
+@write_required()
+def workflow_item_overview(application_id):
+    application = models.Application.pull(application_id)
+    if application is None:
+        abort(404)
+
+    # NOTE: this hack lets us `pull` the worfklow control object, avoiding any re-indexing
+    # latency when redirecting to this page after a save
+    wfc_id = request.values.get("wfc")
+    if wfc_id is not None:
+        wfc = models.WorkflowControl.pull(wfc_id)
+        if wfc.application_id != application_id:
+            abort(400)
+    else:
+        wfc = models.WorkflowControl.find_by_application(application_id)
+    if wfc is None:
+        abort(404)
+
+    svc = DOAJ.workflowService()
+    state = svc.state_for_application(application_id)
+    ui = StateUIFactory.get(state)
+
+    # generate the read-only view of the original application
+    original = wfc.original_application
+    original_processor = OriginalROFormProcessor(source_application=original, source_wfc=wfc)
+    original_ro = original_processor.render_form()
+
+    # generate the read-only view of the triage form
+    processor = TriageROFormProcessor(source_application=application, source_wfc=wfc)
+    rec = processor.recommendation(wfc)
+    ro_form = processor.render_form()
+
+    # generate the notes form
+    notes_processor = StandAloneNotesProcessor(source_application=application)
+    notes_form = notes_processor.render_form()
+
+    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec, original_ro=original_ro, ro_form=ro_form, notes_form=notes_form)
+
+@blueprint.route("/note", methods=["POST"])
+@blueprint.route("/note/<note_id>", methods=["POST", "DELETE"])
+@login_required
+@ssl_required
+@write_required()
+def note(note_id=None):
+    resource_type = request.values.get("resource_type")
+    resource_id = request.values.get("resource_id")
+    note_text = request.values.get("note_text")
+
+    if not resource_type or not resource_id:
+        abort(400)
+
+    resource = None
+    if resource_type == models.Application.__type__:
+        resource = models.Application.pull(resource_id)
+    else:
+        abort(400)
+
+    if resource is None:
+        abort(404)
+
+    if request.method == "DELETE":
+        if not note_id:
+            abort(400)
+
+        note_obj = next((n for n in resource.note_objects if n.id == note_id), None)
+        if note_obj is None:
+            abort(404)
+
+        resource.remove_note_by_id(note_id)
+        resource.save()
+
+        data = {
+            "id": note_id,
+            "resource_type": resource_type,
+            "resource_id": resource_id,
+            "status": "deleted"
+        }
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+
+    else:
+        if not note_text:
+            abort(400)
+
+        if note_id is not None:
+            note_obj = next((n for n in resource.note_objects if n.id == note_id), None)
+            if note_obj is None:
+                abort(404)
+
+            resource.add_note(note=note_text, id=note_id, author_id=current_user.id)  # Update the note text and author
+
+            # not doing it this way, as we want to make sure the resource knows the note
+            # has been updated
+            # note_obj.note = note_text
+            # note_obj.author_id = current_user.id
+        else:
+            note_obj = resource.add_note(note=note_text, author_id=current_user.id)
+
+        resource.save()
+
+        # FIXME: not ideal to call internal method
+        data = resource._note_to_legacy_dict(note_obj)
+        data["last_updated"] = note_obj.data.get("last_updated")
+        data["resource_type"] = resource_type
+        data["resource_id"] = resource_id
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+
+@blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def triage_form(application_id):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+        abort(403)
+
+    application = models.Application.pull(application_id)
+    if application is None:
+        abort(404)
+
+    # NOTE: this hack lets us `pull` the worfklow control object, avoiding any re-indexing
+    # latency when redirecting to this page after a save
+    wfc_id = request.values.get("wfc")
+    if wfc_id is not None:
+        wfc = models.WorkflowControl.pull(wfc_id)
+        if wfc.application_id != application_id:
+            abort(400)
+    else:
+        wfc = models.WorkflowControl.find_by_application(application_id)
+    if wfc is None:
+        abort(404)
+
+    if request.method == "GET":
+        processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
+        form_html = processor.render_form()
+        rec = processor.recommendation(wfc)
+        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc, recommendation=rec, recommendation_overwritten=request.values.get("override_recommendation", False))
+
+    elif request.method == "POST":
+        formdata = dicts.multidict_2_dict(request.form)
+        processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=formdata)
+        valid = processor.validate()
+        if valid:
+            try:
+                processor.finalise(current_user._get_current_object())
+            except AuthoriseException:
+                abort(401)
+
+            flash("Record updated")
+            return redirect(url_for("workflow.triage_form", application_id=application.id, wfc=wfc.id))
+        else:
+            form_html = processor.render_form()
+            return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application,
+                                   wfc=wfc, recommendation=None)  # form is invalid, so no recommendation to show
+
+@blueprint.route("/triage-form/<application_id>/async/<wfc_id>", methods=["POST"])
+@login_required
+@ssl_required
+@write_required()
+def triage_form_async(application_id, wfc_id):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+        abort(403)
+
+    application = models.Application.pull(application_id)
+    if application is None:
+        abort(404)
+
+    wfc = models.WorkflowControl.pull(wfc_id)
+    if wfc.application_id != application_id:
+        abort(400)
+
+    formdata = dicts.multidict_2_dict(request.form)
+    processor = TriageFormProcessor(source_application=application, source_wfc=wfc, raw_formdata=formdata)
+    valid = processor.validate()
+    if valid:
+        try:
+            processor.finalise(current_user._get_current_object())
+        except AuthoriseException:
+            abort(401)
+
+        recommendation = processor.recommendation()
+        resp = make_response(json.dumps({"recommendation": recommendation}))
+        resp.mimetype = "application/json"
+        return resp
+
+    else:
+        validation_messages = processor.validation_report()
+        resp = make_response(json.dumps({"validation": validation_messages}))
+        resp.mimetype = "application/json"
+        return resp
+
+####################################
+## Workflow actions
+
+def _apply_event(wfc_id, event, async_request, onward_url):
+    if wfc_id is None:
+        abort(400)
+
+    args = {}
+    if not event.actor:
+        event.actor = current_user
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc_id, event)
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(400)
+
+    if async_request:
+        resp = make_response(json.dumps({"new_state": new_state.__class__.__name__}))
+        resp.mimetype = "application/json"
+        return resp
+
+    if onward_url:
+        return redirect(onward_url)
+
+@blueprint.route('/claim', methods=['POST'])
+@login_required
+@ssl_required
+def claim():
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+    return _apply_event(wfc_id, Claim(current_user), async_request, onward)
+
+@blueprint.route("/unclaim", methods=["POST"])
+@login_required
+@ssl_required
+def unclaim():
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+    return _apply_event(wfc_id, Unclaim(current_user), async_request, onward)
+
+@blueprint.route("/assign", methods=["POST"])
+@login_required
+@ssl_required
+def assign():
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    assign_to = request.form.get("assign_to")
+
+    if not assign_to:
+        abort(400)
+
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+    return _apply_event(wfc_id, Assign(current_user, assign_to), async_request, onward)
+
+@blueprint.route("/reassign", methods=["POST"])
+@login_required
+@ssl_required
+def reassign():
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    assign_to = request.form.get("assign_to")
+
+    if not assign_to:
+        abort(400)
+
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+    return _apply_event(wfc_id, Reassign(current_user, assign_to), async_request, onward)
+
+@blueprint.route("/unassign", methods=["POST"])
+@login_required
+@ssl_required
+def unassign():
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+    return _apply_event(wfc_id, Unassign(current_user), async_request, onward)
+
+@blueprint.route("/fail", methods=["POST"])
+@login_required
+@ssl_required
+def fail():
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    note = request.form.get("note")
+    embargo = request.form.get("embargo_end")
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    return _apply_event(wfc_id, Fail(current_user, note, embargo), async_request, onward)
+
+@blueprint.route("/triaged", methods=["POST"])
+@login_required
+@ssl_required
+def triaged():
+    wfc_id = request.form.get("workflow_control")
+    app_id = request.form.get("application")
+    async_request = request.form.get("async") == "y"
+    onward = request.form.get("onward")
+    label = request.form.get("label")
+    if label is None or label == "":
+        abort(400)
+    if onward:
+        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+    return _apply_event(wfc_id, Triaged(current_user, label), async_request, onward)
+
+@blueprint.route("/edit/<application_id>", methods=["GET"])
+@login_required
+@ssl_required
+def edit(application_id):
+    # FIXME: this is just a demonstrator
+    try:
+        wfc = models.WorkflowControl.find_by_application(application_id)
+    except ValueError:
+        abort(500)
+
+    if wfc is None:
+        abort(404)
+
+    event = None
+    if wfc.triage.review_complete:
+        event = RescindMinimalReview(current_user)
+    else:
+        event = MinimalReview(current_user)
+
+    svc = DOAJ.workflowService()
+    try:
+        new_state = svc.apply_event(wfc.id, event)
+    except AuthoriseException:
+        abort(401)
+    except ValueError:
+        abort(404)
+
+    url = url_for("workflow.index")
+    return redirect(url)
+
+

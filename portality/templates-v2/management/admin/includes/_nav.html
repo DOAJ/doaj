@@ -5,6 +5,7 @@
 {% set applications = url_for("admin.suggestions") %}
 {% set update_requests = url_for("admin.update_requests") %}
 {% set site_search = url_for("admin.admin_site_search") %}
+{% set workflow = url_for("workflow.workflow_search") %}
 {% set users = url_for("account.index") %}
 {% set editor_groups = url_for("admin.editor_group_search") %}
 {% set bg = url_for("admin.background_jobs_search") %}
@@ -18,6 +19,7 @@
         (applications, "Applications", "file-text"),
         (update_requests, "Update requests", "edit"),
         (site_search, "Journals & articles", "search"),
+        (workflow, "Workflow", "aperture"),
         (users, "Users", "user"),
         (editor_groups, "Editor groups", "users"),
         (bg, "Background jobs", "tool"),

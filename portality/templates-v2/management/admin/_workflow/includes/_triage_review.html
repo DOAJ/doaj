@@ -1,0 +1,176 @@
+{% block triage_compound_base %}
+{% macro license_display(licenses) %}
+    {% for license in licenses %}
+        {%- if loop.last and licenses|length > 1 -%}&nbsp;or
+        {%- elif not loop.first -%}, {%- endif -%}
+        {{ license.type }}
+        {% if license.type == "Publisher's own license" %}:
+            {% for key, value in license.items() if value is sameas true %} {{ key }}{% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+<section
+        id="{{ compound.name }}"
+        {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}
+        class="criterion-wrapper"
+        data-js-class="{{ compound.capability.js_class }}">
+    <h3 class="criterion-wrapper--header">
+        <button
+                type="button"
+                id="{{ compound.name }}-header"
+                class="accordion-btn--secondary col-md-12"
+                aria-expanded="false"
+                aria-controls="{{ compound.name }}-body"
+                data-question-id="{{ compound.name }}"
+                onclick="doaj.triage.questions.handleQuestionHeaderClick(this)"
+        >
+            {{ compound.label }}
+            <span class="sr-only sr-answer">Not answered</span>
+        </button>
+    </h3>
+    <div id="{{ compound.name }}-body" class="col-md-12 criterion" hidden>
+        {% set els = namespace(
+            check=None,
+            note=None,
+            action=[],
+            other = None,
+            options = [],
+            not_classified = []
+        ) %}
+        {% for element in compound.elements %}
+            {% if element.capability.role == "check" %}
+                {% set els.check = element %}
+            {% elif element.capability.role == "note" %}
+                {% set els.note = element %}
+            {% elif element.capability.role == "action" %}
+                {% set els.action = els.action + [element] %}
+            {% elif element.capability.role == "other" %}
+                {% set els.other = element %}
+            {% elif element.capability.role == "options" %}
+                {% set els.options = els.options + [element] %}
+            {% else %}
+                {% set els.not_classified = els.not_classified + [element] %}
+            {% endif %}
+        {% endfor %}
+        {% autoescape off %}
+        <section class="criterion-main col-md-12">
+            <div class="row criterion-layout">
+                <div class="col-md-12 criterion-layout__question">
+                    {% if els.check.capability.check %}
+                    <h4>{{ els.check.capability.check }}</h4>
+                    {% endif %}
+                    <div class="review-table">
+                        {% for info in els.check.capability.application_info %}
+                        <div class="review-table__row">
+                            <div class="review-table__values-cell">
+                            {% for field in info.fields %}
+                                <div class="review-table__value-pair">
+                                    <span class="review-table__label">
+                                        {{ field.label }}:
+                                    </span>
+                                    <strong class="review-table__value" data-value="{{ field['data-value'] }}">
+                                        {{ field.lookup(application, wfc) }}
+                                    </strong>
+                                </div>
+                            {% endfor %}
+                            </div>
+                            <div class="review-table__buttons-cell">
+                                <button type="button"
+                                        class="button button--tertiary button-edit"
+                                        aria-controls="{{ info.question }}">
+                                    <span data-feather="edit-2" aria-hidden="true"></span>
+                                    Change
+                                </button>
+
+                                <div class="review-table__confirmation">
+                                    <input
+                                            class="review-table__checkbox confirmation-checkbox"
+                                            type="checkbox"
+                                            id="{{ info.question }}-confirmation"
+                                            name="{{ info.question }}-confirmation"
+                                    >
+
+                                    <label for="{{ info.question }}-confirmation" class="button button--tertiary button-confirmation">
+                                        <span data-feather="check" aria-hidden="true"></span>
+                                        <span class="confirmation-unchecked">
+                                            Click to confirm
+                                        </span>
+                                        <span class="confirmation-checked">
+                                            Correct
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                </div>
+            </div>
+                {% if els.check.capability.remember or els.check.capability.instructions %}
+                <button
+                        type="button"
+                        class="criterion-instructions-trigger"
+                        aria-controls="{{ compound.name }}-criterion-instructions"
+                        aria-expanded="false"
+                        data-role="open-instructions"
+                >
+                    <span class="form__long-help" data-feather="info" aria-hidden="true"></span>
+                    <span class="criterion-instructions-trigger__label">
+                        Instructions
+                    </span>
+                </button>
+                <div class="criterion-instructions"
+                    id="{{ compound.name }}-criterion-instructions"
+                    aria-hidden="true"
+                    aria-label="Instructions"
+                >
+                        <header class="criterion-instructions__header">
+                            <button
+                                type="button"
+                                class="criterion-instructions-close"
+                                data-role="close-instructions"
+                            >
+                                <span data-feather="x" class="icon" aria-label="close instructions"></span>
+                            </button>
+                        </header>
+                        <div class="criterion-instructions__body">
+                            {% if els.check.capability.remember %}
+                            <div class="criterion-important">
+                                <h5><span data-feather="alert-circle" class="icon" aria-hidden="true"></span>&nbsp;REMEMBER</h5>
+                                <p>{{ els.check.capability.remember }}</p>
+                            </div>
+                            {% endif %}
+                            {% if els.check.capability.instructions %}
+                            <div class="criterion-instructions__content">
+                                <h5><span class="form__long-help" data-feather="help-circle" aria-hidden="true"></span>&nbsp;Instructions</h5>
+                                <p>{{ els.check.capability.instructions }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+<!--                    <div class="checkbox-button review-outcome-container">-->
+<!--                        <input type="checkbox" id="{{ compound.name }}&#45;&#45;review_outcome" value="compliant" data-role="answer">-->
+<!--                        <label for="{{ compound.name }}&#45;&#45;review_outcome" class="review-outcome__label">{{ compound.capability.ok_answer }}</label>-->
+<!--                    </div>-->
+
+                    <fieldset id="{{ compound.name }}-review_outcome" class="review_outcome-container single">
+                        <legend class="sr-only">{{ compound.label }}</legend>
+                        {% set cr = els.check.capability.get_control_renderer() %}
+                        {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}
+                    </fieldset>
+                </div>
+            </div>
+
+        </section>
+        {% endautoescape %}
+
+    </div>
+</section>
+
+
+{% endblock %}

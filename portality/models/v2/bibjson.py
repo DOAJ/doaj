@@ -168,6 +168,9 @@ class JournalLikeBibJSON(SeamlessMixin):
 
         self.__seamless__.add_to_list_with_struct("license", lobj)
 
+    def add_license_obj(self, license_object):
+        self.__seamless__.add_to_list_with_struct("license", license_object)
+
     def remove_licenses(self):
         self.__seamless__.delete("license")
 
@@ -528,7 +531,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def review_process(self):
-        return self.__seamless__.get_list("editorial.review_proccess")
+        return self.__seamless__.get_list("editorial.review_process")
 
     @review_process.setter
     def review_process(self, review_process):

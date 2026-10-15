@@ -1,5 +1,8 @@
 import os
 import threading
+from copy import deepcopy
+from types import SimpleNamespace
+
 import yaml
 import json
 
@@ -13,6 +16,7 @@ from portality import settings, constants, datasets
 from portality.bll import exceptions, DOAJ
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping, dates, paths
+from portality.lib.dicts import AttrDict
 from portality.ui.debug_toolbar import DoajDebugToolbar
 from portality.ui import templates
 
@@ -290,6 +294,12 @@ def proxyfix(app):
 ##################################################
 # Jinja2
 
+from jinja2 import pass_context
+
+@pass_context
+def current_template_name(ctx):
+    return ctx.name  # name of template currently rendering this expression
+
 def setup_jinja(app):
     """
     Jinja2:Environment->Jinja2:Technology
@@ -300,6 +310,10 @@ def setup_jinja(app):
 
     app.jinja_env.add_extension('jinja2.ext.do')
     app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+
+    app.jinja_env.trim_blocks = True
+    app.jinja_env.lstrip_blocks = True
+
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
     #~~->Constants:Config~~
@@ -312,6 +326,8 @@ def setup_jinja(app):
     # ~~->DOAJ:Service~~
     app.jinja_env.globals['services'] = DOAJ
     _load_data(app)
+
+    app.jinja_env.globals["current_template_name"] = current_template_name
     #~~->CMS:DataStore~~
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates-v2',
                                              app.config['BASE_FILE_PATH'] + '/templates',
@@ -333,6 +349,8 @@ def setup_jinja(app):
 def _load_data(app):
     if not "data" in app.jinja_env.globals:
         app.jinja_env.globals["data"] = {}
+    if not hasattr(app, "cms"):
+        app.cms = AttrDict()
     datadir = os.path.join(app.config["BASE_FILE_PATH"], "..", "cms", "data")
     for datafile in os.listdir(datadir):
         with open(os.path.join(datadir, datafile)) as f:
@@ -340,6 +358,9 @@ def _load_data(app):
         dataname = datafile.split(".")[0]
         dataname = dataname.replace("-", "_")
         app.jinja_env.globals["data"][dataname] = data
+
+        data_dict = deepcopy(data)
+        app.cms[dataname] = AttrDict.wrap(data_dict)
 
 
 ##################################################

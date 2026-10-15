@@ -1,0 +1,13 @@
+{% macro make_button(button) %}
+    {% set attrs = button.attrs %}
+    <button
+        {% if attrs %}
+            {% for k, v in attrs.items() %}{{ k }}="{{ v }}"{% endfor %}
+        {% endif %}>
+            {% if button.icon %} {{ button.icon }} {% endif %} {{ button.label }}
+        </button>
+{%- endmacro %}
+
+{% for button in buttons %}
+    {{ make_button(button) }}
+{% endfor %}

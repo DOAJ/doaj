@@ -1,0 +1,73 @@
+{% extends "management/admin/base.html" %}
+
+{% block page_title %}Triage Form{% endblock %}
+
+{% block admin_stylesheets %}{% endblock %}
+
+{% block admin_header %}
+{% include "management/admin/_workflow/includes/_header.html" %}
+{% endblock %}
+{% block body_class %}{{ super() }} ew{% endblock %}
+
+{% block admin_content %}
+    <div
+        class="save-notification success"
+        id="triage-save-notification-success"
+        hidden
+        aria-hidden="true"
+    >
+        <span>Saved</span>
+    </div>
+
+    <div
+        class="save-notification error"
+        id="triage-save-notification-error"
+        hidden
+        aria-hidden="true"
+    >
+        <span>Could not save triage</span>
+    </div>
+
+    <div
+        class="sr-only"
+        id="triage-save-status"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+    ></div>
+
+    <div
+        class="sr-only"
+        id="triage-save-error-status"
+        role="alert"
+        aria-atomic="true"
+    ></div>
+    <div id="triage-async-response"></div>
+
+    {#
+        Fixed-height panel: recommendation banner + progress bar (never
+        scroll, always visible at the top), then the question list as its
+        own scroll region. Prev/Next are not here - each question
+        (_triage_compound_base.html) carries its own, as normal in-flow
+        content at the end of it, so the same pattern repeats consistently
+        for every question rather than one detached shared control.
+    #}
+    <div class="triage-panel">
+        <div class="triage-panel__banner">
+        <div class="ew_body triage-panel__questions">
+            {% autoescape off %}
+                {{ form_html }}
+            {% endautoescape %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript" src="/static/js/custom_jquery.js"></script>
+    <script type="text/javascript" src="/static/js/triage-instructions.js"></script>
+    <script type="text/javascript" src="/static/js/triage.js"></script>
+    <script type="text/javascript">
+        doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
+        doaj.triage.initialRecommendation = {{ recommendation|tojson }};
+    </script>
+{% endblock %}

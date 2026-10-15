@@ -1,0 +1,50 @@
+{% macro render_content(content_list) -%}
+    {%- if content_list is string -%}
+        {{- content_list -}}
+
+    {%- elif content_list is iterable and content_list is not string and content_list is not mapping -%}
+        {%- for ic in content_list -%}
+            {%- set ic_content = ic.content -%}
+            {%- set rendered_content = render_content(ic_content) -%}
+            {% autoescape off %}
+            {{ make_tag(ic, rendered_content) }}
+            <{{ ic.tag }} {% for k, v in ic.attrs %}{{ k }}="{{ v }}" {% endfor %} {% if not ic.close %}/{% endif %}>
+                {{ rendered_content }}
+            {% if ic.close %}
+                </{{ic.tag}}>
+            {% endif %}
+            {% endautoescape %}
+        {%- endfor -%}
+
+    {%- else -%}
+        {{- content_list -}}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro make_tag(spec, content) %}
+    {% set attrs = spec.attrs %}
+    <{{ spec.tag }}
+        {% if attrs %}
+            {% for k, v in spec.attrs.items() %}{{ k }}="{{ v }}" {% endfor %}
+        {% endif %}
+        {% if not spec.close %}/{% endif %}>
+            {{ content }}
+    {% if spec.close %}
+        </{{spec.tag}}>
+    {% endif %}
+{%- endmacro %}
+
+{% for control in controls %}
+    {% set input=control.control %}
+    {% set content = {"value": ""} %}
+    {% if input.content %}
+        {% set content.value=render_content(input.content) %}
+    {% endif %}
+
+    {% autoescape off %}
+        {{ make_tag(input, content.value) }}
+    {% endautoescape %}
+    {% if control.label %}
+        {{ make_tag(control.label, control.label.content) }}
+    {% endif %}
+{% endfor %}
