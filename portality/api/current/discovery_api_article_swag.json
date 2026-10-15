@@ -39,8 +39,11 @@
                                             "items": {
                                                 "type": "object", 
                                                 "properties": {
-                                                    "affiliation": {
-                                                        "type": "string"
+                                                    "affiliations": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
                                                     }, 
                                                     "email": {
                                                         "type": "string"

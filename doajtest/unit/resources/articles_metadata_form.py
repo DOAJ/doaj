@@ -48,9 +48,9 @@ class ArticleMetadataFactory(object):
 ARTICLE_METADATA_VALID_FORM = {
     'title': 'New title',
     'authors-0-name': 'Agnieszka',
-    'authors-0-affiliation': 'Cottage Labs',
+    'authors-0-affiliations': 'Cottage Labs',
     'authors-1-name': 'John Smith',
-    'authors-1-affiliation': 'DOAJ',
+    'authors-1-affiliations': 'DOAJ',
     'abstract': 'This abstract has been edited',
     'keywords': 'edited-1,edited-2, edited-3',
     'publication_month': '10',
