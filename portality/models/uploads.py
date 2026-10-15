@@ -30,6 +30,10 @@ class BaseArticlesUpload(DomainObject):
         return self.data.get("failed", 0)
 
     @property
+    def valid_but_not_imported(self):
+        return self.data.get("valid_but_not_imported", 0)
+
+    @property
     def updates(self):
         return self.data.get("update", 0)
 
@@ -76,6 +80,11 @@ class BaseArticlesUpload(DomainObject):
         self.data["failed"] = fail
         self.data["update"] = update
         self.data["new"] = new
+
+    def not_imported(self, valid, fail):
+        # batch ingest is all-or-nothing, so valid articles are not saved when any article fails
+        self.data["valid_but_not_imported"] = valid
+        self.data["failed"] = fail
 
     def set_failure_reasons(self, shared, unowned, unmatched):
         self.data["failure_reasons"] = {}

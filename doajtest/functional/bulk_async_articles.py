@@ -14,7 +14,7 @@ API_KEY = "606d4a0a92ac432f9f86d05ddf8d381b"
 # make some articles to bulk load (Use quite a few to justify the async)
 
 #TODO: we could use the testdrive fixtures to seed the fixtures below (i.e. a dynamic ISSN)
-articles = ArticleFixtureFactory.make_many_article_sources(100, in_doaj=True, eissn="1x11-1111", pissn="2222-2222")
+articles = ArticleFixtureFactory.make_many_article_sources(100, in_doaj=True, pissn="1111-1111", eissn="2222-2222")
 data = json.dumps(articles)
 
 resp = requests.post(f"https://testdoaj.cottagelabs.com/api/bulk/articles?api_key={API_KEY}", data=data)
