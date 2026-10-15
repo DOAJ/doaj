@@ -188,6 +188,25 @@ tests:
   - step: Click on 'Export RIS' of any article
     results:
       - A RIS file is downloaded
+- title: 'Test Public Search by Alternative Title: Journals'
+  context:
+    role: anonymous
+  steps:
+  - step: Make sure there is a Journal in DOAJ which has an alternative title.
+      For example, a journal with Arabic main title and English alternative title such as "Journal of Science and Knowledge Horizons"
+  - step: Go to the DOAJ journal search page at /search/journals
+  - step: Search for the journal using its alternative title (e.g. "Journal of Science and Knowledge Horizons")
+    results:
+    - The journal appears in the search results
+  - step: Search for the journal using a partial match of the alternative title (e.g. "Knowledge Horizons")
+    results:
+    - The journal appears in the search results
+  - step: Search for the journal using its main title (e.g. the Arabic title)
+    results:
+    - The journal appears in the search results
+  - step: Verify that "Alternative title" is not listed as a selectable field in the "search all" dropdown
+    results:
+    - The alternative title is only searchable via the general search bar, not as a separate field option
 - title: 'Test Public Search Ascii Folding: Articles/Journals'
   context:
     role: anonymous
