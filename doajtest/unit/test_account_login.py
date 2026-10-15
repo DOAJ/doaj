@@ -95,6 +95,60 @@ class TestAccountLogin(DoajTestCase):
                 self.assertEqual(resp.status_code, 200)
                 self.assertIn(b'Account not recognised', resp.data)
 
+    def test_03b_no_password_account_same_response_as_unrecognised(self):
+        """
+        Regression test for issue #4184: an account that has registered but
+        never completed setting a password (no 'password' key in its data at
+        all) used to raise an uncaught KeyError out of Account.check_password,
+        producing a 500. That KeyError is now caught in
+        AccountService.verify_password_login and converted into an
+        IllegalStatusException('no_password') - but the login view used to
+        treat that as a generic "status" failure (a different flash message,
+        in a different place on the page) to the "account doesn't exist" case.
+        That let an attacker tell the two cases apart - i.e. confirm an email/
+        username is registered even though it isn't usable yet - so both must
+        now produce the exact same response.
+        """
+        no_password_account = Account(email="nopassword@example.com", name="No Password", id="nopassword")
+        no_password_account.add_role('publisher')
+        self.assertNotIn('password', no_password_account.data)
+        no_password_account.save(blocking=True)
+
+        for route in LOGIN_ROUTES:
+            with self.subTest(route=route):
+                resp = self.app_client.post(route, data=dict(
+                    user=no_password_account.email, password='whatever', action='password_login'
+                ), follow_redirects=True)
+                self.assertEqual(resp.status_code, 200)
+                self.assertIn(b'Account not recognised', resp.data)
+                self.assertNotIn(b'Login could not be completed due to account status', resp.data)
+
+    def test_03c_invalid_action_does_not_distinguish_existing_account(self):
+        """
+        Found while writing attacker-style regression tests for #4184: login()
+        used to resolve the user (and raise NoSuchObjectException for a
+        nonexistent one) BEFORE checking whether 'action' was one of the two
+        values it understands. That meant an attacker could send
+        action=<garbage> with a guessed username/email and use the response
+        (generic "request problem" flash vs "account not recognised" field
+        error) as an account-existence oracle, without ever needing to guess
+        a password. Same leak class as the no_password case above, different
+        trigger. Fixed by validating 'action' before resolving the user, so
+        an invalid action fails identically either way.
+        """
+        for route in LOGIN_ROUTES:
+            with self.subTest(route=route):
+                existing_resp = self.app_client.post(route, data=dict(
+                    user=self.test_account.email, password='x', action='garbage'
+                ), follow_redirects=True)
+                nonexistent_resp = self.app_client.post(route, data=dict(
+                    user='doesnotexist999@example.com', password='x', action='garbage'
+                ), follow_redirects=True)
+                self.assertEqual(existing_resp.status_code, 200)
+                self.assertEqual(nonexistent_resp.status_code, 200)
+                self.assertNotIn(b'Account not recognised', existing_resp.data)
+                self.assertNotIn(b'Account not recognised', nonexistent_resp.data)
+
     @patch('portality.bll.services.account.AccountService.send_login_code_email')
     def test_04_passwordless_request_link(self, mock_send_email):
         """
