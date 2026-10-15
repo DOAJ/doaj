@@ -1,7 +1,10 @@
+from copy import deepcopy
+
 from doajtest import helpers
 from doajtest.fixtures import article_doajxml
 from doajtest.helpers import DoajTestCase
 from doajtest.unit_tester import article_upload_tester
+from portality import models
 from portality.models import BulkArticles
 from portality.tasks.article_bulk_create import ArticleBulkCreateBackgroundTask
 
@@ -38,3 +41,23 @@ class TestArticleBulkCreateBackgroundTask(DoajTestCase):
         ])
         bulk_articles = run_background_process_by_incoming_articles(acc_id, [{"invalid": "format"}])
         article_upload_tester.assert_failed(bulk_articles, expected_details=False)
+
+    def test_invalid_articles_reported_by_index(self):
+        # #4343: one bad article in a batch must be identified, and nothing in the batch is saved
+        acc_id = "testowner"
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal(acc_id, pissn="1234-5678", eissn="9876-5432"),
+            article_upload_tester.create_simple_publisher(acc_id),
+        ])
+        article = article_doajxml.to_articles(article_doajxml.DoajXmlArticleFixtureFactory.upload_2_issns_correct())[0]
+        articles = [deepcopy(article.data) for _ in range(3)]
+        del articles[1]["bibjson"]["title"]
+        articles[2] = {"invalid": "format"}
+
+        bulk_articles = run_background_process_by_incoming_articles(acc_id, articles)
+
+        article_upload_tester.assert_failed(bulk_articles, expected_details=False)
+        assert "Article at index 0" not in bulk_articles.error
+        assert "Article at index 1: Field 'title' is required" in bulk_articles.error
+        assert "Article at index 2: " in bulk_articles.error
+        assert models.Article.count() == 0

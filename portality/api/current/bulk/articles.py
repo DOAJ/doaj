@@ -138,6 +138,10 @@ class ArticlesBulkApi(Api):
                                 "type": "integer",
                                 "description": "The number of articles imported",
                             },
+                            "valid_but_not_imported": {
+                                "type": "integer",
+                                "description": "Only present when status is 'failed': the number of valid articles that were not imported because other articles in the batch failed",
+                            },
                             "failed": {
                                 "type": "integer",
                                 "description": "The number of articles failed to import",
@@ -193,6 +197,11 @@ class ArticlesBulkApi(Api):
                 "failed": bulk_article.failed_imports,
                 "update": bulk_article.updates,
                 "new": bulk_article.new,
+            }
+        elif bulk_article.failed_imports > 0:
+            status['results'] = {
+                "valid_but_not_imported": bulk_article.valid_but_not_imported,
+                "failed": bulk_article.failed_imports,
             }
 
         if bulk_article.error:
