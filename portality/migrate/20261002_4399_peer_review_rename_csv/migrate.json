@@ -1,0 +1,58 @@
+{
+	"types": [
+		{
+			"type": "application",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions": [
+				"portality.migrate.20260501_4232_peer_review_rename.operations.peer_review_rename"
+			],
+			"query": {
+				"query": {
+					"terms": {
+						"bibjson.editorial.review_process.exact": [
+							"Anonymous peer review",
+							"Peer review"
+						]
+					}
+				}
+			}
+		},
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions": [
+				"portality.migrate.20260501_4232_peer_review_rename.operations.peer_review_rename"
+			],
+			"query": {
+				"query": {
+					"terms": {
+						"bibjson.editorial.review_process.exact": [
+							"Anonymous peer review",
+							"Peer review"
+						]
+					}
+				}
+			}
+		},
+		{
+			"type": "draft_application",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions": [
+				"portality.migrate.20260501_4232_peer_review_rename.operations.peer_review_rename"
+			],
+			"query": {
+				"query": {
+					"terms": {
+						"bibjson.editorial.review_process.exact": [
+							"Anonymous peer review",
+							"Peer review"
+						]
+					}
+				}
+			}
+		}
+	]
+}
