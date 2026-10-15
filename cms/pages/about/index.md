@@ -38,7 +38,7 @@ DOAJ also has a global network of Ambassadors who promote open access and best p
 
 ## Our finances
 
-DOAJ adheres to the [Principles of Open Scholarly Infrastructure (POSI) principles](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/), which includes a transparent approach to our finances. 
+DOAJ adheres to the [Principles of Open Scholarly Infrastructure (POSI)](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/), which includes a transparent approach to our finances. 
 
 Our latest financial figures for 2013-2025 are available for download in [Excel](https://doaj.org/static/doaj/docs/DOAJ_Financials_2013-2025.xlsx) and [PDF](https://doaj.org/static/doaj/docs/DOAJ_Financials_2013-2025.pdf) formats.
 
