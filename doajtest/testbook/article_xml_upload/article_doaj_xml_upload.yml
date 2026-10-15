@@ -165,6 +165,37 @@ tests:
     - Additional error details are shown, indicating that the ISSN "5555-5555" does
       not appear in DOAJ.
 
+- title: Upload a file where some articles are valid and some are not
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the publisher account owns a journal with Print ISSN "1111-1111"
+      and E-ISSN "2222-2222", and that ISSN "5555-5555" is not present in any journal in DOAJ.
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "mixed_valid_and_invalid.xml"
+      from the DOAJ folder.  It contains one valid article and one article with the unknown ISSN "5555-5555"
+    resource: /xml_upload_test_package/DOAJ/mixed_valid_and_invalid.xml
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates. (Dismiss)'
+    - Click away to another tab and then back - your file is shown in the "History of uploads" with the status "pending"
+  - step: wait a short amount of time for the job to process, then click away and then back.  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with the status "processing failed", NOT "partial success"
+    - 'The "Notes" show "One or more articles failed to ingest; entire batch ingest halted"
+      and "Valid articles not imported: 1. Failed articles: 1."'
+  - step: click on "(show error details)" for the record in the "History of uploads"
+    results:
+    - Additional error details are shown, indicating that the ISSN "5555-5555" does
+      not appear in DOAJ.
+  - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
+    results:
+    - There is no article with the title "A valid article in a file with an invalid article",
+      because no articles in the file are imported when any of them fail
+
 - title: Upload a file containing ISSNs erroneously shared with another account
   context:
     role: publisher
