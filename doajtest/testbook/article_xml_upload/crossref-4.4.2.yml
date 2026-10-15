@@ -255,6 +255,7 @@ tests:
       Keep the testdrive tab open and do the test in a separate tab, as leaving the testdrive page tears it down
     - The testdrive creates a journal with ISSNs "1111-1111" and "2222-2222", so make sure no other journal
       on the system has these ISSNs, otherwise the upload will fail
+    - You will also need an administrator account for the final step
     - At the end of the test please use the 'teardown' link provided by the testdrive to remove test assets
       (including the uploaded article) from the system
   steps:
