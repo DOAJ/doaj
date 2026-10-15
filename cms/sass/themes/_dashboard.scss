@@ -18,7 +18,14 @@
       margin: 0 $spacing-04;
       text-decoration: none;
       line-height: 75px;
+      padding: 0;
+      border: none;
+      .feather {
+        height: 1em;
+        width: auto;
+      }
     }
+
 
     .logo {
       display: block;
