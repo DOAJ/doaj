@@ -1279,6 +1279,132 @@ var formulaic = {
             this.init();
         },
 
+        // ~~PreassessmentChecklist:FormWidget~~
+        // Issue #4421: shows a required "I confirm I have completed the
+        // pre-assessment checklist" checkbox beneath the publisher_country field
+        // when its value is one of the configured countries (Mexico/Indonesia).
+        // The checkbox is UI-only - it is never wired to a real form field, so its
+        // state is never submitted or saved. Countries/links are configurable via
+        // the widget's args (see PUBLISHER_COUNTRY in application_forms.py) rather
+        // than hardcoded here, so adding a country or fixing a link is a one-line
+        // Python change, not a JS one.
+        newPreassessmentChecklist: function (params) {
+            return edges.instantiate(formulaic.widgets.PreassessmentChecklist, params)
+        },
+        PreassessmentChecklist: function (params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.args = params.args || {};
+            this.countries = this.args.countries || {};
+            this.blogUrl = this.args.blog_url || "#";
+
+            this.namespace = "formulaic-preassessmentchecklist";
+
+            this.init = function () {
+                var that = this;
+
+                // publisher_country lives on a later wizard page, which is hidden
+                // (display:none) at the point widgets are applied (page load, before
+                // any page navigation) - select2 is known to behave unreliably when
+                // initialised against a hidden element. Rather than bind directly to
+                // the select at this (possibly-unready) moment, delegate the change
+                // listener on the stable, always-present form element instead - a
+                // delegated handler only cares what the event bubbles through when it
+                // *fires*, not what existed/was visible when we bound it, so it isn't
+                // affected by that timing at all.
+                this.form.context.on("change.PreassessmentChecklist",
+                    "select[name='" + this.fieldDef.name + "']",
+                    function (e) {
+                        that.update(this);
+                    });
+
+                // still run once immediately for whatever the current value already
+                // is (e.g. a returning draft application that already has a country)
+                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                for (var i = 0; i < elements.length; i++) {
+                    this.update(elements[i]);
+                }
+            };
+
+            this.update = function (element) {
+                var that = $(element);
+                var val = that.val();
+                var countryConf = this.countries[val];
+
+                // _make_empty_container both creates the container on first call
+                // and empties it (but keeps it) on every subsequent call, so this
+                // naturally handles switching between countries, or back to a
+                // non-listed country, without leaking old checkbox state.
+                let cont = formulaic.widgets._make_empty_container(
+                    this.namespace, "preassessment_checklist", this.form, this.fieldDef
+                );
+
+                if (!countryConf) {
+                    return;
+                }
+
+                var checkboxId = edges.css_id(this.namespace, this.fieldDef.name);
+
+                // BaseApplicationForm tags every input/select with a
+                // data-parsley-group="block-N" (one per wizard page) so Parsley can
+                // validate a page at a time - but it does that scan ONCE, at page
+                // load, when publisher_country is still empty and this checkbox
+                // doesn't exist yet (it's only created here, later, once the user
+                // picks a country). So it would never get tagged, and the per-page
+                // validation would never look at it - meaning "required" alone
+                // would silently do nothing and the user could advance regardless.
+                // Copy the group straight off the country select itself, which WAS
+                // present at scan time and got tagged correctly.
+                var parsleyGroup = that.attr("data-parsley-group");
+                var groupAttr = parsleyGroup ? ' data-parsley-group="' + parsleyGroup + '"' : '';
+
+                // NOTE: deliberately NOT using the "form__subquestion" class here -
+                // that class is `display: none` by default (see _form.scss), meant
+                // for the built-in conditional-fields system which explicitly calls
+                // .show() to reveal it. We don't use that show/hide mechanism - we
+                // control visibility by whether we inject this markup at all - so
+                // using that class would leave this permanently hidden regardless
+                // of content.
+                // Explicit errors-container, same convention _field.html uses for
+                // the real fields (#{name}_checkbox-errors) - safer than relying on
+                // Parsley's default error-insertion placement for a field that was
+                // added to the DOM dynamically, after Parsley's initial setup.
+                var errorsId = checkboxId + "-errors";
+
+                var frag = '<div class="form__question">' +
+                    '<input type="checkbox" id="' + checkboxId + '" required data-parsley-required="true"' + groupAttr + ' ' +
+                    'data-parsley-errors-container="#' + errorsId + '" ' +
+                    'data-parsley-required-message="<p><small>' +
+                    doaj.i18n.get("You must confirm you have completed the pre-assessment checklist before continuing") +
+                    '</small></p>">' +
+                    '<label for="' + checkboxId + '">' +
+                    doaj.i18n.get("I confirm that I have completed the") + ' ' +
+                    '<a href="' + countryConf.checklist_url + '" target="_blank" rel="noopener">' +
+                    doaj.i18n.get("pre-assessment checklist") + '</a>' +
+                    '</label>' +
+                    '<div id="' + errorsId + '"></div>' +
+                    '<p class="form__short-help"><small>' +
+                    doaj.i18n.get("We are launching a pre-assessment checklist. If your journal is published by a publisher based in Mexico or Indonesia, please complete the checklist before submitting your application. The pre-assessment checklist will help you understand how ready your journal is to submit a correct application. For more information about this new initiative, please see our") +
+                    ' <a href="' + this.blogUrl + '" target="_blank" rel="noopener">' + doaj.i18n.get("blogpost") + '</a>.' +
+                    '</small></p>' +
+                    '<p class="form__short-help"><small>' +
+                    doaj.i18n.get("For Mexican journals, please use the") + ' ' +
+                    '<a href="' + (this.countries["MX"] ? this.countries["MX"].checklist_url : "#") + '" target="_blank" rel="noopener">' +
+                    doaj.i18n.get("Spanish version") + '</a>.' +
+                    '</small></p>' +
+                    '<p class="form__short-help"><small>' +
+                    doaj.i18n.get("For Indonesian journals, please use the") + ' ' +
+                    '<a href="' + (this.countries["ID"] ? this.countries["ID"].checklist_url : "#") + '" target="_blank" rel="noopener">' +
+                    doaj.i18n.get("English version") + '</a>.' +
+                    '</small></p>' +
+                    '</div>';
+
+                cont.html(frag);
+            };
+
+            this.init();
+        },
+
         newTrimWhitespace: function (params) {
             return edges.instantiate(formulaic.widgets.TrimWhitespace, params)
         },
