@@ -8,8 +8,17 @@ tests:
     - suite: Continuations
   context:
     role: admin
+    testdrive: journal_form
+  setup:
+    - Use the journal_form testdrive to set up for this test (accounts, editor groups
+      and in-DOAJ journals), OR provide those yourself.
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
+    - For the withdraw/reinstate steps below, use one of the spare journals from the
+      testdrive so the primary journal stays clean for the other tests.
   steps:
-  - step: Go to admin journal search page at /admin/journals
+  - step: Log in as admin_1 from the testdrive setup, then go to admin journal search page at /admin/journals
   - step: From the facet "In DOAJ?" on the left choose Yes
   - step: Click "Edit this journal" link by any journal - note the id
       of the edited journal for future reference
@@ -99,11 +108,19 @@ tests:
 - title: Note features for admin
   context:
     role: admin
+    testdrive: journal_form
+  setup:
+    - Use the journal_form testdrive - it supplies admin_1 and admin_2 (both can open
+      the same journal) and a primary_journal with no existing notes. OR prepare two
+      admin accounts and a shared journal yourself.
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Run the test in a separate browser tab/window, leaving the testdrive
+      tab open until you have finished."
   steps:
-    - step: Prepare two admin accounts (admin1 and admin2), they both can access
-        to the same journal (e.g. /admin/journal/1234)
-    - step: Login as `admin1`
-    - step: Go to Journal page at `/editor/journal/1234`
+    - step: Use admin_1 and admin_2 from the testdrive setup; both can open the
+        primary_journal at its admin_form URL (/admin/journal/<id>)
+    - step: Login as `admin_1`
+    - step: Go to the primary journal's admin form at `/admin/journal/<id>`
     - step: Click "ADD" button in "Notes" area
       results:
         - New note UI is displayed for you to fill in
@@ -120,10 +137,10 @@ tests:
       results:
         - The note is deleted
     - step: Create a new note as per the above steps
-    - step: Switch to other associate editor account `admin2`
-    - step: Go to Journal page at `/editor/journal/1234`
+    - step: Switch to the other admin account `admin_2` (a separate private window is easiest)
+    - step: Go to the same journal's admin form at `/admin/journal/<id>`
       results:
-        - You can see the note that you have created before with `admin1`
+        - You can see the note that you have created before with `admin_1`
     - step: Attempt to click into the note area and edit it
       results:
         - you are unable to edit the note
@@ -177,9 +194,14 @@ tests:
 - title: Journal Full Reviews
   context:
     role: admin
+    testdrive: journal_form
+  setup:
+    - "Use the journal_form testdrive - its primary_journal has no owner-transfer history
+      (shows 'Last Owner Transfer: Never') and no full-review history. Run the test in a
+      separate tab, leaving the testdrive tab open."
   steps:
-    - step: Go to admin journal search page at /admin/journals
-    - step: "Locate a record with the metadata value 'Last Owner Transfer: Never' and click 'Edit this journal'"
+    - step: Log in as admin_1 from the testdrive setup, then go to admin journal search page at /admin/journals
+    - step: "Locate the primary_journal (its metadata shows 'Last Owner Transfer: Never') and click 'Edit this journal'"
     - step: Locate the "Last Full Review" section of the form
     - step: Enter a date in the future in "Last Full Review" field
       results:
@@ -198,11 +220,17 @@ tests:
 - title: Journal Owner Transfer
   context:
     role: admin
+    testdrive: journal_form
+  setup:
+    - "Use the journal_form testdrive - its primary_journal has no owner-transfer history
+      (shows 'Last Owner Transfer: Never'), and publisher_transfer_target is a second
+      publisher account to transfer ownership to. Run the test in a separate tab, leaving
+      the testdrive tab open."
   steps:
-    - step: Go to admin journal search page at /admin/journals
-    - step: "Locate a record with the metadata value 'Last Owner Transfer: Never' and click 'Edit this journal'"
+    - step: Log in as admin_1 from the testdrive setup, then go to admin journal search page at /admin/journals
+    - step: "Locate the primary_journal (its metadata shows 'Last Owner Transfer: Never') and click 'Edit this journal'"
     - step: Locate the "Re-assign publisher account" section of the form
-    - step: Change the user to a different user account
+    - step: Change the user to publisher_transfer_target from the testdrive setup
     - step: Save the journal record
     - step: close the journal form and go back to the admin search page
     - step: Refresh the search and locate the journal you just edited

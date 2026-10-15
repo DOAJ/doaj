@@ -8,6 +8,9 @@ tests:
       testdrive: todo_maned_editor_associate
     setup:
       - Use the todo_maned_editor_associate testdrive to setup for this test, OR follow the next steps
+      - "Important: the testdrive page tears down its test data as soon as you navigate away from it.
+         After opening the testdrive, log in and run the test in a separate browser tab or window,
+         leaving the testdrive tab open until you have finished."
       - You should set up a user account which has the admin, editor and associate editor roles, and is the maned of at least one editorial group, and
         editor of at least one other editorial group
       - "The user account should be assigned at least 4 applications which meet the following criteria: one that was created over 6 weeks ago, 
