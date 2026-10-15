@@ -2,6 +2,7 @@ from flask import flash
 
 
 class Messages(object):
+    PUBLISHER_COMMENT_TOO_LONG__EXCEPTION = "Publisher's comment cannot be longer than {max_length} characters."
     ADMIN__QUICK_REJECT__NO_OWNER = """There is no user attached to this application. 
         <a href="https://testdoaj.cottagelabs.com/account/register" target="_blank">Assign a user account first</a>."""
 
