@@ -1,6 +1,5 @@
 <span>
-{#    Field: {{ field.label}}<br>#}
     {% autoescape off %}
-        {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
+        {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }} {{ field.capability.check }}
     {% endautoescape %}
 </span>

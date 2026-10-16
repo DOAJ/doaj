@@ -991,8 +991,12 @@ QuestionGroup.init();
 Question.init();
 
 const $firstUnanswered = Question.getFirstUnanswered();
-
-if ($firstUnanswered) {
+const hash = window.location.hash;
+const hash_decoded = decodeURIComponent(hash.slice(1));
+if (hash && document.getElementById(hash_decoded)) {
+    Question.getByName(hash_decoded).activate();
+}
+else if ($firstUnanswered) {
     $firstUnanswered.activate();
 } else {
     Question.$all[0].activate();

@@ -64,6 +64,6 @@
     {% elif compliance == "conditional_non_compliant" %}
         {{ noncompliant_icon | safe }}
     {% else %}
-        {{ answer.display or answer.value }}
+        {{ answer.display }}
     {% endif %}
 {% endautoescape %}

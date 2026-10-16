@@ -10,9 +10,8 @@
     {% endfor %}
 
     {% autoescape off %}
-        {{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}
+        <a href="{{ url_for('workflow.triage_form', application_id=application.id) }}#{{compound.name}}">{{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}
     {% endautoescape %}
-    <p class="group-label">{{ compound.label }}</p>
 
     {% for element in ns.others %}
         {% autoescape off %}
