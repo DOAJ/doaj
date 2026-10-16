@@ -1,3 +1,4 @@
+import elasticsearch
 from portality import constants
 from doajtest.testdrive.factory import TestDrive
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
@@ -7,6 +8,12 @@ from portality import models
 
 class PublisherWithJournal(TestDrive):
     def setup(self) -> dict:
+        # the XML upload test files use these fixed ISSNs; a second journal holding them makes uploads fail as "shared"
+        clashes = models.Journal.find_by_issn(["1111-1111", "2222-2222"])
+        if clashes:
+            return {"error": "Journal(s) " + ", ".join(j.id for j in clashes) + " already use ISSN 1111-1111 or "
+                             "2222-2222; remove them or change their ISSNs before running this testdrive"}
+
         un = self.create_random_str()
         pw = self.create_random_str()
         acc = models.Account.make_account(un + "@example.com", un, "Publisher " + un, [constants.ROLE_PUBLISHER, constants.ROLE_API])
@@ -19,8 +26,8 @@ class PublisherWithJournal(TestDrive):
         j.remove_current_application()
         j.set_id(j.makeid())
         j.set_owner(acc.id)
-        j.bibjson().eissn = "1111-1111"
-        j.bibjson().pissn = "2222-2222"
+        j.bibjson().pissn = "1111-1111"
+        j.bibjson().eissn = "2222-2222"
         j.save()
 
         source = ApplicationFixtureFactory.make_application_source()
@@ -46,6 +53,14 @@ class PublisherWithJournal(TestDrive):
         }
 
     def teardown(self, params) -> dict:
+        if "error" in params:
+            return {"status": "success"}
+        # remove articles the tester uploaded into the journal; must run before the journal is removed
+        try:
+            models.Article.delete_selected(owner=params["account"]["username"], snapshot=False, tombstone=False)
+        except elasticsearch.ConflictError:
+            # the page's beforeunload beacon runs a second teardown alongside the link click; it deleted them first
+            pass
         models.Account.remove_by_id(params["account"]["username"])
         for jid in params["journals"]:
             models.Journal.remove_by_id(jid)

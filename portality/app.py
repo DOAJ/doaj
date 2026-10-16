@@ -308,6 +308,35 @@ def is_in_the_past(dttm):
     return dates.is_before(dttm, dates.today())
 
 
+import re as _re
+import html as _html
+from markupsafe import Markup as _Markup
+
+# Tags that our JATS/crossref crosswalk may emit and are safe to render as HTML.
+_RICH_TEXT_ALLOWED_TAGS = frozenset(['em', 'i', 'b', 'strong', 'sub', 'sup', 'u', 'code', 's', 'span'])
+_RICH_TEXT_TAG_RE = _re.compile(
+    r'&lt;(/?)(' + '|'.join(_RICH_TEXT_ALLOWED_TAGS) + r')&gt;',
+    _re.IGNORECASE
+)
+
+@app.template_filter('rich_text')
+def rich_text_filter(text):
+    """Render stored abstract/title HTML safely.
+
+    Escapes all HTML, then restores only the whitelisted inline formatting
+    tags that our crosswalks emit (sub, sup, em, i, b, etc.).  Everything
+    else — arbitrary tags from publisher XML, old entity-decoded content —
+    stays escaped and is shown as plain text.
+    """
+    if not text:
+        return text
+    escaped = _html.escape(str(text))
+    result = _RICH_TEXT_TAG_RE.sub(
+        lambda m: '<%s%s>' % (m.group(1), m.group(2).lower()), escaped
+    )
+    return _Markup(result)
+
+
 #######################################################
 
 @app.context_processor
