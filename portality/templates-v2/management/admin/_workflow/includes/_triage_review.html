@@ -25,7 +25,7 @@
                 data-question-id="{{ compound.name }}"
                 onclick="doaj.triage.questions.handleQuestionHeaderClick(this)"
         >
-            {{ compound.label }}
+            {{ compound.capability.id }}. {{ compound.label }}
             <span class="sr-only sr-answer">Not answered</span>
         </button>
     </h3>
@@ -57,9 +57,13 @@
         <section class="criterion-main col-md-12">
             <div class="row criterion-layout">
                 <div class="col-md-12 criterion-layout__question">
-                    {% if els.check.capability.check %}
-                    <h4>{{ els.check.capability.check }}</h4>
-                    {% endif %}
+                    <div class="question--header" style="margin: 2rem 0 1rem 0;">
+                        <div class="eyebrow"
+                             style="text-transform: uppercase; font-size: 0.8rem; margin-bottom: .25rem;">question {{ compound.capability.id }} ·
+                            {{ compound.label }}
+                        </div>
+                        <h4 style="margin: .25rem 0;">{{ els.check.capability.check }}</h4>
+                    </div>
                     <div class="review-table">
                         {% for info in els.check.capability.application_info %}
                         <div class="review-table__row">
@@ -106,7 +110,7 @@
                         {% endfor %}
                 </div>
             </div>
-                {% if els.check.capability.remember or els.check.capability.instructions %}
+                {% if els.check.capability.instructions %}
                 <button
                         type="button"
                         class="criterion-instructions-trigger"

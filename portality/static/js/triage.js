@@ -7,7 +7,7 @@ doaj.triage.Recommendation = class {
     }
 
      handle(recommendation) {
-        if (recommendation && recommendation.code !== "normal" && !recommendation_overwritten) {
+        if (recommendation && recommendation.code !== "normal") {
             window.location.href = this.url;
         }
     }
@@ -247,18 +247,16 @@ doaj.triage.Errors = class {
                 $errorContainer
                     ._show()
                     .html(message);
-
-                const $invalidField = $(`#${error.field_id}`);
-                $invalidField
-                    .attr("aria-invalid", "true")
-                    .attr("aria-describedby", `${error.field_id}-error-container`)
-                    .trigger("focus");
-
-                const $answerInput = $invalidField
-                    .closest(".criterion-wrapper")
-                    .find("input[data-role='answer']:checked");
-
-                $answerInput.prop("checked", false);
+                if ($errorContainer.length) {
+                    const $probableField = $(`#${error.field_id}`);
+                    const $invalidField = $probableField.length ? $probableField : $(`[name=${error.field_id}]`).first();
+                    $invalidField
+                        .attr("aria-invalid", "true")
+                        .attr("aria-describedby", `${error.field_id}-error-container`)
+                        .trigger("focus");
+                    const $answerInput = $invalidField.closest(".criterion-wrapper").find("input[data-role='answer']:checked");
+                    $answerInput.prop("checked", false);
+                }
             }
         });
 
@@ -295,7 +293,6 @@ doaj.triage.questions = {};
 
 
 //------------------------- my code  -------------------------
-
 doaj.triage.questions.showOverview = function () {
     window.location.href = doaj.triage.overview_url;
 };
@@ -553,6 +550,7 @@ doaj.triage.questions.Question = class {
         this.$continueBtn.addClass("checked");
         this.$srAnswer.text(`Answered: ${answerVal}`);
         this.updateDynamicValues();
+        // doaj.triage.updateStatusBar();
     }
 
     expand() {
@@ -587,6 +585,8 @@ doaj.triage.questions.Question = class {
 
         this.expand();
         this.scrollTo();
+        this.$headerBtn._hide();
+        this.$wrapper.first("input").focus();
 
         if (this.instructions.show_by_default) {
             this.instructions.open();
@@ -604,13 +604,14 @@ doaj.triage.questions.Question = class {
     }
 
     static getFirstUnanswered() {
-        return this.$all.find(question => !question.answer);
+        return this.$all.find(question => !question.answer)
+            ?? this.$all.find(question => question.answer?.val() === "later");
     }
 
-    static getNextUnanswered(current) {
+    static getNextUnanswered(current, ignore_yellow=false) {;
         const afterCurrent = this.$all
             .slice(current.idx + 1)
-            .find(question => !question.answer);
+            .find(question => !question.answer || question.answer.val() === "later");
 
         if (afterCurrent) {
             return afterCurrent;
@@ -618,11 +619,12 @@ doaj.triage.questions.Question = class {
 
         return this.$all
             .slice(0, current.idx)
-            .find(question => !question.answer);
+            .find(question => !question.answer || question.answer.val() === "later");
     }
 
     deactivate() {
         this.$headerBtn.removeAttr("aria-current");
+        this.$headerBtn._show();
         this.collapse();
     }
 
@@ -646,141 +648,11 @@ doaj.triage.questions.Question = class {
 };
 
 
-doaj.triage.questions.CheckboxesQuestion =
-    class extends doaj.triage.questions.Question {
 
-    _initQuestion() {
-        this.$checkboxOther = this.$wrapper.find(
-            "input[type='checkbox'][data-role='other_option']"
-        );
-
-        if (this.$checkboxOther.length) {
-            const $otherValue = this._getOtherValue();
-
-            if (this.$checkboxOther.is(":checked")) {
-                $otherValue._show();
-            } else {
-                $otherValue._hide();
-            }
-        }
-
-        this.$checkboxNone = this.$wrapper.find(
-            "input[type='checkbox'][value='none']"
-        );
-
-        this._updateNoneCheckbox();
-    }
-
-    _setupEvents() {
-        super._setupEvents();
-
-        this.$checkboxNone.on("change", () => {
-            this._updateNoneCheckbox();
-        });
-
-        this.$checkboxOther.on("change", () => {
-            const $otherValue = this._getOtherValue();
-
-            if (this.$checkboxOther.is(":checked")) {
-                $otherValue._show();
-                $otherValue.trigger("focus");
-            } else {
-                $otherValue.find("input").val("");
-                $otherValue._hide();
-            }
-        });
-
-        this.$wrapper
-            .find("input")
-            .not(".review-outcome-answer")
-            .on("change", () => {
-                if (this.answer) {
-                    this.changeAnswer();
-                }
-            });
-    }
-
-    _getOtherValue() {
-        const controlledId =
-            this.$checkboxOther.attr("data-controls");
-
-        return this.$wrapper
-            .find("#" + controlledId)
-            .closest("[data-role='other_value']");
-    }
-
-    _updateNoneCheckbox() {
-        const noneIsChecked =
-            this.$checkboxNone.is(":checked");
-
-        const $otherCheckboxes = this.$checkboxNone
-            .closest("fieldset")
-            .find("input[type='checkbox']")
-            .not(this.$checkboxNone);
-
-        if (noneIsChecked) {
-            $otherCheckboxes.prop("checked", false);
-        }
-
-        $otherCheckboxes.prop("disabled", noneIsChecked);
-    }
-};
-
-
-doaj.triage.questions.Review =
-    class extends doaj.triage.questions.Question {
-
-    _initQuestion() {
-        this.$editBtn =
-            this.$wrapper.find(".button-edit");
-
-        this.$confirmCheckboxes =
-            this.$wrapper.find(".confirmation-checkbox");
-
-        this.$changeAnswerBtn.remove();
-
-        this.$answerInput.prop(
-            "disabled",
-            this.$confirmCheckboxes.filter(":not(:checked)").length !== 0
-        );
-    }
-
-    _setupEvents() {
-        super._setupEvents();
-
-        this.$editBtn.on("click", function () {
-            const controlledId = $(this).attr("aria-controls");
-
-            const question =
-                doaj.triage.questions.Question.getByName(controlledId);
-
-            if (question) {
-                question.activate();
-            }
-        });
-
-        this.$confirmCheckboxes.on("click", () => {
-            this.answer = null;
-
-            this.$answerInput.prop("checked", false);
-
-            this.$answerInput.prop(
-                "disabled",
-                this.$confirmCheckboxes.filter(":not(:checked)").length !== 0
-            );
-        });
-    }
-};
-
-
-doaj.triage.questions.MultistepQuestion =
-    class extends doaj.triage.questions.Question {
-};
 
 
 doaj.triage.questions.ActionQuestion =
     class extends doaj.triage.questions.Question {
-
     _initQuestion() {
         this.pendingAction = false;
 
@@ -904,6 +776,110 @@ doaj.triage.questions.ActionQuestion =
     }
 };
 
+doaj.triage.questions.CheckboxesQuestion = class extends doaj.triage.questions.ActionQuestion {
+    _initQuestion() {
+        super._initQuestion();
+        this.$checkboxOther = this.$wrapper.find(
+            "input[type='checkbox'][data-role='other_option']"
+        );
+
+        if (this.$checkboxOther.length) {
+            const $otherValue = this._getOtherValue();
+
+            if (this.$checkboxOther.is(":checked")) {
+                $otherValue._show();
+            } else {
+                $otherValue._hide();
+            }
+        }
+
+        this.$checkboxNone = this.$wrapper.find(
+            "input[type='checkbox'][value='none']"
+        );
+        this._updateNoneCheckbox();
+    }
+
+    _setupEvents() {
+        super._setupEvents();
+
+        this.$checkboxNone.on("change", () => {
+            this._updateNoneCheckbox();
+        });
+
+        this.$checkboxOther.on("change", () => {
+            const $otherValue = this._getOtherValue();
+
+            if (this.$checkboxOther.is(":checked")) {
+                $otherValue._show();
+                $otherValue.trigger("focus");
+            } else {
+                $otherValue.find("input").val("");
+                $otherValue._hide();
+            }
+        });
+
+        this.$wrapper.find("input").not(".review-outcome-answer").on("change", () => {
+            if (this.answer) {
+                this.changeAnswer();
+            }
+        });
+    }
+
+    _getOtherValue() {
+        const controlledId = this.$checkboxOther.attr("data-controls");
+
+        return this.$wrapper
+            .find("#" + controlledId)
+            .closest("[data-role='other_value']");
+    }
+
+    _updateNoneCheckbox() {
+        const noneIsChecked = this.$checkboxNone.is(":checked");
+        const $otherCheckboxes = this.$checkboxNone
+            .closest("fieldset")
+            .find("input[type='checkbox']")
+            .not(this.$checkboxNone);
+
+        if (noneIsChecked) {
+            $otherCheckboxes.prop("checked", false);
+        }
+
+        $otherCheckboxes.prop("disabled", noneIsChecked);
+    }
+};
+
+doaj.triage.questions.Review = class extends doaj.triage.questions.Question {
+    _initQuestion() {
+        this.$editBtn = this.$wrapper.find(".button-edit");
+        this.$confirmCheckboxes = this.$wrapper.find(".confirmation-checkbox");
+
+        this.$changeAnswerBtn.remove();
+        this.$answerInput.prop("disabled", this.$confirmCheckboxes.filter(":not(:checked)").length !== 0);
+
+    }
+
+    _setupEvents() {
+        super._setupEvents();
+
+        this.$editBtn.on("click", function () {
+            const controlledId = $(this).attr("aria-controls");
+            const question = doaj.triage.questions.Question.getByName(controlledId);
+
+            if (question) {
+                question.activate();
+            }
+        });
+
+        this.$confirmCheckboxes.on("click", () => {
+            this.answer = null;
+            this.$answerInput.prop("checked", false);
+            this.$answerInput.prop("disabled", this.$confirmCheckboxes.filter(":not(:checked)").length !== 0);
+        });
+    }
+};
+
+doaj.triage.questions.MultistepQuestion = class extends doaj.triage.questions.Question {
+};
 
 doaj.triage.questions.QuestionGroup = class {
     static $all = [];

@@ -12,8 +12,7 @@
     {% autoescape off %}
         {{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}
     {% endautoescape %}
-
-    <strong style="margin-left: 10px">{{ compound.label }}</strong>
+    <p class="group-label">{{ compound.label }}</p>
 
     {% for element in ns.others %}
         {% autoescape off %}

@@ -156,13 +156,13 @@ body.dashboard {
       position: sticky;
       top: 75px;
       z-index: 1000;
+      background-color: $light-grey;
       display: flex;
       flex-direction: row;
       align-items: flex-start;
       justify-content: space-between;
       margin-bottom: 0;
       padding: 1rem 0.5rem;
-      background-color: $light-grey;
 
       @media screen and (max-width: 768px) {
         padding: 20px;
@@ -174,6 +174,14 @@ body.dashboard {
 
       @media screen and (min-width: 1280px) {
         padding: 20px 40px;
+      }
+
+      .ew_header_nav {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 0;
       }
 
       .view-switcher {
@@ -454,11 +462,10 @@ body.dashboard {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      justify-content: flex-start;
-      gap: 1.5rem;
-
+      column-gap: .75rem;
+      row-gap: .25rem;
       .info-pair {
-        min-width: calc(33.3333% - 3rem);
+        width: calc(33.3333% - 1.5rem);
       }
     }
 
@@ -512,7 +519,8 @@ body.dashboard {
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
-        background: #fff;
+        background: $light-grey;
+        padding: 1rem;
         visibility: hidden;
         pointer-events: none;
         transform: translateX(100%);
@@ -590,12 +598,12 @@ body.dashboard {
 
       .criterion-instructions-close {
         position: absolute;
-        top: 0;
+        top: 1rem;
         color: $dark-grey;
         border: none;
         margin-bottom: 0;
         padding: 0;
-        right: 1rem;
+        right: 2rem;
         height: 1.25rem;
         width: 1.25rem;
         display: flex;
@@ -1101,6 +1109,16 @@ body.dashboard {
         padding: 0;
         * {
           border: none;
+        }
+        .group-label {
+          margin: 0;
+          border: 0;
+          width: 100%;
+          text-align: left;
+          font-size: 1rem;
+          font-weight: 700;
+          font-variant: small-caps;
+          background-color: $light-grey;
         }
       }
     }
