@@ -85,14 +85,14 @@
     {% endif %}
     <div class="row">
         <div class="col-md-8">
-            <a href="#" class="button button--primary button--cta" data-toggle="submission">Publisher Submission</a>
-            <a href="#" class="button button--primary" data-toggle="triage">Triage</a>
+            <button class="button button--primary button--cta" data-toggle="submission">Publisher Submission</button>
+            <button class="button button--primary" data-toggle="triage">Triage</button>
             <div class="submission">
                 {% autoescape off %}
                     {{ original_ro }}
                 {% endautoescape %}
             </div>
-            <div class="triage" style="display: none">
+            <div class="triage">
                 {% autoescape off %}
                     {{ ro_form }}
                 {% endautoescape %}
@@ -130,65 +130,19 @@
 
         </div>
     </div>
+</div>
 
 {% endblock %}
 
 {% block admin_js %}
-    <script type="text/javascript">
-        function initialiseWorkflowItemToggle() {
-            var toggleLinks = document.querySelectorAll("a[data-toggle]");
-            var sections = {
-                submission: document.querySelector(".submission"),
-                triage: document.querySelector(".triage")
-            };
-
-            function setActiveButton(sectionName) {
-                toggleLinks.forEach(function(link) {
-                    var isActive = link.getAttribute("data-toggle") === sectionName;
-                    link.classList.toggle("button--cta", isActive);
-                });
-            }
-
-            function showSection(sectionName) {
-                Object.keys(sections).forEach(function(name) {
-                    if (!sections[name]) {
-                        return;
-                    }
-
-                    sections[name].style.display = name === sectionName ? "block" : "none";
-                });
-            }
-
-            toggleLinks.forEach(function(link) {
-                link.addEventListener("click", function(event) {
-                    var sectionName = link.getAttribute("data-toggle");
-
-                    if (!sections[sectionName]) {
-                        return;
-                    }
-
-                    event.preventDefault();
-                    showSection(sectionName);
-                    setActiveButton(sectionName);
-                });
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", initialiseWorkflowItemToggle);
-
-        const showRejectionSection = document.getElementById("show-rejection-section");
-        const rejectionsSection = document.getElementById("rejection_section");
-
-        showRejectionSection.addEventListener("click", () => {
-            rejectionsSection.hidden = false;
-            showRejectionSection.hidden = true;
-            rejectionsSection.setAttribute("aria-expanded", "true");
-        //     set focus
-
-        });
-
-        jQuery(document).ready(function($) {
-            doaj.workflow.notes.init();
-        });
-    </script>
+<script type="text/javascript" src="/static/js/custom_jquery.js"></script>
+<script type="text/javascript" src="/static/js/overview.js"></script>
+<script>
+    jQuery(document).ready(function($) {
+        const answers = {{ wfc.data | tojson }}
+        const overview = new doaj.workflow.Overview(answers);
+        overview.init();
+        doaj.workflow.notes.init();
+    });
+</script>
 {% endblock %}
