@@ -1,4 +1,38 @@
 body.dashboard {
+  .tag.stage-tag {
+    @extend .button;
+    border-radius: 0;
+    margin: 0;
+    transition: transform 0.2s ease;
+    &:focus-visible,
+    &:hover {
+        transform: translateY(-0.5rem);
+        outline: 4px solid $grapefruit;
+    }
+    &--new {
+      background-color: $white;
+      color: $warm-black;
+      border: 1px solid $warm-black;
+      &:focus-visible,
+      &:hover {
+        background-color: $white;
+        color: $warm-black;
+      }
+    }
+    &--triage {
+      background-color: $grapefruit;
+      color: $warm-black;
+      border: 1px solid $grapefruit;
+      &:focus-visible,
+      &:hover {
+        background-color: $grapefruit;
+        color: $warm-black;
+      }
+    }
+    &[aria-selected="true"] {
+      transform: translateY(-0.5rem);
+    }
+  }
   &.ew {
     .save-notification {
       position: fixed;
@@ -1059,6 +1093,14 @@ body.dashboard {
         :hover, :focus {
           background-color: $sanguine;
           color: $white;
+        }
+      }
+    }
+    .history-section {
+      section {
+        padding: 0;
+        * {
+          border: none;
         }
       }
     }

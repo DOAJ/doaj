@@ -100,7 +100,6 @@ doaj.workflow.Overview = class {
                     "aria-selected": String(isActive),
                     "tabindex": isActive ? "0" : "-1"
                 })
-                .toggleClass("button--cta", isActive);
 
             const panel = document.getElementById(
                 $tab.attr("aria-controls")
