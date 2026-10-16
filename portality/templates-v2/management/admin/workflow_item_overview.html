@@ -84,19 +84,38 @@
     </div>
     {% endif %}
     <div class="row">
-        <div class="col-md-8">
-            <button class="button button--primary button--cta" data-toggle="submission">Publisher Submission</button>
-            <button class="button button--primary" data-toggle="triage">Triage</button>
-            <div class="submission">
+        <div class="col-md-8" role="tablist" aria-label="Application history">
+            <button type="button"
+                    class="button"
+                    role="tab"
+                    id="submission-tab"
+                    aria-controls="submission-panel"
+                    aria-selected="true">
+                Publisher Submission
+            </button>
+            <button class="button"
+                    role="tab"
+                    id="triage-tab"
+                    aria-controls="triage-panel"
+                    aria-selected="false">
+                Triage
+            </button>
+            <section id="submission-panel"
+                     role="tabpanel"
+                     aria-labelledby="submission-tab"
+            >
                 {% autoescape off %}
                     {{ original_ro }}
                 {% endautoescape %}
-            </div>
-            <div class="triage">
+            </section>
+            <section id="triage-panel"
+                 role="tabpanel"
+                 aria-labelledby="triage-tab"
+            >
                 {% autoescape off %}
                     {{ ro_form }}
                 {% endautoescape %}
-            </div>
+            </section>
         </div>
         <div class="col-md-4">
             {% if wfc.reviewer %}

@@ -3,41 +3,30 @@ doaj.workflow = doaj.workflow || {};
 
 doaj.workflow.Overview = class {
     constructor(wfc) {
-        this.answers = wfc.modules.triage.questions;
-        this.$toggleLinks = $(
-            'a[data-toggle="submission"], a[data-toggle="triage"]'
-        );
+        this.stage = {
+            NEW: "submission",
+            TRIAGE: "triage"
+        }
+        this.triage_answers = wfc.modules.triage.questions;
+        this.$tabs = $('button[role="tab"][aria-controls]');
 
         this.sections = {
             submission: $(".submission").first(),
             triage: $(".triage").first()
         };
 
-        if (this.hasAnswer()) {
-            this.sections.triage._show();
-            this.sections.submission._hide();
-        }
-        else {
-            this.sections.triage._hide();
-            this.sections.submission._show();
-        }
-
         this.$showRejectionSection = $("#show-rejection-section");
         this.$rejectionSection = $("#rejection_section");
     }
 
     init() {
-        this.$toggleLinks.on("click", (event) => {
-            const sectionName = $(event.currentTarget).attr("data-toggle");
-            const $section = this.sections[sectionName];
 
-            if (!$section || !$section.length) {
-                return;
-            }
-
+        this.$tabs.on("click", (event) => {
             event.preventDefault();
-            this.showSection(sectionName);
+            this.activateTab(event.currentTarget.id);
         });
+
+        this.activateTab(this.isTriageStarted() ? `${this.stage.TRIAGE}-tab` : `${this.stage.NEW}-tab`);
 
         if (this.$rejectionSection.length) {
             this.$showRejectionSection
@@ -54,25 +43,40 @@ doaj.workflow.Overview = class {
         }
     }
 
-    hasAnswer() {
-        return Object.values(this.answers).some(
+    isTriageStarted() {
+        return Object.values(this.triage_answers).some(
             value => Object.hasOwn(value, "answer")
         )
     }
 
-    showSection(sectionName) {
-        Object.entries(this.sections).forEach(([name, $section]) => {
-            $section.toggle(name === sectionName);
-        });
+    activateTab(tabId) {
+        const activeTab = document.getElementById(tabId);
 
-        this.$toggleLinks.each((index, link) => {
-            const $link = $(link);
+        if (!activeTab) return;
 
-            $link.toggleClass(
-                "button--cta",
-                $link.attr("data-toggle") === sectionName
+        const $tabs = $(activeTab)
+            .closest('[role="tablist"]')
+            .find('[role="tab"]');
+
+        $tabs.each((index, tab) => {
+            const $tab = $(tab);
+            const isActive = tab === activeTab;
+
+            $tab
+                .attr({
+                    "aria-selected": String(isActive),
+                    "tabindex": isActive ? "0" : "-1"
+                })
+                .toggleClass("button--cta", isActive);
+
+            const panel = document.getElementById(
+                $tab.attr("aria-controls")
             );
+
+            $(panel).prop("hidden", !isActive);
         });
+
+        $(activeTab).trigger("focus");
     }
 
     showRejectionSection() {
