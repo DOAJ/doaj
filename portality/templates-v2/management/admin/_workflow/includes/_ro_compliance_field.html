@@ -1,5 +1,4 @@
-<span>
-    {% autoescape off %}
-        {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }} {{ field.capability.check }}
-    {% endautoescape %}
-</span>
+<!--Check-->
+{% autoescape off %}
+    {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }} {{ field.parent.capability.id }}. {{ field.capability.check }}
+{% endautoescape %}

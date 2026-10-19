@@ -1,9 +1,8 @@
-<div>
-    <h2 class="group-label">{{ fieldset.label }}</h2>
+<!--Question group-->
+<h2 class="group-label">{{ fieldset.label }}</h2>
 
-    {% for element in fieldset.elements %}
-        {% autoescape off %}
-            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
-        {% endautoescape %}
-    {% endfor %}
-</div>
+{% for element in fieldset.elements %}
+{% autoescape off %}
+{{ element.renderer.draw(element, application=application, wfc=wfc) }}
+{% endautoescape %}
+{% endfor %}

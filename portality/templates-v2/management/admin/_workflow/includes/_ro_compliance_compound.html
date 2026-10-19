@@ -1,21 +1,22 @@
-<div>
-    {% set ns = namespace(check=None, others=[]) %}
-    {% for element in compound.elements %}
-        {% if element.capability.role == "check" %}
-            {% set ns.check = element %}
-        {% else %}
-            {% set ns.others = ns.others + [element] %}
-        {% endif %}
+{% set ns = namespace(check=None, others=[]) %}
+{% for element in compound.elements %}
+    {% if element.capability.role == "check" %}
+        {% set ns.check = element %}
+    {% else %}
+        {% set ns.others = ns.others + [element] %}
+    {% endif %}
 
-    {% endfor %}
+{% endfor %}
 
+<div style="padding: .725rem 0;">
+{% autoescape off %}
+    <a href="{{ url_for('workflow.triage_form', application_id=application.id) }}#{{compound.name}}" class="ro_check">
+    {{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}</a>
+{% endautoescape %}
+
+{% for element in ns.others %}
     {% autoescape off %}
-        <a href="{{ url_for('workflow.triage_form', application_id=application.id) }}#{{compound.name}}">{{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}
+        {{ element.renderer.draw(element, application=application, wfc=wfc) }}
     {% endautoescape %}
-
-    {% for element in ns.others %}
-        {% autoescape off %}
-            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
-        {% endautoescape %}
-    {% endfor %}
+{% endfor %}
 </div>

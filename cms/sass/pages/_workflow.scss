@@ -1111,12 +1111,30 @@ body.dashboard {
           border: none;
         }
         .group-label {
-          margin: 0;
           border: 0;
           width: 100%;
           text-align: left;
           font-size: 1rem;
           background-color: $light-grey;
+          margin-top: 0;
+          padding: .5rem;
+          &:first-of-type {
+            margin-top: 1rem;
+          }
+        }
+        p {
+          margin: .25rem 0;
+        }
+        .ro_check {
+          display: flex;
+          align-items: flex-start;
+          gap: .5rem;
+          > span {
+            height: 1.2rem;
+            > svg {
+              height: 100%;
+            }
+          }
         }
       }
     }

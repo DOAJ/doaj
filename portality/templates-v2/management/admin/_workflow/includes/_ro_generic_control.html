@@ -17,18 +17,10 @@
 {#Controls<br>#}
 {% set ns = namespace(values=[]) %}
 {% for control in controls %}
-{#    {% if control.label %}#}
-{#        <strong>{{ control.label.content }}</strong>#}
-{#    {% endif %}#}
-
-{#    {% set input=control.control %}#}
-{#    {% set content = {"value": ""} %}#}
-{#    {% if input.content %}#}
-{#        {% set content.value=render_content(input.content) %}#}
-{#    {% endif %}#}
-
     {% if control.control.attrs.value %}
         {% set ns.values = ns.values + [control.control.attrs.value] %}
+    {% elif control.control.tag == "textarea" and control.control.content %}
+        {% set ns.values = ns.values + [control.control.content] %}
     {% endif %}
 {% endfor %}
 
@@ -36,6 +28,4 @@
     {% for value in ns.values %}
         {{ render_value(value) }}{% if not loop.last %}, {% endif %}
     {% endfor %}
-{% else %}
-    -
 {% endif %}
