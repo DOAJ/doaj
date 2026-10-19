@@ -1,4 +1,12 @@
 <!--Check-->
 {% autoescape off %}
-    {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }} {{ field.parent.capability.id }}. {{ field.capability.check }}
+    {% set answered = namespace(v=False, display="") %}
+{% for control in field.control %}
+    {% set input=control.control %}
+    {% if input.attrs.checked %}
+        {% set answered.v = True %}
+        {% break %}
+    {% endif %}
+{% endfor %}
+    {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }} <span>{{ field.parent.capability.id }}. {{ field.capability.check }} {% if not answered.v %} <span style="color: #5C5956; font-style: italic">Not answered</span> {% endif %}</span>
 {% endautoescape %}

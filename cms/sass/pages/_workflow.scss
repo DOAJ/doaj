@@ -1115,9 +1115,10 @@ body.dashboard {
           width: 100%;
           text-align: left;
           font-size: 1rem;
-          background-color: $light-grey;
           margin-top: 0;
-          padding: .5rem;
+          padding: .5rem .5rem .5rem 0;
+          color: $dark-grey;
+          font-variant: small-caps;
           &:first-of-type {
             margin-top: 1rem;
           }
@@ -1128,13 +1129,7 @@ body.dashboard {
         .ro_check {
           display: flex;
           align-items: flex-start;
-          gap: .5rem;
-          > span {
-            height: 1.2rem;
-            > svg {
-              height: 100%;
-            }
-          }
+          gap: .25rem;
         }
       }
     }

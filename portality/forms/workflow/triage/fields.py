@@ -14,7 +14,7 @@ from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapa
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, \
     GenericControl, GenericField, \
     GenericCompound, JinjaFieldsetRenderer, GenericRORadioRenderer, GenericROCompoundFieldRenderer, \
-    GenericROFieldRenderer, GenericROControlRenderer
+    GenericROFieldRenderer, GenericROControlRenderer, RONoteRenderer
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
@@ -240,7 +240,7 @@ class NoteCapability(FormFieldCapability):
 
     alt_render = {
         "ro": {
-            "render_class": GenericROFieldRenderer,
+            "render_class": RONoteRenderer,
             "control_render_class": GenericROControlRenderer
         }
     }
@@ -2373,7 +2373,7 @@ class AdminSpecialException(ComplianceCheckField):
 
 class AdminSpecialExceptionNote(NoteField):
     name = "admin_special_exception_note"
-    capabilities = (GeneralNoteCapability(),)
+    capabilities = (NoteCapability(),)
 
 
 class SpecialExceptions(Field):
