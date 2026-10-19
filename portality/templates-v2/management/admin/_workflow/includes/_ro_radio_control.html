@@ -56,9 +56,9 @@
     {% elif answer.value == "non_compliant" %}
         <span style="color: #982E0A">{{ noncompliant_icon | safe }}</span>
     {% elif answer.value == "later" %}
-        {{ later_icon | safe }}
+        <span style="color: #F9D950">{{ later_icon | safe }}</span>
     {% elif answer.value == "action" %}
-        {{ action_icon | safe }}
+        <span style="color: #FD5A3B">{{ action_icon | safe }}</span>
     {% elif compliance == "conditional_compliant" %}
         {{ compliant_icon | safe }}
     {% elif compliance == "conditional_non_compliant" %}

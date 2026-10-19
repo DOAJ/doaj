@@ -1,6 +1,6 @@
 <!--Check-->
 {% autoescape off %}
-    {% set answered = namespace(v=False, display="") %}
+{% set answered = namespace(v=False, display="") %}
 {% for control in field.control %}
     {% set input=control.control %}
     {% if input.attrs.checked %}

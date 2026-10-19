@@ -11,6 +11,7 @@
 {% endfor %}
 
 {% if ns.values %}
-    {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
+<p><span style="font-weight: bold">{{ field.capability.label }}</span>
+    <span>{{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}</span></p>
 {% endif %}
 {% endautoescape %}

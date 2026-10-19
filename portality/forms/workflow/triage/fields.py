@@ -1357,6 +1357,12 @@ class AltTitle(Field):
         control_render_class = GenericControl
         render_class = GenericField
         attributes = {"data-value": "alttitle"}
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "alttitle"
     coerce = [Unicode(trim_whitespace=True)]

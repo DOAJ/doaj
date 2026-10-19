@@ -18,39 +18,50 @@
     {% endautoescape %}
 
 
-{% set vals = namespace(values=[]) %}
-{% for element in [ns.action]+[ns.note]+ns.others %}
+    {% set vals = namespace(values=[]) %}
+    {% for element in [ns.action]+[ns.note]+ns.others %}
     {% for control in element.control %}
     {% if control.control.attrs.value %}
-        {% set vals.values = vals.values + [control.control.attrs.value] %}
+    {% set vals.values = vals.values + [control.control.attrs.value] %}
     {% elif control.control.tag == "textarea" and control.control.content %}
-        {% set vals.values = vals.values + [control.control.content] %}
+    {% set vals.values = vals.values + [control.control.content] %}
     {% endif %}
-{% endfor %}
-{% endfor %}
-
-{% if vals.values|length %}
-<div class="ro_subquestions" style="padding: .5rem; margin-top: .5rem; background-color: #F6F4F4; font-size: smaller"
-    {% if ns.action %}
-    <div class="ro_action">
-        {% autoescape off %}
-        {{ ns.action.renderer.draw(ns.action, application=application, wfc=wfc) }}
-        {% endautoescape %}
-    </div>
-    {% endif %}
-
-    {% if ns.note %}
-    <div class="ro_note">
-        {% autoescape off %}
-        <p>{{ ns.note.renderer.draw(ns.note, application=application, wfc=wfc) }}</p>
-        {% endautoescape %}
-    </div>
-    {% endif %}
-
-    {% for element in ns.others %}
-    {% autoescape off %}
-    {{ element.renderer.draw(element, application=application, wfc=wfc) }}
-    {% endautoescape %}
     {% endfor %}
+    {% endfor %}
+
+    {% set check = namespace(answer=False, display="") %}
+    {% for control in ns.check.control %}
+    {% set input=control.control %}
+    {% if input.attrs.checked %}
+    {% set check.answer = input.attrs.value %}
+    {% break %}
+    {% endif %}
+    {% endfor %}
+
+    {% if vals.values|length %}
+    <div class="ro_subquestions"
+         style="padding: .5rem; margin-top: .5rem; background-color: #F6F4F4; font-size: smaller">
+        {% if ns.action and check.answer == "action" %}
+        <div class="ro_action">
+            {% autoescape off %}
+            {{ ns.action.renderer.draw(ns.action, application=application, wfc=wfc) }}
+            {% endautoescape %}
+        </div>
+        {% endif %}
+
+        {% if ns.note %}
+        <div class="ro_note">
+            {% autoescape off %}
+            <p>{{ ns.note.renderer.draw(ns.note, application=application, wfc=wfc) }}</p>
+            {% endautoescape %}
+        </div>
+        {% endif %}
+
+        {% for element in ns.others %}
+        {% autoescape off %}
+        <div>{{ element.renderer.draw(element, application=application, wfc=wfc) }}</div>
+        {% endautoescape %}
+        {% endfor %}
+    </div>
 </div>
 {% endif %}
