@@ -105,7 +105,8 @@ class UserEditForm(Form):
     password_confirm = PasswordField('Confirm password')
 
 class RegisterForm(RedirectForm):
-    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
+    # strip so stray spaces don't end up in the account id (and its URL)
+    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()], filters=[lambda x: x.strip() if x else x])
     name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
     sender_email = StringField('Email address', [
         validators.DataRequired(),
