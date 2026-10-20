@@ -1132,6 +1132,20 @@ body.dashboard {
           gap: .25rem;
         }
       }
+      .tag {
+        &.low {
+          background-color: $dark-green;
+          color: $white;
+        }
+        &.medium {
+          background-color: $grapefruit;
+          color: $warm-black;
+        }
+        &.high {
+          background-color: $sanguine;
+          color: $white;
+        }
+      }
     }
   }
 

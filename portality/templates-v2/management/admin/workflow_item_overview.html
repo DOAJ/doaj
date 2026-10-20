@@ -104,6 +104,20 @@
                      role="tabpanel"
                      aria-labelledby="submission-tab"
             >
+                <div class="stage_metadata">
+                    <div class="user">
+                    <span>Submitted by: </span>
+                        <span class="label tag">
+                            <small>
+                                <a href="/account/{{ application.admin.owner }}" title="Completed by {{ application.admin.owner }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    {{ application.admin.owner }}
+                                </a>
+                            </small>
+                        </span>
+                    </div>
+                    <span>on: {{ application.admin.date_applied }}</span>
+                </div>
                 {% autoescape off %}
                     {{ original_ro }}
                 {% endautoescape %}
@@ -112,6 +126,40 @@
                  role="tabpanel"
                  aria-labelledby="triage-tab"
             >
+                <div class="stage_metadata">
+                    {% if wfc.reviewer %}
+                    <div class="user">
+                        Assigned to:
+                        <span class="label tag">
+                            <small>
+                                <a href="/account/{{ wfc.reviewer.name }}" title="Assigned to {{ wfc.reviewer.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    {{ wfc.reviewer.id }}
+                                </a>
+                            </small>
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% set total_sv = wfc.modules.triage.questions.values()
+                        | selectattr('answer', 'equalto', 'non_compliant')
+                        | selectattr('sv', 'defined')
+                        | sum(attribute='sv')
+                    %}
+                    {% if total_sv < 3 %}
+                        {% set sv_class = "low" %}
+                    {% elif total_sv < 10 %}
+                        {% set sv_class = "medium" %}
+                    {% else %}
+                        {% set sv_class = "high" %}
+                    {% endif %}
+                    <div class="sv_value">
+                        <span class="label tag {{ sv_class }}">
+                            <small>
+                                    SV: {{ total_sv }}
+                            </small>
+                        </span>
+                    </div>
+                </div>
                 {% autoescape off %}
                     {{ ro_form }}
                 {% endautoescape %}
