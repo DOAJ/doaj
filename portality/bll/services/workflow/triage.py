@@ -1,4 +1,4 @@
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 from portality import constants
 from portality.bll import DOAJ
@@ -7,7 +7,12 @@ from portality.bll.exceptions import AuthoriseException
 from portality.bll.services.workflow.core import WorkflowEvent, State, Claim, Assign, Unclaim, Reassign, Unassign, \
     Fail, ApplicationEdit, WorkflowAction
 from portality.bll.services.workflow.rejected import Rejected
+from portality.core import app
 from portality.models import Account, WorkflowControl
+
+if TYPE_CHECKING:
+    from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment
+    from portality.bll.services.workflow.quality_review import QualityReviewAwaitingAssignment
 
 ########################################
 # Triage module state definition values
@@ -20,7 +25,7 @@ MODULE_TRIAGE_STAGES = [
     MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
 ]
 
-LEGACY_EDITOR_GROUP = None
+LEGACY_EDITOR_GROUP = app.config.get("LEGACY_WORKFLOW_TRIAGE_EDITOR_GROUP", "Triage")
 
 ######################################
 ## Workflow events specific to Triage
@@ -46,7 +51,7 @@ class AwaitingTriage(State):
     stage = WorkflowControl.ANY
     reviewer = WorkflowControl.UNASSIGNED
 
-    legacy_application_status = constants.APPLICATION_STATUS_NEW_WORKFLOW
+    legacy_application_status = constants.APPLICATION_STATUS_PENDING
     legacy_editor_group = LEGACY_EDITOR_GROUP
 
     events = [Claim, Assign]
@@ -204,7 +209,7 @@ class TriageAssessmentInProgress(TriageWorkingState):
     stage = MODULE_TRIAGE_STAGE_IN_PROGRESS
     reviewer = WorkflowControl.ASSIGNED
 
-    legacy_application_status = constants.APPLICATION_STATUS_IN_PROGRESS
+    legacy_application_status = constants.APPLICATION_STATUS_PENDING
     legacy_editor_group = LEGACY_EDITOR_GROUP
 
     events = [Unclaim, Reassign, Unassign, Fail, MinimalReview]
@@ -246,7 +251,7 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
     stage = MODULE_TRIAGE_STAGE_MINIMAL_REVIEW
     reviewer = WorkflowControl.ASSIGNED
 
-    legacy_application_status = constants.APPLICATION_STATUS_IN_PROGRESS
+    legacy_application_status = constants.APPLICATION_STATUS_PENDING
     legacy_editor_group = LEGACY_EDITOR_GROUP
 
     events = [Triaged, Unclaim, Reassign, Unassign, Fail, RescindMinimalReview]

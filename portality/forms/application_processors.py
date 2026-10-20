@@ -298,7 +298,7 @@ class NewApplication(ApplicationProcessor):
             self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
         else:
             # New applications now go to the new workflow
-            self.target.set_application_status(constants.APPLICATION_STATUS_NEW_WORKFLOW)
+            self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)
         self.target.set_last_manual_update()
 
@@ -332,7 +332,7 @@ class NewApplication(ApplicationProcessor):
                 from portality.tasks.helpers import background_helper
                 background_helper.submit_by_bg_task_type(ApplicationAutochecks,
                                                          application=self.target.id,
-                                                         status_on_complete=constants.APPLICATION_STATUS_NEW_WORKFLOW)
+                                                         status_on_complete=constants.APPLICATION_STATUS_PENDING)
             else:
                 # otherwise kick off the new workflow (we only save the workflow control, as the target
                 # as already been saved
