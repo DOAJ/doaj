@@ -35,7 +35,7 @@
             {% if event_claim and event_claim.is_available(current_user) %}
             <div class="claim">
                 {% with event = event_claim %}
-                {% include event_claim.template %}
+                    {% include event_claim.template %}
                 {% endwith %}
             </div>
             {% endif %}
@@ -43,7 +43,7 @@
             {% if event_assign and event_assign.is_available(current_user) %}
             <div class="assign">
                 {% with event = event_assign %}
-                {% include event_assign.template %}
+                    {% include event_assign.template %}
                 {% endwith %}
             </div>
             {% endif %}
@@ -51,21 +51,24 @@
             {% if event_reassign and event_reassign.is_available(current_user) %}
             <div class="reassign">
                 {% with event = event_reassign %}
-                {% include event_reassign.template %}
+                    {% include event_reassign.template %}
                 {% endwith %}
             </div>
             {% endif %}
-
-            <div class="reject">
-                <button type="button"
-                        class="btn btn--non-recommended"
-                        id="show-rejection-section"
-                        aria-expanded="false"
-                        aria-controls="rejection_section"
-                >
-                    <span data-feather="alert-circle"></span> Reject this application (non-recommended)
-                </button>
-            </div>
+        </div>
+        <div class="col-md-12 top-controls">
+            {% if event_reject and event_reject.is_available(current_user) %}
+                {% with event = event_reject %}
+                    {% include event_reject.template %}
+                {% endwith %}
+            {% endif %}
+        </div>
+        <div class="col-md-12 top-controls">
+            {% if event_triaged and event_triaged.is_available(current_user) %}
+                {% with event = event_triaged %}
+                    {% include event_triaged.template %}
+                {% endwith %}
+            {% endif %}
         </div>
     </div>
 

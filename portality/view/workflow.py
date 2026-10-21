@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response, flash
 from flask_login import login_required, current_user
 
-from portality import models, constants
+from portality import models, constants, lock
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
 from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail, Assign, Reassign
@@ -16,6 +16,7 @@ from portality.forms.workflow.submission.processors import OriginalROFormProcess
 from portality.forms.workflow.triage.processors import TriageFormProcessor, TriageROFormProcessor
 from portality.lib import dicts
 from portality.ui import templates
+from portality.ui.messages import Messages
 from portality.ui.workflow import StateUIFactory
 
 blueprint = Blueprint('workflow', __name__)
@@ -161,7 +162,7 @@ def note(note_id=None):
 @ssl_required
 @write_required()
 def triage_form(application_id):
-    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__USER_ATTR__TRIAGE)):
         abort(403)
 
     application = models.Application.pull(application_id)
@@ -208,7 +209,7 @@ def triage_form(application_id):
 @ssl_required
 @write_required()
 def triage_form_async(application_id, wfc_id):
-    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__USER_ATTR__TRIAGE)):
         abort(403)
 
     application = models.Application.pull(application_id)
@@ -344,12 +345,32 @@ def fail():
     app_id = request.form.get("application")
     async_request = request.form.get("async") == "y"
     onward = request.form.get("onward")
-    note = request.form.get("note")
-    embargo = request.form.get("embargo_end")
+    canned_reason = request.values.get("reject_reason", "")
+    additional_info = request.form.get("note")
+
+    reasons = []
+    if canned_reason != "":
+        reasons.append(canned_reason)
+    if additional_info != "":
+        reasons.append(additional_info)
+    if len(reasons) == 0:
+        abort(400)
+    reason = " - ".join(reasons)
+    note = Messages.REJECT_NOTE_WRAPPER.format(editor=current_user.id, note=reason)
+
+    applicationService = DOAJ.applicationService()
+
+    # retrieve the application and an edit lock on that application
+    try:
+        application, alock = applicationService.application(app_id, lock_application=True,
+                                                            lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
 
-    return _apply_event(wfc_id, Fail(current_user, note, embargo), async_request, onward)
+    return _apply_event(wfc_id, Fail(current_user, note, None), async_request, onward)
 
 @blueprint.route("/triaged", methods=["POST"])
 @login_required

@@ -21,7 +21,7 @@ def reviewer_factory(reviewer_def):
 
     if reviewer_def == "triage":
         editor = Account(**AccountFixtureFactory.make_editor_source())
-        editor.add_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        editor.add_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__USER_ATTR__TRIAGE)
         editor.set_id(editor.makeid())
         return editor
 
@@ -65,10 +65,10 @@ def label_factory(label_def):
         return None
 
     if label_def == "quick_fail":
-        return constants.EWF__QUICK_FAIL
+        return constants.EWF__USER_ATTR__QUICK_FAIL
 
     if label_def == "quality_review":
-        return constants.EWF__QUALITY_REVIEW
+        return constants.EWF__USER_ATTR__QUALITY_REVIEW
 
     raise ValueError(f"Unknown label definition '{label_def}'")
 
