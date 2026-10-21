@@ -13,6 +13,15 @@
   }
 }
 
+@media (min-width: 1279px) {
+  // nav content (90px padding + 75px bar) overflows the 150px height; keep it above page content
+  // so positioned content below can't steal hover from the dropdown triggers
+  .secondary-nav {
+    position: relative;
+    z-index: 1000;
+  }
+}
+
 .secondary-nav--precedes-highlight {
   background-color: $light-grey;
 }
