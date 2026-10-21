@@ -63,6 +63,8 @@ history/article/*
 !history/article/.gitkeep
 history/journal/*
 !history/journal/.gitkeep
+history/application/*
+!history/application/.gitkeep
 
 .s3fs-credentials
 # local changes devs have made to the docker setup
