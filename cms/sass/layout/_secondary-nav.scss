@@ -14,10 +14,11 @@
 }
 
 @media (min-width: 1279px) {
-  // nav content (90px padding + 75px bar) overflows the 150px height; keep it above page content
-  // so positioned content below can't steal hover from the dropdown triggers
-  .secondary-nav {
-    position: relative;
+  // nav content (90px padding + 75px bar) overflows the 150px height, so positioned page content
+  // can cover the bottom of the triggers and steal :hover. Raise only the active dropdown, so the
+  // overflow strip doesn't block clicks on page content the rest of the time.
+  .secondary-nav .dropdown:hover,
+  .secondary-nav .dropdown.open {
     z-index: 1000;
   }
 }
