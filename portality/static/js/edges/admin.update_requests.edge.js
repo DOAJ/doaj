@@ -63,7 +63,7 @@ doaj.adminApplicationsSearch = {
                 {'display': 'Journal language', 'field': 'index.language'},
                 {'display': 'Publisher', 'field': 'bibjson.publisher.name'},
                 {'display': 'Journal: Alternative Title', 'field': 'bibjson.alternative_title'},
-                {'display': 'Notes', 'field': 'admin.notes.note'}
+                {'display': 'Notes', 'field': 'admin.index.notes'}
             ],
             searchPlaceholder: "Search All Applications",
             resultsDisplay: edges.newResultsDisplay({
