@@ -5,6 +5,8 @@ tests:
   - title: Test Authenticated Navigation and Account Actions
     context:
       role: admin
+    setup:
+      - '"Account actions" refers to the dropdown in the navigation bar labelled "Signed in as: <username>"'.
     steps:
     - step: Open the DOAJ homepage on the test server
       results:
