@@ -479,12 +479,19 @@ body.dashboard {
       position: relative;
       min-width: 0;
 
+      .banner {
+        border: solid 2px red;
+        padding: 1rem;
+        width: 100%;
+      }
       .criterion-layout__question {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
       }
-
+      .question--header {
+        margin: 1rem 0 1rem 0;
+      }
       h4 {
         width: 100%;
         margin: 1.25rem 0;

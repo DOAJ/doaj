@@ -2,20 +2,55 @@ window.doaj = window.doaj || {};
 window.doaj.triage = window.doaj.triage || {};
 
 doaj.triage.Recommendation = class {
-    constructor(url) {
-        this.url = url;
+    constructor(recommendation_url) {
+        this.wasAnnouncedBefore = false;
+        this.recommendation_url = recommendation_url;
+        this.recommendation = null;
     }
 
-     handle(recommendation) {
-        if (recommendation && recommendation.code !== "normal") {
-            window.location.href = this.url;
+    isRecommendationActive() {
+        return this.recommendation !== null;
+    }
+
+    handle(recommendation) {
+        this.recommendation = recommendation;
+        if (recommendation && recommendation.code === "reject") {
+            doaj.triage.questions.showRejectionRecommendedBanners();
+        } else {
+            this.wasAnnouncedBefore = false;
+            doaj.triage.questions.hideRejectionRecommendedBanners();
         }
+    }
+
+    setWasAnnouncedBefore(value) {
+        this.wasAnnouncedBefore = value;
+    }
+
+    checkRecommendationAsynch() {
+        $.ajax({
+            url: this.recommendation_url,
+            method: "GET",
+            processData: false,
+            contentType: false,
+            dataType: "json"
+        }).done(function (data) {
+            doaj.triage.recommendation.handle(data.recommendation);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            // A transport/server failure, distinct from a validation failure -
+            // there's no field-level information to show, so just log it.
+            console.error(
+                "Couldn't get recommendations",
+                textStatus,
+                errorThrown,
+                jqXHR.responseText
+            );
+        });
     }
 };
 
 doaj.triage.overview_url = $("#triage").data("overview-url");
 doaj.triage.recommendation = new doaj.triage.Recommendation(
-    doaj.triage.overview_url
+    doaj.triage.asyncRecommendationURL
 );
 doaj.triage._saving = false;
 doaj.triage._queuedOptions = null;
@@ -297,6 +332,43 @@ doaj.triage.questions.showOverview = function () {
     window.location.href = doaj.triage.overview_url;
 };
 
+doaj.triage.questions.rejectionRecommendedSections = $("div.banner[id^='triage_recommendation']");
+doaj.triage.questions.goToOverviewSRLinks = $("a[id^='go_to_overview']");
+doaj.triage.questions.dismissBtns = $("button[id^='dismiss_recommendation_banner']");
+doaj.triage.questions.AllQuestionsDoneSections = $("[id^='all_questions_done']");
+doaj.triage.rejectionRecommendedSectionsDismissed = false;
+doaj.triage.questions.showRejectionRecommendedBanners = function () {
+    if (!doaj.triage.recommendation.wasAnnouncedBefore){
+        doaj.triage.questions.rejectionRecommendedSections._show();
+        doaj.triage.questions.goToOverviewSRLinks._show();
+        doaj.triage.questions.dismissBtns._show();
+        $("#triage-announcement").text(
+            "Rejection is recommended. " +
+            "You can finish the triage now or continue. " +
+            "To reject click go to overview link after the current question." +
+            "To hide the link and continue choose dismiss button"
+        );
+    }
+}
+doaj.triage.questions.hideRejectionRecommendedBanners = function () {
+    doaj.triage.questions.rejectionRecommendedSections._hide();
+    doaj.triage.questions.goToOverviewSRLinks._hide();
+    doaj.triage.questions.dismissBtns._hide();
+    $("#triage-announcement").text();
+}
+
+doaj.triage.questions.dismissBtns.on("click", function () {
+    doaj.triage.questions.hideRejectionRecommendedBanners();
+    doaj.triage.questions.rejectionRecommendedSectionsDismissed = true;
+    doaj.triage.recommendation.setWasAnnouncedBefore(true);
+    console.log("Can we go further?")
+    if (doaj.triage.questions.currentQuestion.answer && doaj.triage.recommendation.wasAnnouncedBefore){
+        console.log("Yes l.369")
+        doaj.triage.questions.Question.activateNext();
+    }
+})
+
+
 doaj.triage.questions.answerIcons = {
     compliant: `<svg xmlns="http://www.w3.org/2000/svg" 
                     width="24" 
@@ -487,7 +559,10 @@ doaj.triage.questions.Question = class {
         doaj.triage.requestSave({
             blocking: true,
             onSuccess: () => {
-                this.activateNext();
+                if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore ){
+                    console.log("Yes l.564")
+                    doaj.triage.questions.Question.activateNext();
+                }
             }
         });
     }
@@ -527,7 +602,11 @@ doaj.triage.questions.Question = class {
             onSuccess: () => {
                 this.answer = $answer;
                 this._setupAnswered($answer);
-                this.activateNext();
+                if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore) {
+                    console.log("607")
+                    doaj.triage.questions.Question.activateNext();
+                }
+                doaj.triage.recommendation.setWasAnnouncedBefore(true);
             }
         });
     }
@@ -593,13 +672,11 @@ doaj.triage.questions.Question = class {
         }
     }
 
-    activateNext() {
+    static activateNext() {
         const next = doaj.triage.questions.Question.getNextUnanswered(this);
 
         if (next) {
             next.activate();
-        } else {
-            doaj.triage.questions.showOverview();
         }
     }
 
@@ -711,7 +788,11 @@ doaj.triage.questions.ActionQuestion =
                 this.answer = this.$actionInput;
 
                 this._setupAnswered(this.answer);
-                this.activateNext();
+                if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore) {
+                    console.log("793")
+                    doaj.triage.questions.Question.activateNext();
+                }
+                doaj.triage.recommendation.setWasAnnouncedBefore(true);
             },
 
             onFailure: () => {
@@ -1001,6 +1082,10 @@ else if ($firstUnanswered) {
 } else {
     Question.$all[0].activate();
 }
+
+doaj.triage.requestSave({
+    blocking: true
+});
 
 doaj.triage.questions.handleQuestionHeaderClick = function (btn) {
     const $btn = $(btn);

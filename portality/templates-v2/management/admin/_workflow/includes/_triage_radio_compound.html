@@ -9,6 +9,7 @@
             {% set cr = els.check.capability.get_control_renderer() %}
             {{ cr.draw(els.check.control, group=compound.name, action=compound.capability.action) }}
         </fieldset>
+        {{ super() }}
     </div>
 </div>
 {% endautoescape %}

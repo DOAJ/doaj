@@ -101,7 +101,7 @@ class TriageFormProcessor:
         self.pre_validate()
         return self.form_instance.validate()
 
-    def finalise(self, account):
+    def finalise(self, account, dry_run=False):
         self.forminstance2target(account)
 
         # reference for possible future audit system
@@ -118,9 +118,9 @@ class TriageFormProcessor:
 
         # May raise an AuthoriseExeption
         new_state = state.do(ApplicationEdit(account))
-
-        self._target_application.save()
-        self._target_wfc.save()
+        if not dry_run:
+            self._target_application.save()
+            self._target_wfc.save()
 
     ################################
     ## Internal processing methods
