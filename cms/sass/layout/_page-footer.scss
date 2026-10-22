@@ -74,3 +74,29 @@
     }
   }
 }
+
+// Bootstrap's px breakpoints ignore the font-size preference and the 1400px container cap (#4147),
+// so step the columns down by the footer's own width in em. Thresholds sit just under the
+// narrowest width each layout gets at default font size, so default rendering is unchanged.
+.page-footer > .container {
+  container-type: inline-size;
+
+  // flex instead of floats, so uneven column heights can't snag the next row
+  > .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+@container (max-width: 62em) {
+  .page-footer .col-lg-2 {
+    width: 33.33333333%;
+  }
+}
+
+// after the rule above so it wins when both match
+@container (max-width: 38em) {
+  .page-footer .col-sm-4 {
+    width: 50%;
+  }
+}
