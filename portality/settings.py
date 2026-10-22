@@ -1920,3 +1920,10 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
 SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False
+
+
+##################################################
+## Legacy Workflow settings
+
+# Legacy Triage Editor group to assign to applications as they pass through the new triage workflow
+LEGACY_WORKFLOW_TRIAGE_EDITOR_GROUP = "Triage"

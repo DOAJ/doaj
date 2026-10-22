@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response, flash
 from flask_login import login_required, current_user
 
-from portality import models, constants
+from portality import models, constants, lock
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
 from portality.bll.services.workflow.core import Claim, Unclaim, Unassign, Fail, Assign, Reassign
@@ -16,6 +16,7 @@ from portality.forms.workflow.submission.processors import OriginalROFormProcess
 from portality.forms.workflow.triage.processors import TriageFormProcessor, TriageROFormProcessor
 from portality.lib import dicts
 from portality.ui import templates
+from portality.ui.messages import Messages
 from portality.ui.workflow import StateUIFactory
 
 blueprint = Blueprint('workflow', __name__)
@@ -29,17 +30,19 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    svc = DOAJ.workflowService()
-    awaiting_triage = [StateUIFactory.get(x) for x in svc.first_n_in_state(AwaitingTriage, 10)]
-    triage_in_progress = [StateUIFactory.get(x) for x in svc.first_n_in_state(TriageAssessmentInProgress, 10)]
-    triage_minimal_review = [StateUIFactory.get(x) for x in svc.first_n_in_state(TriageAssessmentMinimalReview, 10)]
-    rejected = [StateUIFactory.get(x) for x in svc.first_n_in_state(Rejected, 10)]
-    return render_template(templates.ADMIN_WORKFLOW_OVERVIEW,
-                           awaiting_triage=awaiting_triage,
-                           triage_in_progress=triage_in_progress,
-                           triage_minimal_review=triage_minimal_review,
-                           rejected=rejected,
-                           admin_page=True)
+    # For now this page doesn't do anything
+    abort(404)
+    # svc = DOAJ.workflowService()
+    # awaiting_triage = [StateUIFactory.get(x) for x in svc.first_n_in_state(AwaitingTriage, 10)]
+    # triage_in_progress = [StateUIFactory.get(x) for x in svc.first_n_in_state(TriageAssessmentInProgress, 10)]
+    # triage_minimal_review = [StateUIFactory.get(x) for x in svc.first_n_in_state(TriageAssessmentMinimalReview, 10)]
+    # rejected = [StateUIFactory.get(x) for x in svc.first_n_in_state(Rejected, 10)]
+    # return render_template(templates.ADMIN_WORKFLOW_OVERVIEW,
+    #                        awaiting_triage=awaiting_triage,
+    #                        triage_in_progress=triage_in_progress,
+    #                        triage_minimal_review=triage_minimal_review,
+    #                        rejected=rejected,
+    #                        admin_page=True)
 
 @blueprint.route('/search', methods=['GET'])
 @login_required
@@ -52,7 +55,19 @@ def workflow_search():
 @ssl_required
 @write_required()
 def workflow_item_overview(application_id):
-    application = models.Application.pull(application_id)
+
+    svc = DOAJ.applicationService()
+    application_lock = None
+    locked_by_another_user = False
+    application = None
+    try:
+        application, application_lock = svc.application(application_id, lock_application=True, lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        application_lock = e.lock
+        locked_by_another_user = True
+        application = models.Application.pull(application_id)
+        # return render_template(templates.WORKFLOW_LOCKED, application=application, lock=e.lock)
+
     if application is None:
         abort(404)
 
@@ -67,6 +82,17 @@ def workflow_item_overview(application_id):
         wfc = models.WorkflowControl.find_by_application(application_id)
     if wfc is None:
         abort(404)
+
+    # NOTE: I have not locked the worflow control object here because it should always lock
+    # the application anyway, and they both go hand-in-hand.  There may be scenarios down the
+    # line which require it, but for now leaving it as-is
+    #
+    # wfc_lock = None
+    # try:
+    #     wfc_lock = lock.lock(constants.LOCK_WORKFLOW_CONTROL, wfc.id, current_user.id)
+    # except lock.Locked as e:
+    #     locked_by_another_user = True
+    #     wfc_lock = e.lock
 
     svc = DOAJ.workflowService()
     state = svc.state_for_application(application_id)
@@ -86,7 +112,15 @@ def workflow_item_overview(application_id):
     notes_processor = StandAloneNotesProcessor(source_application=application)
     notes_form = notes_processor.render_form()
 
-    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec, original_ro=original_ro, ro_form=ro_form, notes_form=notes_form)
+    return render_template(templates.WORKFLOW_ITEM_OVERVIEW,
+                           state=ui,
+                           recommendation=rec,
+                           original_ro=original_ro,
+                           ro_form=ro_form,
+                           notes_form=notes_form,
+                           locked_by_another_user=locked_by_another_user,
+                           lock=application_lock,
+                           )
 
 @blueprint.route("/note", methods=["POST"])
 @blueprint.route("/note/<note_id>", methods=["POST", "DELETE"])
@@ -102,8 +136,14 @@ def note(note_id=None):
         abort(400)
 
     resource = None
+    the_lock = None
     if resource_type == models.Application.__type__:
-        resource = models.Application.pull(resource_id)
+        svc = DOAJ.applicationService()
+        try:
+            resource, the_lock = svc.application(resource_id, lock_application=True,
+                                                    lock_account=current_user._get_current_object())
+        except lock.Locked as e:
+            abort(409)
     else:
         abort(400)
 
@@ -120,6 +160,7 @@ def note(note_id=None):
 
         resource.remove_note_by_id(note_id)
         resource.save()
+        the_lock.delete()  # delete the lock, as we don't need it any more
 
         data = {
             "id": note_id,
@@ -127,6 +168,7 @@ def note(note_id=None):
             "resource_id": resource_id,
             "status": "deleted"
         }
+
         return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
 
     else:
@@ -148,6 +190,7 @@ def note(note_id=None):
             note_obj = resource.add_note(note=note_text, author_id=current_user.id)
 
         resource.save()
+        the_lock.delete()  # delete the lock, as we don't need it any more
 
         # FIXME: not ideal to call internal method
         data = resource._note_to_legacy_dict(note_obj)
@@ -161,10 +204,16 @@ def note(note_id=None):
 @ssl_required
 @write_required()
 def triage_form(application_id):
-    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__USER_ATTR__TRIAGE)):
         abort(403)
 
-    application = models.Application.pull(application_id)
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(application_id, lock_application=True,
+                                             lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        return redirect(url_for("workflow.workflow_item_overview", application_id=application_id))
+
     if application is None:
         abort(404)
 
@@ -208,10 +257,16 @@ def triage_form(application_id):
 @ssl_required
 @write_required()
 def triage_form_async(application_id, wfc_id):
-    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)):
+    if not (current_user.is_super or current_user.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__USER_ATTR__TRIAGE)):
         abort(403)
 
-    application = models.Application.pull(application_id)
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(application_id, lock_application=True,
+                                                lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     if application is None:
         abort(404)
 
@@ -269,6 +324,7 @@ def _apply_event(wfc_id, event, async_request, onward_url):
 @blueprint.route('/claim', methods=['POST'])
 @login_required
 @ssl_required
+@write_required()
 def claim():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
@@ -276,11 +332,20 @@ def claim():
     onward = request.form.get("onward")
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(app_id, lock_application=True,
+                                                lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     return _apply_event(wfc_id, Claim(current_user), async_request, onward)
 
 @blueprint.route("/unclaim", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def unclaim():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
@@ -288,11 +353,20 @@ def unclaim():
     onward = request.form.get("onward")
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(app_id, lock_application=True,
+                                                lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     return _apply_event(wfc_id, Unclaim(current_user), async_request, onward)
 
 @blueprint.route("/assign", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def assign():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
@@ -305,11 +379,20 @@ def assign():
 
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(app_id, lock_application=True,
+                                                lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     return _apply_event(wfc_id, Assign(current_user, assign_to), async_request, onward)
 
 @blueprint.route("/reassign", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def reassign():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
@@ -322,11 +405,20 @@ def reassign():
 
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(app_id, lock_application=True,
+                                                lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     return _apply_event(wfc_id, Reassign(current_user, assign_to), async_request, onward)
 
 @blueprint.route("/unassign", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def unassign():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
@@ -334,26 +426,56 @@ def unassign():
     onward = request.form.get("onward")
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(app_id, lock_application=True,
+                                                lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     return _apply_event(wfc_id, Unassign(current_user), async_request, onward)
 
 @blueprint.route("/fail", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def fail():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
     async_request = request.form.get("async") == "y"
     onward = request.form.get("onward")
-    note = request.form.get("note")
-    embargo = request.form.get("embargo_end")
+    canned_reason = request.values.get("reject_reason", "")
+    additional_info = request.form.get("note")
+
+    reasons = []
+    if canned_reason != "":
+        reasons.append(canned_reason)
+    if additional_info != "":
+        reasons.append(additional_info)
+    if len(reasons) == 0:
+        abort(400)
+    reason = " - ".join(reasons)
+    note = Messages.REJECT_NOTE_WRAPPER.format(editor=current_user.id, note=reason)
+
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
 
-    return _apply_event(wfc_id, Fail(current_user, note, embargo), async_request, onward)
+    applicationService = DOAJ.applicationService()
+
+    # retrieve the application and an edit lock on that application
+    try:
+        application, alock = applicationService.application(app_id, lock_application=True,
+                                                            lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
+    return _apply_event(wfc_id, Fail(current_user, note, None), async_request, onward)
 
 @blueprint.route("/triaged", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def triaged():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
@@ -364,36 +486,12 @@ def triaged():
         abort(400)
     if onward:
         onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    svc = DOAJ.applicationService()
+    try:
+        application, the_lock = svc.application(app_id, lock_application=True,
+                                                lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
     return _apply_event(wfc_id, Triaged(current_user, label), async_request, onward)
-
-@blueprint.route("/edit/<application_id>", methods=["GET"])
-@login_required
-@ssl_required
-def edit(application_id):
-    # FIXME: this is just a demonstrator
-    try:
-        wfc = models.WorkflowControl.find_by_application(application_id)
-    except ValueError:
-        abort(500)
-
-    if wfc is None:
-        abort(404)
-
-    event = None
-    if wfc.triage.review_complete:
-        event = RescindMinimalReview(current_user)
-    else:
-        event = MinimalReview(current_user)
-
-    svc = DOAJ.workflowService()
-    try:
-        new_state = svc.apply_event(wfc.id, event)
-    except AuthoriseException:
-        abort(401)
-    except ValueError:
-        abort(404)
-
-    url = url_for("workflow.index")
-    return redirect(url)
-
-

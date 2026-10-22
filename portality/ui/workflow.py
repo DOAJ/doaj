@@ -140,7 +140,6 @@ TRIAGE_EVENT_MAP = {
     MinimalReview: None,
     RescindMinimalReview: None,
     Triaged: TriageTriagedUI,
-
 }
 
 #####################################

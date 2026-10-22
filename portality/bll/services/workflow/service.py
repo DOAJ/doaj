@@ -1,6 +1,6 @@
 from typing import Type, Union
 
-from portality.bll.services.workflow.quality_review import QualityReviewAwaitingAssignment, QualityReviewAssessment
+from portality.bll.services.workflow.quality_review import IntegrityEthicsAwaitingAssignment, QualityReviewAssessment
 from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment, QuickFailCriteriaCheck
 from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
@@ -21,7 +21,7 @@ class WorkflowService:
         QuickFailCriteriaCheck,
 
         # Quality Review States
-        QualityReviewAwaitingAssignment,
+        IntegrityEthicsAwaitingAssignment,
         QualityReviewAssessment,
 
         # Rejected State
