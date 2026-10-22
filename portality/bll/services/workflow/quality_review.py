@@ -1,5 +1,6 @@
 from portality import constants
 from portality.bll.services.workflow.core import State
+from portality.core import app
 from portality.models import WorkflowControl
 
 MODULE_INTEGRITY_ETHICS = "integrity_ethics"
@@ -29,7 +30,7 @@ class IntegrityEthicsAwaitingAssignment(State):
     reviewer = WorkflowControl.UNASSIGNED
 
     legacy_application_status = constants.APPLICATION_STATUS_ON_HOLD
-    legacy_editor_group = None
+    legacy_editor_group = app.config.get("LEGACY_WORKFLOW_INTEGRITY_ETHICS_EDITOR_GROUP")
 
 
 class QualityReviewAssessment(State):

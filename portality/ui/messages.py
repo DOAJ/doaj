@@ -213,6 +213,11 @@ class Messages(object):
 
     DEFAULT_500_DESCRIPTION = "An error has occurred. It looks like something has gone wrong."
 
+    WORKFLOW_TRIAGED_NOTE = "Triage completed with label '{label}'"
+    WORKFLOW_TRIAGED_ASSIGN_GROUP = "You have completed triage, now please assign a suitable editorial group for the next stage of review."
+    WORKFLOW_TRIAGED_INTEGRITY_ETHICS = "You have completed triage, and the Quality Team has been assigned to the application.  You can close this record now, or make any further changes before sending it to the next stage of review."
+
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):

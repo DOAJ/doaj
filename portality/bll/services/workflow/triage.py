@@ -8,7 +8,8 @@ from portality.bll.services.workflow.core import WorkflowEvent, State, Claim, As
     Fail, ApplicationEdit, WorkflowAction
 from portality.bll.services.workflow.rejected import Rejected
 from portality.core import app
-from portality.models import Account, WorkflowControl
+from portality.models import Account, WorkflowControl, JournalLikeObject
+from portality.ui.messages import Messages
 
 if TYPE_CHECKING:
     from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment
@@ -320,6 +321,10 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
             raise ValueError("WorkflowControl is not bound to an application, cannot apply legacy bindings")
         self.application.remove_editor()
         self.application.remove_editor_group()
+
+        # add a note
+        note = Messages.WORKFLOW_TRIAGED_NOTE.format(label=event.label)
+        self.application.add_note(note, author_id=event.actor.id)
 
         if event.label in [constants.EWF__LABEL__NORMAL, constants.EWF__LABEL__MANED]:
             from portality.bll.services.workflow.quick_fail import QuickFailAwaitingAssignment

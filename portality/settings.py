@@ -1927,3 +1927,6 @@ SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False
 
 # Legacy Triage Editor group to assign to applications as they pass through the new triage workflow
 LEGACY_WORKFLOW_TRIAGE_EDITOR_GROUP = "Triage"
+
+# Legacy Quality Team Editor group to assign to applications as they leave triage
+LEGACY_WORKFLOW_INTEGRITY_ETHICS_EDITOR_GROUP = "Quality team"

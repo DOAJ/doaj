@@ -480,12 +480,17 @@ def triaged():
     wfc_id = request.form.get("workflow_control")
     app_id = request.form.get("application")
     async_request = request.form.get("async") == "y"
-    onward = request.form.get("onward")
+
     label = request.form.get("label")
     if label is None or label == "":
         abort(400)
-    if onward:
-        onward = url_for(onward, application_id=app_id, wfc=wfc_id)
+
+    if label in [constants.EWF__LABEL__NORMAL, constants.EWF__LABEL__MANED]:
+        flash(Messages.WORKFLOW_TRIAGED_ASSIGN_GROUP, "success")
+    else:
+        flash(Messages.WORKFLOW_TRIAGED_INTEGRITY_ETHICS, "success")
+
+    onward = url_for("admin.application", application_id=app_id)
 
     svc = DOAJ.applicationService()
     try:
