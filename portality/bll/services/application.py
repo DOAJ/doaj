@@ -622,7 +622,7 @@ class ApplicationService(object):
         ], exceptions.ArgumentException)
 
         # pull the application from the database
-        application = models.Suggestion.pull(application_id)
+        application = models.Application.pull(application_id)
 
         # if we've retrieved the journal, and a lock is requested, request it
         the_lock = None

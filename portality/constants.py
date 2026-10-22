@@ -40,6 +40,7 @@ PROVENANCE_STATUS_ACCEPTED = "status:accepted"
 
 LOCK_APPLICATION = "suggestion"
 LOCK_JOURNAL = "journal"
+LOCK_WORKFLOW_CONTROL = "workflow_control"
 
 IDENT_TYPE_DOI = "doi"
 IDENT_TYPE_PISSN = "pissn"
