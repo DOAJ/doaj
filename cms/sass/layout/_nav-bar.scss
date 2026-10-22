@@ -99,21 +99,26 @@ nav {
           text-transform: uppercase;
         }
       }
+
     }
+
     ul.dropdown__menu {
       width: unset;
       height: fit-content;
       font-size: .889em;
       left: 1.5rem;
       min-width: calc(100% - 3rem);
+
       .nav-bar__logout-form {
         margin-bottom: 0;
+
         button.dropdown__link.btn-logout {
           margin-bottom: 0;
           width: 100%;
           color: white;
           border: none;
           text-align: start;
+
           &:hover,
           &:focus,
           &:active {
