@@ -56,7 +56,7 @@
             </p>
             <a class="button" href="{{ url_for('workflow.triage_form', application_id=application.id) }}">Go to overview</a>
         </div>
-        <div class="banner"
+        <div class="banner container"
             id="triage_recommendation--{{compound.name}}"
             aria-labelledby="triage_recommendation-title--{{compound.name}}"
             aria-describedby="triage_recommendation-description--{{compound.name}}"
@@ -67,7 +67,7 @@
                 remaining questions and can finish the triage now. However, you can continue reviewing the application
                 if you prefer.
             </p>
-            <a class="button" href="{{ url_for('workflow.triage_form', application_id=application.id) }}">Go to overview</a>
+            <a class="button button--cta" href="{{ url_for('workflow.workflow_item_overview', application_id=application.id) }}">Go to overview</a>
             <button id="dismiss_recommendation_banner--{{ compound.name }}" class="alert__close" type="button">Dismiss and continue triage</button>
         </div>
         <div class="col-md-12">

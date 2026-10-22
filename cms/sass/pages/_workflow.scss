@@ -480,9 +480,29 @@ body.dashboard {
       min-width: 0;
 
       .banner {
-        border: solid 2px red;
-        padding: 1rem;
+        border: solid 2px $dark-grey;
+        padding: 1rem 80px;
         width: 100%;
+        background-color: #F6F4F4;
+        margin-top: 0.25rem;
+        font-size: 0.8rem;
+        h2 {
+          font-size: 1.1rem;
+          text-transform: uppercase;
+        }
+        a, button {
+          margin-bottom: 0;
+        }
+        .alert__close {
+          border: none;
+          text-transform: none;
+          text-decoration: underline;
+          font-size: 0.7rem;
+          &:hover {
+            background-color: transparent;
+            color: $grapefruit;
+          }
+        }
       }
       .criterion-layout__question {
         display: flex;
