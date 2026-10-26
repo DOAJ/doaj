@@ -1,6 +1,9 @@
 /** base namespace for all DOAJ-specific functions */
 // ~~ DOAJ:Library ~~
-var doaj = {
+window.doaj = window.doaj || {};
+var doaj = window.doaj;
+
+Object.assign(doaj, {
     scrollPosition: 100,
     init : function() {
         // Use Feather icons
@@ -286,6 +289,14 @@ var doaj = {
         }
     },
 
+    getBaseURL: function() {
+        return window.location.protocol + "//" + document.location.host;
+    },
+
+    buildUrl: function(path) {
+        return doaj.getBaseURL() + path;
+    },
+
     searchQuerySource : function (params) {
         // ~~-> Edges:Technology ~~
         // ~~-> Elasticsearch:Technology ~~
@@ -343,7 +354,7 @@ var doaj = {
         let source = JSON.stringify(obj)
         return encodeURIComponent(source)
     }
-};
+});
 
 
 function setCookieConsent(event) {

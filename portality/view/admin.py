@@ -437,7 +437,7 @@ def update_requests():
 @write_required()
 @login_required
 @ssl_required
-def application(application_id):
+def application(application_id, **kwargs):
     auth_svc = DOAJ.authorisationService()
     application_svc = DOAJ.applicationService()
 
@@ -463,8 +463,15 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
+
+        continuation_info = {"initial_warning": request.args.get("info") == constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED}
+        replaces = Journal.find_by_issn(ap.bibjson().replaces)
+        if replaces:
+            continuation_info["journal"] = replaces[0]
+
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks,
+                                  continuation_info=continuation_info)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -479,7 +486,7 @@ def application(application_id):
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done', info=processor.info))
             except Exception as e:
                 flash("unexpected field " + str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
@@ -548,7 +555,7 @@ def application_quick_reject(application_id):
     flash(msg, "success")
 
     # redirect the user back to the edit page
-    return redirect(url_for('.application', application_id=application_id))
+    return redirect(url_for('admin.application', application_id=application_id, info=constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED))
 
 
 @blueprint.route("/admin_site_search", methods=["GET"])
@@ -693,6 +700,18 @@ def user_autocomplete():
     resp.mimetype = "application/json"
     return resp
 
+@blueprint.route("/autocomplete/user_tags")
+@login_required
+@ssl_required
+def user_tags_autocomplete():
+    q = request.values.get("q")
+    s = request.values.get("s", 10)
+    ac = models.Account.autocomplete("attributes." + constants.USER_ATTR__TAG + ".exact", q, size=s)
+
+    # return a json response
+    resp = make_response(json.dumps({"suggestions": ac}))
+    resp.mimetype = "application/json"
+    return resp
 
 # Route which returns the associate editor account names within a given editor group
 @blueprint.route("/dropdown/eg_associates")
@@ -990,6 +1009,86 @@ def pdd_delete():
 @login_required
 def ris_search():
     return render_template(templates.ADMIN_RIS_SEARCH)
+
+@blueprint.route("/system/provenance", methods=["GET"])
+@login_required
+def system_object_provenance():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="provenance_search",
+                           init_function="initProvenance",
+                           page_title="Provenance")
+
+@blueprint.route("/system/file-uploads", methods=["GET"])
+@login_required
+def system_object_file_uploads():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="file_uploads_search",
+                           init_function="initFileUploads",
+                           page_title="File Uploads")
+
+@blueprint.route("/system/bulk-uploads", methods=["GET"])
+@login_required
+def system_object_bulk_uploads():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="bulk_uploads_search",
+                           init_function="initBulkUploads",
+                           page_title="Bulk Uploads")
+
+@blueprint.route("/system/cache", methods=["GET"])
+@login_required
+def system_object_cache():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="cache_search",
+                           init_function="initCache",
+                           page_title="Cache")
+
+@blueprint.route("/system/locks", methods=["GET"])
+@login_required
+def system_object_locks():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="locks_search",
+                           init_function="initLocks",
+                           page_title="Locks")
+
+@blueprint.route("/system/preservation", methods=["GET"])
+@login_required
+def system_object_preservation():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="preservation_search",
+                           init_function="initPreservation",
+                           page_title="Preservation")
+
+@blueprint.route("/system/article-tombstones", methods=["GET"])
+@login_required
+def system_object_article_tombstones():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="article_tombstones_search",
+                           init_function="initArticleTombstones",
+                           page_title="Article Tombstones")
+
+@blueprint.route("/system/draft-applications", methods=["GET"])
+@login_required
+def system_object_draft_applications():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="draft_applications_search",
+                           init_function="initDraftApplications",
+                           page_title="Draft Applications")
+
+@blueprint.route("/system/harvester-state", methods=["GET"])
+@login_required
+def system_object_harvester_state():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="harvester_state_search",
+                           init_function="initHarvesterState",
+                           page_title="Harvester State")
+
+@blueprint.route("/system/autochecks", methods=["GET"])
+@login_required
+def system_object_autochecks():
+    return render_template(templates.ADMIN_SYSTEM_OBJECTS_SEARCH,
+                           container_id="autochecks_search",
+                           init_function="initAutochecks",
+                           page_title="Autochecks")
 
 @blueprint.route("/ris/<id>/<action>", methods=["POST"])
 @login_required

@@ -18,8 +18,7 @@
         $attrWf.select2({
             placeholder: 'Select workflow stages',
             width: '100%',
-            allowClear: true,
-            closeOnSelect: $attrWf.prop('multiple') ? false : true
+            newOption: true,
         });
 
         // Initialise select2 for language field. If the underlying select is multiple,
@@ -28,45 +27,76 @@
         $attrLang.select2({
             placeholder: 'Select language',
             width: '100%',
-            allowClear: true,
-            closeOnSelect: $attrLang.prop('multiple') ? false : true
+            newOption: true,
         });
 
         let $attrCountry = $("#attribute_country");
         $attrCountry.select2({
             placeholder: 'Select country',
             width: '100%',
-            allowClear: true,
-            closeOnSelect: $attrCountry.prop('multiple') ? false : true
+            newOption: true
         })
 
         let $otherAttr = $("#attribute_tag");
         // Turn a simple text field into a free-text tag entry box.
         // Use comma as the token separator so users can enter tags separated by commas.
         $otherAttr.select2({
-            tags: true,
-            tokenSeparators: [','],
-            placeholder: 'Add tags',
-            width: '100%',
-            allowClear: true,
-            closeOnSelect: true,
-            // Remove the built-in "Searching..." message/spinner since there is
-            // no remote data source — return an empty string for the searching
-            // message so the spinner text is not shown.
-            language: {
-                searching: function() { return ''; }
-            },
-            // Ensure markup isn't escaped so empty searching messages don't show markup
-            escapeMarkup: function (markup) { return markup; },
-            // Normalize entered tags by trimming whitespace and preventing empty tags
-            createTag: function (params) {
-                var term = $.trim(params.term);
-                if (term === '') {
-                    return null;
+            multiple: true,
+            minimumInputLength: 1,
+            ajax: {
+                url: current_scheme + "//" + current_domain + "/admin/autocomplete/user_tags",
+                dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        q: term
+                    };
+                },
+                results: function (data, page) {
+                    return {results: data["suggestions"]};
                 }
-                return { id: term, text: term };
-            }
+            },
+            createSearchChoice: function (term) {
+                return {id: $.trim(term), text: $.trim(term)};
+            },
+            initSelection: function (element, callback) {
+                var initial = element.val();
+                var entries = initial.split(",").map(x => x.trim()).filter(x => x !== "");
+                var data = [];
+                for (var i = 0; i < entries.length; i++) {
+                    data.push({id: entries[i], text: entries[i]});
+                }
+                callback(data);
+            },
+            placeholder: "Add tags",
+            allowClear: false,
+            tags: true,
+            tokenSeparators: [',', ";"],
+            width: 'resolve'
         });
+        {#$otherAttr.select2({#}
+        {#    tags: true,#}
+        {#    tokenSeparators: [','],#}
+        {#    placeholder: 'Add tags',#}
+        {#    width: '100%',#}
+        {#    allowClear: true,#}
+        {#    closeOnSelect: true,#}
+        {#    // Remove the built-in "Searching..." message/spinner since there is#}
+        {#    // no remote data source — return an empty string for the searching#}
+        {#    // message so the spinner text is not shown.#}
+        {#    language: {#}
+        {#        searching: function() { return ''; }#}
+        {#    },#}
+        {#    // Ensure markup isn't escaped so empty searching messages don't show markup#}
+        {#    escapeMarkup: function (markup) { return markup; },#}
+        {#    // Normalize entered tags by trimming whitespace and preventing empty tags#}
+        {#    createTag: function (params) {#}
+        {#        var term = $.trim(params.term);#}
+        {#        if (term === '') {#}
+        {#            return null;#}
+        {#        }#}
+        {#        return { id: term, text: term };#}
+        {#    }#}
+        {#});#}
 
         // Scroll to errors
         let firstError = $('.errors')[0];

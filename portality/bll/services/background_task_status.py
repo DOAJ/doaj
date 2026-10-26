@@ -2,7 +2,7 @@
 ~~BackgroundTask:Monitoring~~
 """
 import itertools
-from typing import Iterable
+from typing import Iterable, Optional
 
 from portality import constants
 from portality.core import app
@@ -76,7 +76,17 @@ class BackgroundTaskStatusService:
             err_msgs=msg
         )
 
-    def create_errors_status(self, action, check_sec=3600, allowed_num_err=0, **_) -> dict:
+    def create_errors_status(self, action, check_sec=3600, allowed_num_err: Optional[int] = 0, **_) -> dict:
+        if allowed_num_err is None:
+            # error-count check disabled for this action - status is determined solely by
+            # the last_run_successful check instead
+            return dict(
+                status=constants.BG_STATUS_STABLE,
+                total=BackgroundJob.hit_count(query=SimpleBgjobQueue(action, status=constants.BGJOB_STATUS_ERROR).query()),
+                in_monitoring_period=None,
+                err_msgs=[],
+            )
+
         in_monitoring_query = SimpleBgjobQueue(action, status=constants.BGJOB_STATUS_ERROR, since=dates.before_now(check_sec))
         num_err_in_monitoring = BackgroundJob.hit_count(query=in_monitoring_query.query())
 

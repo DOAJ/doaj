@@ -294,6 +294,12 @@ def proxyfix(app):
 ##################################################
 # Jinja2
 
+from jinja2 import pass_context
+
+@pass_context
+def current_template_name(ctx):
+    return ctx.name  # name of template currently rendering this expression
+
 def setup_jinja(app):
     """
     Jinja2:Environment->Jinja2:Technology
@@ -304,6 +310,10 @@ def setup_jinja(app):
 
     app.jinja_env.add_extension('jinja2.ext.do')
     app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+
+    app.jinja_env.trim_blocks = True
+    app.jinja_env.lstrip_blocks = True
+
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
     #~~->Constants:Config~~
@@ -316,6 +326,8 @@ def setup_jinja(app):
     # ~~->DOAJ:Service~~
     app.jinja_env.globals['services'] = DOAJ
     _load_data(app)
+
+    app.jinja_env.globals["current_template_name"] = current_template_name
     #~~->CMS:DataStore~~
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates-v2',
                                              app.config['BASE_FILE_PATH'] + '/templates',

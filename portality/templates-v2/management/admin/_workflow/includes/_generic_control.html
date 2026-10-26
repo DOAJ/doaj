@@ -7,12 +7,12 @@
             {%- set ic_content = ic.content -%}
             {%- set rendered_content = render_content(ic_content) -%}
             {% autoescape off %}
-            {{ make_tag(ic, rendered_content) }}
+            {{- make_tag(ic, rendered_content) -}}
             <{{ ic.tag }} {% for k, v in ic.attrs %}{{ k }}="{{ v }}" {% endfor %} {% if not ic.close %}/{% endif %}>
-                {{ rendered_content }}
-            {% if ic.close %}
+                {{- rendered_content -}}
+            {%- if ic.close -%}
                 </{{ic.tag}}>
-            {% endif %}
+            {%- endif -%}
             {% endautoescape %}
         {%- endfor -%}
 
@@ -21,18 +21,18 @@
     {%- endif -%}
 {%- endmacro %}
 
-{% macro make_tag(spec, content) %}
+{%- macro make_tag(spec, content) -%}
     {% set attrs = spec.attrs %}
     <{{ spec.tag }}
         {% if attrs %}
             {% for k, v in spec.attrs.items() %}{{ k }}="{{ v }}" {% endfor %}
         {% endif %}
         {% if spec.tag != "label" and not spec.close %}/{% endif %}>
-            {{ content }}
-    {% if spec.tag == "label" or spec.close %}
+            {{- content -}}
+    {%- if spec.tag == "label" or spec.close -%}
         </{{spec.tag}}>
-    {% endif %}
-{%- endmacro %}
+    {%- endif -%}
+{%- endmacro -%}
 
 {% for control in controls %}
     {% if control.label %}
@@ -40,7 +40,7 @@
     {% endif %}
 
     {% set input=control.control %}
-    {% set content = {"value": ""} %}
+    {% set content = namespace(value="") %}
     {% if input.content %}
         {% set content.value=render_content(input.content) %}
     {% endif %}

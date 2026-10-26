@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.6.10"
+DOAJ_VERSION = "8.7.4"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -34,7 +34,7 @@ REMEMBER_COOKIE_SECURE = True
 TESTDRIVE_ENABLED = False
 
 # List of script names which can be executed via the testdrive.
-TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications"]
+TESTDRIVE_SCRIPT_WHITELIST = ["article_deletion_notifications", "approaching_flag_deadline"]
 
 ####################################
 # Debug Mode
@@ -357,6 +357,9 @@ ROLE_MAP = {
 SYSTEM_USERNAME = "system"
 RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
+# Roles assigned to all users when they are registered
+DEFAULT_REGISTER_ROLES = [constants.ROLE_PUBLISHER, constants.ROLE_API]
+
 # Role map to destination route on login (when no other destination page is present)
 # checked in order, if the user has the role in the first tuple position, they will
 # be redirected to the endpoint in the second tuple position
@@ -481,6 +484,7 @@ HUEY_SCHEDULE = {
     "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
     # Weekly notification to publishers about deleted articles (Article Tombstones)
     "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
+    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
 }
 
 
@@ -913,6 +917,76 @@ QUERY_ROUTE = {
             "role": "admin",
             "dao": "portality.models.RISExport",  # ~~->AdminAlert:Model~~
             "required_parameters": None
+        },
+        # ~~->SystemObjectProvenanceQuery:Endpoint~~
+        "provenance": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Provenance",  # ~~->Provenance:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectFileUploadQuery:Endpoint~~
+        "upload": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.FileUpload",  # ~~->FileUpload:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectBulkUploadQuery:Endpoint~~
+        "bulk_articles": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.BulkArticles",  # ~~->BulkArticles:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectCacheQuery:Endpoint~~
+        "cache": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Cache",  # ~~->Cache:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectLockQuery:Endpoint~~
+        "lock": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Lock",  # ~~->Lock:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectPreservationQuery:Endpoint~~
+        "preserve": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.PreservationState",  # ~~->PreservationState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectArticleTombstoneQuery:Endpoint~~
+        "article_tombstone": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.ArticleTombstone",  # ~~->ArticleTombstone:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectDraftApplicationQuery:Endpoint~~
+        "draft_application": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.DraftApplication",  # ~~->DraftApplication:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectHarvesterStateQuery:Endpoint~~
+        "harvester_state": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.HarvestState",  # ~~->HarvestState:Model~~
+            "tolerate_missing_mapping": True
+        },
+        # ~~->SystemObjectAutocheckQuery:Endpoint~~
+        "autocheck": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Autocheck",  # ~~->Autocheck:Model~~
+            "tolerate_missing_mapping": True
         }
     },
     "associate_query": {
@@ -1538,8 +1612,11 @@ BG_MONITOR_DEFAULT_CONFIG = {
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
     'anon_export': {
-        'check_sec': _WEEK,    # a week
-        'allowed_num_err': 0
+        # anon_export only runs monthly, so a raw count of errors within a rolling window
+        # can't distinguish "still failing" from "failed a few times then succeeded" - disable
+        # this check and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['anon_export'] instead,
+        # which only cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'article_bulk_create': {
         'check_sec': _DAY,  # 1 day
@@ -1635,6 +1712,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
     'find_discontinued_soon': {
         'last_run_successful_in': _DAY + 2 * _HOUR
     },
+    'approaching_flag_deadline': {
+        'last_run_successful_in': _DAY + _HOUR
+    },
     'harvest': {
         'last_run_successful_in': _DAY + 2 * _HOUR
     },
@@ -1686,6 +1766,12 @@ PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 # report journals that discontinue in ... days (eg. 1 = tomorrow)
 DISCONTINUED_DATE_DELTA = 0
+
+####################################################
+# Flag management
+
+# find approaching deadlines in ... days (eg. 1 = tomorrow)
+FLAG_APPROACHING_DEADLINE_DELTA = 7
 
 ##################################################
 # Feature tours currently active
@@ -1833,4 +1919,4 @@ NON_PREMIUM_DELAY_SECONDS = 30 * _DAY
 # Object validation settings
 
 SEAMLESS_JOURNAL_LIKE_SILENT_PRUNE = False
-SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = True
+SEAMLESS_JOURNAL_LIKE_OTHER_FIELDS = False

@@ -59,6 +59,7 @@ NOTIFICATIONS = "management/admin/notifications.html"
 ADMIN_UNLOCKED = "management/admin/unlocked.html"
 ADMIN_JOURNAL_CSV_SEARCH = "management/admin/journal_csv_search.html"
 ADMIN_PDD_SEARCH = "management/admin/pdd_search.html"
+ADMIN_SYSTEM_OBJECTS_SEARCH = "management/admin/system_objects/_search.html"
 
 ADMIN_WORKFLOW_OVERVIEW = "management/admin/workflow.html"
 ADMIN_WORKFLOW_OVERVIEW_ENTRY = "management/admin/_workflow/includes/workflow_entry.html"
@@ -77,9 +78,11 @@ MANED_READ_ONLY_JOURNAL = "management/admin/readonly_journal.html"
 EDITOR_READ_ONLY_JOURNAL = "management/editor/readonly_journal.html"
 MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_journal_bulk_edit.html"
 
+
 # Workflow entry pages
 WORKFLOW_SEARCH = "management/admin/workflow_search.html"
 WORKFLOW_ITEM_OVERVIEW = "management/admin/workflow_item_overview.html"
+WORKFLOW_READ_ONLY_APPLICATION = "management/admin/_application-form/_workflow_read_only.html"
 
 # Generic Workflow components
 WORKFLOW_CLAIM_WIDGET = "management/admin/_workflow/includes/claim.html"
@@ -104,6 +107,9 @@ WORKFLOW_SIMPLE_COMPOUND = "management/admin/_workflow/includes/_simple_compound
 WORKFLOW_OPTIONS_AS_BUTTONS_COMPOUND = "management/admin/_workflow/includes/_options_as_buttons_compound.html"
 WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_claim.html"
 
+# Triage workflow read-only components
+WORKFLOW_TRIAGE_RO_FORM = "management/admin/_workflow/includes/_ro_triage_form.html"
+
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
 WORKFLOW_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_checkbox.html"
 WORKFLOW_TRIAGE_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_triage_checkbox.html"
@@ -116,8 +122,25 @@ WORKFLOW_TRIAGE_DUMMY = "management/admin/_workflow/includes/dummy.html"
 WORKFLOW_GENERIC_FIELDSET = "management/admin/_workflow/includes/_generic_fieldset.html"
 WORKFLOW_TRIAGE_FIELDSET = "management/admin/_workflow/includes/_triage_fieldset.html"
 WORKFLOW_GENERIC_COMPOUND = "management/admin/_workflow/includes/_generic_compound.html"
+WORKFLOW_GENERIC_ELEMENT_LIST = "management/admin/_workflow/includes/_generic_elementlist.html"
 WORKFLOW_GENERIC_FIELD = "management/admin/_workflow/includes/_generic_field.html"
 WORKFLOW_GENERIC_CONTROL = "management/admin/_workflow/includes/_generic_control.html"
+
+WORKFLOW_OVERVIEW_NOTES_FORM = "management/admin/_workflow/includes/_overview_notes_form.html"
+WORKFLOW_OVERVIEW_NOTE_COMPOUND = "management/admin/_workflow/includes/_overview_note_compound.html"
+WORKFLOW_OVERVIEW_NOTE_TEMPLATE_COMPOUND = "management/admin/_workflow/includes/_overview_note_template.html"
+
+# Read only versions
+WORKFLOW_RO_GENERIC_FIELDSET = "management/admin/_workflow/includes/_ro_generic_fieldset.html"
+WORKFLOW_RO_GENERIC_COMPOUND = "management/admin/_workflow/includes/_ro_generic_compound.html"
+WORKFLOW_RO_INLINE_COMPOUND = "management/admin/_workflow/includes/_ro_inline_compound.html"
+WORKFLOW_RO_COMPLIANCE_COMPOUND = "management/admin/_workflow/includes/_ro_compliance_compound.html"
+WORKFLOW_RO_GENERIC_FIELD = "management/admin/_workflow/includes/_ro_generic_field.html"
+WORKFLOW_RO_LIST_ENTRY_FIELD = "management/admin/_workflow/includes/_ro_list_entry_field.html"
+WORKFLOW_RO_JUST_CONTROL_FIELD = "management/admin/_workflow/includes/_ro_just_control_field.html"
+WORKFLOW_RO_COMPLIANCE_FIELD = "management/admin/_workflow/includes/_ro_compliance_field.html"
+WORKFLOW_RO_RADIO_CONTROL = "management/admin/_workflow/includes/_ro_radio_control.html"
+WORKFLOW_RO_GENERIC_CONTROL = "management/admin/_workflow/includes/_ro_generic_control.html"
 
 # Reusable application form components
 AF_ENTRY_GOUP = "_application-form/includes/_entry_group.html"
@@ -125,7 +148,6 @@ AF_ENTRY_GROUP_HORIZONTAL = "_application-form/includes/_entry_group_horizontal.
 AF_FIELD = "_application-form/includes/_field.html"
 AF_GROUP = "_application-form/includes/_group.html"
 AF_LIST = "_application-form/includes/_list.html"
-FLAGS_LIST= "_application-form/includes/_flags_list.html"
 FLAG_ENTRY_GROUP = "_application-form/includes/_flag_entry.html"
 
 # Publisher area

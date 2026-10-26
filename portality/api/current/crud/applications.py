@@ -392,10 +392,10 @@ class ApplicationsCrudApi(CrudApi):
                         if isinstance(em, dict):
                             for sub, subErrors in em.items():
                                 fieldName = fieldName + "." + sub
-                                em = " ".join(subErrors)
+                                em = " ".join(str(s) for s in subErrors)
                         elif isinstance(em, list):
-                            em = " ".join(em)
-                        reportable.append(em)
+                            em = " ".join(str(s) for s in em)
+                        reportable.append(str(em))
                     report[fieldName] = list(set(reportable))
 
             return report

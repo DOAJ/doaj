@@ -1,7 +1,5 @@
 from copy import deepcopy
 
-from flask import render_template
-
 from formulaic.error_codes import RegexDoesNotMatch, FieldsShouldBeDifferent, IsConditionallyRequired, DisallowedValue, \
     IsRequired
 from formulaic.validate.form.validate import LimitToFormOptions
@@ -15,7 +13,8 @@ from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability, GenericFormStructureCapability
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, \
     GenericControl, GenericField, \
-    GenericCompound
+    GenericCompound, JinjaFieldsetRenderer, GenericRORadioRenderer, GenericROCompoundFieldRenderer, \
+    GenericROFieldRenderer, GenericROControlRenderer
 from portality.ui import templates
 
 T = app.cms.workflow.triage.fields
@@ -51,6 +50,11 @@ class DummyRenderer(JinjaFieldRenderer):
 class TriageComplianceCheckFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_TRIAGE_FIELD_COMPLIANCE
 
+class ROComplianceCompound(JinjaCompoundRenderer):
+    template = templates.WORKFLOW_RO_COMPLIANCE_COMPOUND
+
+class ROComplianceField(JinjaFieldRenderer):
+    template = templates.WORKFLOW_RO_COMPLIANCE_FIELD
 
 ## Control Renderers
 
@@ -157,6 +161,12 @@ class ComplianceCheckCapability(FormFieldCapability):
     control_render_class = TriageRadioRenderer
     render_class = TriageComplianceCheckFieldRenderer
 
+    alt_render = {
+        "ro": {
+            "render_class": ROComplianceField,
+            "control_render_class": GenericRORadioRenderer
+        }
+    }
 
 class ButtonsCapability(FormFieldCapability):
     role = "check"
@@ -182,12 +192,22 @@ class CheckboxCompoundCapability(CompoundFieldCapability):
     render_class = TriageCheckboxListRenderer
     sr_only_legend = False
 
+    alt_render = {
+        "ro": {
+            "render_class": ROComplianceCompound
+        }
+    }
 
 class TriageCompoundFieldCapability(CompoundFieldCapability):
     js_class = "compatibilityCheck"
     render_class = TriageCompound
     action = {}
 
+    alt_render = {
+        "ro": {
+            "render_class": ROComplianceCompound
+        }
+    }
 
 class ActionTriageCompoundFieldCapability(TriageCompoundFieldCapability):
     js_class = "action"
@@ -198,6 +218,11 @@ class SimpleCompoundCapability(CompoundFieldCapability):
     render_class = SimpleCompoundRenderer
     control_btns = []
 
+    alt_render = {
+        "ro": {
+            "render_class": GenericROCompoundFieldRenderer
+        }
+    }
 
 #######
 ## Generic notes capability and field
@@ -213,6 +238,12 @@ class NoteCapability(FormFieldCapability):
     control_class_renderer = GenericControl
     render_class = GenericField
 
+    alt_render = {
+        "ro": {
+            "render_class": GenericROFieldRenderer,
+            "control_render_class": GenericROControlRenderer
+        }
+    }
 
 class GeneralNoteCapability(NoteCapability):
     label = "Notes (optional)"
@@ -712,6 +743,12 @@ class DatabaseWithdrawnExceptions(Field):
             DisallowedValue: T.database_withdrawn.validation.exceptions.disallowed_value,
         }
         trigger_btn = "action"
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
 
     name = "database_withdrawn_exceptions"
     coerce = [Unicode()]
@@ -857,6 +894,12 @@ class DatabaseEmbargoExceptions(Field):
             DisallowedValue: T.database_embargo.validation.exceptions.disallowed_value,
         }
         trigger_btn = "action"
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
 
     name = "database_embargo_exceptions"
     coerce = [Unicode()]
@@ -962,24 +1005,11 @@ class DatabaseNotDuplicateNote(NoteField):
     capabilities = (NC(),)
 
 
-class DatabaseNotDuplicateInstruction(Structure):
-    class C(TriageCompoundFieldCapability):
-        label = T.database_not_duplicate.action.instruction
-        role = "action"
-        order = []
-        render_class = SimpleCompoundRenderer
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "database_not_duplicate_group"})]
-
-    name_ = "database_not_duplicate_instruction"
-    capabilities_ = (C(),)
-
-
 class DatabaseNotDuplicateGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
         id = T.database_not_duplicate.id
         label = T.database_not_duplicate.label
-        order = ["answer", "note", "instructions"]
+        order = ["answer", "note"]
         render_class = TriageCompound
 
     name_ = "database_not_duplicate_group"
@@ -987,13 +1017,11 @@ class DatabaseNotDuplicateGroup(Structure):
 
     answer = DatabaseNotDuplicate(OPTIONAL, SINGLE)
     note = DatabaseNotDuplicateNote(OPTIONAL, SINGLE)
-    instructions = DatabaseNotDuplicateInstruction(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note, answer, T.database_not_duplicate.non_compliant_answers),
         RequiredIf(note, answer, T.database_not_duplicate.action_answer)
     ]
-
 
 ###########################################################
 ## ISSN: At Least One Registered ISSN
@@ -1071,6 +1099,12 @@ class EISSN(Field):
             RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "eissn"
     coerce = [Unicode(trim_whitespace=True)]
@@ -1088,6 +1122,12 @@ class PISSN(Field):
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
             FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "pissn"
@@ -1297,6 +1337,12 @@ class Title(Field):
             DisallowedValue: T.issn_title_match.validation.title.disallowed_value,
             IsRequired: T.issn_title_match.validation.title.is_required
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "title"
     coerce = [Unicode(trim_whitespace=True)]
@@ -1398,6 +1444,12 @@ class Continues(Field):
         error_messages = {
             RegexDoesNotMatch: T.issn_continuation.validation.continues.regex_not_match,
             IsConditionallyRequired: T.issn_continuation.validation.continues.required,
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "continues"
@@ -1573,19 +1625,6 @@ class WebsiteURL(ComplianceCheckField):
     capabilities = (C(),)
 
 
-class WebsiteURLInstruction(Structure):
-    class C(TriageCompoundFieldCapability):
-        label = T.website_url.action.instruction
-        role = "action"
-        order = []
-        render_class = SimpleCompoundRenderer
-        control_btns = [TriageFormButtons.contb(),
-                        TriageFormButtons.changeb({"data-controls": "database_not_duplicate_group"})]
-
-    name_ = "website_url_instruction"
-    capabilities_ = (C(),)
-
-
 class WebsiteURLNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
@@ -1600,7 +1639,7 @@ class WebsiteURLGroup(Structure):
     class C(ActionTriageCompoundFieldCapability):
         id = T.website_url.id
         label = T.website_url.label
-        order = ["answer", "note", "instruction"]
+        order = ["answer", "note"]
         render_class = TriageCompound
 
     name_ = "website_url_group"
@@ -1608,7 +1647,6 @@ class WebsiteURLGroup(Structure):
 
     answer = WebsiteURL(OPTIONAL, SINGLE)
     note = WebsiteURLNote(OPTIONAL, SINGLE)
-    instruction = WebsiteURLInstruction(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(note, answer, T.website_url.note_required_answers)
@@ -1654,6 +1692,12 @@ class License(Field):
             IsRequired: T.website_license_policy.validation.license.is_required,
             DisallowedValue: T.website_license_policy.validation.license.disallowed_value,
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
         attributes = {"data-value": "license"}
 
     name = "license"
@@ -1678,6 +1722,12 @@ class LicenseAttribute(Field):
             DisallowedValue: T.website_license_policy.validation.license_attribute.disallowed_value,
             IsConditionallyRequired: T.website_license_policy.validation.license_attribute.is_conditionally_required
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
 
     name = "license_attribute"
     coerce = [Unicode()]
@@ -1694,6 +1744,12 @@ class LicenseURL(Field):
         error_messages = {
             IsRequired: T.website_license_policy.validation.license_url.is_required,
             DisallowedValue: T.website_license_policy.validation.license_url.disallowed_value
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "license_url"
@@ -1717,9 +1773,9 @@ class WebsiteLicensePolicyActionGroup(Structure):
     name_ = "website_license_policy_action_group"
     capabilities_ = (C(),)
 
-    license = License(REQUIRED, REPEATABLE)
+    license = License(OPTIONAL, REPEATABLE)
     license_attribute = LicenseAttribute(OPTIONAL, REPEATABLE)
-    license_url = LicenseURL(REQUIRED, SINGLE)
+    license_url = LicenseURL(OPTIONAL, SINGLE)
 
     validators_ = [
         RequiredIf(license_attribute,  # <- this field is required if
@@ -1798,6 +1854,12 @@ class CopyrightAuthorRetains(Field):
             IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
         }
         attributes = {"data-value": "author_retains_rights"}
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "copyright_author_retains"
     coerce = [Unicode()]
@@ -1815,6 +1877,12 @@ class CopyrightURL(Field):
         error_messages = {
             IsRequired: T.website_copyright.validation.copyright_url.is_required,
             DisallowedValue: T.website_copyright.validation.copyright_url.disallowed_value
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "copyright_url"
@@ -2115,6 +2183,12 @@ class ContentNewJournalException(Field):
         attributes = {
             "data-role": "continue-triage answer"
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
+        }
 
     name = "content_new_journal_exception"
     coerce = [Unicode()]
@@ -2314,6 +2388,12 @@ class SpecialExceptions(Field):
         error_messages = {
             DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
         }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericRORadioRenderer
+            }
+        }
 
     name = "special_exceptions"
     coerce = [Unicode()]
@@ -2330,6 +2410,12 @@ class SpecialExceptionOther(Field):
         render_class = GenericField
         error_messages = {
             IsConditionallyRequired: T.admin_special_exception.validation.special_exception_other.is_conditionally_required
+        }
+        alt_render = {
+            "ro": {
+                "render_class": GenericROFieldRenderer,
+                "control_render_class": GenericROControlRenderer
+            }
         }
 
     name = "special_exception_other"

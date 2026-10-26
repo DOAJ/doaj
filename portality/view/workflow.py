@@ -1,5 +1,4 @@
 import json
-from copy import deepcopy
 
 from flask import Blueprint, render_template, request, abort, url_for, redirect, make_response, flash
 from flask_login import login_required, current_user
@@ -12,7 +11,9 @@ from portality.bll.services.workflow.rejected import Rejected
 from portality.bll.services.workflow.triage import AwaitingTriage, TriageAssessmentInProgress, \
     TriageAssessmentMinimalReview, RescindMinimalReview, MinimalReview, Triaged
 from portality.decorators import ssl_required, write_required, restrict_to_role
-from portality.forms.workflow.triage.processors import TriageFormProcessor
+from portality.forms.workflow.notes import StandAloneNotesProcessor
+from portality.forms.workflow.submission.processors import OriginalROFormProcessor
+from portality.forms.workflow.triage.processors import TriageFormProcessor, TriageROFormProcessor
 from portality.lib import dicts
 from portality.ui import templates
 from portality.ui.workflow import StateUIFactory
@@ -71,10 +72,89 @@ def workflow_item_overview(application_id):
     state = svc.state_for_application(application_id)
     ui = StateUIFactory.get(state)
 
-    processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
-    rec = processor.recommendation(wfc)
+    # generate the read-only view of the original application
+    original = wfc.original_application
+    original_processor = OriginalROFormProcessor(source_application=original, source_wfc=wfc)
+    original_ro = original_processor.render_form()
 
-    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec)
+    # generate the read-only view of the triage form
+    processor = TriageROFormProcessor(source_application=application, source_wfc=wfc)
+    rec = processor.recommendation(wfc)
+    ro_form = processor.render_form()
+
+    # generate the notes form
+    notes_processor = StandAloneNotesProcessor(source_application=application)
+    notes_form = notes_processor.render_form()
+
+    return render_template(templates.WORKFLOW_ITEM_OVERVIEW, state=ui, recommendation=rec, original_ro=original_ro, ro_form=ro_form, notes_form=notes_form)
+
+@blueprint.route("/note", methods=["POST"])
+@blueprint.route("/note/<note_id>", methods=["POST", "DELETE"])
+@login_required
+@ssl_required
+@write_required()
+def note(note_id=None):
+    resource_type = request.values.get("resource_type")
+    resource_id = request.values.get("resource_id")
+    note_text = request.values.get("note_text")
+
+    if not resource_type or not resource_id:
+        abort(400)
+
+    resource = None
+    if resource_type == models.Application.__type__:
+        resource = models.Application.pull(resource_id)
+    else:
+        abort(400)
+
+    if resource is None:
+        abort(404)
+
+    if request.method == "DELETE":
+        if not note_id:
+            abort(400)
+
+        note_obj = next((n for n in resource.note_objects if n.id == note_id), None)
+        if note_obj is None:
+            abort(404)
+
+        resource.remove_note_by_id(note_id)
+        resource.save()
+
+        data = {
+            "id": note_id,
+            "resource_type": resource_type,
+            "resource_id": resource_id,
+            "status": "deleted"
+        }
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
+
+    else:
+        if not note_text:
+            abort(400)
+
+        if note_id is not None:
+            note_obj = next((n for n in resource.note_objects if n.id == note_id), None)
+            if note_obj is None:
+                abort(404)
+
+            resource.add_note(note=note_text, id=note_id, author_id=current_user.id)  # Update the note text and author
+
+            # not doing it this way, as we want to make sure the resource knows the note
+            # has been updated
+            # note_obj.note = note_text
+            # note_obj.author_id = current_user.id
+        else:
+            note_obj = resource.add_note(note=note_text, author_id=current_user.id)
+
+        resource.save()
+
+        # FIXME: not ideal to call internal method
+        data = resource._note_to_legacy_dict(note_obj)
+        data["last_updated"] = note_obj.data.get("last_updated")
+        data["resource_type"] = resource_type
+        data["resource_id"] = resource_id
+        return make_response(json.dumps(data), 200, {'Content-Type': 'application/json'})
 
 @blueprint.route("/triage-form/<application_id>", methods=["GET", "POST"])
 @login_required
@@ -104,7 +184,7 @@ def triage_form(application_id):
         processor = TriageFormProcessor(source_application=application, source_wfc=wfc)
         form_html = processor.render_form()
         rec = processor.recommendation(wfc)
-        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc, recommendation=rec)
+        return render_template(templates.WORKFLOW_TRIAGE_PAGE, form_html=form_html, application=application, wfc=wfc, recommendation=rec, recommendation_overwritten=request.values.get("override_recommendation", False))
 
     elif request.method == "POST":
         formdata = dicts.multidict_2_dict(request.form)
