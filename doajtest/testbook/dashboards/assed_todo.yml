@@ -7,7 +7,10 @@ tests:
       role: associate editor
       testdrive: todo_associate
     setup:
-      - Use the todo_associate testdrive to setup for this test, of follow the next steps
+      - Use the todo_associate testdrive to setup for this test, or follow the next steps
+      - "Important: the testdrive page tears down its test data as soon as you navigate away from it.
+         After opening the testdrive, log in and run the test in a separate browser tab or window,
+         leaving the testdrive tab open until you have finished."
       - You should set up a user account which has only the associate editor role
       - "The user account should be assigned at least 4 applications which meet the following criteria: one that was created over 6 weeks ago, 
          one that has not been modified for 3 weeks, one which has recently been assigned to the user and is in the pending state, and one
