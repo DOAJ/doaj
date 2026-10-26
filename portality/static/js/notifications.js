@@ -56,7 +56,7 @@ doaj.notifications.notificationsReceived = function(data) {
     } else {
         $(".js-notifications-count").html("");
     }
-    const desktopNav = window.matchMedia('(min-width: 1024px)');
+    const desktopNav = window.matchMedia('(min-width: 1279px)');
     $("#notifications_nav").hoverIntent(
         event => {
             if (desktopNav.matches) {
