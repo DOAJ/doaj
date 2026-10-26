@@ -91,8 +91,9 @@ def upload_process(articles_upload: BaseArticlesUpload,
         job.outcome_fail()
     if success > 0 and fail == 0:
         articles_upload.processed(success, update, new)
+    if fail > 0:
+        articles_upload.not_imported(success, fail)
     if success > 0 and fail > 0:
-        articles_upload.partial(success, fail, update, new)
         job.add_audit_message("Some articles in file failed to import correctly, so no articles imported")
 
     articles_upload.set_failure_reasons(list(shared), list(unowned), list(unmatched))
@@ -100,7 +101,7 @@ def upload_process(articles_upload: BaseArticlesUpload,
     job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
     job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
 
-    if new:
+    if new and fail == 0:  # a failed batch saves nothing, so its articles have no ids
         ids = [a.id for a in articles]
         job.add_audit_message("Created/updated articles: " + ", ".join(list(ids)))
 
