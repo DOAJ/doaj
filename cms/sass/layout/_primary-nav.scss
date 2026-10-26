@@ -44,14 +44,6 @@
     align-items: center;
     > li {
       margin: 0 $spacing-04;
-
-      &:nth-child(1 of :not(.mobile)) {
-        margin-left: 0;
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
     }
   }
 

@@ -29,7 +29,7 @@ doaj.tourist.init = function(params) {
 
         $(".trigger_tour").on("click", doaj.tourist.triggerTour);
         navContainer.show();
-        const desktopNav = window.matchMedia('(min-width: 1024px)');
+        const desktopNav = window.matchMedia('(min-width: 1279px)');
         navContainer.hoverIntent(
             event => {
                 if (desktopNav.matches) {
