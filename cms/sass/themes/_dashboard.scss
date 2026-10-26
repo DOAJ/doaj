@@ -13,9 +13,10 @@
 
   .primary-nav {
     height: 75px;
+    display: flex;
+    justify-content: space-between;
 
     .label {
-      margin: 0 $spacing-04;
       text-decoration: none;
       line-height: 75px;
       padding: 0;

@@ -42,6 +42,10 @@
           background-color: $grapefruit;
           color: $warm-black;
         }
+        @media (max-width: 1278px) {
+          padding: 1.5rem 0;
+          font-weight: 600;
+        }
       }
     }
 
@@ -87,7 +91,7 @@ nav {
         position: relative;
 
         > .signed-in-as {
-          @media (min-width: 1024px) {
+          @media (min-width: 1279px) {
             position: absolute;
             font-size: 0.75em;
           }
@@ -106,7 +110,6 @@ nav {
       width: unset;
       height: fit-content;
       font-size: .889em;
-      left: 1.5rem;
       min-width: calc(100% - 3rem);
 
       .nav-bar__logout-form {

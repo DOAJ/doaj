@@ -4,8 +4,6 @@
   position: fixed;
   top: 0;
   z-index: 3000;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   width: 100vw;
   height: 90px;
@@ -14,6 +12,8 @@
   font-weight: 600;
   text-transform: uppercase;
   transition: height 0.3s ease-out;
+
+
 
   a {
     color: $white;
@@ -42,6 +42,17 @@
   &__items {
     display: flex;
     align-items: center;
+    > li {
+      margin: 0 $spacing-04;
+
+      &:nth-child(1 of :not(.mobile)) {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
   }
 
   &__toggle,
@@ -91,7 +102,7 @@
     }
   }
 
-  @media (max-width: 1023px) {
+  @media (max-width: 1279px) {
     &__toggle {
       display: inline-flex;
       align-items: center;
@@ -227,7 +238,7 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   body.primary-nav-open {
     overflow: hidden;
   }
