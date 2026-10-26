@@ -324,64 +324,50 @@ triage:
 
     database_withdrawn:
       id: "12"
-      label: "Journal withdrawn"
-      check: "This journal has <strong>not</strong> been removed from DOAJ earlier and does <strong>not</strong> have an embargo (6 months or otherwise)"
+      label: "Journal removed"
+      check: "Has this journal been removed from DOAJ in the last 6 months?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>has not</strong> been removed and <strong>does not</strong> have an embargo"
-        action: "<span class='answer'>Non-compliant</span>, this journal <strong>has</strong> either been removed or <strong>has</strong> the embargo."
+        compliant: "This journal has <strong>not</strong> been removed in the last 6 months."
+        action: "This journal has been removed in the last 6 months."
         later: "I don't know - mark for later"
       info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
       action:
-        action:
-          instruction: "Do any of these exceptions apply?"
-          answers:
-            compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong> but exceptions are noted"
-            non_compliant: "<span class='answer'>Non-compliant</span>, This journal has either been <strong>removed</strong> or has an <strong>embargo</strong>, and <strong>no</strong> exceptions are noted"
+        instruction: "In the note field add removed record's url and the date of its removal.<br /> Do any of these exceptions apply?"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required when one or more exception options are selected"
+          is_conditionally_required: "Add removed record's url and the date of its removal"
         exceptions:
           disallowed_value: "You must select one of the valid options"
-      edit:
-        exceptions: "Exceptions"
       exceptions:
         ignore_embargo: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
         website_unavailable: "The journal was removed previously because the journal website was not available"
         journal_content: "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
         none: "No special exceptions noted"
-      remember: '<ul>
-                  <li>Search <strong>both</strong> ISSNs (if available) in the journals admin site</li>
-                  <li>If there is a record in DOAJ that it is not currently indexed, click the <span class="answer action">There is a record in DOAJ that is not currently indexed</span> and make a note of it (removal date, reasons and record’s URL)</li>
-                  </ul>'
-      instructions: ''
+      remember: 'Search both ISSNs (if available) in the journals admin site.'
+      instructions: 'Check also the Update requests admin site to find more information about the removal'
       resources:
-        - label: "DOAJ admin journal search"
-          url: "https://doaj.org/admin"
+        resources:
+          - label: "DOAJ journals search"
+            url: "https://doaj.org/admin"
+          - label: "DOAJ admin update requests search"
+            url: "https://doaj.org/admin/update_requests"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
-      note_required_exceptions:
-      - ignore_embargo
-      - website_unavailable
-      - journal_content
 
     database_embargo:
       id: "13"
       label: "Previous application rejection"
-      check: "This journal <strong>application</strong> does <strong>not</strong> 
-      does <strong>not</strong> have an embargo (6 months or otherwise)"
+      check: "Has the journal application been rejected in the last 6 months?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal application <strong>does not</strong> have an active embargo"
-        # non_compliant: ""
+        compliant: "This journal has <strong>not</strong> been removed in the last 6 months"
         later: "I don't know - mark for later"
-        action: "This journal <strong>does have</strong> an active embargo from a previous rejection"
-        # conditional_non_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, and <strong>no exceptions are noted</strong>"
-        # conditional_compliant: "<span class='answer'>Non-compliant</span>, This journal <strong>does have</strong> an active embargo from a previous rejection, but <strong>exceptions are noted</strong>"
+        action: "This journal has been removed in the last 6 months."
       info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
@@ -390,29 +376,20 @@ triage:
           instruction: "Do any of these exceptions apply?"
         button: "non_compliant"
         instruction: "Do any of these exceptions apply?"
-      edit:
-        exceptions: "Exceptions"
       exceptions:
         issn_confirmed: "This journal was previously rejected due to ISSN not being confirmed and it is now."
         ignore_embargo: "The journal was removed previously and has a note to ignore the 6 month embargo from the Mg. Editor"
         website_unavailable: "The journal was removed previously because the journal website was not available"
         journal_content: "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
         none: "No special exceptions noted"
-      remember: '<ul>
-                  <li>Search both <strong>ISSNs</strong> (if available) in the applications admin site and the UR admin site</li>
-                  <li>If there are multiple records, open the most recently updated to see why it was rejected and when.</li>
-                  </ul>'
-      instructions: ''
+      remember: 'Search both <strong>ISSNs</strong> (if available) in the applications admin site and the UR admin site'
+      instructions: 'Check also the Update requests admin site to find more information about the removal'
       resources:
-        - label: "DOAJ admin applications search"
-          url: "https://doaj.org/admin/applications"
+        - label: "DOAJ journals search"
+          url: "https://doaj.org/admin"
         - label: "DOAJ admin update requests search"
           url: "https://doaj.org/admin/update_requests"
       validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "The note field is required"
         exceptions:
           disallowed_value: "You must select one of the valid options"
       compliant_answers:
@@ -424,20 +401,15 @@ triage:
     database_not_listed:
       id: "14"
       label: "Not indexed in DOAJ"
-      check: "This journal is not currently listed in DOAJ "
+      check: "Is the journal currently listed in DOAJ?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this record <strong>is not</strong> listed in DOAJ"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this record <strong>is</strong> currently listed in DOAJ"
+        compliant: "This journal is <strong>not</strong> listed in DOAJ"
+        non_compliant: "This journal is currently listed in DOAJ"
         later: "I don't know - mark for later"
         action: ""
       info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      remember: ""
-      instructions: ''
       resources:
         - label: "DOAJ admin journals search"
           url: "https://doaj.org/admin"
@@ -451,17 +423,16 @@ triage:
     website_working:
       id: "16"
       label: "Website"
-      check: "This journal has a working website"
+      check: "Does the journal have a working website?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this journal <strong>does</strong> have a working website"
-        non_compliant: "<span class='answer'>Non-compliant</span>, this journal <strong>does not</strong> have a working website"
-        action: "This journal has a working website, but url requires changes"
+        compliant: "This journal does have a working website"
+        non_compliant: "This journal does not have a working website"
+        action: "This journal has a working website, but its homepage url requires changes"
         later: "I don't know - mark for later"
       info:
-        www: "Journal's homepage"
+        homepage: "Journal's homepage"
       action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+        instruction: "Correct the journal's homepage url below."
       edit:
         url: "Journal's website"
       validation:
@@ -469,9 +440,7 @@ triage:
           is_required: "You must provide the journal's URL"
           disallowed_value: "You must enter a valid URL"
       remember: "If the website doesn’t work now remember to check it again later at least once, in case these are temporary issues."
-      instructions: '<ul>
-                  <li>Open the homepage URL and make sure it is working. If not, check it again later and if it is still not working, the answer is <span class="answer non_compliant">Non-compliant</span></li>
-                  </ul>'
+      instructions: ''
       resources:
         - label: "https://downforeveryoneorjustme.com/"
           url: "https://downforeveryoneorjustme.com/"
@@ -486,19 +455,15 @@ triage:
     database_not_duplicate:
       id: "15"
       label: "Duplicate application"
-      check: "This application is <strong>not</strong> a duplicate"
+      check: "Is this application a duplicate?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, this application <strong>is not</strong> a duplicate"
-        non_compliant: "<span class='answer'>Non-compliant</span>, it is a duplicate and <strong>there is a newer application</strong>"
+        compliant: "This application is <strong>not</strong> a duplicate"
+        non_compliant: "It is a duplicate."
         later: "I don't know - mark for later"
-        action: "This is <strong>the most recent duplicate</strong> application"
       info:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
-      action:
-        button: "non_compliant"
-        instruction: "Reject the other applications and list their application IDs in the Notes field. Then select <span class='answer compliant'>Continue triage</span> to confirm and save your decision, and move to the next question."
-      remember: "Keep the newest application or the one which is in progress and “Quick Reject” the others as duplicates"
+      remember: "If this is a duplicate - add a link to the duplicated record as a note"
       instructions: ''
       resources:
         - label: "DOAJ admin applications search"
@@ -507,40 +472,33 @@ triage:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Add a link to the duplicated record in DOAJ"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
       - "non_compliant"
-      action_answer:
-      - "action"
       recommend:
         non_compliant: "reject"
 
     website_issn:
       id: "17"
-      label: "Correct issn on the website"
-      check: "Correct ISSN is displayed on the website"
+      label: "ISSN on the website"
+      check: "Is the correct ISSN displayed on the journal website?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, The correct ISSN <strong>is</strong> displayed on the website"
-        non_compliant: "<span class='answer'>Non-compliant</span>, there is <strong>no issn</strong> displayed on the website"
+        compliant: "The correct ISSN is displayed on the website"
+        non_compliant: "The issn displayed on the website is not correct/not displayed"
         later: "I don't know - mark for later"
         action: ""
       info:
         www: "Journal's homepage"
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
       remember: ""
       instructions: ""
       resources: ""
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -549,18 +507,20 @@ triage:
     website_url:
       id: "18"
       label: "Distinct URLs"
-      check: "The application form lists distinct URLs pointing to the correct information for all the answers that require a URL "
+      check: "Are the application URLs distinct and point to the correct information?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, All required URLs in the application are distinct and point to the correct information."
-        non_compliant: "<span class='answer'>Non-compliant</span>, All URLs in the application are the same and do not point to the correct information."
+        compliant: "All required URLs in the application are distinct and point to the correct information."
+        non_compliant: "All URLs in the application are the same and/or they do not point to the correct information."
         later: "I don't know - mark for later"
         action: "Same URL acceptable. All required information is correctly provided under a single URL due to the website structure."
       info:
         www: "Journal's homepage"
-        oa: "Open Access licensing policy"
-        oa_www: "Link to Open Access licensing policy"
+        oa_statement: "Open access statement"
+        oa_statement_www: "Link to open access statement"
         copyright: "Copyright policy"
-        license_www: "Link to copyright policy"
+        copyright_www: "Link to copyright policy"
+        oa_license: "Open Access licensing policy"
+        oa_license_www: "Link to Open Access licensing policy"
         peer_review: "Peer review policy"
         peer_review_www: "Link to peer review policy"
         aims_www: "Link to the journal's Aims & Scope"
@@ -572,15 +532,8 @@ triage:
         button: "non_compliant"
         instruction: 'Provide more information on why identical URLs are acceptable for this application in the Note fields. Then select <span class="answer compliant">Continue triage</span> to confirm and save your decision, and move to the next question.'
       remember: "If the website is structured so that all required information is correctly available under a single URL, select <span answer='answer action'>Same URL acceptable. All required information is correctly provided under a single URL due to the website structure.</span>"
-      instructions: '<ul>
-                  <li>If all URLs are identical but the required information is not actually available at that URL (e.g. all links point to the homepage), select <span class="answer non_compliant">Non-compliant</span></li>
-                  </ul>'
+      instructions: 'If the website is structured so that all required information is correctly available under a single URL, select Same URL acceptable. All required information is correctly provided under a single URL due to the website structure.'
       resources: ""
-      validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "Enter a note to support the assertion that the same URL is acceptable for all the information."
       compliant_answers:
         - "compliant"
         - "action"
@@ -648,33 +601,29 @@ triage:
     website_copyright:
       id: "20"
       label: "Copyright terms"
-      check: "Copyright terms are the same in all parts of the journal website, including the copyright page, article abstracts, HTML pages, PDFs, and copyright forms."
+      check: "Are the copyright terms consistent across the journal website and/or articles?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, copyright information <strong>is</strong> present and the same in all parts of the journal website"
-        non_compliant: "<span class='answer'>Non-compliant</span>, copyright information <strong>is not</strong> present or it <strong>is not</strong> the same in all parts of the journal website"
+        compliant: "Copyright information is <strong>consistent</strong> across the journal website and/or articles"
+        non_compliant: "Copyright information is <strong>inconsistent</strong> on the journal website and/or articles"
         later: "I don't know - mark for later"
-        action: "Changes to copyright terms information is required"
+        action: "Changes to copyright url is required or I can’t find the information about copyrights."
       action:
         action:
-          instruction: "Update the license information as needed"
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      remember: "If the copyright information in the website/articles is contradictory, the answer is <span class='answer non_compliant'>Non-compliant</span>"
+          instruction: "Provide the correct copyright URL. If you can't find the information about copyrights leave the url below unchanged and add a note."
+      remember: "If copyright information is <span class='answer non_compliant'>inconsistent</span> add links showing the inconsistencies as a note."
       instructions: ''
       resources: ""
-      info:
+      additional_info:
         www: "Journal's homepage"
         copyright_author_retains: "Author retains copyright"
         copyright_url: "Copyright URL"
       edit:
-        copyright: "Copyright Information"
-        copyright_author_retains: "Author retains copyright"
         copyright_url: "Copyright URL"
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "The note field is required if the answer is 'Non-compliant'"
+          is_conditionally_required: "Provide links supporting your answer."
         copyright_author_retains:
           is_required: "You must select an answer"
           disallowed_value: "You must select one of the valid options"
@@ -690,25 +639,22 @@ triage:
     content_no_login:
       id: "21"
       label: "Login and registration"
-      check: "Login or registration <strong>are not required</strong> to access, read and download the articles"
+      check: "Can users access, read and download full text of articles without logging in or registering?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, login and registration <strong>are not</strong> required"
-        non_compliant: "<span class='answer'>Non-compliant</span>, login and registration <strong>are</strong> required"
+        compliant: "Login and registration are <strong>not</strong> required"
+        non_compliant: "Login and registration <strong>are</strong> required"
         later: "I don't know - mark for later"
         action: ""
-      info:
+      additional_info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      remember: ""
+      remember: "If an article <span class='answer non_compliant'>requires logging in or registering</span> add its url as a note"
       instructions: ''
       resources: ""
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Enter more details"
+          is_conditionally_required: "Provide a link to an article requiring logging in or registering."
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -717,25 +663,25 @@ triage:
     content_no_embargo:
       id: "22"
       label: "No embargo"
-      check: "All content is immediately freely available in full text with no embargo, paywall. "
+      check: "Is all full-text content immediately and freely available without an embargo or paywall?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, all content is immediately and freely <strong>available</strong> in full text "
-        non_compliant: "<span class='answer'>Non-compliant</span>, some content is <strong>hidden</strong> behind embargo or paywall"
+        compliant: "All content is immediately and freely available in full text"
+        non_compliant: "Some content is hidden behind embargo or paywall"
         later: "I don't know - mark for later"
         action: ""
-      info:
+      additional_info:
         www: "Journal's homepage"
       action:
         button: "non_compliant"
         instruction: "Instruction placeholder"
-      remember: "This criterion does <strong>not</strong> apply to journal content in <strong>print</strong> format"
+      remember: "This criterion does <strong>not</strong> apply to journal content in <strong>print</strong> format. If there is content behind <span class='answer non_compliant'>embargo or paywall</span> add the link as a note."
       instructions: ""
       resources: ""
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Enter more details"
+          is_conditionally_required: "Add a link to the content behind embargo or paywall."
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -744,23 +690,15 @@ triage:
     content_publish_enough:
       id: "23"
       label: "5 research articles per year"
-      check: "The journal publishes <strong>at least five</strong> research articles per year"
+      check: "Does the journal publish at least five research articles per year?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, the journal publishes <strong>at least five</strong> research articles per year"
-        non_compliant: "<span class='answer'>Non-compliant</span>, the journal publishes <strong>less than five</strong> research articles per year"
+        compliant: "The journal publishes <strong>at least five</strong> research articles per year"
+        non_compliant: "the journal publishes <strong>less than five</strong> research articles per year"
         later: "I don't know - mark for later"
         action: ""
-      info:
+      additional_info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
       remember: ""
-      validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "Enter more details"
       instructions: ''
       resources: ""
       compliant_answers:
@@ -771,25 +709,22 @@ triage:
     content_unique_link:
       id: "24"
       label: "Unique article links"
-      check: "Each article has a unique link"
+      check: "Does each article have a unique URLs?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, each article <strong>does have</strong> a unique link"
-        non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>do not</strong> have unique links"
+        compliant: "<span class='answer'>Yes</span>, each article <strong>does have</strong> a unique link"
+        non_compliant: "Articles <strong>do not</strong> have unique links"
         later: "I don't know - mark for later"
         action: ""
-      info:
+      additional_info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      remember: ""
+      remember: "If articles <span class='answer non_compliant'>do not</span> have unique links, provide the url supporting your answer."
       instructions: ''
       resources: ""
       validation:
         group:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
-          is_conditionally_required: "Enter more details"
+          is_conditionally_required: "Provide the url supporting your answer"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -798,25 +733,18 @@ triage:
     content_format:
       id: "25"
       label: "Full text format"
-      check: "Articles are available in HTML or PDF format as a minimum"
+      check: "Are articles available in at least HTML or PDF format?"
       answers:
-        compliant: "<span class='answer'>Compliant</span>, articles <strong>are</strong> available in HTML or PDF"
-        non_compliant: "<span class='answer'>Non-compliant</span>, articles <strong>are not</strong> available in HTML or PDF"
+        compliant: "<span class='answer'>Yes</span>, articles <strong>are</strong> available in HTML or PDF"
+        non_compliant: "<span class='answer'>No</span>, articles <strong>are not</strong> available in HTML or PDF"
         later: "I don't know - mark for later"
         action: ""
-      info:
+      additional_info:
         www: "Journal's homepage"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
+
       remember: ""
       instructions: ''
       resources: ""
-      validation:
-        group:
-          is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
-        note:
-          is_conditionally_required: "Enter more details"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
@@ -825,15 +753,12 @@ triage:
     content_new_journal:
       id: "26"
       label: "New or Flipped Journal"
-      check: "This is a newly launched journal or a flipped journal"
+      check: "Is this a newly launched or flipped journal?"
       answers:
-        compliant: "<span class='answer'>No</span>, this is <strong>not</strong> a newly launched or a flipped journal"
+        compliant: "This is <strong>not</strong> a newly launched or a flipped journal"
         later: "I don't know - mark for later"
         action: "<span class='answer'>Yes</span>, this <strong>is</strong> a newly launched or a flipped journal"
-      action:
-        button: "non_compliant"
-        instruction: "Instruction placeholder"
-      info:
+      additional_info:
         www: "Journal's homepage"
       exception:
         check: "Does this journal demonstrates a publishing history of more than one year or has published at least ten open access research articles?"
@@ -858,7 +783,7 @@ triage:
       instructions: ""
       answers:
         compliant: "Everything is correct"
-      info:
+      additional_info:
         www: "Journal's homepage"
         oa: "Open Access licensing policy"
         oa_www: "Link to Open Access licensing policy"
