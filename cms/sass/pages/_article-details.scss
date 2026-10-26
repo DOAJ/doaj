@@ -18,3 +18,8 @@
   text-align: center;
   @include typescale-03;
 }
+
+.article-details__aside {
+  padding-top: $spacing-04;
+  padding-bottom: $spacing-04;
+}
