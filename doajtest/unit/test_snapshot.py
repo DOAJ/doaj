@@ -1,5 +1,6 @@
 import json
 
+from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_history_dir
 from portality import models
 
@@ -75,3 +76,19 @@ class TestSnapshot(DoajTestCase):
         with open(history_files[0], 'r', encoding="utf-8") as i:
             hist = json.loads(i.read())
         assert hist.get("bibjson", {}).get("title") == "Example journal"
+
+    @patch_history_dir('APPLICATION_HISTORY_DIR')
+    def test_04_snapshot_application(self):
+        # make ourselves an example journal
+        s = ApplicationFixtureFactory.make_application_source()
+        a = models.Application(**s)
+        a.bibjson().title = "Journal of Applied Uncertainty"
+
+        # the snapshot is part of the save method
+        a.save(blocking=True)
+
+        history_files = self.list_today_apps_history_fiels()
+        assert len(history_files) == 1
+        with open(history_files[0], 'r', encoding="utf-8") as i:
+            hist = json.loads(i.read())
+        assert hist.get("bibjson", {}).get("title") == "Journal of Applied Uncertainty"
