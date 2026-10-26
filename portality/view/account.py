@@ -428,12 +428,29 @@ def handle_login_template_rendering(form):
 def login():
     current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
+    # Issue #4184: an account that has registered but not yet set a password
+    # (no 'password' field at all) must produce a response indistinguishable
+    # from a nonexistent account - otherwise an attacker could enumerate which
+    # usernames/emails exist by noticing a different message/response for a
+    # partially-registered account. Shared between both except branches below
+    # so they can't silently drift apart.
+    account_not_recognised_msg = 'Account not recognised. If you entered an email address, try your username instead.'
     if request.method == 'POST' and form.validate():
         username = form.user.data
         action = request.form.get('action')
 
         svc = DOAJ.accountService()
         try:
+            # Validate the action BEFORE resolving the user. An invalid action
+            # must fail identically regardless of whether the account exists -
+            # otherwise an attacker can send action=<garbage> with a guessed
+            # username/email and use the response (generic "request problem"
+            # vs "account not recognised") as an account-existence oracle,
+            # without needing to touch passwords at all. Same leak class as
+            # issue #4184, just a different trigger.
+            if action not in ('get_link', 'password_login'):
+                raise bll_exc.ArgumentException("Unknown login action")
+
             user = svc.resolve_user(username)
             if user is None:
                 raise bll_exc.NoSuchObjectException()
@@ -441,18 +458,14 @@ def login():
             if action == 'get_link':
                 return _handle_pwless_login(user, form, request.args.get("redirected", ""))
 
-            elif action == 'password_login':
+            else:  # action == 'password_login'
                 account = svc.verify_password_login(user, form.password.data)
                 login_user(account, remember=True)
                 Messages.flash(Messages.ACCOUNT__WELCOME_BACK)
                 return redirect(get_redirect_target(form=form, acc=account))
 
-            else:
-                # Unknown action
-                raise bll_exc.ArgumentException("Unknown login action")
-
         except bll_exc.NoSuchObjectException:
-            form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
+            form.user.errors.append(account_not_recognised_msg)
         except bll_exc.IllegalStatusException as e:
             msg = str(e) if e.args else ""
             if msg == 'incomplete_verification':
@@ -463,6 +476,9 @@ def login():
                 form.password.errors.append(
                     f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
                 )
+            elif msg == 'no_password':
+                # See comment above account_not_recognised_msg definition.
+                form.user.errors.append(account_not_recognised_msg)
             else:
                 # Generic illegal status
                 Messages.flash(Messages.ACCOUNT__STATUS_LOGIN_FAILED)
