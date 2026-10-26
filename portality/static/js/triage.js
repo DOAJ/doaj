@@ -7,7 +7,7 @@ doaj.triage.Recommendation = class {
     }
 
      handle(recommendation) {
-        if (recommendation && recommendation.code !== "normal" && !recommendation_overwritten) {
+        if (recommendation && recommendation.code !== "normal") {
             window.location.href = this.url;
         }
     }
