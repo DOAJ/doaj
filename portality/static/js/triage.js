@@ -4,10 +4,11 @@ window.doaj.triage = window.doaj.triage || {};
 doaj.triage.Recommendation = class {
     constructor(url) {
         this.url = url;
+        this.do_not_redirect = true;
     }
 
      handle(recommendation) {
-        if (recommendation && recommendation.code !== "normal") {
+        if (recommendation && recommendation.code !== "normal" && !this.do_not_redirect) {
             window.location.href = this.url;
         }
     }

@@ -65,6 +65,7 @@
                                                                                                    style="height: 0.75rem;"></span>Information
                             for this check</h5>
                         {% if els.check.capability.remember %}
+                        <p class="application_info_label">remember</p>
                         <p>{{ els.check.capability.remember }}</p>
                         {% endif %}
                         {% if els.check.capability.application_info %}
@@ -91,6 +92,7 @@
                         {% endif %}
                         {% if els.check.capability.resources|length > 0 %}
                         <div class="resources-list-container">
+                            <p class="application_info_label">external resources</p>
                             <ul class="resources-list" style="margin-left: -1.5rem;">
                                 {% for resource in els.check.capability.resources %}
                                 <li><a href="{{ resource.url }}" target="_blank"><span data-feather="external-link"

@@ -290,7 +290,7 @@ triage:
       label: "Continuation"
       check: "Is this application a continuation of a journal currently indexed in DOAJ?"
       answers:
-        compliant: "<span class='answer'>No</span>, This application is not a continuation of a journal indexed in DOAJ."
+        compliant: "<span class='answer'>No</span>, this application is <strong>not</strong> a continuation of a journal indexed in DOAJ."
         later: "I don't know - mark for later"
         action: "This application is a continuation of a journal indexed in DOAJ."
       additional_info:
@@ -300,6 +300,8 @@ triage:
         alttitle: "Alternative title"
       edit:
         continues: "Continues"
+      action:
+        instruction: "Add ISSNs of a preceding journal to the <span style='font-style: italics'>Continues</span> field below (comma separated list)"
       instructions: '<ul>
                   <li>Check ISSN Portal records for continuation information. Three or more related records are a useful signal, but fewer records do not rule it out.</li>
                   <li>Check DOAJ for the preceding journal and any earlier applications.</li>
@@ -309,8 +311,6 @@ triage:
       resources:
         - label: "ISSN Portal"
           url: "https://portal.issn.org/"
-      action:
-        instruction: "Enter the ISSN(s) of the preceeding journal here (comma separated list)"
       validation:
         continues:
           regex_not_match: "ISSN(s) must be of the valid form, separated by commas"
@@ -350,20 +350,21 @@ triage:
       remember: 'Search both ISSNs (if available) in the journals admin site.'
       instructions: 'Check also the Update requests admin site to find more information about the removal'
       resources:
-        resources:
-          - label: "DOAJ journals search"
-            url: "https://doaj.org/admin"
-          - label: "DOAJ admin update requests search"
-            url: "https://doaj.org/admin/update_requests"
+        - label: "DOAJ journals search"
+          url: "https://doaj.org/admin"
+        - label: "DOAJ admin update requests search"
+          url: "https://doaj.org/admin/update_requests"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
         - "non_compliant"
+      action_answers:
+        - "action"
 
     database_embargo:
       id: "13"
       label: "Previous application rejection"
-      check: "Has the journal application been rejected in the last 6 months?"
+      check: "Has this journal's application been rejected in the last 6 months?"
       answers:
         compliant: "This journal has <strong>not</strong> been removed in the last 6 months"
         later: "I don't know - mark for later"
@@ -372,9 +373,6 @@ triage:
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
       action:
-        action:
-          instruction: "Do any of these exceptions apply?"
-        button: "non_compliant"
         instruction: "Do any of these exceptions apply?"
       exceptions:
         issn_confirmed: "This journal was previously rejected due to ISSN not being confirmed and it is now."
@@ -382,13 +380,11 @@ triage:
         website_unavailable: "The journal was removed previously because the journal website was not available"
         journal_content: "The journal was removed previously for not enough content and the journal’s contents are now enough to be included in DOAJ"
         none: "No special exceptions noted"
-      remember: 'Search both <strong>ISSNs</strong> (if available) in the applications admin site and the UR admin site'
-      instructions: 'Check also the Update requests admin site to find more information about the removal'
+      remember: 'If there are multiple records, open the most recently updated to see why it was rejected and when.'
+      instructions: 'Search both ISSNs (if available) in the applications admin site'
       resources:
-        - label: "DOAJ journals search"
-          url: "https://doaj.org/admin"
-        - label: "DOAJ admin update requests search"
-          url: "https://doaj.org/admin/update_requests"
+        - label: "DOAJ applications search"
+          url: "https://doaj.org/admin/applications"
       validation:
         exceptions:
           disallowed_value: "You must select one of the valid options"

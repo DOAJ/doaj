@@ -710,38 +710,22 @@ class DatabaseWithdrawn(ComplianceCheckField):
 class DatabaseWithdrawnNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            IsConditionallyRequired: T.database_withdrawn.validation.note.is_conditionally_required
+            # IsConditionallyRequired: T.database_withdrawn.validation.note.is_conditionally_required
+            IsConditionallyRequired: "note error"
         }
 
     name = "database_withdrawn_note"
     capabilities = (NC(),)
 
-
-# class DatabaseWithdrawnExceptionsRadioWrapper(Field):
-#     class C(FormFieldCapability):
-#         S = T.database_withdrawn.action.action
-#         label = " "
-#         options = options_for(T.database_withdrawn.action.action)
-#         control_class = Radio
-#         control_render_class = TriageRadioRenderer
-#
-#         check = " "
-#
-#     name = "database_withdrawn_exceptions_radio_wrapper"
-#     capabilities = (C(),)
-
 class DatabaseWithdrawnExceptions(Field):
     class C(FormFieldCapability):
         role = "options"
-        S = T.database_withdrawn.action.action
+        S = T.database_withdrawn.action
         label = S.instruction
         control_class = Checkbox
         multiple = True
         options = exception_options_for(T.database_withdrawn)
         control_render_class = TriageCheckboxRenderer
-        error_messages = {
-            DisallowedValue: T.database_withdrawn.validation.exceptions.disallowed_value,
-        }
         trigger_btn = "action"
         alt_render = {
             "ro": {
@@ -771,30 +755,17 @@ class DatabaseWithdrawnExceptionsGroup(Structure):
         role = "action"
         S = T.database_withdrawn
         order = ["exceptions"]
+        error_messages = {
+            DisallowedValue: T.database_withdrawn.validation.exceptions.disallowed_value,
+        }
         control_btns = [TriageFormButtons.contb(),
                         TriageFormButtons.changeb({"data-controls": "database_withdrawn_group"})]
-        # note_required = ExceptionsNoteOptions.on_exception
-        # widget = {
-        #     "conditional_answer": {
-        #         "compliant": {
-        #             "database_withdrawn_exceptions": ["ignore_embargo", "website_unavailable", "journal_content"],
-        #         },
-        #         "non_compliant": {
-        #             "database_withdrawn_exceptions": ["none"],
-        #         },
-        #     },
-        #     "show_field_on_check": {
-        #         "show": "database_withdrawn_exception_note",
-        #         "on": "database_withdrawn_exceptions"
-        #     }
-        # }
 
     name_ = "database_withdrawn_exceptions_group"
     capabilities_ = (C(),)
 
-    # radio_wrapper = DatabaseWithdrawnExceptionsRadioWrapper(OPTIONAL, SINGLE)
     exceptions = DatabaseWithdrawnExceptions(OPTIONAL, REPEATABLE)
-    # note = DatabaseWithdrawnExceptionsNote(OPTIONAL, SINGLE)
+
 
 
 ### The main entry point to the Database: Withdrawn question
@@ -805,13 +776,7 @@ class DatabaseWithdrawnGroup(Structure):
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
         error_messages = {
-            IsConditionallyRequired: T.database_withdrawn.validation.group.is_conditionally_required
-        }
-        action = {
-            "action": {
-                "instruction": T.database_withdrawn.action.action.instruction,
-                "controls": "database_withdrawn_exceptions_group"
-            }
+            IsConditionallyRequired: "group message"
         }
 
     name_ = "database_withdrawn_group"
@@ -836,11 +801,14 @@ class DatabaseWithdrawnGroup(Structure):
     # resolves the nested field via get_path() instead, which can walk into
     # sub-structures - "note" still resolves the normal way.
     validators_ = [
-        RequiredIfNestedException(note,  # <- this field is required if
-                                  exceptions_group.exceptions,  # <- this field has one of the values
-                                  T.database_withdrawn.note_required_exceptions
-                                  # <- that is one of the relevant exceptions
-                                  )
+        RequiredIf(note,  # <- this field is required if
+                  answer,  # <- this field has one of the values
+                  T.database_withdrawn.action_answers # <- that is one of the relevant exceptions
+        ),
+        RequiredIf(exceptions_group.exceptions,
+                   answer,
+                   T.database_withdrawn.action_answers
+       )
     ]
 
 
@@ -853,6 +821,7 @@ class DatabaseEmbargo(ComplianceCheckField):
         options = options_for(S)
         check = S.check
         instructions = S.instructions
+        remember = S.remember
         resources = resource_for(S)
         application_info = [
             {
@@ -874,7 +843,8 @@ class DatabaseEmbargo(ComplianceCheckField):
 class DatabaseEmbargoNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
+            # IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
+            IsConditionallyRequired: "dummy"
         }
 
     name = "database_embargo_note"
@@ -929,13 +899,7 @@ class DatabaseEmbargoGroup(Structure):
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
         error_messages = {
-            IsConditionallyRequired: T.database_embargo.validation.group.is_conditionally_required
-        }
-        action = {
-            "action": {
-                "instruction": T.database_embargo.action.action.instruction,
-                "controls": "database_embargo_exceptions_group"
-            }
+            IsConditionallyRequired: False
         }
 
     name_ = "database_embargo_group"
@@ -954,7 +918,7 @@ class DatabaseNotListed(ComplianceCheckField):
         S = T.database_not_listed
         options = options_for(S)
         check = S.check
-        instructions = S.instructions
+        # instructions = S.instructions
         resources = resource_for(S)
 
     name = "database_not_listed"
@@ -1020,7 +984,7 @@ class DatabaseNotDuplicateGroup(Structure):
 
     validators_ = [
         RequiredIf(note, answer, T.database_not_duplicate.non_compliant_answers),
-        RequiredIf(note, answer, T.database_not_duplicate.action_answer)
+        # RequiredIf(note, answer, T.database_not_duplicate.action_answer)
     ]
 
 ###########################################################
@@ -1410,6 +1374,29 @@ class ISSNContinuation(ComplianceCheckField):
         instructions = S.instructions
         resources = resource_for(S)
 
+        application_info = [
+            {
+                "label": S.additional_info.eissn,
+                "lookup": lambda application, wfc: application.bibjson().eissn,
+                "data-value": "eissn"
+            },
+            {
+                "label": S.additional_info.pissn,
+                "lookup": lambda application, wfc: application.bibjson().pissn,
+                "data-value": "pissn"
+            },
+            {
+                "label": S.additional_info.title,
+                "lookup": lambda application, wfc: application.bibjson().title,
+                "data-value": "title"
+            },
+            {
+                "label": S.additional_info.alttitle,
+                "lookup": lambda application, wfc: application.bibjson().alternative_title,
+                "data-value": "alttitle"
+            }
+            ]
+
     name = "issn_continuation"
     capabilities = (C(),)
 
@@ -1460,7 +1447,7 @@ class Continues(Field):
 class ISSNContinuationActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label = " "
+        label = T.issn_continuation.action.instruction
         order = ["continues"]
         control_btns = [TriageFormButtons.contb(),
                         TriageFormButtons.changeb({"data-controls": "issn_continuation_group"})]
@@ -1538,7 +1525,8 @@ class JournalUrl(Field):
 class WebsiteWorkingActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label = T.website_copyright.edit.copyright
+        # label = T.website_copyright.edit.copyright
+        label = "dummy"
         order = [
             "journal_url"
         ]
@@ -1585,7 +1573,8 @@ class WebsiteISSN(ComplianceCheckField):
 class WebsiteISSNNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
+            # IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
+            IsConditionallyRequired: "dummy"
         }
 
     name = "website_issn_note"
@@ -1628,7 +1617,8 @@ class WebsiteURL(ComplianceCheckField):
 class WebsiteURLNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            IsConditionallyRequired: T.website_url.validation.note.is_conditionally_required
+            # IsConditionallyRequired: T.website_url.validation.note.is_conditionally_required
+            IsConditionallyRequired: "dummy"
         }
 
     name = "website_url_note"
@@ -1841,7 +1831,8 @@ class WebsiteCopyrightNote(NoteField):
 
 class CopyrightAuthorRetains(Field):
     class C(FormFieldCapability):
-        label = T.website_copyright.edit.copyright_author_retains
+        # label = T.website_copyright.edit.copyright_author_retains
+        label = "dummy"
         control_class = Radio
         options = [
             {"label": "Yes", "value": "y"},
@@ -1894,7 +1885,8 @@ class CopyrightURL(Field):
 class WebsiteCopyrightActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        label = T.website_copyright.edit.copyright
+        # label = T.website_copyright.edit.copyright
+        label = "dummy"
         order = [
             "copyright_author_retains",
             "copyright_url"
@@ -2042,7 +2034,8 @@ class ContentPublishEnough(ComplianceCheckField):
 class ContentPublishEnoughNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            IsConditionallyRequired: T.content_publish_enough.validation.note.is_conditionally_required
+            # IsConditionallyRequired: T.content_publish_enough.validation.note.is_conditionally_required
+            IsConditionallyRequired: "dummy"
         }
 
     name = "content_publish_enough_note"
@@ -2128,7 +2121,8 @@ class ContentFormat(ComplianceCheckField):
 class ContentFormatNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            IsConditionallyRequired: T.content_format.validation.note.is_conditionally_required
+            # IsConditionallyRequired: T.content_format.validation.note.is_conditionally_required
+            IsConditionallyRequired: "dummy"
         }
 
     name = "content_format_note"

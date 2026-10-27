@@ -437,6 +437,15 @@ body.dashboard {
       }
     }
 
+    .info {
+      .application_info_label {
+        margin: 0;
+        text-transform: capitalize;
+        color: #5C5956;
+        font-size: .889em;
+      }
+    }
+
     .resources-list {
       list-style-type: none;
     }
