@@ -121,9 +121,16 @@ tests:
   - title: Editing the article references
     context:
       role: Admin
+      testdrive: article_references
     setup:
-      - Ensure that an article with references is in DOAJ, e.g. by uploading the test
-        resource file "with_references.xml" as a publisher
+      - Use the article_references testdrive to setup for this test at /testdrive/article_references, and log in
+        as the admin account specified by the testdrive result.  The testdrive's
+        "article_with_references" has the 4 references, and an "admin_edit" link to its
+        metadata form
+      - At the end of the test please use the 'teardown' link provided by the testdrive
+        to remove test assets from the system
+      - Alternatively, ensure that an article with references is in DOAJ, e.g. by
+        uploading the test resource file "with_references.xml" as a publisher
     steps:
       - step: Go to admin journal and articles search, find the article "References!"
           and click "Edit this article"

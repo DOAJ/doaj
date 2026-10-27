@@ -66,6 +66,12 @@ tests:
 - title: Enter article references
   context:
     role: Publisher with existing journal
+    testdrive: article_references
+  setup:
+  - Use the article_references testdrive to setup for this test at /testdrive/article_references, and log
+    in as the publisher account specified by the testdrive.
+  - At the end of the test please use the 'teardown' link provided by the testdrive
+    to remove test assets from the system
   steps:
   - step: Go to the "Enter Article Metadata" tab in the "Publisher Area"
   - step: Find the "References" field

@@ -268,10 +268,11 @@ tests:
 - title: Successfully upload a file containing an article with references
   context:
     role: publisher
+    testdrive: article_references
   setup:
-  - Ensure that the publisher account owns a journal for example with Print ISSN "2222-2222" which
-    is not attached to any other journals
-  - You must be logged in using a pure publisher account
+  - Use the article_references testdrive to setup for this test at /testdrive/article_references and log in as the publisher account specified by the testdrive
+  - At the end of the test please use the 'teardown' link provided by the testdrive
+    to remove test assets from the system
   steps:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Select "Choose file" and select the test resource file "with_references.xml"
