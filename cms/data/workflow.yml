@@ -60,7 +60,7 @@ triage:
       check: "Does the journal display fake impact factor values in text or images?"
       answers:
         compliant: "<span class='answer'>No</span>, it does not display fake impact factor values."
-        non_compliant: "<span class='answer'>Yes</span>, Yes, it displays fake impact factor values."
+        non_compliant: "<span class='answer'>Yes</span>, it displays fake impact factor values."
         later: "I don't know - mark for later"
       remember: 'Check the website as well as the fulltext for any fake impact factor values. <br /> If you select <span class="answer non_compliant">Yes</span>, you must add a note with a link to the source that supports your answer.'
       resources:
@@ -620,7 +620,6 @@ triage:
       resources: ""
       additional_info:
         www: "Journal's homepage"
-        copyright_author_retains: "Author retains copyright"
         copyright_url: "Copyright URL"
       edit:
         copyright_url: "Copyright URL"
@@ -629,9 +628,6 @@ triage:
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         note:
           is_conditionally_required: "Provide links supporting your answer."
-        copyright_author_retains:
-          is_required: "You must select an answer"
-          disallowed_value: "You must select one of the valid options"
         copyright_url:
           is_required: "You must provide a Copyright URL"
           disallowed_value: "You must enter a valid URL"
@@ -640,6 +636,8 @@ triage:
       non_compliant_answers:
         - "non_compliant"
         - "conditional"
+      note_required_answers:
+        - "non_compliant"
 
     content_no_login:
       id: "21"
@@ -698,7 +696,7 @@ triage:
       check: "Does the journal publish at least five research articles per year?"
       answers:
         compliant: "The journal publishes <strong>at least five</strong> research articles per year"
-        non_compliant: "the journal publishes <strong>less than five</strong> research articles per year"
+        non_compliant: "The journal publishes <strong>less than five</strong> research articles per year"
         later: "I don't know - mark for later"
         action: ""
       additional_info:

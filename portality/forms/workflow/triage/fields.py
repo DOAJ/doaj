@@ -1944,13 +1944,6 @@ class WebsiteCopyright(ComplianceCheckField):
                 "lookup": lambda application, wfc: application.bibjson().journal_url
             },
             {
-                "label": S.application_info.copyright,
-                "lookup": lambda application, wfc: (
-                    "Yes" if application.bibjson().author_retains_copyright else "No"
-                ),
-                "data-value": "author_retains_rights",
-            },
-            {
                 "type": "url",
                 "label": S.application_info.copyright_www,
                 "lookup": lambda application, wfc: application.bibjson().copyright_url,
@@ -1970,35 +1963,6 @@ class WebsiteCopyrightNote(NoteField):
 
     name = "website_copyright_note"
     capabilities = (NC(),)
-
-
-class CopyrightAuthorRetains(Field):
-    class C(FormFieldCapability):
-        # label = T.website_copyright.edit.copyright_author_retains
-        label = "dummy"
-        control_class = Radio
-        options = [
-            {"label": "Yes", "value": "y"},
-            {"label": "No", "value": "n"}
-        ]
-        control_render_class = RadioRenderer
-        render_class = GenericField
-        error_messages = {
-            DisallowedValue: T.website_copyright.validation.copyright_author_retains.disallowed_value,
-            IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
-        }
-        attributes = {"data-value": "author_retains_rights"}
-        alt_render = {
-            "ro": {
-                "render_class": GenericROFieldRenderer,
-                "control_render_class": GenericROControlRenderer
-            }
-        }
-
-    name = "copyright_author_retains"
-    coerce = [Unicode()]
-    validators = [LimitToFormOptions()]
-    capabilities = (C(),)
 
 
 class CopyrightURL(Field):
@@ -2028,10 +1992,8 @@ class CopyrightURL(Field):
 class WebsiteCopyrightActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        # label = T.website_copyright.edit.copyright
-        label = "dummy"
+        label = T.website_copyright.action.instruction
         order = [
-            "copyright_author_retains",
             "copyright_url"
         ]
         control_btns = [TriageFormButtons.contb(),
@@ -2041,7 +2003,6 @@ class WebsiteCopyrightActionGroup(Structure):
     name_ = "website_copyright_action_group"
     capabilities_ = (C(),)
 
-    copyright_author_retains = CopyrightAuthorRetains(REQUIRED, SINGLE)
     copyright_url = CopyrightURL(REQUIRED, SINGLE)
 
 
@@ -2058,12 +2019,6 @@ class WebsiteCopyrightGroup(Structure):
         error_messages = {
             IsConditionallyRequired: T.website_copyright.validation.group.is_conditionally_required
         }
-        action = {
-            "action": {
-                "instruction": T.website_copyright.action.instruction,
-                "controls": "website_copyright_action_group",
-            },
-        }
 
     name_ = "website_copyright_group"
     capabilities_ = (C(),)
@@ -2071,6 +2026,10 @@ class WebsiteCopyrightGroup(Structure):
     answer = WebsiteCopyright(OPTIONAL, SINGLE)
     action_group = WebsiteCopyrightActionGroup(OPTIONAL, SINGLE)
     note = WebsiteCopyrightNote(OPTIONAL, SINGLE)
+
+    validators_ = [
+        RequiredIf(note, answer, T.website_copyright.note_required_answers)
+    ]
 
 
 ###########################################################
@@ -2083,6 +2042,15 @@ class ContentNoLogin(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+
+        application_info = [
+            {
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url"
+            }
+        ]
 
     name = "content_no_login"
     capabilities = (C(),)
@@ -2127,6 +2095,15 @@ class ContentNoEmbargo(ComplianceCheckField):
         instructions = S.instructions
         resources = resource_for(S)
 
+        application_info = [
+            {
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url"
+            }
+        ]
+
     name = "content_no_embargo"
     capabilities = (C(),)
 
@@ -2170,19 +2147,22 @@ class ContentPublishEnough(ComplianceCheckField):
         instructions = S.instructions
         resources = resource_for(S)
 
+        application_info = [
+            {
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url"
+            }
+        ]
+
     name = "content_publish_enough"
     capabilities = (C(),)
 
 
 class ContentPublishEnoughNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            # IsConditionallyRequired: T.content_publish_enough.validation.note.is_conditionally_required
-            IsConditionallyRequired: "dummy"
-        }
-
     name = "content_publish_enough_note"
-    capabilities = (NC(),)
+    capabilities = (NoteCapability(),)
 
 
 class ContentPublishEnoughGroup(Structure):
@@ -2198,10 +2178,6 @@ class ContentPublishEnoughGroup(Structure):
     answer = ContentPublishEnough(OPTIONAL, SINGLE)
     note = ContentPublishEnoughNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note, answer, T.content_publish_enough.non_compliant_answers)
-    ]
-
 
 ###########################################################
 ## Content: Unique Link
@@ -2213,6 +2189,14 @@ class ContentUniqueLink(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        application_info = [
+            {
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url"
+            }
+        ]
 
     name = "content_unique_link"
     capabilities = (C(),)
@@ -2257,19 +2241,22 @@ class ContentFormat(ComplianceCheckField):
         instructions = S.instructions
         resources = resource_for(S)
 
+    application_info = [
+        {
+            "type": "url",
+            "label": "Journal's homepage",
+            "lookup": lambda application, wfc: application.bibjson().journal_url,
+            "data-value": "homepage_url"
+        }
+    ]
+
     name = "content_format"
     capabilities = (C(),)
 
 
 class ContentFormatNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            # IsConditionallyRequired: T.content_format.validation.note.is_conditionally_required
-            IsConditionallyRequired: "dummy"
-        }
-
     name = "content_format_note"
-    capabilities = (NC(),)
+    capabilities = (NoteCapability(),)
 
 
 class ContentFormatGroup(Structure):
@@ -2285,10 +2272,6 @@ class ContentFormatGroup(Structure):
     answer = ContentFormat(OPTIONAL, SINGLE)
     note = ContentFormatNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note, answer, T.content_format.non_compliant_answers)
-    ]
-
 
 ###########################################################
 ## Content: Format
@@ -2300,6 +2283,14 @@ class ContentNewJournal(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+        application_info = [
+            {
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url"
+            }
+        ]
 
     name = "content_new_journal"
     capabilities = (C(),)
@@ -2334,13 +2325,10 @@ class ContentNewJournalException(Field):
 
 class ContentNewJournalActionGroup(Structure):
     class C(SimpleCompoundCapability):
-        label = " "
+        label = T.content_new_journal.exception.check
         role = "action"
         order = ["exception"]
         render_class = OptionsAsButtonsCompoundRenderer
-        control_btns = [
-            TriageFormButtons.changeb({"data-controls": "content_new_journal_group"})
-        ]
 
     name_ = "new_journal_exceptions"
     capabilities_ = (C(),)
