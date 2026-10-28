@@ -313,9 +313,8 @@ import html as _html
 from markupsafe import Markup as _Markup
 
 # Tags that our JATS/crossref crosswalk may emit and are safe to render as HTML.
-_RICH_TEXT_ALLOWED_TAGS = frozenset(['em', 'i', 'b', 'strong', 'sub', 'sup', 'u', 'code', 's', 'span'])
 _RICH_TEXT_TAG_RE = _re.compile(
-    r'&lt;(/?)(' + '|'.join(_RICH_TEXT_ALLOWED_TAGS) + r')&gt;',
+    r'&lt;(/?)(' + '|'.join(constants.RICH_TEXT_TAGS) + r')&gt;',
     _re.IGNORECASE
 )
 

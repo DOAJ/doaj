@@ -1,3 +1,4 @@
+import re
 import string
 
 from unidecode import unidecode
@@ -17,6 +18,13 @@ from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article spec
 from portality.models.v1 import shared_structs
 from portality.models.v2.shared_structs import ARTICLE_STRUCT
 from portality.lib import normalise, dates
+
+_RICH_TEXT_TAG_RE = re.compile(r'</?(' + '|'.join(constants.RICH_TEXT_TAGS) + r')>', re.IGNORECASE)
+
+
+def strip_rich_text(text):
+    """ Remove the inline formatting tags the crosswalk stores, so ES tokenises e.g. TiO<sub>x</sub> as 'tiox' (#2861) """
+    return _RICH_TEXT_TAG_RE.sub('', text) if text else text
 
 
 class NoJournalException(Exception):
@@ -502,6 +510,8 @@ class Article(SeamlessMixin, DomainObject):
         country = None
         publisher = []
         classification_paths = []
+        title = None
+        abstract = None
         unpunctitle = None
         asciiunpunctitle = None
         doi = None
@@ -576,10 +586,14 @@ class Article(SeamlessMixin, DomainObject):
         classification_paths = lcc.longest(classification_paths)
         schema_codes_tree = cbib.lcc_codes_full_list()
 
+        # tag-free copies of title and abstract for searching
+        title = strip_rich_text(cbib.title)
+        abstract = strip_rich_text(cbib.abstract)
+
         # create an unpunctitle
-        if cbib.title is not None:
+        if title is not None:
             throwlist = string.punctuation + '\n\t'
-            unpunctitle = "".join(c for c in cbib.title if c not in throwlist).strip()
+            unpunctitle = "".join(c for c in title if c not in throwlist).strip()
             try:
                 asciiunpunctitle = unidecode(unpunctitle)
             except:
@@ -626,6 +640,10 @@ class Article(SeamlessMixin, DomainObject):
             self.data["index"]["schema_code"] = schema_codes
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
+        if title:
+            self.data["index"]["title"] = title
+        if abstract:
+            self.data["index"]["abstract"] = abstract
         if unpunctitle is not None:
             self.data["index"]["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:

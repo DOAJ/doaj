@@ -117,7 +117,7 @@ doaj.adminJournalArticleSearch = {
                 {'display': 'Country of publisher', 'field': 'index.country'},
                 {'display': 'Journal language', 'field': 'index.language'},
                 {'display': 'Journal: Publisher', 'field': 'bibjson.publisher.name'},
-                {'display': 'Article: Abstract', 'field': 'bibjson.abstract'},
+                {'display': 'Article: Abstract', 'field': 'index.abstract'},
                 {'display': 'Article: Author\'s name', 'field': 'bibjson.author.name'},
                 {'display': 'Article: Author\'s ORCID iD', 'field': 'bibjson.author.orcid_id'},
                 {'display': 'Article: Year', 'field': 'bibjson.year'},

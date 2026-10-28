@@ -1151,7 +1151,9 @@ ARTICLE_EXCEPTION_MAPPING = {
     "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
     "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
     "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
+    "index.abstract": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
 }
 
 ####################################################

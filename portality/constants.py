@@ -47,6 +47,9 @@ IDENT_TYPE_EISSN = "eissn"
 ALLOWED_ARTICLE_IDENT_TYPES = [IDENT_TYPE_DOI, IDENT_TYPE_PISSN, IDENT_TYPE_EISSN]
 LINK_TYPE_FULLTEXT = "fulltext"
 
+# Inline formatting tags the crossref crosswalk may store in article titles/abstracts (#2861)
+RICH_TEXT_TAGS = frozenset(['em', 'i', 'b', 'strong', 'sub', 'sup', 'u', 'code', 's', 'span'])
+
 # ~~-> Todo:Service~~
 TODO_ASSIGNED_TO_ME = "todo_assigned_to_me"
 TODO_MANED_STALLED = "todo_maned_stalled"

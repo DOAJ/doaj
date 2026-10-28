@@ -324,6 +324,12 @@ tests:
         results:
           - The article is found and its title and (expanded) abstract are rendered with the same formatting as on the
             Table of Contents, with no literal tags visible
+      - step: In the public article search, choose "Title" from the "search all" pull-down and search for "Pt3Ti"
+        results:
+          - The article is found
+      - step: Choose "Abstract" from the "search all" pull-down and search for "z-TiOx"
+        results:
+          - The article is found
       - step: Log in as an administrator, go to the "Journals & Articles" search in the admin area and search for
           "Rich text TiOx"
         path: /admin/admin_site_search
@@ -331,6 +337,12 @@ tests:
           - The article's title is shown with the same formatting, with no literal tags visible
           - Click "(show/hide)" next to the Abstract; the abstract is shown with the same formatting, and
             "<script>alert('xss')</script>" is shown literally with no alert pop-up
+      - step: In the admin search, choose "Title" from the "search all" pull-down and search for "Pt3Ti"
+        results:
+          - The article is found
+      - step: 'Choose "Article: Abstract" from the "search all" pull-down and search for "z-TiOx"'
+        results:
+          - The article is found
 
   - title: Upload a file containing 2 identical ISSNs
     context:

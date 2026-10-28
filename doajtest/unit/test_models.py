@@ -704,6 +704,22 @@ class TestModels(DoajTestCase):
         a.prep()
         assert a.data.get('index', None) is not None
 
+    def test_11b_article_index_strips_rich_text(self):
+        """Formatting tags are removed from the searchable title/abstract copies, other '<' text is kept (#2861)"""
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
+        a.bibjson().title = "Rich text TiO<i><sub>x</sub></i>/Pt<SUB>3</SUB>Ti(111)"
+        a.bibjson().abstract = "E=mc<sup>2</sup> when x < 5 and <unknown>y</unknown> > 3"
+        a.save(blocking=True)
+
+        assert a.bibjson().title == "Rich text TiO<i><sub>x</sub></i>/Pt<SUB>3</SUB>Ti(111)"
+        assert a.data["index"]["title"] == "Rich text TiOx/Pt3Ti(111)"
+        assert a.data["index"]["abstract"] == "E=mc2 when x < 5 and <unknown>y</unknown> > 3"
+        assert a.data["index"]["unpunctitle"] == "Rich text TiOxPt3Ti111"
+
+        for field, term in [("index.title", "TiOx"), ("index.title", "Pt3Ti"), ("index.abstract", "mc2")]:
+            q = {"query": {"query_string": {"query": term, "default_field": field}}}
+            assert models.Article.hit_count(q) == 1, (field, term)
+
     def test_12_archiving_policy(self):
         # a recent change to how we store archiving policy means we need the object api to continue
         # to respect the old model, while transparently converting it in and out of the object
