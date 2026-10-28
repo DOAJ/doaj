@@ -8,6 +8,6 @@
 	dateyesterday
 	rotate 365
 	postrotate
-	    sudo supervisorctl restart all && sudo nginx -s reload
+	    sudo supervisorctl restart all
 	endscript
 }

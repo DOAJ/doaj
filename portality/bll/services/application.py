@@ -10,7 +10,7 @@ from portality.core import app
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.forms.application_forms import ApplicationFormFactory
-from portality.lib import dates, httputil
+from portality.lib import csv_utils, dates, httputil
 from portality.lib.argvalidate import argvalidate
 from portality.ui.messages import Messages
 from portality import datasets
@@ -752,12 +752,12 @@ class ApplicationService(object):
             row_ix = 1
 
             # ~~ ->$JournalUpdateByCSV:Feature ~~
-            for row in reader:
+            for row in csv_utils.trim_trailing_empty_rows(reader):
                 row_ix += 1
                 validation.log(f'Processing CSV row {row_ix}')
 
                 # Skip empty rows
-                if not any(row.values()):
+                if csv_utils.is_empty_row(row):
                     validation.log("Skipping empty row {x}.".format(x=row_ix))
                     continue
 
@@ -909,6 +909,12 @@ class CSVValidationReport:
     @property
     def value_errors(self):
         return self._values
+
+    @property
+    def all_errors(self):
+        """ (error_type, msg) for every general, header, row and value entry """
+        return self._general + list(self._headers.values()) + list(self._row.values()) + \
+            [(error_type, msg) for row in self._values.values() for error_type, msg, *_ in row.values()]
 
     def has_errors_or_warnings(self):
         return self._errors or self._warnings
