@@ -225,6 +225,32 @@ class SimpleCompoundCapability(CompoundFieldCapability):
     }
 
 #######
+### Helpers
+def _license_display(licenses):
+    descriptions = []
+    for license in licenses:
+        description = license["type"]
+        if description == "Publisher's own license":
+            attributes = [
+                key for key, value in license.items()
+                if value is True
+            ]
+            description += ": " + " ".join(attributes)
+        descriptions.append(description)
+    if len(descriptions) > 1:
+        return ", ".join(descriptions[:-1]) + " or " + descriptions[-1]
+    return descriptions[0] if descriptions else ""
+
+def _apc_display(apc):
+    values = [];
+    for charge in apc:
+        if (not "price" in charge) and (not "currency" in charge):
+            values.append("No data")
+        else:
+            values.append(f"{charge.get('price', '')} {charge.get('currency', '')}")
+    return ", ".join(values)
+
+#######
 ## Generic notes capability and field
 class NoteCapability(FormFieldCapability):
     role = "note"
@@ -256,12 +282,12 @@ class DummyNote(NoteCapability):
 
 class NoteField(Field):
     coerce = [Unicode()]
-    capabilities = (NoteCapability(), )
+    # capabilities = (NoteCapability(), )
 
 
 class GeneralNote(Field):
     coerce = [Unicode()]
-    capabilities = (GeneralNoteCapability(),)
+    # capabilities = (GeneralNoteCapability(),)
 
 
 #######
@@ -357,6 +383,7 @@ class EthicsNotExcluded(ComplianceCheckField):
 
 class EthicsNotExcludedNote(NoteField):
     name = "ethics_not_excluded_note"
+    capabilities = (NoteCapability(),)
 
 
 class EthicsNotExcludedGroup(Structure):
@@ -573,7 +600,7 @@ class EthicsPubTime(ComplianceCheckField):
 
 class EthicsPubTimeNote(GeneralNote):
     name = "ethics_no_false_doaj_claim_note"
-
+    capabilities = (GeneralNoteCapability(),)
 
 class EthicsPubTimeGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -637,7 +664,7 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
 
 class EthicsNoSuspiciousTiesNote(NoteField):
     name = "ethics_no_suspicious_ties_note"
-
+    capabilities = (NoteCapability(),)
 
 class EthicsNoSuspiciousTiesGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -953,6 +980,7 @@ class DatabaseNotDuplicate(ComplianceCheckField):
         options = options_for(S)
         check = S.check
         instructions = S.instructions
+        remember = S.remember
         resources = resource_for(S)
 
     name = "database_not_duplicate"
@@ -1289,6 +1317,7 @@ class ISSNTitleMatch(ComplianceCheckField):
 
 class ISSNTitleMatchNote(NoteField):
     name = "issn_title_match_note"
+    capabilities = (NoteCapability(),)
 
 class Title(Field):
     class C(FormFieldCapability):
@@ -1403,6 +1432,7 @@ class ISSNContinuation(ComplianceCheckField):
 
 class ISSNContinuationNote(NoteField):
     name = "issn_continuation_note"
+    capabilities = (NoteCapability(),)
 
 class RequiredIfNotNestedException(RequiredIfNot):
     """
@@ -1525,8 +1555,7 @@ class JournalUrl(Field):
 class WebsiteWorkingActionGroup(Structure):
     class C(SimpleCompoundCapability):
         role = "action"
-        # label = T.website_copyright.edit.copyright
-        label = "dummy"
+        label = T.website_working.action.instruction
         order = [
             "journal_url"
         ]
@@ -1566,20 +1595,32 @@ class WebsiteISSN(ComplianceCheckField):
         instructions = S.instructions
         resources = resource_for(S)
 
+        application_info = [
+            {
+                "label": S.additional_info.eissn,
+                "lookup": lambda application, wfc: application.bibjson().eissn,
+                "data-value": "eissn"
+            },
+            {
+                "label": S.additional_info.pissn,
+                "lookup": lambda application, wfc: application.bibjson().pissn,
+                "data-value": "pissn"
+            },
+            {
+                "type": "url",
+                "label": S.additional_info.homepage,
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url",
+            }
+        ]
+
     name = "website_issn"
     capabilities = (C(),)
 
 
 class WebsiteISSNNote(NoteField):
-    class NC(NoteCapability):
-        error_messages = {
-            # IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
-            IsConditionallyRequired: "dummy"
-        }
-
     name = "website_issn_note"
-    capabilities = (NC(),)
-
+    capabilities = (NoteCapability(),)
 
 class WebsiteISSNGroup(Structure):
     class C(TriageCompoundFieldCapability):
@@ -1594,10 +1635,6 @@ class WebsiteISSNGroup(Structure):
     answer = WebsiteISSN(OPTIONAL, SINGLE)
     note = WebsiteISSNNote(OPTIONAL, SINGLE)
 
-    validators_ = [
-        RequiredIf(note, answer, T.website_issn.non_compliant_answers)
-    ]
-
 
 ###########################################################
 ## Website: URL
@@ -1609,6 +1646,75 @@ class WebsiteURL(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+
+        application_info = [
+            {
+                "type": "url",
+                "label": S.application_info.homepage,
+                "lookup": lambda application, wfc: application.bibjson().journal_url
+            },
+            {
+                "type": "url",
+                "label": S.application_info.oa_statement_www,
+                "lookup": lambda application, wfc: application.bibjson().oa_statement_url
+            },
+            {
+                "label": S.application_info.copyright,
+                "lookup": lambda application, wfc: (
+                            "Yes" if application.bibjson().author_retains_copyright else "No"
+                        ),
+                        "data-value": "author_retains_rights",
+            },
+            {
+                "type": "url",
+                "label": S.application_info.copyright_www,
+                "lookup": lambda application, wfc: application.bibjson().copyright_url,
+                "data-value": "copyright_url"
+            },
+            {
+                "label": S.application_info.oa_license,
+                "lookup": lambda application, wfc: _license_display(application.bibjson().licenses),
+                "data-value": "license"
+            },
+            {
+                "type": "url",
+                "label": S.application_info.oa_license_www,
+                "lookup": lambda application, wfc: application.bibjson().article_license_display_example_url,
+                "data-value": "license_url"
+            },
+            {
+                "label": S.application_info.review_process,
+                "lookup": lambda application, wfc: application.bibjson().editorial_review_process
+            },
+            {
+                "type": "url",
+                "label": S.application_info.review_process_www,
+                "lookup": lambda application, wfc: application.bibjson().editorial_review_url
+            },
+            {
+                "type": "url",
+                "label": S.application_info.aims_www,
+                "lookup": lambda application, wfc: application.bibjson().aims_scope_url
+            },
+            {
+                "type": "url",
+                "label": S.application_info.editorial_www,
+                "lookup": lambda application, wfc: application.bibjson().editorial_review_url
+            },
+            {
+                "label": S.application_info.apc,
+                "lookup": lambda application, wfc: application.bibjson().has_apc
+            },
+            {
+                "label": S.application_info.apc_max,
+                "lookup": lambda application, wfc: _apc_display(application.bibjson().apc)
+            },
+            {
+                "type": "url",
+                "label": S.application_info.apc_www,
+                "lookup": lambda application, wfc: application.bibjson().apc_url
+            },
+        ]
 
     name = "website_url"
     capabilities = (C(),)
@@ -1626,9 +1732,10 @@ class WebsiteURLNote(NoteField):
 
 
 class WebsiteURLGroup(Structure):
-    class C(ActionTriageCompoundFieldCapability):
+    class C(TriageCompoundFieldCapability):
         id = T.website_url.id
-        label = T.website_url.label
+        S = T.website_url
+        label = S.label
         order = ["answer", "note"]
         render_class = TriageCompound
 
@@ -1637,10 +1744,6 @@ class WebsiteURLGroup(Structure):
 
     answer = WebsiteURL(OPTIONAL, SINGLE)
     note = WebsiteURLNote(OPTIONAL, SINGLE)
-
-    validators_ = [
-        RequiredIf(note, answer, T.website_url.note_required_answers)
-    ]
 
 
 ###########################################################
@@ -1653,6 +1756,25 @@ class WebsiteLicensePolicy(ComplianceCheckField):
         check = S.check
         instructions = S.instructions
         resources = resource_for(S)
+
+        application_info = [
+            {
+                "type": "url",
+                "label": S.application_info.homepage,
+                "lookup": lambda application, wfc: application.bibjson().journal_url
+            },
+            {
+                "label": S.application_info.oa_license,
+                "lookup": lambda application, wfc: _license_display(application.bibjson().licenses),
+                "data-value": "license"
+            },
+            {
+                "type": "url",
+                "label": S.application_info.oa_license_www,
+                "lookup": lambda application, wfc: application.bibjson().article_license_display_example_url,
+                "data-value": "license_url"
+            }
+        ]
 
     name = "website_license_policy"
     capabilities = (C(),)
@@ -1815,6 +1937,27 @@ class WebsiteCopyright(ComplianceCheckField):
         instructions = S.instructions
         resources = resource_for(S)
 
+        application_info = [
+            {
+                "type": "url",
+                "label": S.application_info.homepage,
+                "lookup": lambda application, wfc: application.bibjson().journal_url
+            },
+            {
+                "label": S.application_info.copyright,
+                "lookup": lambda application, wfc: (
+                    "Yes" if application.bibjson().author_retains_copyright else "No"
+                ),
+                "data-value": "author_retains_rights",
+            },
+            {
+                "type": "url",
+                "label": S.application_info.copyright_www,
+                "lookup": lambda application, wfc: application.bibjson().copyright_url,
+                "data-value": "copyright_url"
+            }
+        ]
+
     name = "website_copyright"
     capabilities = (C(),)
 
@@ -1917,7 +2060,7 @@ class WebsiteCopyrightGroup(Structure):
         }
         action = {
             "action": {
-                "instruction": T.website_copyright.action.action.instruction,
+                "instruction": T.website_copyright.action.instruction,
                 "controls": "website_copyright_action_group",
             },
         }
@@ -2164,7 +2307,7 @@ class ContentNewJournal(ComplianceCheckField):
 
 class ContentNewJournalNote(NoteField):
     name = "content_new_journal_note"
-
+    capabilities = (NoteCapability(),)
 
 class ContentNewJournalException(Field):
     class C(ComplianceCheckCapability):
@@ -2220,22 +2363,6 @@ class ContentNewJournalGroup(Structure):
 
 ###########################################################
 ## Admin: Metadata Review
-
-def _license_display(licenses):
-    descriptions = []
-    for license in licenses:
-        description = license["type"]
-        if description == "Publisher's own license":
-            attributes = [
-                key for key, value in license.items()
-                if value is True
-            ]
-            description += ": " + " ".join(attributes)
-        descriptions.append(description)
-    if len(descriptions) > 1:
-        return ", ".join(descriptions[:-1]) + " or " + descriptions[-1]
-    return descriptions[0] if descriptions else ""
-
 
 class AdminMetadataReview(ComplianceCheckField):
     class C(ComplianceCheckCapability):
@@ -2320,7 +2447,7 @@ class AdminMetadataReview(ComplianceCheckField):
 
 class AdminMetadataReviewNote(GeneralNote):
     name = "admin_metadata_review_note"
-
+    capabilities = (GeneralNoteCapability(),)
 
 class AdminMetadataReviewGroup(Structure):
     class C(ReviewCapability):

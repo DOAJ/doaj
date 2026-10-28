@@ -211,7 +211,7 @@ triage:
       check: "Does the country in the application match the country shown in the ISSN Portal?"
       answers:
         compliant: "<span class='answer'>Yes</span>, the country details match."
-        non_compliant: "<span class='answer'>No</span>, No, the country details do not match."
+        non_compliant: "<span class='answer'>No</span>, the country details do not match."
         later: "I don't know - mark for later"
         action: ""
       action: # not currently used, should be removed
@@ -246,7 +246,7 @@ triage:
       label: "Title match"
       check: "Do the journal title and alternative title match across the application, website and ISSN Portal?"
       answers:
-        compliant: "<span class='answer'>Yes</span> this journal’s title and alternative title in the application, on the website and at ISSN portal match each other."
+        compliant: "<span class='answer'>Yes</span>, this journal’s title and alternative title in the application, on the website and at ISSN portal match each other."
         non_compliant: "<span class='answer'>No</span>, this journal’s title or the alternative title in the application or on the website <strong>does not</strong>  match the ISSN portal"
         later: "I don't know - mark for later"
         action: "Journal's title or alternative needs to be changed"
@@ -485,8 +485,8 @@ triage:
         non_compliant: "The issn displayed on the website is not correct/not displayed"
         later: "I don't know - mark for later"
         action: ""
-      info:
-        www: "Journal's homepage"
+      additional_info:
+        homepage: "Journal's homepage"
         pissn: "Print ISSN"
         eissn: "Electronic ISSN"
       remember: ""
@@ -509,16 +509,16 @@ triage:
         non_compliant: "All URLs in the application are the same and/or they do not point to the correct information."
         later: "I don't know - mark for later"
         action: "Same URL acceptable. All required information is correctly provided under a single URL due to the website structure."
-      info:
-        www: "Journal's homepage"
+      application_info:
+        homepage: "Journal's homepage"
         oa_statement: "Open access statement"
         oa_statement_www: "Link to open access statement"
-        copyright: "Copyright policy"
+        copyright: "Author retains rights"
         copyright_www: "Link to copyright policy"
-        oa_license: "Open Access licensing policy"
-        oa_license_www: "Link to Open Access licensing policy"
-        peer_review: "Peer review policy"
-        peer_review_www: "Link to peer review policy"
+        oa_license: "Licensing policy"
+        oa_license_www: "Link to licensing policy"
+        review_process: "Peer review policy"
+        review_process_www: "Link to peer review policy"
         aims_www: "Link to the journal's Aims & Scope"
         editorial_www: "Link to journal's Editorial Board"
         apc: "Does this journal charge APCs?"
@@ -540,13 +540,17 @@ triage:
 
     website_license_policy:
       id: "19"
-      label: "OA policy"
+      label: "Licensing policy"
       check: "Is the licensing policy present and consistent across the journal website?"
       answers:
         compliant: "<span class='answer'>Yes</span>, licensing policy is present and the same in all parts of the journal website"
         non_compliant: "<span class='answer'>No</span>, licensing policy is not present or it is not the same in all parts of the journal website"
         later: "I don't know - mark for later"
         action: "Changes to licensing policy information are required"
+      application_info:
+        homepage: "Journal's homepage"
+        oa_license: "Licensing policy"
+        oa_license_www: "Link to licensing policy"
       license_attrs:
         "CC BY": "CC BY"
         "CC BY-SA": "CC BY-SA"
@@ -603,9 +607,14 @@ triage:
         non_compliant: "Copyright information is <strong>inconsistent</strong> on the journal website and/or articles"
         later: "I don't know - mark for later"
         action: "Changes to copyright url is required or I can’t find the information about copyrights."
+      application_info:
+        homepage: "Journal's homepage"
+        oa_statement: "Open access statement"
+        oa_statement_www: "Link to open access statement"
+        copyright: "Author retains rights"
+        copyright_www: "Link to copyright policy"
       action:
-        action:
-          instruction: "Provide the correct copyright URL. If you can't find the information about copyrights leave the url below unchanged and add a note."
+        instruction: "Provide the correct copyright URL. If you can't find the information about copyrights leave the url below unchanged and add a note."
       remember: "If copyright information is <span class='answer non_compliant'>inconsistent</span> add links showing the inconsistencies as a note."
       instructions: ''
       resources: ""
