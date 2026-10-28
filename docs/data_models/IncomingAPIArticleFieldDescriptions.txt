@@ -2,7 +2,7 @@ admin.in_doaj: Whether the article is in DOAJ, or withdrawn from public view.  Y
 admin.publisher_record_id: **Deprecated** Your own ID for the record.
 admin.upload_id: An ID for a batch upload.  You can retrieve this value from DOAJ, but if you provide it back it will be **ignored**.
 bibjson.abstract: Article abstract
-bibjson.author.affiliation: An author's affiliation
+bibjson.author.affiliations: A list of the author's affiliations. Each affiliation is a string. An author can have multiple affiliations.
 bibjson.author.name: An author's name.  If there is an author record then name is **required**
 bibjson.identifier.id: An identifier for the article.
 bibjson.identifier.type: The type of the associated identifier.  Should contain "doi" if available.  An "eissn" or a "pissn" is **required**.  All supplied identifier types will be cast to lowercase if not already provided that way.  Any identifiers other that "doi", "eissn" or "pissn" will be ignored.

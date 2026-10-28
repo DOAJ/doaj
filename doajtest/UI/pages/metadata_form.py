@@ -59,8 +59,8 @@ class PublisherMetadataForm:
     def add_author(self, author):
         author_name_input = self.browser.find_element_by_id("authors-0-name")
         author_name_input.send_keys(author["name"])
-        author_aff_input = self.browser.find_element_by_id("authors-0-affiliation")
-        author_aff_input.send_keys(author["affiliation"])
+        author_aff_input = self.browser.find_element_by_id("authors-0-affiliations")
+        author_aff_input.send_keys(author.get("affiliations", ""))
 
     def add_url(self, fulltext):
         fulltext_input = self.browser.find_element_by_id("fulltext")
