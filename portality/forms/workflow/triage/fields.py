@@ -361,20 +361,27 @@ class EthicsNotExcluded(ComplianceCheckField):
                 "data-value": "alttitle"
             },
             {
+                "type": "url",
+                "label": "Journal's homepage",
+                "lookup": lambda application, wfc: application.bibjson().journal_url,
+                "data-value": "homepage_url",
+            },
+            {
                 "label": S.application_info.publisher,
                 "lookup": lambda application, wfc: application.bibjson().publisher_name,
+            },
+            {
+                "label": S.application_info.pcountry,
+                "lookup": lambda application, wfc: application.bibjson().publisher_country
             },
             {
                 "label": S.application_info.organization,
                 "lookup": lambda application, wfc: application.bibjson().institution,
             },
             {
-                "type": "url",
-                "label": "Journal's homepage",
-                "lookup": lambda application, wfc: application.bibjson().journal_url,
-                "data-value": "homepage_url",
+                "label": S.application_info.ocountry,
+                "lookup": lambda application, wfc: application.bibjson().institution_country
             }
-
         ]
 
     name = "ethics_not_excluded"
@@ -643,11 +650,19 @@ class EthicsNoSuspiciousTies(ComplianceCheckField):
             },
             {
                 "label": S.application_info.publisher,
-                "lookup": lambda application, wfc: application.bibjson().publisher_name
+                "lookup": lambda application, wfc: application.bibjson().publisher_name,
+            },
+            {
+                "label": S.application_info.pcountry,
+                "lookup": lambda application, wfc: application.bibjson().publisher_country
             },
             {
                 "label": S.application_info.organization,
-                "lookup": lambda application, wfc: application.bibjson().institution
+                "lookup": lambda application, wfc: application.bibjson().institution,
+            },
+            {
+                "label": S.application_info.ocountry,
+                "lookup": lambda application, wfc: application.bibjson().institution_country
             },
             {
                 "type": "url",
@@ -1060,7 +1075,7 @@ class ISSNAtLeastOne(ComplianceCheckField):
                 "lookup": lambda application, wfc: application.bibjson().institution_name
             },
             {
-                "label": S.additional_info.pcountry,
+                "label": S.additional_info.ocountry,
                 "lookup": lambda application, wfc: application.bibjson().institution_country
             }
 
@@ -2473,6 +2488,10 @@ class AdminSpecialException(ComplianceCheckField):
             {
                 "label": S.application_info.country,
                 "lookup": lambda application, wfc: application.bibjson().publisher_country
+            },
+            {
+                "label": S.application_info.organization,
+                "lookup": lambda application, wfc: application.bibjson().institution,
             },
         ]
 

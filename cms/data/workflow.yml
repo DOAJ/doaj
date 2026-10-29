@@ -12,7 +12,9 @@ triage:
         title: "Title"
         alttitle: "Alternative title"
         publisher: "Publisher"
+        pcountry: "Publisher's country"
         organization: "Other organization"
+        ocountry: "Other organization's country"
         homepage: "Homepage"
       remember: 'If the exclusion does not relate to all journals from a publisher, an application for another journal from that publisher should not be rejected at this stage.'
       instructions: '<ul><li>If there is a current publisher exclusion, choose the  <span class="answer non_compliant"">red answer.</span></li>
@@ -139,7 +141,9 @@ triage:
         title: "Title"
         alttitle: "Alternative title"
         publisher: "Publisher"
-        organization: "Journal's title"
+        pcountry: "Publisher's country"
+        organization: "Other organization"
+        ocountry: "Other organization's country"
         homepage: "Journal's homepage"
       compliant_answers:
       - "compliant"
@@ -830,6 +834,7 @@ be rejected for <strong>any</strong> reason. After answering all triage question
         country: "Country"
         account: "Owner's id"
         publisher: "Publisher"
+        organization: "Other organization"
       validation:
         special_exceptions:
           disallowed_value: "Please select one of the options"
