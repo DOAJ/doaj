@@ -223,6 +223,21 @@ class ApplicationProcessor(FormProcessor):
                         # Skip if we don't have a current_user
                         pass
 
+    def _patch_publisher_comment(self, author=None):
+        if self.target.publisher_comment:
+            pc = self.target.publisher_comment
+            if not pc.get("date"):
+                pc["date"] = dates.today()
+            if not pc.get('author_id'):
+                    if author:
+                        pc['author_id'] = author
+                    else:
+                        try:
+                            pc["author_id"] = current_user.id
+                        except AttributeError:
+                            # Skip if we don't have a current_user
+                            pass
+
     def _resolve_flags(self, account):
         import json
         # handle flag resolution
@@ -278,6 +293,7 @@ class NewApplication(ApplicationProcessor):
             self.resetDefaults(self.form)
 
         self.form2target()
+        self._patch_publisher_comment(account.id)
         # ~~-> DraftApplication:Model~~
         draft_application = models.DraftApplication(**self.target.data)
         if id is not None:
@@ -290,6 +306,7 @@ class NewApplication(ApplicationProcessor):
 
     def finalise(self, account, save_target=True, email_alert=True, id=None):
         super(NewApplication, self).finalise()
+        self._patch_publisher_comment(account.id)
 
         # set some administrative data
         now = dates.now_str()
@@ -770,6 +787,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherUpdateRequest, self).finalise()
+        self._patch_publisher_comment(current_user.id)
 
         # set the status to post submission review (will be updated again later after the review job runs)
         if app.config.get("AUTOCHECK_INCOMING", False):
