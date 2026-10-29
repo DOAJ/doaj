@@ -134,6 +134,10 @@ class Crossref442ArticleFixtureFactory(object):
     def upload_multiple_affs(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='Multiple Affs']]")
 
+    @classmethod
+    def upload_jats_rich_abstract(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='JATS Rich Text Abstract']]")
+
 class Crossref531ArticleFixtureFactory(Crossref442ArticleFixtureFactory):
     """
     ~~Crossref531XML:Fixture->Crossref531:Crosswalk~~

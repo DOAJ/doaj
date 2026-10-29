@@ -1,3 +1,13 @@
+doaj.safeRichText = function(text) {
+    if (!text) return '';
+    var escaped = edges.escapeHtml(text);
+    var allowedTags = ['em', 'i', 'b', 'strong', 'sub', 'sup', 'u', 'code', 's', 'span'];
+    var pattern = new RegExp('&lt;(\\/?)(' + allowedTags.join('|') + ')&gt;', 'gi');
+    return escaped.replace(pattern, function(match, slash, tag) {
+        return '<' + slash + tag.toLowerCase() + '>';
+    });
+};
+
 doaj.filters = {
         noCharges: function () {
             return {
@@ -4694,7 +4704,7 @@ doaj.renderers = {
 
                 var title = "";
                 if (resultobj.bibjson.title) {
-                    title = edges.escapeHtml(resultobj.bibjson.title);
+                    title = doaj.safeRichText(resultobj.bibjson.title);
                 }
 
                 // set the authors
@@ -4745,7 +4755,7 @@ doaj.renderers = {
                     }
                     abstract += '</h4>\
                           <p rel="' + resultobj.id + '" class="collapse ' + abstractText + '" aria-expanded="false">\
-                            ' + edges.escapeHtml(resultobj.bibjson.abstract) + '\
+                            ' + doaj.safeRichText(resultobj.bibjson.abstract) + '\
                           </p>';
                 }
 
@@ -4961,7 +4971,7 @@ doaj.renderers = {
 
                 var titleText = "Untitled";
                 if (edges.hasProp(resultobj, "bibjson.title")) {
-                    titleText = edges.escapeHtml(resultobj.bibjson.title);
+                    titleText = doaj.safeRichText(resultobj.bibjson.title);
                 }
                 var title = titleText;
                 if (accessLink) {
@@ -5117,7 +5127,7 @@ doaj.renderers = {
 
                 var titleText = "Untitled";
                 if (edges.hasProp(resultobj, "bibjson.title")) {
-                    titleText = edges.escapeHtml(resultobj.bibjson.title);
+                    titleText = doaj.safeRichText(resultobj.bibjson.title);
                 }
                 var title = titleText;
                 if (accessLink) {
@@ -5577,7 +5587,7 @@ doaj.fieldRender = {
                     field += display;
                 } else {
                     field += display;
-                    field += edges.escapeHtml(resultobj.bibjson.title);
+                    field += doaj.safeRichText(resultobj.bibjson.title);
                 }
                 field += "</h3>";
                 var s2o = '';
@@ -5653,7 +5663,7 @@ doaj.fieldRender = {
                 result += '">(show/hide)</a> <span class="abstract_text" style="display:none" rel="';
                 result += resultobj['id'];
                 result += '">' + '<br>';
-                result += edges.escapeHtml(resultobj['bibjson']['abstract']);
+                result += doaj.safeRichText(resultobj['bibjson']['abstract']);
                 result += '</span>';
                 return result;
             }
