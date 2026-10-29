@@ -480,10 +480,7 @@ def forgot():
     if request.method == 'POST':
         # get hold of the user account
         un = request.form.get('un', "")
-        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
-            account = Account.pull(un) or Account.pull_by_email(un)
-        else:
-            account = Account.pull_by_email(un)
+        account = DOAJ.accountService().resolve_user(un)
 
         if account is None:
             util.flash_with_url('Error - your account username / email address is not recognised.' + CONTACT_INSTR,
