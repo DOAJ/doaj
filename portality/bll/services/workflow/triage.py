@@ -3,9 +3,10 @@ from typing import TYPE_CHECKING, Union
 from portality import constants, models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
+from portality.bll.services.workflow.cancelled import Cancelled
 
 from portality.bll.services.workflow.core import WorkflowEvent, State, Claim, Assign, Unclaim, Reassign, Unassign, \
-    Fail, ApplicationEdit, WorkflowAction
+    Fail, ApplicationEdit, WorkflowAction, Cancel
 from portality.bll.services.workflow.rejected import Rejected
 from portality.core import app
 from portality.models import Account, WorkflowControl, JournalLikeObject
@@ -55,7 +56,7 @@ class AwaitingTriage(State):
     legacy_application_status = constants.APPLICATION_STATUS_PENDING
     legacy_editor_group = LEGACY_EDITOR_GROUP
 
-    events = [Claim, Assign]
+    events = [Claim, Assign, Cancel]
 
     @classmethod
     def assignable_users(cls):
@@ -72,7 +73,8 @@ class AwaitingTriage(State):
     def exit(self, event:WorkflowEvent) -> State:
         return self.dispatch_event(event, {
             Claim: self.event_claim,
-            Assign: self.event_assign
+            Assign: self.event_assign,
+            Cancel: self.event_cancel
         })
 
     def event_claim(self, event:Claim) -> State:
@@ -82,6 +84,11 @@ class AwaitingTriage(State):
         if not event.actor.has_role(constants.ROLE_ADMIN):
             raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
         return self._assign_and_transition(event.actor, event.reviewer)
+
+    def event_cancel(self, event:Cancel) -> State:
+        if not event.actor.has_role(constants.ROLE_ADMIN):
+            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
+        return self.transition(Cancelled, event.actor)
 
     def _assign_and_transition(self, actor, reviewer) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
         if not reviewer.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__USER_ATTR__TRIAGE):
@@ -180,6 +187,11 @@ class TriageWorkingState(State):
 
         return self.enter(event.actor, self._wf_control, self._application, self)
 
+    def event_cancel(self, event:Cancel) -> State:
+        if not event.actor.has_role(constants.ROLE_ADMIN):
+            raise AuthoriseException(reason=AuthoriseException.WRONG_ROLE)
+        return self.transition(Cancelled, event.actor)
+
     def event_fail(self, event: Fail) -> "Rejected":
         wfc = self.workflow_control
         reviewer_permission = wfc.reviewer_id == event.actor_id and wfc.reviewer.has_attribute(
@@ -226,7 +238,7 @@ class TriageAssessmentInProgress(TriageWorkingState):
     legacy_application_status = constants.APPLICATION_STATUS_PENDING
     legacy_editor_group = LEGACY_EDITOR_GROUP
 
-    events = [Unclaim, Reassign, Unassign, Fail, MinimalReview]
+    events = [Unclaim, Reassign, Unassign, Fail, MinimalReview, Cancel]
     actions = [ApplicationEdit]
 
     def do_edit(self, action:ApplicationEdit) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
@@ -246,7 +258,8 @@ class TriageAssessmentInProgress(TriageWorkingState):
             Unassign: self.event_unassign,
             Reassign: self.event_reassign,
             Fail: self.event_fail,
-            MinimalReview: self.event_minimal_review
+            MinimalReview: self.event_minimal_review,
+            Cancel: self.event_cancel
         })
 
     def event_minimal_review(self, event: MinimalReview) -> "TriageAssessmentMinimalReview":
@@ -268,7 +281,7 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
     legacy_application_status = constants.APPLICATION_STATUS_PENDING
     legacy_editor_group = LEGACY_EDITOR_GROUP
 
-    events = [Triaged, Unclaim, Reassign, Unassign, Fail, RescindMinimalReview]
+    events = [Triaged, Unclaim, Reassign, Unassign, Fail, RescindMinimalReview, Cancel]
     actions = [ApplicationEdit]
 
     def do_edit(self, action: ApplicationEdit) -> Union["TriageAssessmentInProgress", "TriageAssessmentMinimalReview"]:
@@ -278,7 +291,6 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
         if not (reviewer_permission or action.actor.has_role(constants.ROLE_ADMIN)):
             raise AuthoriseException(reason=AuthoriseException.NOT_AUTHORISED)
 
-        # FIXME: where does has_minimal_review get calculated?
         if self.workflow_control.triage.review_complete:
             return self
         else:
@@ -291,7 +303,8 @@ class TriageAssessmentMinimalReview(TriageWorkingState):
             Reassign: self.event_reassign,
             RescindMinimalReview: self.event_rescind_minimal_review,
             Fail: self.event_fail,
-            Triaged: self.event_triaged
+            Triaged: self.event_triaged,
+            Cancel: self.event_cancel
         })
 
     def event_rescind_minimal_review(self, event: RescindMinimalReview) -> TriageAssessmentInProgress:

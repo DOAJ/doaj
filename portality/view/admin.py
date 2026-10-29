@@ -15,6 +15,8 @@ from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
 from portality.bll.services.query import Query
+from portality.bll.services.workflow import triage
+from portality.bll.services.workflow.core import Cancel
 from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
@@ -440,6 +442,7 @@ def update_requests():
 def application(application_id, **kwargs):
     auth_svc = DOAJ.authorisationService()
     application_svc = DOAJ.applicationService()
+    wf_svc = DOAJ.workflowService()
 
     ap, _ = application_svc.application(application_id)
 
@@ -456,12 +459,18 @@ def application(application_id, **kwargs):
     except lock.Locked as l:
         return render_template(templates.APPLICATION_LOCKED, application=ap, lock=l.lock)
 
+    new_wf_state = wf_svc.state_for_application(application_id)
+
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
     autochecks = models.Autocheck.for_application(application_id)
 
     if request.method == "GET":
+        if new_wf_state is not None:
+            if new_wf_state.module == triage.MODULE_TRIAGE:
+                flash(Messages.WORKFLOW_APPLICATION_IN_TRIAGE, "success")
+
         fc.processor(source=ap)
 
         continuation_info = {"initial_warning": request.args.get("info") == constants.APP_PROCESSOR_INFO_IS_BEING_REJECTED}
@@ -478,11 +487,12 @@ def application(application_id, **kwargs):
         if processor.validate():
             try:
                 processor.finalise(current_user._get_current_object())
-                # if (processor.form.resettedFields):
-                #     text = "Some fields has been resetted due to invalid value:"
-                #     for f in processor.form.resettedFields:
-                #         text += "<br>field: {}, invalid value: {}, new value: {}".format(f["name"], f["data"], f["default"])
-                #     flash(text, 'info')
+
+                if new_wf_state is not None:
+                    cancel_state = wf_svc.event(new_wf_state, Cancel(current_user._get_current_object()))
+                    cancel_state.saveall()
+                    flash(Messages.WORKFLOW_CANCELLED)
+
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")

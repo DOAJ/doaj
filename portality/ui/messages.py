@@ -216,7 +216,8 @@ class Messages(object):
     WORKFLOW_TRIAGED_NOTE = "Triage completed with label '{label}'"
     WORKFLOW_TRIAGED_ASSIGN_GROUP = "You have completed triage, now please assign a suitable editorial group for the next stage of review."
     WORKFLOW_TRIAGED_INTEGRITY_ETHICS = "You have completed triage, and the Quality Team has been assigned to the application.  You can close this record now, or make any further changes before sending it to the next stage of review."
-
+    WORKFLOW_APPLICATION_IN_TRIAGE = "This application is currently in the new Triage workflow.  If you make ANY changes to it here, it will be removed from that workflow, and you must complete Triage here, using the legacy workflow."
+    WORKFLOW_CANCELLED = "This application has been removed from the new workflow, all remaining review must be done via the legacy workflow."
 
     @classmethod
     def flash(cls, tup):
