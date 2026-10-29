@@ -10,7 +10,7 @@ doaj.triage.Recommendation = class {
         this.redirect_on_reject = redirect_on_reject;
     }
 
-     handle(recommendation) {
+    handle(recommendation) {
         if (recommendation && recommendation.code !== "normal" && this.redirect_on_reject) {
             window.location.href = this.url;
         }
@@ -24,6 +24,8 @@ doaj.triage.recommendation = new doaj.triage.Recommendation(
 );
 doaj.triage._saving = false;
 doaj.triage._queuedOptions = null;
+
+
 
 doaj.triage._announce = function ($region, message) {
     $region.empty();

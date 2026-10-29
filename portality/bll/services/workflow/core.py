@@ -71,6 +71,8 @@ class Fail(WorkflowEvent):
     def embargo_end(self):
         return self._embargo_end
 
+class Cancel(WorkflowEvent): pass
+
 #####################################
 ## Base Workflow Action and all shared actions
 
