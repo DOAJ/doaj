@@ -37,6 +37,7 @@ BASE_ARTICLE_STRUCT = {
                 "link": {"contains": "object"},
                 "author": {"contains": "object"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
+                "reference": {"coerce": "unicode", "contains": "field"},
                 "subject": {"contains": "object"},
             },
             "objects": [
@@ -192,6 +193,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         _remove_from_the_list_if_empty_data("identifier", "id")
         _remove_from_the_list_if_empty_data("link", "url")
         _remove_from_the_list_if_empty_data("keywords")
+        _remove_from_the_list_if_empty_data("reference")
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object

@@ -134,6 +134,12 @@
                                             }, 
                                             "type": "array"
                                         }, 
+                                        "reference": {
+                                            "items": {
+                                                "type": "string"
+                                            }, 
+                                            "type": "array"
+                                        }, 
                                         "identifier": {
                                             "items": {
                                                 "type": "object", 

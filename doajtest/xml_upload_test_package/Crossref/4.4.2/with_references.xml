@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.crossref.org/schema/4.4.2 http://www.crossref.org/schemas/crossref4.4.2.xsd">
+    <head>
+        <doi_batch_id>1dbb27d1030c6c9d9d-7ff1</doi_batch_id>
+        <timestamp>200504260247</timestamp>
+        <depositor>
+            <depositor_name>your name</depositor_name>
+            <email_address>your@email.com</email_address>
+        </depositor>
+        <registrant>WEB-FORM</registrant>
+    </head>
+    <body>
+
+        <!-- a record with references, both unstructured and structured -->
+       <journal>
+            <journal_metadata>
+                <full_title>ISSNs Correct</full_title>
+                <abbrev_title>TP</abbrev_title>
+                <issn media_type="print">2222-2222</issn>
+            </journal_metadata>
+            <journal_issue>
+                <publication_date media_type="print">
+                    <month>12</month>
+                    <day>1</day>
+                    <year>2005</year>
+                </publication_date>
+                <journal_volume>
+                    <volume>12</volume>
+                </journal_volume>
+                <issue>1</issue>
+            </journal_issue>
+            <!-- ====== This is the article's metadata ======== -->
+            <journal_article publication_type="full_text">
+                <titles>
+                    <title>References!</title>
+                </titles>
+                <contributors>
+                    <person_name sequence="first" contributor_role="author">
+                        <given_name>Bob</given_name>
+                        <surname>Surname</surname>
+                    </person_name>
+                </contributors>
+                <publication_date media_type="print">
+                    <month>12</month>
+                    <day>1</day>
+                    <year>2004</year>
+                </publication_date>
+                <pages>
+                    <first_page>100</first_page>
+                    <last_page>200</last_page>
+                </pages>
+                <doi_data>
+                    <doi>10.50505/test_20051229931</doi>
+                    <resource>http://www.crossref.org/</resource>
+                </doi_data>
+                <citation_list>
+                    <citation key="ref1">
+                        <unstructured_citation>Smith, J. (2020) A reference with a URL. https://www.doaj.org/</unstructured_citation>
+                    </citation>
+                    <citation key="ref2">
+                        <author>Jones</author>
+                        <cYear>2021</cYear>
+                        <article_title>A structured reference with a DOI</article_title>
+                        <journal_title>Journal of Tests</journal_title>
+                        <volume>3</volume>
+                        <issue>2</issue>
+                        <first_page>10</first_page>
+                        <doi>10.1234/abc</doi>
+                    </citation>
+                    <citation key="ref3">
+                        <author>Brown</author>
+                        <cYear>2022</cYear>
+                        <volume_title>A structured reference with no identifier</volume_title>
+                        <isbn>9781234567897</isbn>
+                    </citation>
+                </citation_list>
+            </journal_article>
+        </journal>
+
+    </body>
+</doi_batch>
