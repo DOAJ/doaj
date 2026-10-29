@@ -1,13 +1,17 @@
 window.doaj = window.doaj || {};
 window.doaj.triage = window.doaj.triage || {};
 
+// useful for testing
+doaj.triage.redirect_on_reject = false;
+
 doaj.triage.Recommendation = class {
-    constructor(url) {
+    constructor(url, redirect_on_reject) {
         this.url = url;
+        this.redirect_on_reject = redirect_on_reject;
     }
 
      handle(recommendation) {
-        if (recommendation && recommendation.code !== "normal" && !recommendation_overwritten) {
+        if (recommendation && recommendation.code !== "normal" && this.redirect_on_reject) {
             window.location.href = this.url;
         }
     }
@@ -15,7 +19,8 @@ doaj.triage.Recommendation = class {
 
 doaj.triage.overview_url = $("#triage").data("overview-url");
 doaj.triage.recommendation = new doaj.triage.Recommendation(
-    doaj.triage.overview_url
+    doaj.triage.overview_url,
+    doaj.triage.redirect_on_reject
 );
 doaj.triage._saving = false;
 doaj.triage._queuedOptions = null;
