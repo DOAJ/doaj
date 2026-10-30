@@ -104,6 +104,9 @@ def write_required(script=False, api=False, allowed_methods=None):
     ~~ReadOnlyMode:Feature~~
     :param script:
     :param api:
+    :param allowed_methods: request methods still allowed in read-only mode; defaults to GET, HEAD and OPTIONS.
+        Pass an empty set for routes whose GET shows a form that leads to a write (so users see the read-only page
+        before filling it in, not on submit) or whose GET itself writes.
     :return:
     """
     if allowed_methods is None:
