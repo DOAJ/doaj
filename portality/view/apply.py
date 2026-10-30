@@ -38,7 +38,7 @@ def draft_saved():
 
 @blueprint.route("/", methods=["GET", "POST"])
 @blueprint.route("/<draft_id>", methods=["GET", "POST"])
-@write_required()
+@write_required(allowed_methods=set())
 def public_application(draft_id=None):
 
     if not current_user.is_authenticated:

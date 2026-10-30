@@ -47,7 +47,8 @@ def journals():
 
 
 @blueprint.route("/application/<application_id>/delete", methods=["GET"])
-@write_required()
+# GET performs the write here, so it must be blocked too or read-only mode reports a change that didn't happen
+@write_required(allowed_methods=set())
 def delete_application(application_id):
     # FIXME: this should be a POST or DELETE request
     # if this is a draft application, we can just remove it
@@ -74,7 +75,7 @@ def deleted_thanks():
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def update_request(journal_id):
     # DOAJ BLL for this request
     journalService = DOAJ.journalService()
@@ -185,7 +186,7 @@ def updates_in_progress():
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def upload_file():
     """
         ~~UploadMetadata:Feature->UploadMetadata:Page~~
@@ -248,7 +249,7 @@ def upload_file():
 @blueprint.route("/preservation", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def preservation():
     """Upload articles on Internet Servers for archiving.
        This feature is available for the users who has 'preservation' role.
@@ -343,7 +344,7 @@ def preservation():
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def metadata():
     user = current_user._get_current_object()
     # if this is a get request, give the blank form - there is no edit feature
@@ -378,7 +379,7 @@ def metadata():
 @blueprint.route("/journal-csv", methods=["GET"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def journal_csv():
     if current_user.has_role(constants.ROLE_PUBLISHER_JOURNAL_CSV):
         return render_template(templates.PUBLISHER_CSV_UPLOAD)
