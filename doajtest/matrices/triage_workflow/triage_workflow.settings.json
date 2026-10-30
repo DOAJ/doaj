@@ -1,0 +1,934 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "module",
+      "type": "generated",
+      "values": {
+        "triage": {}
+      }
+    },
+    {
+      "name": "stage",
+      "type": "generated",
+      "values": {
+        "in_progress": {},
+        "minimal_review": {}
+      }
+    },
+    {
+      "name": "reviewer",
+      "type": "generated",
+      "values": {
+        "none": {},
+        "triage": {},
+        "non_triage": {}
+      }
+    },
+    {
+      "name": "action",
+      "type": "generated",
+      "values": {
+        "action_edit": {
+          "constraints": {
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_claim": {
+          "constraints": {
+            "reviewer": {
+              "or": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_assign_triage": {
+          "constraints": {
+            "reviewer": {
+              "or": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_assign_non_triage": {
+          "constraints": {
+            "reviewer": {
+              "or": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_unclaim": {
+          "constraints": {
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_unassign": {
+          "constraints": {
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_reassign_triage": {
+          "constraints": {
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_reassign_non_triage": {
+          "constraints": {
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_minimal_review": {
+          "constraints": {
+            "stage": {
+              "or": [
+                "in_progress"
+              ]
+            },
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_fail": {
+          "constraints": {
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_rescind_minimal_review": {
+          "constraints": {
+            "stage": {
+              "or": [
+                "minimal_review"
+              ]
+            },
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "event_triaged": {
+          "constraints": {
+            "stage": {
+              "or": [
+                "minimal_review"
+              ]
+            },
+            "reviewer": {
+              "nor": [
+                "none"
+              ]
+            },
+            "has_minimal_review": {
+              "or": [
+                "yes"
+              ]
+            },
+            "label": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "actor",
+      "type": "generated",
+      "values": {
+        "assigned_triage": {
+          "constraints": {
+            "reviewer": {
+              "or": [
+                "triage"
+              ]
+            }
+          }
+        },
+        "assigned_non_triage": {
+          "constraints": {
+            "reviewer": {
+              "or": [
+                "non_triage"
+              ]
+            }
+          }
+        },
+        "admin": {},
+        "unassigned_triage": {},
+        "unassigned_non_triage": {}
+      }
+    },
+    {
+      "name": "has_minimal_review",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "label",
+      "type": "generated",
+      "values": {
+        "none": {},
+        "quick_fail": {
+          "constraints": {
+            "action": {
+              "or": [
+                "event_triaged"
+              ]
+            }
+          }
+        },
+        "quality_review": {
+          "constraints": {
+            "action": {
+              "or": [
+                "event_triaged"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "state_id",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1.1": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "reviewer": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        },
+        "1.2": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "in_progress"
+                ]
+              },
+              "reviewer": {
+                "nor": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        },
+        "1.3": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "minimal_review"
+                ]
+              },
+              "reviewer": {
+                "nor": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "result_module",
+      "type": "conditional",
+      "default": "triage",
+      "values": {
+        "triage": {},
+        "quick_fail": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "minimal_review"
+                ]
+              },
+              "reviewer": {
+                "nor": [
+                  "none"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_triaged"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_triage"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "label": {
+                "or": [
+                  "quick_fail"
+                ]
+              }
+            }
+          ]
+        },
+        "quality_review": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "minimal_review"
+                ]
+              },
+              "reviewer": {
+                "nor": [
+                  "none"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_triaged"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_triage"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "label": {
+                "or": [
+                  "quality_review"
+                ]
+              }
+            }
+          ]
+        },
+        "rejected": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "reviewer": {
+                "nor": [
+                  "none"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_fail"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_triage"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "result_stage",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "in_progress": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "reviewer": {
+                "or": [
+                  "none"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_claim"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "unassigned_triage"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "no"
+                ]
+              }
+            },
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "reviewer": {
+                "or": [
+                  "none"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_assign_triage"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "no"
+                ]
+              }
+            },
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "in_progress"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_reassign_triage"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "no"
+                ]
+              }
+            },
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "minimal_review"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_rescind_minimal_review"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_triage",
+                  "admin"
+                ]
+              }
+            }
+          ]
+        },
+        "minimal_review": {
+          "conditions": [
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "reviewer": {
+                "or": [
+                  "none"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_claim"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "unassigned_triage"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "yes"
+                ]
+              }
+            },
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "reviewer": {
+                "or": [
+                  "none"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_assign_triage"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "yes"
+                ]
+              }
+            },
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "in_progress"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_minimal_review"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_triage",
+                  "admin"
+                ]
+              }
+            },
+            {
+              "module": {
+                "or": [
+                  "triage"
+                ]
+              },
+              "stage": {
+                "or": [
+                  "minimal_review"
+                ]
+              },
+              "action": {
+                "or": [
+                  "event_reassign_triage"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "has_minimal_review": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "result_reviewer",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "none": {
+          "conditions": [
+            {
+              "action": {
+                "or": [
+                  "event_unclaim",
+                  "event_unassign",
+                  "event_fail",
+                  "event_triaged"
+                ]
+              }
+            }
+          ]
+        },
+        "assigned": {
+          "conditions": [
+            {
+              "action": {
+                "or": [
+                  "event_claim",
+                  "event_assign_triage",
+                  "event_reassign_triage"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "initial_legacy_status",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "pending": {
+          "conditions": [
+            {
+              "reviewer": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        },
+        "in progress": {
+          "conditions": [
+            {
+              "reviewer": {
+                "nor": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "result_legacy_status",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "pending": {
+          "conditions": [
+            {
+              "action": {
+                "or": [
+                  "event_unclaim",
+                  "event_unassign"
+                ]
+              }
+            }
+          ]
+        },
+        "in progress": {
+          "conditions": [
+            {
+              "action": {
+                "or": [
+                  "event_claim",
+                  "event_assign_triage",
+                  "event_reassign_triage",
+                  "event_rescind_minimal_review",
+                  "event_minimal_review",
+                  "event_triaged"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "action_edit"
+                ]
+              }
+            }
+          ]
+        },
+        "rejected": {
+          "conditions": [
+            {
+              "action": {
+                "or": [
+                  "event_fail"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "initial_legacy_eg",
+      "type": "conditional",
+      "default": "Triage",
+      "values": {
+        "Triage": {}
+      }
+    },
+    {
+      "name": "result_legacy_eg",
+      "type": "conditional",
+      "default": "Triage",
+      "values": {
+        "Triage": {},
+        "none": {
+          "conditions": [
+            {
+              "action": {
+                "or": [
+                  "event_fail",
+                  "event_triaged"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "error",
+      "type": "conditional",
+      "default": "no",
+      "values": {
+        "no": {},
+        "AuthoriseException": {
+          "conditions": [
+            {
+              "action": {
+                "or": [
+                  "event_claim"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "unassigned_non_triage",
+                  "admin"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_assign_triage"
+                ]
+              },
+              "actor": {
+                "nor": [
+                  "admin"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_assign_non_triage"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "action_edit"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_non_triage",
+                  "unassigned_triage",
+                  "unassigned_non_triage"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_unclaim"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "admin",
+                  "unassigned_triage",
+                  "unassigned_non_triage"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_unassign"
+                ]
+              },
+              "actor": {
+                "nor": [
+                  "admin"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_reassign_triage"
+                ]
+              },
+              "actor": {
+                "nor": [
+                  "admin"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_reassign_non_triage"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_minimal_review"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_non_triage",
+                  "unassigned_triage",
+                  "unassigned_non_triage"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_fail"
+                ]
+              },
+              "actor": {
+                "nor": [
+                  "assigned_triage"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_rescind_minimal_review"
+                ]
+              },
+              "actor": {
+                "or": [
+                  "assigned_non_triage",
+                  "unassigned_triage",
+                  "unassigned_non_triage"
+                ]
+              }
+            },
+            {
+              "action": {
+                "or": [
+                  "event_triaged"
+                ]
+              },
+              "actor": {
+                "nor": [
+                  "assigned_triage"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

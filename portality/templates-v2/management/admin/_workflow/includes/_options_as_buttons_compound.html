@@ -1,0 +1,27 @@
+{% autoescape off %}
+
+{% if compound.capability.label %}
+<p>{{ compound.capability.label }}</p>
+{% endif %}
+{% set els = namespace(
+            answers=None
+) %}
+{% for element in compound.elements %}
+            {% if element.capability.role == "answers" %}
+                {% set els.answers = element %}
+            {% endif %}
+{% endfor %}
+<div class="row">
+    <div class="col-md-12">
+        <fieldset id="{{ compound.name }}-answers" class="review_outcome" style="flex-direction: column;">
+            <legend class="sr-only">{{ els.answers.label }}</legend>
+            {% set cr = els.answers.capability.get_control_renderer() %}
+            {{ cr.draw(els.answers.control, group=compound.name, action=compound.capability.action) }}
+        </fieldset>
+        {% if compound.capability.control_btns %}
+            {% set buttons = compound.capability.control_btns %}
+            {% include "/management/admin/_workflow/includes/_buttons.html" with context %}
+        {% endif %}
+    </div>
+</div>
+{% endautoescape %}

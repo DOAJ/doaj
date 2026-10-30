@@ -57,6 +57,7 @@
                             <li><a href="{{ url_for("admin.ris_search") }}" class="dropdown__link">Article RIS</a></li>
                             <li><a href="{{ url_for("admin.pdd_search") }}" class="dropdown__link">Public Data Dumps</a></li>
                             <li><a href="{{ url_for("admin.journal_csv_search") }}" class="dropdown__link">Journal CSVs</a></li>
+                            <li><a href="{{ url_for("workflow.index") }}" class="dropdown__link">Workflow Overview</a></li>
                         </ul>
                     </li>
                     <li class="dropdown dropdown--notifications flex-center" id="system_objects_nav">
@@ -94,6 +95,7 @@
 
 
     <main>
+        {% block admin_header %}
         <header class="main-header">
             <div class="row">
                 <header class="col-md-6 col-lg-4">
@@ -198,8 +200,8 @@
 {#                    {% endfor %}#}
 {#                </div>#}
             </div>
-
         </header>
+        {% endblock %}
         {% block permanent_warnings %}{% endblock %}
         {% include "includes/_flash_notification.html" %}
         {% block management_content %}{% endblock %}

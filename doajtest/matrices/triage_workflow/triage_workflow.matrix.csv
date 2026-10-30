@@ -1,0 +1,277 @@
+test_id,module,stage,reviewer,action,actor,has_minimal_review,label,state_id,result_module,result_stage,result_reviewer,initial_legacy_status,result_legacy_status,initial_legacy_eg,result_legacy_eg,error
+1,triage,in_progress,none,event_claim,admin,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+2,triage,in_progress,none,event_claim,admin,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+3,triage,in_progress,none,event_claim,unassigned_triage,yes,none,1.1,triage,minimal_review,assigned,pending,in progress,Triage,Triage,no
+4,triage,in_progress,none,event_claim,unassigned_triage,no,none,1.1,triage,in_progress,assigned,pending,in progress,Triage,Triage,no
+5,triage,in_progress,none,event_claim,unassigned_non_triage,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+6,triage,in_progress,none,event_claim,unassigned_non_triage,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+7,triage,in_progress,none,event_assign_triage,admin,yes,none,1.1,triage,minimal_review,assigned,pending,in progress,Triage,Triage,no
+8,triage,in_progress,none,event_assign_triage,admin,no,none,1.1,triage,in_progress,assigned,pending,in progress,Triage,Triage,no
+9,triage,in_progress,none,event_assign_triage,unassigned_triage,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+10,triage,in_progress,none,event_assign_triage,unassigned_triage,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+11,triage,in_progress,none,event_assign_triage,unassigned_non_triage,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+12,triage,in_progress,none,event_assign_triage,unassigned_non_triage,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+13,triage,in_progress,none,event_assign_non_triage,admin,yes,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+14,triage,in_progress,none,event_assign_non_triage,admin,no,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+15,triage,in_progress,none,event_assign_non_triage,unassigned_triage,yes,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+16,triage,in_progress,none,event_assign_non_triage,unassigned_triage,no,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+17,triage,in_progress,none,event_assign_non_triage,unassigned_non_triage,yes,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+18,triage,in_progress,none,event_assign_non_triage,unassigned_non_triage,no,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+19,triage,in_progress,triage,action_edit,assigned_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,no
+20,triage,in_progress,triage,action_edit,assigned_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,no
+21,triage,in_progress,triage,action_edit,admin,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,no
+22,triage,in_progress,triage,action_edit,admin,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,no
+23,triage,in_progress,triage,action_edit,unassigned_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+24,triage,in_progress,triage,action_edit,unassigned_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+25,triage,in_progress,triage,action_edit,unassigned_non_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+26,triage,in_progress,triage,action_edit,unassigned_non_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+27,triage,in_progress,triage,event_unclaim,assigned_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+28,triage,in_progress,triage,event_unclaim,assigned_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+29,triage,in_progress,triage,event_unclaim,admin,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+30,triage,in_progress,triage,event_unclaim,admin,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+31,triage,in_progress,triage,event_unclaim,unassigned_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+32,triage,in_progress,triage,event_unclaim,unassigned_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+33,triage,in_progress,triage,event_unclaim,unassigned_non_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+34,triage,in_progress,triage,event_unclaim,unassigned_non_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+35,triage,in_progress,triage,event_unassign,assigned_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+36,triage,in_progress,triage,event_unassign,assigned_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+37,triage,in_progress,triage,event_unassign,admin,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+38,triage,in_progress,triage,event_unassign,admin,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+39,triage,in_progress,triage,event_unassign,unassigned_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+40,triage,in_progress,triage,event_unassign,unassigned_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+41,triage,in_progress,triage,event_unassign,unassigned_non_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+42,triage,in_progress,triage,event_unassign,unassigned_non_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+43,triage,in_progress,triage,event_reassign_triage,assigned_triage,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+44,triage,in_progress,triage,event_reassign_triage,assigned_triage,no,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+45,triage,in_progress,triage,event_reassign_triage,admin,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,no
+46,triage,in_progress,triage,event_reassign_triage,admin,no,none,1.2,triage,in_progress,assigned,in progress,in progress,Triage,Triage,no
+47,triage,in_progress,triage,event_reassign_triage,unassigned_triage,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+48,triage,in_progress,triage,event_reassign_triage,unassigned_triage,no,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+49,triage,in_progress,triage,event_reassign_triage,unassigned_non_triage,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+50,triage,in_progress,triage,event_reassign_triage,unassigned_non_triage,no,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+51,triage,in_progress,triage,event_reassign_non_triage,assigned_triage,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+52,triage,in_progress,triage,event_reassign_non_triage,assigned_triage,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+53,triage,in_progress,triage,event_reassign_non_triage,admin,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+54,triage,in_progress,triage,event_reassign_non_triage,admin,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+55,triage,in_progress,triage,event_reassign_non_triage,unassigned_triage,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+56,triage,in_progress,triage,event_reassign_non_triage,unassigned_triage,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+57,triage,in_progress,triage,event_reassign_non_triage,unassigned_non_triage,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+58,triage,in_progress,triage,event_reassign_non_triage,unassigned_non_triage,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+59,triage,in_progress,triage,event_minimal_review,assigned_triage,yes,none,1.2,triage,minimal_review,,in progress,in progress,Triage,Triage,no
+60,triage,in_progress,triage,event_minimal_review,assigned_triage,no,none,1.2,triage,minimal_review,,in progress,in progress,Triage,Triage,no
+61,triage,in_progress,triage,event_minimal_review,admin,yes,none,1.2,triage,minimal_review,,in progress,in progress,Triage,Triage,no
+62,triage,in_progress,triage,event_minimal_review,admin,no,none,1.2,triage,minimal_review,,in progress,in progress,Triage,Triage,no
+63,triage,in_progress,triage,event_minimal_review,unassigned_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+64,triage,in_progress,triage,event_minimal_review,unassigned_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+65,triage,in_progress,triage,event_minimal_review,unassigned_non_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+66,triage,in_progress,triage,event_minimal_review,unassigned_non_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+67,triage,in_progress,triage,event_fail,assigned_triage,yes,none,1.2,rejected,,none,in progress,rejected,Triage,none,no
+68,triage,in_progress,triage,event_fail,assigned_triage,no,none,1.2,rejected,,none,in progress,rejected,Triage,none,no
+69,triage,in_progress,triage,event_fail,admin,yes,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+70,triage,in_progress,triage,event_fail,admin,no,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+71,triage,in_progress,triage,event_fail,unassigned_triage,yes,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+72,triage,in_progress,triage,event_fail,unassigned_triage,no,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+73,triage,in_progress,triage,event_fail,unassigned_non_triage,yes,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+74,triage,in_progress,triage,event_fail,unassigned_non_triage,no,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+75,triage,in_progress,non_triage,action_edit,assigned_non_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+76,triage,in_progress,non_triage,action_edit,assigned_non_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+77,triage,in_progress,non_triage,action_edit,admin,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,no
+78,triage,in_progress,non_triage,action_edit,admin,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,no
+79,triage,in_progress,non_triage,action_edit,unassigned_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+80,triage,in_progress,non_triage,action_edit,unassigned_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+81,triage,in_progress,non_triage,action_edit,unassigned_non_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+82,triage,in_progress,non_triage,action_edit,unassigned_non_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+83,triage,in_progress,non_triage,event_unclaim,assigned_non_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+84,triage,in_progress,non_triage,event_unclaim,assigned_non_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+85,triage,in_progress,non_triage,event_unclaim,admin,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+86,triage,in_progress,non_triage,event_unclaim,admin,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+87,triage,in_progress,non_triage,event_unclaim,unassigned_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+88,triage,in_progress,non_triage,event_unclaim,unassigned_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+89,triage,in_progress,non_triage,event_unclaim,unassigned_non_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+90,triage,in_progress,non_triage,event_unclaim,unassigned_non_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+91,triage,in_progress,non_triage,event_unassign,assigned_non_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+92,triage,in_progress,non_triage,event_unassign,assigned_non_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+93,triage,in_progress,non_triage,event_unassign,admin,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+94,triage,in_progress,non_triage,event_unassign,admin,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,no
+95,triage,in_progress,non_triage,event_unassign,unassigned_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+96,triage,in_progress,non_triage,event_unassign,unassigned_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+97,triage,in_progress,non_triage,event_unassign,unassigned_non_triage,yes,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+98,triage,in_progress,non_triage,event_unassign,unassigned_non_triage,no,none,1.2,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+99,triage,in_progress,non_triage,event_reassign_triage,assigned_non_triage,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+100,triage,in_progress,non_triage,event_reassign_triage,assigned_non_triage,no,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+101,triage,in_progress,non_triage,event_reassign_triage,admin,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,no
+102,triage,in_progress,non_triage,event_reassign_triage,admin,no,none,1.2,triage,in_progress,assigned,in progress,in progress,Triage,Triage,no
+103,triage,in_progress,non_triage,event_reassign_triage,unassigned_triage,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+104,triage,in_progress,non_triage,event_reassign_triage,unassigned_triage,no,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+105,triage,in_progress,non_triage,event_reassign_triage,unassigned_non_triage,yes,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+106,triage,in_progress,non_triage,event_reassign_triage,unassigned_non_triage,no,none,1.2,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+107,triage,in_progress,non_triage,event_reassign_non_triage,assigned_non_triage,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+108,triage,in_progress,non_triage,event_reassign_non_triage,assigned_non_triage,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+109,triage,in_progress,non_triage,event_reassign_non_triage,admin,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+110,triage,in_progress,non_triage,event_reassign_non_triage,admin,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+111,triage,in_progress,non_triage,event_reassign_non_triage,unassigned_triage,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+112,triage,in_progress,non_triage,event_reassign_non_triage,unassigned_triage,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+113,triage,in_progress,non_triage,event_reassign_non_triage,unassigned_non_triage,yes,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+114,triage,in_progress,non_triage,event_reassign_non_triage,unassigned_non_triage,no,none,1.2,triage,,,in progress,,Triage,Triage,AuthoriseException
+115,triage,in_progress,non_triage,event_minimal_review,assigned_non_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+116,triage,in_progress,non_triage,event_minimal_review,assigned_non_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+117,triage,in_progress,non_triage,event_minimal_review,admin,yes,none,1.2,triage,minimal_review,,in progress,in progress,Triage,Triage,no
+118,triage,in_progress,non_triage,event_minimal_review,admin,no,none,1.2,triage,minimal_review,,in progress,in progress,Triage,Triage,no
+119,triage,in_progress,non_triage,event_minimal_review,unassigned_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+120,triage,in_progress,non_triage,event_minimal_review,unassigned_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+121,triage,in_progress,non_triage,event_minimal_review,unassigned_non_triage,yes,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+122,triage,in_progress,non_triage,event_minimal_review,unassigned_non_triage,no,none,1.2,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+123,triage,in_progress,non_triage,event_fail,assigned_non_triage,yes,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+124,triage,in_progress,non_triage,event_fail,assigned_non_triage,no,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+125,triage,in_progress,non_triage,event_fail,admin,yes,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+126,triage,in_progress,non_triage,event_fail,admin,no,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+127,triage,in_progress,non_triage,event_fail,unassigned_triage,yes,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+128,triage,in_progress,non_triage,event_fail,unassigned_triage,no,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+129,triage,in_progress,non_triage,event_fail,unassigned_non_triage,yes,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+130,triage,in_progress,non_triage,event_fail,unassigned_non_triage,no,none,1.2,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+131,triage,minimal_review,none,event_claim,admin,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+132,triage,minimal_review,none,event_claim,admin,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+133,triage,minimal_review,none,event_claim,unassigned_triage,yes,none,1.1,triage,minimal_review,assigned,pending,in progress,Triage,Triage,no
+134,triage,minimal_review,none,event_claim,unassigned_triage,no,none,1.1,triage,in_progress,assigned,pending,in progress,Triage,Triage,no
+135,triage,minimal_review,none,event_claim,unassigned_non_triage,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+136,triage,minimal_review,none,event_claim,unassigned_non_triage,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+137,triage,minimal_review,none,event_assign_triage,admin,yes,none,1.1,triage,minimal_review,assigned,pending,in progress,Triage,Triage,no
+138,triage,minimal_review,none,event_assign_triage,admin,no,none,1.1,triage,in_progress,assigned,pending,in progress,Triage,Triage,no
+139,triage,minimal_review,none,event_assign_triage,unassigned_triage,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+140,triage,minimal_review,none,event_assign_triage,unassigned_triage,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+141,triage,minimal_review,none,event_assign_triage,unassigned_non_triage,yes,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+142,triage,minimal_review,none,event_assign_triage,unassigned_non_triage,no,none,1.1,triage,,assigned,pending,in progress,Triage,Triage,AuthoriseException
+143,triage,minimal_review,none,event_assign_non_triage,admin,yes,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+144,triage,minimal_review,none,event_assign_non_triage,admin,no,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+145,triage,minimal_review,none,event_assign_non_triage,unassigned_triage,yes,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+146,triage,minimal_review,none,event_assign_non_triage,unassigned_triage,no,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+147,triage,minimal_review,none,event_assign_non_triage,unassigned_non_triage,yes,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+148,triage,minimal_review,none,event_assign_non_triage,unassigned_non_triage,no,none,1.1,triage,,,pending,,Triage,Triage,AuthoriseException
+149,triage,minimal_review,triage,action_edit,assigned_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,no
+150,triage,minimal_review,triage,action_edit,assigned_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,no
+151,triage,minimal_review,triage,action_edit,admin,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,no
+152,triage,minimal_review,triage,action_edit,admin,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,no
+153,triage,minimal_review,triage,action_edit,unassigned_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+154,triage,minimal_review,triage,action_edit,unassigned_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+155,triage,minimal_review,triage,action_edit,unassigned_non_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+156,triage,minimal_review,triage,action_edit,unassigned_non_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+157,triage,minimal_review,triage,event_unclaim,assigned_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+158,triage,minimal_review,triage,event_unclaim,assigned_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+159,triage,minimal_review,triage,event_unclaim,admin,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+160,triage,minimal_review,triage,event_unclaim,admin,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+161,triage,minimal_review,triage,event_unclaim,unassigned_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+162,triage,minimal_review,triage,event_unclaim,unassigned_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+163,triage,minimal_review,triage,event_unclaim,unassigned_non_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+164,triage,minimal_review,triage,event_unclaim,unassigned_non_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+165,triage,minimal_review,triage,event_unassign,assigned_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+166,triage,minimal_review,triage,event_unassign,assigned_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+167,triage,minimal_review,triage,event_unassign,admin,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+168,triage,minimal_review,triage,event_unassign,admin,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+169,triage,minimal_review,triage,event_unassign,unassigned_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+170,triage,minimal_review,triage,event_unassign,unassigned_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+171,triage,minimal_review,triage,event_unassign,unassigned_non_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+172,triage,minimal_review,triage,event_unassign,unassigned_non_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+173,triage,minimal_review,triage,event_reassign_triage,assigned_triage,yes,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+174,triage,minimal_review,triage,event_reassign_triage,assigned_triage,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+175,triage,minimal_review,triage,event_reassign_triage,admin,yes,none,1.3,triage,minimal_review,assigned,in progress,in progress,Triage,Triage,no
+176,triage,minimal_review,triage,event_reassign_triage,admin,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,no
+177,triage,minimal_review,triage,event_reassign_triage,unassigned_triage,yes,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+178,triage,minimal_review,triage,event_reassign_triage,unassigned_triage,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+179,triage,minimal_review,triage,event_reassign_triage,unassigned_non_triage,yes,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+180,triage,minimal_review,triage,event_reassign_triage,unassigned_non_triage,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+181,triage,minimal_review,triage,event_reassign_non_triage,assigned_triage,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+182,triage,minimal_review,triage,event_reassign_non_triage,assigned_triage,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+183,triage,minimal_review,triage,event_reassign_non_triage,admin,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+184,triage,minimal_review,triage,event_reassign_non_triage,admin,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+185,triage,minimal_review,triage,event_reassign_non_triage,unassigned_triage,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+186,triage,minimal_review,triage,event_reassign_non_triage,unassigned_triage,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+187,triage,minimal_review,triage,event_reassign_non_triage,unassigned_non_triage,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+188,triage,minimal_review,triage,event_reassign_non_triage,unassigned_non_triage,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+189,triage,minimal_review,triage,event_fail,assigned_triage,yes,none,1.3,rejected,,none,in progress,rejected,Triage,none,no
+190,triage,minimal_review,triage,event_fail,assigned_triage,no,none,1.3,rejected,,none,in progress,rejected,Triage,none,no
+191,triage,minimal_review,triage,event_fail,admin,yes,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+192,triage,minimal_review,triage,event_fail,admin,no,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+193,triage,minimal_review,triage,event_fail,unassigned_triage,yes,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+194,triage,minimal_review,triage,event_fail,unassigned_triage,no,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+195,triage,minimal_review,triage,event_fail,unassigned_non_triage,yes,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+196,triage,minimal_review,triage,event_fail,unassigned_non_triage,no,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+197,triage,minimal_review,triage,event_rescind_minimal_review,assigned_triage,yes,none,1.3,triage,in_progress,,in progress,in progress,Triage,Triage,no
+198,triage,minimal_review,triage,event_rescind_minimal_review,assigned_triage,no,none,1.3,triage,in_progress,,in progress,in progress,Triage,Triage,no
+199,triage,minimal_review,triage,event_rescind_minimal_review,admin,yes,none,1.3,triage,in_progress,,in progress,in progress,Triage,Triage,no
+200,triage,minimal_review,triage,event_rescind_minimal_review,admin,no,none,1.3,triage,in_progress,,in progress,in progress,Triage,Triage,no
+201,triage,minimal_review,triage,event_rescind_minimal_review,unassigned_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+202,triage,minimal_review,triage,event_rescind_minimal_review,unassigned_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+203,triage,minimal_review,triage,event_rescind_minimal_review,unassigned_non_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+204,triage,minimal_review,triage,event_rescind_minimal_review,unassigned_non_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+205,triage,minimal_review,triage,event_triaged,assigned_triage,yes,quick_fail,1.3,quick_fail,,none,in progress,in progress,Triage,none,no
+206,triage,minimal_review,triage,event_triaged,assigned_triage,yes,quality_review,1.3,quality_review,,none,in progress,in progress,Triage,none,no
+207,triage,minimal_review,triage,event_triaged,admin,yes,quick_fail,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+208,triage,minimal_review,triage,event_triaged,admin,yes,quality_review,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+209,triage,minimal_review,triage,event_triaged,unassigned_triage,yes,quick_fail,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+210,triage,minimal_review,triage,event_triaged,unassigned_triage,yes,quality_review,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+211,triage,minimal_review,triage,event_triaged,unassigned_non_triage,yes,quick_fail,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+212,triage,minimal_review,triage,event_triaged,unassigned_non_triage,yes,quality_review,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+213,triage,minimal_review,non_triage,action_edit,assigned_non_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+214,triage,minimal_review,non_triage,action_edit,assigned_non_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+215,triage,minimal_review,non_triage,action_edit,admin,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,no
+216,triage,minimal_review,non_triage,action_edit,admin,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,no
+217,triage,minimal_review,non_triage,action_edit,unassigned_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+218,triage,minimal_review,non_triage,action_edit,unassigned_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+219,triage,minimal_review,non_triage,action_edit,unassigned_non_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+220,triage,minimal_review,non_triage,action_edit,unassigned_non_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+221,triage,minimal_review,non_triage,event_unclaim,assigned_non_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+222,triage,minimal_review,non_triage,event_unclaim,assigned_non_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+223,triage,minimal_review,non_triage,event_unclaim,admin,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+224,triage,minimal_review,non_triage,event_unclaim,admin,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+225,triage,minimal_review,non_triage,event_unclaim,unassigned_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+226,triage,minimal_review,non_triage,event_unclaim,unassigned_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+227,triage,minimal_review,non_triage,event_unclaim,unassigned_non_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+228,triage,minimal_review,non_triage,event_unclaim,unassigned_non_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+229,triage,minimal_review,non_triage,event_unassign,assigned_non_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+230,triage,minimal_review,non_triage,event_unassign,assigned_non_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+231,triage,minimal_review,non_triage,event_unassign,admin,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+232,triage,minimal_review,non_triage,event_unassign,admin,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,no
+233,triage,minimal_review,non_triage,event_unassign,unassigned_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+234,triage,minimal_review,non_triage,event_unassign,unassigned_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+235,triage,minimal_review,non_triage,event_unassign,unassigned_non_triage,yes,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+236,triage,minimal_review,non_triage,event_unassign,unassigned_non_triage,no,none,1.3,triage,,none,in progress,pending,Triage,Triage,AuthoriseException
+237,triage,minimal_review,non_triage,event_reassign_triage,assigned_non_triage,yes,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+238,triage,minimal_review,non_triage,event_reassign_triage,assigned_non_triage,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+239,triage,minimal_review,non_triage,event_reassign_triage,admin,yes,none,1.3,triage,minimal_review,assigned,in progress,in progress,Triage,Triage,no
+240,triage,minimal_review,non_triage,event_reassign_triage,admin,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,no
+241,triage,minimal_review,non_triage,event_reassign_triage,unassigned_triage,yes,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+242,triage,minimal_review,non_triage,event_reassign_triage,unassigned_triage,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+243,triage,minimal_review,non_triage,event_reassign_triage,unassigned_non_triage,yes,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+244,triage,minimal_review,non_triage,event_reassign_triage,unassigned_non_triage,no,none,1.3,triage,,assigned,in progress,in progress,Triage,Triage,AuthoriseException
+245,triage,minimal_review,non_triage,event_reassign_non_triage,assigned_non_triage,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+246,triage,minimal_review,non_triage,event_reassign_non_triage,assigned_non_triage,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+247,triage,minimal_review,non_triage,event_reassign_non_triage,admin,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+248,triage,minimal_review,non_triage,event_reassign_non_triage,admin,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+249,triage,minimal_review,non_triage,event_reassign_non_triage,unassigned_triage,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+250,triage,minimal_review,non_triage,event_reassign_non_triage,unassigned_triage,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+251,triage,minimal_review,non_triage,event_reassign_non_triage,unassigned_non_triage,yes,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+252,triage,minimal_review,non_triage,event_reassign_non_triage,unassigned_non_triage,no,none,1.3,triage,,,in progress,,Triage,Triage,AuthoriseException
+253,triage,minimal_review,non_triage,event_fail,assigned_non_triage,yes,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+254,triage,minimal_review,non_triage,event_fail,assigned_non_triage,no,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+255,triage,minimal_review,non_triage,event_fail,admin,yes,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+256,triage,minimal_review,non_triage,event_fail,admin,no,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+257,triage,minimal_review,non_triage,event_fail,unassigned_triage,yes,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+258,triage,minimal_review,non_triage,event_fail,unassigned_triage,no,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+259,triage,minimal_review,non_triage,event_fail,unassigned_non_triage,yes,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+260,triage,minimal_review,non_triage,event_fail,unassigned_non_triage,no,none,1.3,triage,,none,in progress,rejected,Triage,none,AuthoriseException
+261,triage,minimal_review,non_triage,event_rescind_minimal_review,assigned_non_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+262,triage,minimal_review,non_triage,event_rescind_minimal_review,assigned_non_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+263,triage,minimal_review,non_triage,event_rescind_minimal_review,admin,yes,none,1.3,triage,in_progress,,in progress,in progress,Triage,Triage,no
+264,triage,minimal_review,non_triage,event_rescind_minimal_review,admin,no,none,1.3,triage,in_progress,,in progress,in progress,Triage,Triage,no
+265,triage,minimal_review,non_triage,event_rescind_minimal_review,unassigned_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+266,triage,minimal_review,non_triage,event_rescind_minimal_review,unassigned_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+267,triage,minimal_review,non_triage,event_rescind_minimal_review,unassigned_non_triage,yes,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+268,triage,minimal_review,non_triage,event_rescind_minimal_review,unassigned_non_triage,no,none,1.3,triage,,,in progress,in progress,Triage,Triage,AuthoriseException
+269,triage,minimal_review,non_triage,event_triaged,assigned_non_triage,yes,quick_fail,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+270,triage,minimal_review,non_triage,event_triaged,assigned_non_triage,yes,quality_review,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+271,triage,minimal_review,non_triage,event_triaged,admin,yes,quick_fail,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+272,triage,minimal_review,non_triage,event_triaged,admin,yes,quality_review,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+273,triage,minimal_review,non_triage,event_triaged,unassigned_triage,yes,quick_fail,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+274,triage,minimal_review,non_triage,event_triaged,unassigned_triage,yes,quality_review,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+275,triage,minimal_review,non_triage,event_triaged,unassigned_non_triage,yes,quick_fail,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
+276,triage,minimal_review,non_triage,event_triaged,unassigned_non_triage,yes,quality_review,1.3,triage,,none,in progress,in progress,Triage,none,AuthoriseException
