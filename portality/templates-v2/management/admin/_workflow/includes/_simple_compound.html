@@ -4,8 +4,9 @@
 <p>{{ compound.capability.label }}</p>
 {% endif %}
 {% for element in compound.elements %}
-<div class="input{%- if element.capability.long_input -%} long {%- endif -%}">
+<div class="input{%- if element.capability.long_input -%} long {%- endif -%}" {% if element.capability.role %} data-role="{{ element.capability.role }}" {% endif %}>
 {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+    <div class="error-container" id="{{ element.prefix }}-error-container" hidden></div>
 </div>
 {% endfor %}
 

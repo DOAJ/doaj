@@ -205,8 +205,13 @@ class WorkflowControl2TriageForm(object):
 
         ltypes = []
         las = []
-        for l in bj.licenses:
-            ltypes.append(l.get("type"))
+        from copy import deepcopy
+        licenses = deepcopy(bj.licenses)
+        for l in licenses:
+            if l.get("type") == "Publisher's own license":
+                ltypes.append("other")
+            else:
+                ltypes.append(l.get("type"))
             if l.get("type") == "Publisher's own license":
                 if l.get("BY"): las.append("BY")
                 if l.get("SA"): las.append("SA")
@@ -220,7 +225,6 @@ class WorkflowControl2TriageForm(object):
         # Copyright
         compliance_field_radio(triage.website_copyright, f.website.copyright)
         compliance_field_note(triage.website_copyright, f.website.copyright)
-        bool_2_y_n(f.website.copyright.action_group.copyright_author_retains, bj.author_retains_copyright)
         form.set(f.website.copyright.action_group.copyright_url, bj.copyright_url)
 
         #########
@@ -437,6 +441,9 @@ class TriageForm2WorkflowControl(object):
             bj.license_terms_url = lurl
 
         licenses = form.get(f.website.license_policy.action_group.license)
+        if "other" in licenses:
+            licenses.remove("other")
+            licenses.append("Publisher's own license")
         license_attributes = form.get(f.website.license_policy.action_group.license_attribute)
         if license_attributes is not None:
             for ltype in licenses:
@@ -457,10 +464,6 @@ class TriageForm2WorkflowControl(object):
         # Copyright
         compliance_field_radio(triage.website_copyright, f.website.copyright)
         compliance_field_note(triage.website_copyright, f.website.copyright)
-        car = form.get(f.website.copyright.action_group.copyright_author_retains)
-        bj.author_retains_copyright = car == "y"
-        print(form.get(f.website.copyright.action_group.copyright_author_retains))
-        # bj.author_retains_copyright = form.get(f.website.copyright.action_group.copyright_author_retains)
         curl = form.get(f.website.copyright.action_group.copyright_url)
         bj.copyright_url = curl
 

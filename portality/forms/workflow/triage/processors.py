@@ -486,7 +486,6 @@ class TriageFormProcessor:
                 cap = field.get_capability(GenericFormStructureCapability)
             elif field.has_capability(FormFieldCapability):
                 cap = field.get_capability(FormFieldCapability)
-
             msg = cap.error_message(error_code)
             return msg
 
