@@ -140,6 +140,8 @@ def write_required(script=False, api=False, allowed_methods=None):
             return fn(*args, **kwargs)
 
         setattr(decorated_view, "_write_required", True)
+        # recorded so portality/scripts/list_write_required.py and the tests can see what read-only mode still allows
+        setattr(decorated_view, "_write_allowed_methods", frozenset(allowed_methods))
         return decorated_view
     return decorator
 
