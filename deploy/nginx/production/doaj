@@ -82,7 +82,7 @@ upstream doaj_bg_apps {
 
 # Editor and admin site components
 upstream doaj_ed_failover {
-    server 10.131.191.149:5050 max_fails=3 fail_timeout=30s;            #doaj-editor-app-1
+    server 10.131.9.137:5050 max_fails=3 fail_timeout=30s;            #doaj-editor-1
     server 10.131.191.148:5050 backup;     #doaj-background-app-1
     keepalive 16;
     keepalive_timeout 60s;
