@@ -477,7 +477,6 @@ class TriageFormProcessor:
 
     def validation_report(self):
         def code2msg(error_code:ErrorCode, field):
-            print("error code:", error_code)
             # field = error_code.error.field
             if isinstance(field, Structure):
                 field = field.ref_
@@ -487,8 +486,6 @@ class TriageFormProcessor:
                 cap = field.get_capability(GenericFormStructureCapability)
             elif field.has_capability(FormFieldCapability):
                 cap = field.get_capability(FormFieldCapability)
-            print("field: ", field)
-            print("cap: ", cap)
             msg = cap.error_message(error_code)
             return msg
 
