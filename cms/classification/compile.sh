@@ -1,0 +1,1 @@
+python portality/scripts/crdc_to_hierarchy.py cms/classification/base/CRDC-CCRD-2020-FOR-DDR-StructureV2-eng.csv -o cms/classification/compiled/crdc.json

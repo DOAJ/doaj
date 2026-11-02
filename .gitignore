@@ -47,6 +47,7 @@ local_store/main/*
 local_store/tmp/*
 !local_store/tmp/README.md
 *_options_*.json
+*.~lock*
 
 # test detritous
 doajtest/unit/*.csv
