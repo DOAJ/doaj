@@ -61,6 +61,19 @@ def query_substitute(query, substitutions):
     return ":".join(subs)
 
 
+def lowercase_field_value(query, field):
+    """
+    Lower-case the value(s) associated with an exact `field:` prefix in a Lucene-syntax
+    query string, so that field-specific searches (e.g. doi:) can be matched against
+    normalised (lower-cased) index values, regardless of the case the user searched in.
+
+    Handles both bare tokens (doi:10.1234/ABC) and quoted phrases (doi:"10.1234/ABC"),
+    and leaves the rest of the query (including other fields) untouched.
+    """
+    pattern = r'\b{0}:("[^"]*"|\S+)'.format(re.escape(field))
+    return re.sub(pattern, lambda m: "{0}:{1}".format(field, m.group(1).lower()), query)
+
+
 def allowed(query, wildcards=False, fuzzy=False):
     if not wildcards:
         rx = "(.+[^\\\\][\?\*]+.*)"
@@ -151,6 +164,9 @@ class DiscoveryApi(Api):
         if q is not None:
             if not allowed(q):
                 raise DiscoveryException("Query contains disallowed Lucene features")
+
+            if "doi" in search_subs:
+                q = lowercase_field_value(q, "doi")
 
             q = query_substitute(q, search_subs)
             q = escape(q)

@@ -78,6 +78,8 @@ class GenericBibJSON(dataobj.DataObj):
     def _normalise_identifier(self, idtype, value):
         if idtype in [self.P_ISSN, self.E_ISSN]:
             return self._normalise_issn(value)
+        if idtype == self.DOI and value is not None:
+            return value.lower()
         return value
 
     def _normalise_issn(self, issn):
