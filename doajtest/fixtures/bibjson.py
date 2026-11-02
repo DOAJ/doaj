@@ -70,7 +70,7 @@ ARTICLE = {
     "author" : [
         {
             "name" : "Test",
-            "affiliation" : "University of Life",
+            "affiliations" : ["University of Life"],
             "orcid_id" : "https://orcid.org/0000-0001-1234-1234"
         }
     ],

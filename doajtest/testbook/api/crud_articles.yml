@@ -1,0 +1,173 @@
+# ~~ ArticleCRUDAPI:FunctionalTest -> ArticleAPI:Feature ~~
+suite: API
+testset: CRUD Articles
+tests:
+  - title: Create an article with multiple author affiliations via CRUD API
+    context:
+      role: Publisher with existing journal and API key
+    steps:
+      - step: Obtain your API key from your publisher user profile page (/account/<username>)
+      - step: |
+          Prepare an Article JSON payload containing authors with multiple affiliations in the "affiliations" list. For example:
+          {
+            "admin": {
+              "in_doaj": true
+            },
+            "bibjson": {
+              "title": "API Multi-Affiliation Research",
+              "identifier": [
+                {"type": "doi", "id": "10.1234/api.multi.affil.01"},
+                {"type": "pissn", "id": "1111-1111"},
+                {"type": "eissn", "id": "2222-2222"}
+              ],
+              "journal": {
+                "volume": "10",
+                "number": "2",
+                "publisher": "Test Publisher",
+                "title": "Test Journal Title",
+                "language": ["EN"],
+                "country": "US"
+              },
+              "year": "2024",
+              "month": "06",
+              "link": [
+                {
+                  "type": "fulltext",
+                  "url": "https://example.com/api-article-1",
+                  "content_type": "HTML"
+                }
+              ],
+              "author": [
+                {
+                  "name": "Jane Doe",
+                  "affiliations": ["University of Oxford", "Harvard University"],
+                  "orcid_id": "https://orcid.org/0000-0001-2345-6789"
+                },
+                {
+                  "name": "Bob Smith",
+                  "affiliations": ["MIT", "Stanford University", "Cambridge University"],
+                  "orcid_id": "https://orcid.org/0000-0002-3456-7890"
+                }
+              ]
+            }
+          }
+      - step: Send a POST request to /api/articles with query parameter api_key=<api_key> (or header api_key) and the JSON payload in the request body
+      - step: Inspect the HTTP response
+        results:
+          - HTTP status code is 201 Created
+          - Response JSON body contains status "created" and an "id" representing the created article ID
+      - step: Note the returned article ID
+
+  - title: Retrieve an article with multiple author affiliations via CRUD API
+    context:
+      role: Publisher or Public
+    depends:
+      - suite: API
+        testset: CRUD Articles
+        test: Create an article with multiple author affiliations via CRUD API
+    steps:
+      - step: Send a GET request to /api/articles/<article_id>
+      - step: Inspect the HTTP response
+        results:
+          - HTTP status code is 200 OK
+          - 'Response JSON contains "bibjson.author" array with 2 author objects'
+          - 'First author ("Jane Doe") contains "affiliations": ["University of Oxford", "Harvard University"] and "orcid_id": "https://orcid.org/0000-0001-2345-6789"'
+          - 'Second author ("Bob Smith") contains "affiliations": ["MIT", "Stanford University", "Cambridge University"] and "orcid_id": "https://orcid.org/0000-0002-3456-7890"'
+
+  - title: Update an article's author affiliations via CRUD API
+    context:
+      role: Publisher with existing journal and API key
+    depends:
+      - suite: API
+        testset: CRUD Articles
+        test: Create an article with multiple author affiliations via CRUD API
+    steps:
+      - step: Retrieve the article JSON via GET /api/articles/<article_id>
+      - step: Modify the authors' affiliations in the JSON body, for example updating Jane Doe's affiliations to ["University of Oxford", "Harvard University", "ETH Zurich"]
+      - step: Send a PUT request to /api/articles/<article_id>?api_key=<api_key> with the updated JSON payload
+      - step: Inspect the HTTP response
+        results:
+          - HTTP status code is 200 OK or 204 No Content (status: updated)
+      - step: Send a GET request to /api/articles/<article_id>
+        results:
+          - 'The updated affiliations list ["University of Oxford", "Harvard University", "ETH Zurich"] is returned under the author'
+
+  - title: Create or update article with legacy singular affiliation string (backwards compatibility)
+    context:
+      role: Publisher with existing journal and API key
+    steps:
+      - step: |
+          Prepare an Article JSON payload using the legacy singular "affiliation" string field in bibjson.author, for example:
+          {
+            "admin": {
+              "in_doaj": true
+            },
+            "bibjson": {
+              "title": "Legacy Affiliation API Test",
+              "identifier": [
+                {"type": "doi", "id": "10.1234/api.legacy.affil.01"},
+                {"type": "pissn", "id": "1111-1111"},
+                {"type": "eissn", "id": "2222-2222"}
+              ],
+              "journal": {
+                "publisher": "Test Publisher",
+                "title": "Test Journal Title"
+              },
+              "year": "2024",
+              "link": [
+                {
+                  "type": "fulltext",
+                  "url": "https://example.com/legacy-affil-article"
+                }
+              ],
+              "author": [
+                {
+                  "name": "Legacy Author",
+                  "affiliation": "University of Edinburgh"
+                }
+              ]
+            }
+          }
+      - step: Send a POST request to /api/articles?api_key=<api_key> with the payload
+      - step: Inspect the HTTP response
+        results:
+          - HTTP status code is 201 Created
+          - The article is accepted successfully without errors
+      - step: Retrieve the created article via GET /api/articles/<article_id>
+        results:
+          - HTTP status code is 200 OK
+          - 'Response JSON contains "bibjson.author[0].affiliations": ["University of Edinburgh"]'
+
+  - title: Search articles via Discovery API and verify multiple author affiliations
+    context:
+      role: Public / Anonymous
+    depends:
+      - suite: API
+        testset: CRUD Articles
+        test: Create an article with multiple author affiliations via CRUD API
+    steps:
+      - step: Send a GET request to /api/search/articles/doi%3A10.1234%2Fapi.multi.affil.01 (or search query for the article title)
+      - step: Inspect the HTTP response
+        results:
+          - HTTP status code is 200 OK
+          - 'Response JSON contains "results" array with the matching article'
+          - 'The article''s "bibjson.author" array correctly includes the "affiliations" list for each author'
+
+  - title: Verify API created article display on Public Article Landing Page
+    context:
+      role: Public / Anonymous
+    depends:
+      - suite: API
+        testset: CRUD Articles
+        test: Create an article with multiple author affiliations via CRUD API
+    steps:
+      - step: Navigate to the public article landing page at /article/<article_id>
+        results:
+          - Article title "API Multi-Affiliation Research" is displayed
+          - Both authors "Jane Doe" and "Bob Smith" are displayed
+      - step: Click on the "Affiliations" accordion button under the authors list
+        results:
+          - The affiliations section expands
+          - Under "Jane Doe", both "University of Oxford" and "Harvard University" are displayed on separate lines
+          - Under "Bob Smith", "MIT", "Stanford University", and "Cambridge University" are displayed on separate lines
+          - Clicking on an author's ORCID link opens their ORCID profile in a new tab

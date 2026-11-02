@@ -237,7 +237,7 @@ The following fields are available (not every article will have all the informat
 | `publisherRecordId` | An ID assigned to this article by its publisher and supplied to DOAJ via metadata upload\. Not guaranteed to be unique or otherwise useful in any context, simply a way for the publisher to refer to this article\.                                                                          |
 | `documentType`      | Will never be present in a `OAI_DOAJ` article record, even though it's in the XML schema\.                                                                                                                                                                                                     |
 | `title`             | The title of the article                                                                                                                                                                                                                                                                      |
-| `authors`           | A list of `<author>` elements\. Each <author> element can have a `<name>`, `<email>`, `<affiliationId>` and `<orcid_id>` child elements\. The `affiliationId` refers to one of the affiliations in the `affiliationsList` element described below\.                                                        |
+| `authors`           | A list of `<author>` elements\. Each `<author>` element can have a `<name>`, `<email>`, one or more `<affiliationId>` and `<orcid_id>` child elements\. Each `affiliationId` refers to one of the affiliations in the `affiliationsList` element described below\. An author may have multiple `affiliationId` elements\. |
 
 
 #### Example of a record

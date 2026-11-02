@@ -113,111 +113,111 @@ class PreservationMock:
             "author": [
                 {
                     "name": "Jonathan D. Cherry",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Jesse Mez",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "John F. Crary",
-                    "affiliation": "Department of Pathology, Fishberg Department of Neuroscience, Friedman Brain Institute, Ronald M. Loeb Center for Alzheimer’s Disease, Icahn School of Medicine at Mount Sinai School"
+                    "affiliations": ["Department of Pathology, Fishberg Department of Neuroscience, Friedman Brain Institute, Ronald M. Loeb Center for Alzheimer’s Disease, Icahn School of Medicine at Mount Sinai School"]
                 },
                 {
                     "name": "Yorghos Tripodis",
-                    "affiliation": "Department of Biostatistics, Boston University School of Public Health"
+                    "affiliations": ["Department of Biostatistics, Boston University School of Public Health"]
                 },
                 {
                     "name": "Victor E. Alvarez",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Ian Mahar",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Bertrand R. Huber",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Michael L. Alosco",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Raymond Nicks",
-                    "affiliation": "Department of Veterans Affairs Medical Center"
+                    "affiliations": ["Department of Veterans Affairs Medical Center"]
                 },
                 {
                     "name": "Bobak Abdolmohammadi",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Patrick T. Kiernan",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Laney Evers",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Sarah Svirsky",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Katharine Babcock",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Hannah M. Gardner",
-                    "affiliation": "VA Boston Healthcare System"
+                    "affiliations": ["VA Boston Healthcare System"]
                 },
                 {
                     "name": "Gaoyuan Meng",
-                    "affiliation": "VA Boston Healthcare System"
+                    "affiliations": ["VA Boston Healthcare System"]
                 },
                 {
                     "name": "Christopher J. Nowinski",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Brett M. Martin",
-                    "affiliation": "Department of Biostatistics, Boston University School of Public Health"
+                    "affiliations": ["Department of Biostatistics, Boston University School of Public Health"]
                 },
                 {
                     "name": "Brigid Dwyer",
-                    "affiliation": "Department of Neurology, Boston University School of Medicine"
+                    "affiliations": ["Department of Neurology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Neil W. Kowall",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Robert C. Cantu",
-                    "affiliation": "Department of Anatomy and Neurobiology, Boston University School of Medicine"
+                    "affiliations": ["Department of Anatomy and Neurobiology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Lee E. Goldstein",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Douglas I. Katz",
-                    "affiliation": "Department of Neurology, Boston University School of Medicine"
+                    "affiliations": ["Department of Neurology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Robert A. Stern",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Lindsay A. Farrer",
-                    "affiliation": "Department of Neurology, Boston University School of Medicine"
+                    "affiliations": ["Department of Neurology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Ann C. McKee",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Thor D. Stein",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 }
             ]
         },
@@ -336,111 +336,111 @@ class PreservationMock:
             "author": [
                 {
                     "name": "Jonathan D. Cherry",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Jesse Mez",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "John F. Crary",
-                    "affiliation": "Department of Pathology, Fishberg Department of Neuroscience, Friedman Brain Institute, Ronald M. Loeb Center for Alzheimer’s Disease, Icahn School of Medicine at Mount Sinai School"
+                    "affiliations": ["Department of Pathology, Fishberg Department of Neuroscience, Friedman Brain Institute, Ronald M. Loeb Center for Alzheimer’s Disease, Icahn School of Medicine at Mount Sinai School"]
                 },
                 {
                     "name": "Yorghos Tripodis",
-                    "affiliation": "Department of Biostatistics, Boston University School of Public Health"
+                    "affiliations": ["Department of Biostatistics, Boston University School of Public Health"]
                 },
                 {
                     "name": "Victor E. Alvarez",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Ian Mahar",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Bertrand R. Huber",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Michael L. Alosco",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Raymond Nicks",
-                    "affiliation": "Department of Veterans Affairs Medical Center"
+                    "affiliations": ["Department of Veterans Affairs Medical Center"]
                 },
                 {
                     "name": "Bobak Abdolmohammadi",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Patrick T. Kiernan",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Laney Evers",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Sarah Svirsky",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Katharine Babcock",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Hannah M. Gardner",
-                    "affiliation": "VA Boston Healthcare System"
+                    "affiliations": ["VA Boston Healthcare System"]
                 },
                 {
                     "name": "Gaoyuan Meng",
-                    "affiliation": "VA Boston Healthcare System"
+                    "affiliations": ["VA Boston Healthcare System"]
                 },
                 {
                     "name": "Christopher J. Nowinski",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Brett M. Martin",
-                    "affiliation": "Department of Biostatistics, Boston University School of Public Health"
+                    "affiliations": ["Department of Biostatistics, Boston University School of Public Health"]
                 },
                 {
                     "name": "Brigid Dwyer",
-                    "affiliation": "Department of Neurology, Boston University School of Medicine"
+                    "affiliations": ["Department of Neurology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Neil W. Kowall",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Robert C. Cantu",
-                    "affiliation": "Department of Anatomy and Neurobiology, Boston University School of Medicine"
+                    "affiliations": ["Department of Anatomy and Neurobiology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Lee E. Goldstein",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Douglas I. Katz",
-                    "affiliation": "Department of Neurology, Boston University School of Medicine"
+                    "affiliations": ["Department of Neurology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Robert A. Stern",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Lindsay A. Farrer",
-                    "affiliation": "Department of Neurology, Boston University School of Medicine"
+                    "affiliations": ["Department of Neurology, Boston University School of Medicine"]
                 },
                 {
                     "name": "Ann C. McKee",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 },
                 {
                     "name": "Thor D. Stein",
-                    "affiliation": "Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"
+                    "affiliations": ["Boston University Alzheimer’s Disease and CTE Center, Boston University School of Medicine"]
                 }
             ]
         },

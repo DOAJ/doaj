@@ -1,0 +1,11 @@
+{
+	"new_version": "-20260917_multiple_affiliations",
+	"old_version": "-20250822_ascii_folding",
+	"types": [
+		{
+			"type" : "article",
+			"migrate": true,
+			"set_alias": true
+		}
+	]
+}
