@@ -27,6 +27,7 @@ RIS_ARTICLE_MAPPING = {
     'DO': lambda a: a.get_one_identifier(GenericBibJSON.DOI),
     'SN': lambda a: a.issns(),
     'LA': lambda a: a.journal_language,
+    'CR': lambda a: a.reference,
 }
 
 class ArticleRisXWalk:

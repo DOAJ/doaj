@@ -183,6 +183,15 @@
                         </ul>
                     {% endif %}
 
+                    {% if bibjson.reference %}
+                        <h2>References</h2>
+                        <ol class="article-details__references">
+                            {% for reference in bibjson.reference %}
+                                <li>{{ reference | reference_links }}</li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+
                     {% if doi %}
                         {# Dimensions badge #}
                         <p>
