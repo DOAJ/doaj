@@ -7,10 +7,15 @@ rule,endpoint,methods
 /_debug_toolbar/views/sqlalchemy/sql_explain,debugtoolbar.sql_select,"GET, POST"
 /_debug_toolbar/views/sqlalchemy/sql_select,debugtoolbar.sql_select,"GET, POST"
 /account/,account.index,GET
+/account/verify-code,account.verify_code,"GET, POST"
 /account/login,account.login,"GET, POST"
-/account/logout,account.logout,GET
-/account/create/,account.create,GET
+/account/logout,account.logout,POST
+/<lang>/account/,locale_account.index,GET
+/<lang>/account/verify-code,locale_account.verify_code,"GET, POST"
+/<lang>/account/login,locale_account.login,"GET, POST"
+/<lang>/account/logout,locale_account.logout,POST
 /admin/,admin.index,GET
+/admin/status,admin.status_ui,GET
 /admin/journals,admin.journals,GET
 /admin/journal/readonly/<journal_id>,admin.journal_readonly,GET
 /admin/journal/<journal_id>/article-info/,admin.journal_article_info,GET
@@ -22,13 +27,25 @@ rule,endpoint,methods
 /admin/background_jobs,admin.background_jobs_search,GET
 /admin/notifications,admin.global_notifications_search,GET
 /admin/autocomplete/user,admin.user_autocomplete,GET
+/admin/autocomplete/user_tags,admin.user_tags_autocomplete,GET
 /admin/dropdown/eg_associates,admin.eg_associates_dropdown,GET
 /admin/report/<report_id>,admin.get_report,GET
 /admin/reports,admin.reports_search,GET
 /admin/alerts,admin.admin_alerts,GET
 /admin/autoassign,admin.autoassign_search,GET
+/admin/journal-csv,admin.journal_csv_search,GET
+/admin/pdd,admin.pdd_search,GET
 /admin/ris,admin.ris_search,GET
-/admin/ris/<id>/<action>,admin.ris_manage,POST
+/admin/system/provenance,admin.system_object_provenance,GET
+/admin/system/file-uploads,admin.system_object_file_uploads,GET
+/admin/system/bulk-uploads,admin.system_object_bulk_uploads,GET
+/admin/system/cache,admin.system_object_cache,GET
+/admin/system/locks,admin.system_object_locks,GET
+/admin/system/preservation,admin.system_object_preservation,GET
+/admin/system/article-tombstones,admin.system_object_article_tombstones,GET
+/admin/system/draft-applications,admin.system_object_draft_applications,GET
+/admin/system/harvester-state,admin.system_object_harvester_state,GET
+/admin/system/autochecks,admin.system_object_autochecks,GET
 /publisher/,publisher.index,GET
 /publisher/journal,publisher.journals,GET
 /publisher/application/deleted,publisher.deleted_thanks,GET
@@ -102,6 +119,8 @@ rule,endpoint,methods
 /_status/,_status.status,GET
 /apply/thank-you,apply.application_thanks,GET
 /apply/draft,apply.draft_saved,GET
+/<lang>/apply/thank-you,apply_locale.application_thanks,GET
+/<lang>/apply/draft,apply_locale.draft_saved,GET
 /jct/inprogress,jct.inprogress,GET
 /dashboard/,dashboard.top_todo,GET
 /dashboard/top_notifications,dashboard.top_notifications,GET
@@ -159,10 +178,13 @@ rule,endpoint,methods
 /docs/public-data-dump/,doaj.public_data_dump,GET
 /docs/openurl/,doaj.openurl,GET
 /docs/faq/,doaj.faq,GET
+/docs/journal-csv,doaj.journal_csv,GET
+/docs/premium,doaj.premium,GET
 /about/,doaj.about,GET
 /at-20/,doaj.at_20,GET
 /about/ambassadors/,doaj.ambassadors,GET
-/about/advisory-board-council/,doaj.abc,GET
+/about/foundation-advisory-board/,doaj.abc,GET
+/about/advisory-board-council/,doaj.abc_redirect,GET
 /about/editorial-policy-advisory-group/,doaj.epag,GET
 /about/volunteers/,doaj.volunteers,GET
 /about/team/,doaj.team,GET
@@ -185,7 +207,8 @@ rule,endpoint,methods
 /password-reset/,doaj.new_password_reset,GET
 /u/<alias>,doaj.shortened_url,GET
 /testdrive/<test_id>,testdrive.testdrive,GET
-/testdrive/<test_id>/teardown,testdrive.teardown,GET
+/testdrive/<test_id>/teardown,testdrive.teardown,"GET, POST"
+/testdrive/run,testdrive.run_script,"GET, POST"
 /assets/<path:filename>,our_static,GET
 /static/<path:filename>,our_static,GET
 /doaj,legacy,GET

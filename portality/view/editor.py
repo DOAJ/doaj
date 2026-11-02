@@ -116,7 +116,7 @@ def journal_readonly(journal_id):
 
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
-@write_required()
+@write_required(allowed_methods=set())
 @login_required
 @ssl_required
 def application(application_id):

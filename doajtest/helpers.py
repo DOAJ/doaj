@@ -179,6 +179,12 @@ class DoajTestCase(TestCase):
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
+            # keep test files out of the env config's appdata (test.cfg's DATA_ROOT is the test servers' real one)
+            "UPLOAD_DIR": paths.rel2abs(__file__, "..", "tmp", "appdata", cls.__name__.lower(), "upload"),
+            "FAILED_ARTICLE_DIR": paths.rel2abs(__file__, "..", "tmp", "appdata", cls.__name__.lower(), "failed_articles"),
+            "CACHE_DIR": paths.rel2abs(__file__, "..", "tmp", "appdata", cls.__name__.lower(), "cache"),
+            "ARTICLE_HISTORY_DIR": paths.rel2abs(__file__, "..", "tmp", "appdata", cls.__name__.lower(), "history", "article"),
+            "JOURNAL_HISTORY_DIR": paths.rel2abs(__file__, "..", "tmp", "appdata", cls.__name__.lower(), "history", "journal"),
             "STORE_CACHE_CONTAINER": "doaj-data-cache-placeholder" + '-' + cls.__name__.lower(),
             "STORE_ANON_DATA_CONTAINER": "doaj-anon-data-placeholder" + '-' + cls.__name__.lower(),
             "STORE_PUBLIC_DATA_DUMP_CONTAINER": "doaj-data-dump-placeholder" + '-' + cls.__name__.lower(),
@@ -210,6 +216,14 @@ class DoajTestCase(TestCase):
         patch = cls.create_app_patch()
         cls.originals = patch_config(app, patch)
 
+        # the history models read their directories from app.config at import time, so point them at the patched ones
+        cls.history_dir_originals = {
+            models.ArticleHistory: models.ArticleHistory.SAVE_BASE_DIRECTORY,
+            models.JournalHistory: models.JournalHistory.SAVE_BASE_DIRECTORY,
+        }
+        models.ArticleHistory.SAVE_BASE_DIRECTORY = app.config["ARTICLE_HISTORY_DIR"]
+        models.JournalHistory.SAVE_BASE_DIRECTORY = app.config["JOURNAL_HISTORY_DIR"]
+
         # JournalLikeObject reads these from app.config once at import time, so patching
         # app.config here has no effect on them - a mismatch means the value actually needed
         # for CI/tests must be set directly in test.cfg (or dev.cfg for local runs) instead.
@@ -240,6 +254,8 @@ class DoajTestCase(TestCase):
     def tearDownClass(cls) -> None:
         patch_config(app, cls.originals)
         cls.originals = {}
+        for history_cls, directory in getattr(cls, "history_dir_originals", {}).items():
+            history_cls.SAVE_BASE_DIRECTORY = directory
 
     def setUp(self):
         pass
