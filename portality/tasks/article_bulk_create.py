@@ -24,11 +24,13 @@ def get_upload_path(upload: BulkArticles) -> Path:
 
 def prep_article(data, account) -> models.Article:
     from portality.api.current import ArticlesCrudApi
+    from portality.api.common import Api400Error
     try:
         return ArticlesCrudApi.prep_article(data, account)
     except (
             dataobj.DataStructureException,
             dataobj.ScriptTagFoundException,
+            Api400Error,  # e.g. no journal matches the article's ISSNs
     ) as e:
         raise CrosswalkException(message=str(e))
 
@@ -43,8 +45,16 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
         uploader = models.Account.pull(job.user) or {}
 
         def _articles_factory(path):
-            articles = (prep_article(d, uploader) for d in json.loads(Path(path).read_text()))
-            return [models.Article(**raw) for raw in articles]
+            # validate every article so the caller learns which ones (by 0-based index) are invalid, not just the first
+            articles, errors = [], []
+            for i, d in enumerate(json.loads(Path(path).read_text())):
+                try:
+                    articles.append(models.Article(**prep_article(d, uploader)))
+                except CrosswalkException as e:
+                    errors.append(f"Article at index {i}: {e.message}")
+            if errors:
+                raise CrosswalkException(message="; ".join(errors))
+            return articles
 
         articles_upload_helper.upload_process(bulk_articles, job, articles_path, _articles_factory)
         bulk_articles.save()
