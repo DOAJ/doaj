@@ -4,7 +4,7 @@
 {% if tours|length > 0 %}
 <li class="dropdown flex-center" id="dropdown--tour_nav" style="display:none">
     <a id="feature_tour_nav" class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
-      <span><span data-feather="navigation" aria-hidden="true"></span> Feature Tours</span>
+      <span><span data-feather="navigation" aria-hidden="true"></span> <span class="primary-nav__label-text">Feature Tours</span></span>
     </a>
     <ul class="dropdown__menu notifications" id="feature_tours">
         {% for tour in tours %}

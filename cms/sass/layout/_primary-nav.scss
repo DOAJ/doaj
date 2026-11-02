@@ -27,7 +27,12 @@
     display: none;
   }
 
-  @media (max-width: 1279px) {
+  // 79.9375em == 1279px at the browser default 16px font size, but as an em
+  // value it also collapses to the mobile nav when the user's browser
+  // font-size preference is large enough to make the desktop nav overflow,
+  // even on a wide viewport (WCAG 1.4.4). Keep in step with the matching
+  // breakpoints in _secondary-nav.scss and _dropdown.scss.
+  @media (max-width: 79.9375em) {
     .secondary-nav__menu-toggle {
       display: flex;
       margin-left: $spacing-03;
@@ -67,7 +72,7 @@
     }
   }
 
-  @media (max-width: 1279px) {
+  @media (max-width: 79.9375em) {
     .nav-bar {
       float: right;
     }
