@@ -43,8 +43,8 @@ The journal's name must:
 
 **Publishing schedule and timeline**
 
-1. The journal’s publication frequency (whether based on a fixed schedule with issues/volumes or continuous/rolling publication) should be clearly described, and the journal must keep to its stated schedule and timeline unless there are exceptional circumstances.
-2. The journal must follow its stated publishing schedule unless exceptional circumstances apply.
+1. The journal’s publication frequency (whether based on a fixed schedule with issues/volumes or continuous/rolling publication) should be clearly described.
+2. The journal must follow its stated publishing schedule and timeline unless exceptional circumstances apply.
 
 **Preservation**
 
