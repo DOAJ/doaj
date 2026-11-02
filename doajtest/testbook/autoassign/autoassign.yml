@@ -51,13 +51,12 @@ tests:
       - step: Click on the Edit button for the update request
       - step: Make a minor change to the form data (e.g. change a URL or a title), then go to the final page
               of the form, select the confirmation checkbox, and click Submit.  Note that this update request
-              identifies the publisher's country as "Western Sahara", for which no real mapping exists at time of writing.
-              If you are testing this in the future, you may need to change the country to one which does not have a 
-              mapping.
+              identifies the publisher's country as "France", which the testdrive has mapped to the "Country Mapping"
+              editor group.
         results:
           - Your update request is saved and you return to the Publisher's list of Update Requests
       - step: Log out of the Publisher account
-      - step: Using the details under `map_by_country` in the testdrive setup, log in using the `maned_username` and 
+      - step: Using the details under `map_by_country` in the testdrive setup, log in using the `maned_username` and
               `maned_password`
         results:
           - You are taken to the Managing Editor's dashboard

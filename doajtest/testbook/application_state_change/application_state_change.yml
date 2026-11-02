@@ -7,10 +7,19 @@ tests:
 - title: Accept a New Application
   context:
     role: admin
+    testdrive: application_state_change
+  setup:
+    - "Use the application_state_change testdrive to set up for this test - an admin
+      account, and a Ready-status new application titled 'Application State Change -
+      Accept New Application <run_seed>' owned by a real publisher account. OR provide
+      those yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
   - step: Go to the "Applications/Update Requests" page in the Administration area
-  - step: Select a new application that can be accepted (e.g. is in a status such
-      as Ready) and click "Review application"
+  - step: Search for the testdrive's "Accept New Application" record (it is in status
+      Ready) and click "Review application"
   - step: Complete any required fields, and then change the Application Status to
       "Accepted"
   - step: Click "SAVE"
@@ -35,10 +44,19 @@ tests:
 - title: Accept an Update Request
   context:
     role: admin
+    testdrive: application_state_change
+  setup:
+    - "Use the application_state_change testdrive - it supplies a Ready-status update
+      request titled 'Application State Change - Accept Update Request <run_seed>',
+      already linked to its own in-DOAJ journal owned by a real publisher account.
+      OR provide those yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
   - step: Go to the "Applications/Update Requests" page in the Administration area
-  - step: Select an update request that can be accepted (e.g. is in a status such
-      as Ready) and click "Review update"
+  - step: Search for the testdrive's "Accept Update Request" record (it is in status
+      Ready) and click "Review update"
   - step: Complete any required fields, and then change the Application Status to
       "Accepted"
   - step: Click "SAVE"
@@ -59,10 +77,18 @@ tests:
 - title: Reject a New Application
   context:
     role: admin
+    testdrive: application_state_change
+  setup:
+    - "Use the application_state_change testdrive - it supplies a Ready-status new
+      application titled 'Application State Change - Reject New Application
+      <run_seed>'. OR provide one yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
   - step: Go to the "Applications/Update Requests" page in the Administration area
-  - step: Select a new application that can be rejected (e.g. is in status Ready)
-      and click "Review application"
+  - step: Search for the testdrive's "Reject New Application" record (it is in status
+      Ready) and click "Review application"
   - step: Complete any required fields, and then change the Application Status to
       "Rejected"
   - step: Click "SAVE"
@@ -75,10 +101,18 @@ tests:
 - title: Reject an Update Request
   context:
     role: admin
+    testdrive: application_state_change
+  setup:
+    - "Use the application_state_change testdrive - it supplies a Ready-status update
+      request titled 'Application State Change - Reject Update Request <run_seed>',
+      already linked to its own in-DOAJ journal. OR provide one yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
   - step: Go to the "Applications/Update Requests" page in the Administration area
-  - step: Select an update request that can be rejected (e.g. is in status Ready)
-      and click "Review update"
+  - step: Search for the testdrive's "Reject Update Request" record (it is in status
+      Ready) and click "Review update"
   - step: Complete any required fields, and then change the Application Status to
       "Rejected"
   - step: Click "SAVE"
@@ -94,10 +128,18 @@ tests:
 - title: Request Revisions on an Update Request
   context:
     role: admin
+    testdrive: application_state_change
+  setup:
+    - "Use the application_state_change testdrive - it supplies a Ready-status update
+      request titled 'Application State Change - Revisions Required Update Request
+      <run_seed>', already linked to its own in-DOAJ journal. OR provide one yourself."
+    - "Important: the testdrive page tears down its data as soon as you navigate away
+      from it. Log in and run the test in a separate browser tab/window, leaving the
+      testdrive tab open until you have finished."
   steps:
   - step: Go to the "Applications/Update Requests" page in the Administration area
-  - step: Select an update request that can be rejected (e.g. is in status Ready)
-      and click "Review update"
+  - step: Search for the testdrive's "Revisions Required Update Request" record (it
+      is in status Ready) and click "Review update"
   - step: Complete any required fields, and then change the Application Status to
       "Revisions Required"
   - step: Click "SAVE"
