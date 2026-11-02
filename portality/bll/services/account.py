@@ -21,9 +21,15 @@ class AccountService:
         """Resolve a user by account id or email, depending on config."""
         if username is None or username == "":
             return None
-        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
-            return Account.pull(username) or Account.pull_by_email(username)
-        return Account.pull_by_email(username)
+        # as typed first, so an account still stored as "bob " keeps working; then trimmed, for once it is "bob" (#4419)
+        for un in filter(None, dict.fromkeys([username, username.strip()])):
+            if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
+                user = Account.pull(un) or Account.pull_by_email(un)
+            else:
+                user = Account.pull_by_email(un)
+            if user is not None:
+                return user
+        return None
 
     def initiate_login_code(self, user: Account) -> str:
         """Generate and persist a passwordless login code for the user; return the code."""
