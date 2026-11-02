@@ -34,8 +34,8 @@ var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
                 id: "search-input-bar",
                 category: "controller",
                 fieldOptions : [
-                    {'display':'Title','field':'bibjson.title'},
-                    {'display':'Abstract','field':'bibjson.abstract'},
+                    {'display':'Title','field':'index.title'},
+                    {'display':'Abstract','field':'index.abstract'},
                     {'display':'Keywords','field':'bibjson.keywords'},
                     {'display':'Subject','field':'index.classification'},
                     {'display':'Author','field':'bibjson.author.name'},

@@ -145,3 +145,23 @@ class TestCrosswalks(DoajTestCase):
             {'name': 'Josiah Carberry', 'orcid_id': 'https://orcid.org/0000-0002-1825-0097'}
         ], "expected [{{'affiliation': 'Cottage Labs University', 'name': 'Minerva Housecat', 'orcid_id': 'https://orcid.org/0000-0002-4011-3590'}},{{'name': 'Josiah Carberry', 'orcid_id': 'https://orcid.org/0000-0002-1825-0097'}}]', received: {}".format(bibjson.author)
         assert bibjson.get_single_url("fulltext") == "https://www.crossref.org/xml-samples", "expected 'https://www.crossref.org/xml-samples', received: {}".format(bibjson.get_single_url("fulltext"))
+
+    def test_08_crossref442_jats_rich_abstract(self):
+        handle = Crossref442ArticleFixtureFactory.upload_jats_rich_abstract()
+        xwalk = CrossrefXWalk442()
+        art = xwalk.crosswalk_file(file_handle=handle, add_journal_info=False)
+        article = models.Article(**art[0])
+        bibjson = article.bibjson()
+
+        assert bibjson.title == 'TiO<i><sub>x</sub></i>/Pt<sub>3</sub>Ti(111) surface article', \
+            "title not correctly rendered, received: {}".format(bibjson.title)
+
+        abstract = bibjson.abstract
+        assert '<sub>3</sub>' in abstract, "subscript not converted: {}".format(abstract)
+        assert '<em>' in abstract, "italic not converted: {}".format(abstract)
+        assert 'jats:' not in abstract, "raw JATS namespace left in abstract: {}".format(abstract)
+        assert 'Ti(111)' in abstract, "tail text after jats:sub lost: {}".format(abstract)
+        assert bibjson.author == [
+            {'name': 'Marco Moors', 'orcid_id': 'https://orcid.org/0000-0002-3340-9756'},
+            {'name': 'Yun An'},
+        ], "unexpected author list: {}".format(bibjson.author)

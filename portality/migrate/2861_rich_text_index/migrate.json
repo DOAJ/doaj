@@ -1,0 +1,119 @@
+{
+    "batch": 1000,
+    "types": [
+        {
+            "type": "article",
+            "scroll_size": 1000,
+            "keepalive": "20m",
+            "query": {
+                "query": {
+                    "bool": {
+                        "should": [
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</em>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</i>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</b>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</strong>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</sub>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</sup>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</u>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</code>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</s>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.title.exact": "*</span>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</em>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</i>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</b>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</strong>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</sub>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</sup>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</u>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</code>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</s>*"
+                                }
+                            },
+                            {
+                                "wildcard": {
+                                    "bibjson.abstract.exact": "*</span>*"
+                                }
+                            }
+                        ],
+                        "minimum_should_match": 1
+                    }
+                }
+            }
+        }
+    ]
+}

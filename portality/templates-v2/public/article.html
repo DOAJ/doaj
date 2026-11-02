@@ -29,7 +29,7 @@
         <meta name="citation_author" content="{{author.name}}">
     {% endfor %}
     {% if bibjson.title %}
-        <meta name="citation_title" content="{{ bibjson.title }}">
+        <meta name="citation_title" content="{{ bibjson.title | striptags }}">
     {% endif %}
     {% if bibjson.get_publication_date("%Y/%m/%d") %}
         <meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">
@@ -83,7 +83,7 @@
 
                 <h1>
                     {%  if bibjson.title %}
-                        {{ bibjson.title }}
+                        {{ bibjson.title | rich_text }}
                     {% else %}
                         <em>[Article title missing]</em>
                     {% endif %}
@@ -165,7 +165,7 @@
                         {% endif %}
                       </p>
                     {% if bibjson.abstract %}
-                        <p class="article-details__abstract">{{ bibjson.abstract | striptags }}</p>
+                        <p class="article-details__abstract">{{ bibjson.abstract | rich_text }}</p>
                     {% else %}
                         <em class="article-details__abstract--empty">No abstracts available.</em>
                     {% endif %}

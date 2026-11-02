@@ -282,6 +282,8 @@ ARTICLE_STRUCT = {
                 "schema_subject": {"coerce" : "unicode"},
                 "subject": {"coerce" : "unicode"},
                 "unpunctitle": {"coerce" : "unicode"},
+                "title": {"coerce" : "unicode"},
+                "abstract": {"coerce" : "unicode"},
             }
         }
     }
