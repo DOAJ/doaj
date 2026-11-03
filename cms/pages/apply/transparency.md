@@ -14,8 +14,7 @@ The Committee on Publication Ethics (COPE), DOAJ, the Open Access Scholarly Publ
 
 The Principles of Transparency and Best Practice in Scholarly Publishing apply to all published journal content, including special issues and conference proceedings. Where practices vary from the standards outlined, editors must clearly state the procedures that the journal follows.
 
-COPE, DOAJ, OASPA, and WAME agree that these principles underpin good publishing practice and that publishers must demonstrate they meet them. Because these principles form the basis of organisations' membership criteria, journals and publishers may need to explain when they do not comply with them.
-
+COPE, DOAJ, OASPA, and WAME agree that these principles underpin good publishing practice and that publishers must demonstrate they meet them. Because these principles complement the DOAJ criteria, journals and publishers may need to explain when they do not comply with them.
 
 ---
 
@@ -239,11 +238,11 @@ Any direct marketing activities conducted on behalf of the journal, including so
 
 ---
 
-## About the organizations
+## About the organisations
 
 ### [Committee on Publication Ethics](https://publicationethics.org/) (COPE)
 
-COPE provides advice to editors and publishers on all aspects of publication ethics and, in particular, how to handle cases of research and publication misconduct. It also provides a forum for its members to discuss individual cases. COPE does not investigate individual cases but encourages editors to ensure that cases are investigated by the appropriate authorities (usually a research institution or employer). All COPE members are expected to apply COPE principles of publication ethics outlined in the core practices.
+COPE provides advice to editors and publishers on all aspects of publication ethics and, in particular, how to handle cases of research and publication misconduct. It also provides a forum for its members to discuss individual cases. COPE does not investigate individual cases but encourages editors to ensure the appropriate authorities (usually a research institution or employer) investigate them. All COPE members are expected to adhere to COPE’s Code of Conduct and to uphold its Core Principles of publication ethics, which provide the foundation for ethical editorial decision-making and responsible scholarly publishing.
 
 ### [DOAJ](https://doaj.org)
 
@@ -251,11 +250,11 @@ The mission of the DOAJ is: to curate, maintain and develop a source of reliable
 
 ### [Open Access Scholarly Publishing Association](https://www.oaspa.org/) (OASPA)
 
-OASPA is a trade association that was established in 2008 in order to represent the interests of Open Access (OA) publishers globally across all disciplines. By encouraging collaboration in developing appropriate business models, tools and standards to support OA publishing, OASPA aims to help ensure a prosperous and sustainable future for the benefit of its members and the scholarly communities they serve. This mission is carried out through exchanging information, setting standards, advancing models, advocacy, education, and the promotion of innovation.
+OASPA is a trade association established in 2008 to represent the interests of Open Access (OA) publishers globally across all disciplines. By encouraging collaboration to develop appropriate business models, tools, and standards to support OA publishing, OASPA aims to help ensure a prosperous and sustainable future for its members and the scholarly communities they serve. It carries out this mission by exchanging information, setting standards, advancing models, advocacy, education, and promoting innovation.
 
 ### [World Association of Medical Editors](https://wame.org/) (WAME)
 
-WAME is a global nonprofit voluntary association of editors of peer-reviewed medical journals who seek to foster cooperation and communication among editors; improve editorial standards; promote professionalism in medical editing through education, self-criticism, and self-regulation; and encourage research on the principles and practice of medical editing. WAME develops policies and recommendations of best practices for medical journal editors and has a syllabus for editors that members are encouraged to follow.
+WAME is a global nonprofit voluntary association of editors of peer-reviewed medical journals who seek to foster cooperation and communication among editors; improve editorial standards; promote professionalism in medical editing through education, self-criticism, and self-regulation; and encourage research on the principles and practice of medical editing. WAME develops policies and best-practice recommendations for medical journal editors and provides a syllabus that members are encouraged to follow.
 
 ## License for this work
 
