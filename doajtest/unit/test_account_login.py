@@ -137,6 +137,18 @@ class TestAccountLogin(DoajTestCase):
                 self.assertIn(b'Account not recognised', resp.data)
         mock_send_email.assert_not_called()
 
+    @patch('portality.bll.services.account.AccountService.send_login_code_email')
+    def test_03e_no_password_account_code_resend_not_sent(self, mock_send_email):
+        """#4184: the verify-code 'resend' action must not email a no-password account."""
+        acc = Account(email="nopwresend@example.com", name="No Password Resend", id="nopwresend")
+        acc.add_role('publisher')
+        acc.save(blocking=True)
+
+        resp = self.app_client.post('/account/verify-code', data=dict(email=acc.email, action='resend'), follow_redirects=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b'Account not recognised', resp.data)
+        mock_send_email.assert_not_called()
+
     def test_03c_invalid_action_does_not_distinguish_existing_account(self):
         """
         Found while writing attacker-style regression tests for #4184: login()
