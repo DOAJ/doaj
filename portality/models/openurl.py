@@ -178,7 +178,10 @@ class OpenURLRequest(object):
                     unsupported_fields.append((k, v))
                     continue
 
+                # known field, but not searchable for this genre (e.g. aulast for journals)
                 if es_term is None:
+                    app.logger.warning("OpenURL field '{x}' is not searchable for genre '{g}', skipping".format(x=k, g=self.genre))
+                    unsupported_fields.append((k, v))
                     continue
 
                 term = {"term": {es_term: term_value}}

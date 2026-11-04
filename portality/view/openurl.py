@@ -39,7 +39,7 @@ def openurl():
         result_url = parser_response.get_result_url()
     except UnsupportedOpenURLQuery as e:
         app.logger.info("Rejecting OpenURL request as a bad request: " + str(e))
-        abort(400)
+        return render_template(templates.OPENURL_400), 400
 
     if result_url:
         return redirect(result_url)
@@ -107,8 +107,3 @@ def help():
 @blueprint.errorhandler(404)
 def bad_request(e):
     return render_template(templates.OPENURL_404), 404
-
-
-@blueprint.errorhandler(400)
-def unsupported_request(e):
-    return render_template(templates.OPENURL_400), 400
