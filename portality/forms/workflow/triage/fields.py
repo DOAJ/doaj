@@ -2500,8 +2500,12 @@ class AdminSpecialException(ComplianceCheckField):
 
 
 class AdminSpecialExceptionNote(NoteField):
+    class C(GeneralNoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.admin_special_exception.validation.note.is_conditionally_required
+        }
     name = "admin_special_exception_note"
-    capabilities = (GeneralNoteCapability(),)
+    capabilities = (C(),)
 
 
 class SpecialExceptions(Field):
@@ -2515,6 +2519,7 @@ class SpecialExceptions(Field):
         control_render_class = TriageCheckboxRenderer
         error_messages = {
             DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
+            IsConditionallyRequired: T.admin_special_exception.validation.special_exceptions.is_conditionally_required
         }
         alt_render = {
             "ro": {
@@ -2562,6 +2567,10 @@ class AdminSpecialExceptionGroup(Structure):
         order = ["answer", "special_exceptions", "special_exception_other", "note"]
         js_class = "checkbox"
 
+        error_messages = {
+            IsConditionallyRequired: False
+        }
+
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)
 
@@ -2575,5 +2584,6 @@ class AdminSpecialExceptionGroup(Structure):
                    special_exceptions,  # <- this field has one of the values
                    ["other"]  # <- that is non compliant
                    ),
-        RequiredIf(note, special_exceptions, ["africa", "publisher", "other"])
+        RequiredIf(note, special_exceptions, ["africa", "publisher", "other"]),
+        RequiredIf(special_exceptions, answer, T.admin_special_exception.compliant_answers + T.admin_special_exception.non_compliant_answers)
     ]

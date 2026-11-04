@@ -2,7 +2,7 @@ window.doaj = window.doaj || {};
 window.doaj.triage = window.doaj.triage || {};
 
 // useful for testing
-doaj.triage.redirect_on_reject = false;
+doaj.triage.redirect_on_reject = true;
 
 doaj.triage.Recommendation = class {
     constructor(url, redirect_on_reject) {

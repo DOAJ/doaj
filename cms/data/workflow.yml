@@ -1043,8 +1043,11 @@ be rejected for <strong>any</strong> reason. After answering all triage question
       validation:
         special_exceptions:
           disallowed_value: "Please select one of the options"
+          is_conditionally_required: "You must select an exception, or choose 'No exceptions apply'"
         special_exception_other:
           is_conditionally_required: "If you select 'Other', please provide a description of the special exception"
+        note:
+          is_conditionally_required: "You must provide a note explaining the special exception"
       compliant_answers:
         - "compliant"
       non_compliant_answers:
