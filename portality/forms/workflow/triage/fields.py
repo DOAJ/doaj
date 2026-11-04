@@ -1105,7 +1105,8 @@ class EISSN(Field):
         attributes = {"data-value": "eissn"}
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
-            FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different,
+            IsConditionallyRequired: T.issn_at_least_one.validation.eissn.is_conditionally_required
         }
         alt_render = {
             "ro": {
@@ -1129,7 +1130,8 @@ class PISSN(Field):
         attributes = {"data-value": "pissn"}
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
-            FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different,
+            IsConditionallyRequired: T.issn_at_least_one.validation.pissn.is_conditionally_required
         }
         alt_render = {
             "ro": {
@@ -1164,6 +1166,9 @@ class ISSNAdditionalFields(Structure):
 
     validators_ = [
         Different(eissn, pissn),
+        # At least one or other of the fields is required
+        RequiredIfNot(eissn, pissn),
+        RequiredIfNot(pissn, eissn)
     ]
 
 
@@ -1488,6 +1493,10 @@ class Continues(Field):
     name = "continues"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
+
+    # Note that in the main admin form there are additional validators that are not required here
+    # - is this different from the continuedby field (that field is not present in this form)
+    # - is this different from the discontinued date (that field is not present in this form)
     validators = [RegexOnList(ISSN)]
 
 class ISSNContinuationActionGroup(Structure):
@@ -2387,12 +2396,12 @@ class AdminMetadataReview(ComplianceCheckField):
         application_info = [
             {"question": "issn_at_least_one_group",
              "fields": [{
-                 "label": "PISSN",
+                 "label": "Print ISSN",
                  "lookup": lambda application, wfc: application.bibjson().pissn,
                  "data-value": "pissn"
              },
                  {
-                     "label": "EISSN",
+                     "label": "Electronic ISSN",
                      "lookup": lambda application, wfc: application.bibjson().eissn,
                      "data-value": "eissn"
                  }
@@ -2429,8 +2438,8 @@ class AdminMetadataReview(ComplianceCheckField):
                         "data-value": "license",
                     },
                     {
-                        "label": "url",
-                        "lookup": lambda application, wfc: application.bibjson().copyright_url,
+                        "label": "Licensing URL",
+                        "lookup": lambda application, wfc: application.bibjson().license_terms_url,
                         "data-value": "license_url",
                     },
                 ]
@@ -2439,14 +2448,7 @@ class AdminMetadataReview(ComplianceCheckField):
                 "question": "website_copyright_group",
                 "fields": [
                     {
-                        "label": "Author retains rights ",
-                        "lookup": lambda application, wfc: (
-                            "Yes" if application.bibjson().author_retains_copyright else "No"
-                        ),
-                        "data-value": "author_retains_rights",
-                    },
-                    {
-                        "label": "url",
+                        "label": "Copyright URL",
                         "lookup": lambda application, wfc: application.bibjson().copyright_url,
                         "data-value": "copyright_url"
                     }
