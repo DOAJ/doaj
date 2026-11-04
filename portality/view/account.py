@@ -405,9 +405,7 @@ def handle_password_login(user, form):
         return redirect(get_redirect_target(form=form, acc=user))
     else:
         forgot_url = url_for(".forgot")
-        form.password.errors.append(
-            f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
-        )
+        form.password.errors.append(Messages.ACCOUNT__INCORRECT_PASSWORD.format(forgot_url=forgot_url))
 
 def handle_incomplete_verification():
     forgot_url = url_for('.forgot')
@@ -434,7 +432,7 @@ def login():
     # usernames/emails exist by noticing a different message/response for a
     # partially-registered account. Shared between both except branches below
     # so they can't silently drift apart.
-    account_not_recognised_msg = 'Account not recognised, or registration was not completed. Check your username (not your email address), or register or reset your password.'
+    account_not_recognised_msg = Messages.ACCOUNT__LOGIN_NOT_RECOGNISED
     if request.method == 'POST' and form.validate():
         username = form.user.data
         action = request.form.get('action')
@@ -473,9 +471,7 @@ def login():
                 return redirect(url_for('doaj.home'))
             elif msg == 'incorrect_password':
                 forgot_url = url_for(".forgot")
-                form.password.errors.append(
-                    f'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
-                )
+                form.password.errors.append(Messages.ACCOUNT__INCORRECT_PASSWORD.format(forgot_url=forgot_url))
             elif msg == 'no_password':
                 # See comment above account_not_recognised_msg definition.
                 form.user.errors.append(account_not_recognised_msg)
