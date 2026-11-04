@@ -434,7 +434,7 @@ def login():
     # usernames/emails exist by noticing a different message/response for a
     # partially-registered account. Shared between both except branches below
     # so they can't silently drift apart.
-    account_not_recognised_msg = 'Account not recognised. If you entered an email address, try your username instead.'
+    account_not_recognised_msg = 'Account not recognised, or registration was not completed. Check your username (not your email address), or register or reset your password.'
     if request.method == 'POST' and form.validate():
         username = form.user.data
         action = request.form.get('action')
