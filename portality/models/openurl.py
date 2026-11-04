@@ -228,7 +228,12 @@ class OpenURLRequest(object):
 
         if results.get('hits', {}).get('total', {}).get('value', 0) == 0:
             # No results found for query, retry
-            results = self.fallthrough_retry()
+            # the retry swaps jtitle for stitle, which has no article mapping, so it can
+            # legitimately be unsupported here - that's "no results", not a bad request
+            try:
+                results = self.fallthrough_retry()
+            except UnsupportedOpenURLQuery:
+                results = None
             if results is None or results.get('hits', {}).get('total', {}).get('value', 0) == 0:
                 # This time we've definitely failed
                 return None

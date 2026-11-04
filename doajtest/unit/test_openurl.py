@@ -281,3 +281,15 @@ class TestOpenURL(DoajTestCase):
                                             url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
                                             rft_val_fmt='info:ofi/fmt:kev:mtx:journal'))
                 assert resp.status_code == 404
+
+    def test_13_article_title_no_match_is_404_not_400(self):
+        """ The jtitle->stitle fallthrough retry has no article mapping; a valid article query with no hits must stay a 404 """
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('openurl.openurl',
+                                            url_ver='Z39.88-2004',
+                                            url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                            rft_val_fmt='info:ofi/fmt:kev:mtx:journal',
+                                            genre='article',
+                                            jtitle='No Such Title XYZ'))
+                assert resp.status_code == 404
