@@ -336,7 +336,7 @@ def verify_code():
             return redirect(url_for('account.login'))
 
         user = Account.pull_by_email(email)
-        if not user:
+        if not user or not user.has_password():
             Messages.flash(Messages.ACCOUNT__NOT_RECOGNISED)
             return redirect(url_for('account.login'))
 
@@ -450,7 +450,9 @@ def login():
                 raise bll_exc.ArgumentException("Unknown login action")
 
             user = svc.resolve_user(username)
-            if user is None:
+            # An account with no password hasn't finished registering: treat it as nonexistent for BOTH
+            # actions, so get_link can't send a code/email that confirms the account exists (#4184).
+            if user is None or not user.has_password():
                 raise bll_exc.NoSuchObjectException()
 
             if action == 'get_link':

@@ -123,6 +123,20 @@ class TestAccountLogin(DoajTestCase):
                 self.assertIn(b'Account not recognised', resp.data)
                 self.assertNotIn(b'Login could not be completed due to account status', resp.data)
 
+    @patch('portality.bll.services.account.AccountService.send_login_code_email')
+    def test_03d_no_password_account_get_link_same_as_unrecognised(self, mock_send_email):
+        """#4184: get_link for a no-password account must not send an email or show the verify-code page."""
+        acc = Account(email="nopwlink@example.com", name="No Password Link", id="nopwlink")
+        acc.add_role('publisher')
+        acc.save(blocking=True)
+
+        for route in LOGIN_ROUTES:
+            with self.subTest(route=route):
+                resp = self.app_client.post(route, data=dict(user=acc.email, action='get_link'), follow_redirects=True)
+                self.assertEqual(resp.status_code, 200)
+                self.assertIn(b'Account not recognised', resp.data)
+        mock_send_email.assert_not_called()
+
     def test_03c_invalid_action_does_not_distinguish_existing_account(self):
         """
         Found while writing attacker-style regression tests for #4184: login()
