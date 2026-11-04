@@ -92,7 +92,7 @@ def upload_process(articles_upload: BaseArticlesUpload,
     if success > 0 and fail == 0:
         articles_upload.processed(success, update, new)
     if success > 0 and fail > 0:
-        articles_upload.partial(success, fail, update, new)
+        # batch ingest is all-or-nothing, so the upload was already marked as failed when the exception was caught
         job.add_audit_message("Some articles in file failed to import correctly, so no articles imported")
 
     articles_upload.set_failure_reasons(list(shared), list(unowned), list(unmatched))
@@ -100,7 +100,8 @@ def upload_process(articles_upload: BaseArticlesUpload,
     job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
     job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
 
-    if new:
+    # The report comes from a dry run, so on a failed batch `new` can be non-zero even though nothing was saved
+    if (new or update) and fail == 0:
         ids = [a.id for a in articles]
         job.add_audit_message("Created/updated articles: " + ", ".join(list(ids)))
 
