@@ -19,7 +19,7 @@ from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
 from portality.models.atom import AtomRecord
 from portality.models.search import JournalArticle, JournalStatsQuery, ArticleStatsQuery
 from portality.models.cache import Cache
-from portality.models.openurl import OpenURLRequest
+from portality.models.openurl import OpenURLRequest, UnsupportedOpenURLQuery
 from portality.models.provenance import Provenance
 from portality.models.background import BackgroundJob
 from portality.models.preservation import PreservationState
