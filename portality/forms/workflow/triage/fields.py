@@ -11,6 +11,7 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput, Buttons
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability, GenericFormStructureCapability
+from portality.forms.application_forms import FieldDefinitions
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, \
     GenericControl, GenericField, \
     GenericCompound, JinjaFieldsetRenderer, GenericRORadioRenderer, GenericROCompoundFieldRenderer, \
@@ -1811,7 +1812,10 @@ class License(Field):
         control_class = Checkbox
         multiple = True
         options = [
-            {"value": k, "label": t} for k, t in T.website_license_policy.license_attrs.items()
+            # FIXME: this is a hack to fit "Publisher's own licence" into the form, which is keyed to expect "other" instead
+            # ideally we would have a consistent value through both forms, so we should look at this again
+            {"value": opt.get("value") if opt.get("value") != "Publisher's own license" else "other", "label": opt.get("display")}
+            for opt in FieldDefinitions.LICENSE.get("options", [])
         ]
         other_option = "Publisher's own license"
         control_render_class = TriageCheckboxRenderer
@@ -1825,7 +1829,11 @@ class License(Field):
                 "control_render_class": GenericRORadioRenderer
             }
         }
-        attributes = {"data-value": "license"}
+        attributes = {
+            "data-value": "license",
+            "data-conditional": "license_attribute",
+            "data-conditions": "other"
+        }
 
     name = "license"
     coerce = [Unicode()]
@@ -1839,10 +1847,7 @@ class LicenseAttribute(Field):
         control_class = Checkbox
         multiple = True
         options = [
-            {"label": "Attribution", "value": "BY"},
-            {"label": "Share Alike", "value": "SA"},
-            {"label": "No Derivatives", "value": "ND"},
-            {"label": "No Commercial Usage", "value": "NC"}
+            {"value": opt.get("value"), "label": opt.get("display")} for opt in FieldDefinitions.LICENSE_ATTRIBUTES.get("options", [])
         ]
         control_render_class = TriageCheckboxRenderer
         error_messages = {
@@ -1854,6 +1859,11 @@ class LicenseAttribute(Field):
                 "render_class": GenericROFieldRenderer,
                 "control_render_class": GenericRORadioRenderer
             }
+        }
+
+        # FIXME: this is not ideal, as it hardcodes the conditional field name, but it is necessary to make the JS work for now
+        fieldset_attributes = {
+            "data-conditional-id": "license_attribute"
         }
 
     name = "license_attribute"
