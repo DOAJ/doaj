@@ -14,8 +14,7 @@ The Committee on Publication Ethics (COPE), DOAJ, the Open Access Scholarly Publ
 
 The Principles of Transparency and Best Practice in Scholarly Publishing apply to all published journal content, including special issues and conference proceedings. Where practices vary from the standards outlined, editors must clearly state the procedures that the journal follows.
 
-COPE, DOAJ, OASPA, and WAME agree that these principles underpin good publishing practice and that publishers must demonstrate they meet them. Because these principles form the basis of each organisation’s membership criteria, journals and publishers may need to explain when they do not comply with them.
-
+COPE, DOAJ, OASPA, and WAME agree that these principles underpin good publishing practice and that publishers must demonstrate they meet them. Because these principles complement the DOAJ criteria, journals and publishers may need to explain when they do not comply with them.
 
 ---
 
@@ -43,8 +42,8 @@ The journal's name must:
 
 **Publishing schedule and timeline**
 
-1. The journal’s publication frequency (whether based on a fixed schedule with issues/volumes or continuous/rolling publication) should be clearly described, and the journal must keep to its stated schedule and timeline unless there are exceptional circumstances.
-2. The journal must follow its stated publishing schedule unless exceptional circumstances apply.
+1. The journal’s publication frequency (whether based on a fixed schedule with issues/volumes or continuous/rolling publication) should be clearly described.
+2. The journal must follow its stated publishing schedule and timeline unless exceptional circumstances apply.
 
 **Preservation**
 
@@ -77,27 +76,27 @@ A journal must have and adhere to clear, detailed policies on publication ethics
   1. Journals must have a prominently displayed aims and scope statement on the journal website. The aims and scope statement should define the journal’s purpose, subject area, types of research published, and target audience.
   2. Publishers and editors are responsible for supporting [accessibility, diversity, equity, and inclusivity](https://c4disc.org/) in all aspects of the publication.
 2. Publication practices
-  1. Journals should clearly describe their policies on ethical issues and related considerations for specific publication types, such as special issues, supplements, and conference proceedings, and if guest editors are used, how they are appointed and their role in manuscript decision making.
+   1. Journals should clearly describe their policies on ethical issues and related considerations for specific publication types, such as special issues, supplements, and conference proceedings, and if guest editors are used, how they are appointed and their role in manuscript decision making.
 3. Authorship and contributorship, including the use of AI
   1. Journals must have clear requirements for authorship and contributorship that allow for transparency around who contributed to the work and in what capacity, and who takes responsibility for the work. Processes for managing potential authorship disputes should also be stated.
   2. Journals must state their policy on [use of AI](https://stm-assoc.org/document/stm-generative-ai-paper-2023/) by authors for content correction and generation (including, but not limited to, development of study design, methods, results, data analysis, generation of figures and tables, introduction, discussion, and citations), and how that should be disclosed.
   3. Current scholarly consensus is that [AI cannot qualify for authorship](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools). However, if a journal accepts AI as an author, that should be stated.
 4. Conflicts of interest
-  1. Journals must state the processes used for handling [conflicts of interest](https://publicationethics.org/guidance?f%5B0%5D=topics%3A28&f%5B1%5D=type%3A16&f%5B2%5D=type%3A42&f%5B3%5D=type%3A43) (also known as competing interests) of authors, editors, reviewers, journals, and publishers, whether identified before or after publication. Editors and reviewers who have significant conflicts of interest for particular manuscripts must recuse themselves from reviewing, and in the case of editors, from decision making.
+   1. Journals must state the processes used for handling [conflicts of interest](https://publicationethics.org/guidance?f%5B0%5D=topics%3A28&f%5B1%5D=type%3A16&f%5B2%5D=type%3A42&f%5B3%5D=type%3A43) (also known as competing interests) of authors, editors, reviewers, journals, and publishers, whether identified before or after publication. Editors and reviewers who have significant conflicts of interest for particular manuscripts must recuse themselves from reviewing, and in the case of editors, from decision making.
   2. Journals must have clear definitions of conflicts of interest, eg, personal, financial, political or religious, academic or professional influences, and ownership that potentially could interfere with, or could reasonably be perceived as interfering with, the full and objective conduct of research, presentation, peer review, decision making, or publication of research papers submitted to a journal.
   3. Journals must declare what conflicts of interest must be declared and by whom. They must state how, to whom, and when they should be declared.
   4. Journals must state the steps the journal will take if conflicts of interest are not declared.
   5. Editors and staff must not receive compensation based on the acceptance of articles.
 5. Data sharing and reproducibility
-  1. Journals should include [policies on data sharing, publication and access](https://publicationethics.org/guidance?f%5B0%5D=topics%3A27&f%5B1%5D=type%3A16&f%5B2%5D=type%3A21&f%5B3%5D=type%3A47) and encourage the use of the [FAIR](https://www.go-fair.org/fair-principles/) and [CARE](https://www.gida-global.org/care) principles, [reporting guidelines](https://www.equator-network.org/reporting-guidelines/), and registration of clinical trials and other study designs according to [standard practice](https://www.equator-network.org/toolkits/using-guidelines-in-journals/) in their discipline.
+   1. Journals should include [policies on data sharing, publication and access](https://publicationethics.org/guidance?f%5B0%5D=topics%3A27&f%5B1%5D=type%3A16&f%5B2%5D=type%3A21&f%5B3%5D=type%3A47) and encourage the use of the [FAIR](https://www.go-fair.org/fair-principles/) and [CARE](https://www.gida-global.org/care) principles, [reporting guidelines](https://www.equator-network.org/reporting-guidelines/), and registration of clinical trials and other study designs according to [standard practice](https://www.equator-network.org/toolkits/using-guidelines-in-journals/) in their discipline.
 6. Funding and support
-  1. Journals [must require](https://www.icmje.org/icmje-recommendations.pdf) that authors disclose all sources of funding and support, such as grants, equipment, drugs, and/or other support that either facilitates conduct of the work described in the article or the writing of the article itself. If no funding was received, journals must require authors to state 'No funding was received for this study' or similar language.
+   1. Journals [must require](https://www.icmje.org/icmje-recommendations.pdf) that authors disclose all sources of funding and support, such as grants, equipment, drugs, and/or other support that either facilitates conduct of the work described in the article or the writing of the article itself. If no funding was received, journals must require authors to state 'No funding was received for this study' or similar language.
 7. Post-publication review
-  1. Journals should state their policies on handling [post-publication review](https://publicationethics.org/guidance/flowchart/handling-post-publication-critiques), such as letters to the editor and/or online comments. 
+   1. Journals should state their policies on handling [post-publication review](https://publicationethics.org/guidance/flowchart/handling-post-publication-critiques), such as letters to the editor and/or online comments. 
 8. Corrections, Retractions, and Expressions of Concern
-  1. Journals should state their policies regarding Corrections, [Retractions](https://publicationethics.org/guidance/guideline/retraction-guidelines), and [Expressions of Concern](https://publicationethics.org/guidance/guideline/expressions-concern).
+   1. Journals should state their policies regarding Corrections, [Retractions](https://publicationethics.org/guidance/guideline/retraction-guidelines), and [Expressions of Concern](https://publicationethics.org/guidance/guideline/expressions-concern).
 9. Plagiarism
-  1. Journal policies must explicitly outline what constitutes [plagiarism](https://publicationethics.org/guidance?f%5B0%5D=topics%3A25&f%5B1%5D=type%3A16&f%5B2%5D=type%3A21&f%5B3%5D=type%3A42&f%5B4%5D=type%3A47) (copying others’ words or ideas without acknowledgement) as well as self-plagiarism (reusing one’s own previous work without disclosure, eg, redundant/duplicate or [overlapping publication](https://www.icmje.org/recommendations/browse/publishing-and-editorial-issues/overlapping-publications.html), [text recycling](https://publicationethics.org/guidance/endorsed-guidance/text-recycling-guidelines-editors)).
+   1. Journal policies must explicitly outline what constitutes [plagiarism](https://publicationethics.org/guidance?f%5B0%5D=topics%3A25&f%5B1%5D=type%3A16&f%5B2%5D=type%3A21&f%5B3%5D=type%3A42&f%5B4%5D=type%3A47) (copying others’ words or ideas without acknowledgement) as well as self-plagiarism (reusing one’s own previous work without disclosure, eg, redundant/duplicate or [overlapping publication](https://www.icmje.org/recommendations/browse/publishing-and-editorial-issues/overlapping-publications.html), [text recycling](https://publicationethics.org/guidance/endorsed-guidance/text-recycling-guidelines-editors)).
   2. Journals should specify whether they will consider submissions that have been published elsewhere, including preprints or translations of previously published work.
 10. Complaints and appeals
   1. Complaints may be brought against the journal, its staff, editorial board, or publisher, while appeals may be brought by authors about editorial decisions or processes. Journals must clearly describe processes for handling both and adhere to them.
@@ -239,11 +238,11 @@ Any direct marketing activities conducted on behalf of the journal, including so
 
 ---
 
-## About the organizations
+## About the organisations
 
 ### [Committee on Publication Ethics](https://publicationethics.org/) (COPE)
 
-COPE provides advice to editors and publishers on all aspects of publication ethics and, in particular, how to handle cases of research and publication misconduct. It also provides a forum for its members to discuss individual cases. COPE does not investigate individual cases but encourages editors to ensure that cases are investigated by the appropriate authorities (usually a research institution or employer). All COPE members are expected to apply COPE principles of publication ethics outlined in the core practices.
+COPE provides advice to editors and publishers on all aspects of publication ethics and, in particular, how to handle cases of research and publication misconduct. It also provides a forum for its members to discuss individual cases. COPE does not investigate individual cases but encourages editors to ensure the appropriate authorities (usually a research institution or employer) investigate them. All COPE members are expected to adhere to COPE’s Code of Conduct and to uphold its Core Principles of publication ethics, which provide the foundation for ethical editorial decision-making and responsible scholarly publishing.
 
 ### [DOAJ](https://doaj.org)
 
@@ -251,11 +250,11 @@ The mission of the DOAJ is: to curate, maintain and develop a source of reliable
 
 ### [Open Access Scholarly Publishing Association](https://www.oaspa.org/) (OASPA)
 
-OASPA is a trade association that was established in 2008 in order to represent the interests of Open Access (OA) publishers globally across all disciplines. By encouraging collaboration in developing appropriate business models, tools and standards to support OA publishing, OASPA aims to help ensure a prosperous and sustainable future for the benefit of its members and the scholarly communities they serve. This mission is carried out through exchanging information, setting standards, advancing models, advocacy, education, and the promotion of innovation.
+OASPA is a trade association established in 2008 to represent the interests of Open Access (OA) publishers globally across all disciplines. By encouraging collaboration to develop appropriate business models, tools, and standards to support OA publishing, OASPA aims to help ensure a prosperous and sustainable future for its members and the scholarly communities they serve. It carries out this mission by exchanging information, setting standards, advancing models, advocacy, education, and promoting innovation.
 
 ### [World Association of Medical Editors](https://wame.org/) (WAME)
 
-WAME is a global nonprofit voluntary association of editors of peer-reviewed medical journals who seek to foster cooperation and communication among editors; improve editorial standards; promote professionalism in medical editing through education, self-criticism, and self-regulation; and encourage research on the principles and practice of medical editing. WAME develops policies and recommendations of best practices for medical journal editors and has a syllabus for editors that members are encouraged to follow.
+WAME is a global nonprofit voluntary association of editors of peer-reviewed medical journals who seek to foster cooperation and communication among editors; improve editorial standards; promote professionalism in medical editing through education, self-criticism, and self-regulation; and encourage research on the principles and practice of medical editing. WAME develops policies and best-practice recommendations for medical journal editors and provides a syllabus that members are encouraged to follow.
 
 ## License for this work
 
