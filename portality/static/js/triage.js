@@ -2,7 +2,7 @@ window.doaj = window.doaj || {};
 window.doaj.triage = window.doaj.triage || {};
 
 // useful for testing
-doaj.triage.redirect_on_reject = false;
+doaj.triage.redirect_on_reject = true;
 
 doaj.triage.Recommendation = class {
     constructor(url, redirect_on_reject) {
@@ -416,6 +416,13 @@ doaj.triage.questions.Question = class {
 
         this.$srAnswer = this.$wrapper.find(".sr-answer");
 
+        // conditional subfields
+        this.$conditionalTriggers = this.$wrapper.find("input[data-conditional]");
+        let that = this;
+        this.$conditionalTriggers.each(function () {
+            that.setConditionalStatus($(this));
+        });
+
         this.$changedValues = [];
 
         // Subclass fields must exist before restoring answers or binding events.
@@ -470,6 +477,32 @@ doaj.triage.questions.Question = class {
         this.$valueInputs.on("change", function () {
             question.$changedValues.push($(this));
         });
+
+        this.$conditionalTriggers.on("change", function () {
+            let that = $(this);
+            question.setConditionalStatus(that);
+        });
+    }
+
+    setConditionalStatus($input) {
+        const question = this;
+        let conditions = $input.data("conditions")
+        let conditional = $input.data("conditional")
+        let inputs = question.$wrapper.find(`input[data-conditional="${conditional}"]`)
+        let conditionMet = false;
+
+        // note: only works with checkboxes for now, will need to be extended for other conditionals if needed
+        inputs.each(function () {
+            let input = $(this);
+            if (input.val() === conditions && input.is(":checked")) {
+                conditionMet = true;
+            }
+        });
+        if (conditionMet) {
+            question.$wrapper.find(`[data-conditional-id="${conditional}"]`)._show();
+        } else {
+            question.$wrapper.find(`[data-conditional-id="${conditional}"]`)._hide();
+        }
     }
 
     updateDynamicValues() {

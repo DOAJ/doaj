@@ -27,20 +27,21 @@
         options = [],
         not_classified = []
         ) %}
+
         {% for element in compound.elements %}
-        {% if element.capability.role == "check" %}
-        {% set els.check = element %}
-        {% elif element.capability.role == "note" %}
-        {% set els.note = element %}
-        {% elif element.capability.role == "action" %}
-        {% set els.action = els.action + [element] %}
-        {% elif element.capability.role == "other" %}
-        {% set els.other = element %}
-        {% elif element.capability.role == "options" %}
-        {% set els.options = els.options + [element] %}
-        {% else %}
-        {% set els.not_classified = els.not_classified + [element] %}
-        {% endif %}
+            {% if element.capability.role == "check" %}
+                {% set els.check = element %}
+            {% elif element.capability.role == "note" %}
+                {% set els.note = element %}
+            {% elif element.capability.role == "action" %}
+                {% set els.action = els.action + [element] %}
+            {% elif element.capability.role == "other" %}
+                {% set els.other = element %}
+            {% elif element.capability.role == "options" %}
+                {% set els.options = els.options + [element] %}
+            {% else %}
+                {% set els.not_classified = els.not_classified + [element] %}
+            {% endif %}
         {% endfor %}
         {% autoescape off %}
         <section class="criterion-main col-md-12">
@@ -105,45 +106,50 @@
                         {% endif %}
                     </div>
                     {% endif %}
+
                     {% if els.options %}
-                    <fieldset style="flex-direction: column;" class="subquestion">
-                        <legend class="sr-only">Special exceptions</legend>
-                        {% for option in els.options %}
-                        {% set options_renderer = option.capability.get_control_renderer() %}
-                        {{ options_renderer.draw(option.control, application=application, wfc=wfc, other=els.other)
-                        }}
-                        {% endfor %}
-                    </fieldset>
+                        <fieldset style="flex-direction: column;" class="subquestion">
+                            <legend class="sr-only">Special exceptions</legend>
+                            {% for option in els.options %}
+                                {% set options_renderer = option.capability.get_control_renderer() %}
+                                {{ options_renderer.draw(option.control, application=application, wfc=wfc, other=els.other) }}
+                                <div id="{{ option.prefix }}-error-container" class="error-container" hidden></div>
+                            {% endfor %}
+                        </fieldset>
+
                     {% endif %}
+
                     {% if els.not_classified %}
-                    {% for nc in els.not_classified %}
-                    <div class="row">
-                        <div class="col-md-12 action-container" id="{{nc.name}}-container">
-                            {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
-                        </div>
-                    </div>
-                    {% endfor %}
+                        {% for nc in els.not_classified %}
+                            <div class="row">
+                                <div class="col-md-12 action-container" id="{{nc.name}}-container">
+                                    {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
+                                </div>
+                            </div>
+                        {% endfor %}
                     {% endif %}
+
                     {% if els.note %}
-                    <div class="note-container">
-                        {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}
-                    </div>
+                        <div class="note-container">
+                            {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}
+                        </div>
                     {% endif %}
+
                     {% if els.action %}
-                    {% for action in els.action %}
-                    <div class="action-container {{ action.capability.trigger_btn }} action"
-                         id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info"
-                         hidden>
-                        <p id="{{ compound.name }}-your_answer">Your answer: <span
-                                class="your-answer answer action"></span></p>
-                        <p class="reminder save-reminder" hidden>
-                            <span data-feather="alert-circle" aria-hidden="true"></span>
-                            <span class="save-reminder-text" role="status" aria-live="polite"
-                                  aria-atomic="true"></span>
-                        </p>
-                        {{ action.renderer.draw(action, application=application, wfc=wfc) }}
-                    </div>
-                    {% endfor %}
+                        {% for action in els.action %}
+                            <div class="action-container {{ action.capability.trigger_btn }} action"
+                                 id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info"
+                                 hidden>
+                                <p id="{{ compound.name }}-your_answer">Your answer: <span
+                                        class="your-answer answer action"></span></p>
+                                <p class="reminder save-reminder" hidden>
+                                    <span data-feather="alert-circle" aria-hidden="true"></span>
+                                    <span class="save-reminder-text" role="status" aria-live="polite"
+                                          aria-atomic="true"></span>
+                                </p>
+                                {{ action.renderer.draw(action, application=application, wfc=wfc) }}
+                            </div>
+                        {% endfor %}
                     {% endif %}
                 </div>
                 {% if els.check.capability.instructions %}
@@ -187,6 +193,7 @@
             </div>
 
             {% block renderer scoped %}{% endblock %}
+            <div id="{{ compound.prefix }}-error-container" class="error-container" hidden></div>
 
         </section>
         {% endautoescape %}

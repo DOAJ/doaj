@@ -3,7 +3,7 @@
       action="{{ url_for('workflow.triage_form', application_id=application.id) }}"
       method="{{ form.method }}"
       data-parsley-focus="none"
-      data-overview-url="{{ url_for('workflow.workflow_item_overview', application_id=application.id) }}"
+      data-overview-url="{{ url_for('workflow.workflow_item_overview', application_id=application.id, wfc=wfc.id) }}"
         {% for k, v in form.attributes %}{{ k }}="{{ v }}" {% endfor %}
     >
 

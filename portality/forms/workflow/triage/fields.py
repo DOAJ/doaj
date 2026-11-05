@@ -11,6 +11,7 @@ from formulaic.coerce.coerce import Boolean, Unicode
 from formulaic.core import Field, FieldCapability, Structure, SINGLE, OPTIONAL, REQUIRED, REPEATABLE
 from formulaic.serialise.form.controls import Radio, Textarea, Hidden, TextInput, Checkbox, URLInput, Buttons
 from formulaic.serialise.form.core import FormFieldCapability, CompoundFieldCapability, GenericFormStructureCapability
+from portality.forms.application_forms import FieldDefinitions
 from portality.forms.workflow.core import JinjaFieldRenderer, JinjaControlRenderer, JinjaCompoundRenderer, \
     GenericControl, GenericField, \
     GenericCompound, JinjaFieldsetRenderer, GenericRORadioRenderer, GenericROCompoundFieldRenderer, \
@@ -752,8 +753,7 @@ class DatabaseWithdrawn(ComplianceCheckField):
 class DatabaseWithdrawnNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            # IsConditionallyRequired: T.database_withdrawn.validation.note.is_conditionally_required
-            IsConditionallyRequired: "note error"
+            IsConditionallyRequired: False
         }
 
     name = "database_withdrawn_note"
@@ -780,16 +780,6 @@ class DatabaseWithdrawnExceptions(Field):
     coerce = [Unicode()]
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
-
-
-# class DatabaseWithdrawnExceptionsNote(NoteField):
-#     class NC(NoteCapability):
-#         role = "options"
-#         error_messages = {
-#             IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
-#         }
-#     name = "database_withdrawn_exception_note"
-#     capabilities = (NC(),)
 
 class DatabaseWithdrawnExceptionsGroup(Structure):
     class C(SimpleCompoundCapability):
@@ -818,7 +808,7 @@ class DatabaseWithdrawnGroup(Structure):
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
         error_messages = {
-            IsConditionallyRequired: "group message"
+            IsConditionallyRequired: False
         }
 
     name_ = "database_withdrawn_group"
@@ -885,8 +875,7 @@ class DatabaseEmbargo(ComplianceCheckField):
 class DatabaseEmbargoNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            # IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
-            IsConditionallyRequired: "dummy"
+            IsConditionallyRequired: False
         }
 
     name = "database_embargo_note"
@@ -1018,6 +1007,9 @@ class DatabaseNotDuplicateGroup(Structure):
         label = T.database_not_duplicate.label
         order = ["answer", "note"]
         render_class = TriageCompound
+        error_messages = {
+            IsConditionallyRequired: False
+        }
 
     name_ = "database_not_duplicate_group"
     capabilities_ = (C(),)
@@ -1104,7 +1096,8 @@ class EISSN(Field):
         attributes = {"data-value": "eissn"}
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.eissn.regex_not_match,
-            FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.eissn.fields_should_be_different,
+            IsConditionallyRequired: T.issn_at_least_one.validation.eissn.is_conditionally_required
         }
         alt_render = {
             "ro": {
@@ -1128,7 +1121,8 @@ class PISSN(Field):
         attributes = {"data-value": "pissn"}
         error_messages = {
             RegexDoesNotMatch: T.issn_at_least_one.validation.pissn.regex_not_match,
-            FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.pissn.fields_should_be_different,
+            IsConditionallyRequired: T.issn_at_least_one.validation.pissn.is_conditionally_required
         }
         alt_render = {
             "ro": {
@@ -1151,7 +1145,8 @@ class ISSNAdditionalFields(Structure):
         control_btns = [TriageFormButtons.contb(),
                         TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
         error_messages = {
-            FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different,
+            IsConditionallyRequired: False
         }
         trigger_btn = "action"
 
@@ -1163,6 +1158,9 @@ class ISSNAdditionalFields(Structure):
 
     validators_ = [
         Different(eissn, pissn),
+        # At least one or other of the fields is required
+        RequiredIfNot(eissn, pissn),
+        RequiredIfNot(pissn, eissn)
     ]
 
 
@@ -1177,6 +1175,9 @@ class ISSNAtLeastOneGroup(Structure):
         ]
         action_group = ["edited_issns"]
         render_class = TriageCompound
+        error_messages = {
+            IsConditionallyRequired: False
+        }
 
     name_ = "issn_at_least_one_group"
     capabilities_ = (C(),)
@@ -1487,6 +1488,10 @@ class Continues(Field):
     name = "continues"
     coerce = [Unicode(trim_whitespace=True)]
     capabilities = (C(),)
+
+    # Note that in the main admin form there are additional validators that are not required here
+    # - is this different from the continuedby field (that field is not present in this form)
+    # - is this different from the discontinued date (that field is not present in this form)
     validators = [RegexOnList(ISSN)]
 
 class ISSNContinuationActionGroup(Structure):
@@ -1811,7 +1816,10 @@ class License(Field):
         control_class = Checkbox
         multiple = True
         options = [
-            {"value": k, "label": t} for k, t in T.website_license_policy.license_attrs.items()
+            # FIXME: this is a hack to fit "Publisher's own licence" into the form, which is keyed to expect "other" instead
+            # ideally we would have a consistent value through both forms, so we should look at this again
+            {"value": opt.get("value") if opt.get("value") != "Publisher's own license" else "other", "label": opt.get("display")}
+            for opt in FieldDefinitions.LICENSE.get("options", [])
         ]
         other_option = "Publisher's own license"
         control_render_class = TriageCheckboxRenderer
@@ -1825,7 +1833,11 @@ class License(Field):
                 "control_render_class": GenericRORadioRenderer
             }
         }
-        attributes = {"data-value": "license"}
+        attributes = {
+            "data-value": "license",
+            "data-conditional": "license_attribute",
+            "data-conditions": "other"
+        }
 
     name = "license"
     coerce = [Unicode()]
@@ -1839,10 +1851,7 @@ class LicenseAttribute(Field):
         control_class = Checkbox
         multiple = True
         options = [
-            {"label": "Attribution", "value": "BY"},
-            {"label": "Share Alike", "value": "SA"},
-            {"label": "No Derivatives", "value": "ND"},
-            {"label": "No Commercial Usage", "value": "NC"}
+            {"value": opt.get("value"), "label": opt.get("display")} for opt in FieldDefinitions.LICENSE_ATTRIBUTES.get("options", [])
         ]
         control_render_class = TriageCheckboxRenderer
         error_messages = {
@@ -1854,6 +1863,11 @@ class LicenseAttribute(Field):
                 "render_class": GenericROFieldRenderer,
                 "control_render_class": GenericRORadioRenderer
             }
+        }
+
+        # FIXME: this is not ideal, as it hardcodes the conditional field name, but it is necessary to make the JS work for now
+        fieldset_attributes = {
+            "data-conditional-id": "license_attribute"
         }
 
     name = "license_attribute"
@@ -2377,12 +2391,12 @@ class AdminMetadataReview(ComplianceCheckField):
         application_info = [
             {"question": "issn_at_least_one_group",
              "fields": [{
-                 "label": "PISSN",
+                 "label": "Print ISSN",
                  "lookup": lambda application, wfc: application.bibjson().pissn,
                  "data-value": "pissn"
              },
                  {
-                     "label": "EISSN",
+                     "label": "Electronic ISSN",
                      "lookup": lambda application, wfc: application.bibjson().eissn,
                      "data-value": "eissn"
                  }
@@ -2419,8 +2433,8 @@ class AdminMetadataReview(ComplianceCheckField):
                         "data-value": "license",
                     },
                     {
-                        "label": "url",
-                        "lookup": lambda application, wfc: application.bibjson().copyright_url,
+                        "label": "Licensing URL",
+                        "lookup": lambda application, wfc: application.bibjson().license_terms_url,
                         "data-value": "license_url",
                     },
                 ]
@@ -2429,14 +2443,7 @@ class AdminMetadataReview(ComplianceCheckField):
                 "question": "website_copyright_group",
                 "fields": [
                     {
-                        "label": "Author retains rights ",
-                        "lookup": lambda application, wfc: (
-                            "Yes" if application.bibjson().author_retains_copyright else "No"
-                        ),
-                        "data-value": "author_retains_rights",
-                    },
-                    {
-                        "label": "url",
+                        "label": "Copyright URL",
                         "lookup": lambda application, wfc: application.bibjson().copyright_url,
                         "data-value": "copyright_url"
                     }
@@ -2500,8 +2507,12 @@ class AdminSpecialException(ComplianceCheckField):
 
 
 class AdminSpecialExceptionNote(NoteField):
+    class C(GeneralNoteCapability):
+        error_messages = {
+            IsConditionallyRequired: T.admin_special_exception.validation.note.is_conditionally_required
+        }
     name = "admin_special_exception_note"
-    capabilities = (GeneralNoteCapability(),)
+    capabilities = (C(),)
 
 
 class SpecialExceptions(Field):
@@ -2515,6 +2526,7 @@ class SpecialExceptions(Field):
         control_render_class = TriageCheckboxRenderer
         error_messages = {
             DisallowedValue: T.admin_special_exception.validation.special_exceptions.disallowed_value,
+            IsConditionallyRequired: T.admin_special_exception.validation.special_exceptions.is_conditionally_required
         }
         alt_render = {
             "ro": {
@@ -2562,6 +2574,10 @@ class AdminSpecialExceptionGroup(Structure):
         order = ["answer", "special_exceptions", "special_exception_other", "note"]
         js_class = "checkbox"
 
+        error_messages = {
+            IsConditionallyRequired: False
+        }
+
     name_ = "admin_special_exception_group"
     capabilities_ = (C(),)
 
@@ -2575,5 +2591,6 @@ class AdminSpecialExceptionGroup(Structure):
                    special_exceptions,  # <- this field has one of the values
                    ["other"]  # <- that is non compliant
                    ),
-        RequiredIf(note, special_exceptions, ["africa", "publisher", "other"])
+        RequiredIf(note, special_exceptions, ["africa", "publisher", "other"]),
+        RequiredIf(special_exceptions, answer, T.admin_special_exception.compliant_answers + T.admin_special_exception.non_compliant_answers)
     ]
