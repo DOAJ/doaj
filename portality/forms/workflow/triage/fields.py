@@ -2015,34 +2015,6 @@ class WebsiteCopyrightNote(NoteField):
     capabilities = (NC(),)
 
 
-class CopyrightAuthorRetains(Field):
-    class C(FormFieldCapability):
-        label = T.website_copyright.edit.copyright_author_retains
-        control_class = Radio
-        options = [
-            {"label": "Yes", "value": "y"},
-            {"label": "No", "value": "n"}
-        ]
-        control_render_class = RadioRenderer
-        render_class = GenericField
-        error_messages = {
-            DisallowedValue: T.website_copyright.validation.copyright_author_retains.disallowed_value,
-            IsRequired: T.website_copyright.validation.copyright_author_retains.is_required
-        }
-        attributes = {"data-value": "author_retains_rights"}
-        alt_render = {
-            "ro": {
-                "render_class": GenericROFieldRenderer,
-                "control_render_class": GenericROControlRenderer
-            }
-        }
-
-    name = "copyright_author_retains"
-    coerce = [Unicode()]
-    validators = [LimitToFormOptions()]
-    capabilities = (C(),)
-
-
 class CopyrightURL(Field):
     class C(FormFieldCapability):
         label = T.website_copyright.edit.copyright_url
