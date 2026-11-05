@@ -753,8 +753,7 @@ class DatabaseWithdrawn(ComplianceCheckField):
 class DatabaseWithdrawnNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            # IsConditionallyRequired: T.database_withdrawn.validation.note.is_conditionally_required
-            IsConditionallyRequired: "note error"
+            IsConditionallyRequired: False
         }
 
     name = "database_withdrawn_note"
@@ -781,16 +780,6 @@ class DatabaseWithdrawnExceptions(Field):
     coerce = [Unicode()]
     validators = [LimitToFormOptions()]
     capabilities = (C(),)
-
-
-# class DatabaseWithdrawnExceptionsNote(NoteField):
-#     class NC(NoteCapability):
-#         role = "options"
-#         error_messages = {
-#             IsConditionallyRequired: T.website_issn.validation.note.is_conditionally_required
-#         }
-#     name = "database_withdrawn_exception_note"
-#     capabilities = (NC(),)
 
 class DatabaseWithdrawnExceptionsGroup(Structure):
     class C(SimpleCompoundCapability):
@@ -819,7 +808,7 @@ class DatabaseWithdrawnGroup(Structure):
         order = ["answer", "note", "exceptions_group"]
         render_class = TriageCompound
         error_messages = {
-            IsConditionallyRequired: "group message"
+            IsConditionallyRequired: False
         }
 
     name_ = "database_withdrawn_group"
@@ -886,8 +875,7 @@ class DatabaseEmbargo(ComplianceCheckField):
 class DatabaseEmbargoNote(NoteField):
     class NC(NoteCapability):
         error_messages = {
-            # IsConditionallyRequired: T.database_embargo.validation.note.is_conditionally_required
-            IsConditionallyRequired: "dummy"
+            IsConditionallyRequired: False
         }
 
     name = "database_embargo_note"
@@ -1019,6 +1007,9 @@ class DatabaseNotDuplicateGroup(Structure):
         label = T.database_not_duplicate.label
         order = ["answer", "note"]
         render_class = TriageCompound
+        error_messages = {
+            IsConditionallyRequired: False
+        }
 
     name_ = "database_not_duplicate_group"
     capabilities_ = (C(),)
@@ -1154,7 +1145,8 @@ class ISSNAdditionalFields(Structure):
         control_btns = [TriageFormButtons.contb(),
                         TriageFormButtons.changeb({"data-controls": "issn_at_least_one_group"})]
         error_messages = {
-            FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different
+            FieldsShouldBeDifferent: T.issn_at_least_one.validation.group.fields_should_be_different,
+            IsConditionallyRequired: False
         }
         trigger_btn = "action"
 
@@ -1183,6 +1175,9 @@ class ISSNAtLeastOneGroup(Structure):
         ]
         action_group = ["edited_issns"]
         render_class = TriageCompound
+        error_messages = {
+            IsConditionallyRequired: False
+        }
 
     name_ = "issn_at_least_one_group"
     capabilities_ = (C(),)
