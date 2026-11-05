@@ -82,7 +82,6 @@ MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_jour
 # Workflow entry pages
 WORKFLOW_SEARCH = "management/admin/workflow_search.html"
 WORKFLOW_ITEM_OVERVIEW = "management/admin/workflow_item_overview.html"
-WORKFLOW_READ_ONLY_APPLICATION = "management/admin/_application-form/_workflow_read_only.html"
 
 # Generic Workflow components
 WORKFLOW_CLAIM_WIDGET = "management/admin/_workflow/includes/claim.html"
@@ -109,6 +108,7 @@ WORKFLOW_TRIAGE_CLAIM_WIDGET = "management/admin/_workflow/includes/_triage_clai
 
 # Triage workflow read-only components
 WORKFLOW_TRIAGE_RO_FORM = "management/admin/_workflow/includes/_ro_triage_form.html"
+WORKFLOW_READ_ONLY_APPLICATION = "management/admin/_application-form/_workflow_read_only.html"
 
 WORKFLOW_CONTROL_RADIO = "management/admin/_workflow/includes/_radio.html"
 WORKFLOW_CONTROL_CHECKBOX = "management/admin/_workflow/includes/_checkbox.html"

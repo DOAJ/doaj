@@ -85,7 +85,7 @@ class UserEditForm(Form):
     roles = StringField('User roles')
     attribute_workflow = SelectMultipleField(
         "Workflow Participation",
-        choices=[(x,x) for x in constants.EWF__ALL_STAGES]
+        choices=[(x,x) for x in constants.EWF__USER_ATTR__ALL]
     )
     attribute_language = SelectMultipleField(
         'Can Review Languages',

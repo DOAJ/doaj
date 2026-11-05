@@ -23,10 +23,10 @@
                 </div>
             </div>
         </div>
+        {% if not locked_by_another_user %}
         <div class="right">
             {% set is_form_view = request.endpoint == "workflow.triage_form" %}
-            {% set is_overview_view = request.endpoint == "workflow.workflow_item_overview"
-            %}
+            {% set is_overview_view = request.endpoint == "workflow.workflow_item_overview" %}
             <div class="top">
                 <nav class="view-switcher" aria-label="Change the view">
                     <a
@@ -73,6 +73,6 @@
             </div>
             {% endif %}
         </div>
+        {% endif %}
     </div>
-    <div class="status-bar" id="status-bar" style="height: 5px;"><div class="compliant"></div><div class="non_compliant"></div><div class="action"></div></div>
 </header>
