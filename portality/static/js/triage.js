@@ -364,7 +364,7 @@ doaj.triage.questions.dismissBtns.on("click", function () {
     console.log("Can we go further?")
     if (doaj.triage.questions.currentQuestion.answer && doaj.triage.recommendation.wasAnnouncedBefore){
         console.log("Yes l.369")
-        doaj.triage.questions.Question.activateNext();
+        doaj.triage.questions.currentQuestion.activateNext();
     }
 })
 
@@ -456,6 +456,8 @@ doaj.triage.questions.Question = class {
         this.$headerBtn = this.$wrapper.find(
             ".criterion-wrapper--header > button"
         );
+
+        this.title = this.$headerBtn.text();
 
         this.$body = $(`#${this.$headerBtn.attr("aria-controls")}`);
 
@@ -561,7 +563,7 @@ doaj.triage.questions.Question = class {
             onSuccess: () => {
                 if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore ){
                     console.log("Yes l.564")
-                    doaj.triage.questions.Question.activateNext();
+                    doaj.triage.questions.currentQuestion.activateNext();
                 }
             }
         });
@@ -604,7 +606,7 @@ doaj.triage.questions.Question = class {
                 this._setupAnswered($answer);
                 if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore) {
                     console.log("607")
-                    doaj.triage.questions.Question.activateNext();
+                    doaj.triage.questions.currentQuestion.activateNext();
                 }
                 doaj.triage.recommendation.setWasAnnouncedBefore(true);
             }
@@ -672,8 +674,8 @@ doaj.triage.questions.Question = class {
         }
     }
 
-    static activateNext() {
-        const next = doaj.triage.questions.Question.getNextUnanswered(this);
+    activateNext() {
+        const next = this.getNextUnanswered(this);
 
         if (next) {
             next.activate();
@@ -685,18 +687,15 @@ doaj.triage.questions.Question = class {
             ?? this.$all.find(question => question.answer?.val() === "later");
     }
 
-    static getNextUnanswered(current, ignore_yellow=false) {;
-        const afterCurrent = this.$all
-            .slice(current.idx + 1)
-            .find(question => !question.answer || question.answer.val() === "later");
+    getNextUnanswered(current, ignore_yellow = false) {
+        const questions = doaj.triage.questions.Question.$all;
+        const ordered = [
+            ...questions.slice(current.idx + 1),
+            ...questions.slice(0, current.idx)
+        ];
 
-        if (afterCurrent) {
-            return afterCurrent;
-        }
-
-        return this.$all
-            .slice(0, current.idx)
-            .find(question => !question.answer || question.answer.val() === "later");
+        return ordered.find(q => !q.answer)
+                || ordered.find(q => q.answer?.val() === "later");
     }
 
     deactivate() {
@@ -790,7 +789,7 @@ doaj.triage.questions.ActionQuestion =
                 this._setupAnswered(this.answer);
                 if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore) {
                     console.log("793")
-                    doaj.triage.questions.Question.activateNext();
+                    this.activateNext();
                 }
                 doaj.triage.recommendation.setWasAnnouncedBefore(true);
             },
@@ -1076,6 +1075,7 @@ const hash = window.location.hash;
 const hash_decoded = decodeURIComponent(hash.slice(1));
 if (hash && document.getElementById(hash_decoded)) {
     Question.getByName(hash_decoded).activate();
+    history.replaceState(null, "", location.pathname + location.search);
 }
 else if ($firstUnanswered) {
     $firstUnanswered.activate();
