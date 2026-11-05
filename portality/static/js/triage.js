@@ -9,7 +9,7 @@ doaj.triage.Recommendation = class {
     }
 
     isRecommendationActive() {
-        return this.recommendation !== null;
+        return this.recommendation !== null && this.recommendation.code !== "normal";
     }
 
     handle(recommendation) {
@@ -598,7 +598,7 @@ doaj.triage.questions.Question = class {
         doaj.triage.requestSave({
             blocking: true,
             onSuccess: () => {
-                if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore ){
+                if (!doaj.triage.recommendation.isRecommendationActive() || doaj.triage.recommendation.wasAnnouncedBefore ){
                     console.log("Yes l.564")
                     doaj.triage.questions.currentQuestion.activateNext();
                 }
@@ -641,7 +641,7 @@ doaj.triage.questions.Question = class {
             onSuccess: () => {
                 this.answer = $answer;
                 this._setupAnswered($answer);
-                if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore) {
+                if (!doaj.triage.recommendation.isRecommendationActive() || doaj.triage.recommendation.wasAnnouncedBefore) {
                     console.log("607")
                     doaj.triage.questions.currentQuestion.activateNext();
                 }
@@ -724,7 +724,7 @@ doaj.triage.questions.Question = class {
             ?? this.$all.find(question => question.answer?.val() === "later");
     }
 
-    getNextUnanswered(current, ignore_yellow = false) {
+    getNextUnanswered(current) {
         const questions = doaj.triage.questions.Question.$all;
         const ordered = [
             ...questions.slice(current.idx + 1),
@@ -820,7 +820,7 @@ doaj.triage.questions.ActionQuestion = class extends doaj.triage.questions.Quest
                 this.answer = this.$actionInput;
 
                 this._setupAnswered(this.answer);
-                if (!doaj.triage.recommendation.isRecommendationActive || doaj.triage.recommendation.wasAnnouncedBefore) {
+                if (!doaj.triage.recommendation.isRecommendationActive() || doaj.triage.recommendation.wasAnnouncedBefore) {
                     console.log("793")
                     this.activateNext();
                 }
