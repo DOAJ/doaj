@@ -39,7 +39,13 @@ class ApplicationAutochecks(BackgroundTask):
             job.add_audit_message("Setting status to {x}".format(x=status_on_complete))
             application.set_application_status(status_on_complete)
             # Note: we have not locked the application
-            application.save()
+            # No need to save the application, the state saveall will do that
+            # application.save()
+
+            # trigger the new workflow
+            submitter = application.owner_account
+            initial_state = DOAJ.workflowService().initialise_workflow(submitter, application)
+            initial_state.saveall()
 
     def cleanup(self):
         """

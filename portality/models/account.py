@@ -458,6 +458,11 @@ class Account(DomainObject, UserMixin):
             return res[0]
         return None
 
+    @classmethod
+    def find_by_attributes(cls, attribute_types_and_values: list[tuple[str, str]], limit=1000):
+        q = AttributesQuery(attribute_types_and_values, limit)
+        return cls.object_query(q.query())
+
 class LoginCodeQuery:
     def __init__(self, code):
         self.code = code
@@ -471,12 +476,6 @@ class LoginCodeQuery:
             }
         }
 
-    @classmethod
-    def find_by_attributes(cls, attribute_types_and_values:list[tuple[str, str]], limit=1000):
-        q = AttributesQuery(attribute_types_and_values, limit)
-        return cls.object_query(q.query())
-
-
 class AttributesQuery:
     def __init__(self, attribute_types_and_values, page_size):
         self._tup = attribute_types_and_values
@@ -484,7 +483,7 @@ class AttributesQuery:
 
     def query(self):
         musts = []
-        for t, v in self._tup.items():
+        for t, v in self._tup:
             if not isinstance(v, list):
                 v = [v]
             f = {"terms": {f"attribute.{t}.exact": v}}

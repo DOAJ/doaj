@@ -1,0 +1,15 @@
+<fieldset id="{{ compound.name }}" {% for k, v in compound.attributes %}{{ k }}="{{ v }}" {% endfor %}>
+    {# only show the legend if this is not part of a releatable list of elements (which will probably
+    do the global legend for you #}
+    {% if not compound.capability.struct_ref.repeatable and compound.label %}
+        <legend>{{ compound.label }}</legend>
+    {% endif %}
+
+    <div class="error-container"></div>
+
+    {% for element in compound.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+</fieldset>

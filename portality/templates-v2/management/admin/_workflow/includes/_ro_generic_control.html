@@ -1,0 +1,31 @@
+{% macro render_value(value) -%}
+    {% if value is string %}
+        {% if value.startswith("http") %}
+            <a href="{{ value }}" target="_blank">{{ value }}</a>
+        {% else %}
+            {{ value }}
+        {% endif %}
+    {% elif value is mapping %}
+        mapping
+    {% elif value is sequence  %}
+        sequence
+    {% else %}
+        {{ value }}
+    {% endif %}
+{%- endmacro %}
+
+{#Controls<br>#}
+{% set ns = namespace(values=[]) %}
+{% for control in controls %}
+    {% if control.control.attrs.value %}
+        {% set ns.values = ns.values + [control.control.attrs.value] %}
+    {% elif control.control.tag == "textarea" and control.control.content %}
+        {% set ns.values = ns.values + [control.control.content] %}
+    {% endif %}
+{% endfor %}
+
+{% if ns.values|length > 0 %}
+    {% for value in ns.values %}
+        {{ render_value(value) }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+{% endif %}

@@ -59,6 +59,10 @@ let doaj_url = parser.protocol + '//' + parser.host;
     function main() {
         jQuery(document).ready(function($) {
 
+            $('#doaj-simple-search-widget').html(html);
+            $("form").attr("action", doaj_url + "/search");
+            feather.replace();
+
             let html = `
     <form role="search" id="doaj-search-form" method="POST">
         <h2>
@@ -94,10 +98,6 @@ let doaj_url = parser.protocol + '//' + parser.host;
         <input type="hidden" name="ref" value="ssw">
     </form>
 `
-            $('#doaj-simple-search-widget').html(html);
-            $("form").attr("action", doaj_url + "/search");
-
-            feather.replace();
 
         });
     }

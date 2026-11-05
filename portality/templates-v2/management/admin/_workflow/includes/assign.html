@@ -1,0 +1,76 @@
+<button
+        class="btn"
+        type="button"
+        id="show_assignment_form"
+        aria-expanded="false"
+        aria-controls="assignment_form"
+>
+    ASSIGN SOMEONE ELSE
+</button>
+
+<form action="{{ event.get_route() }}" method="post" id="assignment_form" hidden>
+    <input type="hidden" name="workflow_control" value="{{ wfc.id }}">
+    <input type="hidden" name="application" value="{{ application.id }}">
+    <input type="hidden" name="async" value="n">
+    <input type="hidden" name="onward" value="workflow.workflow_search">
+
+    <div class="input input--inline">
+        <label for="assign_to">Assign to</label>
+
+        <select name="assign_to" id="assign_to">
+            <option value="">Select User...</option>
+
+            {% for account in state.assignable_users() %}
+            {% if account.id != wfc.reviewer_id %}
+            <option value="{{ account.id }}">
+                {{ account.name }} ({{ account.id }})
+            </option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <button
+            type="submit"
+            class="assign"
+            id="assign_button"
+            disabled
+    >
+        Assign
+    </button>
+
+    <button class="btn" type="button" id="cancel_assignment">
+        CANCEL
+    </button>
+</form>
+
+{% block admin_js %}
+<script type="text/javascript">
+    const showAssignment = document.getElementById("show_assignment_form");
+    const assignmentForm = document.getElementById("assignment_form");
+    const cancelAssignment = document.getElementById("cancel_assignment");
+    const assignTo = document.getElementById("assign_to");
+    const assignButton = document.getElementById("assign_button");
+
+    showAssignment.addEventListener("click", () => {
+        assignmentForm.hidden = false;
+        showAssignment.hidden = true;
+        showAssignment.setAttribute("aria-expanded", "true");
+
+        assignTo.focus();
+    });
+
+    cancelAssignment.addEventListener("click", () => {
+        assignTo.value = "";
+
+        assignmentForm.hidden = true;
+        showAssignment.hidden = false;
+        showAssignment.setAttribute("aria-expanded", "false");
+
+        showAssignment.focus();
+    });
+
+    assignTo.addEventListener("change", () => {
+        assignButton.disabled = !assignTo.value;
+    });
+</script>
+{% endblock %}

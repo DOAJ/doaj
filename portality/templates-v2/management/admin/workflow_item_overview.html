@@ -1,0 +1,298 @@
+{% extends "management/admin/base.html" %}
+
+{% set wfc = state.workflow_control %}
+{% set application = state.application %}
+{% set event_claim = state.event_claim %}
+{% set event_assign = state.event_assign %}
+{% set event_unclaim = state.event_unclaim %}
+{% set event_unassign = state.event_unassign %}
+{% set event_reassign = state.event_reassign %}
+{% set event_reject = state.event_reject %}
+{% set event_triaged = state.event_triaged %}
+
+{% block page_title %}{{ wfc.module }} {{ application.bibjson().title }}{% endblock %}
+{% block page_header %}
+<span class="tag tag--featured">{{ wfc.module }}</span> {{ application.bibjson().title }}
+{% endblock %}
+
+{% block admin_stylesheets %}
+
+{% endblock %}
+
+{% block body_class %}{{ super() }} ew{% endblock %}
+
+{% block admin_header %}
+{% include "management/admin/_workflow/includes/_header.html" %}
+{% endblock %}
+{% block admin_content %}
+<div class="overview-page">
+    {% if not locked_by_another_user %}
+    <div class="row">
+        <div class="col-md-12 top-controls">
+            {% if wfc.reviewer_id == current_user.id %}
+                <a href="{{ url_for("workflow.triage_form", application_id=application.id) }}" class="button button--cta">Continue Working on this Item</a>
+            {% endif %}
+
+            {% if event_claim and event_claim.is_available(current_user) %}
+            <div class="claim">
+                {% with event = event_claim %}
+                    {% include event_claim.template %}
+                {% endwith %}
+            </div>
+            {% endif %}
+
+            {% if event_assign and event_assign.is_available(current_user) %}
+            <div class="assign">
+                {% with event = event_assign %}
+                    {% include event_assign.template %}
+                {% endwith %}
+            </div>
+            {% endif %}
+
+            {% if event_reassign and event_reassign.is_available(current_user) %}
+            <div class="reassign">
+                {% with event = event_reassign %}
+                    {% include event_reassign.template %}
+                {% endwith %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-12 top-controls">
+            {% if event_reject and event_reject.is_available(current_user) %}
+                {% with event = event_reject %}
+                    {% include event_reject.template %}
+                {% endwith %}
+            {% endif %}
+        </div>
+        <div class="col-md-12 top-controls">
+            {% if event_triaged and event_triaged.is_available(current_user) %}
+                {% with event = event_triaged %}
+                    {% include event_triaged.template %}
+                {% endwith %}
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-md-12 top-controls">
+            <p class="alert">You <strong>cannot</strong> currently edit this application</p>
+            <p>The user <span class="tag">{{lock.username}}</span> is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}} UTC</span></strong></p>
+            <p>Please try again later!</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if recommendation and recommendation.code != "normal" %}
+    <div class="row">
+        <div class="col-md-12 recommendation">
+            <div id="rejection_section" style="background-color: #F6F4F4; min-height: 200px;">
+                <p><strong>RECOMMENDATION: </strong>{{ recommendation.code }}</p>
+                <p><strong>REASONS: </strong></p>
+                {% for reason in recommendation.reasons %}
+                <p>{{ reason.question.text }}</p>
+                {% endfor %}
+
+                {% if not locked_by_another_user %}
+                    <a href="{{ url_for('workflow.triage_form', application_id=application.id, override_recommendation=true) }}" class="btn button" style="background-color: white;">continue triage</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-8 history-section" role="tablist" aria-label="Application history">
+            <button type="button"
+                    class="tag stage-tag stage-tag--new"
+                    role="tab"
+                    id="submission-tab"
+                    aria-controls="submission-panel"
+                    aria-selected="true">
+                Publisher Submission
+            </button>
+            <button class="tag stage-tag stage-tag--triage"
+                    role="tab"
+                    id="triage-tab"
+                    aria-controls="triage-panel"
+                    aria-selected="false">
+                Triage
+            </button>
+            <section id="submission-panel"
+                     role="tabpanel"
+                     aria-labelledby="submission-tab"
+            >
+                <div class="stage_metadata">
+                    <div class="user">
+                    <span>Submitted by: </span>
+                        <span class="label tag">
+                            <small>
+                                <a href="/account/{{ application.admin.owner }}" title="Completed by {{ application.admin.owner }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    {{ application.admin.owner }}
+                                </a>
+                            </small>
+                        </span>
+                    </div>
+                    <span>on: {{ application.admin.date_applied }}</span>
+                </div>
+                {% autoescape off %}
+                    {{ original_ro }}
+                {% endautoescape %}
+            </section>
+            <section id="triage-panel"
+                 role="tabpanel"
+                 aria-labelledby="triage-tab"
+            >
+                <div class="stage_metadata">
+                    {% if wfc.reviewer %}
+                    <div class="user">
+                        Assigned to:
+                        <span class="label tag">
+                            <small>
+                                <a href="/account/{{ wfc.reviewer.name }}" title="Assigned to {{ wfc.reviewer.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    {{ wfc.reviewer.id }}
+                                </a>
+                            </small>
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% set total_sv = wfc.modules.triage.questions.values()
+                        | selectattr('answer', 'equalto', 'non_compliant')
+                        | selectattr('sv', 'defined')
+                        | sum(attribute='sv')
+                    %}
+                    {% if total_sv < 3 %}
+                        {% set sv_class = "low" %}
+                    {% elif total_sv < 10 %}
+                        {% set sv_class = "medium" %}
+                    {% else %}
+                        {% set sv_class = "high" %}
+                    {% endif %}
+                    <div class="sv_value">
+                        <span class="label tag sv_tag {{ sv_class }}">
+                            <small>
+                                SV: {{ total_sv }}
+                            </small>
+                        </span>
+                    </div>
+                </div>
+                {% autoescape off %}
+                    {{ ro_form }}
+                {% endautoescape %}
+            </section>
+        </div>
+        <div class="col-md-4">
+            {% if not locked_by_another_user %}
+                <h3 class="label"> Locked for editing until <span id="lock_expires"
+                                                      data-timestamp="{{ lock.utc_expires() }}">{{ lock.expire_formatted() }} UTC</span>
+                </h3>
+
+                <button type="button" class="button" id="unlock" data-type="{{ application.es_type }}" data-id="{{ application.id }}">
+                    Unlock &amp; Close
+                </button>
+            {% endif %}
+            {% if wfc.reviewer %}
+                Assigned To: {{ wfc.reviewer.name }} ({{ wfc.reviewer.id }})
+                {% if not locked_by_another_user %}
+
+                    {% if event_unclaim and wfc.reviewer_id == current_user.id%}
+                        <div>
+                            {% with event = event_unclaim %}
+                                {% include event_unclaim.template %}
+                            {% endwith %}
+                        </div>
+                    {% endif %}
+                    {% if event_unassign and wfc.reviewer_id != current_user.id%}
+                        <div>
+                            {% with event = event_unassign %}
+                                {% include event_unassign.template %}
+                            {% endwith %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+            {% set owner = application.owner_account %}
+            {% if owner and owner.email %}
+                <a href="mailto:{{ owner.email }}">{{ owner.email }}</a>
+            {% endif %}
+
+            {% if not locked_by_another_user %}
+                {% autoescape off %}
+                    {{ notes_form }}
+                {% endautoescape %}
+            {% endif %}
+
+            <a href="{{ url_for("admin.application", application_id=application.id) }}">Full Edit Form</a>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block admin_js %}
+<script type="text/javascript" src="/static/js/workflow.js"></script>
+<script type="text/javascript" src="/static/js/custom_jquery.js"></script>
+<script type="text/javascript" src="/static/js/overview.js"></script>
+<script type="text/javascript">
+        function initialiseWorkflowItemToggle() {
+            var toggleLinks = document.querySelectorAll("a[data-toggle]");
+            var sections = {
+                submission: document.querySelector(".submission"),
+                triage: document.querySelector(".triage")
+            };
+
+            function setActiveButton(sectionName) {
+                toggleLinks.forEach(function(link) {
+                    var isActive = link.getAttribute("data-toggle") === sectionName;
+                    link.classList.toggle("button--cta", isActive);
+                });
+            }
+
+            function showSection(sectionName) {
+                Object.keys(sections).forEach(function(name) {
+                    if (!sections[name]) {
+                        return;
+                    }
+
+                    sections[name].style.display = name === sectionName ? "block" : "none";
+                });
+            }
+
+            toggleLinks.forEach(function(link) {
+                link.addEventListener("click", function(event) {
+                    var sectionName = link.getAttribute("data-toggle");
+
+                    if (!sections[sectionName]) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    showSection(sectionName);
+                    setActiveButton(sectionName);
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", initialiseWorkflowItemToggle);
+
+        jQuery(document).ready(function($) {
+             const answers = {{ wfc.data | tojson }}
+            const overview = new doaj.workflow.Overview(answers);
+            overview.init();
+            doaj.workflow.notes.init(NOTES_CONFIG)
+            doaj.workflow.lock.init();
+        });
+    </script>
+<script type="text/javascript" src="/static/js/custom_jquery.js"></script>
+<script type="text/javascript" src="/static/js/overview.js"></script>
+<script>
+    jQuery(document).ready(function($) {
+        const answers = {{ wfc.data | tojson }}
+        const overview = new doaj.workflow.Overview(answers);
+        overview.init();
+        doaj.workflow.notes.init();
+    });
+</script>
+{% endblock %}

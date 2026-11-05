@@ -297,6 +297,7 @@ class NewApplication(ApplicationProcessor):
         if app.config.get("AUTOCHECK_INCOMING", False):
             self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
         else:
+            # New applications now go to the new workflow
             self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)
         self.target.set_last_manual_update()
@@ -332,6 +333,11 @@ class NewApplication(ApplicationProcessor):
                 background_helper.submit_by_bg_task_type(ApplicationAutochecks,
                                                          application=self.target.id,
                                                          status_on_complete=constants.APPLICATION_STATUS_PENDING)
+            else:
+                # otherwise kick off the new workflow (we only save the workflow control, as the target
+                # as already been saved
+                initial_state = DOAJ.workflowService().initialise_workflow(account, self.target)
+                initial_state.workflow_control.save()
 
 
 class AdminApplication(ApplicationProcessor):

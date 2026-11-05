@@ -1,0 +1,9 @@
+<div class="col-md-10 page">
+    <section class="page-content">
+        {% for element in form.elements %}
+            {% autoescape off %}
+                {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+            {% endautoescape %}
+        {% endfor %}
+    </section>
+</div>

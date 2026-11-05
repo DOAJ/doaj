@@ -1,0 +1,5 @@
+<li>
+    {% autoescape off %}
+    {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
+    {% endautoescape %}
+</li>
