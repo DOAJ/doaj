@@ -27,20 +27,21 @@
         options = [],
         not_classified = []
         ) %}
+
         {% for element in compound.elements %}
-        {% if element.capability.role == "check" %}
-        {% set els.check = element %}
-        {% elif element.capability.role == "note" %}
-        {% set els.note = element %}
-        {% elif element.capability.role == "action" %}
-        {% set els.action = els.action + [element] %}
-        {% elif element.capability.role == "other" %}
-        {% set els.other = element %}
-        {% elif element.capability.role == "options" %}
-        {% set els.options = els.options + [element] %}
-        {% else %}
-        {% set els.not_classified = els.not_classified + [element] %}
-        {% endif %}
+            {% if element.capability.role == "check" %}
+                {% set els.check = element %}
+            {% elif element.capability.role == "note" %}
+                {% set els.note = element %}
+            {% elif element.capability.role == "action" %}
+                {% set els.action = els.action + [element] %}
+            {% elif element.capability.role == "other" %}
+                {% set els.other = element %}
+            {% elif element.capability.role == "options" %}
+                {% set els.options = els.options + [element] %}
+            {% else %}
+                {% set els.not_classified = els.not_classified + [element] %}
+            {% endif %}
         {% endfor %}
         {% autoescape off %}
         <div class="banner"
@@ -75,7 +76,7 @@
                 <div class="row criterion-layout">
                     <div class="col-md-12 criterion-layout__question">
                         {% if els.check.capability.check %}
-                        <div class="question--header">
+                        <div class="question--header" style="margin: 2rem 0 1rem 0;">
                             <div class="eyebrow"
                                  style="text-transform: uppercase; font-size: 0.8rem; margin-bottom: .25rem;">question
                                 {{
@@ -99,90 +100,96 @@
                             {% if els.check.capability.application_info %}
                             <div class="application_info" style="display: flex; flex-direction: column; gap: 1rem;">
 
-                                <dl class="app_info" style="gap: .5rem;">
-                                    {% for info in els.check.capability.application_info %}
-                                    <div class="info-pair">
-                                        <dt>{{ info.label }}</dt>
-                                        <dd {% if
-                                        'data-value' in info %} data-value = "{ info[data-value] }" {% endif %}>
+                            <dl class="app_info" style="gap: .5rem;">
+                                {% for info in els.check.capability.application_info %}
+                                <div class="info-pair">
+                                    <dt>{{ info.label }}</dt>
+                                    <dd {% if
+                                    'data-value' in info %} data-value = "{ info[data-value] }" {% endif %}>
+                                    {%- if info.type == "url" -%}
+                                    <a href="info.lookup(application, wfc)" target="_blank" ref="noreferrer">
+                                        {%- endif -%}
+                                        {{ info.lookup(application, wfc) }}
                                         {%- if info.type == "url" -%}
-                                        <a href="info.lookup(application, wfc)" target="_blank" ref="noreferrer">
-                                            {%- endif -%}
-                                            {{ info.lookup(application, wfc) }}
-                                            {%- if info.type == "url" -%}
-                                        </a>
-                                        {% endif %}
-                                        </dd>
-                                    </div>
-                                    {% endfor %}
-                                </dl>
-                            </div>
-                            {% endif %}
-                            {% if els.check.capability.resources|length > 0 %}
-                            <div class="resources-list-container">
-                                <ul class="resources-list" style="margin-left: -1.5rem;">
-                                    {% for resource in els.check.capability.resources %}
-                                    <li><a href="{{ resource.url }}" target="_blank"><span data-feather="external-link"
-                                                                                           aria-hidden="true"
-                                                                                           style="height: .75rem;"></span>
-                                        {{ resource.label }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            {% endif %}
+                                    </a>
+                                    {% endif %}
+                                    </dd>
+                                </div>
+                                {% endfor %}
+                            </dl>
                         </div>
                         {% endif %}
-                        {% if els.options %}
+                        {% if els.check.capability.resources|length > 0 %}
+                        <div class="resources-list-container">
+                            <p class="application_info_label">external resources</p>
+                            <ul class="resources-list" style="margin-left: -1.5rem;">
+                                {% for resource in els.check.capability.resources %}
+                                <li><a href="{{ resource.url }}" target="_blank"><span data-feather="external-link"
+                                                                                       aria-hidden="true"
+                                                                                       style="height: .75rem;"></span>
+                                    {{ resource.label }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if els.options %}
                         <fieldset style="flex-direction: column;" class="subquestion">
                             <legend class="sr-only">Special exceptions</legend>
                             {% for option in els.options %}
-                            {% set options_renderer = option.capability.get_control_renderer() %}
-                            {{ options_renderer.draw(option.control, application=application, wfc=wfc, other=els.other)
-                            }}
+                                {% set options_renderer = option.capability.get_control_renderer() %}
+                                {{ options_renderer.draw(option.control, application=application, wfc=wfc, other=els.other) }}
+                                <div id="{{ option.prefix }}-error-container" class="error-container" hidden></div>
                             {% endfor %}
                         </fieldset>
-                        {% endif %}
-                        {% if els.not_classified %}
+
+                    {% endif %}
+
+                    {% if els.not_classified %}
                         {% for nc in els.not_classified %}
-                        <div class="row">
-                            <div class="col-md-12 action-container" id="{{nc.name}}-container">
-                                {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
+                            <div class="row">
+                                <div class="col-md-12 action-container" id="{{nc.name}}-container">
+                                    {{ nc.renderer.draw(nc, application=application, wfc=wfc) }}
+                                </div>
                             </div>
-                        </div>
                         {% endfor %}
-                        {% endif %}
-                        {% if els.note %}
+                    {% endif %}
+
+                    {% if els.note %}
                         <div class="note-container">
                             {{ els.note.renderer.draw(els.note, application=application, wfc=wfc) }}
                         </div>
-                        {% endif %}
-                        {% if els.action %}
+                    {% endif %}
+
+                    {% if els.action %}
                         {% for action in els.action %}
-                        <div class="action-container {{ action.capability.trigger_btn }} action"
-                             id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info"
-                             hidden>
-                            <p id="{{ compound.name }}-your_answer">Your answer: <span
-                                    class="your-answer answer action"></span></p>
-                            <p class="reminder save-reminder" hidden>
-                                <span data-feather="alert-circle" aria-hidden="true"></span>
-                                <span class="save-reminder-text" role="status" aria-live="polite"
-                                      aria-atomic="true"></span>
-                            </p>
-                            {{ action.renderer.draw(action, application=application, wfc=wfc) }}
-                        </div>
+                            <div class="action-container {{ action.capability.trigger_btn }} action"
+                                 id="{{action.name}}-container" data-group="{{ compound.name }}" data-role="additional_info"
+                                 hidden>
+                                <p id="{{ compound.name }}-your_answer">Your answer: <span
+                                        class="your-answer answer action"></span></p>
+                                <p class="reminder save-reminder" hidden>
+                                    <span data-feather="alert-circle" aria-hidden="true"></span>
+                                    <span class="save-reminder-text" role="status" aria-live="polite"
+                                          aria-atomic="true"></span>
+                                </p>
+                                {{ action.renderer.draw(action, application=application, wfc=wfc) }}
+                            </div>
                         {% endfor %}
-                        {% endif %}
-                    </div>
-                    {% if els.check.capability.instructions %}
-                    <button
-                            type="button"
-                            class="criterion-instructions-trigger"
-                            aria-controls="{{ compound.name }}-criterion-instructions"
-                            aria-expanded="false"
-                            data-role="open-instructions"
-                    >
-                        <span class="form__long-help" data-feather="help-circle" aria-hidden="true"></span>
-                        <span class="criterion-instructions-trigger__label">
+                    {% endif %}
+                </div>
+                {% if els.check.capability.instructions %}
+                <button
+                        type="button"
+                        class="criterion-instructions-trigger"
+                        aria-controls="{{ compound.name }}-criterion-instructions"
+                        aria-expanded="false"
+                        data-role="open-instructions"
+                >
+                    <span class="form__long-help" data-feather="help-circle" aria-hidden="true"></span>
+                    <span class="criterion-instructions-trigger__label">
                         Instructions
                     </span>
                     </button>
@@ -214,8 +221,8 @@
                     {% endif %}
                 </div>
 
-                {% block renderer scoped %}
-                <a
+            {% block renderer scoped %}
+            <a
                     href="{{ url_for('workflow.triage_form', application_id=application.id) }}"
                     id="go_to_overview--{{compound.name}}--shortcut"
                     class="sr-only-focusable"
@@ -224,7 +231,8 @@
                     Go to the overview page
                 </a>
                 <button id="dismiss_recommendation_banner--{{ compound.name }}--shortcut" class="sr-only-focusable" type="button" hidden> Dismiss and continue triage</button>
-                {% endblock %}
+            {% endblock %}
+            <div id="{{ compound.prefix }}-error-container" class="error-container" hidden></div>
 
             </section>
         </div>

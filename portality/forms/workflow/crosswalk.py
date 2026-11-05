@@ -225,7 +225,6 @@ class WorkflowControl2TriageForm(object):
         # Copyright
         compliance_field_radio(triage.website_copyright, f.website.copyright)
         compliance_field_note(triage.website_copyright, f.website.copyright)
-        bool_2_y_n(f.website.copyright.action_group.copyright_author_retains, bj.author_retains_copyright)
         form.set(f.website.copyright.action_group.copyright_url, bj.copyright_url)
 
         #########
@@ -446,29 +445,24 @@ class TriageForm2WorkflowControl(object):
             licenses.remove("other")
             licenses.append("Publisher's own license")
         license_attributes = form.get(f.website.license_policy.action_group.license_attribute)
-        if license_attributes is not None:
-            for ltype in licenses:
-                by, nc, nd, sa = None, None, None, None
-                if ltype in LICENSES:
-                    by = LICENSES[ltype]["BY"]
-                    nc = LICENSES[ltype]["NC"]
-                    nd = LICENSES[ltype]["ND"]
-                    sa = LICENSES[ltype]["SA"]
-                    lurl = LICENSES[ltype]["url"]
-                elif license_attributes is not None and len(license_attributes) > 0:
-                    by = True if 'BY' in license_attributes else False
-                    nc = True if 'NC' in license_attributes else False
-                    nd = True if 'ND' in license_attributes else False
-                    sa = True if 'SA' in license_attributes else False
-                bj.add_license(ltype, by=by, nc=nc, nd=nd, sa=sa, url=lurl)
+        for ltype in licenses:
+            by, nc, nd, sa = None, None, None, None
+            if ltype in LICENSES:
+                by = LICENSES[ltype]["BY"]
+                nc = LICENSES[ltype]["NC"]
+                nd = LICENSES[ltype]["ND"]
+                sa = LICENSES[ltype]["SA"]
+                lurl = LICENSES[ltype]["url"]
+            elif license_attributes is not None and len(license_attributes) > 0:
+                by = True if 'BY' in license_attributes else False
+                nc = True if 'NC' in license_attributes else False
+                nd = True if 'ND' in license_attributes else False
+                sa = True if 'SA' in license_attributes else False
+            bj.add_license(ltype, by=by, nc=nc, nd=nd, sa=sa, url=lurl)
 
         # Copyright
         compliance_field_radio(triage.website_copyright, f.website.copyright)
         compliance_field_note(triage.website_copyright, f.website.copyright)
-        car = form.get(f.website.copyright.action_group.copyright_author_retains)
-        bj.author_retains_copyright = car == "y"
-        print(form.get(f.website.copyright.action_group.copyright_author_retains))
-        # bj.author_retains_copyright = form.get(f.website.copyright.action_group.copyright_author_retains)
         curl = form.get(f.website.copyright.action_group.copyright_url)
         bj.copyright_url = curl
 

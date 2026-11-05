@@ -1,4 +1,5 @@
 <header class="ew_header" id="ew_header">
+    <div class="ew_header_nav" style="width: 100%;">
         <div class="left">
             <!--        dev: this should be a tag showing the current application status. -->
 
@@ -22,10 +23,10 @@
                 </div>
             </div>
         </div>
+        {% if not locked_by_another_user %}
         <div class="right">
             {% set is_form_view = request.endpoint == "workflow.triage_form" %}
-            {% set is_overview_view = request.endpoint == "workflow.workflow_item_overview"
-            %}
+            {% set is_overview_view = request.endpoint == "workflow.workflow_item_overview" %}
             <div class="top">
                 <nav class="view-switcher" aria-label="Change the view">
                     <a
@@ -72,4 +73,6 @@
             </div>
             {% endif %}
         </div>
+        {% endif %}
+    </div>
 </header>

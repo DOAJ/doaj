@@ -1,39 +1,36 @@
 from portality import constants
 from portality.bll.services.workflow.core import State
+from portality.core import app
 from portality.models import WorkflowControl
 
-MODULE_QUALITY_REVIEW = "quality_review"
-MODULE_QUALITY_REVIEW_STAGE_PENDING = "pending"
+MODULE_INTEGRITY_ETHICS = "integrity_ethics"
+MODULE_INTEGRITY_ETHICS_STAGE_PENDING = "pending"
 
-MODULE_QUALITY_REVIEW_STAGES = [
-    MODULE_QUALITY_REVIEW_STAGE_PENDING
+MODULE_INTEGRITY_ETHICS_STAGES = [
+    MODULE_INTEGRITY_ETHICS_STAGE_PENDING
 ]
 
-LEGACY_EDITOR_GROUP = None
+LEGACY_MODULE_INTEGRITY_ETHICS = "triaged_integrity_ethics_legacy"
+LEGACY_MODULE_INTEGRITY_ETHICS_STAGE_DEFAULT = "default"
 
 
-class QualityReviewAwaitingAssignment(State):
-    module = MODULE_QUALITY_REVIEW
-    stage = MODULE_QUALITY_REVIEW_STAGE_PENDING
+class IntegrityEthicsAwaitingAssignment(State):
+    # These are the true IE state properties, but they are commented out for now in preference
+    # of the "triaged_quick_fail_legacy" state, which is the state that records which have passed
+    # through the new triage workflow and have now dropped back into the legacy workflow, but would
+    # otherwise have come here for quick fail processing.
+
+    # module = MODULE_INTEGRITY_ETHICS
+    # stage = MODULE_INTEGRITY_ETHICS_STAGE_PENDING
+    # reviewer = WorkflowControl.UNASSIGNED
+
+    # Temporary states
+    module = LEGACY_MODULE_INTEGRITY_ETHICS
+    stage = LEGACY_MODULE_INTEGRITY_ETHICS_STAGE_DEFAULT
     reviewer = WorkflowControl.UNASSIGNED
 
-    legacy_application_status = constants.APPLICATION_STATUS_PENDING
-    legacy_editor_group = LEGACY_EDITOR_GROUP
-
-    def apply_legacy_application_reviewer(self):
-        # back-compatibility for the original workflow
-        # application = self.application
-        # application.set_editor_group(self.legacy_editor_group)
-        # if self.workflow_control.reviewer_id is not None:
-        #     if application.editor != self.workflow_control.reviewer_id:
-        #         application.set_editor(self.workflow_control.reviewer_id)
-        # else:
-        #     application.remove_editor()
-
-        # FIXME: this bit will need to assign the editor group according to
-        # the labelling on the record
-        pass
-
+    legacy_application_status = constants.APPLICATION_STATUS_ON_HOLD
+    legacy_editor_group = app.config.get("LEGACY_WORKFLOW_INTEGRITY_ETHICS_EDITOR_GROUP")
 
 
 class QualityReviewAssessment(State):

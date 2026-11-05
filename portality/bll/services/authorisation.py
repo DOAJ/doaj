@@ -155,7 +155,7 @@ class AuthorisationService(object):
             return True
 
         # triage users can reject if the item is in triage
-        triage = account.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__TRIAGE)
+        triage = account.has_attribute(constants.USER_ATTR__WORKFLOW, constants.EWF__USER_ATTR__TRIAGE)
         in_progress = application.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
         attr = triage & in_progress
         if attr:

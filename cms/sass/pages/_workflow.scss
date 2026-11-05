@@ -164,6 +164,7 @@ body.dashboard {
       justify-content: space-between;
       margin-bottom: 0;
       padding: 1rem 0.5rem;
+      background-color: $light-grey;
 
       @media screen and (max-width: 768px) {
         padding: 20px;
@@ -465,8 +466,18 @@ body.dashboard {
       flex-wrap: wrap;
       column-gap: .75rem;
       row-gap: .25rem;
+      justify-content: flex-start;
       .info-pair {
         width: calc(33.3333% - 1.5rem);
+      }
+    }
+
+    .info {
+      .application_info_label {
+        margin: 0;
+        text-transform: capitalize;
+        color: #5C5956;
+        font-size: .889em;
       }
     }
 

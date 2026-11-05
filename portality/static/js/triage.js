@@ -55,6 +55,8 @@ doaj.triage.recommendation = new doaj.triage.Recommendation(
 doaj.triage._saving = false;
 doaj.triage._queuedOptions = null;
 
+
+
 doaj.triage._announce = function ($region, message) {
     $region.empty();
 
@@ -328,9 +330,11 @@ doaj.triage.questions = {};
 
 
 //------------------------- my code  -------------------------
+
 doaj.triage.questions.showOverview = function () {
     window.location.href = doaj.triage.overview_url;
 };
+
 
 doaj.triage.questions.rejectionRecommendedSections = $("div.banner[id^='triage_recommendation']");
 doaj.triage.questions.goToOverviewSRLinks = $("a[id^='go_to_overview']");
@@ -482,6 +486,13 @@ doaj.triage.questions.Question = class {
 
         this.$srAnswer = this.$wrapper.find(".sr-answer");
 
+        // conditional subfields
+        this.$conditionalTriggers = this.$wrapper.find("input[data-conditional]");
+        let that = this;
+        this.$conditionalTriggers.each(function () {
+            that.setConditionalStatus($(this));
+        });
+
         this.$changedValues = [];
 
         // Subclass fields must exist before restoring answers or binding events.
@@ -536,6 +547,32 @@ doaj.triage.questions.Question = class {
         this.$valueInputs.on("change", function () {
             question.$changedValues.push($(this));
         });
+
+        this.$conditionalTriggers.on("change", function () {
+            let that = $(this);
+            question.setConditionalStatus(that);
+        });
+    }
+
+    setConditionalStatus($input) {
+        const question = this;
+        let conditions = $input.data("conditions")
+        let conditional = $input.data("conditional")
+        let inputs = question.$wrapper.find(`input[data-conditional="${conditional}"]`)
+        let conditionMet = false;
+
+        // note: only works with checkboxes for now, will need to be extended for other conditionals if needed
+        inputs.each(function () {
+            let input = $(this);
+            if (input.val() === conditions && input.is(":checked")) {
+                conditionMet = true;
+            }
+        });
+        if (conditionMet) {
+            question.$wrapper.find(`[data-conditional-id="${conditional}"]`)._show();
+        } else {
+            question.$wrapper.find(`[data-conditional-id="${conditional}"]`)._hide();
+        }
     }
 
     updateDynamicValues() {
@@ -724,11 +761,7 @@ doaj.triage.questions.Question = class {
 };
 
 
-
-
-
-doaj.triage.questions.ActionQuestion =
-    class extends doaj.triage.questions.Question {
+doaj.triage.questions.ActionQuestion = class extends doaj.triage.questions.Question {
     _initQuestion() {
         this.pendingAction = false;
 
