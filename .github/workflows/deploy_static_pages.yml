@@ -27,7 +27,7 @@ jobs:
       - name: configure ssh
         env:
           SSH_KEY: ${{ secrets.STATIC_PAGES_SSH_KEY }}
-          KNOWN_HOSTS: ${{ secrets.STATIC_PAGES_KNOWN_HOSTS }}
+          KNOWN_HOSTS: ${{ vars.STATIC_PAGES_KNOWN_HOSTS }}
         run: |
           install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
@@ -36,8 +36,8 @@ jobs:
 
       - name: pull and deploy
         env:
-          HOST: ${{ secrets.STATIC_PAGES_HOST }}
-          USER: ${{ secrets.STATIC_PAGES_USER }}
+          HOST: ${{ vars.STATIC_PAGES_HOST }}
+          USER: ${{ vars.STATIC_PAGES_USER }}
         run: |
           ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=yes -o BatchMode=yes "$USER@$HOST" 'bash -s' <<'EOF'
           set -euo pipefail
