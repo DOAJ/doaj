@@ -1629,8 +1629,10 @@ BG_MONITOR_ERRORS_CONFIG = {
         'allowed_num_err': 0
     },
     'harvest': {
-        'check_sec': _DAY,
-        'allowed_num_err': 0,
+        # harvest runs daily and is sometimes re-run manually after a failure - disable the error
+        # count and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['harvest'] instead, which only
+        # cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'ingest_articles': {
         'check_sec': _DAY,
