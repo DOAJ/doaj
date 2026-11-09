@@ -3,6 +3,7 @@ from copy import deepcopy
 from portality import constants
 from portality.core import app
 from portality.lib import es_data_mapping, coerce, dates
+from portality.models import WorkflowControl
 from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
@@ -29,6 +30,16 @@ APPLICATION_STRUCT = {
                         constants.APPLICATION_TYPE_NEW_APPLICATION,
                         constants.APPLICATION_TYPE_UPDATE_REQUEST
                     ]
+                }
+            },
+            "objects": ["workflow"],
+            "structs": {
+                "workflow": {
+                    "fields": {
+                        "wfc": {"coerce": "unicode"},
+                        "module": {"coerce": "unicode"},
+                        "stage": {"coerce": "unicode"}
+                    }
                 }
             }
         },
@@ -165,6 +176,11 @@ class Application(JournalLikeObject):
     def date_rejected(self, value):
         self.__seamless__.set_with_struct("admin.date_rejected", value)
 
+    def set_workflow_info(self, workflow_control:WorkflowControl):
+        self.__seamless__.set_with_struct("admin.workflow.wfc", workflow_control.id)
+        self.__seamless__.set_with_struct("admin.workflow.module", workflow_control.module)
+        self.__seamless__.set_with_struct("admin.workflow.stage", workflow_control.stage)
+    
     def _sync_owner_to_journal(self):
         if self.current_journal is None:
             return
