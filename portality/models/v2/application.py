@@ -71,8 +71,15 @@ class Application(JournalLikeObject):
         return records
 
     @classmethod
-    def delete_selected(cls, email=None, statuses=None):
+    def delete_selected(cls, email=None, statuses=None, snapshot=True):
         q = SuggestionQuery(email=email, statuses=statuses)
+
+        # snapshot application records
+        if snapshot:
+            apps = cls.iterate(q.query(), page_size=1000)
+            for app in apps:
+                app.snapshot()
+
         r = cls.delete_by_query(q.query())
 
     @classmethod
@@ -205,7 +212,7 @@ class Application(JournalLikeObject):
         if is_update:
             self.set_last_updated()
 
-    def save(self, sync_owner=True, **kwargs):
+    def save(self, snapshot=True, sync_owner=True, **kwargs):
         if self.id is None:
             self.set_id(self.makeid())
 
@@ -219,7 +226,10 @@ class Application(JournalLikeObject):
 
         if sync_owner:
             self._sync_owner_to_journal()
-        return super(Application, self).save(**kwargs)
+        res = super(Application, self).save(**kwargs)
+        if snapshot:
+            self.snapshot()
+        return res
 
     #########################################################
     ## DEPRECATED METHODS
@@ -246,6 +256,10 @@ class Application(JournalLikeObject):
             "email": oacc.email
         }
 
+    @classmethod
+    def _history_class(cls):
+        from portality.models import ApplicationHistory
+        return ApplicationHistory
 
 class DraftApplication(Application):
     __type__ = "draft_application"
