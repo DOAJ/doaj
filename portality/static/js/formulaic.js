@@ -937,7 +937,7 @@ var formulaic = {
                 if (flagIcon.length > 0) {
                     flagIcon.remove();
                 }
-                if (this.$assigneeInput.val() === doaj.session.currentUserId) {
+                if (this.$assigneeInput.val() === doaj.current_user.id) {
                     this.$assigneeInput.parent().prepend(this.fullFlagHTML());
                 }
             };

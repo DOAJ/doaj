@@ -34,8 +34,10 @@ class AccountService:
         user.save()
         return code
 
-    def send_login_code_email(self, user: Account, code: str, redirected: Optional[str] = "") -> Optional[str]:
+    def send_login_code_email(self, user: Account, code: str, redirected: Optional[str] = "",
+                              next_url: Optional[str] = "") -> Optional[str]:
         """Compose and send the passwordless login email with code and a direct link.
+        next_url, if supplied, is carried in the encrypted token so the link returns the user there after login.
         """
         if user is None or not user.email:
             raise exceptions.ArgumentException("Cannot send login code email: user/email missing")
@@ -43,6 +45,8 @@ class AccountService:
         params = {"email": user.email, "code": code}
         if redirected:
             params["redirected"] = redirected
+        if next_url:
+            params["next"] = next_url
 
         login_url = None
         try:
@@ -105,11 +109,11 @@ class AccountService:
         encrypted_token: Optional[str] = None,
         email: Optional[str] = None,
         code: Optional[str] = None,
-    ) -> Tuple[Account, Optional[str]]:
+    ) -> Tuple[Account, Optional[str], Optional[str]]:
         """
         Verify a login either from an encrypted token or plain email/code.
 
-        Returns: (account, redirected)
+        Returns: (account, redirected, next_url)
         Raises:
             - exceptions.ArgumentException if params missing
             - exceptions.NoSuchObjectException if account not found
@@ -121,10 +125,12 @@ class AccountService:
             tok_email = params.get('email')
             tok_code = params.get('code')
             redirected = params.get('redirected')
+            next_url = params.get('next')
         else:
             tok_email = email
             tok_code = code
             redirected = None
+            next_url = None
 
         if not tok_email or not tok_code:
             raise exceptions.ArgumentException("Required parameters not available.")
@@ -140,4 +146,4 @@ class AccountService:
         account.remove_login_code()
         account.save()
 
-        return account, redirected
+        return account, redirected, next_url

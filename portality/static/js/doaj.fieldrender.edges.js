@@ -36,7 +36,7 @@ doaj.filters = {
                 must: [
                     es.newTermFilter({
                         field: "index.flag_assignees.exact",
-                        value: doaj.session.currentUserId
+                        value: doaj.current_user.id
                     })
                 ]
             }
@@ -907,7 +907,7 @@ doaj.components = {
                     facetOptions += `<option value="${facetExport.component_id}">${display}</option>`;
                 }
 
-                let exportNotes = current_user && current_user.role.includes("ultra_admin_reports_with_notes")
+                let exportNotes = doaj.current_user && doaj.current_user.role.includes("ultra_admin_reports_with_notes")
                 let notesFrag = "";
                 if (exportNotes) {
                     notesFrag = `<div class="checkbox">
@@ -965,7 +965,7 @@ doaj.components = {
                 let name = this.context.find(nameSelector).val();
 
                 let notes = false;
-                let exportNotes = current_user && current_user.role.includes("ultra_admin_reports_with_notes")
+                let exportNotes = doaj.current_user && doaj.current_user.role.includes("ultra_admin_reports_with_notes")
                 if (exportNotes) {
                     let includeNotesSelector = edges.css_class_selector(this.namespace, "notes", this);
                     notes = this.context.find(includeNotesSelector).is(":checked");
@@ -5590,7 +5590,7 @@ doaj.fieldRender = {
                 if (resultobj.index.is_flagged  || s2o) {
                     field += '<div class="badges badges--search-result badges--search-result--maned flex-start">'
                     if (resultobj.index.is_flagged) {
-                        if (resultobj.index.flag_assignees.includes(doaj.session.currentUserId)) {
+                        if (resultobj.index.flag_assignees.includes(doaj.current_user.id)) {
                             field += doaj.fieldRender.fragment.fullFlagHTML;
                         } else {
                             field += doaj.fieldRender.fragment.emptyFlagHTML;

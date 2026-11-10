@@ -4,7 +4,7 @@
    to form.password.errors. If present, render in password mode. Otherwise toggle is in JS #}
 {% set pw_mode = form.password.errors %}
 
-<form method="post" action="" class="form-login">
+<form method="post" action="{{ url_for('account.login', next=form.next.data) }}" class="form-login">
     <div class="form__question form-login__question">
         {{ render_field(form.user, placeholder="email@example.com") }}
     </div>
