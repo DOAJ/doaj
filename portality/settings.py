@@ -1519,6 +1519,13 @@ EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.9"  # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
 
+# Retry transient EPMC failures rather than failing the whole harvest run.
+# Back-off is 2**attempt * factor seconds, capped at max: 4, 8, 16, 32, 64, 128... (~4 minutes total over 6 retries)
+EPMC_HTTP_RETRIES = 6
+EPMC_HTTP_BACK_OFF_FACTOR = 2
+EPMC_HTTP_MAX_BACK_OFF = 120
+EPMC_HTTP_RETRY_CODES = [429, 500, 502, 503, 504]
+
 # General harvester configuration
 HARVESTERS = [
     "portality.tasks.harvester_helpers.epmc.epmc_harvester.EPMCHarvester"

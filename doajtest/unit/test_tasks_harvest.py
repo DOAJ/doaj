@@ -110,6 +110,31 @@ class TestHarvester(DoajTestCase):
         assert isinstance(result[1], EPMCMetadata)
         assert result[1].journal == "My Journal"
 
+    @patch('portality.lib.httputil.time.sleep')
+    @patch('portality.lib.httputil.requests.get')
+    def test_query_retries_transient_errors(self, mock_requests_get, mock_sleep):
+        with open(PATH_HARVESTER_RESP) as json_file:
+            articles = json.load(json_file)
+
+        unavailable = Mock(status_code=503)
+        ok = Mock(status_code=200)
+        ok.json.return_value = articles
+
+        # transient 503s are retried until EPMC recovers
+        mock_requests_get.side_effect = [unavailable, unavailable, ok]
+        result, cursor = EuropePMC().query("query_string")
+        assert len(result) == 2
+        assert mock_requests_get.call_count == 3
+
+        # persistent 503s give up after the configured number of retries
+        mock_requests_get.reset_mock()
+        mock_requests_get.side_effect = None
+        mock_requests_get.return_value = unavailable
+        with self.assertRaises(EuropePMCException) as cm:
+            EuropePMC().query("query_string")
+        assert mock_requests_get.call_count == app.config["EPMC_HTTP_RETRIES"] + 1
+        assert "503" in str(cm.exception)
+
     @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
     def test_start_multiple(self, mock_query):
         # Create a job that appears to be in progress
