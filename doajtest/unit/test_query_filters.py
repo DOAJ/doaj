@@ -55,22 +55,24 @@ class TestQueryFilters(DoajTestCase):
 
     def test_03_update_request(self):
         original_config = patch_config(app, {"UPDATE_REQUESTS_SHOW_OLDEST": '2018-05-03'})
+        try:
 
-        newq = query_filters.update_request(self.q)
-        assert newq.as_dict() == {
-            "track_total_hits": True,
-            'query': {
-                'bool': {
-                    'filter': [
-                        {"range": {"admin.date_applied": {"gte": '2018-05-03'}}},
-                        {"term": {"admin.application_type.exact": "update_request"}}
-                    ]
+            newq = query_filters.update_request(self.q)
+            assert newq.as_dict() == {
+                "track_total_hits": True,
+                'query': {
+                    'bool': {
+                        'filter': [
+                            {"range": {"admin.date_applied": {"gte": '2018-05-03'}}},
+                            {"term": {"admin.application_type.exact": "update_request"}}
+                        ]
+                    }
                 }
-            }
-        }, newq.as_dict()
+            }, newq.as_dict()
 
-        # Tear down
-        patch_config(self.app_test, original_config)
+        finally:
+            # Tear down
+            patch_config(self.app_test, original_config)
 
     def test_04_associate(self):
         acc = models.Account(**AccountFixtureFactory.make_assed1_source())

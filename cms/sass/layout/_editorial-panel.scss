@@ -1,45 +1,80 @@
 .editorial-panel {
-  margin-top: 0;
+    .spanPretendingToBeInput {
+        display: block;
 
-  fieldset {
-    padding: 0 !important;
-  }
+        &:has(svg) {
+            display: flex;
+            align-items: flex-start;
+            gap: .5rem;
+        }
 
-  .form__question {
-    margin: 0 !important;
-    select, textarea, input {
-      width: 100%;
+        background-color: $disabled;
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: .375rem;
+        font-style: italic;
+
+        span {
+            white-space: normal;
+        }
     }
-  }
 
-  hr {
-    margin: $spacing-02;
-  }
+    margin-top: 0;
 
-  @media (min-width: 992px) {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 100px;
+    fieldset {
+        padding: 0 !important;
+    }
+
+    .form__question {
+        margin: 0 !important;
+
+        select, textarea, input {
+            width: 100%;
+        }
+    }
+
+    hr {
+        margin: $spacing-02;
+    }
+
+    @media (min-width: 992px) {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 100px;
 
         &__wrapper {
-          display: flex;
-          flex-direction: column;
-          max-height: calc(100vh - 75px - 1.5rem - 25px); //(full viewport)-(nav height)-(top padding)-(bottom padding)
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 75px - 1.5rem - 25px); //(full viewport)-(nav height)-(top padding)-(bottom padding)
         }
 
         &__content {
-          flex: 1;
-          overflow-y: scroll;
+            flex: 1;
+            overflow-y: scroll;
 
-          select, textarea, input {
-            display: block;
-          }
+            select, textarea, input {
+                display: block;
+            }
         }
-      }
+    }
 
     .flag--resolved {
         position: relative;
         opacity: 0.2; /* Set opacity of entire div */
+        .pretendInputWrapper {
+            .pretendLabel {
+                margin-bottom: .75rem;
+                font-size: 1.125em;
+            }
+            .pretendInput {
+                margin-bottom: .375rem;
+                width: 100% !important;
+                border: 1px solid #A9A7A5;
+                padding: .5em;
+                font-size: 1em;
+            }
+        }
+
     }
 
     .flag--resolved::before {
@@ -56,75 +91,68 @@
         letter-spacing: 0.2em; /* Adjust the spacing between letters for the stamp */
         font-weight: bold;
     }
+
     .editorial-panel__content {
         .form__question.editorial-panel__question {
             padding: 0 !important;
+
             .editorial-panel__question-header {
                 padding: .5rem;
                 align-items: flex-start;
+
                 label, p {
                     margin: 0;
                 }
             }
+
             .editorial-panel__legend {
-                    display: flex;
-                    align-items: center;
-                    gap: .5rem;
-                    padding: 0 .5rem;
-                    margin-bottom: .375rem;
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+                padding: 0 .5rem;
+                margin-bottom: .375rem;
             }
+
             .editorial-panel__questions-content {
                 .form-inputs--container {
                     &:has(input[type="hidden"]) {
 
                     }
+
                     &:has(label) {
                         label {
                             font-size: .75rem;
                             margin-bottom: 0;
                             margin-left: .5rem;
+
                             .form__question--optional {
                                 font-size: .75rem;
                             }
                         }
                     }
+
                     &:has(svg) {
                         position: relative;
-                        width:100%;
+                        width: 100%;
+
                         svg {
                             position: absolute;
                             left: .5rem;
                             bottom: 22px;
                             z-index: 1;
                         }
+
                         .select2-choice {
                             .select2-chosen {
                                 padding-left: calc(.5rem + 20px);
                             }
                         }
                     }
+
                     input {
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                    }
-
-                    span.spanPretendingToBeInput {
-                        display: block;
-                        &:has(svg) {
-                            display: flex;
-                            align-items: flex-start;
-                            gap: .5rem;
-                        }
-                        background-color: $disabled;
-                        width: 100%;
-                        padding: 0.5rem;
-                        margin-bottom: .375rem;
-                        font-style: italic;
-
-                        span {
-                            white-space: normal;
-                        }
                     }
 
                     input:disabled ~ label {

@@ -27,7 +27,7 @@ class TestPublicDataDump(DoajTestCase):
         self.articles = ArticleFixtureFactory.make_n_articles(5)
         ArticleFixtureFactory.save_articles(self.articles, block=True)
 
-        self.journals = JournalFixtureFactory.make_n_journals(5)
+        self.journals = JournalFixtureFactory.make_multiple_journals_legacy(5)
         JournalFixtureFactory.save_journals(self.journals, block=True)
         self.svc = DOAJ.publicDataDumpService(self.logger)
         self.store = StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
@@ -196,23 +196,25 @@ class TestPublicDataDump(DoajTestCase):
             "PREMIUM_PHASE_IN": False,
             "PREMIUM_PHASE_IN_START": dates.before_now(50 * 24 * 60 * 60),
         })
-        free = self.svc.get_free_dump()
-        assert free.id == dds[2].id
+        try:
+            free = self.svc.get_free_dump()
+            assert free.id == dds[2].id
 
-        # 15 days into phase in, oldest dump newer than 15 days
-        _ = patch_config(app, {
-            "PREMIUM_PHASE_IN": True,
-            "PREMIUM_PHASE_IN_START": dates.before_now(15 * 24 * 60 * 60),
-        })
-        free = self.svc.get_free_dump()
-        assert free.id == dds[1].id
+            # 15 days into phase in, oldest dump newer than 15 days
+            _ = patch_config(app, {
+                "PREMIUM_PHASE_IN": True,
+                "PREMIUM_PHASE_IN_START": dates.before_now(15 * 24 * 60 * 60),
+            })
+            free = self.svc.get_free_dump()
+            assert free.id == dds[1].id
 
-        # phase in just started, newest dump
-        _ = patch_config(app, {
-            "PREMIUM_PHASE_IN": True,
-            "PREMIUM_PHASE_IN_START": dates.now()
-        })
-        free = self.svc.get_free_dump()
-        assert free.id == dds[0].id
+            # phase in just started, newest dump
+            _ = patch_config(app, {
+                "PREMIUM_PHASE_IN": True,
+                "PREMIUM_PHASE_IN_START": dates.now()
+            })
+            free = self.svc.get_free_dump()
+            assert free.id == dds[0].id
 
-        patch_config(app, cfg)
+        finally:
+            patch_config(app, cfg)

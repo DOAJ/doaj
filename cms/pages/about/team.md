@@ -8,7 +8,3 @@ featuremap: ~~Team:Fragment->TeamData:Template~~
 data: true
 
 ---
-
-If you'd like to contact a member of our team, please use the [Contact us](/contact/) page.
- 
- 

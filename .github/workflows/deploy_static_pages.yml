@@ -1,0 +1,54 @@
+name: Deploy static pages server
+
+# Replaces the polling repo watcher on the static pages server: on push to static_pages,
+# SSH in, pull the branch and run the deploy script.
+# NOTE: push triggers use the workflow file from the pushed branch, so this file must exist on static_pages.
+
+on:
+  push:
+    branches:
+      - static_pages
+  workflow_dispatch:
+
+# Queue deploys rather than running them concurrently on the same checkout
+concurrency:
+  group: deploy-static-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: pull static_pages and run deploy.sh on the static pages server
+    runs-on: ubuntu-latest
+    environment: static-pages
+    permissions:
+      contents: read
+
+    steps:
+      - name: configure ssh
+        env:
+          SSH_KEY: ${{ secrets.STATIC_PAGES_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.STATIC_PAGES_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: pull and deploy
+        env:
+          HOST: ${{ secrets.STATIC_PAGES_HOST }}
+          USER: ${{ secrets.STATIC_PAGES_USER }}
+        run: |
+          ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=yes -o BatchMode=yes "$USER@$HOST" 'bash -s' <<'EOF'
+          set -euo pipefail
+          cd /home/cloo/doaj
+          git fetch origin static_pages
+          git checkout static_pages
+          git merge --ff-only origin/static_pages
+          echo "Deploying $(git rev-parse --short HEAD)"
+          deploy/deploy.sh test
+          EOF
+
+      - name: remove ssh key
+        if: always()
+        run: rm -f ~/.ssh/id_deploy

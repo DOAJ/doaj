@@ -1,6 +1,9 @@
 # -*- coding: UTF-8 -*-
 from copy import deepcopy
 from typing import Iterable
+
+from doajtest.fixtures.v2.shared_generators import make_data, JOURNAL_BASE, JOURNAL_FULL_LEGACY_FIXTURE, make_object, \
+    JOURNAL_OBJECT_BASE_LOADERS
 from portality import models
 
 import rstr
@@ -8,6 +11,7 @@ import rstr
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
     OWNER_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED, LAST_REVIEW_FORM_EXPANDED, \
     FLAGS_FORM_EXPANDED
+from portality.models import Journal, JournalLikeBibJSON
 from portality.regex import ISSN_COMPILED
 from portality.lib import dicts
 from doajtest.fixtures.v2.common import build_flags_form_expanded
@@ -27,14 +31,38 @@ class JournalFixtureFactory(object):
 
     @staticmethod
     def make_journal_source(in_doaj=False, overlay=None):
-        template = deepcopy(JOURNAL_SOURCE)
-        template['admin']['in_doaj'] = in_doaj
-        if overlay is not None:
-            template = dicts.deep_merge(template, overlay, overlay=True)
-        return template
+        if overlay is None:
+            overlay = {}
+        if "admin" not in overlay:
+            overlay["admin"] = {}
+        if "in_doaj" not in overlay:
+            overlay["admin"]["in_doaj"] = in_doaj
+        source = make_data([JOURNAL_BASE, JOURNAL_FULL_LEGACY_FIXTURE, overlay])
+        return source
 
     @staticmethod
-    def make_many_journal_sources(count=2, in_doaj=False) -> Iterable[dict]:
+    def make_legacy_journal_object(in_doaj=False, overlay=None):
+        if overlay is None:
+            overlay = {}
+        if "admin" not in overlay:
+            overlay["admin"] = {}
+        if "in_doaj" not in overlay:
+            overlay["admin"]["in_doaj"] = in_doaj
+        journal = make_object(Journal,
+                    [JOURNAL_BASE, JOURNAL_FULL_LEGACY_FIXTURE, overlay],
+                    loaders=JOURNAL_OBJECT_BASE_LOADERS)
+        return journal
+
+    @staticmethod
+    def make_journal_object(data_stack=None, klazz=None, loaders=None):
+        journal = make_object(klazz or models.Journal,
+                              data_stack or [JOURNAL_BASE, JOURNAL_FULL_LEGACY_FIXTURE],
+                              loaders=loaders or JOURNAL_OBJECT_BASE_LOADERS)
+        return journal
+
+
+    @staticmethod
+    def make_many_journal_sources(count=2, in_doaj=False, overlay=None) -> Iterable[dict]:
         journal_sources = []
         for i in range(0, count):
             template = deepcopy(JOURNAL_SOURCE)
@@ -55,10 +83,41 @@ class JournalFixtureFactory(object):
 
     @classmethod
     def make_n_journals(cls, n, in_doaj=True):
+        j = JournalFixtureFactory.make_legacy_journal_object(in_doaj=in_doaj)
         sources = JournalFixtureFactory.make_many_journal_sources(count=n, in_doaj=in_doaj)
         journals = []
         for s in sources:
             journals.append(models.Journal(**s))
+        return journals
+
+    @classmethod
+    def make_multiple_journals_legacy(cls, count, in_doaj=True, data_stack=None, klazz=None, loaders=None, vary=None):
+        def legacy_vary(n, j:Journal):
+            j.set_id("journalid{0}".format(n))
+            j.set_in_doaj(in_doaj)
+
+            # now some very quick and very dirty date generation
+            fakemonth = n
+            if fakemonth < 1:
+                fakemonth = 1
+            if fakemonth > 9:
+                fakemonth = 9
+            j.set_created("2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth))
+            bj:JournalLikeBibJSON = j.bibjson()
+            bj.pissn = rstr.xeger(ISSN_COMPILED)
+            bj.eissn = rstr.xeger(ISSN_COMPILED)
+            bj.title = 'Test Title {}'.format(i)
+
+        if vary is None:
+            vary = [legacy_vary]
+
+        journals = []
+        for i in range(count):
+            journal = cls.make_journal_object(data_stack=data_stack, klazz=klazz, loaders=loaders)
+            for v in vary:
+                v(i, journal)
+            journals.append(journal)
+
         return journals
 
     @staticmethod
@@ -78,21 +137,6 @@ class JournalFixtureFactory(object):
         # Last review is on the journal, but not on the journal-like
         jf.update(deepcopy(LAST_REVIEW_FORM_EXPANDED))
         return jf
-
-    @staticmethod
-    def make_journal_with_data(**data):
-        journal = deepcopy(JOURNAL_SOURCE)
-        in_doaj = data['in_doaj'] if'in_doaj' in data else True
-        journal['admin']['in_doaj'] = in_doaj
-        if 'title' in data:
-            journal["bibjson"]["title"] = data['title']
-        if 'publisher_name' in data:
-            journal["bibjson"]["publisher"]["name"] = data['publisher_name']
-        if 'country' in data:
-            journal["bibjson"]["publisher"]["country"] = data['country']
-        if 'alternative_title' in data:
-            journal["bibjson"]["alternative_title"] = data['alternative_title']
-        return journal
 
     @staticmethod
     def make_bulk_edit_data():
@@ -117,11 +161,9 @@ JOURNAL_SOURCE = {
         "editor_group": "editorgroup",
         "editor": "associate",
         "in_doaj": False,
-        "notes": [
-            {"note": "Second Note", "date": "2014-05-22T00:00:00Z", "id": "1234",
-             "author_id": "fake_account_id__b"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id": "abcd",
-             "author_id": "fake_account_id__a"},
+        "note_ids": [
+            "1234",
+            "abcd"
         ],
         "owner": "publisher",
         "related_applications": [

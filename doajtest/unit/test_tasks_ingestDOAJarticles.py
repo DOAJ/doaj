@@ -107,6 +107,25 @@ class TestIngestArticlesDoajXML(DoajTestCase):
             if os.path.exists(path):
                 os.remove(path)
 
+        # Most test methods here create articles/journals via shared
+        # article_upload_tester helpers rather than tracking IDs
+        # themselves, and several reuse the exact same fixture content
+        # (e.g. testowner / pissn 1234-5678, or
+        # DoajXmlArticleFixtureFactory.upload_1_issn_correct()). setUp()
+        # doesn't reset ES between test methods (only setUpClass does),
+        # so under pytest-randomly's shuffled order, a later test can
+        # find an earlier test's article already indexed and get
+        # classified as an update instead of a new import - wipe both
+        # indices after every test so each one starts clean regardless
+        # of run order.
+        models.Article.delete_by_query({"query": {"match_all": {}}})
+        models.Journal.delete_by_query({"query": {"match_all": {}}})
+        # force a refresh so the next test's queries don't still see
+        # these documents mid-deletion (ES delete_by_query isn't
+        # immediately visible to search without one)
+        models.Article.refresh()
+        models.Journal.refresh()
+
         for path in self.cleanup_paths:
             if os.path.exists(path):
                 os.remove(path)

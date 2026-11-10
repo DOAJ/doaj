@@ -106,132 +106,133 @@ class TestBLLSitemap(DoajTestCase):
         if main_write_arg == "fail":
             original_configs.update(patch_config(app, {"STORE_IMPL": StoreMockFactory.no_writes_classpath()}))
 
-        journals = []
-        for s in JournalFixtureFactory.make_many_journal_sources(count=10, in_doaj=True):
-            j = models.Journal(**s)
-            j.save()
-            journals.append(j)
-        models.Journal.blockall([(j.id, j.last_updated) for j in journals])
+        try:
+            journals = []
+            for s in JournalFixtureFactory.make_many_journal_sources(count=10, in_doaj=True):
+                j = models.Journal(**s)
+                j.save()
+                journals.append(j)
+            models.Journal.blockall([(j.id, j.last_updated) for j in journals])
 
-        expectations = [(j.bibjson().get_preferred_issn(), j.last_updated) for j in journals]
+            expectations = [(j.bibjson().get_preferred_issn(), j.last_updated) for j in journals]
 
-        articles = []
-        for s in ArticleFixtureFactory.make_many_article_sources(count=10, in_doaj=True):
-            a = models.Article(**s)
-            a.save()
-            articles.append(a)
-        models.Article.blockall([(a.id, a.last_updated) for a in articles])
+            articles = []
+            for s in ArticleFixtureFactory.make_many_article_sources(count=10, in_doaj=True):
+                a = models.Article(**s)
+                a.save()
+                articles.append(a)
+            models.Article.blockall([(a.id, a.last_updated) for a in articles])
 
-        articles_expectations = [(a.id, a.last_updated) for a in articles]
+            articles_expectations = [(a.id, a.last_updated) for a in articles]
 
-        if prune:
-            self.localStore.store(self.container_id, "sitemap_doaj_20180101_0000/_0_utf8.xml",
-                                  source_stream=StringIO("test1"))
-            self.localStore.store(self.container_id, "sitemap_doaj_20180601_0000/_0_utf8.xml",
-                                  source_stream=StringIO("test2"))
-            self.localStore.store(self.container_id, "sitemap_doaj_20190101_0000/_0_utf8.xml",
-                                  source_stream=StringIO("test3"))
-
-        ###########################################################
-        # Execution
-
-        if raises is not None:
-            with self.assertRaises(raises):
-                self.svc.sitemap(prune)
-
-                tempFiles = self.tmpStore.list(self.container_id)
-                assert len(tempFiles) == 0, "expected 0, received {}".format(len(tempFiles))
-        else:
-            index_urls, action_register = self.svc.sitemap(prune)
-            assert index_urls is not None
-            assert len(index_urls) > 0
-
-            # Check the results
-            ################################
-            index_filename = models.cache.Cache.get_sitemap_index("0")
-            assert index_filename in index_urls
-
-            filenames = self.localStore.list(self.container_id)
             if prune:
-                assert len(filenames) == 2, "expected 0, received {}".format(len(filenames))
-                assert "sitemap_doaj_20180101_0000" not in filenames
-                assert "sitemap_doaj_20180601_0000" not in filenames
-                assert "sitemap_doaj_20190101_0000" in filenames
+                self.localStore.store(self.container_id, "sitemap_doaj_20180101_0000/_0_utf8.xml",
+                                      source_stream=StringIO("test1"))
+                self.localStore.store(self.container_id, "sitemap_doaj_20180601_0000/_0_utf8.xml",
+                                      source_stream=StringIO("test2"))
+                self.localStore.store(self.container_id, "sitemap_doaj_20190101_0000/_0_utf8.xml",
+                                      source_stream=StringIO("test3"))
+
+            ###########################################################
+            # Execution
+
+            if raises is not None:
+                with self.assertRaises(raises):
+                    self.svc.sitemap(prune)
+
+                    tempFiles = self.tmpStore.list(self.container_id)
+                    assert len(tempFiles) == 0, "expected 0, received {}".format(len(tempFiles))
             else:
-                assert len(filenames) == 1, "expected 0, received {}".format(len(filenames))
+                index_urls, action_register = self.svc.sitemap(prune)
+                assert index_urls is not None
+                assert len(index_urls) > 0
 
-            latest = None
-            for fn in filenames:
-                if fn != "sitemap_doaj_20190101_0000":
-                    latest = fn
-                    break
+                # Check the results
+                ################################
+                index_filename = models.cache.Cache.get_sitemap_index("0")
+                assert index_filename in index_urls
 
-            NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
-
-            file_date = '_'.join(latest.split('_')[2:])
-            index_file = os.path.join(latest, 'sitemap_index_0_utf8.xml')
-
-            handle = self.localStore.get(self.container_id, index_file, encoding="utf-8")
-
-            # check sitemap index file
-            tree = etree.parse(handle)
-            urlElements = tree.getroot().getchildren()
-            for urlElement in urlElements:
-                loc = urlElement.find(NS + "loc").text
-                assert loc.startswith(self.base_url + "sitemap")
-
-            tocs = []
-            statics = []
-            article_ids = []
-
-            # check sitemap file
-            sitemap_file = os.path.join(latest, 'sitemap_0_utf8.xml')
-            handle = self.localStore.get(self.container_id, sitemap_file, encoding="utf-8")
-
-            tree = etree.parse(handle)
-            urlElements = tree.getroot().getchildren()
-
-            for urlElement in urlElements:
-                loc = urlElement.find(NS + "loc").text
-                lm = urlElement.find(NS + "lastmod")
-                if lm is not None:
-                    lm = lm.text
-                cf = urlElement.find(NS + "changefreq").text
-                assert cf == "daily"
-                # check journals
-                if "/toc" in loc:
-                    for exp in expectations:
-                        if loc.endswith(exp[0]):
-                            tocs.append(exp[0])
-                            assert lm == exp[1]
-                # check articles
-                elif "/article/" in loc:
-                    for exp in articles_expectations:
-                        if loc.endswith(exp[0]):
-                            article_ids.append(exp[0])
-                            assert lm == exp[1]
-                # check static pages
+                filenames = self.localStore.list(self.container_id)
+                if prune:
+                    assert len(filenames) == 2, "expected 0, received {}".format(len(filenames))
+                    assert "sitemap_doaj_20180101_0000" not in filenames
+                    assert "sitemap_doaj_20180601_0000" not in filenames
+                    assert "sitemap_doaj_20190101_0000" in filenames
                 else:
-                    statics.append(loc)
-                    assert lm is None
-                    assert loc.startswith(app.config.get('BASE_URL', 'https://doaj.org'))
+                    assert len(filenames) == 1, "expected 0, received {}".format(len(filenames))
 
-            # deduplicate the list of tocs, to check that we saw all journals
-            list(set(tocs))
-            assert len(tocs) == len(expectations)
+                latest = None
+                for fn in filenames:
+                    if fn != "sitemap_doaj_20190101_0000":
+                        latest = fn
+                        break
 
-            # deduplicate the list of articles, to check that we saw all articles
-            list(set(article_ids))
-            assert len(article_ids) == len(articles_expectations)
+                NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
-            # deduplicate the statics, to check we saw all of them too
-            _urls = (get_full_url_safe(r)
-                     for r in nav.yield_all_route(self.static_entries))
-            _urls = filter(None, _urls)
-            assert set(statics) == set(_urls)
+                file_date = '_'.join(latest.split('_')[2:])
+                index_file = os.path.join(latest, 'sitemap_index_0_utf8.xml')
 
-        # Tear down
-        patch_config(app, original_configs)
+                handle = self.localStore.get(self.container_id, index_file, encoding="utf-8")
+
+                # check sitemap index file
+                tree = etree.parse(handle)
+                urlElements = tree.getroot().getchildren()
+                for urlElement in urlElements:
+                    loc = urlElement.find(NS + "loc").text
+                    assert loc.startswith(self.base_url + "sitemap")
+
+                tocs = []
+                statics = []
+                article_ids = []
+
+                # check sitemap file
+                sitemap_file = os.path.join(latest, 'sitemap_0_utf8.xml')
+                handle = self.localStore.get(self.container_id, sitemap_file, encoding="utf-8")
+
+                tree = etree.parse(handle)
+                urlElements = tree.getroot().getchildren()
+
+                for urlElement in urlElements:
+                    loc = urlElement.find(NS + "loc").text
+                    lm = urlElement.find(NS + "lastmod")
+                    if lm is not None:
+                        lm = lm.text
+                    cf = urlElement.find(NS + "changefreq").text
+                    assert cf == "daily"
+                    # check journals
+                    if "/toc" in loc:
+                        for exp in expectations:
+                            if loc.endswith(exp[0]):
+                                tocs.append(exp[0])
+                                assert lm == exp[1]
+                    # check articles
+                    elif "/article/" in loc:
+                        for exp in articles_expectations:
+                            if loc.endswith(exp[0]):
+                                article_ids.append(exp[0])
+                                assert lm == exp[1]
+                    # check static pages
+                    else:
+                        statics.append(loc)
+                        assert lm is None
+                        assert loc.startswith(app.config.get('BASE_URL', 'https://doaj.org'))
+
+                # deduplicate the list of tocs, to check that we saw all journals
+                list(set(tocs))
+                assert len(tocs) == len(expectations)
+
+                # deduplicate the list of articles, to check that we saw all articles
+                list(set(article_ids))
+                assert len(article_ids) == len(articles_expectations)
+
+                # deduplicate the statics, to check we saw all of them too
+                _urls = (get_full_url_safe(r)
+                         for r in nav.yield_all_route(self.static_entries))
+                _urls = filter(None, _urls)
+                assert set(statics) == set(_urls)
+        finally:
+            # Tear down
+            patch_config(app, original_configs)
 
     def test_cache_cleanup_on_regeneration(self):
         """Test that old cached sitemap index entries are properly cleaned up"""

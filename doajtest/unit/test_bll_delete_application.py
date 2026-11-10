@@ -72,12 +72,12 @@ class TestBLLDeleteApplication(DoajTestCase):
             elif current_journal == "not_found":
                 application.set_current_journal("123456789987654321")
             elif current_journal == "found":
-                cj = Journal(**JournalFixtureFactory.make_journal_source())
+                cj = JournalFixtureFactory.make_legacy_journal_object()
                 cj.set_id(cj.makeid())
                 cj.save(blocking=True)
                 application.set_current_journal(cj.id)
             elif current_journal == "locked":
-                cj = Journal(**JournalFixtureFactory.make_journal_source())
+                cj = JournalFixtureFactory.make_legacy_journal_object()
                 cj.set_id(cj.makeid())
                 cj.save(blocking=True)
                 application.set_current_journal(cj.id)
@@ -88,12 +88,12 @@ class TestBLLDeleteApplication(DoajTestCase):
             elif related_journal == "not_found":
                 application.set_related_journal("123456789987654321")
             elif related_journal == "found":
-                rj = Journal(**JournalFixtureFactory.make_journal_source())
+                rj = JournalFixtureFactory.make_legacy_journal_object()
                 rj.set_id(rj.makeid())
                 rj.save(blocking=True)
                 application.set_related_journal(rj.id)
             elif related_journal == "locked":
-                rj = Journal(**JournalFixtureFactory.make_journal_source())
+                rj = JournalFixtureFactory.make_legacy_journal_object()
                 rj.set_id(rj.makeid())
                 rj.save(blocking=True)
                 application.set_related_journal(rj.id)

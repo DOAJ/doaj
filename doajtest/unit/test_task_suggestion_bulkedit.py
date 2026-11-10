@@ -34,7 +34,7 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         egm.save(blocking=True)
 
         self.suggestions = []
-        for app_src in ApplicationFixtureFactory.make_many_application_sources(count=TEST_SUGGESTION_COUNT):
+        for app_src in ApplicationFixtureFactory.make_multiple_applications_legacy(count=TEST_SUGGESTION_COUNT):
             app = models.Suggestion(**app_src)
             jid = app.current_journal
             JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)

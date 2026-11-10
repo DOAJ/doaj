@@ -151,7 +151,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                         "Data validation failed while bulk editing journal {} :\n"
                         "{}\n\n"
                         "The data from the fields with the errors is:\n{}".format(
-                            journal_id, json.dumps(fc.form.errors), json.dumps(data_submitted)
+                            journal_id, json.dumps(fc.form.errors, default=str), json.dumps(data_submitted, default=str)
                         )
                     )
 

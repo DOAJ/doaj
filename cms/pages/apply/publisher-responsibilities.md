@@ -25,7 +25,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 - You will [upload article metadata](/publisher/uploadfile) to us if you are able to.
 - You will regularly review your indexed journals and ensure their compliance with current DOAJ criteria.
 
-As is described in [our Code of Conduct](/code-of-conduct/), we will treat you with respect and courtesy. We expect you to do the same.
+As described in [our Code of Conduct](/code-of-conduct/), we will treat you with respect and courtesy. We expect you to do the same.
 
 ### Emails from us
 
@@ -117,7 +117,7 @@ We have [guidelines](https://doaj-kit.netlify.app/building-blocks/logotype/) abo
 Keeping your journal records up to date has [very clear advantages](/apply/why-index/). When something changes, you must keep your journal records in DOAJ up to date.
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
-- Request a CSV file from us that allows you to update multiple journals and values at the same time and in spreadsheet format.
+- Request a Journal Update File from us that allows you to update multiple journals and values at the same time and in spreadsheet format.
 - For all other changes, log into your DOAJ account to [submit an update request](/publisher/journal). Use the black ‘Update’ button.
 
 ### When should I submit an update?
@@ -127,7 +127,7 @@ Keeping your journal records up to date has [very clear advantages](/apply/why-i
 - When journal information or policies change
 - When your journal is included in a digital archive, starts using DOIs, or has registered a deposit policy for authors in a deposit policy registry
 
-If a member of the DOAJ Team has sent you a CSV file, we ask that you complete it as quickly as possible. Full details are available on our [Metadata Help](/docs/faq/) page.
+If a member of the DOAJ Team has sent you a Journal Update File, please complete it as quickly as possible. Full details are available on our [Metadata Help](/docs/faq/) page.
 
 We aim to process update requests within one month.
 
