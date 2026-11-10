@@ -328,7 +328,7 @@ def toc(identifier=None):
     current_info = {'next': url_for('publisher.update_request', journal_id=journal.id)}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if real_identifier:
-        return redirect(url_for('doaj.toc', identifier=real_identifier, form=form), 301)
+        return redirect(url_for('doaj.toc', identifier=real_identifier), 301)
     else:
         # now render all that information
         return render_template(templates.PUBLIC_TOC_MAIN, journal=journal, bibjson=bibjson, tab="main", form=form)

@@ -11,7 +11,6 @@
             submitting an update request.</p>
         <p class="intro-text">Login with the email address linked to your DOAJ account to continue.</p>
         {% from "includes/_formhelpers.html" import render_field %}
-        {% set ur_url = base_url + url_for('publisher.update_request', journal_id=journal.id) %}
         {% include "_account/includes/_login_form.html" %}
         <p class="closing-text">We look forward to hearing from you!</p>
         <button class="button button--tertiary" data-dismiss="drawer-login">Cancel</span>
