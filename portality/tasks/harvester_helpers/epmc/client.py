@@ -56,9 +56,10 @@ def to_keywords(s):
 
 class EuropePMCException(Exception):
     def __init__(self, *args, **kwargs):
-        httpresponse = kwargs.get("httpresponse")
-        if httpresponse is not None:
-            del kwargs["httpresponse"]
+        httpresponse = kwargs.pop("httpresponse", None)
+        message = kwargs.pop("message", None)
+        if message is not None:
+            args = (message,) + args
         super(EuropePMCException, self).__init__(*args)
         self.response = httpresponse
 
@@ -115,6 +116,14 @@ class EuropePMC(object):
     def _write_to_logger(self, msg):
         self.logger.log(msg)
 
+    @staticmethod
+    def _get(url):
+        return httputil.get(url,
+                            retries=app.config.get("EPMC_HTTP_RETRIES", 0),
+                            back_off_factor=app.config.get("EPMC_HTTP_BACK_OFF_FACTOR"),
+                            max_back_off=app.config.get("EPMC_HTTP_MAX_BACK_OFF"),
+                            retry_codes=app.config.get("EPMC_HTTP_RETRY_CODES", []))
+
     def iterate(self, query_string, page_size=1000, throttle=None):
         cursor = ""
         last = None
@@ -162,11 +171,11 @@ class EuropePMC(object):
         url = self.url_from_query(query_string, cursor, page_size)
         self._write_to_logger("Requesting EPMC metadata from " + url)
 
-        resp = httputil.get(url)
+        resp = self._get(url)
         if resp is None:
             raise EuropePMCException(message="could not get a response from EPMC")
         if resp.status_code != 200:
-            raise EuropePMCException(resp)
+            raise EuropePMCException(f"EPMC returned status {resp.status_code} for {url}", httpresponse=resp)
 
         try:
             j = resp.json()
@@ -181,11 +190,11 @@ class EuropePMC(object):
     def fulltext(self, pmcid):
         url = app.config.get("EPMC_REST_API") + pmcid + "/fullTextXML"
         self._write_to_logger("Searching for Fulltext at " + url)
-        resp = httputil.get(url)
+        resp = self._get(url)
         if resp is None:
             raise EuropePMCException(message="could not get a response for fulltext from EPMC")
         if resp.status_code != 200:
-            raise EuropePMCException(resp)
+            raise EuropePMCException(f"EPMC returned status {resp.status_code} for {url}", httpresponse=resp)
         return EPMCFullText(resp.text)
 
 
