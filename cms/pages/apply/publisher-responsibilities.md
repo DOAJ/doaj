@@ -14,7 +14,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 
 - **No charge** - we do not charge fees for reviewing or indexing your applications
 - **Fairness** - we assess all journals using the criteria in our [Guide to applying](/apply/guide/) However, we acknowledge that publishing practices and interpretation of our criteria may vary across regions and disciplines, and we encourage you to contact us if you have any concerns.
-- **Confidentiality** - we will only share or discuss details and information collected during the review process with the applicant or an entity authorised to represent the journal.
+- **Confidentiality** - we will only share or discuss details and information collected during the review process with the applicant or an entity authorised to represent the journal. In public spaces, closed online fora, or in groups on messaging apps, we will not refer to or infer the outcome of any record under review. See [our privacy policy](https://doaj.org/privacy/#1-the-information-we-collect-and-how-we-use-it).
 - **Privacy** - we [will not share your personal data](https://doaj.org/privacy/) with third parties unless you have permitted us to do so. We will always ask you first.
 
 ### Your commitment to us
