@@ -3,7 +3,7 @@ from datetime import datetime
 
 from portality.api.current.data_objects.common import _check_for_script
 from portality.lib import swagger, seamless, coerce, dates, dataobj
-from portality import models
+from portality import models, constants
 from copy import deepcopy
 
 from portality.api.current.data_objects.common_journal_application import OutgoingCommonJournalApplication, _SHARED_STRUCT
@@ -29,7 +29,8 @@ OUTGOING_APPLICATION_STRUCT = {
                 "application_status" : {"coerce" : "unicode"},
                 "current_journal" : {"coerce" : "unicode"},
                 "date_applied" : {"coerce" : "unicode"},
-                "owner" : {"coerce" : "unicode"}
+                "owner" : {"coerce" : "unicode"},
+                "publisher_comment": {"coerce" : "unicode"}
             }
         }
     }
@@ -131,7 +132,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     """
     __type__ = "application"
     __SEAMLESS_COERCE__ = dict(COERCE_MAP)
-    __SEAMLESS_STRUCT__ = [
+    __SEAMLESS_STRUCT__ = deepcopy([
         # FIXME: Struct merge isn't an OVERRIDE, so we apply the strict checks first since they'll persist
         # FIXME: can we live without specifying required fields, since the form validation will handle this?
         INCOMING_APPLICATION_REQUIREMENTS,
@@ -140,13 +141,32 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         # I have removed it as it was exposing incorrect data in the auto-generated documentation
         # INTERNAL_APPLICATION_STRUCT,
         _SHARED_STRUCT
-    ]
+    ])
 
     def __init__(self, raw=None, **kwargs):
+        # we only have the text of the publisher's comment at this point
+        self._adjust_struct()
         if raw is None:
             super(IncomingApplication, self).__init__(silent_prune=False, check_required_on_init=False, **kwargs)
         else:
             super(IncomingApplication, self).__init__(raw=raw, silent_prune=False, **kwargs)
+
+    def _adjust_struct(self):
+        for struct in self.__SEAMLESS_STRUCT__:
+            admin = struct.get("structs", {}).get("admin")
+
+            if admin:
+                # Remove publisher_comment from objects
+                if "publisher_comment" in admin.get("objects", []):
+                    admin["objects"].remove("publisher_comment")
+
+                # Remove its struct definition
+                admin.get("structs", {}).pop("publisher_comment", None)
+
+                # Add it as a unicode field
+                admin.setdefault("fields", {})["publisher_comment"] = {
+                    "coerce": "unicode"
+                }
 
     @property
     def data(self):
@@ -205,6 +225,10 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if len(self.data["bibjson"]["keywords"]) > 6:
             raise seamless.SeamlessException("bibjson.keywords may only contain a maximum of 6 keywords")
 
+        # publisher comment cannot be longer than constants.MAX_PUBLISHER_COMMENT_LENGTH
+        if "publisher_comment" in self.data["admin"] and len(self.data["admin"]["publisher_comment"]) > constants.MAX_PUBLISHER_COMMENT_LENGTH:
+            raise seamless.SeamlessException(Messages.PUBLISHER_COMMENT_TOO_LONG__EXCEPTION.format(max_length=constants.MAX_PUBLISHER_COMMENT_LENGTH))
+
     def _normalise_issn(self, issn):
         issn = issn.upper()
         if len(issn) > 8: return issn
@@ -217,9 +241,10 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
                 issn = ("0" * (8 - len(issn))) + issn
                 return issn[:4] + "-" + issn[4:]
 
-    def to_application_model(self, existing=None):
+    def to_application_model(self, account_id, existing=None):
         nd = deepcopy(self.data)
-
+        # add meta to publisher's comment
+        self._patch_publisher_comment(nd, account_id)
         if existing is None:
             return models.Suggestion(**nd)
         else:
@@ -348,6 +373,21 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
             ordered += clusters[key]
         return ordered
 
+    @property
+    def publisher_comment(self):
+        return self.__seamless__.get_single("admin.publisher_comment")
+
+    def set_publisher_comment(self, comment, id=None, author_id=None, date=None):
+        if not id:
+            id = uuid.uuid4()
+        obj = {"id": id, "comment": comment, "author_id": author_id, "date": date}
+        self.__seamless__.set_with_struct("admin.publisher_comment", obj)
+
+    def get_publisher_comment_id(self):
+        if self.publisher_comment and "id" in self.publisher_comment:
+            return self.publisher_comment["id"]
+        return None
+
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
         if bj is None:
@@ -358,6 +398,21 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     def set_bibjson(self, bibjson):
         bibjson = bibjson.data if isinstance(bibjson, JournalLikeBibJSON) else bibjson
         self.__seamless__.set_with_struct("bibjson", bibjson)
+
+    @staticmethod
+    def _patch_publisher_comment(data, account_id):
+        pc = data["admin"].get("publisher_comment", None)
+
+        if not pc:
+            data["admin"]["publisher_comment"] = {}
+            return
+
+        data["admin"]["publisher_comment"] = {
+            "id": uuid.uuid4().hex,
+            "comment": pc,
+            "date": dates.today(),
+            "author_id": account_id
+        }
 
 
 class OutgoingApplication(OutgoingCommonJournalApplication):
@@ -377,7 +432,10 @@ class OutgoingApplication(OutgoingCommonJournalApplication):
     @classmethod
     def from_model(cls, application):
         assert isinstance(application, models.Suggestion)
-        return super(OutgoingApplication, cls).from_model(application)
+        outgoing = super(OutgoingApplication, cls).from_model(application)
+        # return only content of the publisher's comment
+        outgoing.data["admin"]["publisher_comment"] = application.publisher_comment["comment"]
+        return outgoing
 
     @property
     def data(self):
