@@ -310,6 +310,7 @@ def setup_jinja(app):
 
     app.jinja_env.add_extension('jinja2.ext.do')
     app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+    app.jinja_env.add_extension("jinja2.ext.debug")
 
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True

@@ -249,14 +249,16 @@ triage:
         pissn: "Print ISSN"
       validation:
         group:
-          fields_should_be_different: "The EISSN and PISSN must be different"
+          fields_should_be_different: "The Electronic ISSN and Print ISSN must be different"
           is_conditionally_required: false  # This means we won't display a group-level error if the note is missing
         eissn:
           regex_not_match: "The ISSN is not of the valid form"
-          fields_should_be_different: "The value of the EISSN must be different to the PISSN"
+          fields_should_be_different: "The value of the Electronic ISSN must be different to the Print ISSN"
+          is_conditionally_required: "If the Print ISSN is empty, the Electronic ISSN is required"
         pissn:
           regex_not_match: "The ISSN is not of the valid form"
-          fields_should_be_different: "The value of the PISSN must be different to the EISSN"
+          fields_should_be_different: "The value of the Print ISSN must be different to the Electronic ISSN"
+          is_conditionally_required: "If the Electronic ISSN is empty, the Print ISSN is required"
         note:
           is_conditionally_required: "Add more details about changes you made to ISSNs"
       compliant_answers:
@@ -699,15 +701,6 @@ triage:
         homepage: "Journal's homepage"
         oa_license: "Licensing policy"
         oa_license_www: "Link to licensing policy"
-      license_attrs:
-        "CC BY": "CC BY"
-        "CC BY-SA": "CC BY-SA"
-        "CC BY-ND": "CC BY-ND"
-        "CC BY-NC": "CC BY-NC"
-        "CC BY-NC-SA": "CC BY-NC-SA"
-        "CC BY-NC-ND": "CC BY-NC-ND"
-        "CC0": "CC0"
-        "other": "Publisher's own license"
       action:
         instruction: "Provide correct license, license attributes and license URL information provided below."
       remember: "If the exclusion does <strong>not</strong> relate to <all> journals from a publisher, an application for another journal from that publisher should <strong>not</strong> be rejected at this stage"
@@ -1043,8 +1036,11 @@ be rejected for <strong>any</strong> reason. After answering all triage question
       validation:
         special_exceptions:
           disallowed_value: "Please select one of the options"
+          is_conditionally_required: "You must select an exception, or choose 'No exceptions apply'"
         special_exception_other:
           is_conditionally_required: "If you select 'Other', please provide a description of the special exception"
+        note:
+          is_conditionally_required: "You must provide a note explaining the special exception"
       compliant_answers:
         - "compliant"
       non_compliant_answers:

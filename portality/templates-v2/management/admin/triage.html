@@ -11,6 +11,11 @@
 
 {% block admin_content %}
     <div
+        id="triage-announcement"
+        class="sr-only"
+        role="status"
+    ></div>
+    <div
         class="save-notification success"
         id="triage-save-notification-success"
         hidden
@@ -64,10 +69,12 @@
 
 {% block admin_js %}
     <script type="text/javascript" src="/static/js/custom_jquery.js"></script>
+    <script type="text/javascript">
+        window.doaj = window.doaj || {};
+        window.doaj.triage = window.doaj.triage || {};
+        doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
+        doaj.triage.asyncRecommendationURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}/recommendation";
+    </script>
     <script type="text/javascript" src="/static/js/triage-instructions.js"></script>
     <script type="text/javascript" src="/static/js/triage.js"></script>
-    <script type="text/javascript">
-        doaj.triage.asyncURL = "/workflow/triage-form/{{ application.id }}/async/{{ wfc.id }}";
-        doaj.triage.initialRecommendation = {{ recommendation|tojson }};
-    </script>
 {% endblock %}

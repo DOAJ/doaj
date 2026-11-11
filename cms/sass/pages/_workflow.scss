@@ -1,4 +1,39 @@
 body.dashboard {
+  .tag.stage-tag {
+    @extend .button;
+    padding: .25rem .5rem;
+    border-radius: 0;
+    margin: 0 0 0.25rem 0 !important;
+    transition: transform 0.2s ease;
+    &:focus-visible,
+    &:hover {
+        transform: translateY(-0.5rem);
+        outline: 4px solid $grapefruit;
+    }
+    &--new {
+      background-color: $white;
+      color: $warm-black;
+      border: 1px solid $warm-black;
+      &:focus-visible,
+      &:hover {
+        background-color: $white;
+        color: $warm-black;
+      }
+    }
+    &--triage {
+      background-color: $grapefruit;
+      color: $warm-black;
+      border: 1px solid $grapefruit;
+      &:focus-visible,
+      &:hover {
+        background-color: $grapefruit;
+        color: $warm-black;
+      }
+    }
+    &[aria-selected="true"] {
+      transform: translateY(-0.5rem);
+    }
+  }
   &.ew {
     .save-notification {
       position: fixed;
@@ -455,12 +490,39 @@ body.dashboard {
       position: relative;
       min-width: 0;
 
+      .banner {
+        border: solid 2px $dark-grey;
+        padding: 1rem 80px;
+        width: 100%;
+        background-color: #F6F4F4;
+        margin-top: 0.25rem;
+        font-size: 0.8rem;
+        h2 {
+          font-size: 1.1rem;
+          text-transform: uppercase;
+        }
+        a, button {
+          margin-bottom: 0;
+        }
+        .alert__close {
+          border: none;
+          text-transform: none;
+          text-decoration: underline;
+          font-size: 0.7rem;
+          &:hover {
+            background-color: transparent;
+            color: $grapefruit;
+          }
+        }
+      }
       .criterion-layout__question {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
       }
-
+      .question--header {
+        margin: 1rem 0 1rem 0;
+      }
       h4 {
         width: 100%;
         margin: 1.25rem 0;
@@ -1078,6 +1140,74 @@ body.dashboard {
         :hover, :focus {
           background-color: $sanguine;
           color: $white;
+        }
+      }
+    }
+    .history-section {
+      section {
+        padding: 1.5rem 0;
+        * {
+          border: none;
+        }
+
+        .group-label {
+          border: 0;
+          width: 100%;
+          text-align: left;
+          font-size: 1em;
+          margin: 0;
+          padding: .5rem .5rem .5rem 0;
+          color: $dark-grey;
+          text-transform: uppercase;
+          &:first-of-type {
+            margin-top: 1rem;
+          }
+        }
+        p {
+          margin: .25rem 0;
+        }
+        .ro_check {
+          display: flex;
+          align-items: flex-start;
+          gap: .25rem;
+          svg {
+            height: 1.25em;
+            width: auto;
+          }
+        }
+      }
+      .stage_metadata {
+        display: flex;
+        .tag {
+          margin-bottom: 0;
+        }
+        .sv_value {
+          display: flex;
+          flex-grow: 1;
+          justify-content: flex-end;
+          .tag.sv_tag {
+            font-weight: bold;
+            &.low {
+              background-color: $dark-green;
+              color: $white;
+            }
+
+            &.medium {
+              background-color: $grapefruit;
+              color: $white;
+            }
+
+            &.high {
+              background-color: $sanguine;
+              color: $white;
+            }
+
+            svg {
+              width: 1rem;
+              height: 1rem;
+              top: 4px;
+            }
+          }
         }
       }
     }

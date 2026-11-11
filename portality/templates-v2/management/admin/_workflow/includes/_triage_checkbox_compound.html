@@ -7,6 +7,7 @@
             {% set cr = els.check.capability.get_control_renderer() %}
             {{ cr.draw(els.check.control) }}
         </div>
+        {{ super() }}
     </div>
 {% endautoescape %}
 {% endblock %}

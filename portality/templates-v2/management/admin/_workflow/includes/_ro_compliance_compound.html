@@ -1,23 +1,67 @@
-<div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
-    {% set ns = namespace(check=None, others=[]) %}
-    {% for element in compound.elements %}
-        {% if element.capability.role == "check" %}
-            {% set ns.check = element %}
-        {% else %}
-            {% set ns.others = ns.others + [element] %}
-        {% endif %}
+{% set ns = namespace(check=None, note=None, action=None, others=[]) %}
+{% for element in compound.elements %}
+{% if element.capability.role == "check" %}
+{% set ns.check = element %}
+{% elif element.capability.role == "note" %}
+{% set ns.note = element %}
+{% elif element.capability.role == "action" %}
+{% set ns.action = element %}
+{% else %}
+{% set ns.others = ns.others + [element] %}
+{% endif %}
+{% endfor %}
 
-    {% endfor %}
-
+<div style="padding: .725rem 0;">
     {% autoescape off %}
-        {{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}
+    <a href="{{ url_for('workflow.triage_form', application_id=application.id) }}#{{compound.name}}" class="ro_check">
+        {{ ns.check.renderer.draw(ns.check, application=application, wfc=wfc) }}</a>
     {% endautoescape %}
 
-    <strong style="margin-left: 10px">{{ compound.label }}</strong>
 
-    {% for element in ns.others %}
-        {% autoescape off %}
-            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
-        {% endautoescape %}
+    {% set vals = namespace(values=[]) %}
+    {% for element in [ns.action]+[ns.note]+ns.others %}
+    {% for control in element.control %}
+    {% if control.control.attrs.value %}
+    {% set vals.values = vals.values + [control.control.attrs.value] %}
+    {% elif control.control.tag == "textarea" and control.control.content %}
+    {% set vals.values = vals.values + [control.control.content] %}
+    {% endif %}
     {% endfor %}
+    {% endfor %}
+
+    {% set check = namespace(answer=False, display="") %}
+    {% for control in ns.check.control %}
+    {% set input=control.control %}
+    {% if input.attrs.checked %}
+    {% set check.answer = input.attrs.value %}
+    {% break %}
+    {% endif %}
+    {% endfor %}
+
+    {% if vals.values|length %}
+    <div class="ro_subquestions"
+         style="padding: .5rem; margin-top: .5rem; background-color: #F6F4F4; font-size: smaller">
+        {% if ns.action and check.answer == "action" %}
+        <div class="ro_action">
+            {% autoescape off %}
+            {{ ns.action.renderer.draw(ns.action, application=application, wfc=wfc) }}
+            {% endautoescape %}
+        </div>
+        {% endif %}
+
+        {% if ns.note %}
+        <div class="ro_note">
+            {% autoescape off %}
+            <p>{{ ns.note.renderer.draw(ns.note, application=application, wfc=wfc) }}</p>
+            {% endautoescape %}
+        </div>
+        {% endif %}
+
+        {% for element in ns.others %}
+        {% autoescape off %}
+        <div>{{ element.renderer.draw(element, application=application, wfc=wfc) }}</div>
+        {% endautoescape %}
+        {% endfor %}
+    </div>
 </div>
+{% endif %}

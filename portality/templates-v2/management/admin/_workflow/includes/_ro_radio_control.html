@@ -52,18 +52,18 @@
 {% endfor %}
 {% autoescape off %}
     {% if answer.value == "compliant" %}
+        <span style="color: #3A5959">{{ compliant_icon | safe }}</span>
+    {% elif answer.value == "non_compliant" %}
+        <span style="color: #982E0A">{{ noncompliant_icon | safe }}</span>
+    {% elif answer.value == "later" %}
+        <span style="color: #F9D950">{{ later_icon | safe }}</span>
+    {% elif answer.value == "action" %}
+        <span style="color: #FD5A3B">{{ action_icon | safe }}</span>
+    {% elif compliance == "conditional_compliant" %}
         {{ compliant_icon | safe }}
-    {% elif compliance == "non_compliant" and label %}
-        {{ noncompliant_icon | safe }}
-    {% elif compliance == "later" and label %}
-        {{ later_icon | safe }}
-    {% elif compliance == "action" and label %}
-        {{ action_icon | safe }}
-    {% elif compliance == "conditional_compliant" and label %}
-        {{ compliant_icon | safe }}
-    {% elif compliance == "conditional_non_compliant" and label %}
+    {% elif compliance == "conditional_non_compliant" %}
         {{ noncompliant_icon | safe }}
     {% else %}
-        {{ answer.display or answer.value }}
+        {{ answer.display }}
     {% endif %}
 {% endautoescape %}

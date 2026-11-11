@@ -1,6 +1,17 @@
-<div {# style="border: 1px solid black; padding: 10px; margin-bottom: 10px;" #}>
-    <strong>{{ field.label}}</strong>
-    {% autoescape off %}
-        {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
-    {% endautoescape %}
-</div>
+<!--Each question that is not a check-->
+{% autoescape off %}
+{% set ns = namespace(values=[]) %}
+{% for control in field.control %}
+    {% if control.control.attrs.value %}
+        {% set ns.values = ns.values + [control.control.attrs.value] %}
+    {% elif control.control.tag == "textarea" and control.control.content %}
+        {% set ns.values = ns.values + [control.control.content] %}
+    {% endif %}
+
+{% endfor %}
+
+{% if ns.values %}
+<p><span style="font-weight: bold">{{ field.capability.label }}</span>
+    <span>{{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}</span></p>
+{% endif %}
+{% endautoescape %}

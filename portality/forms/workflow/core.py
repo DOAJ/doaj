@@ -81,6 +81,9 @@ class InlineROCompoundFieldRenderer(JinjaCompoundRenderer):
 class GenericROFieldRenderer(JinjaFieldRenderer):
     template = templates.WORKFLOW_RO_GENERIC_FIELD
 
+class RONoteRenderer(JinjaFieldRenderer):
+    template = templates.WORKFLOW_RO_NOTE
+
 class GenericRORadioRenderer(JinjaControlRenderer):
     template = templates.WORKFLOW_RO_RADIO_CONTROL
 

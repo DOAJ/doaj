@@ -1,4 +1,4 @@
-<li {# style="border: 1px solid black; padding: 10px; margin-bottom: 10px;" #}>
+<li>
     {% autoescape off %}
     {{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}
     {% endautoescape %}
