@@ -256,6 +256,9 @@ class State:
         self.workflow_control.add_audit(actor, target_data, date)
 
     def saveall(self, *args, **kwargs):
-        self.workflow_control.save(*args, **kwargs)
         if self._application:
+            self.workflow_control.save(*args, application=self.application, update_application=True,
+                                       save_application=False, **kwargs)
             self._application.save(*args, **kwargs)
+        else:
+            self.workflow_control.save(*args, update_application=True, save_application=True, **kwargs)

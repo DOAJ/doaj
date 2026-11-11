@@ -3,6 +3,38 @@ doaj.adminApplicationsSearch = {
 
     activeEdges : {},
 
+    openInWorkflow : function(params) {
+
+        return function(val, resultobj, renderer) {
+            var current_domain = document.location.host;
+            var current_scheme = window.location.protocol;
+
+            let frag = "";
+
+            let isLegacy = false;
+            if (resultobj.admin && resultobj.admin.workflow) {
+                if (resultobj.admin.workflow.module === "triage") {
+                    let overviewUrl = current_scheme + "//" + current_domain + params.workflowPage + resultobj.id;
+                    frag += `<a href="${overviewUrl}" style="margin-bottom: .75em; margin-right: 20px;" class="edit_suggestion_link button" target="_blank">Triage Application</a>`;
+                    isLegacy = true;
+                }
+            }
+
+            // determine the link name
+            let linkName = "Review application";
+            if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                linkName = "View application (finished)"
+            } else if (isLegacy) {
+                linkName = "Review in legacy workflow (not recommended)"
+            }
+
+
+            frag += `<a class="edit_suggestion_link button" href="${params.editUrl}${resultobj.id}" target="_blank" style="margin-bottom: .75em;">${linkName}</a>`;
+
+            return frag;
+        }
+    },
+
     init : function(params) {
         if (!params) { params = {} }
 
@@ -188,7 +220,13 @@ doaj.adminApplicationsSearch = {
                 renderer: doaj.renderers.newAdminBasicResultsRenderer({
                     topRowDisplay: [
                         [{valueFunction: doaj.fieldRender.titleField}],
-                        [{valueFunction: doaj.fieldRender.editSuggestion({editUrl: doaj.adminApplicationsSearchConfig.applicationEditUrl})}]
+                        // [{valueFunction: doaj.fieldRender.editSuggestion({editUrl: doaj.adminApplicationsSearchConfig.applicationEditUrl})}],
+                        [{valueFunction: doaj.adminApplicationsSearch.openInWorkflow(
+                            {
+                                editUrl: doaj.adminApplicationsSearchConfig.applicationEditUrl,
+                                workflowPage: doaj.adminApplicationsSearchConfig.workflowPage
+                            }
+                        )}]
                     ],
                     leftRowDisplay: [
                         [{pre: '<strong>Alternative title: </strong>', field: "bibjson.alternative_title"}],
@@ -209,7 +247,8 @@ doaj.adminApplicationsSearch = {
                         [{valueFunction: doaj.fieldRender.deadline}],
                         [{pre: "<strong>Date applied</strong>: ", valueFunction: doaj.fieldRender.suggestedOn}],
                         [{pre: "<strong>Date Rejected</strong>: ", valueFunction: doaj.fieldRender.dateRejected}],
-                        [{pre: "<strong>Last updated</strong>: ", valueFunction: doaj.fieldRender.lastManualUpdate}]
+                        [{pre: "<strong>Last updated</strong>: ", valueFunction: doaj.fieldRender.lastManualUpdate}],
+                        [{pre: "<strong>In new workflow</strong>: ", valueFunction: doaj.fieldRender.inNewWorkflow}],
                     ]
                 })
             }),
