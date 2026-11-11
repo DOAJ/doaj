@@ -119,8 +119,8 @@ class TriageFormProcessor:
         # May raise an AuthoriseExeption
         new_state = state.do(ApplicationEdit(account))
         if not dry_run:
+            self._target_wfc.save(application=self._target_application, update_application=True, save_application=False)
             self._target_application.save()
-            self._target_wfc.save()
 
     ################################
     ## Internal processing methods

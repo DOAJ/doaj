@@ -243,13 +243,22 @@ class WorkflowControl(SeamlessMixin, DomainObject):
     def data(self):
         return self.__seamless__.data
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, application=None, update_application=True, save_application=True, **kwargs):
         if self.id is None:
             self.set_id(self.makeid())
         # all notes in the cache should get saved
         for id, n in self._notes_cache.items():
             n.resource_id = self.id
             n.save()
+
+        if update_application:
+            if application is None:
+                application = Application.pull(self.application_id)
+            if application is not None:
+                application.set_workflow_info(self)
+                if save_application:
+                    application.save()
+
         super(WorkflowControl, self).save(*args, **kwargs)
 
     ####################################

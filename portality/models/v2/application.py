@@ -1,9 +1,12 @@
 from copy import deepcopy
 
+from typing import Union, TYPE_CHECKING
+if TYPE_CHECKING:
+    from portality.models import WorkflowControl
+
 from portality import constants
 from portality.core import app
 from portality.lib import es_data_mapping, coerce, dates
-from portality.models import WorkflowControl
 from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
@@ -176,10 +179,28 @@ class Application(JournalLikeObject):
     def date_rejected(self, value):
         self.__seamless__.set_with_struct("admin.date_rejected", value)
 
-    def set_workflow_info(self, workflow_control:WorkflowControl):
-        self.__seamless__.set_with_struct("admin.workflow.wfc", workflow_control.id)
-        self.__seamless__.set_with_struct("admin.workflow.module", workflow_control.module)
-        self.__seamless__.set_with_struct("admin.workflow.stage", workflow_control.stage)
+    def set_workflow_info(self, workflow_control:Union["WorkflowControl", dict]):
+        if isinstance(workflow_control, dict):
+            wfc_id = workflow_control.get("wfc")
+            module = workflow_control.get("module")
+            stage = workflow_control.get("stage")
+        else:
+            wfc_id = workflow_control.id
+            module = workflow_control.module
+            stage = workflow_control.stage
+        self.__seamless__.set_with_struct("admin.workflow.wfc", wfc_id)
+        self.__seamless__.set_with_struct("admin.workflow.module", module)
+        self.__seamless__.set_with_struct("admin.workflow.stage", stage)
+
+    def workflow_info(self):
+        wfc_id = self.__seamless__.get_single("admin.workflow.wfc")
+        module = self.__seamless__.get_single("admin.workflow.module")
+        stage = self.__seamless__.get_single("admin.workflow.stage")
+        return {
+            "wfc": wfc_id,
+            "module": module,
+            "stage": stage
+        }
     
     def _sync_owner_to_journal(self):
         if self.current_journal is None:

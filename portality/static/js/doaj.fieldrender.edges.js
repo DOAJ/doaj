@@ -5833,6 +5833,13 @@ doaj.fieldRender = {
             }
         },
 
+        inNewWorkflow: function (val, resultobj, renderer) {
+            if (resultobj.admin && resultobj.admin.workflow) {
+                return `${resultobj.admin.workflow.module}:${resultobj.admin.workflow.stage}`
+            }
+            return "No"
+        },
+
         suggestedOn: function (val, resultobj, renderer) {
             if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
                 return doaj.dates.iso_datetime2date_and_time(resultobj['admin']['date_applied']);

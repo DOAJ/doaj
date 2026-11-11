@@ -28,6 +28,7 @@
         adminApplicationsSearchConfig : {
             applicationEditUrl : "{{ url_for('admin.application', application_id='') }}",
             journalsUrl : "{{ url_for('admin.index') }}",
+            workflowPage : "{{ url_for('workflow.workflow_item_overview', application_id="") }}",
             readOnlyJournalUrl: "{{ url_for('admin.journal_readonly', journal_id="") }}",
             searchPath : '/admin_query/suggestion/_search'
         }
