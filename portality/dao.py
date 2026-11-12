@@ -1372,18 +1372,23 @@ class DomainObject(UserDict, object):
         The indexes alias is then repointed to the new index.
         If a keep_history value is provided, the previous indexes with the same prefix as the alias will be deleted,
 
-        :param documents:
-        :param mapping:
+        :param documents: may be empty, to roll the alias over onto a new empty index (then a mapping is required)
+        :param mapping: the mappings, or a full index body ({"mappings": ..., "settings": ...}) to also apply index settings
         :param keep_history: supply -1 to keep all history, 0 to keep no history, or a positive integer to keep that many previous indexes.
         :return:
         """
+        has_documents = len(documents) > 0
+        if not has_documents and mapping is None:
+            raise ValueError("A mapping is required to roll over onto an empty index")
+
         full_alias = cls.index_name()
         new_name = cls.__type__ + "-" + dates.now_str(dates.FMT_DATETIME_LONG)
         if mapping is not None:
             cls.put_mapping(mapping, override_index_name=new_name)
-        resp = cls.bulk(documents, refresh=True, override_index_name=new_name)
-        if resp.get('errors', False):
-            raise ESError("Error creating index {}: {}".format(new_name, resp))
+        if has_documents:
+            resp = cls.bulk(documents, refresh=True, override_index_name=new_name)
+            if resp.get('errors', False):
+                raise ESError("Error creating index {}: {}".format(new_name, resp))
         cls.move_alias(full_alias, new_name)
 
         if keep_history > -1:
