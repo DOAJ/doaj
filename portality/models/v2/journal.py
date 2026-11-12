@@ -387,7 +387,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def get_note_by_id(self, note_id:str):
         if not self._notes_loaded:
             self._load_notes()
-        return self._note_to_legacy_dict(self._notes.get(note_id))
+        original_note = self._notes.get(note_id)
+        if not original_note:
+            return None
+        return self._note_to_legacy_dict(original_note)
 
     def set_notes(self, notes:Union[list[Note], list[dict], Note, dict]):
         if not isinstance(notes, list):
@@ -536,8 +539,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         flag = self.get_note_by_id(flag_id)
         if flag:
             self.remove_note_by_id(flag_id)
-            return self.add_note(updated_note, flag.get("date"), flag_id, flag.get("author_id"))
+            date = date if date else flag.get("date", dates.now_str())
+            author_id = author if author else flag.get("author_id")
+            return self.add_note(updated_note, date, flag_id, author_id)
         else:
+            # FIXME: it's possible in some circumstances not resolving the note could leave behind some detritus
             return None
 
     def delete_flag_and_note(self):
