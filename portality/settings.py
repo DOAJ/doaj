@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.5"
+DOAJ_VERSION = "8.7.7"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -1148,21 +1148,22 @@ ADMIN_NOTES_SEARCH_MAPPING = {
 }
 
 ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
+ASCII_FOLDED_ALL_META = {**ASCII_FOLDED, "copy_to": ["all_meta"]}
 
 JOURNAL_EXCEPTION_MAPPING = {
-    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ARTICLE_EXCEPTION_MAPPING = {
-    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ####################################################
@@ -1629,8 +1630,10 @@ BG_MONITOR_ERRORS_CONFIG = {
         'allowed_num_err': 0
     },
     'harvest': {
-        'check_sec': _DAY,
-        'allowed_num_err': 0,
+        # harvest runs daily and is sometimes re-run manually after a failure - disable the error
+        # count and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['harvest'] instead, which only
+        # cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'ingest_articles': {
         'check_sec': _DAY,
