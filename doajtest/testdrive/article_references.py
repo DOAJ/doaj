@@ -5,6 +5,7 @@ from doajtest.fixtures.article import ArticleFixtureFactory
 from portality import constants
 from portality import models
 from portality.core import app
+from portality.models.article import ArticleQuery
 
 # The ISSNs used by the "with_references.xml" test resources for DOAJ, Crossref 4.4.2 and Crossref 5.3.1 XML
 PISSN = "1111-1111"
@@ -95,15 +96,22 @@ class ArticleReferences(TestDrive):
         # make the removals visible before deleting by query, otherwise ES reports version conflicts
         models.Article.refresh()
         # also remove any articles created during testing, via the XML upload or the metadata form
-        models.Article.delete_by_issns([PISSN, EISSN], snapshot=False)
+        self.delete_articles_by_issns([PISSN, EISSN])
         return self.SUCCESS
 
-    @staticmethod
-    def eliminate_existing(issns):
+    @classmethod
+    def eliminate_existing(cls, issns):
         for issn in issns:
             for j in models.Journal.find_by_issn(issn):
                 j.delete()
-        models.Article.delete_by_issns(issns, snapshot=False)
+        cls.delete_articles_by_issns(issns)
+
+    @staticmethod
+    def delete_articles_by_issns(issns):
+        # Tombstoning needs the article's owning journal, which by now has been removed (or never existed, for
+        # leftovers from an earlier run), so delete without tombstones; they are of no use for testdrive data anyway
+        q = ArticleQuery(issns=issns)
+        models.Article.delete_selected(query=q.query(), snapshot=False, tombstone=False)
 
     def admin_account(self):
         un = self.create_random_str()
