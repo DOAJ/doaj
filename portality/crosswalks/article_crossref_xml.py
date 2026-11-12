@@ -175,6 +175,7 @@ class CrossrefXWalk442(object):
         self.extract_article_title(record, journal, bibjson)
         self.extract_authors(record, journal, bibjson)
         self.extract_abstract(record, journal, bibjson)
+        self.extract_references(record, journal, bibjson)
 
         return article
 
@@ -327,6 +328,36 @@ class CrossrefXWalk442(object):
             bibjson.abstract = text[:30000]  # avoids Elasticsearch
             # exceptions about .exact analyser not being able to handle
             # more than 32766 UTF8 characters
+
+    # the only place references may appear in a crossref deposit is citation_list/citation, and
+    # the model is identical in 4.4.2 and 5.3.1 (see common4.4.2.xsd / common5.3.1.xsd, citation_t),
+    # so this implementation is inherited unchanged by CrossrefXWalk531 - only the namespace differs
+    CITATION_FIELDS = ["x:author", "x:cYear", "x:article_title", "x:volume_title", "x:series_title",
+                       "x:journal_title", "x:standards_body", "x:std_designator", "x:edition_number",
+                       "x:component_number", "x:volume", "x:issue", "x:first_page", "x:elocation_id",
+                       "x:isbn", "x:issn", "x:doi"]
+
+    def extract_references(self, record, journal, bibjson):
+        citation_list = record.find("x:citation_list", self.NS)
+        if citation_list is None:
+            return
+        for citation in citation_list.findall("x:citation", self.NS):
+            reference = self._citation_to_string(citation)
+            if reference:
+                bibjson.add_reference(reference)
+
+    def _citation_to_string(self, citation):
+        """ Render a crossref citation element as a single reference string """
+        unstructured = _element(citation, "x:unstructured_citation", self.NS)
+        if unstructured is not None:
+            return unstructured
+
+        parts = []
+        for field in self.CITATION_FIELDS:
+            val = _element(citation, field, self.NS)
+            if val is not None:
+                parts.append(val)
+        return ". ".join(parts) if parts else None
 
 ###############################################################################
 ## Crossref 5.3.1 Xwalk

@@ -38,7 +38,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                 "abstract" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "author" : {"contains" : "object"}
+                "author" : {"contains" : "object"},
+                "reference" : {"contains" : "field", "coerce" : "unicode"}
             },
             "objects" : [
                 "journal"
@@ -756,6 +757,30 @@ class ArticleBibJSON(GenericBibJSON):
     @abstract.setter
     def abstract(self, val):
         self._set_with_struct("abstract", val)
+
+    @property
+    def reference(self):
+        return self._get_list("reference")
+
+    @reference.setter
+    def reference(self, val):
+        self._set_with_struct("reference", val)
+
+    @property
+    def references(self):
+        return self.reference
+
+    def add_reference(self, ref):
+        if ref is not None:
+            self._add_to_list_with_struct("reference", ref)
+
+    def set_reference(self, refs):
+        if refs is not None:
+            self._set_with_struct("reference", refs)
+
+    def set_references(self, refs):
+        if refs is not None:
+            self._set_with_struct("reference", refs)
 
     # article-specific complex part getters and setters
 

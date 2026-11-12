@@ -242,6 +242,13 @@ class DOAJXWalk(object):
                 if kel.text != "":
                     bibjson.add_keyword(kel.text)
 
+        # references
+        refsel = record.find("references")
+        if refsel is not None:
+            for rel in refsel:
+                if rel.text is not None and rel.text.strip() != "":
+                    bibjson.add_reference(rel.text.strip())
+
         # add the journal info if requested
         if add_journal_info:
             article.add_journal_metadata()
