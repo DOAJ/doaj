@@ -12,10 +12,12 @@ def list_write_required_routes(app):
             continue
         if getattr(view, "_write_required", False):
             methods = sorted(m for m in rule.methods if m not in ("HEAD", "OPTIONS"))
+            allowed = getattr(view, "_write_allowed_methods", frozenset())
             writable.append({
                 "rule": rule.rule,
                 "endpoint": rule.endpoint,
-                "methods": methods
+                "methods": methods,
+                "allowed_in_read_only": [m for m in methods if m in allowed]
             })
         else:
             methods = sorted(m for m in rule.methods if m not in ("HEAD", "OPTIONS"))
@@ -29,21 +31,22 @@ def list_write_required_routes(app):
 writable, readable = list_write_required_routes(app)
 out = rel2abs(__file__, "..", "..", "deploy", "write_required_routes.csv")
 with open(out, "w", newline='') as csvfile:
-    fieldnames = ["rule", "endpoint", "methods"]
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    fieldnames = ["rule", "endpoint", "methods", "allowed_in_read_only"]
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, lineterminator="\n")
 
     writer.writeheader()
     for route in writable:
         writer.writerow({
             "rule": route["rule"],
             "endpoint": route["endpoint"],
-            "methods": ", ".join(route["methods"])
+            "methods": ", ".join(route["methods"]),
+            "allowed_in_read_only": ", ".join(route["allowed_in_read_only"])
         })
 
 out = rel2abs(__file__, "..", "..", "deploy", "read_only_routes.csv")
 with open(out, "w", newline='') as csvfile:
     fieldnames = ["rule", "endpoint", "methods"]
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, lineterminator="\n")
 
     writer.writeheader()
     for route in readable:
