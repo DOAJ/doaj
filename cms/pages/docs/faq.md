@@ -140,9 +140,23 @@ If article XML uploading fails, there might be a problem with the XML. An error 
 
 ### My authors have multiple affiliations
 
-We are currently unable to roll up multiple affiliations and attach them to one author. We are investigating how we can better support this. More information will be posted on our blog.
+Multiple affiliations are supported per author. An author with multiple affiliations will be listed once, with all their affiliations grouped together.
 
-If an author has multiple affiliations, you must list the author once for each affiliation. 
+When uploading article metadata via the API, use the `affiliations` field (a list of strings) inside each author object. For example:
+
+```json
+{
+  "name": "The Author",
+  "affiliations": [
+    "Department of Chemistry, University of Toronto",
+    "Department of Chemistry, York University"
+  ]
+}
+```
+
+For backward compatibility, the API will also accept the old `affiliation` field (a single string).
+
+When uploading via DOAJ XML, you can use multiple `affiliationId` elements per author to reference different affiliations.
 
 ### My article abstracts are in more than one language
 
@@ -222,9 +236,10 @@ From time to time, other validation errors might be seen if one of the cells con
 
 ## Version history
 
-This is Version 3.2 of our Metadata help page.
+This is Version 3.3 of our Metadata help page.
 
-*Version 3.2 (November 2025 - updates to the CSV validation text)*<br>
+*Version 3.3 (September 2026 - updated multiple affiliations section)*<br>
+<s>Version 3.2 (November 2025 - updates to the CSV validation text)</s><br>
 <s>Version 3.1 (October 2025 - small corrections and updates)</s><br>
 <s>Version 3.0 (January 2025 - added a new section: 'Correcting or updating article metadata')</s><br>
 <s>Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)</s><br>

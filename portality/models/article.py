@@ -48,9 +48,11 @@ ARTICLE_BIBJSON_EXTENSION = {
                 "author" : {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
-                        "affiliation" : {"coerce" : "unicode"},
                         "email" : {"coerce": "unicode"},
                         "orcid_id" : {"coerce" : "unicode"}
+                    },
+                    "lists" : {
+                        "affiliations" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 },
 
@@ -815,13 +817,32 @@ class ArticleBibJSON(GenericBibJSON):
     def publisher(self, value):
         self._set_with_struct("journal.publisher", value)
 
-    def add_author(self, name, affiliation=None, orcid_id=None):
+    def add_author(self, name, affiliations=None, orcid_id=None):
         aobj = {"name": name}
-        if affiliation is not None:
-            aobj["affiliation"] = affiliation
+        if affiliations is not None:
+            aobj["affiliations"] = affiliations if isinstance(affiliations, list) else [affiliations]
         if orcid_id is not None:
             aobj["orcid_id"] = orcid_id
         self._add_to_list_with_struct("author", aobj)
+
+    def find_author_index(self, name):
+        """Find the index of an author by name. Returns -1 if not found."""
+        for i, a in enumerate(self.author):
+            if a.get("name") == name:
+                return i
+        return -1
+
+    def add_affiliations_to_author(self, author_index, affiliations):
+        """Add affiliations to an existing author"""
+        authors = self.author
+        if author_index < 0 or author_index >= len(authors):
+            return
+        existing = authors[author_index].get("affiliations", [])
+        for aff in affiliations:
+            if aff not in existing:
+                existing.append(aff)
+        authors[author_index]["affiliations"] = existing
+        self.author = authors
 
     @property
     def author(self):

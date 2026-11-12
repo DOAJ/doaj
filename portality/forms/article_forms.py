@@ -557,7 +557,8 @@ class AuthorForm(Form):
     ~~->$ Author:Form~~
     """
     name = StringField("Name", [validators.Optional(),NoScriptTag()])
-    affiliation = StringField("Affiliation", [validators.Optional(), NoScriptTag()])
+    affiliations = StringField("Affiliations", [validators.Optional(), NoScriptTag()],
+                               description="Separate multiple affiliations with a semicolon (;)")
     orcid_id = StringField("ORCID iD", [validators.Optional(), validators.Regexp(regex=regex.ORCID_COMPILED, message=ORCID_ERROR)])
 
 
