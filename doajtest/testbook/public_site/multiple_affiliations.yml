@@ -1,0 +1,137 @@
+suite: Public Site
+testset: Multiple Author Affiliations
+tests:
+- title: Author with multiple affiliations is displayed once on the article page
+  context:
+    role: Anonymous
+    testdrive: multiple_affiliations
+  setup:
+    - Open /testdrive/multiple_affiliations in its own tab and keep it open for the whole test - closing or navigating
+      away from it removes the test data. Do all of the steps below in a separate tab.
+    - At the end of the test use the 'FINISH TESTING AND CLEAN UP' link on the testdrive page, unless you are going
+      on to the other tests in this testset
+  steps:
+  - step: Open the "article_page" link from the testdrive "links" section
+    results:
+    - The authors line reads "Ana Author, Ben Author, Cat Author" - each author appears exactly once
+  - step: Click the "Affiliations" button under the authors list
+    results:
+    - The affiliations section expands
+    - '"Ana Author" is listed once, followed by an ORCiD link and then "University of Oxford", "Harvard University"
+      and "MIT", each on its own line, in that order'
+    - '"Ben Author" is listed once with "Sorbonne University"'
+    - '"Cat Author" is listed with no affiliation and no ORCiD'
+  - step: Click the ORCiD link under "Ana Author"
+    results:
+    - https://orcid.org/0000-0001-2345-6789 opens in a new tab
+  - step: Use a screen reader or the browser's accessibility inspector on the expanded section
+    results:
+    - Each author is a term (dt) and each of their affiliations is a separate description (dd) belonging to it
+
+- title: Upload DOAJ XML where an author references multiple affiliations
+  context:
+    role: Publisher
+    testdrive: multiple_affiliations
+  setup:
+    - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
+    - Copy the "doaj_xml" value from the testdrive "upload_data" section and save it as a file called
+      multiple_affiliations.xml. It already contains the testdrive journal's ISSNs.
+  steps:
+  - step: In a separate tab, log in with the testdrive publisher username and password
+  - step: Open the "publisher_xml_upload" link
+  - step: Choose "DOAJ Native XML" as the format, select multiple_affiliations.xml and click "Upload"
+    results:
+    - 'A flash message is shown: "File uploaded and waiting to be processed. Check back here for updates."'
+  - step: Wait a short time and reload the page
+    results:
+    - The upload is shown as "successfully processed" with the note "1 articles imported (1 new, 0 updated)"
+  - step: Open the "journal_toc" link and click the article titled "XML Multiple Affiliations ..."
+    results:
+    - The authors line reads "Jane Doe, John Smith" - each author appears once
+  - step: Click the "Affiliations" button
+    results:
+    - '"Jane Doe" shows an ORCiD link, then "University of Oxford" and "Harvard University" on separate lines'
+    - '"John Smith" shows "Harvard University" and "MIT" on separate lines'
+    - '"Harvard University" is shown under both authors, although it is defined only once in the XML file'
+
+- title: Create articles with multiple affiliations through the API
+  context:
+    role: Publisher
+    testdrive: multiple_affiliations
+  setup:
+    - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
+    - You need a tool that can send a POST request with a JSON body, eg curl, Postman, or the API docs page /api/docs
+  steps:
+  - step: 'Send a POST request to the "api_create_article" link with header "Content-Type: application/json" and
+      the "api_json_affiliations_list" value as the body'
+    results:
+    - The response status is 201 and the response contains the new article's id
+  - step: Open /article/<the returned id>, then click "Affiliations"
+    results:
+    - '"Api Author" is listed once with "Uni One" and "Uni Two" on separate lines'
+  - step: Send a GET request to /api/articles/<the returned id>?api_key=<testdrive publisher api_key>
+    results:
+    - 'The author in bibjson.author has an "affiliations" list: ["Uni One", "Uni Two"]'
+    - There is no "affiliation" (singular) field
+  - step: Send another POST request in the same way, with the "api_json_legacy_affiliation" value as the body.
+      It uses the old single "affiliation" string field.
+    results:
+    - The response status is 201 - the old field is still accepted
+  - step: Send a GET request for the second article's id
+    results:
+    - 'The author has "affiliations": ["Old Style University"], converted from the old field'
+
+- title: Enter and edit multiple affiliations in the article metadata form
+  context:
+    role: Publisher
+    testdrive: multiple_affiliations
+  setup:
+    - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
+    - In a separate tab, log in with the testdrive publisher username and password
+  steps:
+  - step: Open the "publisher_metadata_form" link
+    results:
+    - In the Authors section the field is labelled "Affiliations", with help text telling you to separate
+      multiple affiliations with a semicolon (;)
+  - step: Enter Article Title "Form Multiple Affiliations", a Full-Text URL such as https://example.com/form-affs,
+      and select the testdrive journal's ISSN
+  - step: For the first author enter Name "Form Author" and Affiliations "University of Oxford ; Harvard University;;MIT"
+  - step: Click "Add Article"
+    results:
+    - The message "Article created/updated" is shown
+  - step: Open the "journal_toc" link, open the "Form Multiple Affiliations" article and click "Affiliations"
+    results:
+    - '"Form Author" is listed once with exactly three affiliations: "University of Oxford", "Harvard University"
+      and "MIT" - extra spaces are removed and the empty value between ";;" is ignored'
+
+- title: Admin edits an article with multiple affiliations
+  context:
+    role: Admin
+    testdrive: multiple_affiliations
+  setup:
+    - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
+    - In a separate tab, log in as an admin
+  steps:
+  - step: Open /admin/article/<testdrive article id>
+    results:
+    - 'The first author is "Ana Author" and the Affiliations field shows "University of Oxford; Harvard University; MIT"'
+  - step: Change the Affiliations to "University of Oxford; MIT" and save the article
+    results:
+    - The article saves without error
+  - step: Open the "article_page" link and click "Affiliations"
+    results:
+    - '"Ana Author" now shows only "University of Oxford" and "MIT"'
+    - The other authors are unchanged
+
+- title: OAI-PMH oai_doaj output for an author with multiple affiliations
+  context:
+    role: Anonymous
+    testdrive: multiple_affiliations
+  setup:
+    - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
+  steps:
+  - step: Open /oai.article?verb=GetRecord&metadataPrefix=oai_doaj&identifier=oai:doaj.org/article:<testdrive article id>
+    results:
+    - '"Ana Author" appears once in the authors list, with three affiliationId elements'
+    - Each of those ids matches an affiliationName in the affiliationsList with the values "University of Oxford",
+      "Harvard University" and "MIT"

@@ -35,7 +35,8 @@ tests:
   - step: Click on the RIS export option
     results:
     - An .ris file is downloaded containing the article's bibliographic metadata (including
-      title, authors, affiliations, journal, publication date, and identifiers)
+      title, authors, journal, publication date, and identifiers)
+    - Each author appears once (AU line), even if they have multiple affiliations. RIS does not include affiliations.
   - step: Click on the BibTeX export option if available
     results:
     - BibTeX formatted citation data is displayed or downloaded
