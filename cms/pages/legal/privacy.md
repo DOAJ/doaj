@@ -60,7 +60,9 @@ Only some emails generated as part of the review process can be sent to Applican
 
 Gmail automatically saves copies of all emails that we send. Our use of Gmail and the protection of your personal data within it is governed by [Google's Privacy Policy](https://policies.google.com/privacy/update), [Data Processing Amendment for G Suite](https://gsuite.google.com/terms/dpa_terms.html), and [Data Processing and Security Terms for Google Cloud Platform](https://cloud.google.com/terms/data-processing-term).
 
-We will never discuss the details of your journal applications with anyone apart from you or someone that we can easily verify is connected to your journal or to your journal's publisher.
+We will never discuss the details of your journal applications with anyone apart from you or someone that we can easily verify is connected to your journal or to your journal's publisher. In public spaces, closed online fora, or in groups on messaging apps, we will not refer to or infer the outcome of any record under review.
+
+To avoid confusion, confidentiality does not apply to any public information, such as the outcome of journals published on our Added/Withdrawn list. If a journal has publicly shared information about a decision, we reserve the right to comment, provide more detail or context.
 
 #### 1b Volunteer applications
 
