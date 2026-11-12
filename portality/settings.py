@@ -721,7 +721,10 @@ DEFAULT_INDEX_SETTINGS = \
 
 # Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
 # Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
-INDEX_SETTINGS_OVERRIDES = {}
+INDEX_SETTINGS_OVERRIDES = {
+    # RIS cache: write-mostly, read back by id only; DEFLATE is ~35% smaller than the default LZ4 for its _source
+    "ris_export": {"codec": "best_compression"},
+}
 
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
