@@ -492,7 +492,9 @@ HUEY_SCHEDULE = {
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "2", "minute": "0"},
-    "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    # Disabled: a full run (re)generates RIS for every article (~16.6M). The cache refills on demand instead - RIS
+    # downloads and article saves both write it. Was {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"}
+    "ris_export": CRON_NEVER,
 }
 
 
