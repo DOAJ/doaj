@@ -26,7 +26,7 @@ import re
 from datetime import datetime
 
 from portality import lock, constants
-from portality.lib import dates
+from portality.lib import csv_utils, dates
 from portality.core import app
 from portality.models import Journal, Account
 from portality.crosswalks import journal_questions
@@ -37,6 +37,8 @@ from portality.forms.application_forms import ApplicationFormFactory
 
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
+from portality.bll.services.application import CSVValidationReport
+from portality.ui.messages import Messages
 
 SYSTEM_ACCOUNT = {
     "email": "steve@cottagelabs.com",
@@ -46,6 +48,12 @@ SYSTEM_ACCOUNT = {
 }
 
 sys_acc = Account(**SYSTEM_ACCOUNT)
+
+
+def has_blocking_warnings(report: CSVValidationReport) -> bool:
+    """ Warnings other than 'no data change' - unchanged records are simply skipped by this script.
+    Only called when there are no errors, so every entry is a warning. """
+    return any(msg != Messages.JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE for _, msg in report.all_errors)
 
 
 def confirm_prompt():
@@ -116,7 +124,7 @@ if __name__ == "__main__":
 
     appSvc = DOAJ.applicationService()
     validation_results = appSvc.validate_update_csv(args.infile, acc)
-    if validation_results.has_errors_or_warnings():
+    if validation_results.has_errors() or has_blocking_warnings(validation_results):
         print(f'ERROR: CSV validation failed with warnings or errors.')
         print(validation_results.json(indent=2))
 
@@ -145,13 +153,13 @@ if __name__ == "__main__":
         row_ix = 1
 
         # ~~ ->$JournalUpdateByCSV:Feature ~~
-        for row in reader:
+        for row in csv_utils.trim_trailing_empty_rows(reader):
             row_ix += 1
             print(f'\n***\nCSV row {row_ix}')
             assert isinstance(row, dict)
 
             # Skip empty rows
-            if not any(row.values()):
+            if csv_utils.is_empty_row(row):
                 print("Skipping empty row.")
                 continue
 

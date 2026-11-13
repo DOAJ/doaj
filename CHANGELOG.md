@@ -2,6 +2,34 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.7
+Static pages release
+Reindex Alt title to fix public search
+https://github.com/DOAJ/doajPM/issues/4288
+
+Bugfix for flags feature
+https://github.com/DOAJ/doajPM/issues/4476
+
+### 8.7.6
+Python 3.12 upgrade
+https://github.com/DOAJ/doajPM/issues/4050
+
+Fixes for 'skip to main content' on homepage
+https://github.com/DOAJ/doajPM/issues/4441
+
+### 8.7.5
+
+Static pages release
+Improvements to scheduled task to reduce conflicts
+Pre-assessment checklist for journals from certain countries
+https://github.com/DOAJ/doajPM/issues/4421
+
+### 8.7.4
+
+Static pages release
+Fix bug where default roles weren't being assigned to new accounts
+https://github.com/DOAJ/doajPM/issues/4439
+
 ### 8.7.3
 
 Disallow terminology 'blind' peer review via form validation (anonymous should be selected)

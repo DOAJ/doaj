@@ -588,6 +588,32 @@ class FieldDefinitions:
             },
             "bulk_edit": {
                 "validate": []
+            },
+            # ~~^-> PreassessmentChecklist:FormWidget~~
+            # Issue #4421: on the public new-application form only, when the
+            # publisher's country is Mexico or Indonesia, show a required
+            # "I confirm..." checkbox below the country field (UI-only - its state
+            # is never saved as part of the Application, so there's no
+            # corresponding real form field/data model change). Deliberately
+            # scoped to "public" only (not update_request/editor/admin/etc, which
+            # share this same field definition) - the checklist is about
+            # readiness to *submit* a new application, not for staff reviewing one
+            # or a publisher updating an existing DOAJ-listed journal.
+            # Country values below are ISO 3166 alpha-2 codes (see iso_country_list
+            # / portality.datasets.country_options), NOT the country names.
+            "public": {
+                "widgets": [
+                    {"select": {}},
+                    {"preassessment_checklist": {
+                        "countries": {
+                            # Spanish-language pre-assessment checklist (Google Form)
+                            "MX": {"checklist_url": "https://docs.google.com/forms/d/e/1FAIpQLSceng2wJmSC5NElurptCh2bweAVcwgRzaf5QK0TgPXnDS2Acg/viewform"},
+                            # English-language pre-assessment checklist (Google Form)
+                            "ID": {"checklist_url": "https://docs.google.com/forms/d/e/1FAIpQLSeIjmsXhlUL1GCsKHC5LZ_wc0LsDzlONzOQKpRrSSw5F4ZfBQ/viewform?usp=header"},
+                        },
+                        "blog_url": "https://blog.doaj.org/2026/09/28/using-our-new-pre-assessment-checklist-an-invitation-to-mexican-and-indonesian-journals/"
+                    }}
+                ]
             }
         }
     }
@@ -3453,7 +3479,8 @@ JAVASCRIPT_FUNCTIONS = {
     "issn_link": "formulaic.widgets.newIssnLink",  # ~~-> IssnLink:FormWidget~~,
     "article_info": "formulaic.widgets.newArticleInfo",  # ~~-> ArticleInfo:FormWidget~~
     "flag_manager": "formulaic.widgets.newFlagManager",  # ~~-> FlagManager:FormWidget~~
-    "date_picker": "formulaic.widgets.newDatePicker"  # ~~-> DatePicker:FormWidget~~
+    "date_picker": "formulaic.widgets.newDatePicker",  # ~~-> DatePicker:FormWidget~~
+    "preassessment_checklist": "formulaic.widgets.newPreassessmentChecklist"  # ~~-> PreassessmentChecklist:FormWidget~~
 
 }
 

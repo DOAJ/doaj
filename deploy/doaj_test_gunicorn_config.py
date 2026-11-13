@@ -1,5 +1,13 @@
 import multiprocessing
 
+def when_ready(server):
+    from portality.core import app
+    server.log.info("Waiting for Crossref schemas to load")
+    app.config["LOAD_CROSSREF_THREAD"].join()
+    if app.config["CROSSREF442_SCHEMA"] is None or app.config["CROSSREF531_SCHEMA"] is None:
+        raise RuntimeError("Crossref schemas failed to load")
+    server.log.info("Crossref schemas loaded")
+
 bind = "0.0.0.0:5050"
 workers = multiprocessing.cpu_count() * 3 + 1
 proc_name = 'doaj (test)'

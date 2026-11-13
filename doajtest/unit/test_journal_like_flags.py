@@ -196,6 +196,7 @@ class TestJournalLikeFlagsModel(DoajTestCase):
             fc = JournalFormFactory.context("admin")
             processor = fc.processor(source=journal)
             resolved_flag = {
+                "id": flag_note_id,
                 "assignee": self.another_admin.id,
                 "deadline": short_deadline,
                 "note": ftext,
