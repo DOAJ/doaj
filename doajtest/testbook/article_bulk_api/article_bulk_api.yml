@@ -1,0 +1,71 @@
+# ~~ArticleBulkAPI:FunctionalTest -> BulkArticlesAPI:Feature ~~
+suite: Article Bulk API
+testset: Bulk Article Create Status
+tests:
+- title: Bulk create reports which article has invalid metadata
+  context:
+    role: publisher
+    testdrive: publisher_with_journal
+  setup:
+    - Use the publisher_with_journal testdrive to set up for this test at /testdrive/publisher_with_journal. It creates
+      a publisher account with an API key, owning a journal in DOAJ with Print ISSN "1111-1111" and E-ISSN "2222-2222"
+    - If you have run this testdrive before, use the 'teardown' link from that earlier run first, so that no other
+      journal has these ISSNs
+    - Keep the testdrive tab open (closing it removes the test data) and do the test in a separate tab
+    - At the end of the test please use the 'teardown' link provided by the testdrive to remove test assets from the system
+  steps:
+  - step: Download the test resource file "bulk_api_articles_missing_title.json". It contains 3 articles; the second
+      one has no title
+    resource: /example_files/bulk_api_articles_missing_title.json
+  - step: Go to the API documentation page
+    path: /api/docs
+  - step: Open "POST /api/bulk/articles" (Bulk article creation (asynchronous)) and click "Try it out". Enter the
+      api_key from the testdrive result, paste the whole contents of the downloaded file into the body, and click
+      "Execute"
+    results:
+    - The response code is 202
+    - The response body contains an "upload_id" and a "status" link
+  - step: Open the "status" link from the response in a new tab. If the "status" is "pending" or "processing", wait a
+      few seconds and reload until it changes
+    results:
+    - '"status" is "failed"'
+    - '"error" is "Article at index 1: Field ''title'' is required but not present at ''bibjson.''" (articles are
+      counted from 0, so index 1 is the second article in the file)'
+    - There is no "results" section, because the batch was rejected before import
+  - step: Go to the Table of Contents for the journal
+    path: /toc/2222-2222
+    results:
+    - There are no articles whose title starts with "Bulk API test", because no articles are imported when any
+      article in the batch fails
+
+- title: Bulk create reports counts when valid articles are not imported
+  context:
+    role: publisher
+    testdrive: publisher_with_journal
+  setup:
+    - If you have not done so already, use the publisher_with_journal testdrive to set up for this test at
+      /testdrive/publisher_with_journal (see the setup of the previous test)
+  steps:
+  - step: Download the test resource file "bulk_api_articles_mixed_valid_and_invalid.json". It contains 3 articles;
+      the third one has the E-ISSN "5555-5555", which is not on any journal in DOAJ
+    resource: /example_files/bulk_api_articles_mixed_valid_and_invalid.json
+  - step: Go to the API documentation page
+    path: /api/docs
+  - step: Open "POST /api/bulk/articles" (Bulk article creation (asynchronous)) and click "Try it out". Enter the
+      api_key from the testdrive result, paste the whole contents of the downloaded file into the body, and click
+      "Execute"
+    results:
+    - The response code is 202
+    - The response body contains an "upload_id" and a "status" link
+  - step: Open the "status" link from the response in a new tab. If the "status" is "pending" or "processing", wait a
+      few seconds and reload until it changes
+    results:
+    - '"status" is "failed", NOT "processed_partial"'
+    - '"results" is {"valid_but_not_imported": 2, "failed": 1}, and there is no "imported" count'
+    - '"error" is "One or more articles failed to ingest; entire batch ingest halted"'
+    - '"failure_reasons" is {"unmatched": ["5555-5555"]}'
+  - step: Go to the Table of Contents for the journal
+    path: /toc/2222-2222
+    results:
+    - There are no articles whose title starts with "Bulk API test", because no articles are imported when any
+      article in the batch fails

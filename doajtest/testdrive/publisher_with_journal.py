@@ -19,8 +19,9 @@ class PublisherWithJournal(TestDrive):
         j.remove_current_application()
         j.set_id(j.makeid())
         j.set_owner(acc.id)
-        j.bibjson().eissn = "1111-1111"
-        j.bibjson().pissn = "2222-2222"
+        # same ISSNs, in the same fields, as the article XML upload test files in doajtest/xml_upload_test_package
+        j.bibjson().pissn = "1111-1111"
+        j.bibjson().eissn = "2222-2222"
         j.save()
 
         source = ApplicationFixtureFactory.make_application_source()
@@ -43,6 +44,14 @@ class PublisherWithJournal(TestDrive):
             },
             "journals": [j.id],
             "applications": [a.id],
+            "article_upload_instructions": [
+                "Log in with the username and password above to upload articles as this publisher",
+                "The journal is in DOAJ with Print ISSN 1111-1111 and E-ISSN 2222-2222, matching the article XML upload test files",
+                "An article's ISSNs must match exactly one journal in DOAJ, owned by the uploader, with the Print and E-ISSN in the same fields",
+                "Only one journal may have these ISSNs. If you ran this testdrive before, use the teardown link on that earlier page first, or uploads will fail with the ISSNs reported as shared or not owned",
+                "For the 'unmatched ISSN' tests, ISSN 5555-5555 must not be on any journal",
+                "Uploads stay 'pending' unless the events queue worker is running: huey_consumer.py portality.tasks.consumer_events_queue.events_queue",
+            ],
         }
 
     def teardown(self, params) -> dict:
