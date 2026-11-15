@@ -193,10 +193,11 @@ class ApplicationService(object):
 
         # ~~->Journal:Service~~
         journalService = DOAJ.journalService()
+        authSvc = DOAJ.authorisationService()
 
         # check we're allowed to carry out this action
-        if not account.has_role("reject_application"):
-            raise exceptions.AuthoriseException(message="This user is not allowed to reject applications", reason=exceptions.AuthoriseException.WRONG_ROLE)
+        # (raises an AuthoriseException if not)
+        can_reject = authSvc.can_reject_application(account, application)
 
         # ensure the application status is "rejected"
         if application.application_status != constants.APPLICATION_STATUS_REJECTED:
@@ -621,7 +622,7 @@ class ApplicationService(object):
         ], exceptions.ArgumentException)
 
         # pull the application from the database
-        application = models.Suggestion.pull(application_id)
+        application = models.Application.pull(application_id)
 
         # if we've retrieved the journal, and a lock is requested, request it
         the_lock = None

@@ -95,3 +95,17 @@
   background: $dark-green;
   color: $white;
 }
+
+.tag--workflow {
+  border-radius: 0;
+  text-transform: uppercase;
+  &--big {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  &--new {
+    color: $warm-black;
+    border: solid 1px $warm-black;
+    background-color: $white;
+  }
+}

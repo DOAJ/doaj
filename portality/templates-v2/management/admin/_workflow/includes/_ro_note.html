@@ -1,0 +1,9 @@
+<!--Note field-->
+{% autoescape off %}
+
+{% set value = field.control[0].control.content %}
+{% if value %}
+<p style="font-weight: bold">User's note</p>
+<p>{{ field.control_renderer.draw(field.control, application=application, wfc=wfc) }}</p>
+{% endif %}
+{% endautoescape %}

@@ -1,0 +1,127 @@
+<form>
+
+    <section class="issn">
+
+        <h2>ISSN(s)</h2>
+
+        <section class="criterion">
+            <header class="review-header">
+
+                <nav>
+                    <button type="button" class="button button--prev">
+                        Previous question
+                    </button>
+                </nav>
+
+                <div class="progress">
+                    <label for="criterion-progress">
+                        Criterion progress
+                    </label>
+
+                    <progress
+                            id="criterion-progress"
+                            value="11"
+                            max="25">
+                        11 of 25
+                    </progress>
+
+                    <span>C11 of 25</span>
+                </div>
+
+            </header>
+
+
+            <h3>Criterion 11</h3>
+
+
+            <div class="criterion__evidence">
+                ...
+            </div>
+
+            <aside class="criterion__guidance">
+                ...
+            </aside>
+
+            <fieldset>
+                <legend>Review outcome</legend>
+
+                    <div>
+                        <input
+                                type="radio"
+                                id="friend"
+                                name="source"
+                                value="friend">
+                        <label for="friend">Friend</label>
+                    </div>
+
+                    <div>
+                        <input
+                                type="radio"
+                                id="social"
+                                name="source"
+                                value="social">
+                        <label for="social">Social media</label>
+                    </div>
+
+                    <div>
+                        <input
+                                type="radio"
+                                id="other"
+                                name="source"
+                                value="other">
+                        <label for="other">Other</label>
+                    </div>
+
+                    <div id="other-container" hidden>
+                        <label for="other-text">
+                            Please specify
+                        </label>
+                        <input
+                                type="text"
+                                id="other-text"
+                                name="source_other"
+                                disabled>
+                    </div>
+                </fieldset>
+
+            <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const radios = document.querySelectorAll('input[name="source"]');
+                        const otherRadio = document.getElementById('other');
+                        const otherContainer = document.getElementById('other-container');
+                        const otherInput = document.getElementById('other-text');
+
+                        radios.forEach(radio => {
+                            radio.addEventListener('change', () => {
+                                const isOther = otherRadio.checked;
+
+                                otherContainer.hidden = !isOther;
+                                otherInput.disabled = !isOther;
+
+                                if (isOther) {
+                                    otherInput.focus();
+                                } else {
+                                    otherInput.value = '';
+                                }
+                            });
+                        });
+                    });
+                </script>
+
+            <div class="criterion__followup">
+                ...
+            </div>
+
+
+        </section>
+
+        <section class="criterion">
+
+            <h3>Criterion 12</h3>
+
+            ...
+        </section>
+
+    </section>
+
+</form>

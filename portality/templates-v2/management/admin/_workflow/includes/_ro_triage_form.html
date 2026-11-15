@@ -1,0 +1,7 @@
+<div>
+{% for element in form.elements %}
+    {% autoescape off %}
+        {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+    {% endautoescape %}
+{% endfor %}
+</div>

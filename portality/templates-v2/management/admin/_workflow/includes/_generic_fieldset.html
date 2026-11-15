@@ -1,0 +1,11 @@
+<section id="{{ fieldset.name }}" {% for k, v in fieldset.attributes %}{{ k }}="{{ v }}" {% endfor %}>
+    <h2>{{ fieldset.label }}</h2>
+
+    <div class="error-container"></div>
+
+    {% for element in fieldset.elements %}
+        {% autoescape off %}
+            {{ element.renderer.draw(element, application=application, wfc=wfc) }}
+        {% endautoescape %}
+    {% endfor %}
+</section>

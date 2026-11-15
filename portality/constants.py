@@ -40,6 +40,7 @@ PROVENANCE_STATUS_ACCEPTED = "status:accepted"
 
 LOCK_APPLICATION = "suggestion"
 LOCK_JOURNAL = "journal"
+LOCK_WORKFLOW_CONTROL = "workflow_control"
 
 IDENT_TYPE_DOI = "doi"
 IDENT_TYPE_PISSN = "pissn"
@@ -128,15 +129,19 @@ USER_ATTR__ALL = [
     USER_ATTR__TAG
 ]
 
-EWF__TRIAGE = "Triage"
-EWF__QUICK_FAIL = "Quick Fail"
-EWF__QUALITY_REVIEW = "Quality Review"
+EWF__USER_ATTR__TRIAGE = "Triage"
+EWF__USER_ATTR__QUICK_FAIL = "Quick Fail"
+EWF__USER_ATTR__QUALITY_REVIEW = "Integrity & Ethics"
 
-EWF__ALL_STAGES = [
-    EWF__TRIAGE,
-    EWF__QUICK_FAIL,
-    EWF__QUALITY_REVIEW
+EWF__USER_ATTR__ALL = [
+    EWF__USER_ATTR__TRIAGE,
+    EWF__USER_ATTR__QUICK_FAIL,
+    EWF__USER_ATTR__QUALITY_REVIEW
 ]
+
+EWF__LABEL__NORMAL = "normal"
+EWF__LABEL__MANED = "maned"
+EWF__LABEL__INTEGRITY_ETHICS = "integrity_ethics"
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
