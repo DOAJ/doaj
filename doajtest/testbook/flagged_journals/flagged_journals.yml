@@ -101,7 +101,7 @@ tests:
         results:
           - At the top navbar "Notifications" indicate a new notification
       - step: Hover over Notifications button
-        result:
+        results:
           - At the top of the list new notification "New flag" is listed
       - step: Click on the "New flag" notification
         results:
@@ -115,7 +115,7 @@ tests:
           - The long description says "A new flag in 'Feline Aerodynamics Review __<id>' has been assigned to you"
       - step: Open the testdrive/flags page <b>do not close the page where you are logged in</b>
       - step: Click "Run background task" button located at the bottom of the testdrive page, wait for the task to execute
-        result:
+        results:
           - Message "Script executed successfully!" is displayed
       - step: Go back to the tab where you are logged as ProfessorQuibbleton
       - step: refresh the page
@@ -148,7 +148,7 @@ tests:
       results:
       - At the top navbar "Notifications" indicate a new notification
     - step: Hover over Notifications button
-      result:
+      results:
       - At the top of the list new notification "New flag" is listed
     - step: Click on the "New flag" notification
       results:
@@ -162,7 +162,7 @@ tests:
       - The long description says "A new flag in 'Feline Aerodynamics Review __<id>' has been assigned to you"
     - step: Open the testdrive/flags page <b>do not close the page where you are logged in</b>
     - step: Click "Run background task" button located at the bottom of the testdrive page, wait for the task to execute
-      result:
+      results:
       - Message "Script executed successfully!" is displayed
     - step: Go back to the tab where you are logged as ProfessorQuibbleton
     - step: refresh the page
@@ -342,7 +342,8 @@ tests:
       - step: Click "Add flag"
       - step: Enter an assignee, a deadline and a note
       - step: Click "Save"
-        results: The form is saved correctly with a new flag
+        results:
+        - The form is saved correctly with a new flag
       - step: Click "Resolve" to resolve the flag
       - step: Click "Add flag"
       - step: Enter an assignee, a deadline and a note
