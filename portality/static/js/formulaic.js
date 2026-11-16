@@ -793,6 +793,7 @@ var formulaic = {
                 this.$resolvedInput = $($("#" + this.fieldName + "-flag_resolved")[0]);
                 this.$authorInput = $($("#" + this.fieldName + "-flag_setter")[0]);
                 this.$createdInput = $($("#" + this.fieldName + "-flag_created_date")[0]);
+                this.$flagNoteId = $($("#" + this.fieldName + "-flag_note_id")[0]);
                 this.$addFlagBtn = $($("#add_flag")[0]);
                 this.$resolveFlagBtn = $($("#resolve_flag-btn")[0]);
                 this.$unresolveFlagBtn = $($("#unresolve_flag-btn")[0]);
@@ -983,6 +984,7 @@ var formulaic = {
             this.resolveFlag = function(e) {
 
                 const resolvedFlagJSON = {
+                    id: this.$flagNoteId.val(),
                     assignee: this.$assigneeInput.val(),
                     deadline: this.$flagDeadline.val(),
                     note: this.$flagNote.val(),
@@ -1007,9 +1009,11 @@ var formulaic = {
                 this.$flagNote.val(prevFlag.note);
                 this.$createdInput.val(prevFlag.created);
                 this.$authorInput.val(prevFlag.author);
+                this.$flagNoteId.val(prevFlag.id);
                 this.setUpFlagHeader();
                 this.flagExists = true;
                 $(".flag--resolved").remove();
+                this.$resolvedInput.val("");
                 this.disableAddBtn();
                 this.toggleFlagButtons(true, false, false);
             }

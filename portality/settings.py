@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.5"
+DOAJ_VERSION = "8.7.7"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -492,7 +492,9 @@ HUEY_SCHEDULE = {
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "2", "minute": "0"},
-    "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    # Disabled: a full run (re)generates RIS for every article (~16.6M). The cache refills on demand instead - RIS
+    # downloads and article saves both write it. Was {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"}
+    "ris_export": CRON_NEVER,
 }
 
 
@@ -721,7 +723,10 @@ DEFAULT_INDEX_SETTINGS = \
 
 # Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
 # Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
-INDEX_SETTINGS_OVERRIDES = {}
+INDEX_SETTINGS_OVERRIDES = {
+    # RIS cache: write-mostly, read back by id only; DEFLATE is ~35% smaller than the default LZ4 for its _source
+    "ris_export": {"codec": "best_compression"},
+}
 
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
@@ -1148,21 +1153,22 @@ ADMIN_NOTES_SEARCH_MAPPING = {
 }
 
 ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
+ASCII_FOLDED_ALL_META = {**ASCII_FOLDED, "copy_to": ["all_meta"]}
 
 JOURNAL_EXCEPTION_MAPPING = {
-    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ARTICLE_EXCEPTION_MAPPING = {
-    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ####################################################
@@ -1629,8 +1635,10 @@ BG_MONITOR_ERRORS_CONFIG = {
         'allowed_num_err': 0
     },
     'harvest': {
-        'check_sec': _DAY,
-        'allowed_num_err': 0,
+        # harvest runs daily and is sometimes re-run manually after a failure - disable the error
+        # count and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['harvest'] instead, which only
+        # cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'ingest_articles': {
         'check_sec': _DAY,
