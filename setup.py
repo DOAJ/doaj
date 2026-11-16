@@ -14,7 +14,7 @@ setup(
         "beautifulsoup4",
         "boto3==1.44.3",
         "cryptography~=50.0",
-        "elastic-apm==6.26.2",
+        "elastic-apm==6.26.3",
         "elasticsearch==7.13.0",
         "faker==40.54.0",
         "feedparser==6.0.14",
