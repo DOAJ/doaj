@@ -698,7 +698,7 @@ ass_ed:
   city: Osaka
   country: Japan
   language: Japanese, English
-  photo:
+  photo: "Picture_kikutani.jpg"
 
 - name: Sara Jalalzadeh Asrjadidi
   area: Library Science
