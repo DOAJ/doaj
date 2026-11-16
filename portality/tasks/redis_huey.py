@@ -4,17 +4,17 @@ from portality.core import app
 # short jobs to be run on demand from within the application
 events_queue = RedisHuey('doaj_events_queue',
                        host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'],
-                       always_eager=app.config.get("HUEY_EAGER", False))
+                       immediate=app.config.get("HUEY_IMMEDIATE", False))
 
 # scheduled jobs that can run for several hours each
 scheduled_long_queue = RedisHuey('doaj_scheduled_long_queue',
                          host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'],
-                         always_eager=app.config.get("HUEY_EAGER", False))
+                         immediate=app.config.get("HUEY_IMMEDIATE", False))
 
 # scheduled jobs that will typically run within a few minutes
 scheduled_short_queue = RedisHuey('doaj_scheduled_short_queue',
                          host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'],
-                         always_eager=app.config.get("HUEY_EAGER", False))
+                         immediate=app.config.get("HUEY_IMMEDIATE", False))
 
 
 def schedule(action):
