@@ -447,6 +447,11 @@ ASSOC_ED_NOTIFICATION_STATUSES = [
 # /status endpoint connection to all app machines
 APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)]  # This should be set in production.cfg (or dev.cfg etc)
 
+# HTTP basic auth for /_status/ and /_status/stats, which are slow and expensive. Set both in app.cfg (secret);
+# while either is unset those endpoints refuse every request. /_status/ping is cheap and needs no credentials.
+STATUS_BASIC_AUTH_USERNAME = None
+STATUS_BASIC_AUTH_PASSWORD = None
+
 ###########################################
 # Background Jobs settings
 # ~~->Huey:Technology~~
