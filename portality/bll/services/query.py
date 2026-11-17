@@ -125,9 +125,14 @@ class QueryService(object):
         # get the query
         query = self._get_query(cfg, raw_query)
 
-        # send the query
+        # send the query. These are user-facing requests, so retry sparingly: a gunicorn worker can't wait out
+        # the DAO's default of 50 retries, and mass retries add load to a cluster that's already struggling.
+        send_kwargs = {"retry": app.config.get("QUERY_SERVICE_ES_RETRIES", 3)}
+        if cfg.get("request_cache", False):
+            # use the shard request cache even though size > 0 (by default ES only caches size=0 requests)
+            send_kwargs["request_cache"] = True
         try:
-            res = dao_klass.query(q=query.as_dict())
+            res = dao_klass.query(q=query.as_dict(), send_kwargs=send_kwargs)
         except ESMappingMissingError:
             if not cfg.get("tolerate_missing_mapping", False):
                 raise

@@ -77,6 +77,7 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 ES_TERMS_LIMIT = 1024
 ELASTICSEARCH_REQ_TIMEOUT = 20  # Seconds - used in core.py for whole ES connection request timeout
 ES_READ_TIMEOUT = '2m'  # Minutes - used in DAO for searches
+QUERY_SERVICE_ES_RETRIES = 3  # attempts per user-facing search via the QueryService (/query and the API)
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -787,7 +788,8 @@ QUERY_ROUTE = {
             "query_filters": ["only_in_doaj", "last_update_fallback", "search_all_meta"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Journal",  # ~~->Journal:Model~~
-            "required_parameters": {"ref": ["ssw", "public_journal", "subject_page"]}
+            "required_parameters": {"ref": ["ssw", "public_journal", "subject_page"]},
+            "request_cache": True
         },
         # ~~->PublicArticleQuery:Endpoint~~
         "article": {
@@ -797,7 +799,8 @@ QUERY_ROUTE = {
             "query_filters": ["only_in_doaj"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Article",  # ~~->Article:Model~~
-            "required_parameters": {"ref": ["public_article", "toc", "subject_page"]}
+            "required_parameters": {"ref": ["public_article", "toc", "subject_page"]},
+            "request_cache": True
         },
         # back-compat for fixed query widget
         # ~~->PublicJournalArticleQuery:Endpoint~~
