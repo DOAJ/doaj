@@ -36,6 +36,17 @@ def prep_article(data, account) -> models.Article:
         raise CrosswalkException(message=str(e), inner=e)
 
 
+def article_label(i, data) -> str:
+    """'index 3' or 'index 3 (doi 10.1/x)': the 0-based position, plus the DOI if the raw article has one"""
+    try:
+        for ident in data["bibjson"]["identifier"]:
+            if str(ident.get("type", "")).lower() == "doi" and ident.get("id"):
+                return f"index {i} (doi {ident['id']})"
+    except (KeyError, TypeError, AttributeError):
+        pass  # malformed article: the index alone still identifies it
+    return f"index {i}"
+
+
 class ArticleBulkCreateBackgroundTask(BackgroundTask):
     __action__ = "article_bulk_create"
 
@@ -52,13 +63,13 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
                 try:
                     articles.append(models.Article(**prep_article(d, uploader)))
                 except CrosswalkException as e:
-                    errors.append(f"Article at index {i}: {e.message}")
+                    errors.append(f"Article at {article_label(i, d)}: {e.message}")
                     if script_tag_article is None and isinstance(e.inner, dataobj.ScriptTagFoundException):
                         script_tag_article = d
                 except Exception:
                     # one unexpected failure must not hide the other articles' errors
                     app.logger.exception(f"Unexpected error preparing bulk article at index {i}")
-                    errors.append(f"Article at index {i}: unexpected error")
+                    errors.append(f"Article at {article_label(i, d)}: unexpected error")
             if script_tag_article is not None:
                 from portality.api.current import ArticlesCrudApi
                 ArticlesCrudApi.send_script_tag_email(script_tag_article, uploader)

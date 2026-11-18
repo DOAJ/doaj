@@ -128,3 +128,14 @@ class TestArticleBulkCreateBackgroundTask(DoajTestCase):
         assert "boom" not in bulk_articles.error
         assert bulk_articles.valid_but_not_imported == 1
         assert bulk_articles.failed_imports == 2
+
+    def test_failed_article_label_includes_doi_when_present(self):
+        acc_id, articles = self._setup_batch(3)
+        articles[1]["bibjson"]["identifier"].append({"type": "DOI", "id": "10.1234/abc"})
+        del articles[1]["bibjson"]["title"]
+        del articles[2]["bibjson"]["title"]  # no DOI: index only
+
+        bulk_articles = run_background_process_by_incoming_articles(acc_id, articles)
+
+        assert "Article at index 1 (doi 10.1234/abc): Field 'title' is required" in bulk_articles.error
+        assert "Article at index 2: Field 'title' is required" in bulk_articles.error

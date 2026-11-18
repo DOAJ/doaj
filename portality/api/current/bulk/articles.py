@@ -130,6 +130,10 @@ class ArticlesBulkApi(Api):
                         "description": "The status of the task",
                         "enum": ["pending", "validated", "failed", "processed", "processed_partial"]
                     },
+                    "error": {
+                        "type": "string",
+                        "description": "Only present on failure. Invalid articles are listed as 'Article at index N (doi D): reason', where N is the position in the submitted list, counting from 0 (the first article is index 0), and the doi is shown when the article has one",
+                    },
                     "results": {
                         'type': 'object',
                         'description': 'The result of the upload',
