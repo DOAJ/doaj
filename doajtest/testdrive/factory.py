@@ -104,7 +104,7 @@ class TestDrive:
         for i in range(n):
             template = {
                 "bibjson": {
-                    "title": f"Journal {owner} {i} {self.run_seed}",
+                    "title": f"Journal {owner.id} {i} {self.run_seed}",
                 }
             }
             source = JournalFixtureFactory.make_journal_source(in_doaj=True, overlay=template)

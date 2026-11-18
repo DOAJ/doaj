@@ -243,7 +243,9 @@ class ApplicationProcessor(FormProcessor):
                 username=acc_id,
                 note=resolved["note"]
             )
-            self.target.resolve_flag(flag["flag_note_id"], new_note_text, dates.today(), acc_id)
+            new_note = self.target.resolve_flag(resolved["id"], new_note_text, dates.now_str(), acc_id)
+            if not new_note:
+                self.target.add_note(new_note_text, dates.now_str(), id=resolved["id"], author_id=acc_id)
 
 
 class NewApplication(ApplicationProcessor):
