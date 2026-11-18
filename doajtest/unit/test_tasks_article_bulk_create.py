@@ -1,4 +1,5 @@
 from copy import deepcopy
+from unittest.mock import patch
 
 from doajtest import helpers
 from doajtest.fixtures import article_doajxml
@@ -80,3 +81,50 @@ class TestArticleBulkCreateBackgroundTask(DoajTestCase):
         assert bulk_articles.valid_but_not_imported == 1
         assert bulk_articles.failed_imports == 1
         assert models.Article.count() == 0
+
+    def _setup_batch(self, n):
+        acc_id = "testowner"
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal(acc_id, pissn="1234-5678", eissn="9876-5432"),
+            article_upload_tester.create_simple_publisher(acc_id),
+        ])
+        article = article_doajxml.to_articles(article_doajxml.DoajXmlArticleFixtureFactory.upload_2_issns_correct())[0]
+        return acc_id, [deepcopy(article.data) for _ in range(n)]
+
+    def test_script_tags_send_one_email_per_upload(self):
+        # #4343: every bad article is reported, but the recipients get a single warning email
+        acc_id, articles = self._setup_batch(4)
+        for a in articles[1:]:
+            a["bibjson"]["title"] = "<script>x</script>"
+
+        with patch("portality.api.current.crud.articles.app_email.send_mail") as send_mail:
+            bulk_articles = run_background_process_by_incoming_articles(acc_id, articles)
+
+        assert send_mail.call_count == 1
+        for i in (1, 2, 3):
+            assert f"Article at index {i}: " in bulk_articles.error
+        assert bulk_articles.valid_but_not_imported == 1
+        assert bulk_articles.failed_imports == 3
+
+    def test_unexpected_error_does_not_hide_other_articles(self):
+        acc_id, articles = self._setup_batch(3)
+        del articles[2]["bibjson"]["title"]
+
+        from portality.api.current import ArticlesCrudApi
+        real = ArticlesCrudApi.prep_article
+        calls = []
+
+        def flaky(data, account, send_email=True):
+            calls.append(1)
+            if len(calls) == 2:
+                raise RuntimeError("boom")
+            return real(data, account, send_email=send_email)
+
+        with patch.object(ArticlesCrudApi, "prep_article", side_effect=flaky):
+            bulk_articles = run_background_process_by_incoming_articles(acc_id, articles)
+
+        assert "Article at index 1: unexpected error" in bulk_articles.error
+        assert "Article at index 2: Field 'title' is required" in bulk_articles.error
+        assert "boom" not in bulk_articles.error
+        assert bulk_articles.valid_but_not_imported == 1
+        assert bulk_articles.failed_imports == 2

@@ -26,13 +26,14 @@ def prep_article(data, account) -> models.Article:
     from portality.api.current import ArticlesCrudApi
     from portality.api.common import Api400Error
     try:
-        return ArticlesCrudApi.prep_article(data, account)
+        # the warning email is sent once per upload by the caller, not once per article
+        return ArticlesCrudApi.prep_article(data, account, send_email=False)
     except (
             dataobj.DataStructureException,
             dataobj.ScriptTagFoundException,
             Api400Error,  # e.g. no journal matches the article's ISSNs
     ) as e:
-        raise CrosswalkException(message=str(e))
+        raise CrosswalkException(message=str(e), inner=e)
 
 
 class ArticleBulkCreateBackgroundTask(BackgroundTask):
@@ -46,12 +47,21 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
 
         def _articles_factory(path):
             # validate every article so the caller learns which ones (by 0-based index) are invalid, not just the first
-            articles, errors = [], []
+            articles, errors, script_tag_article = [], [], None
             for i, d in enumerate(json.loads(Path(path).read_text())):
                 try:
                     articles.append(models.Article(**prep_article(d, uploader)))
                 except CrosswalkException as e:
                     errors.append(f"Article at index {i}: {e.message}")
+                    if script_tag_article is None and isinstance(e.inner, dataobj.ScriptTagFoundException):
+                        script_tag_article = d
+                except Exception:
+                    # one unexpected failure must not hide the other articles' errors
+                    app.logger.exception(f"Unexpected error preparing bulk article at index {i}")
+                    errors.append(f"Article at index {i}: unexpected error")
+            if script_tag_article is not None:
+                from portality.api.current import ArticlesCrudApi
+                ArticlesCrudApi.send_script_tag_email(script_tag_article, uploader)
             if errors:
                 # counts let upload_process report valid_but_not_imported/failed like a service-level failure
                 raise CrosswalkException(message="; ".join(errors),
