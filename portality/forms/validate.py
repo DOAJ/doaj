@@ -307,7 +307,7 @@ class JournalURLInPublicDOAJ(object):
     """
     def __init__(self, message=None):
         if not message:
-            message = "This Journal URL already appears in the public DOAJ database"
+            message = "This Journal URL already appears in the public DOAJ database. If this is a new version of the same journal, please contact the DOAJ Helpdesk: helpdesk@doaj.org"
         self.message = message
 
     def __call__(self, form, field):
