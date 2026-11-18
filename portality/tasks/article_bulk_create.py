@@ -53,7 +53,9 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
                 except CrosswalkException as e:
                     errors.append(f"Article at index {i}: {e.message}")
             if errors:
-                raise CrosswalkException(message="; ".join(errors))
+                # counts let upload_process report valid_but_not_imported/failed like a service-level failure
+                raise CrosswalkException(message="; ".join(errors),
+                                         result={"success": len(articles), "fail": len(errors)})
             return articles
 
         articles_upload_helper.upload_process(bulk_articles, job, articles_path, _articles_factory)

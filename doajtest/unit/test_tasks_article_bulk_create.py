@@ -60,4 +60,23 @@ class TestArticleBulkCreateBackgroundTask(DoajTestCase):
         assert "Article at index 0" not in bulk_articles.error
         assert "Article at index 1: Field 'title' is required" in bulk_articles.error
         assert "Article at index 2: " in bulk_articles.error
+        assert bulk_articles.valid_but_not_imported == 1
+        assert bulk_articles.failed_imports == 2
+        assert models.Article.count() == 0
+
+    def test_no_matching_journal_reported_with_counts(self):
+        acc_id = "testowner"
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal(acc_id, pissn="1234-5678", eissn="9876-5432"),
+            article_upload_tester.create_simple_publisher(acc_id),
+        ])
+        article = article_doajxml.to_articles(article_doajxml.DoajXmlArticleFixtureFactory.upload_2_issns_correct())[0]
+        articles = [deepcopy(article.data) for _ in range(2)]
+        articles[1]["bibjson"]["identifier"] = [{"type": "pissn", "id": "8888-8888"}, {"type": "eissn", "id": "9999-9999"}]
+
+        bulk_articles = run_background_process_by_incoming_articles(acc_id, articles)
+
+        assert "Article at index 1: No journal found" in bulk_articles.error
+        assert bulk_articles.valid_but_not_imported == 1
+        assert bulk_articles.failed_imports == 1
         assert models.Article.count() == 0
