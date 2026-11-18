@@ -260,6 +260,7 @@ class FieldDefinitions:
             "clickable_url"  # ~~^-> ClickableURL:FormWidget~~
         ],
         "help": {
+            "long_help": [lazy_gettext("We encourage the use of secure HTTPS URLs for journal websites when possible.")],
             "placeholder": "https://www.my-journal.com"
         },
         "contexts": {
