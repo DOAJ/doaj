@@ -314,7 +314,7 @@ def _handle_pwless_login(user, form, redirected: str = ""):
     try:
         svc = DOAJ.accountService()
         code = svc.initiate_login_code(user)
-        login_url = svc.send_login_code_email(user, code, redirected or "")
+        login_url = svc.send_login_code_email(user, code, redirected or "", next_url=form.next.data or "")
         Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
 
         if app.config.get('DEBUG', False):
@@ -345,7 +345,7 @@ def verify_code():
     svc = DOAJ.accountService()
 
     try:
-        account, _redirected = svc.verify_login_code(
+        account, _redirected, _next = svc.verify_login_code(
             encrypted_token=_get_param('token'),
             email=_get_param('email'),
             code=_get_param('code'),
@@ -364,6 +364,9 @@ def verify_code():
     redirected_page = request.args.get("redirected") or _redirected
     if redirected_page == "apply":
         form['next'].data = url_for("apply.public_application")
+    elif _next:
+        # next target carried in the emailed login link token; get_redirect_target checks it's safe
+        form['next'].data = _next
 
     _complete_verification(account)
     return redirect(get_redirect_target(form=form, acc=account))
