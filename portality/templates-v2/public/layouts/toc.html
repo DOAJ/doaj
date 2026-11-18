@@ -154,3 +154,13 @@
 {% include "includes/_hotjar.html" %}
 
 {% endblock %}
+
+{%- block public_js -%}
+    <script type="text/javascript" src="/static/js/toc_drawer.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    {% include "_account/includes/_login_form_js.html" %}
+    <script type="text/javascript">
+    jQuery(document).ready(function ($) {
+        doaj.toc_drawer.init();
+    });
+    </script>
+{%- endblock -%}

@@ -157,6 +157,15 @@ server {
     proxy_read_timeout 600s;
     client_max_body_size 50M;
 
+    # Room for large upstream response headers. The API's Link pagination header repeats the whole search query
+    # for each link, so long queries overflowed the 4k default: nginx returned 502 "upstream sent too big header"
+    # and counted it as an upstream failure, which emptied doaj_api_failover ("no live upstreams") for 30s at a time.
+    # 32k covers the longest URL nginx accepts (large_client_header_buffers, 8k) repeated in the header.
+    # proxy_buffers must grow too, or nginx -t fails: proxy_busy_buffers_size (2 x 32k) must be less than all
+    # proxy_buffers minus one. Both are only allocated when a response needs them.
+    proxy_buffer_size 32k;
+    proxy_buffers 4 32k;
+
     # Enable HTTP/1.1 keepalive to upstreams for connection reuse
     proxy_http_version 1.1;
     proxy_set_header Connection "";
