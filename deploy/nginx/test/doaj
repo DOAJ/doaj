@@ -51,6 +51,13 @@ server {
     proxy_read_timeout 600s;
     client_max_body_size 50M;
 
+    # Room for large upstream response headers, as in production: the API's Link pagination header repeats the whole
+    # search query, and long queries overflowed the 4k default (502 "upstream sent too big header").
+    # proxy_buffers must grow too, or nginx -t fails: proxy_busy_buffers_size (2 x 32k) must be less than all
+    # proxy_buffers minus one.
+    proxy_buffer_size 32k;
+    proxy_buffers 4 32k;
+
     if ($new_uri != "") {
         rewrite ^(.*)$ $new_uri permanent;
     }
