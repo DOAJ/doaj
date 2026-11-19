@@ -2,7 +2,7 @@
 	"elastic_search_host" : null,
 	"elastic_search_db" : null,
 	"confirm" : true,
-	"max_content_length" : 40000000,
+	"max_content_length" : 1000000,
 	"types" : {
 		"account" : {"import" : true, "limit" : -1},
 		"application" : {"import" : true, "limit" : -1},
@@ -18,6 +18,7 @@
 		"notification" : {"import" : true, "limit" : 100},
 		"preserve" : {"import" : false, "limit" : -1},
 		"provenance" : {"import" : false, "limit" : -1},
-		"upload" : {"import" : false, "limit" : -1}
+		"upload" : {"import" : false, "limit" : -1},
+		"note": {"import":  true, "limit":  -1}
 	}
 }

@@ -20,6 +20,7 @@ PUBLIC_READ_ONLY_MODE = "public/readonly_mode.html"
 PUBLIC_TOC_MAIN = "public/toc_main.html"
 PUBLIC_TOC_ARTICLES = "public/toc_articles.html"
 OPENURL_404 = "public/openurl/404.html"
+OPENURL_400 = "public/openurl/400.html"
 OPENURL_HELP = "public/openurl/help.html"
 
 # Static content
@@ -59,6 +60,7 @@ NOTIFICATIONS = "management/admin/notifications.html"
 ADMIN_UNLOCKED = "management/admin/unlocked.html"
 ADMIN_JOURNAL_CSV_SEARCH = "management/admin/journal_csv_search.html"
 ADMIN_PDD_SEARCH = "management/admin/pdd_search.html"
+ADMIN_SYSTEM_OBJECTS_SEARCH = "management/admin/system_objects/_search.html"
 
 # Application Form
 MANED_APPLICATION_FORM = "management/admin/maned_application.html"

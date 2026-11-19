@@ -19,7 +19,7 @@ from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
 from portality.models.atom import AtomRecord
 from portality.models.search import JournalArticle, JournalStatsQuery, ArticleStatsQuery
 from portality.models.cache import Cache
-from portality.models.openurl import OpenURLRequest
+from portality.models.openurl import OpenURLRequest, UnsupportedOpenURLQuery
 from portality.models.provenance import Provenance
 from portality.models.background import BackgroundJob
 from portality.models.preservation import PreservationState
@@ -35,6 +35,7 @@ from portality.models.shortened_url import ShortenedUrl, CountWithinDaysQuery
 from portality.models.data_dump import DataDump
 from portality.models.journal_csv import JournalCSV
 from portality.models.ris_export import RISExport
+from portality.models.note import Note
 
 import sys
 

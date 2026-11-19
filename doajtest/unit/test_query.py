@@ -647,7 +647,11 @@ class TestQuery(DoajTestCase):
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
     def test_journal_query_ascii_folding(self):
-        self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_data(title="I can’t really think in English"))
+        self.journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={
+            "bibjson": {
+                "title": "I can’t really think in English"
+            }
+        })
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
@@ -709,11 +713,16 @@ class TestQuery(DoajTestCase):
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
     def test_journal_query_ascii_folding_data(self):
-        self.journal = models.Journal(**JournalFixtureFactory
-                                      .make_journal_with_data(title="Kadınlarının sağlık",
-                                                              publisher_name="Ankara Üniversitesi",
-                                                              country="Türkiye",
-                                                              alternative_title="Dirasat: Shariía and Law Sciences"))
+        self.journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={
+            "bibjson": {
+                "title": "Kadınlarının sağlık",
+                "publisher": {
+                    "name": "Ankara Üniversitesi",
+                    "country": "Türkiye"
+                },
+                "alternative_title": "Dirasat: Shariía and Law Sciences"
+            }
+        })
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
@@ -746,12 +755,52 @@ class TestQuery(DoajTestCase):
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
+    def test_public_journal_search_by_alternative_title(self):
+        """public journal search must find journals by alternative title"""
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
+        self.journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={
+            "bibjson": {
+                "title": "مجلة آفاق العلم والمعرفة",
+                "alternative_title": "Journal of Science and Knowledge Horizons"
+            }
+        })
+        self.journal.save(blocking=True)
+        qsvc = QueryService()
+
+        # verify journal exists
+        res = qsvc.search('query', 'journal', MATCH_ALL_RAW_QUERY, account=None,
+                          additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # search by main title via all_meta (public search)
+        res = qsvc.search('query', 'journal', raw_query("آفاق العلم"),
+                          account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, \
+            "Public search by main title should return result, got: {}".format(res['hits']['total']["value"])
+
+        # search by alternative title via all_meta (public search) - this was the bug
+        res = qsvc.search('query', 'journal', raw_query("Science Knowledge Horizons"),
+                          account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, \
+            "Public search by alternative title should return result, got: {}".format(res['hits']['total']["value"])
+
+        # search by partial alternative title
+        res = qsvc.search('query', 'journal', raw_query("Knowledge Horizons"),
+                          account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, \
+            "Public search by partial alternative title should return result, got: {}".format(res['hits']['total']["value"])
+
     def test_application_query_ascii_folding_data(self):
         acc = models.Account(**AccountFixtureFactory.make_managing_editor_source())
-        application = models.Application(**ApplicationFixtureFactory
-                                      .make_application_with_data(title="Kadınlarının sağlık",
-                                                              publisher_name="Ankara Üniversitesi",
-                                                              country="Türkiye", ))
+        application = ApplicationFixtureFactory.make_legacy_application_object(overlay={
+            "bibjson": {
+                "title": "Kadınlarının sağlık",
+                "publisher": {
+                    "name": "Ankara Üniversitesi",
+                    "country": "Türkiye"
+                }
+            }
+        })
         application.save(blocking=True)
         qsvc = QueryService()
 

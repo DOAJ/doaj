@@ -2,6 +2,7 @@ from portality.core import app, es_connection
 from portality.util import ipt_prefix
 from portality.bll import exceptions
 from portality.lib import plugin
+from portality.dao import ESMappingMissingError
 from copy import deepcopy
 
 class QueryService(object):
@@ -124,8 +125,18 @@ class QueryService(object):
         # get the query
         query = self._get_query(cfg, raw_query)
 
-        # send the query
-        res = dao_klass.query(q=query.as_dict())
+        # send the query. These are user-facing requests, so retry sparingly: a gunicorn worker can't wait out
+        # the DAO's default of 50 retries, and mass retries add load to a cluster that's already struggling.
+        send_kwargs = {"retry": app.config.get("QUERY_SERVICE_ES_RETRIES", 3)}
+        if cfg.get("request_cache", False):
+            # use the shard request cache even though size > 0 (by default ES only caches size=0 requests)
+            send_kwargs["request_cache"] = True
+        try:
+            res = dao_klass.query(q=query.as_dict(), send_kwargs=send_kwargs)
+        except ESMappingMissingError:
+            if not cfg.get("tolerate_missing_mapping", False):
+                raise
+            return {"hits": {"hits": [], "total": {"value": 0}}, "aggregations": {}}
 
         # filter the results as needed
         res = self._post_filter_search_results(cfg, res)

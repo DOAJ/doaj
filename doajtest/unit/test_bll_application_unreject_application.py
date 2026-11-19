@@ -59,7 +59,7 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         journal_id = None
         journal = None
         if related_journal_present_arg == "yes":
-            journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+            journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
             journal.remove_current_application()
             journal.remove_related_applications()
             journal.set_id(journal.makeid())

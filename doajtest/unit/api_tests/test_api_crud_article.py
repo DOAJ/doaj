@@ -145,7 +145,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_email("test@test.com")
 
         # add a journal to the account
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         # make sure non-overwritable journal metadata matches the article
         journal.bibjson().title = "The Title"
@@ -220,7 +220,7 @@ class TestCrudArticle(DoajTestCase):
 
         ArticleService.create_article = mock_create_article
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.bibjson().eissn = "1234-5678"
         journal.bibjson().pissn = None
@@ -256,7 +256,7 @@ class TestCrudArticle(DoajTestCase):
 
         ArticleService.create_article = mock_create_article
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.bibjson().eissn = "1234-5678"
         journal.bibjson().pissn = None
@@ -335,7 +335,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save()
 
@@ -378,7 +378,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save()
 
@@ -411,7 +411,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         # make sure non-overwritable journal metadata matches the article
         journal.bibjson().title = "The Title"
@@ -494,7 +494,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save(blocking=True)
 
@@ -537,7 +537,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save(blocking=True)
 
@@ -566,7 +566,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save(blocking=True)
 
@@ -604,7 +604,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save(blocking=True)
 
@@ -672,7 +672,7 @@ class TestCrudArticle(DoajTestCase):
         somebody_else.save(blocking=True)
 
         # add a journal to the article owner account to create that link between account and articles
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(article_owner.id)
         journal.save(blocking=True)
 
@@ -770,7 +770,7 @@ class TestCrudArticle(DoajTestCase):
         somebody_else.save(blocking=True)
 
         # add a journal to the article owner account to create that link between account and articles
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(article_owner.id)
         journal.save(blocking=True)
 
@@ -839,7 +839,7 @@ class TestCrudArticle(DoajTestCase):
         somebody_else.save(blocking=True)
 
         # add a journal to the article owner account to create that link between account and articles
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(article_owner.id)
         journal.save(blocking=True)
 
@@ -891,7 +891,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save(blocking=True)
 
@@ -910,7 +910,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
         journal.set_owner(account.id)
         journal.save(blocking=True)
 

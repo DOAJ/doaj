@@ -2,6 +2,64 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.8
+Static pages update
+Add edit button for logged-in publishers to submit update-request from ToC page
+https://github.com/DOAJ/doajPM/issues/4158
+
+OpenURL exception handling and logic improvements
+https://github.com/DOAJ/doajPM/issues/4124
+
+### 8.7.7
+Static pages release
+Reindex Alt title to fix public search
+https://github.com/DOAJ/doajPM/issues/4288
+
+Bugfix for flags feature
+https://github.com/DOAJ/doajPM/issues/4476
+
+### 8.7.6
+Python 3.12 upgrade
+https://github.com/DOAJ/doajPM/issues/4050
+
+Fixes for 'skip to main content' on homepage
+https://github.com/DOAJ/doajPM/issues/4441
+
+### 8.7.5
+
+Static pages release
+Improvements to scheduled task to reduce conflicts
+Pre-assessment checklist for journals from certain countries
+https://github.com/DOAJ/doajPM/issues/4421
+
+### 8.7.4
+
+Static pages release
+Fix bug where default roles weren't being assigned to new accounts
+https://github.com/DOAJ/doajPM/issues/4439
+
+### 8.7.3
+
+Disallow terminology 'blind' peer review via form validation (anonymous should be selected)
+https://github.com/DOAJ/doajPM/issues/4232
+
+### 8.7.2
+
+Refactor and improve the search interface code structure
+https://github.com/DOAJ/doajPM/issues/4185
+
+### 8.7.1
+
+Enable user attributes as well as roles (additional field on model).
+https://github.com/DOAJ/doajPM/issues/4317
+
+Fixes for tests and anonymous export script.
+
+### 8.7.0
+
+Separate the notes from Journal and Application models into their own index.
+https://github.com/DOAJ/doajPM/issues/4316
+
 ### 8.6.13
 
 Prompt for withdrawing a continued journal when an application is rejected.

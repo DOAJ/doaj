@@ -20,7 +20,12 @@ STRUCT = {
 
 MAPPING_OPTS = {
     "dynamic": None,
-    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": {
+        # The RIS text is only ever read back from _source by id, never searched, so don't index it: the default
+        # unicode mapping (text + stored keyword "exact") kept it three times over (~90GB primary for 16.6M articles)
+        "ris": {"type": "text", "index": False}
+    }
 }
 
 class RISExport(SeamlessMixin, DomainObject):

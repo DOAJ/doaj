@@ -243,3 +243,35 @@ tests:
   - step: Check the consent box and click Submit
     results:
     - The application submits and you are shown the confirmation page
+
+- title: Disallowed values
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form
+    path: /en/apply
+  - step: Skip to section 2 (About) using the progress bar
+  - step: In the "Other organisation's name" field, enter the value "None"
+  - step: Click "Next" at the bottom of the page
+    results:
+    - There is an error by the "Other organisation's name" field that says the value is not permitted
+  - step: Skip to section 4 (Editorial) using the progress bar
+  - step: Select "Other" from the Peer Review checkboxes
+  - step: In the "Other peer review" field, enter the value "None"
+  - step: Click "Next" at the bottom of the page
+    results:
+    - There is an error by the "Other peer review" field that says the value is not permitted
+  - step: Go back to the "Other peer review" field and change the text value to "blind peer review" and click Next
+  - step: Click "Next" at the bottom of the page
+    results:
+    - There is an error by the "Other peer review" field that asks you to use a structured option instead
+  - step: Skip to section 6 (Best practice) using the progress bar
+  - step: Select "A National Library" and "Other" from the Archiving services checkboxes
+  - step: Enter "None" in both boxes that appear
+  - step: Select "Other" from the Repository policy checkboxes
+  - step: Enter "None" in the "Other repository policy" field
+  - step: Select "Other" from the Persistent identifier checkboxes
+  - step: Enter "None" in the "Other identifier" field
+  - step: Click "Next" at the bottom of the page
+    results:
+    - There is an error by all relevant fields that says the value is not permitted
