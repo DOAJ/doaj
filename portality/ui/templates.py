@@ -20,6 +20,7 @@ PUBLIC_READ_ONLY_MODE = "public/readonly_mode.html"
 PUBLIC_TOC_MAIN = "public/toc_main.html"
 PUBLIC_TOC_ARTICLES = "public/toc_articles.html"
 OPENURL_404 = "public/openurl/404.html"
+OPENURL_400 = "public/openurl/400.html"
 OPENURL_HELP = "public/openurl/help.html"
 
 # Static content
