@@ -241,7 +241,7 @@ def scroll_and_click(driver: 'WebDriver', element: 'WebElement'):
 def login(driver: 'WebDriver', username: str, password: str):
     # Preserve current URL to redirect back after login
     login_path = "/login?" + urlencode({'next': driver.current_url}) if driver.current_url else "/login"
-    login_url = goto(driver, login_path)
+    goto(driver, login_path)
     wait = WebDriverWait(driver, 10)
 
     driver.find_element(By.ID, 'user').send_keys(username)
@@ -264,11 +264,14 @@ def login(driver: 'WebDriver', username: str, password: str):
     driver.save_screenshot(f'doaj_seleniumtest_{username}.png')
     scroll_and_click(driver, driver.find_element(By.ID, 'password-btn'))
 
-    # Wait for login to complete - URL should change away from login page
+    # Wait for login to complete - we should end up somewhere other than the login page.
+    # Don't use url_changes against the URL we requested: /login redirects to
+    # /<lang>/account/login, so the URL has already "changed" before the form is submitted.
     try:
-        wait.until(EC.url_changes(login_url))
+        wait.until(lambda d: '/login' not in d.current_url)
     except Exception as e:
-        log.error(f"Login failed to complete, current_url: {driver.current_url}\n Error: {e}")
+        errors = [el.text for el in driver.find_elements(By.CSS_SELECTOR, '.alert')]
+        log.error(f"Login failed to complete, current_url: {driver.current_url}, page errors: {errors}\n Error: {e}")
         raise
 
 
