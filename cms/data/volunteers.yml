@@ -691,6 +691,14 @@ ass_ed:
   language: Farsi, English
   featured: true
   photo: "amini.jpg"
+  
+- name: Satoshi Kikutani
+  area: Library Science
+  year_since:
+  city: Osaka
+  country: Japan
+  language: Japanese, English
+  photo: "Picture_kikutani.jpg"
 
 - name: Sara Jalalzadeh Asrjadidi
   area: Library Science
