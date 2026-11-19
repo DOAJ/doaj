@@ -10,7 +10,7 @@ featuremap: ~~Transparency:Fragment~~
 
 ## Introduction
 
-The Committee on Publication Ethics (COPE), DOAJ, the Open Access Scholarly Publishing Association (OASPA), and the World Association of Medical Editors (WAME) are scholarly organisations that work together to identify principles of transparency and best practice for scholarly publications. This is the fifth version of a work in progress (published 29th October 2026). We encourage you to share them widely.
+The Committee on Publication Ethics (COPE), DOAJ, the Open Access Scholarly Publishing Association (OASPA), and the World Association of Medical Editors (WAME) are scholarly organisations that work together to identify principles of transparency and best practice for scholarly publications. This is the fifth version (published 29th October 2026). We encourage you to share them widely.
 
 The Principles of Transparency and Best Practice in Scholarly Publishing apply to all published journal content, including special issues and conference proceedings. Where practices vary from the standards outlined, editors must clearly state the procedures that the journal follows.
 
