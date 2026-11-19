@@ -89,10 +89,19 @@ class OpenURLRequest(object):
         for key in JOURNAL_SCHEMA_KEYS:
             setattr(self, key, None)
 
+        # set by query_es(): the supported genre searched as (lowercased, or None if unsupported), and the fields it
+        # had to skip
+        self._search_genre = None
+        self._unsupported_fields = []
+
         # Save any attributes specified at creation time
         if kwargs:
             for key, value in kwargs.items():
                 setattr(self, key, value)
+
+    @staticmethod
+    def _total_hits(results):
+        return results.get('hits', {}).get('total', {}).get('value', 0)
 
     def __str__(self):
         return "OpenURLRequest{" + ", ".join(["%s : %s" % (x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS if getattr(self, x)]) + "}"
@@ -188,6 +197,10 @@ class OpenURLRequest(object):
                 populated_query["query"]["bool"]["must"].append(term)
                 terms_added += 1
 
+        # get_result_url() needs these to decide whether a match is trustworthy
+        self._search_genre = SUPPORTED_GENRES[i] if i is not None else None
+        self._unsupported_fields = unsupported_fields
+
         # avoid doing an empty (unconstrained beyond in_doaj) query
         if terms_added == 0:
             if unsupported_fields:
@@ -218,25 +231,31 @@ class OpenURLRequest(object):
         """
         Get the URL for this OpenURLRequest's referent.
         :return: The url as a string, or None if not found.
-        :raises UnsupportedOpenURLQuery: propagated from query_es() - the caller
-            (the view) should turn this into a 400 response.
+        :raises UnsupportedOpenURLQuery: propagated from query_es(), or if an article
+            request only matched several articles once unsupported fields were skipped.
+            The caller (the view) should turn this into a 400 response.
         """
         results = self.query_es()
 
         if results is None:
             return None
 
-        if results.get('hits', {}).get('total', {}).get('value', 0) == 0:
+        if self._total_hits(results) == 0:
             # No results found for query, retry
-            # the retry swaps jtitle for stitle, which has no article mapping, so it can
-            # legitimately be unsupported here - that's "no results", not a bad request
-            try:
-                results = self.fallthrough_retry()
-            except UnsupportedOpenURLQuery:
-                results = None
-            if results is None or results.get('hits', {}).get('total', {}).get('value', 0) == 0:
+            results = self.fallthrough_retry()
+            if results is None or self._total_hits(results) == 0:
                 # This time we've definitely failed
                 return None
+
+        # Skipping an unsupported field broadens the search. For an article, the skipped field (artnum, pages, part,
+        # chron, aufirst ...) may be the very thing that tells the matches apart, so taking the first of several hits
+        # would send the user to the wrong article with no sign anything was ignored. Only trust a unique match.
+        # (For a journal the skipped fields describe items within it, so they don't change which journal it is.)
+        if self._search_genre == "article" and self._unsupported_fields and self._total_hits(results) > 1:
+            msg = ("OpenURL article request matched {n} articles once unsupported fields were skipped "
+                   "(unsupported: {x}), so it can't be resolved to one article").format(
+                n=self._total_hits(results), x=", ".join(f for f, _ in self._unsupported_fields))
+            raise UnsupportedOpenURLQuery(msg)
 
         if results.get('hits', {}).get('hits', [{}])[0].get('_source', {}).get('es_type') == 'journal':
 
@@ -292,8 +311,10 @@ class OpenURLRequest(object):
         """
         results = None
 
-        # Search again for the title against alternative_title (may catch translations of titles)
-        if self.jtitle and not self.stitle:
+        # Search again for the title against alternative_title (may catch translations of titles).
+        # Journals only: stitle has no article mapping, so for an article this would just drop the title and re-run
+        # the remaining terms - a broader search that could redirect to an unrelated article.
+        if self.jtitle and not self.stitle and self._search_genre == "journal":
             self.stitle = self.jtitle
             self.jtitle = None
             results = self.query_es()

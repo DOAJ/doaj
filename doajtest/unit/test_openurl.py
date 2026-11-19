@@ -293,3 +293,57 @@ class TestOpenURL(DoajTestCase):
                                             genre='article',
                                             jtitle='No Such Title XYZ'))
                 assert resp.status_code == 404
+
+    def _save_two_articles_in_one_journal(self):
+        """ Two in_doaj articles sharing a journal title and volume (as the fixtures make them), but with distinct titles """
+        art_sources = ArticleFixtureFactory.make_many_article_sources(2, in_doaj=True)
+        arts = [models.Article(**s) for s in art_sources]
+        for a in arts:
+            a.save(blocking=True)
+        return arts
+
+    def _openurl(self, t_client, **params):
+        return t_client.get(url_for('openurl.openurl',
+                                    url_ver='Z39.88-2004',
+                                    url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                    rft_val_fmt='info:ofi/fmt:kev:mtx:journal',
+                                    **params))
+
+    def test_14_article_ambiguous_after_skipping_unsupported_field_is_400(self):
+        """ Skipping an unsupported field (artnum) mustn't broaden an article query into a redirect to an arbitrary
+        one of several matches - the skipped field might be what told them apart """
+        arts = self._save_two_articles_in_one_journal()
+        jtitle = arts[0].bibjson().journal_title
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = self._openurl(t_client, genre='article', jtitle=jtitle, artnum='123')
+                assert resp.status_code == 400, resp.status_code
+
+                # the same query without the unsupported field is unchanged: best match by ES
+                resp = self._openurl(t_client, genre='article', jtitle=jtitle)
+                assert resp.status_code == 302, resp.status_code
+
+    def test_15_article_unique_after_skipping_unsupported_field_still_resolves(self):
+        """ If the supported fields alone identify exactly one article, the skipped field doesn't matter """
+        arts = self._save_two_articles_in_one_journal()
+        target = arts[1]
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = self._openurl(t_client, genre='article', atitle=target.bibjson().title,
+                                     jtitle=target.bibjson().journal_title, artnum='123', aufirst='Someone')
+                assert resp.status_code == 302, resp.status_code
+                assert resp.location.endswith(url_for('doaj.article_page', identifier=target.id)), resp.location
+
+    def test_16_article_title_no_match_does_not_retry_without_title(self):
+        """ For articles the jtitle->stitle retry would drop the title (stitle has no article mapping) and re-run only
+        the other terms. A journal title that matches nothing must 404, not redirect to some article in that volume """
+        arts = self._save_two_articles_in_one_journal()
+        volume = arts[0].bibjson().volume
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = self._openurl(t_client, genre='article', jtitle='No Such Journal XYZ', volume=volume)
+                assert resp.status_code == 404, resp.status_code
+
+                # sanity check: the volume alone does find articles, so the 404 above is down to the title
+                resp = self._openurl(t_client, genre='article', volume=volume)
+                assert resp.status_code == 302, resp.status_code
