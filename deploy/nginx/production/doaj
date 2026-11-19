@@ -31,6 +31,7 @@ map $http_user_agent $block_ua {
 map $http_user_agent $block_bots {
     default 0;
     ~*UptimeRobot 0;
+    ~*ToweyaBot 0;
     ~*(bot|spider) 1;
 }
 
