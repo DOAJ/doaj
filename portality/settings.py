@@ -1268,6 +1268,10 @@ CROSSREF442_SCHEMA = None
 CROSSREF531_SCHEMA = None
 LOAD_CROSSREF_THREAD = None
 
+# Compile the Crossref schemas (~13 CPU-seconds) at startup instead of on first use. Only worth it on servers that
+# validate Crossref XML uploads (production: the background server, via its instance.cfg).
+CROSSREF_SCHEMA_PRELOAD = False
+
 # mapping of format names to modules which implement the crosswalks
 # ~~->DOAJArticleXML:Crosswalk~~
 # ~~->CrossrefXML:Crosswalk~~

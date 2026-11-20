@@ -46,8 +46,11 @@ def create_app():
     #~~->Jinja2:Environment~~
     setup_jinja(app)
     #~~->CrossrefXML:Feature~~
-    app.config["LOAD_CROSSREF_THREAD"] = threading.Thread(target=load_crossref_schema, args=(app, ), daemon=True)
-    app.config["LOAD_CROSSREF_THREAD"].start()
+    # Compiling the Crossref schemas costs ~13 CPU-seconds, so by default they are loaded on first use (see
+    # get_crossref_schema). Servers that validate Crossref XML set CROSSREF_SCHEMA_PRELOAD to load them at startup.
+    if app.config.get("CROSSREF_SCHEMA_PRELOAD", False):
+        app.config["LOAD_CROSSREF_THREAD"] = threading.Thread(target=load_crossref_schema, args=(app, ), daemon=True)
+        app.config["LOAD_CROSSREF_THREAD"].start()
     #~~->LoginManager:Feature~~
     login_manager.init_app(app)
     #~~->CORS:Framework~~
@@ -140,6 +143,33 @@ application configuration (settings.py or app.cfg).
 
 ################################################
 # Crossref setup
+
+_crossref_schema_lock = threading.Lock()
+
+
+def get_crossref_schema(app, format_name):
+    """
+    Get a compiled Crossref schema, loading the schemas on first use if they weren't preloaded at startup.
+    ~~CrossrefXML:Feature->CrossrefXML:Schema~~
+    :param app:
+    :param format_name: "crossref442" or "crossref531"
+    :return: the lxml XMLSchema
+    """
+    key = format_name.upper() + "_SCHEMA"
+    if app.config.get(key) is not None:
+        return app.config[key]
+
+    # If a preload is in progress, wait for it rather than compiling the schemas a second time
+    thread = app.config.get("LOAD_CROSSREF_THREAD")
+    if thread is not None and thread.is_alive():
+        thread.join()
+
+    # Load synchronously if there was no preload, or it failed (an exception in the thread is only logged)
+    with _crossref_schema_lock:
+        if app.config.get(key) is None:
+            load_crossref_schema(app)
+    return app.config[key]
+
 
 def load_crossref_schema(app):
     """

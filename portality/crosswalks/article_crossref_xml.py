@@ -1,4 +1,4 @@
-from portality.core import app
+from portality.core import app, get_crossref_schema
 from lxml import etree
 import re
 from portality.bll import exceptions
@@ -101,11 +101,9 @@ class CrossrefXWalk442(object):
             raise exceptions.IngestException(
                 message="Unable to validate for " + self.format_name + ", as schema path is not set in config")
 
-        while app.config["CROSSREF442_SCHEMA"] is None:
-            continue
-
         # ~~->CrossrefXML:Schema~~
-        self.schema = app.config["CROSSREF442_SCHEMA"]
+        # format_name picks the schema, so subclasses for other Crossref versions get theirs here too
+        self.schema = get_crossref_schema(app, self.format_name)
 
     def validate_file(self, file_handle):
         # first try to parse the file
@@ -342,11 +340,6 @@ class CrossrefXWalk531(CrossrefXWalk442):
 
     def __init__(self):
         super(CrossrefXWalk531,self).__init__()
-
-        while app.config["CROSSREF531_SCHEMA"] is None:
-            continue
-
-        self.schema = app.config["CROSSREF531_SCHEMA"]
 
     def extract_authors(self, record, journal, bibjson):
         contributors = record.find("x:contributors", self.NS)

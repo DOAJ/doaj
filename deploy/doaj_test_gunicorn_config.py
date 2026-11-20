@@ -1,7 +1,11 @@
 import multiprocessing
 
 def when_ready(server):
+    # With preload_app, a schema-loading thread started in the master must finish before the workers fork, or they
+    # won't get the schemas. There is only a thread if CROSSREF_SCHEMA_PRELOAD is set; otherwise they load on first use.
     from portality.core import app
+    if app.config.get("LOAD_CROSSREF_THREAD") is None:
+        return
     server.log.info("Waiting for Crossref schemas to load")
     app.config["LOAD_CROSSREF_THREAD"].join()
     if app.config["CROSSREF442_SCHEMA"] is None or app.config["CROSSREF531_SCHEMA"] is None:
