@@ -1,0 +1,539 @@
+LC code,CRDC code,Class Term
+A,,General Works
+AE1-90,,Encyclopedias
+AG2-600,,Dictionaries and other general reference works
+AM1-501,RDF6040803,Museums. Collectors and collecting
+AN,,Newspapers
+AP1-271,,Periodicals
+AS1-945,,Academies and learned societies
+AZ20-999,RDF60,History of scholarship and learning. The humanities
+B,,Philosophy. Psychology. Religion
+B1-5802,RDF603,Philosophy (General)
+B108-5802,RDF6030122,By period
+B5800-5802,RDF6030113,By religion
+B790-5802,,Modern
+BC1-199,RDF6030106,Logic
+BD10-701,,Speculative philosophy
+BD143-237,RDF6030103,Epistemology. Theory of knowledge
+BD300-450,RDF6030124,Ontology
+BD95-131,RDF6030107,Metaphysics
+BF1-990,RDF501,Psychology
+BF309-499,RDF50102,Consciousness. Cognition
+BH1-301,RDF6030101,Aesthetics
+BJ1-1725,,Ethics
+BJ1188-1295,RDF6010306,Religious ethics
+BL1-2790,,Religions. Mythology. Rationalism
+BL1-50,RDF60103,Religion (General)
+BL1000-2370,,Asian. Oriental
+BL51-65,RDF60103,Philosophy of religion. Psychology of religion. Religion in relation to other subjects
+BL660-2680,RDF6010399,History and principles of religions
+BL74-99,RDF6010302,Religions of the world
+BM1-990,RDF6010305,Judaism
+BP1-253,RDF6010304,Islam
+BP1-610,RDF6010304,"Islam. Bahai Faith. Theosophy, etc."
+BP600-610,RDF60199,Other beliefs and movements
+BQ1-9800,RDF6010307,Buddhism
+BR1-1725,RDF6010301,Christianity
+BR140-1510,RDF6010301,History
+BR60-67,RDF6010301,"Early Christian literature. Fathers of the Church, etc."
+BS1-2970,RDF6010301,The Bible
+BS1901-2970,RDF6010301,New Testament
+BS701-1830,RDF6010301,Old Testament
+BT10-1480,RDF6010301,Doctrinal Theology
+BT1313-1480,RDF6010301,History of specific doctrines and movements. Heresies and schisms
+BV1-5099,RDF6010301,Practical Theology
+BV4485-5099,RDF6010301,Practical religion. The Christian life
+BV4625-4780,RDF6010301,Moral theology
+BX1-9999,RDF6010301,Christian Denominations
+C,,Auxiliary sciences of history
+CB3-482,,History of Civilization
+CC1-960,RDF60102,Archaeology
+CD1-6471,RDF1020707,Diplomatics. Archives. Seals
+CS1-3090,RDF6010199,Genealogy
+CT21-9999,RDF6010199,Biography
+D,RDF60101,History (General) and history of Europe
+D1-2009,RDF60101,History (General)
+D111-203,RDF6010111,Medieval history
+D204-475,RDF6010105,"Modern history, 1453-"
+D299-475,RDF6010105,1789-
+D51-90,RDF6010103,Ancient history
+D900-2009,RDF6010105,Europe (General)
+DA1-995,RDF6010104,History of Great Britain
+DAW1001-1051,RDF6010144,History of Central Europe
+DB1-3150,RDF6010144,History of Austria. Liechtenstein. Hungary. Czechoslovakia
+DB1-879,RDF6010144,Austria. Austro-Hungarian Empire
+DB901-999,RDF6010144,Hungary
+DC1-947,RDF6010148,History of France
+DD1-905,RDF6010148,History of Germany
+DE1-100,RDF6010103,History of the Greco-Roman World
+DF10-951,RDF6010147,History of Greece
+DG11-999,RDF6010147,History of Italy
+DH1-925,RDF6010148,History of Low Countries - Benelux Countries
+DJK1-77,RDF6010145,History of Eastern Europe
+DK1-4735,RDF6010145,History of Russia. Soviet Union. Former Soviet Republics
+DK4010-4800,RDF6010144,History of Poland
+DL1-1180,RDF6010146,History of Northern Europe. Scandinavia
+DL1002-1180,RDF6010146,Finland
+DL401-596,RDF6010146,Norway
+DP1-402,RDF6010147,History of Spain
+DP501-900.22,RDF6010147,History of Portugal
+DR1-2285,RDF6010147,History of Balkan Peninsula
+DS1-937,RDF6010102,History of Asia
+DT1-3415,RDF6010108,History of Africa
+DU1-950,RDF6010199,History of Oceania (South Seas)
+E-F,,History America
+E11-143,,America
+E151-889,RDF6010109,United States
+F1-975,RDF6010109,United States local history
+F1201-3799,RDF6010106,Latin America. Spanish America
+G,,Geography. Anthropology. Recreation
+G1-922,,Geography (General)
+G3180-9980,RDF2080201,Maps
+G9900-9980,RDF2080201,Unlocalized maps (Asian studies only)
+GA1-1776,RDF2080201,Mathematical geography. Cartography
+GA101-1776,RDF2080201,Cartography
+GA109.5,RDF2080201,Cadastral mapping
+GA51-87,RDF2080205,Surveys (General)
+GB3-5030,,Physical geography
+GC1-1581,RDF10505,Oceanography
+GE1-350,RDF10510,Environmental sciences
+GF1-900,,Human ecology. Anthropogeography
+GF101-127,,Settlements
+GF125,RDF5070208,Cities. Urban geography
+GN1-890,RDF50901,Anthropology
+GN281-289,RDF5090102,Human evolution
+GN282-286.7,RDF5090102,Fossil man. Human paleontology
+GN301-674,RDF5090104,Ethnology. Social and cultural anthropology
+GN49-298,RDF5090102,Physical anthropology. Somatology
+GN700-890,RDF6010203,Prehistoric archaeology
+GR1-950,,Folklore
+GT1-7070,RDF5090104,Manners and customs (General)
+GV1-1860,RDF5070103,Recreation. Leisure
+GV1580-1799.4,RDF6040604 or RDF6040605,Dancing
+GV181.35-181.6,RDF5030210,Recreation leadership. Administration of recreation services
+GV557-1198.995,RDF5049937 ,Sports
+H,RDF50,Social Sciences
+H1-99,RDF50,Social sciences (General)
+H53,RDF5060107,Social sciences and state - Asia (Asian studies only)
+HA1-4737,RDF10103,Statistics
+HB1-3840,RDF50201,Economic theory. Demography
+HB71-74,,Economics as a science
+HB848-3697,RDF50903,Demography. Population. Vital events
+HC10-1085,RDF5020101,Economic history and conditions
+HC92,RDF5070101,Economic geography of the oceans (General)
+HD101-1395.5,RDF5070204,Land use
+HD1286-1339,RDF4010107,Land tenure
+HD1290-1291,RDF5020510,Municipal ownership
+HD1332-1333.5,RDF20204,Land reform. Agrarian reform
+HD1361-1395.5,RDF5020126,Real estate business
+HD2321-4730.9,RDF50205,Industry
+HD2330,RDF5040104,Rural industries
+HD2340.8-2346.5,,"Small and medium-sized businesses, artisans, handicrafts, trades"
+HD2350.8-2356,,Large industry. Factory system. Big business
+HD2421-2429,RDF5020503,Trade associations
+HD28-70,RDF50205,Management. Industrial management
+HD28-9999,RDF502,Industries. Land use. Labor
+HD2951-3575,RDF5020124,Cooperation. Cooperative societies
+HD39-40.7,RDF50204,Capital. Capital investments
+HD41,RDF5020513,Competition
+HD45-45.2,RDF5020513,Technological innovations. Automation
+HD47-47.4,RDF5020402,Costs
+HD4801-8943,RDF50202,Labor. Work. Working class
+HD4861-4895,RDF5020201,Labor systems
+HD49-49.5,RDF5020514,Crisis management. Emergency management. Inflation
+HD5481-5630.7,RDF5020202,Industrial arbitration. Meditation and conciliation
+HD56-57.5,,Industrial productivity
+HD5650-5660,,Employee participation in management. Employee ownership. Industrial democracy. Works councils
+HD5701-6000.9,RDF5020116,Labor market. Labor supply. Labor demand
+HD58.7-58.95,,"Organizational behaviour, change and effectiveness. Corporate culture"
+HD59-59.6,RDF5080107,Public relations. Industrial publicity
+HD60-60.5,RDF5020511,Social responsibility of business
+HD61,,Risk in industry. Risk management
+HD62,RDF2080107,Standardization. Simplification. Waste
+HD62.2-62.8,RDF5020124,Management of special enterprises
+HD6951-6957,RDF50202,Industrial sociology. Social conditions of labor
+HD6958.5-6976,RDF50202,Industrial relations
+HD7088-7252,RDF5020121,Social insurance. Social security. Pension
+HD72-88,RDF5020107,"Economic growth, development, planning"
+HD7255-7256,,Vocational rehabilitation. Employment of people with disabilities
+HD7260-7780.8,RDF5020203,Industrial hygiene. Industrial welfare
+HD7795-8027,RDF5020201,Labor policy. Labor and the state
+HD8031,RDF5060110,Labor in politics. Political activity of the working class
+HD8038,RDF6030207,Professions (General). Professional employees
+HD9000-9495,RDF40101,Agricultural industries
+HD9000-9999,,Special industries and trades
+HD9502-9502.5,,Energy industries. Energy policy. Fuel trade
+HD9506-9624,RDF2010499,Mineral industries. Metal trade
+HD9650-9663,RDF20501,Chemical industries
+HD9665-9675,RDF3010504,Pharmaceutical industry
+HD9680-9714,,Mechanical industries
+HD9715-9717.5,RDF2010102,Construction industry
+HD9720-9975,RDF20403,Manufacturing industries
+HD9999,,Miscellaneous industries and trades
+HE1-9990,,Transportation and communications
+HE9713-9715,RDF2030201,Cellular telephone services industry. Wireless telephone industry
+HF1-6182,RDF50205,Commerce
+HF1014,RDF5020503,Balance of trade
+HF1021-1027,RDF5070101,Commercial geography. Economic geography
+HF5001-6182,RDF50205,Business
+HF5381-5386,RDF5090402,Vocational guidance. Career development
+HF5387-5387.5,RDF6030202,Business ethics
+HF5410-5417.5,RDF50203,Marketing. Distribution of products
+HF5437-5444,RDF5020304,Purchasing. Selling. Sales personnel. Sales executives
+HF5546-5548.6,,Office management
+HF5548.7-5548.85,RDF5010114,Industrial psychology
+HF5549-5549.5,RDF5020204,Personnel management. Employment management
+HF5601-5689,RDF5020401,Accounting. Bookkeeping
+HF5691-5716,RDF50204,"Business mathematics. Commercial arithmetic. Including tables, etc."
+HF5717-5734.7,,"Business communication. Including business report writing, business correspondence"
+HF5735-5746,RDF5020501,Business records management
+HF5761-5780,RDF5020506,Shipment of goods. Delivery of goods
+HF5801-6182,RDF5020303,Advertising
+HG1-9999,RDF50204,Finance
+HG1501-3550,RDF5020404,Banking
+HG8011-9999,RDF5020403,Insurance
+HJ2240-5908,RDF5020406,Revenue. Taxation. Internal revenue
+HM401-1281,RDF50401,Sociology (General)
+HN1-995,,Social history and conditions. Social problems. Social reform
+HQ1-2044,,The family. Marriage. Woman
+HQ1088-1090.7,RDF5099903,Men
+HQ1101-2030.7,,Women. Feminism
+HS1-3371,,"Societies: secret, benevolent, etc."
+HT101-395,RDF5040111,Urban groups. The city. Urban sociology
+HT165.5-169.9,RDF50702,City planning
+HT170-178,RDF5070207,Urban renewal. Urban redevelopment
+HT201-221,RDF5090303,"City population. Including children in cities, immigration"
+HT321-325,RDF5070103,The city as an economic factor. City promotion
+HT330-334,RDF5070207,Metropolitan areas
+HT351-352,RDF5070101,Suburban cities and towns
+HT361-384,RDF5070207,Urbanization. City and country
+HT388,RDF5070101,Regional economics. Space in economics
+HT390-395,RDF5070205,Regional planning
+HT51-1595,,Communities. Classes. Races
+HT51-65,RDF5040111,Human settlements. Communities
+HV1-9960,RDF50902,Social pathology. Social and public welfare. Criminology
+HX1-970.7,RDF5060110,Socialism. Communism. Anarchism
+J,RDF50601,Political science
+JA1-92,RDF50601,Political science (General)
+JC11-607,RDF5060103,Political theory
+JF20-2112,RDF50602,Political institutions and public administration (General)
+JQ1-6651,,Political institutions and public administration - Asia (Asian studies only)
+JV1-9480,,Colonies and colonization. Emigration and immigration. International migration
+JZ2-6530,RDF5060105,International relations
+K,RDF505,Law
+K1-7720,RDF505,Law in general. Comparative and uniform law. Jurisprudence
+K1000-1395,RDF5050107,Commercial law
+K201-487,RDF5050203,Jurisprudence. Philosophy and theory of law
+K3150,,Public law
+K3581-3598,RDF5050111,Environmental law
+K3601-3611,RDF5050121,Medical legislation
+K3840-4375,,"Regulation of industry, trade, and commerce. Occupational law"
+K4011-4343,,Transportation and communication
+K4430-4675,RDF5050116,Public finance
+K5000-5582,RDF5050110,Criminal law and procedure
+K520-5582,,Comparative law. International uniform law
+K623-968,RDF5050105,Civil law
+K7000-7720,RDF5050303,Private international law. Conflict of laws
+K720-792,RDF5050119,Property
+K7585-7595,RDF5050123,Social legislation
+KBP1-4860,RDF5050155,Islamic law
+KJ-KKZ,,Law of Europe
+KJ2-1040,RDF6030305,History of Law
+KL-KWX,,"Asia and Eurasia, Africa, Pacific Area, and Antarctica"
+KN,,South Asia. Southeast Asia. East Asia
+KZ2-6785,RDF50503,Law of nations
+L,RDF503,Education
+L7-991,RDF503,Education (General)
+LA5-2396,RDF6030302,History of education
+LB5-3640,RDF503,Theory and practice of education
+LC8-6691,RDF50303,Special aspects of education
+M,RDF60405,Music and books on Music
+M1-5000,RDF60405,Music
+ML1-3930,RDF60405,Literature on music
+MT1-960,RDF5030201,Musical instruction and study
+N,RDF60407,Fine Arts
+N1-9211,RDF60407,Visual arts
+NA1-9428,RDF60402,Architecture
+NA2695-2793,RDF6040201,Architectural drawing and design
+NA9000-9428,RDF5070208,Aesthetics of cities. City planning and beautifying
+NB1-1952,RDF6040701,Sculpture
+NC1-1940,,Drawing. Design. Illustration
+ND25-3416,RDF6040701,Painting
+NE1-3002,,Print media
+NE1-978,,Printmaking and engraving
+NE380,RDF6040802,Conservation and restoration of prints
+NK1-9990,RDF6040702,Decorative arts
+NX1-820,RDF60401,Arts in general
+NX440-632,RDF6040101,History of the arts
+P,RDF602,Language and Literature
+P1-1091,,Philology. Linguistics
+P101-410,RDF60202,Language. Linguistic theory. Comparative grammar
+P118-118.7,,Language acquisition
+P201-299,RDF6020208,Comparative grammar
+P301-301.5,RDF5080302,Style. Composition. Rhetoric
+P302-302.87,RDF6020203,Discourse analysis
+P306-310,RDF5080138,Translating and interpreting
+P325-325.5,RDF6020208,Semantics
+P327-327.5,RDF6020207,Lexicography
+P87-96,RDF50801,Communication. Mass media
+P95-95.6,RDF3030304,Oral communication. Speech
+P98-98.5,RDF6020202,Computational linguistics. Natural language processing
+PA,RDF6020306,Greek language and literature. Latin language and literature
+PA201-899,RDF6020201,Greek philology and language
+PC1-5498,,Romanic languages
+PD1-7159,RDF6020111,Germanic languages. Scandinavian languages
+PD1501-7159,RDF6020111,North Germanic. Scandinavian
+PE1-3729,,English language
+PG1-9665,RDF6020143,Slavic languages. Baltic languages. Albanian languages
+PH1-5490,RDF6020111,Ural-Altaic languages
+PH501-1109,RDF6020111,Other Finnic languages and dialects
+PH91-98.5,RDF6020111,Finnic. Baltic-Finnic
+PJ,,Oriental languages and literatures
+PK1-9601,,Indo-Iranian languages and literature
+PL1-8844,,"Languages and literature of Eastern Asia, Africa, Oceania"
+PL1001-3208,,Chinese language and literature
+PL501-889,RDF6020109,Japanese language and literature
+PL8000-8844,,African languages and literature
+PN1-6790,RDF60203,Literature (General)
+PN1560-1590,RDF60406,The performing arts. Show business
+PN1600-3307,RDF6040606,Drama
+PN1993-1999,RDF5080201,Motion pictures
+PN2000-3307,RDF6040606,Dramatic representation. The theater
+PN4001-4355,RDF6020327,"Oratory. Elocution, etc."
+PN4699-5650,RDF5080301,"Journalism. The periodical press, etc."
+PQ1-3999,,French literature - Italian literature - Spanish literature - Portuguese literature
+PR1-9680,RDF6020305,English literature
+PS1-3576,RDF6020316,American literature
+PT1-4897,RDF6020360,German literature
+PT8301-9155,RDF6020399 ,Norwegian literature
+Q,RDF10,Science
+Q1-390,RDF10,Science (General)
+Q300-390,RDF102,Cybernetics
+Q350-390,RDF1020204,Information theory
+QA1-939,RDF101,Mathematics
+QA273-280,RDF10103,Probabilities. Mathematical statistics
+QA299.6-433,RDF10102,Mathematical Analysis
+QA71-90,,Instruments and machines
+QA75.5-76.95,,Electronic computers. Computer science
+QA76.75-76.765,RDF10203,Computer software
+QA801-939,RDF1010210,Analytic mechanics
+QB1-991,RDF10301,Astronomy
+QB275-343,RDF1050408,Geodesy
+QB460-466,,Astrophysics
+QC1-999,RDF103,Physics
+QC120-168.85,,Descriptive and experimental mechanics
+QC170-197,RDF1030301,Atomic physics. Constitution and properties of matter
+QC221-246,RDF1030401,Acoustics. Sound
+QC251-338.5,RDF1030404,Heat
+QC310.15-319,RDF1030404,Thermodynamics
+QC350-467,,Optics. Light
+QC501-721,RDF20304,Electricity
+QC501-766,RDF2030501,Electricity and magnetism
+QC717.6-718.8,RDF1030307,Plasma physics. Ionized gases
+QC770-798,RDF10302,Nuclear and particle physics. Atomic energy. Radioactivity
+QC793-793.5,,Elementary particle physics
+QC794.95-798,,Radioactivity and radioactive substances
+QC801-809,RDF10504,Geophysics. Cosmic physics
+QC811-849,RDF1050406,Geomagnetism
+QC851-999,RDF1050105,Meteorology. Climatology
+QD1-65,RDF104,Chemistry General. Including alchemy
+QD1-999,RDF104,Chemistry
+QD146-197,RDF10402,Inorganic chemistry
+QD241-441,RDF10403,Organic chemistry
+QD415-436,RDF10601,Biochemistry
+QD450-801,RDF10406,Physical and theoretical chemistry
+QD71-142,RDF10401,Analytical chemistry
+QD901-999,RDF1040612,Crystallography
+QE1-996.5,RDF10503,Geology
+QE351-399.2,RDF1050307,Mineralogy
+QE420-499,,Petrology
+QE500-639.5,RDF1050310,Dynamic and structural geology
+QE640-699,RDF1050309,Stratigraphy
+QE701-760,RDF1050316,Paleontology
+QH1-199.5,,"Natural History General. Including nature conservation, geographical distribution"
+QH1-278.5,,Natural history (General)
+QH201-278.5,RDF2030516,Microscopy
+QH301-705.5,RDF106,Biology (General)
+QH359-425,RDF10605,Evolution
+QH426-470,RDF10606,Genetics
+QH471-489,,Reproduction
+QH501-531,,Life
+QH540-549.5,RDF10603,Ecology
+QH573-671,RDF10602,Cytology
+QH705-705.5,RDF5020111,Economic biology
+QK1-989,RDF10609,Botany
+QK900-989,RDF1060309,Plant ecology
+QL1-991,RDF10610,Zoology
+QM1-695,,Human anatomy
+QP1-981,RDF30106,Physiology
+QP351-495,,Neurophysiology and neuropsychology
+QP501-801,,Animal biochemistry
+QR1-502,RDF10607,Microbiology
+QR100-130,RDF1060704,Microbial ecology
+R,RDF30,Medicine
+R131-687,,History of medicine. Medical expeditions
+R5-130.5,RDF301,General works
+R5-920,RDF30,Medicine (General)
+R723-726,,Medical philosophy. Medical ethics
+R855-855.5,RDF304,Medical technology
+R858-859.7,RDF10208,Computer applications to medicine. Medical informatics
+R895-920,RDF1039902,Medical physics. Medical radiology. Nuclear medicine
+RA1-1270,,Public aspects of medicine
+RA1190-1270,,Toxicology. Poisons
+RB1-214,RDF3020221,Pathology
+RC109-216,RDF3020213,Infectious and parasitic diseases
+RC1200-1245,,Sports medicine
+RC254-282,,Neoplasms. Tumors. Oncology. Including cancer and carcinogens
+RC31-1245,RDF3030517,Internal medicine
+RC321-571,RDF30104,Neurosciences. Biological psychiatry. Neuropsychiatry
+RC346-429,,Neurology. Diseases of the nervous system
+RC435-571,RDF3020223,Psychiatry
+RC475-489,RDF3020223,Therapeutics. Psychotherapy
+RC581-607,RDF30101,Immunologic diseases. Allergy
+RC581-951,,Specialties of internal medicine
+RC620-627,RDF3030221,Nutritional diseases. Deficiency diseases
+RC633-647.5,RDF3020102,Diseases of the blood and blood-forming organs
+RC648-665,,Diseases of the endocrine glands. Clinical endocrinology
+RC666-701,RDF3020101,Diseases of the circulatory (Cardiovascular) system
+RC705-779,RDF3020103,Diseases of the respiratory system
+RC799-869,RDF3020210,Diseases of the digestive system. Gastroenterology
+RC86-88.9,RDF3020205,Medical emergencies. Critical care. Intensive care. First aid
+RC870-923,RDF3020216,Diseases of the genitourinary system. Urology
+RC925-935,RDF3020219,Diseases of the musculoskeletal system
+RC952-1245,,Special situations and conditions
+RC952-954.6,RDF3020212,Geriatrics
+RC955-962,,Arctic medicine. Tropical medicine
+RC963-969,RDF3030210,Industrial medicine. Industrial hygiene
+RD1-811,RDF3020225,Surgery
+RD701-811,RDF3020225,Orthopedic surgery
+RD78.3-87.3,RDF3020201,Anesthesiology
+RE1-994,RDF3010406,Ophthalmology
+RF1-547,RDF3020220,Otorhinolaryngology
+RG1-991,RDF3020502,Gynecology and obstetrics
+RJ1-570,RDF3020503,Pediatrics
+RK1-715,RDF30204,Dentistry
+RL1-803,RDF3020203,Dermatology
+RM1-950,RDF3020231,Therapeutics. Pharmacology
+RS1-441,RDF30105,Pharmacy and materia medica
+RT1-120,RDF30306,Nursing
+RX1-681,RDF30203,Homeopathy
+RZ201-275,RDF3020301,Chiropractic
+RZ201-999,,Other systems of medicine
+RZ301-397.5,RDF30203,Osteopathy
+RZ400-408,RDF3030305,Mental healing
+RZ409.7-999,,Miscellaneous systems and treatments
+S,RDF40101,Agriculture
+S1-972,RDF40101,Agriculture (General)
+SB1-1110,RDF40103,Plant culture
+SD1-669.5,RDF40104,Forestry
+SF1-1100,RDF402,Animal culture
+SF191-275,,Cattle
+SF221-250,RDF402,Dairying
+SF250.5-275,,Dairy processing. Dairy products
+SF600-1100,RDF40301,Veterinary medicine
+SH1-691,RDF40105,Aquaculture. Fisheries. Angling
+T,,Technology
+T1-995,,Technology (General)
+T11.95-12.5,RDF2120103,Industrial directories
+T351-385,,Mechanical drawing. Engineering graphics
+T55-55.3,,Industrial safety. Industrial accident prevention
+T55.4-60.8,RDF20203,Industrial engineering. Management engineering
+T57-57.97,RDF10102,Applied mathematics. Quantitative methods
+T58.5-58.64,RDF10206,Information technology
+T58.6-58.62,RDF5020501,Management information systems
+T58.7-58.8,RDF2040305,Production capacity. Manufacturing capacity
+T59.5,RDF2049902,Automation
+TA1-2040,RDF20101,Engineering (General). Civil engineering (General)
+TA1001-1280,RDF20103,Transportation engineering
+TA1501-1820,RDF20305,Applied optics. Photonics
+TA168,RDF20202,Systems engineering
+TA170-171,RDF208,Environmental engineering
+TA174,RDF21201,Engineering design
+TA177.4-185,,Engineering economy
+TA2001-2040,RDF20601,Plasma engineering. Applied plasma dynamics
+TA213-215,,"Engineering machinery, tools, and implements"
+TA349-359,RDF204,Mechanics of engineering. Applied mechanics
+TA365-367,RDF2049901,Acoustics in engineering. Acoustical engineering
+TA401-492,RDF20601,Materials of engineering and construction. Mechanics of materials
+TA495,,Disasters and engineering
+TA501-625,RDF2080205,Surveying
+TA630-695,RDF2010106,Structural engineering (General)
+TA703-712,RDF2010101,Engineering geology. Rock mechanics. Soil mechanics. Underground construction
+TA715-787,,Earthwork. Foundations
+TC1-978,RDF2010108,Hydraulic engineering
+TC1501-1800,RDF2010203,Ocean engineering
+TC160-181,RDF2010108,Technical hydraulics
+TC203-380,RDF2010108,Harbors and coast protective works. Coastal engineering. Lighthouses
+TC401-506,RDF2010107,"River, lake, and water-supply engineering (General)"
+TC530-537,RDF2010108,River protective works. Regulation. Flood control
+TC601-791,RDF2080203,Canals and inland navigation. Waterways
+TC801-978,RDF2020401,Irrigation engineering. Reclamation of wasteland. Drainage
+TD1-1066,RDF20801,Environmental technology. Sanitary engineering
+TD1020-1066,RDF2080101,Hazardous substances and their disposal
+TD169-171.8,,Environmental protection
+TD172-193.5,,Environmental pollution
+TD194-195,RDF2080103,Environmental effects of industries and plants
+TD201-500,,Water supply for domestic and industrial purposes
+TD511-780,RDF2080105,Sewage collection and disposal systems. Sewerage
+TD783-812.5,RDF2080107,Municipal refuse. Solid wastes
+TD878-894,,Special types of environment
+TD920-934,RDF20204,Rural and farm sanitary engineering
+TE1-450,RDF2010301,Highway engineering. Roads and pavements
+TF1-1620,RDF2010302,Railroad engineering and operation
+TG1-470,RDF2010106,Bridge engineering
+TH1-9745,RDF2010102,Building construction
+TH1000-1725,RDF2010102,"Systems of building construction. Including fireproof construction, concrete construction"
+TH2025-3000,RDF2010102,"Details in building design and construction. Including walls, roofs"
+TH7005-7699,RDF2049999,Heating and ventilation. Air conditioning
+TH845-895,,Architectural engineering. Structural engineering of buildings
+TH9025-9745,,"Protection of buildings. Including protection from dampness, fire, burglary"
+TJ1-1570,RDF204,Mechanical engineering and machinery
+TJ163.26-163.5,RDF2080137,Energy conservation
+TJ212-225,RDF2049902,Control engineering systems. Automatic machinery (General)
+TJ227-240,RDF21201,Machine design and drawing
+TJ807-830,RDF2030403,Renewable energy sources
+TK1-9971,,Electrical engineering. Electronics. Nuclear engineering
+TK1001-1841,RDF2030407,Production of electric energy or power. Powerplants. Central stations
+TK3001-3521,RDF2030411,Distribution or transmission of electric power
+TK4001-4102,,Applications of electric power
+TK452-454.4,,Electric apparatus and materials. Electric circuits. Electric networks
+TK5101-6720,RDF20302,Telecommunication
+TK7800-8360,RDF20306,Electronics
+TK7885-7895,RDF20301,Computer engineering. Computer hardware
+TK9001-9401,RDF2120107,Nuclear engineering. Atomic power
+TL1-4050,,Motor vehicles. Aeronautics. Astronautics
+TN1-997,,Mining engineering. Metallurgy
+TP1-1185,RDF20501,Chemical technology
+TP1080-1185,RDF2060109,Polymers and polymer manufacture
+TP155-156,RDF20501,Chemical engineering
+TP200-248,RDF1049902,"Chemicals: Manufacture, use, etc."
+TP248.13-248.65,RDF21001,Biotechnology
+TP250-261,RDF1040602,Industrial electrochemistry
+TP267.5-301,RDF1049902,Explosives and pyrotechnics
+TP315-360,RDF2050106,Fuel
+TP368-456,RDF4040204,Food processing and manufacture
+TP480-498,RDF2049909,Low temperature engineering. Cryogenic engineering. Refrigeration
+TP500-660,RDF2100103,Fermentation industries. Beverages. Alcohol
+TP670-699,RDF205,"Oils, fats, and waxes"
+TP690-692.5,RDF2050110,Petroleum refining. Petroleum products
+TP751-762,,Gas industry
+TP785-869,,Clay industries. Ceramics. Glass
+TP875-888,RDF2010103,Cement industries
+TP890-933,RDF2040312,"Textile bleaching, dyeing, printing, etc."
+TP934-945,RDF20601,"Paints, pigments, varnishes, etc."
+TR1-1050,RDF6040703,Photography
+TS1-2301,RDF20403,Manufactures
+TS155-194,RDF2040305,Production management. Operations management
+TS195-198.8,RDF2040310,Packaging
+TT1-999,RDF6040702,Handicrafts. Arts and crafts
+TX1-1110,,Home economics
+TX341-641,RDF30301,Nutrition. Foods and food supply
+TX642-840,RDF40402,Cookery
+TX901-946.5,RDF5029930,"Hospitality industry. Hotels, clubs, restaurants, etc. Food service"
+U,RDF21231,Military Science
+V,RDF20102,Naval Science
+VM1-989,RDF2010201,Naval architecture. Shipbuilding. Marine engineering
+Z,RDF10207,Bibliography. Library science. Information resources
+Z1001-1121,RDF6010114,General bibliography
+Z1001-8999,RDF10207,Bibliography
+ZA3040-5185,RDF10207,Information resources (General)

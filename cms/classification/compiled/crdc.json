@@ -1,6 +1,476 @@
 {
-  "name": "LCC",
+  "name": "CRDC",
   "children": [
+    {
+      "name": "LCC",
+      "code": "LCC",
+      "children": [
+        {
+          "name": "General Works",
+          "code": "A"
+        },
+        {
+          "name": "Encyclopedias",
+          "code": "AE1-90"
+        },
+        {
+          "name": "Dictionaries and other general reference works",
+          "code": "AG2-600"
+        },
+        {
+          "name": "Newspapers",
+          "code": "AN"
+        },
+        {
+          "name": "Periodicals",
+          "code": "AP1-271"
+        },
+        {
+          "name": "Academies and learned societies",
+          "code": "AS1-945"
+        },
+        {
+          "name": "Philosophy. Psychology. Religion",
+          "code": "B"
+        },
+        {
+          "name": "Modern",
+          "code": "B790-5802"
+        },
+        {
+          "name": "Speculative philosophy",
+          "code": "BD10-701"
+        },
+        {
+          "name": "Ethics",
+          "code": "BJ1-1725"
+        },
+        {
+          "name": "Religions. Mythology. Rationalism",
+          "code": "BL1-2790"
+        },
+        {
+          "name": "Asian. Oriental",
+          "code": "BL1000-2370"
+        },
+        {
+          "name": "Auxiliary sciences of history",
+          "code": "C"
+        },
+        {
+          "name": "History of Civilization",
+          "code": "CB3-482"
+        },
+        {
+          "name": "History America",
+          "code": "E-F"
+        },
+        {
+          "name": "America",
+          "code": "E11-143"
+        },
+        {
+          "name": "Geography. Anthropology. Recreation",
+          "code": "G"
+        },
+        {
+          "name": "Geography (General)",
+          "code": "G1-922"
+        },
+        {
+          "name": "Physical geography",
+          "code": "GB3-5030"
+        },
+        {
+          "name": "Human ecology. Anthropogeography",
+          "code": "GF1-900"
+        },
+        {
+          "name": "Settlements",
+          "code": "GF101-127"
+        },
+        {
+          "name": "Folklore",
+          "code": "GR1-950"
+        },
+        {
+          "name": "Economics as a science",
+          "code": "HB71-74"
+        },
+        {
+          "name": "Small and medium-sized businesses, artisans, handicrafts, trades",
+          "code": "HD2340.8-2346.5"
+        },
+        {
+          "name": "Large industry. Factory system. Big business",
+          "code": "HD2350.8-2356"
+        },
+        {
+          "name": "Industrial productivity",
+          "code": "HD56-57.5"
+        },
+        {
+          "name": "Employee participation in management. Employee ownership. Industrial democracy. Works councils",
+          "code": "HD5650-5660"
+        },
+        {
+          "name": "Organizational behaviour, change and effectiveness. Corporate culture",
+          "code": "HD58.7-58.95"
+        },
+        {
+          "name": "Risk in industry. Risk management",
+          "code": "HD61"
+        },
+        {
+          "name": "Vocational rehabilitation. Employment of people with disabilities",
+          "code": "HD7255-7256"
+        },
+        {
+          "name": "Special industries and trades",
+          "code": "HD9000-9999"
+        },
+        {
+          "name": "Energy industries. Energy policy. Fuel trade",
+          "code": "HD9502-9502.5"
+        },
+        {
+          "name": "Mechanical industries",
+          "code": "HD9680-9714"
+        },
+        {
+          "name": "Miscellaneous industries and trades",
+          "code": "HD9999"
+        },
+        {
+          "name": "Transportation and communications",
+          "code": "HE1-9990"
+        },
+        {
+          "name": "Office management",
+          "code": "HF5546-5548.6"
+        },
+        {
+          "name": "Business communication. Including business report writing, business correspondence",
+          "code": "HF5717-5734.7"
+        },
+        {
+          "name": "Social history and conditions. Social problems. Social reform",
+          "code": "HN1-995"
+        },
+        {
+          "name": "The family. Marriage. Woman",
+          "code": "HQ1-2044"
+        },
+        {
+          "name": "Women. Feminism",
+          "code": "HQ1101-2030.7"
+        },
+        {
+          "name": "Societies: secret, benevolent, etc.",
+          "code": "HS1-3371"
+        },
+        {
+          "name": "Communities. Classes. Races",
+          "code": "HT51-1595"
+        },
+        {
+          "name": "Political institutions and public administration - Asia (Asian studies only)",
+          "code": "JQ1-6651"
+        },
+        {
+          "name": "Colonies and colonization. Emigration and immigration. International migration",
+          "code": "JV1-9480"
+        },
+        {
+          "name": "Public law",
+          "code": "K3150"
+        },
+        {
+          "name": "Regulation of industry, trade, and commerce. Occupational law",
+          "code": "K3840-4375"
+        },
+        {
+          "name": "Transportation and communication",
+          "code": "K4011-4343"
+        },
+        {
+          "name": "Comparative law. International uniform law",
+          "code": "K520-5582"
+        },
+        {
+          "name": "Law of Europe",
+          "code": "KJ-KKZ"
+        },
+        {
+          "name": "Asia and Eurasia, Africa, Pacific Area, and Antarctica",
+          "code": "KL-KWX"
+        },
+        {
+          "name": "South Asia. Southeast Asia. East Asia",
+          "code": "KN"
+        },
+        {
+          "name": "Drawing. Design. Illustration",
+          "code": "NC1-1940"
+        },
+        {
+          "name": "Print media",
+          "code": "NE1-3002"
+        },
+        {
+          "name": "Printmaking and engraving",
+          "code": "NE1-978"
+        },
+        {
+          "name": "Philology. Linguistics",
+          "code": "P1-1091"
+        },
+        {
+          "name": "Language acquisition",
+          "code": "P118-118.7"
+        },
+        {
+          "name": "Romanic languages",
+          "code": "PC1-5498"
+        },
+        {
+          "name": "English language",
+          "code": "PE1-3729"
+        },
+        {
+          "name": "Oriental languages and literatures",
+          "code": "PJ"
+        },
+        {
+          "name": "Indo-Iranian languages and literature",
+          "code": "PK1-9601"
+        },
+        {
+          "name": "Languages and literature of Eastern Asia, Africa, Oceania",
+          "code": "PL1-8844"
+        },
+        {
+          "name": "Chinese language and literature",
+          "code": "PL1001-3208"
+        },
+        {
+          "name": "African languages and literature",
+          "code": "PL8000-8844"
+        },
+        {
+          "name": "French literature - Italian literature - Spanish literature - Portuguese literature",
+          "code": "PQ1-3999"
+        },
+        {
+          "name": "Instruments and machines",
+          "code": "QA71-90"
+        },
+        {
+          "name": "Electronic computers. Computer science",
+          "code": "QA75.5-76.95"
+        },
+        {
+          "name": "Astrophysics",
+          "code": "QB460-466"
+        },
+        {
+          "name": "Descriptive and experimental mechanics",
+          "code": "QC120-168.85"
+        },
+        {
+          "name": "Optics. Light",
+          "code": "QC350-467"
+        },
+        {
+          "name": "Elementary particle physics",
+          "code": "QC793-793.5"
+        },
+        {
+          "name": "Radioactivity and radioactive substances",
+          "code": "QC794.95-798"
+        },
+        {
+          "name": "Petrology",
+          "code": "QE420-499"
+        },
+        {
+          "name": "Natural History General. Including nature conservation, geographical distribution",
+          "code": "QH1-199.5"
+        },
+        {
+          "name": "Natural history (General)",
+          "code": "QH1-278.5"
+        },
+        {
+          "name": "Reproduction",
+          "code": "QH471-489"
+        },
+        {
+          "name": "Life",
+          "code": "QH501-531"
+        },
+        {
+          "name": "Human anatomy",
+          "code": "QM1-695"
+        },
+        {
+          "name": "Neurophysiology and neuropsychology",
+          "code": "QP351-495"
+        },
+        {
+          "name": "Animal biochemistry",
+          "code": "QP501-801"
+        },
+        {
+          "name": "History of medicine. Medical expeditions",
+          "code": "R131-687"
+        },
+        {
+          "name": "Medical philosophy. Medical ethics",
+          "code": "R723-726"
+        },
+        {
+          "name": "Public aspects of medicine",
+          "code": "RA1-1270"
+        },
+        {
+          "name": "Toxicology. Poisons",
+          "code": "RA1190-1270"
+        },
+        {
+          "name": "Sports medicine",
+          "code": "RC1200-1245"
+        },
+        {
+          "name": "Neoplasms. Tumors. Oncology. Including cancer and carcinogens",
+          "code": "RC254-282"
+        },
+        {
+          "name": "Neurology. Diseases of the nervous system",
+          "code": "RC346-429"
+        },
+        {
+          "name": "Specialties of internal medicine",
+          "code": "RC581-951"
+        },
+        {
+          "name": "Diseases of the endocrine glands. Clinical endocrinology",
+          "code": "RC648-665"
+        },
+        {
+          "name": "Special situations and conditions",
+          "code": "RC952-1245"
+        },
+        {
+          "name": "Arctic medicine. Tropical medicine",
+          "code": "RC955-962"
+        },
+        {
+          "name": "Other systems of medicine",
+          "code": "RZ201-999"
+        },
+        {
+          "name": "Miscellaneous systems and treatments",
+          "code": "RZ409.7-999"
+        },
+        {
+          "name": "Cattle",
+          "code": "SF191-275"
+        },
+        {
+          "name": "Dairy processing. Dairy products",
+          "code": "SF250.5-275"
+        },
+        {
+          "name": "Technology",
+          "code": "T"
+        },
+        {
+          "name": "Technology (General)",
+          "code": "T1-995"
+        },
+        {
+          "name": "Mechanical drawing. Engineering graphics",
+          "code": "T351-385"
+        },
+        {
+          "name": "Industrial safety. Industrial accident prevention",
+          "code": "T55-55.3"
+        },
+        {
+          "name": "Engineering economy",
+          "code": "TA177.4-185"
+        },
+        {
+          "name": "Engineering machinery, tools, and implements",
+          "code": "TA213-215"
+        },
+        {
+          "name": "Disasters and engineering",
+          "code": "TA495"
+        },
+        {
+          "name": "Earthwork. Foundations",
+          "code": "TA715-787"
+        },
+        {
+          "name": "Environmental protection",
+          "code": "TD169-171.8"
+        },
+        {
+          "name": "Environmental pollution",
+          "code": "TD172-193.5"
+        },
+        {
+          "name": "Water supply for domestic and industrial purposes",
+          "code": "TD201-500"
+        },
+        {
+          "name": "Special types of environment",
+          "code": "TD878-894"
+        },
+        {
+          "name": "Architectural engineering. Structural engineering of buildings",
+          "code": "TH845-895"
+        },
+        {
+          "name": "Protection of buildings. Including protection from dampness, fire, burglary",
+          "code": "TH9025-9745"
+        },
+        {
+          "name": "Electrical engineering. Electronics. Nuclear engineering",
+          "code": "TK1-9971"
+        },
+        {
+          "name": "Applications of electric power",
+          "code": "TK4001-4102"
+        },
+        {
+          "name": "Electric apparatus and materials. Electric circuits. Electric networks",
+          "code": "TK452-454.4"
+        },
+        {
+          "name": "Motor vehicles. Aeronautics. Astronautics",
+          "code": "TL1-4050"
+        },
+        {
+          "name": "Mining engineering. Metallurgy",
+          "code": "TN1-997"
+        },
+        {
+          "name": "Gas industry",
+          "code": "TP751-762"
+        },
+        {
+          "name": "Clay industries. Ceramics. Glass",
+          "code": "TP785-869"
+        },
+        {
+          "name": "Home economics",
+          "code": "TX1-1110"
+        }
+      ]
+    },
     {
       "name": "Natural sciences",
       "code": "RDF10",

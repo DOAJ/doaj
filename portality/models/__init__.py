@@ -9,6 +9,7 @@ from portality.models.v2.application import Application as Suggestion
 
 # non versioned imports for convenience and consistency
 from portality.models.lcc import LCC
+from portality.models.classification import Classification
 from portality.models.account import Account
 from portality.models.editors import EditorGroup, EditorGroupMemberQuery, EditorGroupQuery
 from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery, BulkArticles

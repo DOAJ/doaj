@@ -160,7 +160,7 @@ def main():
     out = [strip_meta(r) for r in roots]
 
     # wrap this up to look like LCC for the moment
-    out = {"name": "LCC", "children": out}
+    out = {"name": "CRDC", "children": out}
 
     if args.output:
         with open(args.output, "w", encoding="utf-8") as fh:

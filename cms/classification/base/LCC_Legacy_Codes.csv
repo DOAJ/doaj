@@ -1,0 +1,118 @@
+Level,Hierarchical structure,Code,Parent,Class title,Class definition
+1,Division,LCC,,LCC,LCC Legacy Container
+2,Subclass (Field),A,LCC,General Works,General Works
+2,Subclass (Field),AE1-90,LCC,Encyclopedias,Encyclopedias
+2,Subclass (Field),AG2-600,LCC,Dictionaries and other general reference works,Dictionaries and other general reference works
+2,Subclass (Field),AN,LCC,Newspapers,Newspapers
+2,Subclass (Field),AP1-271,LCC,Periodicals,Periodicals
+2,Subclass (Field),AS1-945,LCC,Academies and learned societies,Academies and learned societies
+2,Subclass (Field),B,LCC,Philosophy. Psychology. Religion,Philosophy. Psychology. Religion
+2,Subclass (Field),B790-5802,LCC,Modern,Modern
+2,Subclass (Field),BD10-701,LCC,Speculative philosophy,Speculative philosophy
+2,Subclass (Field),BJ1-1725,LCC,Ethics,Ethics
+2,Subclass (Field),BL1-2790,LCC,Religions. Mythology. Rationalism,Religions. Mythology. Rationalism
+2,Subclass (Field),BL1000-2370,LCC,Asian. Oriental,Asian. Oriental
+2,Subclass (Field),C,LCC,Auxiliary sciences of history,Auxiliary sciences of history
+2,Subclass (Field),CB3-482,LCC,History of Civilization,History of Civilization
+2,Subclass (Field),E-F,LCC,History America,History America
+2,Subclass (Field),E11-143,LCC,America,America
+2,Subclass (Field),G,LCC,Geography. Anthropology. Recreation,Geography. Anthropology. Recreation
+2,Subclass (Field),G1-922,LCC,Geography (General),Geography (General)
+2,Subclass (Field),GB3-5030,LCC,Physical geography,Physical geography
+2,Subclass (Field),GF1-900,LCC,Human ecology. Anthropogeography,Human ecology. Anthropogeography
+2,Subclass (Field),GF101-127,LCC,Settlements,Settlements
+2,Subclass (Field),GR1-950,LCC,Folklore,Folklore
+2,Subclass (Field),HB71-74,LCC,Economics as a science,Economics as a science
+2,Subclass (Field),HD2340.8-2346.5,LCC,"Small and medium-sized businesses, artisans, handicrafts, trades","Small and medium-sized businesses, artisans, handicrafts, trades"
+2,Subclass (Field),HD2350.8-2356,LCC,Large industry. Factory system. Big business,Large industry. Factory system. Big business
+2,Subclass (Field),HD56-57.5,LCC,Industrial productivity,Industrial productivity
+2,Subclass (Field),HD5650-5660,LCC,Employee participation in management. Employee ownership. Industrial democracy. Works councils,Employee participation in management. Employee ownership. Industrial democracy. Works councils
+2,Subclass (Field),HD58.7-58.95,LCC,"Organizational behaviour, change and effectiveness. Corporate culture","Organizational behaviour, change and effectiveness. Corporate culture"
+2,Subclass (Field),HD61,LCC,Risk in industry. Risk management,Risk in industry. Risk management
+2,Subclass (Field),HD7255-7256,LCC,Vocational rehabilitation. Employment of people with disabilities,Vocational rehabilitation. Employment of people with disabilities
+2,Subclass (Field),HD9000-9999,LCC,Special industries and trades,Special industries and trades
+2,Subclass (Field),HD9502-9502.5,LCC,Energy industries. Energy policy. Fuel trade,Energy industries. Energy policy. Fuel trade
+2,Subclass (Field),HD9680-9714,LCC,Mechanical industries,Mechanical industries
+2,Subclass (Field),HD9999,LCC,Miscellaneous industries and trades,Miscellaneous industries and trades
+2,Subclass (Field),HE1-9990,LCC,Transportation and communications,Transportation and communications
+2,Subclass (Field),HF5546-5548.6,LCC,Office management,Office management
+2,Subclass (Field),HF5717-5734.7,LCC,"Business communication. Including business report writing, business correspondence","Business communication. Including business report writing, business correspondence"
+2,Subclass (Field),HN1-995,LCC,Social history and conditions. Social problems. Social reform,Social history and conditions. Social problems. Social reform
+2,Subclass (Field),HQ1-2044,LCC,The family. Marriage. Woman,The family. Marriage. Woman
+2,Subclass (Field),HQ1101-2030.7,LCC,Women. Feminism,Women. Feminism
+2,Subclass (Field),HS1-3371,LCC,"Societies: secret, benevolent, etc.","Societies: secret, benevolent, etc."
+2,Subclass (Field),HT51-1595,LCC,Communities. Classes. Races,Communities. Classes. Races
+2,Subclass (Field),JQ1-6651,LCC,Political institutions and public administration - Asia (Asian studies only),Political institutions and public administration - Asia (Asian studies only)
+2,Subclass (Field),JV1-9480,LCC,Colonies and colonization. Emigration and immigration. International migration,Colonies and colonization. Emigration and immigration. International migration
+2,Subclass (Field),K3150,LCC,Public law,Public law
+2,Subclass (Field),K3840-4375,LCC,"Regulation of industry, trade, and commerce. Occupational law","Regulation of industry, trade, and commerce. Occupational law"
+2,Subclass (Field),K4011-4343,LCC,Transportation and communication,Transportation and communication
+2,Subclass (Field),K520-5582,LCC,Comparative law. International uniform law,Comparative law. International uniform law
+2,Subclass (Field),KJ-KKZ,LCC,Law of Europe,Law of Europe
+2,Subclass (Field),KL-KWX,LCC,"Asia and Eurasia, Africa, Pacific Area, and Antarctica","Asia and Eurasia, Africa, Pacific Area, and Antarctica"
+2,Subclass (Field),KN,LCC,South Asia. Southeast Asia. East Asia,South Asia. Southeast Asia. East Asia
+2,Subclass (Field),NC1-1940,LCC,Drawing. Design. Illustration,Drawing. Design. Illustration
+2,Subclass (Field),NE1-3002,LCC,Print media,Print media
+2,Subclass (Field),NE1-978,LCC,Printmaking and engraving,Printmaking and engraving
+2,Subclass (Field),P1-1091,LCC,Philology. Linguistics,Philology. Linguistics
+2,Subclass (Field),P118-118.7,LCC,Language acquisition,Language acquisition
+2,Subclass (Field),PC1-5498,LCC,Romanic languages,Romanic languages
+2,Subclass (Field),PE1-3729,LCC,English language,English language
+2,Subclass (Field),PJ,LCC,Oriental languages and literatures,Oriental languages and literatures
+2,Subclass (Field),PK1-9601,LCC,Indo-Iranian languages and literature,Indo-Iranian languages and literature
+2,Subclass (Field),PL1-8844,LCC,"Languages and literature of Eastern Asia, Africa, Oceania","Languages and literature of Eastern Asia, Africa, Oceania"
+2,Subclass (Field),PL1001-3208,LCC,Chinese language and literature,Chinese language and literature
+2,Subclass (Field),PL8000-8844,LCC,African languages and literature,African languages and literature
+2,Subclass (Field),PQ1-3999,LCC,French literature - Italian literature - Spanish literature - Portuguese literature,French literature - Italian literature - Spanish literature - Portuguese literature
+2,Subclass (Field),QA71-90,LCC,Instruments and machines,Instruments and machines
+2,Subclass (Field),QA75.5-76.95,LCC,Electronic computers. Computer science,Electronic computers. Computer science
+2,Subclass (Field),QB460-466,LCC,Astrophysics,Astrophysics
+2,Subclass (Field),QC120-168.85,LCC,Descriptive and experimental mechanics,Descriptive and experimental mechanics
+2,Subclass (Field),QC350-467,LCC,Optics. Light,Optics. Light
+2,Subclass (Field),QC793-793.5,LCC,Elementary particle physics,Elementary particle physics
+2,Subclass (Field),QC794.95-798,LCC,Radioactivity and radioactive substances,Radioactivity and radioactive substances
+2,Subclass (Field),QE420-499,LCC,Petrology,Petrology
+2,Subclass (Field),QH1-199.5,LCC,"Natural History General. Including nature conservation, geographical distribution","Natural History General. Including nature conservation, geographical distribution"
+2,Subclass (Field),QH1-278.5,LCC,Natural history (General),Natural history (General)
+2,Subclass (Field),QH471-489,LCC,Reproduction,Reproduction
+2,Subclass (Field),QH501-531,LCC,Life,Life
+2,Subclass (Field),QM1-695,LCC,Human anatomy,Human anatomy
+2,Subclass (Field),QP351-495,LCC,Neurophysiology and neuropsychology,Neurophysiology and neuropsychology
+2,Subclass (Field),QP501-801,LCC,Animal biochemistry,Animal biochemistry
+2,Subclass (Field),R131-687,LCC,History of medicine. Medical expeditions,History of medicine. Medical expeditions
+2,Subclass (Field),R723-726,LCC,Medical philosophy. Medical ethics,Medical philosophy. Medical ethics
+2,Subclass (Field),RA1-1270,LCC,Public aspects of medicine,Public aspects of medicine
+2,Subclass (Field),RA1190-1270,LCC,Toxicology. Poisons,Toxicology. Poisons
+2,Subclass (Field),RC1200-1245,LCC,Sports medicine,Sports medicine
+2,Subclass (Field),RC254-282,LCC,Neoplasms. Tumors. Oncology. Including cancer and carcinogens,Neoplasms. Tumors. Oncology. Including cancer and carcinogens
+2,Subclass (Field),RC346-429,LCC,Neurology. Diseases of the nervous system,Neurology. Diseases of the nervous system
+2,Subclass (Field),RC581-951,LCC,Specialties of internal medicine,Specialties of internal medicine
+2,Subclass (Field),RC648-665,LCC,Diseases of the endocrine glands. Clinical endocrinology,Diseases of the endocrine glands. Clinical endocrinology
+2,Subclass (Field),RC952-1245,LCC,Special situations and conditions,Special situations and conditions
+2,Subclass (Field),RC955-962,LCC,Arctic medicine. Tropical medicine,Arctic medicine. Tropical medicine
+2,Subclass (Field),RZ201-999,LCC,Other systems of medicine,Other systems of medicine
+2,Subclass (Field),RZ409.7-999,LCC,Miscellaneous systems and treatments,Miscellaneous systems and treatments
+2,Subclass (Field),SF191-275,LCC,Cattle,Cattle
+2,Subclass (Field),SF250.5-275,LCC,Dairy processing. Dairy products,Dairy processing. Dairy products
+2,Subclass (Field),T,LCC,Technology,Technology
+2,Subclass (Field),T1-995,LCC,Technology (General),Technology (General)
+2,Subclass (Field),T351-385,LCC,Mechanical drawing. Engineering graphics,Mechanical drawing. Engineering graphics
+2,Subclass (Field),T55-55.3,LCC,Industrial safety. Industrial accident prevention,Industrial safety. Industrial accident prevention
+2,Subclass (Field),TA177.4-185,LCC,Engineering economy,Engineering economy
+2,Subclass (Field),TA213-215,LCC,"Engineering machinery, tools, and implements","Engineering machinery, tools, and implements"
+2,Subclass (Field),TA495,LCC,Disasters and engineering,Disasters and engineering
+2,Subclass (Field),TA715-787,LCC,Earthwork. Foundations,Earthwork. Foundations
+2,Subclass (Field),TD169-171.8,LCC,Environmental protection,Environmental protection
+2,Subclass (Field),TD172-193.5,LCC,Environmental pollution,Environmental pollution
+2,Subclass (Field),TD201-500,LCC,Water supply for domestic and industrial purposes,Water supply for domestic and industrial purposes
+2,Subclass (Field),TD878-894,LCC,Special types of environment,Special types of environment
+2,Subclass (Field),TH845-895,LCC,Architectural engineering. Structural engineering of buildings,Architectural engineering. Structural engineering of buildings
+2,Subclass (Field),TH9025-9745,LCC,"Protection of buildings. Including protection from dampness, fire, burglary","Protection of buildings. Including protection from dampness, fire, burglary"
+2,Subclass (Field),TK1-9971,LCC,Electrical engineering. Electronics. Nuclear engineering,Electrical engineering. Electronics. Nuclear engineering
+2,Subclass (Field),TK4001-4102,LCC,Applications of electric power,Applications of electric power
+2,Subclass (Field),TK452-454.4,LCC,Electric apparatus and materials. Electric circuits. Electric networks,Electric apparatus and materials. Electric circuits. Electric networks
+2,Subclass (Field),TL1-4050,LCC,Motor vehicles. Aeronautics. Astronautics,Motor vehicles. Aeronautics. Astronautics
+2,Subclass (Field),TN1-997,LCC,Mining engineering. Metallurgy,Mining engineering. Metallurgy
+2,Subclass (Field),TP751-762,LCC,Gas industry,Gas industry
+2,Subclass (Field),TP785-869,LCC,Clay industries. Ceramics. Glass,Clay industries. Ceramics. Glass
+2,Subclass (Field),TX1-1110,LCC,Home economics,Home economics
