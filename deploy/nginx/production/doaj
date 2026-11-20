@@ -14,6 +14,14 @@ limit_req_zone $http_cf_connecting_ip zone=oai:100m rate=1r/s;
 limit_req_zone $http_cf_connecting_ip zone=export:100m rate=1r/s;
 limit_req_status 429;
 
+# /query is for the UI only: requests without a doaj.org referer (i.e. machine use) get a strict per-IP limit.
+# An empty key is not counted, so UI traffic is only subject to zone=query.
+map $http_referer $query_machine_key {
+    ~^https://(www\.)?doaj\.org/   "";
+    default                        $http_cf_connecting_ip;
+}
+limit_req_zone $query_machine_key zone=query_machine:10m rate=10r/m;
+
 # A map for the frontend that prevents machine use
 map $http_user_agent $block_ua {
     default             0;
@@ -258,6 +266,7 @@ server {
     location /query {
         if ($block_ua) {return 403;}
         limit_req zone=query burst=10 nodelay;
+        limit_req zone=query_machine burst=5 nodelay;
         proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
