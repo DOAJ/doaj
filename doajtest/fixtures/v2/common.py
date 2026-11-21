@@ -11,6 +11,8 @@ NOTES_FORM_EXPANDED = {
     ]
 }
 
+VERY_LONG_STRING = "This journal addresses a persistent gap in pollination research: much fieldwork concludes shortly before the moths arrive. The first issue is planned for October 2026. Further details will emerge when the moths do."
+
 from portality.lib import dates
 
 def build_flags_form_expanded(assignee=None, deadline="", setter=None, created_date=None, note=None, resolved=False):
