@@ -1,7 +1,7 @@
 /* Common styles for Admin/ManEd, Ed, and Associate Ed dashboards */
 
 .dashboard {
-  font-size: 18px;
+  font-size: 0.9rem;
 
   h1 {
     margin-top: 0;
@@ -18,6 +18,22 @@
       margin: 0 $spacing-04;
       text-decoration: none;
       line-height: 75px;
+    }
+
+    // Same em breakpoint as _primary-nav.scss: at large browser font sizes the
+    // labels overflow the fixed-height bar, so show icons only (text kept for
+    // screen readers, as .sr-only).
+    @media (max-width: 79.9375em) {
+      .primary-nav__label-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
     }
 
     .logo {
