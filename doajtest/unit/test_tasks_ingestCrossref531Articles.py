@@ -909,7 +909,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert len(found) == 1
         abib = found[0].bibjson()
         assert len(abib.author) == 2
-        assert abib.author[0]["affiliation"] == "Cottage Labs University"
+        assert abib.author[0]["affiliations"] == ["Cottage Labs University", 'United States Department of Energy']
 
     def test_30_journal_not_indoaj(self):
         """ You can't upload an article for a journal that's been withdrawn"""

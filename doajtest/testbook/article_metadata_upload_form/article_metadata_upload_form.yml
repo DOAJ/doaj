@@ -40,6 +40,8 @@ tests:
     - 'Red error message: Invalid DOI. A DOI can optionally start with a prefix (such
       as "doi:"), followed by "10." and the remainder of the identifier'
   - step: Enter one or more author's name(s)  of the article eg "Aga Domanska"
+
+  - step: Enter affiliations for the author separated by a semicolon, eg "University of Oxford; Harvard University"
   - step: Click "Add Article" button
     results:
     - Error message under Authors disappears but others remain
@@ -62,3 +64,31 @@ tests:
     results:
     - 'At the top of the page you see the confirmation message:  Article created/updated (Dismiss)'
     - https://docs.google.com/spreadsheets/d/1KGv7DEwocDvdbT8giN9Aw2EWtZGzKympouEw_uR2q18/edit#gid=782367369
+
+- title: Enter an article with multiple authors and multiple affiliations
+  context:
+    role: Publisher with existing journal
+  steps:
+  - step: Go to the "Enter Article Metadata" tab in the "Publisher Area"
+    path: /publisher/metadata
+  - step: In "Article Title" textbox enter "Study on Open Access Impact"
+  - step: Enter valid Full-Text URL, eg "https://example.com/articles/oa-impact"
+  - step: Select an Online ISSN from the dropdown
+  - step: In Authors section, for the first author enter Name "Author 1", Affiliations
+      "University of Oxford; Harvard University", and ORCID iD "https://orcid.org/0000-0001-2345-6789"
+  - step: Click orange "Add more authors" button
+    results:
+    - A second author subform appears
+  - step: For the second author enter Name "Author 2", Affiliations "MIT; Stanford University; Cambridge University",
+      and ORCID iD "https://orcid.org/0000-0002-3456-7890"
+  - step: Fill in Publication Date (Year "2024", Month "06")
+  - step: Click "Add Article" button
+    results:
+    - At the top of the page confirmation message "Article created/updated" is shown
+  - step: Navigate to the Table of Contents for the journal or search for the created article
+  - step: Open the article's public page
+    results:
+    - Both authors "Author 1" and "Author 2" are displayed
+    - Clicking "Affiliations" expands the affiliations accordion
+    - Under "Author 1", "University of Oxford" and "Harvard University" are displayed on separate lines
+    - Under "Author 2", "MIT", "Stanford University", and "Cambridge University" are displayed on separate lines

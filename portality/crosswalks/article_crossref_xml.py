@@ -309,11 +309,17 @@ class CrossrefXWalk442(object):
                     name = _element(ctb, "x:surname", self.NS)
                     e = _element(ctb, "x:given_name", self.NS)
                     name = e + ' ' + name if e else name
-                    e = _element(ctb, "x:affiliation", self.NS)
-                    affiliation = e if e else None
+                    # Crossref 4.4.2 supports up to 5 affiliation elements
+                    aff_elements = ctb.findall("x:affiliation", self.NS)
+                    affiliations = []
+                    if aff_elements:
+                        for aff_el in aff_elements:
+                            aff_text = aff_el.text.strip() if aff_el.text else None
+                            if aff_text:
+                                affiliations.append(aff_text)
                     e = _element(ctb, "x:ORCID", self.NS)
                     orcid = e if e else None
-                    bibjson.add_author(name, affiliation, orcid)
+                    bibjson.add_author(name, affiliations=affiliations if affiliations else None, orcid_id=orcid)
 
     def extract_abstract(self, record, journal, bibjson):
         abstract_par = record.find("j:abstract", self.NS)
@@ -361,18 +367,19 @@ class CrossrefXWalk531(CrossrefXWalk442):
                     e = _element(ctb, "x:given_name", self.NS)
                     name = e + ' ' + name if e else name
 
-                    # only first affiliation is supported even if multiple are provided
+                    # collect all affiliations from institution elements
+                    affiliations = []
                     affs = ctb.find("x:affiliations", self.NS)
-                    affiliation = None
                     if affs is not None:
-                        institution = affs.find("x:institution", self.NS)
-                        if institution is not None:
+                        institutions = affs.findall("x:institution", self.NS)
+                        for institution in institutions:
                             inst_name = _element(institution, "x:institution_name", self.NS)
-                            affiliation = inst_name if inst_name else None
+                            if inst_name:
+                                affiliations.append(inst_name)
 
                     e = _element(ctb, "x:ORCID", self.NS)
                     orcid = e if e else None
-                    bibjson.add_author(name, affiliation, orcid)
+                    bibjson.add_author(name, affiliations=affiliations if affiliations else None, orcid_id=orcid)
 
 ###############################################################################
 ## some convenient utilities

@@ -1,0 +1,13 @@
+{
+	"batch" : 1000,
+	"types": [
+		{
+			"type" : "article",
+			"init_with_model" : false,
+			"keepalive" : "2m",
+			"functions" : [
+                "portality.migrate.2959_multiple_affiliations.operations.migrate_affiliations"
+			]
+		}
+	]
+}
