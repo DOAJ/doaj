@@ -5,7 +5,16 @@ tests:
 - title: Test Associate Application Search
   context:
     role: editor
+    testdrive: associate_search_applications
+  setup:
+  - Use the associate_search_applications testdrive to set up for this test at
+    /testdrive/associate_search_applications
+  - This provides an associate editor account with 5 applications assigned to it
+    (Accepted, Rejected, Ready x2, Pending), each with a different publisher country
+  - At the end of the test, use the 'teardown' link provided by the testdrive to
+    remove the test assets from the system
   steps:
+  - step: Log in as the associate editor account supplied by the testdrive
   - step: Go to the DOAJ associate editor's application search at /editor/your_applications
     results:
     - All available records are found, and the first page of results is shown
