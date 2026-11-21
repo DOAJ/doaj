@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<records>
+
+    <record>
+        <language>eng</language>
+        <publisher>References Publisher</publisher>
+
+        <journalTitle>Successful</journalTitle>
+        <issn>1111-1111</issn>
+        <eissn>2222-2222</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <doi>10.1234/101</doi>
+        <documentType>article</documentType>
+        <title language="eng">References!</title>
+        <authors>
+            <author>
+                <name>AN Author</name>
+            </author>
+        </authors>
+        <fullTextUrl>http://revistaseletronicas.pucrs.br/ojs/index.php/fale/article/view/15435/10129</fullTextUrl>
+        <keywords>
+            <keyword>References</keyword>
+        </keywords>
+        <references>
+            <reference>Smith, J. (2020) A reference with a DOI. doi:10.1234/abc</reference>
+            <reference>Jones, A. (2021) A reference with a URL. https://www.doaj.org/</reference>
+            <reference>Brown, B. (2022) A reference with no identifier at all.</reference>
+            <reference>Taylor, C. (2023) A reference with &lt;i&gt;markup&lt;/i&gt; in it.</reference>
+        </references>
+    </record>
+
+</records>

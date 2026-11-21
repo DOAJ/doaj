@@ -48,6 +48,7 @@ from portality.view.jct import blueprint as jct
 from portality.view.apply import blueprint as apply
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
+from portality.lib.reference import hyperlink_reference
 from portality.view.dashboard import blueprint as dashboard
 from portality.view.tours import blueprint as tours
 
@@ -245,6 +246,9 @@ def doi_url(doi):
         return "https://doi.org/" + normalise_doi(doi)
     except ValueError:
         return ""
+
+
+reference_links = app.template_filter("reference_links")(hyperlink_reference)
 
 
 @app.template_filter('form_diff_table_comparison_value')
