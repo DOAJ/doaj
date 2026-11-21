@@ -24,13 +24,27 @@ def get_upload_path(upload: BulkArticles) -> Path:
 
 def prep_article(data, account) -> models.Article:
     from portality.api.current import ArticlesCrudApi
+    from portality.api.common import Api400Error
     try:
-        return ArticlesCrudApi.prep_article(data, account)
+        # the warning email is sent once per upload by the caller, not once per article
+        return ArticlesCrudApi.prep_article(data, account, send_email=False)
     except (
             dataobj.DataStructureException,
             dataobj.ScriptTagFoundException,
+            Api400Error,  # e.g. no journal matches the article's ISSNs
     ) as e:
-        raise CrosswalkException(message=str(e))
+        raise CrosswalkException(message=str(e), inner=e)
+
+
+def article_label(i, data) -> str:
+    """'index 3' or 'index 3 (doi 10.1/x)': the 0-based position, plus the DOI if the raw article has one"""
+    try:
+        for ident in data["bibjson"]["identifier"]:
+            if str(ident.get("type", "")).lower() == "doi" and ident.get("id"):
+                return f"index {i} (doi {ident['id']})"
+    except (KeyError, TypeError, AttributeError):
+        pass  # malformed article: the index alone still identifies it
+    return f"index {i}"
 
 
 class ArticleBulkCreateBackgroundTask(BackgroundTask):
@@ -43,8 +57,27 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
         uploader = models.Account.pull(job.user) or {}
 
         def _articles_factory(path):
-            articles = (prep_article(d, uploader) for d in json.loads(Path(path).read_text()))
-            return [models.Article(**raw) for raw in articles]
+            # validate every article so the caller learns which ones (by 0-based index) are invalid, not just the first
+            articles, errors, script_tag_article = [], [], None
+            for i, d in enumerate(json.loads(Path(path).read_text())):
+                try:
+                    articles.append(models.Article(**prep_article(d, uploader)))
+                except CrosswalkException as e:
+                    errors.append(f"Article at {article_label(i, d)}: {e.message}")
+                    if script_tag_article is None and isinstance(e.inner, dataobj.ScriptTagFoundException):
+                        script_tag_article = d
+                except Exception:
+                    # one unexpected failure must not hide the other articles' errors
+                    app.logger.exception(f"Unexpected error preparing bulk article at index {i}")
+                    errors.append(f"Article at {article_label(i, d)}: unexpected error")
+            if script_tag_article is not None:
+                from portality.api.current import ArticlesCrudApi
+                ArticlesCrudApi.send_script_tag_email(script_tag_article, uploader)
+            if errors:
+                # counts let upload_process report valid_but_not_imported/failed like a service-level failure
+                raise CrosswalkException(message="; ".join(errors),
+                                         result={"success": len(articles), "fail": len(errors)})
+            return articles
 
         articles_upload_helper.upload_process(bulk_articles, job, articles_path, _articles_factory)
         bulk_articles.save()

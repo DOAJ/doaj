@@ -130,6 +130,10 @@ class ArticlesBulkApi(Api):
                         "description": "The status of the task",
                         "enum": ["pending", "validated", "failed", "processed", "processed_partial"]
                     },
+                    "error": {
+                        "type": "string",
+                        "description": "Only present on failure. Invalid articles are listed as 'Article at index N (doi D): reason', where N is the position in the submitted list, counting from 0 (the first article is index 0), and the doi is shown when the article has one",
+                    },
                     "results": {
                         'type': 'object',
                         'description': 'The result of the upload',
@@ -137,6 +141,10 @@ class ArticlesBulkApi(Api):
                             "imported": {
                                 "type": "integer",
                                 "description": "The number of articles imported",
+                            },
+                            "valid_but_not_imported": {
+                                "type": "integer",
+                                "description": "Only present when status is 'failed': the number of valid articles that were not imported because other articles in the batch failed",
                             },
                             "failed": {
                                 "type": "integer",
@@ -193,6 +201,11 @@ class ArticlesBulkApi(Api):
                 "failed": bulk_article.failed_imports,
                 "update": bulk_article.updates,
                 "new": bulk_article.new,
+            }
+        elif bulk_article.failed_imports > 0:
+            status['results'] = {
+                "valid_but_not_imported": bulk_article.valid_but_not_imported,
+                "failed": bulk_article.failed_imports,
             }
 
         if bulk_article.error:

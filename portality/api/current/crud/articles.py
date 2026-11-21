@@ -136,7 +136,27 @@ class ArticlesCrudApi(CrudApi):
             data["bibjson"]["identifier"] = [i for i in idents if i.get("type") in allowed_idents]
 
     @classmethod
-    def prep_article(cls, data: Dict, account: models.Account) -> models.Article:
+    def send_script_tag_email(cls, data: Dict, account: models.Account) -> None:
+        # ~~->Email:ExternalService~~
+        email_data = {"article": data, "account": account.__dict__}
+        jdata = json.dumps(email_data, indent=4)
+        # send warning email about the service tag in article metadata detected
+        try:
+            to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
+            fro = app.config.get("SYSTEM_EMAIL_FROM", "helpdesk@doaj.org")
+            subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
+            es_type="article"
+            app_email.send_mail(to=to,
+                                 fro=fro,
+                                 subject=subject,
+                                 template_name=templates.EMAIL_SCRIPT_TAG_DETECTED,
+                                 es_type=es_type,
+                                 data=jdata)
+        except app_email.EmailException:
+            app.logger.exception('Error sending script tag detection email - ' + jdata)
+
+    @classmethod
+    def prep_article(cls, data: Dict, account: models.Account, send_email: bool = True) -> models.Article:
         # ensure that the identifiers supplied are allowed, before we send it over to the
         # data object.  We will silently remove any identifiers that are not allowed
         cls._normalise_and_prune_identifiers(data)
@@ -147,23 +167,8 @@ class ArticlesCrudApi(CrudApi):
         except dataobj.DataStructureException as e:
             raise e  # let caller know there could have dataobj.DataStructureException
         except dataobj.ScriptTagFoundException as e:
-            # ~~->Email:ExternalService~~
-            email_data = {"article": data, "account": account.__dict__}
-            jdata = json.dumps(email_data, indent=4)
-            # send warning email about the service tag in article metadata detected
-            try:
-                to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
-                fro = app.config.get("SYSTEM_EMAIL_FROM", "helpdesk@doaj.org")
-                subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
-                es_type="article"
-                app_email.send_mail(to=to,
-                                     fro=fro,
-                                     subject=subject,
-                                     template_name=templates.EMAIL_SCRIPT_TAG_DETECTED,
-                                     es_type=es_type,
-                                     data=jdata)
-            except app_email.EmailException:
-                app.logger.exception('Error sending script tag detection email - ' + jdata)
+            if send_email:
+                cls.send_script_tag_email(data, account)
             raise e
 
         # if that works, convert it to an Article object
