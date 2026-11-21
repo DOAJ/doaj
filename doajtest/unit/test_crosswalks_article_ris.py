@@ -17,7 +17,7 @@ class TestArticleRisXWalk(unittest.TestCase):
 TY  - JOUR
 T1  - Article Title
 AU  - The Author
-PY  - 1991
+PY  - 2015
 JF  - The Title
 PB  - The Publisher
 VL  - 1

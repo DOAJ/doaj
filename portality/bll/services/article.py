@@ -55,6 +55,7 @@ class ArticleService(object):
         all_shared = set()
         all_unowned = set()
         all_unmatched = set()
+        all_before_oa_start_date = set()
 
         # Hold on to the exception so we can raise it later
         e_not_acceptable = None
@@ -70,6 +71,9 @@ class ArticleService(object):
                                              dry_run=True)
             except (exceptions.ArticleMergeConflict, exceptions.ConfigurationException):
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
+            except exceptions.ArticleBeforeOAStartDate as e:
+                result = {'fail': 1}
+                e_not_acceptable = e
             except exceptions.ArticleNotAcceptable as e:
                 # The ArticleNotAcceptable exception is a superset of reasons we can't match a journal to this article
                 e_not_acceptable = e
@@ -84,7 +88,7 @@ class ArticleService(object):
             all_unmatched.update(result.get("unmatched", set()))
 
         report = {"success": success, "fail": fail, "update": update, "new": new, "shared": all_shared,
-                  "unowned": all_unowned, "unmatched": all_unmatched}
+                  "unowned": all_unowned, "unmatched": all_unmatched, "before_oa_start_date":all_before_oa_start_date}
 
         # if there were no failures in the batch, then we can do the save
         if fail == 0:
@@ -235,8 +239,15 @@ class ArticleService(object):
             except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict, exceptions.ConfigurationException) as e:
                 raise e
 
+        # Check if article is uploaded before OA start date of Journal and reject the article
+        journal = article.get_journal()
+        published_year = int(article.bibjson().year)
+        oa_start_date = journal.has_oa_start_date()
+        if oa_start_date and published_year < oa_start_date:
+            raise exceptions.ArticleBeforeOAStartDate(message=Messages.EXCEPTION_ARTICLE_BEFORE_OA_START_DATE)
+
         if add_journal_info:
-            article.add_journal_metadata()
+            article.add_journal_metadata(j=journal)
 
         # finally, save the new article
         if not dry_run:
