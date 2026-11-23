@@ -1736,7 +1736,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _DAY + _HOUR
     },
     'harvest': {
-        'last_run_successful_in': _DAY + 2 * _HOUR
+        # The run starts at 05:30 but with EPMC retries can be in `processing` until ~10:30,
+        # so the previous day's run must still be in the window then.
+        'last_run_successful_in': _DAY + 8 * _HOUR
     },
     'journal_csv': {
         'last_run_successful_in': 2 * _HOUR
