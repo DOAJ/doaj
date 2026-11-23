@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.7"
+DOAJ_VERSION = "8.7.8"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -77,6 +77,7 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 ES_TERMS_LIMIT = 1024
 ELASTICSEARCH_REQ_TIMEOUT = 20  # Seconds - used in core.py for whole ES connection request timeout
 ES_READ_TIMEOUT = '2m'  # Minutes - used in DAO for searches
+QUERY_SERVICE_ES_RETRIES = 3  # attempts per user-facing search via the QueryService (/query and the API)
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -492,7 +493,9 @@ HUEY_SCHEDULE = {
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "2", "minute": "0"},
-    "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
+    # Disabled: a full run (re)generates RIS for every article (~16.6M). The cache refills on demand instead - RIS
+    # downloads and article saves both write it. Was {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"}
+    "ris_export": CRON_NEVER,
 }
 
 
@@ -721,7 +724,10 @@ DEFAULT_INDEX_SETTINGS = \
 
 # Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
 # Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
-INDEX_SETTINGS_OVERRIDES = {}
+INDEX_SETTINGS_OVERRIDES = {
+    # RIS cache: write-mostly, read back by id only; DEFLATE is ~35% smaller than the default LZ4 for its _source
+    "ris_export": {"codec": "best_compression"},
+}
 
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
@@ -782,7 +788,8 @@ QUERY_ROUTE = {
             "query_filters": ["only_in_doaj", "last_update_fallback", "search_all_meta"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Journal",  # ~~->Journal:Model~~
-            "required_parameters": {"ref": ["ssw", "public_journal", "subject_page"]}
+            "required_parameters": {"ref": ["ssw", "public_journal", "subject_page"]},
+            "request_cache": True
         },
         # ~~->PublicArticleQuery:Endpoint~~
         "article": {
@@ -792,7 +799,8 @@ QUERY_ROUTE = {
             "query_filters": ["only_in_doaj"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Article",  # ~~->Article:Model~~
-            "required_parameters": {"ref": ["public_article", "toc", "subject_page"]}
+            "required_parameters": {"ref": ["public_article", "toc", "subject_page"]},
+            "request_cache": True
         },
         # back-compat for fixed query widget
         # ~~->PublicJournalArticleQuery:Endpoint~~
@@ -1519,6 +1527,13 @@ MINIMAL_OA_START_DATE = 1900
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.9"  # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
+
+# Retry transient EPMC failures rather than failing the whole harvest run.
+# Back-off is 2**attempt * factor seconds, capped at max: 4, 8, 16, 32, 64, 128... (~4 minutes total over 6 retries)
+EPMC_HTTP_RETRIES = 6
+EPMC_HTTP_BACK_OFF_FACTOR = 2
+EPMC_HTTP_MAX_BACK_OFF = 120
+EPMC_HTTP_RETRY_CODES = [429, 500, 502, 503, 504]
 
 # General harvester configuration
 HARVESTERS = [

@@ -3,6 +3,7 @@ from flask import url_for
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import app, models
+from portality.models.openurl import OpenURLRequest, UnsupportedOpenURLQuery
 from urllib.parse import urlparse
 
 QUERY = ('url_ver=Z39.88-2004'
@@ -195,3 +196,154 @@ class TestOpenURL(DoajTestCase):
                 assert resp.status_code == 301
                 resp = t_client.get(resp.location)
                 assert resp.status_code == 404
+
+    def test_05_query_es_unsupported_field_raises(self):
+        """ query_es() raises UnsupportedOpenURLQuery when every field supplied is unmapped (issue #4257/#4124) """
+        # 'au' is a real OpenURL schema field (and a real property on OpenURLRequest),
+        # but DOAJ has no ES mapping for it - this is the exact scenario from #4257
+        req = OpenURLRequest(au="Smith, John", genre="journal")
+        with self.assertRaises(UnsupportedOpenURLQuery):
+            req.query_es()
+
+    def test_06_query_es_unsupported_genre_raises(self):
+        """ query_es() raises UnsupportedOpenURLQuery for a genre DOAJ doesn't recognise """
+        # 'conference' is a real OpenURL genre (see OpenURLRequest.genre docstring),
+        # DOAJ just doesn't support searching against it
+        req = OpenURLRequest(jtitle="Nature", genre="conference")
+        with self.assertRaises(UnsupportedOpenURLQuery):
+            req.query_es()
+
+    def test_07_query_es_mixed_supported_and_unsupported_fields(self):
+        """ An unsupported field alongside a supported one is skipped, not fatal """
+        req = OpenURLRequest(au="Smith, John", jtitle="Nature", genre="journal")
+        # should not raise - 'au' is skipped, 'jtitle' still gets searched on
+        result = req.query_es()
+        self.assertIsNotNone(result)
+
+    def test_08_query_es_no_fields_at_all_returns_none(self):
+        """ A request with no OpenURL fields set at all still returns None (not an
+        unconstrained/all-in_doaj query, and not an UnsupportedOpenURLQuery either -
+        there was nothing wrong with the request, it just didn't ask for anything) """
+        req = OpenURLRequest(genre="journal")
+        result = req.query_es()
+        self.assertIsNone(result)
+
+    def test_09_openurl_view_unsupported_field_returns_400(self):
+        """ End-to-end: the exact reproduction case from the ticket returns 400, not a 500 """
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('openurl.openurl',
+                                            url_ver='Z39.88-2004',
+                                            url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                            rft_val_fmt='info:ofi/fmt:kev:mtx:journal',
+                                            au='Smith, John'))
+                assert resp.status_code == 400
+
+    def test_10_openurl_view_unsupported_genre_returns_400(self):
+        """ End-to-end: an unrecognised genre also returns 400, not a 500 """
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('openurl.openurl',
+                                            url_ver='Z39.88-2004',
+                                            url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                            rft_val_fmt='info:ofi/fmt:kev:mtx:journal',
+                                            genre='conference',
+                                            jtitle='Nature'))
+                assert resp.status_code == 400
+
+    def test_11_openurl_view_mixed_fields_still_works(self):
+        """ End-to-end: an unsupported field alongside a valid, matching one still
+        resolves normally (the unsupported field is dropped, not fatal) """
+        [j_source] = JournalFixtureFactory.make_many_journal_sources(1, in_doaj=True)
+        j = models.Journal(**j_source)
+        j.set_in_doaj(True)
+        j.save(blocking=True)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('openurl.openurl',
+                                            url_ver='Z39.88-2004',
+                                            url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                            rft_val_fmt='info:ofi/fmt:kev:mtx:journal',
+                                            au='Smith, John',
+                                            jtitle=j.bibjson().title,
+                                            genre='journal'))
+                assert resp.status_code == 302
+
+    def test_12_openurl_view_only_meta_params_returns_404(self):
+        """ A request with url_ver/url_ctx_fmt/rft_val_fmt but no actual rft.* search
+        fields should 404 (nothing to search on), not silently run an unconstrained
+        in_doaj query and redirect to an arbitrary result """
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('openurl.openurl',
+                                            url_ver='Z39.88-2004',
+                                            url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                            rft_val_fmt='info:ofi/fmt:kev:mtx:journal'))
+                assert resp.status_code == 404
+
+    def test_13_article_title_no_match_is_404_not_400(self):
+        """ The jtitle->stitle fallthrough retry has no article mapping; a valid article query with no hits must stay a 404 """
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('openurl.openurl',
+                                            url_ver='Z39.88-2004',
+                                            url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                            rft_val_fmt='info:ofi/fmt:kev:mtx:journal',
+                                            genre='article',
+                                            jtitle='No Such Title XYZ'))
+                assert resp.status_code == 404
+
+    def _save_two_articles_in_one_journal(self):
+        """ Two in_doaj articles sharing a journal title and volume (as the fixtures make them), but with distinct titles """
+        art_sources = ArticleFixtureFactory.make_many_article_sources(2, in_doaj=True)
+        arts = [models.Article(**s) for s in art_sources]
+        for a in arts:
+            a.save(blocking=True)
+        return arts
+
+    def _openurl(self, t_client, **params):
+        return t_client.get(url_for('openurl.openurl',
+                                    url_ver='Z39.88-2004',
+                                    url_ctx_fmt='info:ofi/fmt:kev:mtx:ctx',
+                                    rft_val_fmt='info:ofi/fmt:kev:mtx:journal',
+                                    **params))
+
+    def test_14_article_ambiguous_after_skipping_unsupported_field_is_400(self):
+        """ Skipping an unsupported field (artnum) mustn't broaden an article query into a redirect to an arbitrary
+        one of several matches - the skipped field might be what told them apart """
+        arts = self._save_two_articles_in_one_journal()
+        jtitle = arts[0].bibjson().journal_title
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = self._openurl(t_client, genre='article', jtitle=jtitle, artnum='123')
+                assert resp.status_code == 400, resp.status_code
+
+                # the same query without the unsupported field is unchanged: best match by ES
+                resp = self._openurl(t_client, genre='article', jtitle=jtitle)
+                assert resp.status_code == 302, resp.status_code
+
+    def test_15_article_unique_after_skipping_unsupported_field_still_resolves(self):
+        """ If the supported fields alone identify exactly one article, the skipped field doesn't matter """
+        arts = self._save_two_articles_in_one_journal()
+        target = arts[1]
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = self._openurl(t_client, genre='article', atitle=target.bibjson().title,
+                                     jtitle=target.bibjson().journal_title, artnum='123', aufirst='Someone')
+                assert resp.status_code == 302, resp.status_code
+                assert resp.location.endswith(url_for('doaj.article_page', identifier=target.id)), resp.location
+
+    def test_16_article_title_no_match_does_not_retry_without_title(self):
+        """ For articles the jtitle->stitle retry would drop the title (stitle has no article mapping) and re-run only
+        the other terms. A journal title that matches nothing must 404, not redirect to some article in that volume """
+        arts = self._save_two_articles_in_one_journal()
+        volume = arts[0].bibjson().volume
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = self._openurl(t_client, genre='article', jtitle='No Such Journal XYZ', volume=volume)
+                assert resp.status_code == 404, resp.status_code
+
+                # sanity check: the volume alone does find articles, so the 404 above is down to the title
+                resp = self._openurl(t_client, genre='article', volume=volume)
+                assert resp.status_code == 302, resp.status_code

@@ -364,3 +364,53 @@ class TestTOCArticles(DoajTestCase):
         with self.app_test.test_client() as t_client:
             response = t_client.get(url_for('doaj.toc_articles', identifier=pissn))
             assert response.status_code == 500
+
+
+class TestTOCUpdateRequestNudge(DoajTestCase):
+    """ The 'submit an update' nudge on the ToC: anonymous users and the owner see it, other users don't """
+
+    def setUp(self):
+        super(TestTOCUpdateRequestNudge, self).setUp()
+        from portality import constants
+        self.pwd = 'password'
+        self.owner = models.Account.make_account("owner@example.com", "owner", "Owner", [constants.ROLE_PUBLISHER])
+        self.owner.set_password(self.pwd)
+        self.owner.save()
+        self.other = models.Account.make_account("other@example.com", "other", "Other", [constants.ROLE_PUBLISHER])
+        self.other.set_password(self.pwd)
+        self.other.save(blocking=True)
+
+        self.journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True)
+        self.journal.set_owner(self.owner.id)
+        self.journal.save(blocking=True)
+        self.ur_url = url_for('publisher.update_request', journal_id=self.journal.id)
+
+    def _get_toc(self, t_client):
+        resp = t_client.get(url_for('doaj.toc', identifier=self.journal.bibjson().get_preferred_issn()))
+        assert resp.status_code == 200
+        return resp.data.decode()
+
+    def test_01_anonymous_sees_nudge_and_login_drawer(self):
+        with self.app_test.test_client() as t_client:
+            html = self._get_toc(t_client)
+            assert 'id="ur_nudge--link"' in html
+            assert 'Are you associated with this journal?' in html
+            assert 'id="drawer-login"' in html
+            # the drawer's login form posts to login with the UR form as the next target
+            assert url_for('account.login', next=self.ur_url) in html
+
+    def test_02_owner_sees_nudge(self):
+        from doajtest import helpers
+        with self.app_test.test_client() as t_client:
+            helpers.login(t_client, self.owner.email, self.pwd)
+            html = self._get_toc(t_client)
+            assert 'id="ur_nudge--link"' in html
+            assert 'This is your journal!' in html
+            assert 'href="' + self.ur_url + '"' in html
+
+    def test_03_non_owner_does_not_see_nudge(self):
+        from doajtest import helpers
+        with self.app_test.test_client() as t_client:
+            helpers.login(t_client, self.other.email, self.pwd)
+            html = self._get_toc(t_client)
+            assert 'id="ur_nudge--link"' not in html

@@ -758,9 +758,12 @@ class TestQuery(DoajTestCase):
     def test_public_journal_search_by_alternative_title(self):
         """public journal search must find journals by alternative title"""
         self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
-        self.journal = models.Journal(**JournalFixtureFactory
-                                      .make_journal_with_data(title="مجلة آفاق العلم والمعرفة",
-                                                              alternative_title="Journal of Science and Knowledge Horizons"))
+        self.journal = JournalFixtureFactory.make_legacy_journal_object(in_doaj=True, overlay={
+            "bibjson": {
+                "title": "مجلة آفاق العلم والمعرفة",
+                "alternative_title": "Journal of Science and Knowledge Horizons"
+            }
+        })
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
