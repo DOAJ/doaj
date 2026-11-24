@@ -37,7 +37,8 @@ tests:
     - Copy the "doaj_xml" value from the testdrive "upload_data" section and save it as a file called
       multiple_affiliations.xml. It already contains the testdrive journal's ISSNs.
   steps:
-  - step: In a separate tab, log in with the testdrive publisher username and password
+  - step: In a separate tab, open the "login" link and log in with the username and password from
+      "accounts" > "publisher" on the testdrive page
   - step: Open the "publisher_xml_upload" link
   - step: Choose "DOAJ Native XML" as the format, select multiple_affiliations.xml and click "Upload"
     results:
@@ -66,10 +67,10 @@ tests:
       the "api_json_affiliations_list" value as the body'
     results:
     - The response status is 201 and the response contains the new article's id
-  - step: Open /article/<the returned id>, then click "Affiliations"
+  - step: Open "/article/<the returned id>", then click "Affiliations"
     results:
     - '"Api Author" is listed once with "Uni One" and "Uni Two" on separate lines'
-  - step: Send a GET request to /api/articles/<the returned id>?api_key=<testdrive publisher api_key>
+  - step: Send a GET request to /api/articles/<the returned id>?api_key=<"accounts" > "publisher" > "api_key">
     results:
     - 'The author in bibjson.author has an "affiliations" list: ["Uni One", "Uni Two"]'
     - There is no "affiliation" (singular) field
@@ -87,7 +88,8 @@ tests:
     testdrive: multiple_affiliations
   setup:
     - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
-    - In a separate tab, log in with the testdrive publisher username and password
+    - In a separate tab, open the "login" link and log in with the username and password from
+      "accounts" > "publisher" on the testdrive page
   steps:
   - step: Open the "publisher_metadata_form" link
     results:
@@ -110,9 +112,10 @@ tests:
     testdrive: multiple_affiliations
   setup:
     - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
-    - In a separate tab, log in as an admin
+    - In a separate tab, open the "login" link and log in with the username and password from
+      "accounts" > "admin" on the testdrive page
   steps:
-  - step: Open /admin/article/<testdrive article id>
+  - step: Open the "admin_article_edit" link
     results:
     - 'The first author is "Ana Author" and the Affiliations field shows "University of Oxford; Harvard University; MIT"'
   - step: Change the Affiliations to "University of Oxford; MIT" and save the article
@@ -130,7 +133,7 @@ tests:
   setup:
     - Open /testdrive/multiple_affiliations in its own tab and keep it open (see the first test in this testset)
   steps:
-  - step: Open /oai.article?verb=GetRecord&metadataPrefix=oai_doaj&identifier=oai:doaj.org/article:<testdrive article id>
+  - step: Open the "oai_doaj_record" link
     results:
     - '"Ana Author" appears once in the authors list, with three affiliationId elements'
     - Each of those ids matches an affiliationName in the affiliationsList with the values "University of Oxford",
