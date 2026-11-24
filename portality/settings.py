@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.7"
+DOAJ_VERSION = "8.7.8"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -1528,6 +1528,13 @@ EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.9"  # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
 
+# Retry transient EPMC failures rather than failing the whole harvest run.
+# Back-off is 2**attempt * factor seconds, capped at max: 4, 8, 16, 32, 64, 128... (~4 minutes total over 6 retries)
+EPMC_HTTP_RETRIES = 6
+EPMC_HTTP_BACK_OFF_FACTOR = 2
+EPMC_HTTP_MAX_BACK_OFF = 120
+EPMC_HTTP_RETRY_CODES = [429, 500, 502, 503, 504]
+
 # General harvester configuration
 HARVESTERS = [
     "portality.tasks.harvester_helpers.epmc.epmc_harvester.EPMCHarvester"
@@ -1729,7 +1736,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _DAY + _HOUR
     },
     'harvest': {
-        'last_run_successful_in': _DAY + 2 * _HOUR
+        # The run starts at 05:30 but with EPMC retries can be in `processing` until ~10:30,
+        # so the previous day's run must still be in the window then.
+        'last_run_successful_in': _DAY + 8 * _HOUR
     },
     'journal_csv': {
         'last_run_successful_in': 2 * _HOUR

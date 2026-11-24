@@ -14,6 +14,14 @@ limit_req_zone $http_cf_connecting_ip zone=oai:100m rate=1r/s;
 limit_req_zone $http_cf_connecting_ip zone=export:100m rate=1r/s;
 limit_req_status 429;
 
+# /query is for the UI only: requests without a doaj.org referer (i.e. machine use) get a strict per-IP limit.
+# An empty key is not counted, so UI traffic is only subject to zone=query.
+map $http_referer $query_machine_key {
+    ~^https://(www\.)?doaj\.org/   "";
+    default                        $http_cf_connecting_ip;
+}
+limit_req_zone $query_machine_key zone=query_machine:10m rate=10r/m;
+
 # A map for the frontend that prevents machine use
 map $http_user_agent $block_ua {
     default             0;
@@ -31,6 +39,7 @@ map $http_user_agent $block_ua {
 map $http_user_agent $block_bots {
     default 0;
     ~*UptimeRobot 0;
+    ~*ToweyaBot 0;
     ~*(bot|spider) 1;
 }
 
@@ -157,6 +166,15 @@ server {
     proxy_read_timeout 600s;
     client_max_body_size 50M;
 
+    # Room for large upstream response headers. The API's Link pagination header repeats the whole search query
+    # for each link, so long queries overflowed the 4k default: nginx returned 502 "upstream sent too big header"
+    # and counted it as an upstream failure, which emptied doaj_api_failover ("no live upstreams") for 30s at a time.
+    # 32k covers the longest URL nginx accepts (large_client_header_buffers, 8k) repeated in the header.
+    # proxy_buffers must grow too, or nginx -t fails: proxy_busy_buffers_size (2 x 32k) must be less than all
+    # proxy_buffers minus one. Both are only allocated when a response needs them.
+    proxy_buffer_size 32k;
+    proxy_buffers 4 32k;
+
     # Enable HTTP/1.1 keepalive to upstreams for connection reuse
     proxy_http_version 1.1;
     proxy_set_header Connection "";
@@ -248,6 +266,7 @@ server {
     location /query {
         if ($block_ua) {return 403;}
         limit_req zone=query burst=10 nodelay;
+        limit_req zone=query_machine burst=5 nodelay;
         proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;

@@ -295,3 +295,70 @@ class TestSendLoginCodeEmail(DoajTestCase):
             self.assertIn('login_url', kwargs)
             self.assertTrue('token=' in kwargs['login_url'])  # Check for encrypted token in URL
             self.assertEqual(kwargs['expiry_minutes'], 10)
+
+
+class TestPasswordlessLoginNext(DoajTestCase):
+    """ A next target given at login survives the emailed login link """
+
+    def setUp(self):
+        super(TestPasswordlessLoginNext, self).setUp()
+        self.ctx = app.test_request_context()
+        self.ctx.push()
+        self.app = app.test_client()
+        self.app.testing = True
+        self.url_crypto = Encryption(app.config['PASSWORDLESS_ENCRYPTION_KEY'])
+        self.test_account = Account.make_account(
+            username='nextuser',
+            name='Next User',
+            email='next@example.com',
+            roles=['publisher']
+        )
+        self.test_account.save(blocking=True)
+
+    def tearDown(self):
+        self.ctx.pop()
+        super(TestPasswordlessLoginNext, self).tearDown()
+
+    @patch('portality.bll.services.account.send_mail')
+    def test_01_next_is_carried_in_login_link_token(self, mock_send_mail):
+        from portality.bll.services.account import AccountService
+        AccountService().send_login_code_email(self.test_account, '123456', "", next_url="/publisher/update_request/abc")
+
+        login_url = mock_send_mail.call_args.kwargs['login_url']
+        token = login_url.split('token=')[1]
+        params = self.url_crypto.decrypt_params(token)
+        self.assertEqual(params.get('next'), "/publisher/update_request/abc")
+
+    @patch('portality.bll.services.account.send_mail')
+    def test_02_login_form_next_is_passed_to_login_link(self, mock_send_mail):
+        response = self.app.post('/account/login?next=/publisher/update_request/abc',
+                                 data={'user': 'next@example.com', 'action': 'get_link',
+                                       'next': '/publisher/update_request/abc'})
+        self.assertEqual(response.status_code, 200)
+
+        login_url = mock_send_mail.call_args.kwargs['login_url']
+        token = login_url.split('token=')[1]
+        params = self.url_crypto.decrypt_params(token)
+        self.assertEqual(params.get('next'), "/publisher/update_request/abc")
+
+    def test_03_verify_code_redirects_to_next_from_token(self):
+        code = '123456'
+        self.test_account.set_login_code(code)
+        self.test_account.save(blocking=True)
+
+        token = self.url_crypto.encrypt_params({'email': 'next@example.com', 'code': code,
+                                                'next': '/publisher/update_request/abc'})
+        response = self.app.get('/account/verify-code', query_string={'token': token})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.location.endswith('/publisher/update_request/abc'))
+
+    def test_04_verify_code_ignores_unsafe_next_from_token(self):
+        code = '123456'
+        self.test_account.set_login_code(code)
+        self.test_account.save(blocking=True)
+
+        token = self.url_crypto.encrypt_params({'email': 'next@example.com', 'code': code,
+                                                'next': 'https://evil.example.com/'})
+        response = self.app.get('/account/verify-code', query_string={'token': token})
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('evil.example.com', response.location)

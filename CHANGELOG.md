@@ -2,6 +2,14 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.8
+Static pages update
+Add edit button for logged-in publishers to submit update-request from ToC page
+https://github.com/DOAJ/doajPM/issues/4158
+
+OpenURL exception handling and logic improvements
+https://github.com/DOAJ/doajPM/issues/4124
+
 ### 8.7.7
 Static pages release
 Reindex Alt title to fix public search
