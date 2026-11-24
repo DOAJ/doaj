@@ -211,15 +211,30 @@ class DOAJXWalk(object):
                 affid = ael.get("affiliationId")
                 aff = ael.text
                 affiliations[affid] = aff
-        ## now crosswalk each author and dereference their affiliation from the table
+        ## now crosswalk each author and dereference their affiliations from the table
         authorsel = record.find("authors")
         if authorsel is not None:
+            # group affiliations by author name+orcid to merge duplicates
+            author_map = {}
+            author_order = []
             for ael in authorsel:
                 name = _element(ael, "name")
-                affid = _element(ael, "affiliationId")
-                aff = affiliations.get(affid)
                 orcid = _element(ael, "orcid_id")
-                bibjson.add_author(name, affiliation=aff, orcid_id=orcid)
+                key = (name, orcid)
+                if key not in author_map:
+                    author_map[key] = []
+                    author_order.append(key)
+                # collect all affiliationId references for this author
+                for affid_el in ael.findall("affiliationId"):
+                    if affid_el.text is not None:
+                        affid = affid_el.text.strip()
+                        aff = affiliations.get(affid)
+                        if aff and aff not in author_map[key]:
+                            author_map[key].append(aff)
+            for key in author_order:
+                name, orcid = key
+                affs = author_map[key] if author_map[key] else None
+                bibjson.add_author(name, affiliations=affs, orcid_id=orcid)
 
         # abstract
         abstract = _element(record, "abstract")

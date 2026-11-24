@@ -45,7 +45,8 @@ tests:
         results:
           - The author is removed from the list
       - step: Change the title to "Success 400"
-      - step: Add an author filling in any string as a name, an affiliation and an orcid
+      - step: Add an author filling in any string as a name, multiple affiliations separated
+          by a semicolon (e.g. "University of Oxford; Harvard University") and an orcid
           id in the correct form, for example https://orcid.org/0001-1234-1234-444X
       - step: Change all the other fields except doi and fulltext URL to something easily
           recognisable
@@ -56,7 +57,8 @@ tests:
       - step: Close the page with the Article Metadata Form
       - step: Click "Edit the article"
         results:
-          - Confirm all the metadata is updated
+          - Confirm all the metadata is updated, including the author's multiple affiliations
+            separated by semicolons in the Affiliations field if there are multiple affiliations
 
   - title: Checking data validation
     context:
@@ -126,6 +128,8 @@ tests:
         results:
           - The article's public page is opened in a new tab
           - On the article's public page at the top the button "Edit this article" is shown
+          - Clicking "Affiliations" expands the author affiliations list displaying each
+            affiliation on a separate line under the respective author
       - step: Click "Edit this article" button
         results:
           - The artcile's admin metadata form is opened in a new tab with correct data
@@ -137,3 +141,36 @@ tests:
       - step: Navigate to the article's public page as an anonymous user
         results:
           - The button "Edit this article" is not displayed
+
+  - title: Multiple authors and multiple affiliations
+    context:
+      role: Admin
+    depends:
+      - suite: Admin Article Metadata Form
+        testset: Admin Article Metadata Form
+        test: Preparation
+    steps:
+      - step: Go to admin journal and articles search, find "Success 100" article
+      - step: Click "Edit this article"
+      - step: In Authors section, set first author's Name to "Author 1", Affiliations
+          to "University of Oxford; Harvard University", and ORCID to "https://orcid.org/0000-0001-2345-6789"
+      - step: Click "Add Author" button
+      - step: In the second author subform, set Name to "Author 2", Affiliations to
+          "MIT; Stanford University; Cambridge University", and ORCID to "https://orcid.org/0000-0002-3456-7890"
+      - step: Click "Update Article" button
+        results:
+          - Green banner saying "Article created/updated" is shown at the top of the page.
+      - step: Close the page and search for "Success 100" article again
+      - step: Click "Edit this article"
+        results:
+          - First author has Name "Author 1", Affiliations "University of Oxford; Harvard University",
+            and ORCID "https://orcid.org/0000-0001-2345-6789"
+          - Second author has Name "Author 2", Affiliations "MIT; Stanford University; Cambridge University",
+            and ORCID "https://orcid.org/0000-0002-3456-7890"
+      - step: Click "See this article in doaj"
+        results:
+          - The article's public page opens
+          - Both authors are listed
+          - Clicking "Affiliations" expands the affiliations accordion, showing "University of Oxford"
+            and "Harvard University" under Author 1, and "MIT", "Stanford University", and "Cambridge University"
+            under Author 2

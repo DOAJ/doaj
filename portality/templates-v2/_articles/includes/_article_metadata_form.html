@@ -13,11 +13,16 @@
                 {% for field in subfield.form %}
                     <div class="form__question">
                         <label for="{{ field.id }}">{{ field.label.text | safe }}</label>
-                        {% if field.label.text == "ORCID iD" %}
-                            {{ field(placeholder="https://orcid.org/0000-0000-0000-0000") }}
-                        {% else %}
-                            {{ field }}
-                        {% endif %}
+                        <div>
+                            {% if field.label.text == "ORCID iD" %}
+                                {{ field(placeholder="https://orcid.org/0000-0000-0000-0000") }}
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                            {% if field.description %}
+                                <p><small>{{ field.description | safe }}</small></p>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
                 {% for error in subfield.errors %}
