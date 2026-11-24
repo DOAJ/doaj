@@ -52,9 +52,12 @@ if test -f "cms/error_sass.txt"; then
   exit 1
 fi
 
-# Restart all supervisor tasks, will cover the app plus huey on the background server. Then reload nginx.
+# Restart all supervisor tasks, will cover the app plus huey on the background server.
 sudo supervisorctl update
 sudo supervisorctl restart all || sudo supervisorctl start all
 
-# todo: we might want to move this to ansible so we don't run on the background server unnecessarily
-sudo nginx -t && sudo nginx -s reload
+# Reload nginx on test servers since we may run deploy.sh on there without ansible.
+if [ "$ENV" = 'test' ]
+then
+  sudo nginx -t && sudo nginx -s reload
+fi

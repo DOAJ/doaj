@@ -10,7 +10,7 @@ from datetime import datetime
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "8.7.3"
+DOAJ_VERSION = "8.7.8"
 API_VERSION = "4.0.1"
 
 ######################################
@@ -77,6 +77,7 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 ES_TERMS_LIMIT = 1024
 ELASTICSEARCH_REQ_TIMEOUT = 20  # Seconds - used in core.py for whole ES connection request timeout
 ES_READ_TIMEOUT = '2m'  # Minutes - used in DAO for searches
+QUERY_SERVICE_ES_RETRIES = 3  # attempts per user-facing search via the QueryService (/query and the API)
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -357,6 +358,9 @@ ROLE_MAP = {
 SYSTEM_USERNAME = "system"
 RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
+# Roles assigned to all users when they are registered
+DEFAULT_REGISTER_ROLES = [constants.ROLE_PUBLISHER, constants.ROLE_API]
+
 # Role map to destination route on login (when no other destination page is present)
 # checked in order, if the user has the role in the first tuple position, they will
 # be redirected to the endpoint in the second tuple position
@@ -460,28 +464,38 @@ CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minut
 
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
-    "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
-    "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
+    # Hourly
     "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
-    "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
+    "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
+
+    # Daily
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
+    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
+    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
+    "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
-    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
-    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
-    "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
-    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "4", "minute": "30"},
+
+    # Every N days of the month
     "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
-    "ris_export": {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"},
-    "site_statistics": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "40"},
-    # Weekly notification to publishers about deleted articles (Article Tombstones)
+    "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+
+    # Weekly (Monday)
+    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
     "article_deletion_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "10"},
-    "approaching_flag_deadline": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "45"},
+
+    # Monthly
+    "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "1", "minute": "10"},
+    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "2", "minute": "0"},
+    # Disabled: a full run (re)generates RIS for every article (~16.6M). The cache refills on demand instead - RIS
+    # downloads and article saves both write it. Was {"month": "*", "day": "15", "day_of_week": "*", "hour": "3", "minute": "30"}
+    "ris_export": CRON_NEVER,
 }
 
 
@@ -710,7 +724,10 @@ DEFAULT_INDEX_SETTINGS = \
 
 # Per-index settings to merge on top of DEFAULT_INDEX_SETTINGS at index creation time.
 # Keys are index type names (e.g. 'article'), values are dicts of ES index settings.
-INDEX_SETTINGS_OVERRIDES = {}
+INDEX_SETTINGS_OVERRIDES = {
+    # RIS cache: write-mostly, read back by id only; DEFLATE is ~35% smaller than the default LZ4 for its _source
+    "ris_export": {"codec": "best_compression"},
+}
 
 DEFAULT_DYNAMIC_MAPPING = {
     'dynamic_templates': [
@@ -771,7 +788,8 @@ QUERY_ROUTE = {
             "query_filters": ["only_in_doaj", "last_update_fallback", "search_all_meta"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Journal",  # ~~->Journal:Model~~
-            "required_parameters": {"ref": ["ssw", "public_journal", "subject_page"]}
+            "required_parameters": {"ref": ["ssw", "public_journal", "subject_page"]},
+            "request_cache": True
         },
         # ~~->PublicArticleQuery:Endpoint~~
         "article": {
@@ -781,7 +799,8 @@ QUERY_ROUTE = {
             "query_filters": ["only_in_doaj"],
             "result_filters": ["public_result_filter"],
             "dao": "portality.models.Article",  # ~~->Article:Model~~
-            "required_parameters": {"ref": ["public_article", "toc", "subject_page"]}
+            "required_parameters": {"ref": ["public_article", "toc", "subject_page"]},
+            "request_cache": True
         },
         # back-compat for fixed query widget
         # ~~->PublicJournalArticleQuery:Endpoint~~
@@ -1137,21 +1156,22 @@ ADMIN_NOTES_SEARCH_MAPPING = {
 }
 
 ASCII_FOLDED = {"analyzer": "ascii_folded", "search_analyzer": "ascii_folded"}
+ASCII_FOLDED_ALL_META = {**ASCII_FOLDED, "copy_to": ["all_meta"]}
 
 JOURNAL_EXCEPTION_MAPPING = {
-    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.alternative_title" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.publisher.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ARTICLE_EXCEPTION_MAPPING = {
-    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED},
-    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED}
+    "bibjson.abstract" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.author.name" : {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.journal.publisher": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "index.country": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META},
+    "bibjson.title": {**DATAOBJ_TO_MAPPING_DEFAULTS["unicode"], **ASCII_FOLDED_ALL_META}
 }
 
 ####################################################
@@ -1509,6 +1529,13 @@ EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.9"  # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
 
+# Retry transient EPMC failures rather than failing the whole harvest run.
+# Back-off is 2**attempt * factor seconds, capped at max: 4, 8, 16, 32, 64, 128... (~4 minutes total over 6 retries)
+EPMC_HTTP_RETRIES = 6
+EPMC_HTTP_BACK_OFF_FACTOR = 2
+EPMC_HTTP_MAX_BACK_OFF = 120
+EPMC_HTTP_RETRY_CODES = [429, 500, 502, 503, 504]
+
 # General harvester configuration
 HARVESTERS = [
     "portality.tasks.harvester_helpers.epmc.epmc_harvester.EPMCHarvester"
@@ -1619,8 +1646,10 @@ BG_MONITOR_ERRORS_CONFIG = {
         'allowed_num_err': 0
     },
     'harvest': {
-        'check_sec': _DAY,
-        'allowed_num_err': 0,
+        # harvest runs daily and is sometimes re-run manually after a failure - disable the error
+        # count and rely on BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG['harvest'] instead, which only
+        # cares whether the most recent run succeeded.
+        'allowed_num_err': None
     },
     'ingest_articles': {
         'check_sec': _DAY,
@@ -1708,7 +1737,9 @@ BG_MONITOR_LAST_SUCCESSFULLY_RUN_CONFIG = {
         'last_run_successful_in': _DAY + _HOUR
     },
     'harvest': {
-        'last_run_successful_in': _DAY + 2 * _HOUR
+        # The run starts at 05:30 but with EPMC retries can be in `processing` until ~10:30,
+        # so the previous day's run must still be in the window then.
+        'last_run_successful_in': _DAY + 8 * _HOUR
     },
     'journal_csv': {
         'last_run_successful_in': 2 * _HOUR

@@ -2,9 +2,11 @@
 
 {% block body_class %}homepage{% endblock %}
 
+{% block skip_target %}homepage-search{% endblock %}
+
 {% block extra_header %}
     <div class="homepage__background">
-        <section class="homepage__search">
+        <section class="homepage__search" id="homepage-search">
             <div class="container">
                 <p class="label">Directory of Open Access Journals</p>
                 <h1>Find open access journals & articles.</h1>

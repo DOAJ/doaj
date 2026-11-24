@@ -314,7 +314,7 @@ def _handle_pwless_login(user, form, redirected: str = ""):
     try:
         svc = DOAJ.accountService()
         code = svc.initiate_login_code(user)
-        login_url = svc.send_login_code_email(user, code, redirected or "")
+        login_url = svc.send_login_code_email(user, code, redirected or "", next_url=form.next.data or "")
         Messages.flash(Messages.ACCOUNT__PWLESS__EMAIL_SENT)
 
         if app.config.get('DEBUG', False):
@@ -345,7 +345,7 @@ def verify_code():
     svc = DOAJ.accountService()
 
     try:
-        account, _redirected = svc.verify_login_code(
+        account, _redirected, _next = svc.verify_login_code(
             encrypted_token=_get_param('token'),
             email=_get_param('email'),
             code=_get_param('code'),
@@ -364,6 +364,9 @@ def verify_code():
     redirected_page = request.args.get("redirected") or _redirected
     if redirected_page == "apply":
         form['next'].data = url_for("apply.public_application")
+    elif _next:
+        # next target carried in the emailed login link token; get_redirect_target checks it's safe
+        form['next'].data = _next
 
     _complete_verification(account)
     return redirect(get_redirect_target(form=form, acc=account))
@@ -557,7 +560,9 @@ def register(template=templates.REGISTER):
             or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
         abort(401)      # todo: we may need a template to explain this since it's linked from the application form
 
-    form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
+    form = RegisterForm(request.form, csrf_enabled=False,
+                        roles=",".join(app.config.get("DEFAULT_REGISTER_ROLES", [])),
+                        identifier=Account.new_short_uuid())
 
     if request.method == 'POST':
 
@@ -571,6 +576,12 @@ def register(template=templates.REGISTER):
                 roles = [r.strip() for r in form.roles.data.split(',')]
                 for r in roles:
                     account.add_role(r)
+            else:
+                # for all accounts, add the default roles
+                default_roles = app.config.get("DEFAULT_REGISTER_ROLES", [])
+                for role in default_roles:
+                    account.add_role(role)
+
 
             account.save()
 

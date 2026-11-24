@@ -13,7 +13,7 @@ from datetime import timedelta
 from typing import List, Iterable, Tuple
 
 import elasticsearch
-from elasticsearch.exceptions import ConnectionTimeout
+from elasticsearch.exceptions import ConnectionTimeout, TransportError
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -25,6 +25,13 @@ from portality.lib.dates import FMT_DATETIME_STD
 
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_\.]+?\] in order to sort on.*', re.DOTALL)
 CONTENT_TYPE_JSON = {'Content-Type': 'application/json'}
+
+
+def is_client_error(e: Exception) -> bool:
+    """True if ES rejected the request itself (4xx), so retrying it cannot succeed. 429 is excluded, since it
+    means 'too many requests' and may succeed later."""
+    status = getattr(e, "status_code", None)
+    return isinstance(e, TransportError) and isinstance(status, int) and 400 <= status < 500 and status != 429
 
 
 class ElasticSearchWriteException(Exception):
@@ -419,15 +426,16 @@ class DomainObject(UserDict, object):
         return [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
 
     @classmethod
-    def query(cls, q=None, **kwargs):
+    def query(cls, q=None, send_kwargs=None, **kwargs):
         """Perform a query on backend.
 
         :param q: maps to query_string parameter if string, or query dict if dict.
+        :param send_kwargs: keyword args for send_query, e.g. retry, request_cache
         :param kwargs: any keyword args as per
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         """
         query = cls.make_query(q, **kwargs)
-        return cls.send_query(query)
+        return cls.send_query(query, **(send_kwargs or {}))
 
     @classmethod
     def send_query(cls, qobj, retry=50, pit_query=False, **kwargs):
@@ -460,6 +468,9 @@ class DomainObject(UserDict, object):
                     if isinstance(exception, ESMappingMissingError):
                         raise exception
                 except TypeError:
+                    raise e
+                if is_client_error(e):
+                    # 4xx (e.g. a query_string parse error): the request itself is bad, so retrying can't succeed
                     raise e
 
             time.sleep(0.5)
@@ -1372,18 +1383,23 @@ class DomainObject(UserDict, object):
         The indexes alias is then repointed to the new index.
         If a keep_history value is provided, the previous indexes with the same prefix as the alias will be deleted,
 
-        :param documents:
-        :param mapping:
+        :param documents: may be empty, to roll the alias over onto a new empty index (then a mapping is required)
+        :param mapping: the mappings, or a full index body ({"mappings": ..., "settings": ...}) to also apply index settings
         :param keep_history: supply -1 to keep all history, 0 to keep no history, or a positive integer to keep that many previous indexes.
         :return:
         """
+        has_documents = len(documents) > 0
+        if not has_documents and mapping is None:
+            raise ValueError("A mapping is required to roll over onto an empty index")
+
         full_alias = cls.index_name()
         new_name = cls.__type__ + "-" + dates.now_str(dates.FMT_DATETIME_LONG)
         if mapping is not None:
             cls.put_mapping(mapping, override_index_name=new_name)
-        resp = cls.bulk(documents, refresh=True, override_index_name=new_name)
-        if resp.get('errors', False):
-            raise ESError("Error creating index {}: {}".format(new_name, resp))
+        if has_documents:
+            resp = cls.bulk(documents, refresh=True, override_index_name=new_name)
+            if resp.get('errors', False):
+                raise ESError("Error creating index {}: {}".format(new_name, resp))
         cls.move_alias(full_alias, new_name)
 
         if keep_history > -1:

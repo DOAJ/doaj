@@ -59,6 +59,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         schema_path = app.config.get("SCHEMAS", {}).get("doaj")
         schema_file = open(schema_path)
         schema_doc = etree.parse(schema_file)
+        article_doaj_xml.DOAJXWalk._localise_schema(schema_doc)
         self.schema = etree.XMLSchema(schema_doc)
 
         etree.XMLSchema = self.mock_load_schema
