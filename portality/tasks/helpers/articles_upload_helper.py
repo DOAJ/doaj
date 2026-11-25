@@ -84,6 +84,7 @@ def upload_process(articles_upload: BaseArticlesUpload,
     shared = result.get("shared", [])
     unowned = result.get("unowned", [])
     unmatched = result.get("unmatched", [])
+    before_oa_start_date = result.get("before_oa_start_date", [])
 
     if success == 0 and fail > 0 and not ingest_exception:
         articles_upload.failed("All articles in file failed to import")
@@ -99,6 +100,8 @@ def upload_process(articles_upload: BaseArticlesUpload,
     job.add_audit_message("Shared ISSNs: " + ", ".join(list(shared)))
     job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
     job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
+    if len(before_oa_start_date) > 0:
+        job.add_audit_message("Articles before OA start date: " + ", ".join(list(before_oa_start_date)))
 
     if new:
         ids = [a.id for a in articles]

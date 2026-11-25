@@ -73,6 +73,12 @@ class ArticleNotAcceptable(Exception):
         super(ArticleNotAcceptable, self).__str__()
         return self.message
 
+class ArticleBeforeOAStartDate(ArticleNotAcceptable):
+    """
+    Exception to raise when the article is uploaded before OA start date of the Journal
+    """
+    pass
+
 class ArticleMergeConflict(Exception):
     """
     Exception to raise when it's not clear which article to merge an update with
