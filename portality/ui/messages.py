@@ -36,6 +36,9 @@ class Messages(object):
         "error",
     )
     ACCOUNT__NOT_RECOGNISED = "Account not recognised."
+    # Shared by nonexistent and no-password accounts so the login response can't be used to enumerate accounts (#4184)
+    ACCOUNT__LOGIN_NOT_RECOGNISED = "Account not recognised, or registration was not completed. Check your username (not your email address), or register or reset your password."
+    ACCOUNT__INCORRECT_PASSWORD = 'The password you entered is incorrect. Try again or <a href="{forgot_url}">reset your password</a>.'
     ACCOUNT__REQUIRED_PARAMS_NOT_AVAILABLE = "Required parameters not available."
     ACCOUNT__INVALID_OR_EXPIRED_CODE = "Invalid or expired verification code"
     ACCOUNT__WELCOME_BACK = ("Welcome back.", "success")
