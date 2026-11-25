@@ -2,6 +2,9 @@
 // ~~ DOAJ:Library ~~
 var doaj = {
     scrollPosition: 100,
+
+    prefixWildcardWarningMessage: 'Prefix wildcard searches (e.g. <code>*term</code> or <code>?term</code>) are not allowed. ' +
+        'Please remove the wildcard from the beginning of your search text.',
     init : function() {
         // Use Feather icons
         feather.replace();
