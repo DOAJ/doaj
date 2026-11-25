@@ -5,7 +5,17 @@ tests:
 - title: Test Associate Journal Search Interactions
   context:
     role: Associate Editor
+    testdrive: journals
+  setup:
+  - Use the journals testdrive to set up for this test at /testdrive/journals
+  - This provides an 'associate' account with 2 journals individually assigned to
+    it ("Sentient Houseplants" and "Withdrawn Enthusiasm") - a third journal
+    ("Uneventful Volcanology") is in the same editor group but NOT assigned to this
+    associate, so it should NOT appear in this search
+  - At the end of the test, use the 'teardown' link provided by the testdrive to
+    remove the test assets from the system
   steps:
+  - step: Log in as the 'associate' account supplied by the testdrive
   - step: Go to the DOAJ editor's journal search at /editor/your_journals
     results:
     - All available records are found, and the first page of results is shown
