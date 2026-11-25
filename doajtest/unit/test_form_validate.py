@@ -15,8 +15,18 @@ class TestFormValidate(DoajTestCase):
         pass
 
     def test_02_journal_url_in_public_doaj(self):
-        # FIXME: we can only do this once the migration code has been merged
-        pass
+        from unittest.mock import patch, MagicMock
+        from wtforms import validators
+        from portality.forms.validate import JournalURLInPublicDOAJ
+        field = MagicMock(data="https://example.com/journal")
+        with patch("portality.forms.validate.Journal.find_by_journal_url", return_value=[object()]):
+            with self.assertRaises(validators.ValidationError) as cm:
+                JournalURLInPublicDOAJ()(None, field)
+        assert "already appears in the public DOAJ database" in str(cm.exception)
+        assert "helpdesk@doaj.org" in str(cm.exception)
+
+        with patch("portality.forms.validate.Journal.find_by_journal_url", return_value=[]):
+            JournalURLInPublicDOAJ()(None, field)  # no error
 
     def test_03_stop_words(self):
         formdata = MultiDict({
