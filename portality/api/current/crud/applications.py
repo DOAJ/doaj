@@ -12,7 +12,7 @@ from portality import models, app_email
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
-from portality.crosswalks.application_form import ApplicationFormXWalk, PublisherApplicationFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.ui import templates
 
@@ -136,7 +136,7 @@ class ApplicationsCrudApi(CrudApi):
             # convert the incoming application into the web form
             # ~~->ApplicationForm:Crosswalk~~
             # ~~->UpdateRequest:FormContext~~
-            form = PublisherApplicationFormXWalk.obj2formdata(ap)
+            form = ApplicationFormXWalk.obj2formdata(ap)
             formulaic_context = ApplicationFormFactory.context("update_request")
             fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
 
@@ -158,7 +158,7 @@ class ApplicationsCrudApi(CrudApi):
         # otherwise, this is a brand-new application
         else:
             # ~~->ApplicationForm:Crosswalk~~
-            form = PublisherApplicationFormXWalk.obj2formdata(ap)
+            form = ApplicationFormXWalk.obj2formdata(ap)
 
             # create a template that will hold all the values we want to persist across the form submission
             template = models.Application() # ~~->Application:Model~~

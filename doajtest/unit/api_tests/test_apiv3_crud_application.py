@@ -158,9 +158,6 @@ class TestCrudApplication(DoajTestCase):
         # check publisher comment
         pc = a.publisher_comment
         assert data["admin"]["publisher_comment"] == pc["comment"]
-        assert "test" == pc["author_id"]
-        assert pc["id"] is not None
-        assert pc["date"] is not None
 
         # check the stuff that should not be processed through
         assert a.bibjson().labels == []
@@ -441,7 +438,7 @@ class TestCrudApplication(DoajTestCase):
         assert "related_journal" not in oa.data.get("admin", {})
 
         # publisher comment is retrieved correctly
-        assert oa.data.get("admin", {}).get("publisher_comment", None) == data["admin"]["publisher_comment"]["comment"]
+        assert oa.data.get("admin", {}).get("publisher_comment", None) == data["admin"]["publisher_comment"]
 
         # check that it does contain admin information that it should
         assert oa.data.get("admin", {}).get("current_journal") is not None
@@ -463,7 +460,7 @@ class TestCrudApplication(DoajTestCase):
         # check that we got back the object we expected
         assert isinstance(a, OutgoingApplication)
         assert a.data["id"] == ap.id
-        assert a.data["admin"]["publisher_comment"] == data["admin"]["publisher_comment"]["comment"]
+        assert a.data["admin"]["publisher_comment"] == data["admin"]["publisher_comment"]
 
     def test_07_retrieve_application_fail(self):
         # set up all the bits we need

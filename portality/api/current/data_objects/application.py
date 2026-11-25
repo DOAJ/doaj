@@ -244,7 +244,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     def to_application_model(self, account_id, existing=None):
         nd = deepcopy(self.data)
         # add meta to publisher's comment
-        self._patch_publisher_comment(nd, account_id)
+        # self._patch_publisher_comment(nd, account_id)
         if existing is None:
             return models.Suggestion(**nd)
         else:
@@ -377,16 +377,8 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     def publisher_comment(self):
         return self.__seamless__.get_single("admin.publisher_comment")
 
-    def set_publisher_comment(self, comment, id=None, author_id=None, date=None):
-        if not id:
-            id = uuid.uuid4()
-        obj = {"id": id, "comment": comment, "author_id": author_id, "date": date}
-        self.__seamless__.set_with_struct("admin.publisher_comment", obj)
-
-    def get_publisher_comment_id(self):
-        if self.publisher_comment and "id" in self.publisher_comment:
-            return self.publisher_comment["id"]
-        return None
+    def set_publisher_comment(self, comment):
+        self.__seamless__.set_single("admin.publisher_comment", "")
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
@@ -399,20 +391,20 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         bibjson = bibjson.data if isinstance(bibjson, JournalLikeBibJSON) else bibjson
         self.__seamless__.set_with_struct("bibjson", bibjson)
 
-    @staticmethod
-    def _patch_publisher_comment(data, account_id):
-        pc = data["admin"].get("publisher_comment", None)
-
-        if not pc:
-            data["admin"]["publisher_comment"] = {}
-            return
-
-        data["admin"]["publisher_comment"] = {
-            "id": uuid.uuid4().hex,
-            "comment": pc,
-            "date": dates.today(),
-            "author_id": account_id
-        }
+    # @staticmethod
+    # def _patch_publisher_comment(data, account_id):
+    #     pc = data["admin"].get("publisher_comment", None)
+    #
+    #     if not pc:
+    #         data["admin"]["publisher_comment"] = {}
+    #         return
+    #
+    #     data["admin"]["publisher_comment"] = {
+    #         "id": uuid.uuid4().hex,
+    #         "comment": pc,
+    #         "date": dates.today(),
+    #         "author_id": account_id
+    #     }
 
 
 class OutgoingApplication(OutgoingCommonJournalApplication):

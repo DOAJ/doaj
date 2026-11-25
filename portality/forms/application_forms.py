@@ -14,7 +14,7 @@ from flask_babel import lazy_gettext
 from portality import constants
 from portality import regex
 from portality.core import app
-from portality.crosswalks.application_form import ApplicationFormXWalk, PublisherApplicationFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.datasets import language_options, country_options, currency_options
 from portality.forms import application_processors
@@ -2182,60 +2182,25 @@ class FieldDefinitions:
     PUBLISHER_COMMENT = {
         "name": "publisher_comment",
         "input": "textarea",
+        "contexts": {
+            "public": {
+                "label":  lazy_gettext("Add here any extra information to support your application."),
+                "template": templates.TEXTAREA_WITH_COUNTER
+            },
+            "admin": {
+                "label": lazy_gettext("Publisher's comment"),
+                "template": templates.ADMIN_TEXTAREA_WITH_COUNTER
+            }
+        },
         "label": lazy_gettext("Add here any extra information to support your application."),
         "optional": True,
         "maxlength": constants.MAX_PUBLISHER_COMMENT_LENGTH,
-        "subfield": True,
-        "group": "publisher_comment_group",
         "widgets": [
             "textarea_with_counter"
         ],
         "help": {
             "short_help": "Maximum 200 characters, longer comments will be shortened."
-        },
-    }
-
-    PUBLISHER_COMMENT_ID = {
-        "name": "publisher_comment_id",
-        "input": "hidden",
-        "subfield": True,
-        "group": "publisher_comment_group",
-        "optional": True
-    }
-
-    PUBLISHER_COMMENT_AUTHOR = {
-        "name": "publisher_comment_author",
-        "input": "hidden",
-        "subfield": True,
-        "group": "publisher_comment_group",
-        "optional": True
-    }
-
-    PUBLISHER_COMMENT_DATE = {
-        "name": "publisher_comment_date",
-        "input": "hidden",
-        "subfield": True,
-        "group": "publisher_comment_group",
-        "optional": True
-    }
-
-    PUBLISHER_COMMENT_GROUP = {
-        "name": "publisher_comment_group",
-        "label": lazy_gettext("Your comment"),
-        "input": "group",
-        "subfields": [
-            "publisher_comment_id",
-            "publisher_comment_author",
-            "publisher_comment_date",
-            "publisher_comment"
-        ],
-        "template": templates.TEXTAREA_WITH_COUNTER
-    }
-
-    PUBLISHER_COMMENT_ADMIN = {
-        "name": "publisher_comment_admin",
-        "label": "Publisher comment",
-        "input": "hidden"
+        }
     }
 
 
@@ -2563,18 +2528,7 @@ class FieldSetDefinitions:
     PUBLISHER_COMMENT = {
         "name": "publisher_comment",
         "fields": [
-            FieldDefinitions.PUBLISHER_COMMENT_GROUP["name"],
-            FieldDefinitions.PUBLISHER_COMMENT_ID["name"],
-            FieldDefinitions.PUBLISHER_COMMENT_AUTHOR["name"],
-            FieldDefinitions.PUBLISHER_COMMENT_DATE["name"],
             FieldDefinitions.PUBLISHER_COMMENT["name"]
-        ]
-    }
-
-    PUBLISHER_COMMENT_ADMIN = {
-        "name": "publisher_comment_admin",
-        "fields": [
-            FieldDefinitions.PUBLISHER_COMMENT_ADMIN["name"],
         ]
     }
 
@@ -2605,7 +2559,8 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
-            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
+            FieldSetDefinitions.PUBLISHER_COMMENT["name"]
         ],
         "templates": {
             "form": templates.PUBLIC_APPLICATION_FORM,
@@ -2626,9 +2581,6 @@ class ApplicationContextDefinitions:
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
     UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
-    UPDATE["fieldsets"] += [
-        FieldSetDefinitions.PUBLISHER_COMMENT["name"]
-    ]
 
     # ~~->$ ReadOnlyApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2645,7 +2597,6 @@ class ApplicationContextDefinitions:
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.NOTES["name"],
-        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
     ASSOCIATE["templates"]["form"] = templates.ASSED_APPLICATION_FORM
@@ -2659,7 +2610,6 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.NOTES["name"],
-        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
     EDITOR["templates"]["form"] = templates.EDITOR_APPLICATION_FORM
@@ -2677,8 +2627,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.NOTES["name"],
-        FieldSetDefinitions.PUBLISHER_COMMENT_ADMIN["name"],
-        FieldSetDefinitions.MARK_AS_FULL_REVIEW["name"],
+        FieldSetDefinitions.MARK_AS_FULL_REVIEW["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
@@ -2686,11 +2635,10 @@ class ApplicationContextDefinitions:
     # add about the journal and editorial fields that differ between the contexts
     publisher_context = [PUBLIC, READ_ONLY, UPDATE]
     for pc in publisher_context:
-        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"],
-                            FieldSetDefinitions.PUBLISHER_COMMENT["name"]]
+        pc["fieldsets"] += [FieldSetDefinitions.ABOUT_THE_JOURNAL_EXTENDED["name"]]
         pc["crosswalks"] = {
-            "obj2form": PublisherApplicationFormXWalk.obj2form,
-            "form2obj": PublisherApplicationFormXWalk.form2obj
+            "obj2form": ApplicationFormXWalk.obj2form,
+            "form2obj": ApplicationFormXWalk.form2obj
         }
 
     editorial_context = [ASSOCIATE, EDITOR, MANED]

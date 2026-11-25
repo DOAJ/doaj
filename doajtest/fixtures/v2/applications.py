@@ -177,9 +177,7 @@ APPLICATION_SOURCE = {
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234", 'author_id': 'fake_account_id__b'},
             {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd", 'author_id': 'fake_account_id__a'},
         ],
-        "publisher_comment": {
-            "comment": "Please note that this application was completed during a building-wide fire drill.",
-            "date": "2014-05-21T14:02:45Z", "id": "pub_comment_fixture", "author_id": "Chuck Norris"},
+        "publisher_comment": "Please note that this application was completed during a building-wide fire drill.",
         "owner" : "publisher",
         "related_journal" : "987654321123456789",
         "date_applied" : "2003-01-01T00:00:00Z",

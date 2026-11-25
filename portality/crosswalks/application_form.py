@@ -135,28 +135,28 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
         return diff, cj
 
-class PublisherApplicationFormXWalk(ApplicationFormXWalk):
-    @classmethod
-    def admin2form(cls, obj, forminfo):
-        super().admin2form(obj, forminfo)
-        # save publisher comment in a form field
-        forminfo['publisher_comment_group'] = {}
-        pc = forminfo['publisher_comment_group']
-        if obj.publisher_comment:
-            pc['publisher_comment'] = obj.publisher_comment["comment"]
-            pc['publisher_comment_author'] = obj.publisher_comment["author_id"]
-            pc['publisher_comment_date'] = obj.publisher_comment["date"]
-            pc['publisher_comment_id'] = obj.publisher_comment["id"]
-
-    @classmethod
-    def form2admin(cls, form, obj):
-        super().form2admin(form, obj)
-        pc = getattr(form, "publisher_comment_group", None)
-        comment = pc["publisher_comment"]
-        if comment:
-            max_length = constants.MAX_PUBLISHER_COMMENT_LENGTH
-            comment = comment.data[:max_length]
-        date = pc["publisher_comment_date"].data
-        pubid = pc["publisher_comment_id"].data
-        author_id = pc["publisher_comment_author"].data
-        obj.set_publisher_comment(comment=comment, author_id=author_id, date=date, id=pubid)
+# class PublisherApplicationFormXWalk(ApplicationFormXWalk):
+#     @classmethod
+#     def admin2form(cls, obj, forminfo):
+#         super().admin2form(obj, forminfo)
+#         # save publisher comment in a form field
+#         forminfo['publisher_comment_group'] = {}
+#         pc = forminfo['publisher_comment_group']
+#         if obj.publisher_comment:
+#             pc['publisher_comment'] = obj.publisher_comment["comment"]
+#             pc['publisher_comment_author'] = obj.publisher_comment["author_id"]
+#             pc['publisher_comment_date'] = obj.publisher_comment["date"]
+#             pc['publisher_comment_id'] = obj.publisher_comment["id"]
+#
+#     @classmethod
+#     def form2admin(cls, form, obj):
+#         super().form2admin(form, obj)
+#         pc = getattr(form, "publisher_comment_group", None)
+#         comment = pc["publisher_comment"]
+#         if comment:
+#             max_length = constants.MAX_PUBLISHER_COMMENT_LENGTH
+#             comment = comment.data[:max_length]
+#         date = pc["publisher_comment_date"].data
+#         pubid = pc["publisher_comment_id"].data
+#         author_id = pc["publisher_comment_author"].data
+#         obj.set_publisher_comment(comment=comment, author_id=author_id, date=date, id=pubid)
