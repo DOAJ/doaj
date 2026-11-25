@@ -129,7 +129,7 @@ class RegisterForm(RedirectForm):
 @blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def username(username):
     acc = Account.pull(username)
 
@@ -476,7 +476,7 @@ def login():
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def forgot():
     CONTACT_INSTR = ' Please <a href="{url}">contact us.</a>'.format(url=url_for('doaj.contact'))
     if request.method == 'POST':
@@ -515,7 +515,7 @@ def forgot():
 
 @blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def reset(reset_token):
     form = ResetForm(request.form, csrf_enabled=False)
     account = Account.get_by_reset_token(reset_token)
@@ -552,7 +552,7 @@ def logout():
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def register(template=templates.REGISTER):
     # ~~-> Honeypot:Feature ~~
     # 3rd-party registration only for those with create_user role, only allow public registration when configured
@@ -607,7 +607,7 @@ def register(template=templates.REGISTER):
     return render_template(template, form=form)
 
 @blueprint.route('/create/', methods=['GET', 'POST'])
-@write_required()
+@write_required(allowed_methods=set())
 @login_required
 def create():
     if not current_user.has_role(constants.ROLE_ADMIN):

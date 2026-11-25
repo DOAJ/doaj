@@ -168,7 +168,7 @@ def article_endpoint(article_id):
 @blueprint.route("/article/<article_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def article_page(article_id):
     if not current_user.has_role("edit_article"):
         abort(401)
@@ -200,7 +200,7 @@ def article_page(article_id):
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def journal_page(journal_id):
     # ~~JournalForm:Page~~
     auth_svc = DOAJ.authorisationService()
@@ -297,7 +297,8 @@ def create_cont_list(continuations: Iterable[Journal],
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+# GET performs the write here, so it must be blocked too or read-only mode reports a change that didn't happen
+@write_required(allowed_methods=set())
 def journal_activate(journal_id):
     matching_issns = find_matching_issns_in_doaj(journal_id)
     if not matching_issns:
@@ -314,7 +315,8 @@ def journal_activate(journal_id):
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+# GET performs the write here, so it must be blocked too or read-only mode reports a change that didn't happen
+@write_required(allowed_methods=set())
 def journal_deactivate(journal_id):
     job = journal_in_out_doaj.change_in_doaj([journal_id], False)
     return redirect(url_for('.journal_page', journal_id=journal_id, job=job.id))
@@ -377,7 +379,7 @@ def journal_article_info_admin_site_search(journal_id):
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def journal_continue(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
@@ -434,7 +436,7 @@ def update_requests():
 
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
-@write_required()
+@write_required(allowed_methods=set())
 @login_required
 @ssl_required
 def application(application_id, **kwargs):
@@ -598,7 +600,7 @@ def global_notifications_search():
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required(allowed_methods=set())
 def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)
@@ -1092,6 +1094,7 @@ def system_object_autochecks():
 
 @blueprint.route("/ris/<id>/<action>", methods=["POST"])
 @login_required
+@write_required()
 def ris_manage(id, action):
     if action not in ["delete", "regenerate"]:
         abort(404)
