@@ -36,7 +36,7 @@ When you register with us, we use your email address to send important informati
 - Log in to your account regularly and check that your email address is up to date.
 
 **Using an institutional email address**
-If you use an institutional email address, your institution may apply extra security measures, such as a firewall. Your IT department administers the firewall. If you aren’t receiving our emails, contact your IT department to see if they can find emails from helpdesk@doaj.org and if they will let them through. If they have concerns about doing this, ask them to contact us.
+If you use an institutional email address, your institution may apply extra security measures, such as a firewall. Your IT department administers the firewall. If you aren’t receiving our emails, contact your IT department to see if they can find emails from helpdesk@doaj.org and allow them through. If they have concerns about doing this, ask them to contact us.
 
 ## Applying to DOAJ
 
@@ -57,12 +57,12 @@ If we reject your application, you will receive an email explaining why and how 
 If we accept your application, you will receive an automated email that includes:
 
 - The URL of your journal record in DOAJ
-- Information on how to log into your publisher dashboard
+- Information on how to log in to your publisher dashboard
 - Details on why it is helpful to upload article metadata to DOAJ
 
-If you found your journal in DOAJ but didn’t get an email from us, there are [steps you can take](/apply/publisher-responsibilities/#emails-from-us) to ensure our emails are delivered.
+If you found your journal in DOAJ but didn’t receive an email from us, you can follow [these steps](/apply/publisher-responsibilities/#emails-from-us) to ensure our emails are delivered.
 
-During the review process, we might correct some of the information in your application.
+During the review process, we may change some information in your application.
 
 You can [submit an update request](/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date) if something about your journal has changed since you applied.
 
@@ -99,7 +99,7 @@ On [your dashboard](/publisher/), you can
 
 If you cannot log in, you can [reset your password](/account/forgot). We will send an email containing a reset link. The link is valid for 24 hours. 
 
-If you don’t get the email, check the email address you registered with us. If you haven’t received the email after three hours, [contact us](mailto:helpdesk@doaj.org). It's always worth checking your Spam folder, too.
+If you don’t receive the email, you might have used the wrong email address. If you haven’t received the email after three hours, [contact us](mailto:helpdesk@doaj.org). It's always worth checking your Spam folder first.
 
 ## Your indexed journals
 
@@ -118,7 +118,7 @@ Keeping your journal records up to date has [very clear advantages](/apply/why-i
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
 - Request a Journal Update File from us that allows you to update multiple journals and values at the same time and in spreadsheet format.
-- For all other changes, log into your DOAJ account to [submit an update request](/publisher/journal). Use the black ‘Update’ button.
+- For all other changes, log in to your DOAJ account to [submit an update request](/publisher/journal). Use the black ‘Update’ button.
 
 ### When should I submit an update?
 
@@ -136,20 +136,20 @@ We aim to process update requests within one month.
 You may upload article metadata to us once your journal is indexed in DOAJ. 
 
 - The article metadata you upload must have a [Publication date](/docs/xml/#list-of-doaj-xml-elements) on or after the date that the journal started to publish as true open access, according to [DOAJ's definition](/apply/guide/#the-type-of-open-access).
-- You are not able to upload article metadata for back files prior to the OA start year. 
+- You are not able to upload article metadata published before the OA start year. 
 
-From April 2026, journal account owners will receive an automated email notification if we delete any article metadata due to broken links or duplication. Please see [further details](/docs/faq/#uploading-article-metadata) on uploading article metadata.
+From April 2026, journal account owners will receive an automated email notification if any article metadata has been deleted from your journal(s). Please see [further details](/docs/faq/#uploading-article-metadata) on uploading article metadata.
 
 ### Journal title changes, mergers or continuations
 
-- There are [specific rules](https://www.issn.org/understanding-the-issn/assignment-rules/issn-the-major-principles/) about what to do when a journal changes its title.
+- There are [specific rules](https://www.issn.org/understanding-the-issn/assignment-rules/issn-the-major-principles/) about what to do when a journal changes its title and usually you will need a new ISSN.
 - You must submit a new application if your journal has a new ISSN.
-- We will automatically reject the application if the new ISSN is not confirmed.
+- We will automatically reject the application if the new ISSN is [not fully confirmed](https://blog.doaj.org/2020/04/21/provisional-issns-versus-confirmed-issns/).
 - We will review the two records alongside each other to determine if the new title meets our basic criteria. If not, we will reject the application and withdraw the previous title.
 
 ### Ceased journals
 
-- If one of your indexed journals will be ceasing publication, let us know as soon as possible by [contacting our Help Desk](mailto:helpdesk@doaj.org). When you contact us, include the ISSN and the title of your journal.
+- If one of your indexed journals will cease publication, let us know as soon as possible by [contacting our Help Desk](mailto:helpdesk@doaj.org). When you contact us, include the ISSN and the title of your journal.
 - If another title is continuing the journal, you must [submit a continuation](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
 
 ### Journal transfers
@@ -162,14 +162,14 @@ If a journal is moving to or from another publisher, let us know as soon as poss
 - Name and email address of the old publisher
 - Name and email address of the new publisher
 
-If the journal has transferred to a new publisher that has not registered with us earlier and/or does not have journals indexed in DOAJ it will be removed and the new publisher may submit an application with no embargo period.
+If the journal has transferred to a new publisher that has not previously registered with us and/or does not have journals indexed in DOAJ, it will be removed and the new publisher may submit an application with no embargo period.
 
 
 ## Journal queries
 
 ### Journal is not listed (is withdrawn)
 
-When we withdraw your journal, we will send you an email. Remind yourself of the email address attached to your DOAJ account and check your Spam folder if you haven’t received anything. The email may include information on how long you must wait before you can apply again.
+When we withdraw your journal, we will send you an email. Please check the email address attached to your DOAJ account and your Spam folder if you haven’t received anything. The email may include information on how long you must wait before you can apply again.
 
 - We have to withdraw your journal from DOAJ if it no longer adheres to our criteria or to publishing best practices.
 - We have to withdraw the journal if it is inactive (ceased publishing) or the website is unavailable.
