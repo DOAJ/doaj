@@ -408,7 +408,7 @@ class OutgoingApplication(OutgoingCommonJournalApplication):
         assert isinstance(application, models.Suggestion)
         outgoing = super(OutgoingApplication, cls).from_model(application)
         # return only content of the publisher's comment
-        outgoing.data["admin"]["publisher_comment"] = application.publisher_comment["comment"]
+        outgoing.data["admin"]["publisher_comment"] = application.publisher_comment
         return outgoing
 
     @property

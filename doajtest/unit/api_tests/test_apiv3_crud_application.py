@@ -156,8 +156,7 @@ class TestCrudApplication(DoajTestCase):
         assert "A safe place" in preservation.get("service")
 
         # check publisher comment
-        pc = a.publisher_comment
-        assert data["admin"]["publisher_comment"] == pc["comment"]
+        assert data["admin"]["publisher_comment"] == a.publisher_comment
 
         # check the stuff that should not be processed through
         assert a.bibjson().labels == []

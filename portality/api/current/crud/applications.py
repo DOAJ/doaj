@@ -143,7 +143,7 @@ class ApplicationsCrudApi(CrudApi):
             if fc.validate():
                 try:
                     save_target = not dry_run
-                    fc.finalise(account=account, save_target=save_target, email_alert=False)
+                    fc.finalise(save_target=save_target, email_alert=False)
                     return fc.target
                 except Exception as e:
                     raise Api400Error(str(e))
