@@ -2,6 +2,14 @@
 
 **Note, issue refs on the doajPM (project management) board aren't public.**
 
+### 8.7.9
+Static pages update
+Fix for menu hover
+https://github.com/DOAJ/doajPM/issues/4355
+
+Font zooming improvements
+https://github.com/DOAJ/doajPM/issues/4147
+
 ### 8.7.8
 Static pages update
 Add edit button for logged-in publishers to submit update-request from ToC page
