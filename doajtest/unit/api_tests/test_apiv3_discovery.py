@@ -235,6 +235,13 @@ class TestAPIDiscovery(DoajTestCase):
             res = DiscoveryApi.search("article", None, '"10.test\/1"', 1, 10)
             assert res.data.get('total', 0) == 1
 
+            # 13. doi field search is case insensitive
+            res = DiscoveryApi.search("article", None, 'doi:10.test/1', 1, 10)
+            assert res.data.get('total', 0) == 1
+
+            res = DiscoveryApi.search("article", None, 'doi:10.TEST/1', 1, 10)
+            assert res.data.get('total', 0) == 1
+
     def test_03_applications(self):
         # populate the index with some suggestions owned by this owner
         now = dates.now()
@@ -466,6 +473,21 @@ class TestAPIDiscovery(DoajTestCase):
 
         for t in test_tuples:
             assert escape(t[0]) == t[1], "expected {0} got {1}".format(t[1], t[0])
+
+    def test_07b_lowercase_field_value(self):
+        from portality.api.current.discovery import lowercase_field_value
+
+        test_tuples = [
+            ("doi:10.1234/ABC", "doi:10.1234/abc"),
+            ('doi:"10.1234/ABC"', 'doi:"10.1234/abc"'),
+            ("issn:1111-2222 AND doi:10.1234/ABC", "issn:1111-2222 AND doi:10.1234/abc"),
+            ("doi:10.1234/ABC AND title:Something", "doi:10.1234/abc AND title:Something"),
+            ("title:SomeDoi", "title:SomeDoi"),
+        ]
+
+        for q, expected in test_tuples:
+            assert lowercase_field_value(q, "doi") == expected, \
+                "expected {0} got {1}".format(expected, lowercase_field_value(q, "doi"))
 
     def test_08_exception_thrown_invalid_model(self):
         """ Going for 100% test coverage by validating the DiscoveryException caused by scrolling e.g. accounts"""

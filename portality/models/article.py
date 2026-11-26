@@ -587,6 +587,12 @@ class Article(SeamlessMixin, DomainObject):
 
         # create a normalised version of the DOI for deduplication
         source_doi = cbib.get_one_identifier(constants.IDENT_TYPE_DOI)
+        if source_doi is not None:
+            # re-run through add_identifier so articles constructed directly from a raw
+            # dict (e.g. via the API), which bypass add_identifier's case normalisation,
+            # still get a lower-cased DOI stored on the bibjson identifier list
+            cbib.add_identifier(constants.IDENT_TYPE_DOI, source_doi)
+            source_doi = cbib.get_one_identifier(constants.IDENT_TYPE_DOI)
         try:
             doi = normalise.normalise_doi(source_doi)
         except ValueError as e:

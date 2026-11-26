@@ -90,7 +90,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["new"] == 0, "expected 1 updated, received: {}".format(resp)
 
         a = Article.pull(self.article10.id)
-        assert a.bibjson().get_one_identifier("doi") == "10.0000/NEW", a.bibjson().get_one_identifier("doi")
+        assert a.bibjson().get_one_identifier("doi") == "10.0000/new", a.bibjson().get_one_identifier("doi")
         assert a.bibjson().get_single_url("fulltext") == "https://www.UPDATED.com", a.bibjson().get_single_url("fulltext")
 
 
