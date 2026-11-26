@@ -224,6 +224,7 @@ APPLICATION_BASE = {
             "1234",
             "abcd"
         ],
+        "publisher_comment": "Please note that this application was completed during a building-wide fire drill.",
         "owner" : "publisher",
         "date_applied" : "2003-01-01T00:00:00Z",
     },

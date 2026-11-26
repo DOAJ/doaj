@@ -1,0 +1,22 @@
+<div class="{{ f.name }}__container form__question">
+        {% block admin_field_part %}{% endblock %}
+        {% if f.label %}
+            <label for="{{f.name}}">
+                {% autoescape off %}{{ f.label }}{% endautoescape%}
+            </label>
+        {% endif %}
+        {% if "textarea_with_counter" in f.widgets %}
+            <div class="textarea-with-counter-wrapper">
+                {{ f.render_form_control() }}
+                <span
+                        id="{{ f.name }}-{{ f.name }}-counter"
+                        class="character-counter"
+                        aria-hidden="true"
+                >
+              0/{%- if f.maxlength -%}{{ f.maxlength }}{%- endif -%}
+            </span>
+            </div>
+        {% else %}
+            {{ f.render_form_control() }}
+        {% endif %}
+</div>

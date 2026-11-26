@@ -187,6 +187,7 @@ SHARED_JOURNAL_LIKE = {
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
                 "date_applied": {"coerce": "utcdatetime"},
+                "publisher_comment": {"coerce": "unicode"}
             },
             "lists" : {
                 "note_ids" : {"contains" : "field", "coerce" : "unicode"},

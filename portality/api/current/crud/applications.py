@@ -1,11 +1,12 @@
 # ~~APICrudApplications:Feature->APICrud:Feature~~
 import json
+import uuid
 
 from portality.api.current.crud.common import CrudApi
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
 from portality.api.current.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.core import app
-from portality.lib import seamless, dataobj
+from portality.lib import seamless, dataobj, dates
 from portality import models, app_email
 
 from portality.bll import DOAJ
@@ -88,7 +89,7 @@ class ApplicationsCrudApi(CrudApi):
             raise Api400Error(str(e))
 
         # if that works, convert it to a Suggestion object
-        ap = ia.to_application_model()
+        ap = ia.to_application_model(account.id)
 
         # now augment the suggestion object with all the additional information it requires
 
@@ -242,7 +243,7 @@ class ApplicationsCrudApi(CrudApi):
             raise Api404Error()
 
         # if that works, convert it to a Suggestion object
-        new_ap = ia.to_application_model()
+        new_ap = ia.to_application_model(account.id)
 
         # now augment the suggestion object with all the additional information it requires
         #
@@ -293,7 +294,7 @@ class ApplicationsCrudApi(CrudApi):
 
             if fc.validate():
                 try:
-                    fc.finalise(email_alert=False)
+                    fc.finalise(account, email_alert=False)
                     return fc.target
                 except Exception as e:
                     raise Api400Error(str(e))

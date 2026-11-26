@@ -13,4 +13,7 @@ class OutgoingCommonJournalApplication(SeamlessMixin, swagger.SwaggerSupport):
     @classmethod
     def from_model(cls, journal_or_app):
         d = deepcopy(journal_or_app.data)
+        # we do not add publisher's comment by default
+        if "publisher_comment" in d["admin"]:
+            del d["admin"]["publisher_comment"]
         return cls(d)

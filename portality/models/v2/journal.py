@@ -581,6 +581,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         notes = self.notes_except_flags
         return self._order_notes(notes)
 
+
     def _order_notes(self, notes):
         clusters = {}
         for note in notes:
@@ -612,6 +613,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         self._notes_loaded = True
 
     #### end of notes methods
+    #### publisher comment
+
+    @property
+    def publisher_comment(self):
+        return self.__seamless__.get_single("admin.publisher_comment")
+
+    def set_publisher_comment(self, comment):
+        self.__seamless__.set_single("admin.publisher_comment", comment)
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
