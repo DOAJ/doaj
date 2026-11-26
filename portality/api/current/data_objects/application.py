@@ -145,28 +145,10 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
     def __init__(self, raw=None, **kwargs):
         # we only have the text of the publisher's comment at this point
-        self._adjust_struct()
         if raw is None:
             super(IncomingApplication, self).__init__(silent_prune=False, check_required_on_init=False, **kwargs)
         else:
             super(IncomingApplication, self).__init__(raw=raw, silent_prune=False, **kwargs)
-
-    def _adjust_struct(self):
-        for struct in self.__SEAMLESS_STRUCT__:
-            admin = struct.get("structs", {}).get("admin")
-
-            if admin:
-                # Remove publisher_comment from objects
-                if "publisher_comment" in admin.get("objects", []):
-                    admin["objects"].remove("publisher_comment")
-
-                # Remove its struct definition
-                admin.get("structs", {}).pop("publisher_comment", None)
-
-                # Add it as a unicode field
-                admin.setdefault("fields", {})["publisher_comment"] = {
-                    "coerce": "unicode"
-                }
 
     @property
     def data(self):

@@ -518,7 +518,11 @@ def run_server(host=None, port=None, fake_https=False):
 
     host = host or app.config['HOST']
     port = port or app.config['PORT']
-    app.run(host=host, debug=app.config['DEBUG'], port=port,
+
+    print("Debugger attached:", sys.gettrace())
+    print("Current file:", __file__)
+    print("Breakpoint test")
+    app.run(host=host, debug=app.config['DEBUG'], port=port, use_reloader=False, use_debugger=False,
             **run_kwargs)
 
 

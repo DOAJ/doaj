@@ -614,7 +614,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.__seamless__.get_single("admin.publisher_comment")
 
     def set_publisher_comment(self, comment):
-        self.__seamless__.set_single("admin.publisher_comment", "")
+        print("journal.py")
+        self.__seamless__.set_single("admin.publisher_comment", comment)
 
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")

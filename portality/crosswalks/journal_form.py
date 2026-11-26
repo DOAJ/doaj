@@ -283,7 +283,6 @@ class JournalGenericXWalk(object):
     @classmethod
     def form2admin(cls, form, obj):
         import re
-
         if getattr(form, "publisher_comment", None):
             if form.publisher_comment.data:
                 obj.set_publisher_comment(form.publisher_comment.data)
@@ -496,7 +495,7 @@ class JournalGenericXWalk(object):
 
         forminfo['publisher_comment'] = ""
         if obj.publisher_comment:
-            forminfo['publisher_comment'] = json.dumps(obj.publisher_comment)
+            forminfo['publisher_comment'] = obj.publisher_comment
 
         note_fields = obj.ordered_notes_except_flags
         for n in note_fields:
