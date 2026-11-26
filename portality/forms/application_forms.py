@@ -2669,7 +2669,6 @@ class JournalContextDefinitions:
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
-
         ],
         "templates": {
             "form": templates.MANED_READ_ONLY_JOURNAL,

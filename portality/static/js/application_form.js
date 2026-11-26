@@ -97,7 +97,7 @@ doaj.af.BaseApplicationForm = class {
                     // This field has separate labels for the group’s review-table entry and the textarea’s accessible name in editable mode.
                     // Treat it as a special case here to prevent the value from being rendered twice.
                     // The broader grouped-field labelling issue is tracked in https://github.com/DOAJ/doaj/pull/2619#issuecomment-5544737595.
-                    if (f.name !== "publisher_comment") {
+                    // if (f.name !== "publisher_comment") {
                         if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))) {
                             let value = this.determineFieldsValue(f.name);
                             let text = this.convertValueToText(value);
@@ -117,7 +117,7 @@ doaj.af.BaseApplicationForm = class {
                     `;
                             review_table.append(html);
                         }
-                    }
+                    // }
                 });
             });
 
