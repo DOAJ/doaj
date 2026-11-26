@@ -2,6 +2,7 @@ import csv
 import json
 import logging
 import re
+import uuid
 from io import StringIO
 
 from portality import constants, lock, models
@@ -553,10 +554,11 @@ class ApplicationService(object):
             journal.add_note_by_dict(note)
         # save publisher comment from the app to a note in a journal
         if application.publisher_comment:
+            publisher_comment_note_id = uuid.uuid4().hex
             pc = application.publisher_comment
-            note_obj = {'note': pc['comment'],
-                        'note_date': pc['date'], 'note_id': pc['id'],
-                        'author_id': pc["author_id"],
+            note_obj = {'note': pc,
+                        'note_date': application.date_applied, 'note_id': publisher_comment_note_id,
+                        'author_id': application.owner,
                         }
             journal.add_note_by_dict(note_obj)
         if application.owner is not None:
