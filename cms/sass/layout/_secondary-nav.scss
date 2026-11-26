@@ -13,12 +13,24 @@
   }
 }
 
+@media (min-width: 1279px) {
+  // nav content (90px padding + 75px bar) overflows the 150px height, so positioned page content
+  // can cover the bottom of the triggers and steal :hover. Raise only the active dropdown, so the
+  // overflow strip doesn't block clicks on page content the rest of the time.
+  .secondary-nav .dropdown:hover,
+  .secondary-nav .dropdown.open {
+    z-index: 1000;
+  }
+}
+
 .secondary-nav--precedes-highlight {
   background-color: $light-grey;
 }
 // Mobile / hamburger menu
+// 79.9375em matches the primary nav's breakpoint (see _primary-nav.scss) -
+// keep these in step, since they gate the same desktop/mobile nav split.
 
-@media (max-width: 1279px) {
+@media (max-width: 79.9375em) {
   .secondary-nav {
     height: 75px;
   }
@@ -89,7 +101,7 @@
 }
 
 .secondary-nav__item_mobile {
-  @media (min-width: 1279px) {
+  @media (min-width: 79.9375em) {
     display: none;
   }
 }
