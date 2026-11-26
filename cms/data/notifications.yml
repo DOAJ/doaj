@@ -58,7 +58,7 @@ application:publisher:accepted:notify:
 
     You may access the journal record from your Publisher dashboard: [{publisher_dashboard_url}]({publisher_dashboard_url}) using your DOAJ account ID or email address and password.
 
-    You are responsible for keeping your journal information in DOAJ up to date. Please promptly [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard when changes or updates are needed. Please be aware that failure to do this may result in removal of your journal from DOAJ.
+    You are responsible for keeping your journal information in DOAJ up to date. Please promptly [submit an update](https://doaj.org/publisher/journal) when changes or updates are needed. Please be aware that failure to do so may result in your journal being removed from DOAJ.
 
     [How to submit an Update Request](https://doaj.org/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date)    
 
@@ -88,7 +88,7 @@ application:publisher:created:notify:
     You may get an email from us during the review if we have questions. One of our volunteer editors, who will not be using a DOAJ email address, might contact you. These emails may go to your spam folder, so please check it regularly.
     You can see our volunteers listed here: [{volunteers_url}]({volunteers_url})
     
-    If you need to make a change to your application, please send an email to our Help Desk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org). Please include your ISSN. 
+    If you need to make a change to your application, please email our Help Desk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org). Please include your ISSN. 
   short:
     Your application for {issns} to DOAJ has been received
 
@@ -130,7 +130,7 @@ bg:job:admin_reports:export_available:
 
 bg:job:article_deletion_notifications:publisher:
   long: |
-    This is an automated email to inform you that article metadata has been deleted from one or several of the journals connected to your DOAJ account:
+    This is an automated email to inform you that article metadata has been deleted from one or more of the journals connected to your DOAJ account:
     
     {list_of_articles}
     
@@ -186,9 +186,9 @@ update_request:maned:editor_group_assigned:notify:
 
 update_request:publisher:accepted:notify:
   long: |
-    The changes you submitted for **{application_title}** on {application_date} have been reviewed and the journal record updated. Please note that our editorial team may have edited some of the changes you suggested. Review the journal record here: [{publisher_dashboard_url}]({publisher_dashboard_url}).
+    The changes you submitted for **{application_title}** on {application_date} have been reviewed and the journal has been updated. Please note that our editorial team may have edited some of the changes you suggested. Review the journal record here: [{publisher_dashboard_url}]({publisher_dashboard_url}).
 
-    Thank you for helping to keep the DOAJ database up-to-date.
+    Thank you for helping keep the DOAJ database up to date.
   short:
     Update request ({issns}) accepted
 
@@ -196,7 +196,7 @@ update_request:publisher:assigned:notify:
   long: |
     The update you submitted for **{application_title}** on {application_date} has been assigned to a Managing Editor for review.
 
-    Thank you for helping to keep the DOAJ database up-to-date.
+    Thank you for helping keep the DOAJ database up to date.
   short:
     Your update request ({issns}) has been assigned to an editor for review
 
@@ -204,7 +204,7 @@ update_request:publisher:rejected:notify:
   long: |
     The update you submitted for **{title}** on {date_applied} has been rejected. 
 
-    If you have any questions or require further details, please get in touch with our Help Desk: helpdesk@doaj.org.
+    If you have any questions or need further details, please contact our Help Desk at helpdesk@doaj.org.
 
   short:
     Your update request ({issns}) was rejected
@@ -215,7 +215,7 @@ update_request:publisher:submitted:notify:
 
     Thank you for submitting an update to your journal on {date_applied}. It has been safely received. A Managing Editor will review it soon. In the meantime, your original journal record is still visible in DOAJ and you may continue to upload article metadata to us.
 
-    Please save this email as a record of when you submitted your update. Before you contact us requesting a status update, please check your Spam folder to ensure that a member of our editorial team has not already contacted you.
+    Please save this email as a record of when you submitted your update. Before contacting us for a status update, please check your Spam folder to ensure a member of our editorial team has not already contacted you.
 
     Yours faithfully,
 
