@@ -11,7 +11,7 @@ from portality.crosswalks.article_crossref_xml import CrossrefXWalk442, Crossref
 from portality import models
 from werkzeug.datastructures import MultiDict
 from copy import deepcopy
-from portality import lcc
+from portality.models import Classification
 from portality.models import Journal, Application
 from portality.forms.application_forms import ApplicationFormFactory
 
@@ -25,26 +25,11 @@ APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
 APPLICATION_FORMINFO = ApplicationFixtureFactory.make_application_form_info()
 APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 
-######################################################################
-# Mocks
-######################################################################
-
-
-def mock_lookup_code(code):
-    if code == "H": return "Social Sciences"
-    if code == "HB1-3840": return "Economic theory. Demography"
-    if code == "SF600-1100": return 'Veterinary medicine'
-    return None
-
-
 class TestCrosswalks(DoajTestCase):
     def setUp(self):
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
         super(TestCrosswalks, self).setUp()
 
     def tearDown(self):
-        lcc.lookup_code = self.old_lookup_code
         super(TestCrosswalks, self).tearDown()
 
     def test_01_journal_form2obj(self):

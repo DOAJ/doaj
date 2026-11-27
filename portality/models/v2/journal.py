@@ -542,8 +542,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         schema_codes = list(set(schema_codes))
 
         # get the full classification paths for the subjects
-        classification_paths = cbib.lcc_paths()
-        schema_codes_tree = cbib.lcc_codes_full_list()
+        classification_paths = cbib.classification_paths()
+        schema_codes_tree = cbib.subject_codes_full_list()
 
         # create an unpunctitle
         if cbib.title is not None:

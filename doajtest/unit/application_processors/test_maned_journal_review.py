@@ -1,13 +1,14 @@
 from doajtest.helpers import DoajTestCase
 
 from portality import models
-from portality import lcc
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.application_processors import ManEdJournalReview
 
 from doajtest.fixtures import JournalFixtureFactory
 
 from copy import deepcopy
+
+from portality.models import Classification
 
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
@@ -24,27 +25,16 @@ def editor_group_pull(cls, field, value):
     eg.set_name("Test Editor Group")
     return eg
 
-def mock_lookup_code(code):
-    if code == "H": return "Social Sciences"
-    if code == "HB1-3840": return "Economic theory. Demography"
-    return None
-
-
 class TestManEdJournalReview(DoajTestCase):
 
     def setUp(self):
         super(TestManEdJournalReview, self).setUp()
-
         self.editor_group_pull = models.EditorGroup.pull_by_key
         models.EditorGroup.pull_by_key = editor_group_pull
-
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
 
     def tearDown(self):
         super(TestManEdJournalReview, self).tearDown()
         models.EditorGroup.pull_by_key = self.editor_group_pull
-        lcc.lookup_code = self.old_lookup_code
 
     def test_01_maned_review_success(self):
         """Give the Managing Editor's journal form a full workout"""

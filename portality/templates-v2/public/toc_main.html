@@ -319,12 +319,12 @@
                 <article class="card card--with-icon">
                     <span data-feather="tag" aria-hidden="true"></span>
                     <dl>
-                        {% for path, code in bibjson.lcc_paths_and_codes() %}
+                        {% for path, code in bibjson.subject_paths_and_codes() %}
                             {% if loop.index0 == 0 %}
-                                <dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank"
+                                <dt>Subject Classifications <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank"
                                                     rel="noopener">
                                     <span data-feather="help-circle" aria-hidden="true"></span>
-                                    <span class="sr-only">Look up the Library of Congress Classification Outline</span>
+                                    <span class="sr-only">Look up the Subject Classification</span>
                                 </a>
                                 </dt>{% endif %}
                             <dd>

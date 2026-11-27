@@ -23,7 +23,7 @@ class TestFeed(DoajTestCase):
             bj.title = "Test Journal {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
-            bj.add_subject("LCC", "Agriculture")
+            bj.add_subject("CRDC", "Adaptive agents")
             bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
             j.save()
             ids.append(j.id)
@@ -44,7 +44,7 @@ class TestFeed(DoajTestCase):
             e = f.entries.get(sorted(entry_dates)[i])[0]
             assert e["author"] == "Test Publisher {x}".format(x=i)
             assert len(e["categories"]) == 1
-            assert e["categories"][0] == "LCC:Agriculture"
+            assert e["categories"][0] == "CRDC:Adaptive agents"
             assert e["content_src"].endswith("{x}000-0000?rss".format(x=i))
             assert e["alternate"].endswith("{x}000-0000?rss".format(x=i))
             assert e["id"] == "urn:uuid:" + ids[i]
@@ -64,7 +64,7 @@ class TestFeed(DoajTestCase):
             bj.title = "Test Journal {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
-            bj.add_subject("LCC", "Agriculture")
+            bj.add_subject("CRDC", "Adaptive agents")
             bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
             j.save()
             ids.append(j.id)
@@ -89,6 +89,6 @@ class TestFeed(DoajTestCase):
             assert e.xpath("atom:id", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].text == "urn:uuid:" + ids[inv]
             assert e.xpath("atom:link[@rel='alternate']", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].get("href").endswith("{x}000-0000?rss".format(x=inv))
             assert e.xpath("atom:link[@rel='related']", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].get("href") == "http://homepage.com/{x}".format(x=inv)
-            assert e.xpath("atom:category", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].get("term") == "LCC:Agriculture"
+            assert e.xpath("atom:category", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].get("term") == "CRDC:Adaptive agents"
             assert e.xpath("atom:summary", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].text.startswith("Published by Test Publisher {x}".format(x=inv))
             assert e.xpath("atom:title", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].text == "Test Journal {x} ({x}000-0000)".format(x=inv)

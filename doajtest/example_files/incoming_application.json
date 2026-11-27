@@ -78,15 +78,16 @@
 			"license_terms": "http://licence.url"
 		},
 		"replaces": ["1111-1111"],
-		"subject": [{
-				"scheme": "LCC",
-				"term": "Economic theory. Demography",
-				"code": "HB1-3840"
-			},
+		"subject": [
 			{
-				"scheme": "LCC",
-				"term": "Social Sciences",
-				"code": "H"
+				"scheme": "CRDC",
+				"term": "Pure mathematics",
+         		"code": "RDF10101"
+			},
+        	{
+				"scheme": "CRDC",
+				"term": "Molecular and atomic computing",
+				"code": "RDF1020805"
 			}
 		],
 		"title": "The Title",

@@ -1,4 +1,4 @@
-from portality import models, lcc
+from portality import models
 from portality.crosswalks.journal_form import JournalGenericXWalk, JournalFormXWalk
 
 

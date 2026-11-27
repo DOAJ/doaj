@@ -289,13 +289,13 @@ def form_diff_table_subject_expand(val):
     if not isinstance(val, list):
         val = [val]
 
-    from portality import lcc
+    from portality.models import Classification
 
     results = []
     for v in val:
         if v is None or v == "":
             continue
-        expanded = lcc.lcc_index_by_code.get(v)
+        expanded = Classification.lookup_code(v)
         if expanded is not None:
             results.append(expanded + " [code: " + v + "]")
         else:

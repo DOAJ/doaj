@@ -184,7 +184,7 @@ def create_es_connection(app):
 
 
 def prepare_type(es_type):
-    """ Ensure a type has an index correctly prepared - e.g. LCC on app startup """
+    """ Ensure a type has an index correctly prepared"""
     expected_alias = app.config['ELASTIC_SEARCH_DB_PREFIX'] + es_type
 
     if not es_connection.indices.exists(expected_alias):

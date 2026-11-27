@@ -6,7 +6,7 @@ from portality.core import app
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality import models
 from portality.bll import DOAJ, exceptions
-from portality.lcc import lcc_jstree
+from portality.models.classification import JS_TREE as classification_tree
 
 from portality import lock
 from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
@@ -112,7 +112,7 @@ def journal_readonly(journal_id):
 
     fc = JournalFormFactory.context("editor_readonly")
     fc.processor(source=j)
-    return fc.render_template(obj=j, lcc_tree=lcc_jstree, notabs=True)
+    return fc.render_template(obj=j, lcc_tree=classification_tree, notabs=True)
 
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
@@ -146,7 +146,7 @@ def application(application_id):
     if request.method == "GET":
         fc.processor(source=ap)
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
-                                  lcc_tree=lcc_jstree)
+                                  lcc_tree=classification_tree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -160,7 +160,7 @@ def application(application_id):
             except Exception as e:
                 flash(str(e))
                 return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
-                                  lcc_tree=lcc_jstree)
+                                  lcc_tree=classification_tree)
         else:
             return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
-                                  lcc_tree=lcc_jstree)
+                                  lcc_tree=classification_tree)

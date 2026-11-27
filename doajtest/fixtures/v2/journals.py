@@ -205,7 +205,7 @@ CSV_HEADERS = [
     "Does the journal comply to DOAJ's definition of open access?",
     "Continues",
     "Continued By",
-    "LCC Codes",
+    "Classification Codes",
     "Subscribe to Open",
     "Mirror Journal",
     "Open Journals Collective",
@@ -260,7 +260,7 @@ JOURNAL_QUESTION_ANSWERS = [
     'Yes',
     "1111-1111",
     "2222-2222",
-    "HB1-3840|H|SF600-1100",
+    "RDF10101|RDF1020805|RDF1060304",
     "Yes",
     "Yes",
     "No"

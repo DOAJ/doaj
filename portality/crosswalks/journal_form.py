@@ -1,6 +1,6 @@
 from werkzeug.datastructures import MultiDict
 
-from portality import models, lcc
+from portality import models
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
 from portality.models import Account
@@ -249,7 +249,7 @@ class JournalGenericXWalk(object):
             if not isinstance(incoming, list):
                 incoming = [x.strip() for x in form.subject.data.split(",")]
             for code in incoming:
-                sobj = {"scheme": 'LCC', "term": lcc.lookup_code(code), "code": code}
+                sobj = {"scheme": 'CRDC', "term": models.Classification.lookup_code(code), "code": code}
                 new_subjects.append(sobj)
             bibjson.subject = new_subjects
 

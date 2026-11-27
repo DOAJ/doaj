@@ -18,7 +18,7 @@ from portality import store
 from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, api_key_required
-from portality.lcc import lcc_jstree
+from portality.models.classification import JS_TREE as classification_tree
 from portality.lib import plausible
 from portality.ui.messages import Messages
 from portality.ui import templates
@@ -74,12 +74,12 @@ def fqw_hit():
 
 @blueprint.route("/search/journals", methods=["GET"])
 def journals_search():
-    return render_template(templates.PUBLIC_JOURNAL_SEARCH, lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_JOURNAL_SEARCH, lcc_tree=classification_tree)
 
 
 @blueprint.route("/search/articles", methods=["GET"])
 def articles_search():
-    return render_template(templates.PUBLIC_ARTICLE_SEARCH, lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_ARTICLE_SEARCH, lcc_tree=classification_tree)
 
 
 @blueprint.route("/search", methods=['GET'])

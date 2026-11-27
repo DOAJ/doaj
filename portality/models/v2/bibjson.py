@@ -649,57 +649,50 @@ class JournalLikeBibJSON(SeamlessMixin):
         return list(set(langs))
 
     def term_path(self, term):
-        from portality.lcc import lcc
-        return lcc.term_path(term)
+        from portality.models import Classification
+        return Classification.term_path(term)
 
-    def lcc_paths(self):
+    def classification_paths(self):
         classification_paths = []
 
         # calculate the classification paths
-        from portality.lcc import lcc  # inline import since this hits the database
+        from portality.models import Classification
         for subs in self.subjects():
-            scheme = subs.get("scheme")
             term = subs.get("term")
-            if scheme == "LCC":
-                p = lcc.pathify(term)
-                if p is not None:
-                    classification_paths.append(p)
+            p = Classification.pathify(term)
+            if p is not None:
+                classification_paths.append(p)
 
         # normalise the classification paths, so we only store the longest ones
-        classification_paths = lcc.longest(classification_paths)
+        classification_paths = Classification.longest(classification_paths)
 
         return classification_paths
 
-    def lcc_codes_full_list(self):
+    def subject_codes_full_list(self):
         full_list = set()
 
-        from portality.lcc import lcc  # inline import since this hits the database
+        from portality.models import Classification
         for subs in self.subjects():
-            scheme = subs.get("scheme")
-            if scheme != "LCC":
-                continue
             code = subs.get("code")
-            expanded = lcc.expand_codes(code)
+            expanded = Classification.expand_codes(code)
             full_list.update(expanded)
 
-        return ["LCC:" + x for x in full_list if x is not None]
+        # FIXME: can we avoid hard-coding the "CRDC" prefix?
+        return ["CRDC:" + x for x in full_list if x is not None]
 
-    def lcc_paths_and_codes(self):
+    def subject_paths_and_codes(self):
         paths_and_codes = {}
 
         # calculate the classification paths
-        from portality.lcc import lcc  # inline import since this hits the database
+        from portality.models import Classification
         for subs in self.subjects():
-            scheme = subs.get("scheme")
-            if scheme != "LCC":
-                continue
             term = subs.get("term")
             code = subs.get("code")
-            p = lcc.pathify(term)
+            p = Classification.pathify(term)
             if p is not None:
-                paths_and_codes[p] = "LCC:" + code
+                paths_and_codes[p] = "CRDC:" + code
 
-        return [(x, paths_and_codes[x]) for x in lcc.longest(list(paths_and_codes.keys()))]
+        return [(x, paths_and_codes[x]) for x in Classification.longest(list(paths_and_codes.keys()))]
 
     # to help with ToC - we prefer to refer to a journal by E-ISSN, or
     # if not, then P-ISSN

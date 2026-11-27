@@ -6,10 +6,10 @@ from werkzeug.datastructures import MultiDict
 from portality import constants
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_history_dir
-from portality import lcc
 from portality import models
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.forms.application_processors import AdminApplication
+from portality.models import Classification
 
 
 #####################################################################
@@ -23,21 +23,6 @@ def editor_group_pull(cls, field, value):
     eg.set_associates(["associate", "assan"])
     eg.set_name("editorgroup")
     return eg
-
-
-mock_lcc_choices = [
-    ('H', 'Social Sciences'),
-    ('HB1-3840', '--Economic theory. Demography'),
-    ('SF600-1100', 'Veterinary medicine')
-]
-
-
-def mock_lookup_code(code):
-    if code == "H": return "Social Sciences"
-    if code == "HB1-3840": return "Economic theory. Demography"
-    if code == "SF600-1100": return 'Veterinary medicine'
-    return None
-
 
 #####################################################################
 # Source objects to be used for testing
@@ -60,23 +45,12 @@ class TestManEdAppReview(DoajTestCase):
 
     def setUp(self):
         super(TestManEdAppReview, self).setUp()
-
         self.editor_group_pull = models.EditorGroup.pull_by_key
         models.EditorGroup.pull_by_key = editor_group_pull
 
-        self.old_lcc_choices = lcc.lcc_choices
-        lcc.lcc_choices = mock_lcc_choices
-
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
-
     def tearDown(self):
         super(TestManEdAppReview, self).tearDown()
-
         models.EditorGroup.pull_by_key = self.editor_group_pull
-        lcc.lcc_choices = self.old_lcc_choices
-
-        lcc.lookup_code = self.old_lookup_code
 
     def test_01_maned_review_success(self):
         """Give the editor's application form a full workout"""
@@ -120,8 +94,6 @@ class TestManEdAppReview(DoajTestCase):
             # no disabled fields, so just test the function runs
 
             # run the validation itself
-            # set the choices allowed for the subject manually (part of the test)
-            fc.form.subject.choices = mock_lcc_choices
             assert fc.validate(), fc.form.errors
 
             # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)

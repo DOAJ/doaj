@@ -15,7 +15,7 @@ from portality.ui.messages import Messages
 from portality.ui import templates
 from portality import lock
 from portality.models import DraftApplication
-from portality.lcc import lcc_jstree
+from portality.models.classification import JS_TREE as classification_tree
 from portality.forms.article_forms import ArticleFormFactory
 from portality.store import StoreFactory
 
@@ -43,7 +43,7 @@ def index():
 @login_required
 @ssl_required
 def journals():
-    return render_template(templates.PUBLISHER_JOURNAL_SEARCH, lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLISHER_JOURNAL_SEARCH, lcc_tree=classification_tree)
 
 
 @blueprint.route("/application/<application_id>/delete", methods=["GET"])

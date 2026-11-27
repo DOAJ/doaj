@@ -115,7 +115,7 @@ class ExportService(object):
             :return: a list of (key, value) tuples for our metadata
             """
             kvs = [
-                ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
+                ("Subjects", ' | '.join(journal.bibjson().classification_paths())),
                 ("Added on Date", journal.created_date if isinstance(journal, models.Journal) else journal.date_applied),
                 ("Last updated Date", journal.last_manual_update),
             ]

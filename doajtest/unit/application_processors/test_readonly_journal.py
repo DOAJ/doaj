@@ -3,19 +3,9 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.application_processors import ReadOnlyJournal
-from portality import lcc
 
 from doajtest.fixtures import JournalFixtureFactory
-
-
-#####################################################################
-# Mocks required to make some of the lookups work
-#####################################################################
-def mock_lookup_code(code):
-    if code == "H": return "Social Sciences"
-    if code == "HB1-3840": return "Economic theory. Demography"
-    return None
-
+from portality.models import Classification
 
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
@@ -32,12 +22,8 @@ class TestReadOnlyJournal(DoajTestCase):
     def setUp(self):
         super(TestReadOnlyJournal, self).setUp()
 
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
-
     def tearDown(self):
         super(TestReadOnlyJournal, self).tearDown()
-        lcc.lookup_code = self.old_lookup_code
 
     def test_01_unknown_context(self):
         """ Pulling the wrong context gives an exception """

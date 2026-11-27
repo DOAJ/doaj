@@ -6,11 +6,11 @@ from werkzeug.datastructures import MultiDict
 from portality import constants
 from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase
-from portality import lcc
 from portality import models
 
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.forms.application_processors import AssociateApplication
+from portality.models import Classification
 
 
 #####################################################################
@@ -24,21 +24,6 @@ def editor_group_pull(cls, field, value):
     eg.set_associates(["associate", "assan"])
     eg.set_name("editorgroup")
     return eg
-
-
-mock_lcc_choices = [
-    ('H', 'Social Sciences'),
-    ('HB1-3840', '--Economic theory. Demography'),
-    ('SF600-1100', 'Veterinary medicine')
-]
-
-
-def mock_lookup_code(code):
-    if code == "H": return "Social Sciences"
-    if code == "HB1-3840": return "Economic theory. Demography"
-    if code == "SF600-1100": return 'Veterinary medicine'
-    return None
-
 
 def make_application_source():
     return ApplicationFixtureFactory.make_update_request_source()
@@ -57,23 +42,12 @@ class TestAssedAppReview(DoajTestCase):
 
     def setUp(self):
         super(TestAssedAppReview, self).setUp()
-
         self.editor_group_pull = models.EditorGroup.pull_by_key
         models.EditorGroup.pull_by_key = editor_group_pull
 
-        self.old_lcc_choices = lcc.lcc_choices
-        lcc.lcc_choices = mock_lcc_choices
-
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
-
     def tearDown(self):
         super(TestAssedAppReview, self).tearDown()
-
         models.EditorGroup.pull_by_key = self.editor_group_pull
-        lcc.lcc_choices = self.old_lcc_choices
-
-        lcc.lookup_code = self.old_lookup_code
 
     ###########################################################
     # Tests on the associate editor's application form
@@ -95,17 +69,6 @@ class TestAssedAppReview(DoajTestCase):
             assert fc.form is not None
             assert fc.source is not None
             assert fc.form_data is None
-            # assert fc.template is not None
-
-            # TODO: we are no longer testing the render here - should we move this?
-            """
-            # check that we can render the form
-            # FIXME: we can't easily render the template - need to look into Flask-Testing for this
-            # html = fc.render_template(edit_suggestion=True)
-            html = fc.render_field_group("status")
-            assert html is not None
-            assert html != ""
-            """
 
             # now construct it from form data (with a known source)
             formulaic_context = ApplicationFormFactory.context("associate_editor")
@@ -124,7 +87,6 @@ class TestAssedAppReview(DoajTestCase):
             fc.pre_validate()
 
             # run the validation itself
-            fc.form.subject.choices = mock_lcc_choices  # set the choices allowed for the subject manually (part of the test)
             assert fc.validate(), fc.form.errors
 
             # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)

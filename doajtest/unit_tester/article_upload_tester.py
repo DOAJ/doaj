@@ -99,8 +99,8 @@ def test_lcc_spelling_error(run_background_process_fn):
     bj1 = j1.bibjson()
     bj1.add_identifier(bj1.P_ISSN, "1234-5678")
     bj1.add_identifier(bj1.E_ISSN, "9876-5432")
-    bj1.add_subject("LCC", "Whatever", "WHATEVA")
-    bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
+    bj1.add_subject("CRDC", "Whatever", "WHATEVA")  # not real
+    bj1.add_subject("CRDC", "Museum studies (Museology)", "RDF6040803")  # real
     j1.set_in_doaj(True)
     j1.save()
 
@@ -117,7 +117,7 @@ def test_lcc_spelling_error(run_background_process_fn):
     found = [a for a in models.Article.find_by_issns(target_issns)]
     cpaths = found[0].data["index"]["classification_paths"]
     assert len(cpaths) == 1
-    assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
+    assert cpaths[0] == "Humanities and the arts: Arts (arts, history of arts, performing arts, music), architecture and design: Curatorial and related studies: Museum studies (Museology)"
 
 
 def test_one_journal_one_article_2_issns_one_unknown(run_background_process_fn):

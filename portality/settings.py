@@ -745,7 +745,6 @@ MAPPINGS = {
 MAPPINGS['upload'] = MAPPINGS["account"]  # ~~->Upload:Model~~
 MAPPINGS['bulk_articles'] = MAPPINGS["account"]  # ~~->BulkArticles:Model~~
 MAPPINGS['cache'] = MAPPINGS["account"]  # ~~->Cache:Model~~
-MAPPINGS['lcc'] = MAPPINGS["account"]  # ~~->LCC:Model~~
 MAPPINGS['editor_group'] = MAPPINGS["account"]  # ~~->EditorGroup:Model~~
 MAPPINGS['news'] = MAPPINGS["account"]  # ~~->News:Model~~
 MAPPINGS['lock'] = MAPPINGS["account"]  # ~~->Lock:Model~~

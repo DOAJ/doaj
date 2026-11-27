@@ -21,7 +21,7 @@ from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.forms.application_forms import ApplicationFormFactory, application_statuses
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
-from portality.lcc import lcc_jstree
+from portality.models.classification import JS_TREE as classification_tree
 from portality.lib.query_filters import remove_search_limits, update_request, not_update_request
 from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
@@ -240,7 +240,7 @@ def journal_page(journal_id):
         past_cont_list = create_cont_list(journal.get_past_continuations(), bibjson.replaces)
         future_cont_list = create_cont_list(journal.get_future_continuations(), bibjson.is_replaced_by)
 
-        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree,
+        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=classification_tree,
                                   past_cont_list=past_cont_list, future_cont_list=future_cont_list,
                                   autochecks=autochecks)
 
@@ -257,7 +257,7 @@ def journal_page(journal_id):
                 flash(str(e))
                 return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=classification_tree, autochecks=autochecks)
 
 
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
@@ -270,7 +270,7 @@ def journal_readonly(journal_id):
 
     fc = JournalFormFactory.context("admin_readonly")
     fc.processor(source=j)
-    return fc.render_template(obj=j, lcc_tree=lcc_jstree, notabs=True)
+    return fc.render_template(obj=j, lcc_tree=classification_tree, notabs=True)
 
 DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
 
@@ -464,7 +464,7 @@ def application(application_id):
     if request.method == "GET":
         fc.processor(source=ap)
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+                                  current_journal=current_journal, lcc_tree=classification_tree, autochecks=autochecks)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -485,7 +485,7 @@ def application(application_id):
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
-                                      lcc_tree=lcc_jstree, autochecks=autochecks)
+                                      lcc_tree=classification_tree, autochecks=autochecks)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])

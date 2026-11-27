@@ -1665,7 +1665,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0
 
-    def test_47_crossref_lcc_spelling_error(self):
+    def test_47_crossref_classification_spelling_error(self):
         etree.XMLSchema = self.mock_load_schema
         # create a journal with a broken subject classification
         j1 = models.Journal()
@@ -1673,8 +1673,8 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
-        bj1.add_subject("LCC", "Whatever", "WHATEVA")
-        bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
+        bj1.add_subject("CRDC", "Whatever", "WHATEVA")  # not real
+        bj1.add_subject("CRDC", "Museum studies (Museology)", "RDF6040803") # real
         j1.set_in_doaj(True)
         j1.save()
 
@@ -1723,7 +1723,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         cpaths = found[0].data["index"]["classification_paths"]
         assert len(cpaths) == 1
-        assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
+        assert cpaths[0] == "Humanities and the arts: Arts (arts, history of arts, performing arts, music), architecture and design: Curatorial and related studies: Museum studies (Museology)"
 
     def test_48_crossref_unknown_journal_issn(self):
         etree.XMLSchema = self.mock_load_schema

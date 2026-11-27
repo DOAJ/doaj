@@ -1854,7 +1854,7 @@ class TestModels(DoajTestCase):
     def test_41_article_tombstone(self):
         t = models.ArticleTombstone()
         t.set_id("1234")
-        t.bibjson().add_subject("LCC", "Medicine", "KM22")
+        t.bibjson().add_subject("CRDC", "Estuarine and freshwater ecology", "RDF1060304")
         t.set_in_doaj(True) # should have no effect
 
         t.save(blocking=True)
@@ -1864,9 +1864,9 @@ class TestModels(DoajTestCase):
         assert t2.id == "1234"
         assert t2.is_in_doaj() is False
         assert t2.last_updated is not None
-        assert t2.bibjson().subjects()[0].get("scheme") == "LCC"
-        assert t2.bibjson().subjects()[0].get("term") == "Medicine"
-        assert t2.bibjson().subjects()[0].get("code") == "KM22"
+        assert t2.bibjson().subjects()[0].get("scheme") == "CRDC"
+        assert t2.bibjson().subjects()[0].get("term") == "Estuarine and freshwater ecology"
+        assert t2.bibjson().subjects()[0].get("code") == "RDF1060304"
 
     def test_42_make_article_tombstone(self):
         # the articles below all use ArticleFixtureFactory's default

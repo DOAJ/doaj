@@ -29,9 +29,9 @@ class AtomCrosswalk(object):
         if summary != "":
             summary += "\n"
         summary += "Added to DOAJ on " + atom_record.created_timestamp.strftime("%e %b %Y") + "\n"
-        lccs = b.lcc_paths()
+        lccs = b.classification_paths()
         if len(lccs) > 0:
-            summary += "LCC Subject Category: " + " | ".join(lccs)
+            summary += "Subject Category: " + " | ".join(lccs)
 
         if b.publisher is not None:
             entry["author"] = b.publisher

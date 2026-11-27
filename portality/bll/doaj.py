@@ -188,3 +188,12 @@ class DOAJ(object):
         """
         from portality.bll.services import account
         return account.AccountService()
+
+    @classmethod
+    def classificationService(cls):
+        """
+        Obtain an instance of the ClassificationService ~~->ClassificationService:Service~~
+        :return: ClassificationService
+        """
+        from portality.bll.services import classification
+        return classification.ClassificationService()

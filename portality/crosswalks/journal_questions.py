@@ -59,7 +59,7 @@ class Journal2QuestionXwalk(object):
         ("has_other_charges", "Has other fees"),
         ("has_waiver", "Journal waiver policy (for developing country authors etc)"),
         ("deposit_policy_url", "URL for deposit policy"),
-        ("subject", "LCC Codes"),
+        ("subject", "Classification Codes"),
         ("s2o", "Subscribe to Open"),
         ("mirror", "Mirror Journal"),
         ("ojc", "Open Journals Collective"),

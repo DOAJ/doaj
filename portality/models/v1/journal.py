@@ -309,7 +309,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         has_seal = "Yes" if self.has_seal() else "No"
 
         # get the full classification paths for the subjects
-        classification_paths = cbib.lcc_paths()
+        classification_paths = cbib.classification_paths()
 
         # create an unpunctitle
         if cbib.title is not None:

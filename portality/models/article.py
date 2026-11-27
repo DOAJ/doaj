@@ -563,18 +563,16 @@ class Article(SeamlessMixin, DomainObject):
         date = cbib.get_publication_date()
 
         # calculate the classification paths
-        from portality.lcc import lcc  # inline import since this hits the database
+        from portality.models import Classification
         for subs in cbib.subjects():
-            scheme = subs.get("scheme")
             term = subs.get("term")
-            if scheme == "LCC":
-                path = lcc.pathify(term)
-                if path is not None:
-                    classification_paths.append(path)
+            path = Classification.pathify(term)
+            if path is not None:
+                classification_paths.append(path)
 
         # normalise the classification paths, so we only store the longest ones
-        classification_paths = lcc.longest(classification_paths)
-        schema_codes_tree = cbib.lcc_codes_full_list()
+        classification_paths = Classification.longest(classification_paths)
+        schema_codes_tree = cbib.subject_codes_full_list()
 
         # create an unpunctitle
         if cbib.title is not None:
@@ -926,19 +924,16 @@ class ArticleBibJSON(GenericBibJSON):
 
         return jtitle.strip(), citation
 
-    def lcc_codes_full_list(self):
+    def subject_codes_full_list(self):
         full_list = set()
 
-        from portality.lcc import lcc  # inline import since this hits the database
+        from portality.models import Classification
         for subs in self.subjects():
-            scheme = subs.get("scheme")
-            if scheme != "LCC":
-                continue
             code = subs.get("code")
-            expanded = lcc.expand_codes(code)
+            expanded = Classification.expand_codes(code)
             full_list.update(expanded)
 
-        return ["LCC:" + x for x in full_list if x is not None]
+        return ["CRDC:" + x for x in full_list if x is not None]
 
 
 ##################################################

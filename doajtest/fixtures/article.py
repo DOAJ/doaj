@@ -247,17 +247,17 @@ ARTICLE_SOURCE = {
         ],
         "keywords": ["word", "key"],
         "subject": [
-            {
-                "scheme": "LCC",
-                "term": "Economic theory. Demography",
-                "code": "HB1-3840"
-            },
-            {
-                "scheme": "LCC",
-                "term": "Social Sciences",
-                "code": "H"
-            }
-        ],
+			{
+				"scheme": "CRDC",
+				"term": "Pure mathematics",
+         		"code": "RDF10101"
+			},
+        	{
+				"scheme": "CRDC",
+				"term": "Molecular and atomic computing",
+				"code": "RDF1020805"
+			}
+		],
     },
     "created_date": "2000-01-01T00:00:00Z"
 }

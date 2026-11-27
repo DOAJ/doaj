@@ -33,9 +33,16 @@ GENERIC = {
         {"type": "oa_statement", "url": "http://oa.statement"}
     ],
     "subject": [
-        {"scheme": "LCC", "term": "Economic theory. Demography",
-         "code": "HB1-3840"},
-        {"scheme": "LCC", "term": "Social Sciences", "code": "H"}
+        {
+            "scheme": "CRDC",
+            "term": "Pure mathematics",
+            "code": "RDF10101"
+        },
+        {
+            "scheme": "CRDC",
+            "term": "Molecular and atomic computing",
+            "code": "RDF1020805"
+        }
     ]
 }
 
@@ -77,9 +84,9 @@ ARTICLE = {
     "keywords" : ["key", "word"],
     "subject" : [
         {
-            "scheme" : "LCC",
-            "term" : "Medicine",
-            "code" : "M"
+            "scheme": "CRDC",
+            "term": "Pure mathematics",
+            "code": "RDF10101"
         }
     ]
 }

@@ -39,7 +39,7 @@ def build_flags_form_expanded(assignee=None, deadline="", setter=None, created_d
 
 
 SUBJECT_FORM_EXPANDED = {
-    "subject": ['HB1-3840', 'H', 'SF600-1100']
+    "subject": ['RDF10101', 'RDF1020805', 'RDF1060304']
 }
 
 OWNER_FORM_EXPANDED = {
@@ -141,10 +141,10 @@ JOURNAL_LIKE_BIBJSON = {
     },
     "replaces": ["1111-1111"],
     "subject": [
-        {"scheme": "LCC", "term": "Economic theory. Demography",
-         "code": "HB1-3840"},
-        {"scheme": "LCC", "term": "Social Sciences", "code": "H"},
-        {"scheme": "LCC", "term": "Veterinary medicine", "code": "SF600-1100"}
+        {"scheme": "CRDC", "term": "Pure mathematics",
+         "code": "RDF10101"},
+        {"scheme": "CRDC", "term": "Molecular and atomic computing", "code": "RDF1020805"},
+        {"scheme": "CRDC", "term": "Estuarine and freshwater ecology", "code": "RDF1060304"}
     ],
     "title": "The Title",
     "waiver": {
