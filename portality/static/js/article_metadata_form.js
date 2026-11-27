@@ -2,112 +2,189 @@
 
 $(document).ready(function() {
 
-    function prepAuthorContainer(params) {
-        var ne = params.element;
-        var reset = params.reset_value;
-        var number = params.number;
+    function initRepeatableFieldList(options) {
+        var prefix = options.prefix;
+        var removeButtonSelector = options.removeButtonSelector;
+        var addButtonSelector = options.addButtonSelector;
+        var onAdd = options.onAdd;
 
-        ne.id = 'authors-' + number + '-container';
+        function prepContainer(params) {
+            var ne = params.element;
+            var reset = params.reset_value;
+            var number = params.number;
 
-        ne = $(ne);
-        ne.find('[id^=authors-]').each(function () {
-            var ce = $(this);
+            ne.id = prefix + '-' + number + '-container';
 
-            // reset the value
-            if (reset) {
-                ce.val('')
+            ne = $(ne);
+            ne.find('[id^=' + prefix + '-]').each(function () {
+                var ce = $(this);
+
+                // reset the value
+                if (reset) {
+                    if (ce.is('select')) {
+                        // val('') can leave nothing visibly selected if there's no blank
+                        // option; selectedIndex always lands on a real, visible option
+                        ce.prop('selectedIndex', 0);
+                    } else {
+                        ce.val('');
+                    }
+                }
+
+                // set the id as requested
+                var items = ce.attr('id').split('-');
+                var id = prefix + '-' + number + '-' + items[2];
+
+                // set both the id and the name to the new id, as per wtforms requirements
+                ce.attr('id', id);
+                ce.attr('name', id);
+            });
+
+            // we also need to update the remove button
+            ne.find(removeButtonSelector).each(function () {
+                var ce = $(this);
+                var id = 'remove_' + prefix + '-' + number;
+
+                // set both the id and the name to the new id
+                ce.attr('id', id);
+                ce.attr('name', id);
+            });
+        }
+
+        function showHideFirstRemoveButton() {
+            // Hide delete button when there's just one entry
+            if ($('[id^=' + prefix + '-][id$="container"]').length === 1) {
+                $('#remove_' + prefix + '-0').css('display', 'none');
+            } else {
+                $('#remove_' + prefix + '-0').css('display', 'inherit');
+            }
+        }
+
+        function removeItem(event) {
+            event.preventDefault();
+
+            var id = $(this).attr("id");
+            // strip the leading "remove_" to get the container's short_name (e.g. other_identifiers-0)
+            var short_name = id.replace(/^remove_/, '');
+            var container = short_name + "-container";
+
+            $("#" + container).remove();
+
+            var count = 0;
+            $('[id^=' + prefix + '-][id$="container"]').each(function () {
+                prepContainer({
+                    element: this,
+                    number: count,
+                    reset_value: false
+                });
+                count++;
+            });
+
+            showHideFirstRemoveButton();
+        }
+
+        $(addButtonSelector).click(function (event) {
+            event.preventDefault();
+
+            // get the last entry in the list
+            var all_e = $('[id^=' + prefix + '-][id$="container"]');
+            var e = all_e.last();
+
+            // make a clone of the last entry
+            var ne = e.clone()[0];
+
+            // extract the last entry's number from the container id and increment it
+            var items = ne.id.split('-');
+            var number = parseInt(items[1]);
+            number = number + 1;
+
+            // increment all the numbers
+            prepContainer({
+                element: ne,
+                number: number,
+                reset_value: true
+            });
+
+            e.after(ne);
+
+            var rem_b = $(removeButtonSelector);
+            rem_b.unbind("click");
+            rem_b.click(removeItem);
+            if (all_e.length === 1) {
+                $('#remove_' + prefix + '-1').css('display', 'inherit');
             }
 
-            // set the id as requestsed
-            items = ce.attr('id').split('-');
-            var id = 'authors-' + number + '-' + items[2];
+            showHideFirstRemoveButton();
 
-            // set both the id and the name to the new id, as per wtforms requirements
-            ce.attr('id', id);
-            ce.attr('name', id);
+            if (onAdd) {
+                onAdd(ne);
+            }
         });
-
-        // we also need to update the remove button
-        ne.find("[id^=remove_authors-]").each(function () {
-            var ce = $(this);
-
-            // update the id as above - saving us a closure again
-            items = ce.attr('id').split('-');
-            var id = 'remove_authors-' + number;
-
-            // set both the id and the name to the new id
-            ce.attr('id', id);
-            ce.attr('name', id);
-        })
-    }
-
-    function showHideFirstRemoveButton() {
-        // Hide delete button when there's just one author
-        if ($('[id^=authors-][id$="container"]').length === 1) {
-            $('#remove_authors-0').css('display', 'none')
-        } else {
-            $('#remove_authors-0').css('display', 'inherit')
-        }
-    }
-
-    function removeAuthor() {
-        event.preventDefault();
-
-        var id = $(this).attr("id");
-        var short_name = id.split("_")[1];
-        var container = short_name + "-container";
-
-        $("#" + container).remove();
-
-        var count = 0;
-        $('[id^=authors-][id$="container"]').each(function () {
-            prepAuthorContainer({
-                element: this,
-                number: count,
-                reset_value: false
-            });
-            count++;
-        });
-
-        showHideFirstRemoveButton()
-    }
-
-    $('button[name=more_authors]').click(function (event) {
-        event.preventDefault();
-
-        // get the last author div in the list
-        var all_e = $('[id^=authors-][id$="container"]');
-        var e = all_e.last();
-
-        // make a clone of the last author div
-        var ne = e.clone()[0];
-
-        // extract the last author's number from the div id and increment it
-        var items = ne.id.split('-');
-        var number = parseInt(items[1]);
-        number = number + 1;
-
-        // increment all the numbers
-        prepAuthorContainer({
-            element: ne,
-            number: number,
-            reset_value: true
-        });
-
-        e.after(ne);
-
-        var rem_b = $(".remove_field__button");
-        rem_b.unbind("click");
-        rem_b.click(removeAuthor);
-        if (all_e.length === 1) {
-            $('#remove_authors-1').css('display', 'inherit')
-        }
 
         showHideFirstRemoveButton();
+        $(removeButtonSelector).click(removeItem);
+    }
+
+    initRepeatableFieldList({
+        prefix: 'authors',
+        removeButtonSelector: '.remove_author__button',
+        addButtonSelector: 'button[name=more_authors]'
     });
 
-    showHideFirstRemoveButton();
-    $(".remove_field__button").click(removeAuthor);
+    initRepeatableFieldList({
+        prefix: 'other_identifiers',
+        removeButtonSelector: '.remove_identifier__button',
+        addButtonSelector: 'button[name=more_other_identifiers]',
+        onAdd: function (container) {
+            syncIdentifierTypeVisibility($(container).find('.identifier-type-select'));
+        }
+    });
+
+    // The "Type of identifier" dropdown offers the known identifier types plus an
+    // "other" option. The free-text type field is only needed (and shown) when
+    // "other" is selected - the rest of the time the dropdown value *is* the type.
+    function syncIdentifierTypeVisibility(select) {
+        var typeInput = select.closest('.identifier-item').find('.identifier-type-other');
+        if (select.val() === 'other') {
+            typeInput.show();
+        } else {
+            typeInput.hide();
+        }
+    }
+
+    $('#identifier-list').on('change', '.identifier-type-select', function () {
+        syncIdentifierTypeVisibility($(this));
+    });
+
+    $('.identifier-type-select').each(function () {
+        var select = $(this);
+        var typeInput = select.closest('.identifier-item').find('.identifier-type-other');
+        var existingType = typeInput.val();
+
+        // an existing type that isn't one of the dropdown's known options must have
+        // been freely typed in previously, so select "other" and reveal the field
+        if (existingType && select.find('option[value="' + existingType + '"]').length === 0) {
+            select.val('other');
+        }
+
+        syncIdentifierTypeVisibility(select);
+    });
+
+    $("#article_metadata_form").on("submit", function () {
+        // whenever a known type is selected, that dropdown value is the type -
+        // copy it into the (possibly hidden) type field so it gets submitted.
+        // Rows the user hasn't engaged with (no identifier value entered) are left
+        // alone so they don't get flagged as incomplete.
+        $('#identifier-list .identifier-item').each(function () {
+            var item = $(this);
+            var select = item.find('.identifier-type-select');
+            var idInput = item.find('input[id$="-id"]');
+            var typeInput = item.find('.identifier-type-other');
+
+            if (select.val() !== 'other' && idInput.val() !== '') {
+                typeInput.val(select.val());
+            }
+        });
+    });
 
     $("#pissn").select2({
         allowClear: false,
